@@ -192,5 +192,5 @@ def dosetup(name, version, packages, datafiles, scripts, ext_modules=[]):
         )
 
 if __name__ == "__main__":
-  standardsetup("translate toolkit", translateversion)
+  standardsetup("translate-toolkit", translateversion)
 
