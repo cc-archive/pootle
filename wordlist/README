@@ -3,6 +3,7 @@ This directory provides the follwoing scripts
 * get-words - extract words from PO, PDF, MO, HTML and Lynx DAT files
 * new-words - eliminate existing words from a wordlist
 * sort-length - provide a length sorted wordlist
+* letter-frequency.py - create a letter frequency count for a wordlist
 
 
 get-words
@@ -54,3 +55,17 @@ potential starting points for finding new words.
 It would probably make sense to evaluate the page to determine if it indeed is in the language under
 investigation.  This could be done by checking the statistical frequency of dictionary words within 
 the page, although this would then depend on a good wordlist for the language.
+
+letter-frequency.py
+-------------------
+This produces a list of letters in decending order of frequency.  You need this for the MySpell TRY 
+entry.  The input can be a single column wordlist or a double column list with the word frequency 
+in the first column and the word in the second column.
+
+It is debatable which is the more correct approach as MySpell uses the list of characters from the 
+TRY entry to take letters and substitute them to try and determine other spelling possibilities.  
+So the true letter frequency as apposed to the wordlist letter freqnuecny might might be more 
+important - but they are quite similar.  If you only have a wordlist then you probably have no other
+choice then to rely on the wordlist letter frequency.
+
+
