@@ -14,17 +14,18 @@ packagesdir = distutils.sysconfig.get_python_lib()
 sitepackages = packagesdir.replace(sys.prefix + os.sep, '')
 
 infofiles = [(join(sitepackages,'translate'),
-             [join('translate',filename) for filename in 'ChangeLog', 'COPYING', 'README', 'intro.txt'])]
+             [join('translate',filename) for filename in 'ChangeLog', 'COPYING', 'README'])]
 initfiles = [(join(sitepackages,'translate'),[join('translate','__init__.py')])]
 
 convertscripts = [apply(join, ('translate', ) + script) for script in
                   ('convert', 'moz2po'), ('convert', 'po2moz'),
                   ('convert', 'oo2po'), ('convert', 'po2oo'),
                   ('convert', 'csv2po'), ('convert', 'po2csv'),
+                  ('convert', 'txt2po'), 
                   ('filters', 'pofilter'), ('filters', 'pogrep'),
                   ('tools', 'pomerge')]
 
-subpackages = ["convert", "misc", "portal", "storage", "filters"]
+subpackages = ["convert", "misc", "storage", "filters"]
 packages = ["translate"]
 for subpackage in subpackages:
   initfiles.append((join(sitepackages, 'translate', subpackage),
