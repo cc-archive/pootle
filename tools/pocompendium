@@ -15,19 +15,10 @@ output=$1
 shift
 directories=$*
 
-# if [ $# -eq 2 ]; then
-# 	msgcat -o $2 `find $directory -name "*.po"` 
-# else
-# 	msgcat `find $directory -name "*.po"`
-# fi
-
-touch $output
 for dir in $directories
 do
-	tmp=`mktemp`
-	msgcat -o $tmp `find $dir -name "*.po"`
-	tmp2=`mktemp`
-	cp $output $tmp2
-	msgcat -o $output $tmp $tmp2
-	rm $tmp $tmp2
+	new_files=`find $dir -name "*.po"`
+	files=`echo $files $new_files`
 done
+
+msgcat -o $output $files
