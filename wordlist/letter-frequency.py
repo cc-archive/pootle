@@ -27,16 +27,26 @@ locale.setlocale(locale.LC_ALL, options.inputlocale)
 
 line = input.readline()
 total = 0
+#while line != "":
+#  count, word = string.split(line, maxsplit=1)
+#  for c in word:
+#    if c in string.letters + "-'":
+#      total += int(count)
+#      if freq.has_key(c):
+#        freq[c] += int(count)
+#      else:
+#        freq[c] = int(count)
+#  line = input.readline()
+
 while line != "":
-  count, word = string.split(line, maxsplit=1)
-  for c in word:
-    if c in string.letters + "-'":
-      total += int(count)
-      if freq.has_key(c):
-        freq[c] += int(count)
-      else:
-        freq[c] = int(count)
-  line = input.readline()
+	word = line
+	for c in word:
+		if c in string.letters + "-'":
+			if freq.has_key(c):
+				freq[c] += 1
+			else:
+				freq[c] = 1
+	line = input.readline()
 
 input.close()
 
