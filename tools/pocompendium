@@ -4,21 +4,71 @@
 # subdirectory.  If conflicts in the merge are found then these are
 # combined and marked fuzzy.
 
-if [ $# -lt 2 ]; then
-	echo "Usage: `basename $0` output.po directory(s)"
+function print_usage() {
+	echo "Usage: `basename $0` [options] output.po directory(s)"
 	echo "       The first parameter is the output file, standard output if the output file is '-'."
 	echo "       Any number of directories may be specified for input files."
+	echo "     Options:"
+	echo "       --invert|v  Creates an inverse compendium with msgid and msgstr swapped"
+	echo "       --errors|e  Only ouput msg bundles that have errors"
 	exit 1
+}
+
+for true
+do
+	case $1 in
+		--invert|-v) option_invert=1
+				shift
+				;;
+		--errors|-e) option_errors=1
+				shift
+				;;
+		--*|-*) print_usage
+			;;
+		*) break
+			;;
+	esac
+done
+	#--ignore-case|-i)
+	#--strip-accelerators|-a)
+	#--strip-end-punctuation|-p)
+	#--strip-all|-A)
+
+if [ $# -lt 2 ]; then
+	print_usage
 fi
 
 output=$1
 shift
 directories=$*
 
+tmp_dir=`mktemp -d`
+
 for dir in $directories
 do
-	new_files=`find $dir -name "*.po"`
-	files=`echo $files $new_files`
+	cp -rp $dir $tmp_dir
 done
 
-msgcat -o $output $files
+# Invert if requested
+if [ $option_invert -eq 1 ] ; then
+	for po_file in `find $tmp_dir -name "*.po"`
+	do
+		stripped_name=`dirname $po_file`/`basename $po_file .po`
+		po_translated=${stripped_name}.translated.po
+		po_inverted=${stripped_name}.invert.po
+		msgattrib --translated $po_file > $po_translated
+		msghack --invert $po_translated > $po_inverted
+		rm $po_file $po_translated
+	done
+fi
+
+msgcat -o $output `find $tmp_dir -name "*.po"`
+
+# Extract only problems if requested
+if [ $option_errors -eq 1 ] ; then
+	tmp=`mktemp`
+	msgattrib --only-fuzzy $output > $tmp
+	mv $tmp $output
+fi
+
+rm -rf $tmp_dir
