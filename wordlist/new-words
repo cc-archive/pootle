@@ -48,13 +48,13 @@ if [ "$spell" != "" ]; then
 	done
 fi 
 
-# Restore freqeuncies
-echo "egrep -f $tmp_input $input | sort --general-numeric-sort > $output"
+# TODO Restore freqeuncies
+#echo "egrep -f $tmp_input $input | sort --general-numeric-sort > $output"
+
+#Cleanup
+mv $tmp_input $output
 
 # Stats
 echo Statistics
 echo Input: `cat $input | wc -l`
 echo Output: `cat $output | wc -l`
-
-#Cleanup
-rm $tmp_input
