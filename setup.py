@@ -40,8 +40,11 @@ translatescripts = [apply(join, ('translate', ) + script) for script in
                   ('convert', 'html2po'),
                   ('convert', 'sxw2po'),
                   ('filters', 'pofilter'),
-                  ('tools', 'podebug'), ('tools', 'pogrep'),
-                  ('tools', 'pomerge'), ('tools', 'pocount')]
+                  ('tools', 'pocompile'),
+                  ('tools', 'pocount'),
+                  ('tools', 'podebug'),
+                  ('tools', 'pogrep'),
+                  ('tools', 'pomerge')]
 if includepootle:
   subpackages.append("pootle")
   translatescripts.append(join('translate', 'pootle', 'pootle.py'))
