@@ -221,7 +221,7 @@ def dosetup(name, version, packages, datafiles, scripts, ext_modules=[]):
 
 if __name__ == "__main__":
   if includepootle:
-    standardsetup("pootle", translateversion)
+    standardsetup("Pootle", translateversion)
   else:
     standardsetup("translate-toolkit", translateversion)
 
