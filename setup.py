@@ -79,7 +79,11 @@ def getdatafiles():
   datafiles = initfiles + infofiles
   def listfiles(srcdir):
     return join(sitepackages, srcdir), [join(srcdir, f) for f in os.listdir(srcdir) if os.path.isfile(join(srcdir, f))]
-  docfiles = listfiles(join('translate', 'doc'))
+  try:
+    docfiles = listfiles(join('translate', 'doc'))
+  except OSError, e:
+    print >>sys.stderr, "error importing docs, not including: ", e
+    docfiles = None, []
   if docfiles[1]:
     datafiles.append(docfiles)
   if includepootle:
