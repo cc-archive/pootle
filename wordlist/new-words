@@ -1,0 +1,16 @@
+#!/bin/bash
+#
+
+if [ $# -lt 2 ]; then
+	program=`basename $0`
+	echo "Usage: $program new-word-list existing-word-list(s)"
+	echo "   eg: $program new-zu-words zu.dic en.dic reject-words"
+	exit 1
+fi
+
+new=$1
+shift 1
+tmp=`mktemp`
+sort --unique $* > $tmp
+comm -2 -3 $new $tmp
+rm $tmp
