@@ -32,7 +32,7 @@ convertscripts = [apply(join, ('translate', ) + script) for script in
                   ('tools', 'pomerge')]
 
 subpackages = ["convert", "misc", "storage", "filters"]
-packages = ["translate"]
+packages = ["translate", "elementtree"]
 for subpackage in subpackages:
   initfiles.append((join(sitepackages, 'translate', subpackage),
                     [join('translate', subpackage, '__init__.py')]))
