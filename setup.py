@@ -14,7 +14,7 @@ packagesdir = distutils.sysconfig.get_python_lib()
 sitepackages = packagesdir.replace(sys.prefix + os.sep, '')
 
 infofiles = [(join(sitepackages,'translate'),
-             [join('translate',filename) for filename in 'ChangeLog', 'COPYING', 'README'])]
+             [join('translate',filename) for filename in 'ChangeLog', 'COPYING', 'README', 'intro.txt'])]
 initfiles = [(join(sitepackages,'translate'),[join('translate','__init__.py')])]
 
 convertscripts = [apply(join, ('translate', ) + script) for script in
