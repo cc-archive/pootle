@@ -68,6 +68,7 @@ def getcsvmodule():
   return csvSetup.csvExtension(csvPath)
 
 def getdatafiles():
+  # TODO: add pootle.prefs, pootle/html
   datafiles = initfiles + infofiles
   docfiles = [join('translate', 'doc', docfile) for docfile in os.listdir(join('translate', 'doc'))]
   datafiles.append((join(sitepackages, 'translate', 'doc'), docfiles))
@@ -191,5 +192,5 @@ def dosetup(name, version, packages, datafiles, scripts, ext_modules=[]):
         )
 
 if __name__ == "__main__":
-  standardsetup("translate", translateversion)
+  standardsetup("translate toolkit", translateversion)
 
