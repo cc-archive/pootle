@@ -29,7 +29,7 @@ convertscripts = [apply(join, ('translate', ) + script) for script in
                   ('convert', 'html2po'),
                   ('convert', 'sxw2po'),
                   ('filters', 'pofilter'), ('filters', 'pogrep'),
-                  ('tools', 'pomerge')]
+                  ('tools', 'pomerge'), ('tools', 'pocount')]
 
 subpackages = ["convert", "misc", "storage", "filters"]
 packages = ["translate", "elementtree"]
