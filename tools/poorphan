@@ -1,26 +1,20 @@
 #!/bin/bash
 
-if [ $# -ne 2 ]; then
-	echo "Usage: `basename $0` po_directory pot_directory "
+if [ $# -lt 2 -o $# -gt 4 ]; then
+	echo "Usage: `basename $0` [-l locale] <po_directory> <pot_directory>"
+	echo "   eg. `basename $0` af_ZA af templates"
 	exit 1
 fi
 
-# current_dir=`pwd`
-# 
-# if [ "/" != "`echo $1 | cut -c1`" ]; then
-# 	po_dir=$current_dir/$1
-# else
-# 	po_dir=$1
-# fi
-# 
-# if [ "/" != "`echo $2 | cut -c1`" ]; then
-# 	pot_dir=$current_dir/$2
-# else
-# 	pot_dir=$2
-# fi
+if [ "$1" == "-l" ]; then
+	locale="--locale=$2"
+	shift 2
+fi
+
 po_dir=$1
 pot_dir=$2
 
+echo
 echo "No POT file for an old PO file"
 for po_file in `cd $po_dir; find . -name "*.po"`
 do
@@ -30,11 +24,31 @@ do
 	fi
 done
 
+echo
 echo "No PO file for an new POT file"
 for pot_file in `cd $pot_dir; find . -name "*.pot"`
 do
 	po_file=$po_dir/`dirname $pot_file`/`basename ${pot_file} .pot`.po
 	if [ ! -f $po_file ]; then
-		echo "mkdir -p `dirname $po_file`; msginit --no-translator -i $pot_dir/$pot_file -o $po_file "
+		echo "mkdir -p `dirname $po_file`; msginit $locale --no-translator -i $pot_dir/$pot_file -o $po_file "
 	fi
 done
+
+echo
+echo "Has possibly been moved"
+for po_file in `cd $po_dir; find . -name "*.po"`
+do
+	pot_file=$pot_dir/${po_file}t
+	if [ ! -f $pot_file ]; then
+		# No POT file so possibility the file moved and there might be a few possibilities
+		pot_file_name=`basename $pot_file`
+		count=0
+		for move in `cd $pot_dir; find . -name "$pot_file_name"`
+		do
+			[ $count -eq 0 ] && echo $po_file:
+			echo "cp $po_dir/$po_file $po_dir/`dirname $move`/`basename $move .pot`.po"
+			count=1
+		done
+		[ $count -eq 1 ] && echo "--------------"
+	fi
+done	
