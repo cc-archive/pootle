@@ -4,7 +4,6 @@ from distutils.core import setup, Extension
 import distutils.sysconfig
 import sys
 import os.path
-import distfileset
 from translate import __version__
 
 join = os.path.join
@@ -18,7 +17,8 @@ infofiles = [(join(sitepackages,'translate'),
              [join('translate',filename) for filename in 'ChangeLog', 'COPYING', 'README'])]
 initfiles = [(join(sitepackages,'translate'),[join('translate','__init__.py')])]
 
-convertscripts = [join('translate', 'convert', script) for script in ('moz2po', 'po2moz')]
+convertscripts = [apply(join, ('translate', ) + script) for script in
+                  ('convert', 'moz2po'), ('convert', 'po2moz'), ('filters', 'pofilter')]
 
 subpackages = ["convert", "misc", "portal", "storage"]
 packages = ["translate"]
