@@ -34,7 +34,7 @@ convertscripts = [apply(join, ('translate', ) + script) for script in
                   ('tools', 'podebug'), ('tools', 'pogrep'),
                   ('tools', 'pomerge'), ('tools', 'pocount')]
 
-subpackages = ["convert", "misc", "storage", "filters", "pootle"]
+subpackages = ["convert", "misc", "storage", "filters", "pootle", "tools"]
 # TODO: elementtree doesn't work in sdist, fix this
 packages = ["translate"]
 for subpackage in subpackages:
