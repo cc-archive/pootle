@@ -95,7 +95,10 @@ def buildinfolinks():
     docdir = os.path.join(os.path.dirname(basedir), "html", "doc")
     if os.path.isdir(docdir):
       if os.path.exists("doc"):
-        shutil.rmtree("doc")
+        rmtreeerrorhandler = lambda func, arg, error: sys.stderr.write("error removing doc tree: %s\n" % (error[1], ))
+        shutil.rmtree("doc", onerror=rmtreeerrorhandler)
+        if os.path.exists("doc"):
+          os.unlink("doc")
       linkdir(docdir, "doc")
   os.chdir(basedir)
   for filename in ["COPYING", "README", "LICENSE"]:
@@ -128,7 +131,7 @@ class TranslateDistribution(Distribution):
     py2exeoptions["packages"] = ["translate", "encodings"]
     py2exeoptions["compressed"] = True
     version = attrs.get("version", translateversion)
-    py2exeoptions["dist_dir"] = "translate-%s" % version
+    py2exeoptions["dist_dir"] = "translate-toolkit-%s" % version
     options = {"py2exe": py2exeoptions}
     baseattrs['options'] = options
     if py2exe:
