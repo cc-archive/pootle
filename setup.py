@@ -77,22 +77,16 @@ def getcsvmodule():
 def getdatafiles():
   # TODO: add pootle.prefs, pootle/html
   datafiles = initfiles + infofiles
-  docfiles = [join('translate', 'doc', docfile) for docfile in os.listdir(join('translate', 'doc'))]
-  datafiles.append((join(sitepackages, 'translate', 'doc'), docfiles))
+  def listfiles(srcdir):
+    return join(sitepackages, srcdir), [join(srcdir, f) for f in os.listdir(srcdir) if os.path.isfile(join(srcdir, f))]
+  docfiles = listfiles(join('translate', 'doc'))
+  if docfiles[1]:
+    datafiles.append(docfiles)
   if includepootle:
-    pootledir = join('translate', 'pootle')
-    htmldir = join(pootledir, 'html')
-    desthtmldir = join(sitepackages, htmldir)
-    imagesdir = join(htmldir, 'images')
-    destimagesdir = join(sitepackages, imagesdir)
-    jsdir = join(htmldir, 'js')
-    destjsdir = join(sitepackages, jsdir)
-    def dirfiles(srcdir):
-      return join(sitepackages, srcdir), [join(srcdir, f) for f in os.listdir(srcdir) if os.path.isfile(join(srcdir, f))]
-    pootlefiles = [(join(sitepackages, pootledir), [join(pootledir, 'pootle.prefs')])]
-    pootlefiles.append(dirfiles(htmldir))
-    pootlefiles.append(dirfiles(imagesdir))
-    pootlefiles.append(dirfiles(jsdir))
+    pootlefiles = [(join(sitepackages, 'translate', 'pootle'), [join('translate', 'pootle', 'pootle.prefs')])]
+    pootlefiles.append(listfiles(join('translate', 'pootle', 'html')))
+    pootlefiles.append(listfiles(join('translate', 'pootle', 'html', 'images')))
+    pootlefiles.append(listfiles(join('translate', 'pootle', 'html', 'js')))
     datafiles += pootlefiles
   includecsv = 0
   if includecsv:
@@ -163,8 +157,14 @@ class TranslateDistribution(Distribution):
       self.com_server = []
       self.service = []
       self.windows = []
+      self.isapi = []
       self.console = translatescripts
       self.zipfile = "translate.zip"
+      if includepootle:
+        import jToolkitSetup
+        baseattrs['cmdclass'] = {"innosetup": jToolkitSetup.build_installer}
+        options["innosetup"] = py2exeoptions.copy()
+        options["innosetup"]["install_script"] = []
     baseattrs.update(attrs)
     Distribution.__init__(self, baseattrs)
 
@@ -220,5 +220,8 @@ def dosetup(name, version, packages, datafiles, scripts, ext_modules=[]):
         )
 
 if __name__ == "__main__":
-  standardsetup("translate-toolkit", translateversion)
+  if includepootle:
+    standardsetup("pootle", translateversion)
+  else:
+    standardsetup("translate-toolkit", translateversion)
 
