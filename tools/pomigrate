@@ -47,7 +47,7 @@ if [ "$1" != "" ]; then
 fi
 
 # Create a compendium if needed
-if [ $option_create_compendium == 1 ]; then
+if [ "$option_create_compendium" == "1" ]; then
 	echo "Creating: compendium file from PO directory..."
 	temp_compendium=`mktemp`
 	msgcat -o $temp_compendium `find $po_dir -name "*.po"`
