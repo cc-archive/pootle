@@ -61,7 +61,7 @@ do
 		echo "No POT file exists for $po_file"
 	else
 		echo -n "$po_file "
-		msgmerge --update $compendium $po_dir/$po_file $pot_dir/${po_file}t
+		msgmerge --backup=off --update $compendium $po_dir/$po_file $pot_dir/${po_file}t
 	fi
 done
 

@@ -32,7 +32,7 @@ echo "Updating files using compendium..."
 for po in `cd $new ; find . -name "*.po"`
 do
 	echo -n $new/$po
-	msgmerge --compendium=$compendium --update $new/$po $templates/${po}t
+	msgmerge --compendium=$compendium --backup=off --update $new/$po $templates/${po}t
 done
 
 rm $compendium
