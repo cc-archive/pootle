@@ -10,6 +10,8 @@ try:
 except ImportError:
   py2exe = None
 
+# TODO: check out installing into a different path with --prefix/--home
+
 join = os.path.join
 
 translateversion = __version__.ver
@@ -31,8 +33,9 @@ convertscripts = [apply(join, ('translate', ) + script) for script in
                   ('filters', 'pofilter'), ('filters', 'pogrep'),
                   ('tools', 'pomerge'), ('tools', 'pocount')]
 
-subpackages = ["convert", "misc", "storage", "filters"]
-packages = ["translate", "elementtree"]
+subpackages = ["convert", "misc", "storage", "filters", "pootle"]
+# TODO: elementtree doesn't work in sdist, fix this
+packages = ["translate"]
 for subpackage in subpackages:
   initfiles.append((join(sitepackages, 'translate', subpackage),
                     [join('translate', subpackage, '__init__.py')]))
