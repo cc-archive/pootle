@@ -18,4 +18,6 @@ global-include *.c
 include translate/convert/moz2po
 include translate/convert/po2moz
 include translate/filters/pofilter
+include translate/filters/pogrep
+include translate/tools/pomerge
 

@@ -18,7 +18,9 @@ infofiles = [(join(sitepackages,'translate'),
 initfiles = [(join(sitepackages,'translate'),[join('translate','__init__.py')])]
 
 convertscripts = [apply(join, ('translate', ) + script) for script in
-                  ('convert', 'moz2po'), ('convert', 'po2moz'), ('filters', 'pofilter')]
+                  ('convert', 'moz2po'), ('convert', 'po2moz'),
+                  ('filters', 'pofilter'), ('filters', 'pogrep'),
+                  ('tools', 'pomerge')]
 
 subpackages = ["convert", "misc", "portal", "storage", "filters"]
 packages = ["translate"]
