@@ -11,12 +11,14 @@ function print_usage() {
 	echo "     Options:"
 	echo "       --invert|v  Creates an inverse compendium with msgid and msgstr swapped"
 	echo "       --errors|e  Only ouput msg bundles that have errors"
+	echo "       --correct|c Only ouput msg bundles that are correctly translated"
 	echo "       --ignore-case|i  Drops all strings to lowercase"
 	exit 1
 }
 
 option_invert=0
 option_errors=0
+option_correct=0
 option_ignorecase=0
 
 for true
@@ -26,6 +28,16 @@ do
 				shift
 				;;
 		--errors|-e) option_errors=1
+				if [ $option_correct -eq 1 ]; then 
+					usage 
+				fi
+				shift
+				;;
+        --correct|-c) option_correct=1
+				if [ $option_errors -eq 1 ]; 
+				then 
+					usage 
+				fi
 				shift
 				;;
 	    --ignore-case|-i) option_ignorecase=1
@@ -85,10 +97,17 @@ fi
 
 msgcat -o $output `find $tmp_dir -name "*.po"`
 
-# Extract only problems if requested
+# Extract only errors if requested
 if [ $option_errors -eq 1 ] ; then
 	tmp=`mktemp`
 	msgattrib --only-fuzzy $output > $tmp
+	mv $tmp $output
+fi
+
+# Extract only correct translations if requested
+if [ $option_correct -eq 1 ] ; then
+	tmp=`mktemp`
+	msgattrib --translated --no-fuzzy $output > $tmp
 	mv $tmp $output
 fi
 
