@@ -19,6 +19,8 @@ initfiles = [(join(sitepackages,'translate'),[join('translate','__init__.py')])]
 
 convertscripts = [apply(join, ('translate', ) + script) for script in
                   ('convert', 'moz2po'), ('convert', 'po2moz'),
+                  ('convert', 'oo2po'), ('convert', 'po2oo'),
+                  ('convert', 'csv2po'), ('convert', 'po2csv'),
                   ('filters', 'pofilter'), ('filters', 'pogrep'),
                   ('tools', 'pomerge')]
 
