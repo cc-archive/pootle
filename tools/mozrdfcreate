@@ -1,0 +1,54 @@
+#!/bin/bash
+
+# mozrdfcreate copies RDF files from a template directory and makes the needed
+# changes before adding them to your destination directory.
+#
+# The directory structure of the template and destination directories should be
+# the same.
+#
+# Syntax: 
+#   mozrdfcreate <from> <to> <to locale> <to descriptive locale> <author>
+#   <preview URL>
+#   
+#   eg. mozrdfcreate templates af af-ZA "Afrikaans (South Africa)" "Zuza
+#   Software Foundation"
+#       mozrdfcreate templates ven ven-ZA Venda
+#
+#   note: <to locale> must be in the form language-REGION
+#
+if [ $# -lt 4 ]; then
+	echo "Usage: `basename $0` <from> <to> <to locale> <to descriptive locale> [author] [preview URL]"
+	echo "    eg. `basename $0` templates af af-ZA \"Afrikaans (South Africa)\" "
+	echo "        `basename $0` templates ven ven-ZA Venda Translate.org.za http://translate.org.za/mozilla1.7/af-ZA.gif" 
+	exit 1
+fi
+
+from=$1
+to=$2
+locale=$3
+description=$4
+author=$5
+previewURL=`echo $6 | sed 's/\//\\\\\//g'`
+
+for rdf_file in `cd $from; find . -name "*.rdf"`
+do
+	mkdir -p $to/`dirname $rdf_file`
+
+	# Change the entries
+	sed_script="s/en-US/$locale/g; \
+		s/displayName=\"English\( \|\)(US)\"/displayName=\"$description\"/g; " 
+	if [ "$author" ]; then
+		sed_script="$sed_script s/author=\"[^\"]*\"/author=\"$author\"/g;"
+	fi 
+	if [ "$previewURL" ]; then
+		sed_script="$sed_script s/previewURL=\"[^\"]*\"/previewURL=\"$previewURL\"/g; "
+	fi 
+	cat $from/$rdf_file | sed "$sed_script" > $to/$rdf_file
+	
+	# Check if anything changed
+	if [ "`diff -q $from/$rdf_file $to/$rdf_file`" == "" ];then
+		echo "Unchanged: $to/$rdf_file "
+	fi
+	
+done
+
