@@ -5,7 +5,7 @@
 # combined and marked fuzzy.
 
 function print_usage() {
-	echo "Usage: `basename $0` [options] output.po directory(s)"
+	echo "Usage: `basename $0` [options] output.po <-d directory(s)|file(s)>"
 	echo "       The first parameter is the output file, standard output if the output file is '-'."
 	echo "       Any number of directories may be specified for input files."
 	echo "     Options:"
@@ -74,14 +74,27 @@ fi
 
 output=$1
 shift
-directories=$*
 
 tmp_dir=`mktemp -d`
 
-for dir in $directories
-do
-	cp -rp $dir $tmp_dir
-done
+if [ $1 == "-d" ]; then
+	shift
+	directories=$*
+	if [ $# -eq 0 ]; then
+		print_usage
+	fi
+	for dir in $directories
+	do
+		cp -rp $dir $tmp_dir
+	done
+else
+	files=$*
+	for file in $files
+	do
+		mkdir -p $tmp_dir/`dirname $file`
+		cp -p $file $tmp_dir/`dirname $file`
+	done
+fi
 
 # Invert if requested
 if [ $option_invert -eq 1 ] ; then
