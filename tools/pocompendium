@@ -15,6 +15,7 @@ function print_usage() {
 	echo "       --ignore-case|i  Drops all strings to lowercase"
 	echo "       --strip-accel-tilde|-st  Strip all tilde (~) accelerator characters"
 	echo "       --strip-accel-amp|-sa  Strip all ampersand (&) accelerator characters"
+	echo "       --strip-accel-under|-su  Strip all underscore (_) accelerator characters"
 	exit 1
 }
 
@@ -24,6 +25,7 @@ option_correct=0
 option_ignorecase=0
 option_accel_ooo=0
 option_accel_moz=0
+option_accel_gnome=0
 
 for true
 do
@@ -51,6 +53,9 @@ do
 				shift
 				;;
 	    --strip-accel-amp|-sa) option_accel_moz=1
+				shift
+				;;
+	    --strip-accel-under|-su) option_accel_gnome=1
 				shift
 				;;
 		--*|-*) print_usage
@@ -103,6 +108,9 @@ if [ $option_accel_ooo -eq 1 ]; then
 fi
 if [ $option_accel_moz -eq 1 ]; then
 	sed_string=`echo "$sed_string s/&//;"`
+fi
+if [ $option_accel_gnome -eq 1 ]; then
+	sed_string=`echo "$sed_string s/_//;"`
 fi
 
 if [ $option_ignorecase = 1 ]; then
