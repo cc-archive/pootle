@@ -11,7 +11,7 @@ old=$1
 new=$2
 templates=$3
 
-echo "Migrating files..."
+echo "** Migrating files... **"
 for pot in `cd $templates; find . -name "*.pot"`
 do
 	filename=`basename $pot .pot`.po
@@ -24,11 +24,11 @@ do
     fi
 done
 
-echo "Creating compendium from old files..."
+echo "** Creating compendium from old files... **"
 compendium=`mktemp`
 msgcat -o $compendium `find $old -name "*.po"`
 
-echo "Updating files using compendium..."
+echo "** Updating files using compendium... **"
 for po in `cd $new ; find . -name "*.po"`
 do
 	echo -n $new/$po
