@@ -13,6 +13,8 @@ function print_usage() {
 	echo "       --errors|e  Only ouput msg bundles that have errors"
 	echo "       --correct|c Only ouput msg bundles that are correctly translated"
 	echo "       --ignore-case|i  Drops all strings to lowercase"
+	echo "       --strip-accel-tilde|-st  Strip all tilde (~) accelerator characters"
+	echo "       --strip-accel-amp|-sa  Strip all ampersand (&) accelerator characters"
 	exit 1
 }
 
@@ -20,6 +22,8 @@ option_invert=0
 option_errors=0
 option_correct=0
 option_ignorecase=0
+option_accel_ooo=0
+option_accel_moz=0
 
 for true
 do
@@ -43,13 +47,18 @@ do
 	    --ignore-case|-i) option_ignorecase=1
 				shift
 				;;
+	    --strip-accel-tilde|-st) option_accel_ooo=1
+				shift
+				;;
+	    --strip-accel-amp|-sa) option_accel_moz=1
+				shift
+				;;
 		--*|-*) print_usage
 			;;
 		*) break
 			;;
 	esac
 done
-	#--strip-accelerators|-a)
 	#--strip-end-punctuation|-p)
 	#--strip-all|-A)
 	#--good|-g)
@@ -82,15 +91,26 @@ if [ $option_invert -eq 1 ] ; then
 	done
 fi
 
-# Drop case to lowercase
+# Drop case to lowercase and apply other filters
 UPPER=ABCDEFGHIJKLMNOPQRSTUVWXYZ
 LOWER=abcdefghijklmnopqrstuvwxyz
+
+if [ $option_ignorecase -eq 1 ]; then
+	sed_string=`echo "$sed_string y/$UPPER/$LOWER/;"`
+fi
+if [ $option_accel_ooo -eq 1 ]; then
+	sed_string=`echo "$sed_string s/~//;"`
+fi
+if [ $option_accel_moz -eq 1 ]; then
+	sed_string=`echo "$sed_string s/&//;"`
+fi
+
 if [ $option_ignorecase = 1 ]; then
 	for po_file in `find $tmp_dir -name "*.po"`
 	do
 		stripped_name=`dirname $po_file`/`basename $po_file .po`
 		po_lower=${stripped_name}.lower.po
-		msgfilter -i $po_file sed -e "y/$UPPER/$LOWER/" > $po_lower
+		msgfilter -i $po_file sed -e "$sed_string" > $po_lower
 		rm $po_file
 	done
 fi
