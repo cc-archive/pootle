@@ -18,6 +18,7 @@ join = os.path.join
 translateversion = __version__.ver
 
 includepootle = False
+includebeta = False
 
 packagesdir = distutils.sysconfig.get_python_lib()
 sitepackages = packagesdir.replace(sys.prefix + os.sep, '')
@@ -45,6 +46,9 @@ translatescripts = [apply(join, ('translate', ) + script) for script in
                   ('tools', 'podebug'),
                   ('tools', 'pogrep'),
                   ('tools', 'pomerge')]
+if includebeta:
+  translatescripts.append(join('translate', 'convert', 'po2tmx'))
+  
 if includepootle:
   subpackages.append("pootle")
   translatescripts.append(join('translate', 'pootle', 'pootle.py'))
