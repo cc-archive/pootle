@@ -1,0 +1,35 @@
+#!/bin/bash
+
+# This tool takes and existing directory of PO based translations and migrates
+# them based on a set of PO Template files.
+#
+# If a compendium or compendium files are provided then they will be used to
+# perform rough translations during the migration.
+
+if [ $# -lt 2 ]; then
+	echo "Usage: `basename $0` po_directory pot_directory [compendium(s)]"
+	exit 1
+fi
+
+# FIXME correct problem if people specify absolute paths not relative
+current_dir=`pwd`
+po_dir=$current_dir/$1
+pot_dir=$current_dir/$2
+shift 2
+if [ "$1" != "" ]; then
+	for file in $*
+	do
+		compendium=" $compendium --compendium=$current_dir/$file "
+	done
+fi
+
+cd $po_dir
+for po_file in `find . -name "*.po"`
+do
+	if [ ! -f $pot_dir/${po_file}t ]; then
+		echo "No POT file exists for $po_file"
+	else
+		echo -n "$po_file "
+		msgmerge --update $compendium $po_file $pot_dir/${po_file}t
+	fi
+done
