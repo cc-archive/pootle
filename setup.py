@@ -30,7 +30,8 @@ convertscripts = [apply(join, ('translate', ) + script) for script in
                   ('convert', 'txt2po'), ('convert', 'po2txt'),
                   ('convert', 'html2po'),
                   ('convert', 'sxw2po'),
-                  ('filters', 'pofilter'), ('tools', 'pogrep'),
+                  ('filters', 'pofilter'),
+                  ('tools', 'podebug'), ('tools', 'pogrep'),
                   ('tools', 'pomerge'), ('tools', 'pocount')]
 
 subpackages = ["convert", "misc", "storage", "filters", "pootle"]
