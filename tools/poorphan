@@ -1,0 +1,40 @@
+#!/bin/bash
+
+if [ $# -ne 2 ]; then
+	echo "Usage: `basename $0` po_directory pot_directory "
+	exit 1
+fi
+
+# current_dir=`pwd`
+# 
+# if [ "/" != "`echo $1 | cut -c1`" ]; then
+# 	po_dir=$current_dir/$1
+# else
+# 	po_dir=$1
+# fi
+# 
+# if [ "/" != "`echo $2 | cut -c1`" ]; then
+# 	pot_dir=$current_dir/$2
+# else
+# 	pot_dir=$2
+# fi
+po_dir=$1
+pot_dir=$2
+
+echo "No POT file for an old PO file"
+for po_file in `cd $po_dir; find . -name "*.po"`
+do
+	pot_file=$pot_dir/${po_file}t
+	if [ ! -f $pot_file ]; then
+		echo "rm $po_dir/$po_file "
+	fi
+done
+
+echo "No PO file for an new POT file"
+for pot_file in `cd $pot_dir; find . -name "*.pot"`
+do
+	po_file=$po_dir/`dirname $pot_file`/`basename ${pot_file} .pot`.po
+	if [ ! -f $po_file ]; then
+		echo "mkdir -p `dirname $po_file`; msginit --no-translator -i $pot_dir/$pot_file -o $po_file "
+	fi
+done
