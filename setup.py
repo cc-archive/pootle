@@ -18,6 +18,8 @@ infofiles = [(join(sitepackages,'translate'),
              [join('translate',filename) for filename in 'ChangeLog', 'COPYING', 'README'])]
 initfiles = [(join(sitepackages,'translate'),[join('translate','__init__.py')])]
 
+convertscripts = [join('translate', 'convert', script) for script in ('moz2po', 'po2moz')]
+
 subpackages = ["convert", "misc", "portal", "storage"]
 packages = ["translate"]
 for subpackage in subpackages:
@@ -31,6 +33,7 @@ for subpackage in subpackages:
 
 setuppackages = packages
 standarddatafiles = initfiles + infofiles
+scripts = convertscripts
 ext_modules = []
 
 def import_setup_module(modulename, modulepath):
@@ -39,7 +42,7 @@ def import_setup_module(modulename, modulepath):
   return imp.load_module(modulename, modfile, pathname, description)
 
 # need csv support for versions prior to Python 2.3
-buildcsv = 0
+buildcsv = 1
 includecsv = 0
 if buildcsv:
   csvPath = join('translate', 'misc')
@@ -66,6 +69,7 @@ def dosetup(name, version, packages, datafiles):
         url="http://translate.sourceforge.net/",
         packages = packages,
         data_files = datafiles,
+        scripts = scripts,
         ext_modules = ext_modules
         )
 

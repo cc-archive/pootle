@@ -1,0 +1,20 @@
+# this is used to specify files needed for the source distribution by setup.py
+# that otherwise wouldn't be included...
+
+# things needed by setup to rebuild
+include distfileset.py
+include MANIFEST.in
+
+# informational files
+global-include README
+global-include TODO
+global-include ChangeLog
+global-include COPYING
+
+# C programs
+global-include *.c
+
+# scripts which don't get included by default
+include translate/convert/moz2po
+include translate/convert/po2moz
+
