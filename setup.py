@@ -37,6 +37,7 @@ for subpackage in subpackages:
 
 setuppackages = packages
 standarddatafiles = initfiles + infofiles
+# TODO: make these end with .py ending on Windows...
 scripts = convertscripts
 ext_modules = []
 
