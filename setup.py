@@ -74,6 +74,30 @@ def getcsvmodule():
   csvSetup = import_setup_module('setup', join(os.getcwd(), 'translate', 'misc'))
   return csvSetup.csvExtension(csvPath)
 
+def map_data_file (data_file):
+  """remaps a data_file (could be a directory) to a different location
+  This version gets rid of Lib\\site-packages, etc"""
+  data_parts = data_file.split(os.sep)
+  if data_parts[:2] == ["Lib", "site-packages"]:
+    data_parts = data_parts[2:]
+    if data_parts:
+      data_file = os.path.join(*data_parts)
+    else:
+      data_file = ""
+  if data_parts[:1] == ["translate"]:
+    data_parts = data_parts[1:]
+    if data_parts:
+      data_file = os.path.join(*data_parts)
+    else:
+      data_file = ""
+  if data_parts[:1] == ["pootle"]:
+    data_parts = data_parts[1:]
+    if data_parts:
+      data_file = os.path.join(*data_parts)
+    else:
+      data_file = ""
+  return data_file
+
 def getdatafiles():
   # TODO: add pootle.prefs, pootle/html
   datafiles = initfiles + infofiles
@@ -153,6 +177,7 @@ class TranslateDistribution(Distribution):
     py2exeoptions = {}
     py2exeoptions["packages"] = ["translate", "encodings"]
     py2exeoptions["compressed"] = True
+    py2exeoptions["excludes"] = ["PyLucene"]
     version = attrs.get("version", translateversion)
     py2exeoptions["dist_dir"] = "translate-toolkit-%s" % version
     options = {"py2exe": py2exeoptions}
@@ -169,6 +194,8 @@ class TranslateDistribution(Distribution):
         baseattrs['cmdclass'] = {"innosetup": jToolkitSetup.build_installer}
         options["innosetup"] = py2exeoptions.copy()
         options["innosetup"]["install_script"] = []
+        jToolkitSetup.exclude_python_file(join("jToolkit", "data", "ADODB.py"))
+        jToolkitSetup.map_data_file = map_data_file
     baseattrs.update(attrs)
     Distribution.__init__(self, baseattrs)
 
