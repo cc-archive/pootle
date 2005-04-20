@@ -8,8 +8,11 @@ from translate import __version__
 from translate import __doc__
 try:
   import py2exe
+  build_exe = py2exe.build_exe.py2exe
+  Distribution = py2exe.Distribution
 except ImportError:
   py2exe = None
+  build_exe = Command
 
 # TODO: check out installing into a different path with --prefix/--home
 
@@ -57,6 +60,134 @@ def addsubpackages(subpackages):
       if os.path.exists(infopath):
         infofiles.append((join(sitepackages, 'translate', subpackage), [infopath]))
     packages.append("translate.%s" % subpackage)
+
+class InnoScript:
+    """class that builds an InnoSetup script"""
+    def __init__(self, name, lib_dir, dist_dir, exe_files = [], other_files = [], install_scripts = [], version = "1.0"):
+        self.lib_dir = lib_dir
+        self.dist_dir = dist_dir
+        if not self.dist_dir.endswith(os.sep):
+            self.dist_dir += os.sep
+        self.name = name
+        self.version = version
+        self.exe_files = [self.chop(p) for p in exe_files]
+        self.other_files = [self.chop(p) for p in other_files]
+        self.install_scripts = install_scripts
+
+    def getcompilecommand(self):
+        try:
+            import _winreg
+            compile_key = _winreg.OpenKey(_winreg.HKEY_CLASSES_ROOT, "innosetupscriptfile\\shell\\compile\\command")
+            compilecommand = _winreg.QueryValue(compile_key, "")
+            compile_key.Close()
+        except:
+            compilecommand = "compil32.exe"
+        return compilecommand
+
+    def chop(self, pathname):
+        """returns the path relative to self.dist_dir"""
+        assert pathname.startswith(self.dist_dir)
+        return pathname[len(self.dist_dir):]
+
+    def create(self, pathname=None):
+        """creates the InnoSetup script"""
+        if pathname is None:
+          self.pathname = os.path.join(self.dist_dir, self.name + os.extsep + "iss")
+        else:
+          self.pathname = pathname
+        ofi = self.file = open(self.pathname, "w")
+        print >> ofi, "; WARNING: This script has been created by py2exe. Changes to this script"
+        print >> ofi, "; will be overwritten the next time py2exe is run!"
+        print >> ofi, r"[Setup]"
+        print >> ofi, r"AppName=%s" % self.name
+        print >> ofi, r"AppVerName=%s %s" % (self.name, self.version)
+        print >> ofi, r"DefaultDirName={pf}\%s" % self.name
+        print >> ofi, r"DefaultGroupName=%s" % self.name
+        print >> ofi, r"OutputBaseFilename=%s-%s-setup" % (self.name, self.version)
+        print >> ofi
+        print >> ofi, r"[Files]"
+        for path in self.exe_files + self.other_files:
+            print >> ofi, r'Source: "%s"; DestDir: "{app}\%s"; Flags: ignoreversion' % (path, os.path.dirname(path))
+        print >> ofi
+        print >> ofi, r"[Icons]"
+        for path in self.exe_files:
+            if path in self.install_scripts:
+                continue
+            linkname = os.path.splitext(os.path.basename(path))[0]
+            print >> ofi, r'Name: "{group}\%s"; Filename: "{app}\%s"; WorkingDir: "{app}"; Flags: dontcloseonexit' % \
+                  (linkname, path)
+        print >> ofi, 'Name: "{group}\Uninstall %s"; Filename: "{uninstallexe}"' % self.name
+        if self.install_scripts:
+            print >> ofi, r"[Run]"
+            for path in self.install_scripts:
+                print >> ofi, r'Filename: "{app}\%s"; WorkingDir: "{app}"; Parameters: "-install"' % path
+            print >> ofi
+            print >> ofi, r"[UninstallRun]"
+            for path in self.install_scripts:
+                print >> ofi, r'Filename: "{app}\%s"; WorkingDir: "{app}"; Parameters: "-remove"' % path
+        print >> ofi
+        ofi.close()
+
+    def compile(self):
+        """compiles the script using InnoSetup"""
+        shellcompilecommand = self.getcompilecommand()
+        compilecommand = shellcompilecommand.replace('"%1"', self.pathname)
+        result = os.system(compilecommand)
+        if result:
+            print "Error compiling iss file"
+            print "Opening iss file, use InnoSetup GUI to compile manually"
+            os.startfile(self.pathname)
+
+class build_installer(build_exe):
+    """distutils class that first builds the exe file(s), then creates a Windows installer using InnoSetup"""
+    description = "create an executable installer for MS Windows using InnoSetup and py2exe"
+    user_options = getattr(build_exe, 'user_options', []) + \
+        [('install-script=', None,
+          "basename of installation script to be run after installation or before deinstallation")]
+
+    def initialize_options(self):
+        build_exe.initialize_options(self)
+        self.install_script = None
+
+    def reinitialize_command(self, command, reinit_subcommands=0):
+        if command == "install_data":
+            install_data = build_exe.reinitialize_command(self, command, reinit_subcommands)
+            install_data.data_files = self.remap_data_files(install_data.data_files)
+            return install_data
+        return build_exe.reinitialize_command(self, command, reinit_subcommands)
+
+    def remap_data_files(self, data_files):
+        new_data_files = []
+        for f in data_files:
+            if type(f) in (str, unicode):
+                f = map_data_file(f)
+            else:
+                dir, files = f
+                dir = map_data_file(dir)
+                if dir is None:
+                  f = None
+                else:
+                  f = dir, files
+            if f is not None:
+              new_data_files.append(f)
+        return new_data_files
+
+    def run(self):
+        # First, let py2exe do it's work.
+        build_exe.run(self)
+        lib_dir = self.lib_dir
+        dist_dir = self.dist_dir
+        # create the Installer, using the files py2exe has created.
+        exe_files = self.windows_exe_files + self.console_exe_files
+        install_scripts = self.install_script
+        if isinstance(install_scripts, (str, unicode)):
+            install_scripts = [install_scripts]
+        script = InnoScript(self.distribution.metadata.name, lib_dir, dist_dir, exe_files, self.lib_files, version=self.distribution.metadata.version, install_scripts=install_scripts)
+        print "*** creating the inno setup script***"
+        script.create()
+        print "*** compiling the inno setup script***"
+        script.compile()
+        # Note: By default the final setup.exe will be in an Output subdirectory.
 
 def import_setup_module(modulename, modulepath):
   import imp
@@ -175,6 +306,9 @@ class TranslateDistribution(Distribution):
       self.isapi = []
       self.console = translatescripts
       self.zipfile = "translate.zip"
+      baseattrs['cmdclass'] = {"innosetup": build_installer}
+      options["innosetup"] = py2exeoptions.copy()
+      options["innosetup"]["install_script"] = []
     baseattrs.update(attrs)
     Distribution.__init__(self, baseattrs)
 
