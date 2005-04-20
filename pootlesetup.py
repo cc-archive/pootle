@@ -4,8 +4,8 @@ from distutils.core import setup, Extension, Distribution
 import distutils.sysconfig
 import sys
 import os.path
-from translate import __version__
-from translate import __doc__
+from Pootle import __version__
+from Pootle import __doc__
 try:
   import py2exe
 except ImportError:
@@ -15,66 +15,22 @@ except ImportError:
 
 join = os.path.join
 
-translateversion = __version__.ver
-
-includebeta = False
+pootleversion = __version__.ver
 
 packagesdir = distutils.sysconfig.get_python_lib()
 sitepackages = packagesdir.replace(sys.prefix + os.sep, '')
 
-infofiles = [(join(sitepackages,'translate'),
-             [join('translate',filename) for filename in 'ChangeLog', 'COPYING', 'LICENSE', 'README'])]
-initfiles = [(join(sitepackages,'translate'),[join('translate','__init__.py')])]
+infofiles = [(join(sitepackages,'Pootle'),
+             [join('Pootle',filename) for filename in 'ChangeLog', 'COPYING', 'LICENSE', 'README'])]
+initfiles = [(join(sitepackages,'Pootle'),[join('Pootle','__init__.py')])]
 
-subpackages = ["convert", "misc", "storage", "filters", "tools"]
-# TODO: elementtree doesn't work in sdist, fix this
-packages = ["translate"]
-
-translatescripts = [apply(join, ('translate', ) + script) for script in
-                  ('convert', 'pot2po'),
-                  ('convert', 'moz2po'), ('convert', 'po2moz'),
-                  ('convert', 'oo2po'),  ('convert', 'po2oo'),
-                  ('convert', 'csv2po'), ('convert', 'po2csv'),
-                  ('convert', 'txt2po'), ('convert', 'po2txt'),
-                  ('convert', 'ts2po'), ('convert', 'po2ts'),
-                  ('convert', 'html2po'),
-                  ('convert', 'sxw2po'),
-                  ('filters', 'pofilter'),
-                  ('tools', 'pocompile'),
-                  ('tools', 'pocount'),
-                  ('tools', 'podebug'),
-                  ('tools', 'pogrep'),
-                  ('tools', 'pomerge')]
-if includebeta:
-  translatescripts.append(join('translate', 'convert', 'po2tmx'))
-
-def addsubpackages(subpackages):
-  for subpackage in subpackages:
-    initfiles.append((join(sitepackages, 'translate', subpackage),
-                      [join('translate', subpackage, '__init__.py')]))
-    for infofile in ('README', 'TODO'):
-      infopath = join('translate', subpackage, infofile)
-      if os.path.exists(infopath):
-        infofiles.append((join(sitepackages, 'translate', subpackage), [infopath]))
-    packages.append("translate.%s" % subpackage)
+packages = ["Pootle"]
+translatescripts = [join('Pootle', 'PootleServer')]
 
 def import_setup_module(modulename, modulepath):
   import imp
   modfile, pathname, description = imp.find_module(modulename, [modulepath])
   return imp.load_module(modulename, modfile, pathname, description)
-
-# need csv support for versions prior to Python 2.3
-def testcsvsupport():
-  try:
-    import csv
-    return 1
-  except ImportError:
-    return 0
-
-def getcsvmodule():
-  csvPath = join('translate', 'misc')
-  csvSetup = import_setup_module('setup', join(os.getcwd(), 'translate', 'misc'))
-  return csvSetup.csvExtension(csvPath)
 
 def map_data_file (data_file):
   """remaps a data_file (could be a directory) to a different location
@@ -86,7 +42,7 @@ def map_data_file (data_file):
       data_file = os.path.join(*data_parts)
     else:
       data_file = ""
-  if data_parts[:1] == ["translate"]:
+  if data_parts[:1] == ["Pootle"]:
     data_parts = data_parts[1:]
     if data_parts:
       data_file = os.path.join(*data_parts)
@@ -95,77 +51,81 @@ def map_data_file (data_file):
   return data_file
 
 def getdatafiles():
+  # TODO: add pootle.prefs, Pootle/html
   datafiles = initfiles + infofiles
   def listfiles(srcdir):
     return join(sitepackages, srcdir), [join(srcdir, f) for f in os.listdir(srcdir) if os.path.isfile(join(srcdir, f))]
-  try:
-    docfiles = listfiles(join('translate', 'doc'))
-  except OSError, e:
-    print >>sys.stderr, "error importing docs, not including: ", e
-    docfiles = None, []
-  if docfiles[1]:
-    datafiles.append(docfiles)
-  includecsv = 0
-  if includecsv:
-    # TODO: work out csv.so/pyd
-    csvModuleFile = (sitepackages, ['_csv.so'])
-    datafiles.append(csvModuleFile)
+  pootlefiles = [(join(sitepackages, 'Pootle'), [join('Pootle', 'pootle.prefs')])]
+  pootlefiles.append(listfiles(join('Pootle', 'html')))
+  pootlefiles.append(listfiles(join('Pootle', 'html', 'images')))
+  pootlefiles.append(listfiles(join('Pootle', 'html', 'js')))
+  datafiles += pootlefiles
   return datafiles
 
 def buildinfolinks():
   linkfile = getattr(os, 'symlink', None)
-  linkdir = getattr(os, 'symlink', None)
   import shutil
   if linkfile is None:
     linkfile = shutil.copy2
-  if linkdir is None:
-    linkdir = shutil.copytree
   basedir = os.path.abspath(os.curdir)
-  os.chdir("translate")
-  if not os.path.exists("LICENSE"):
-    linkfile("COPYING", "LICENSE")
-  if not os.path.islink("doc"):
-    docdir = os.path.join(os.path.dirname(basedir), "html", "doc")
-    if os.path.isdir(docdir):
-      if os.path.exists("doc"):
-        rmtreeerrorhandler = lambda func, arg, error: sys.stderr.write("error removing doc tree: %s\n" % (error[1], ))
-        shutil.rmtree("doc", onerror=rmtreeerrorhandler)
-        if os.path.exists("doc"):
-          os.unlink("doc")
-      linkdir(docdir, "doc")
+  os.chdir("Pootle")
+  if os.path.exists("LICENSE"):
+    os.remove("LICENSE")
+  linkfile("COPYING", "LICENSE")
   os.chdir(basedir)
   for filename in ["COPYING", "README", "LICENSE"]:
-    if not os.path.exists(filename):
-      linkfile(os.path.join("translate", filename), filename)
+    if os.path.exists(filename):
+      os.remove(filename)
+    linkfile(os.path.join("Pootle", filename), filename)
 
 def buildmanifest_in(file, scripts):
   """This writes the required files to a MANIFEST.in file"""
-  print >>file, "# MANIFEST.in: the below autogenerated by setup.py from translate %s" % translateversion
+  print >>file, "# MANIFEST.in: the below autogenerated by pootlesetup.py from Pootle %s" % pootleversion
   print >>file, "# things needed by translate setup.py to rebuild"
   print >>file, "# informational files"
   for filename in ("README", "TODO", "ChangeLog", "COPYING", "LICENSE", "*.txt"):
     print >>file, "global-include %s" % filename
-  print >>file, "# C programs"
-  print >>file, "global-include *.c"
   print >> file, "# scripts which don't get included by default in sdist"
   for scriptname in scripts:
     print >>file, "include %s" % scriptname
   # wordlist, portal are in the source tree but unconnected to the python code
   print >>file, "prune wordlist"
   print >>file, "prune portal"
-  print >>file, "graft translate/doc"
-  print >>file, "# MANIFEST.in: the above autogenerated by setup.py from translate %s" % translateversion
+  # translate toolkit is in the same source tree but distributed separately
+  print >>file, "prune translate"
+  print >>file, "include Pootle/*.prefs"
+  print >>file, "graft Pootle/html"
+  print >>file, "prune Pootle/po"
+  print >>file, "# MANIFEST.in: the above autogenerated by pootlesetup.py from Pootle %s" % pootleversion
 
-class TranslateDistribution(Distribution):
+def fix_bdist_rpm(setupfile):
+    """Fixes bdist_rpm to use the given setup filename instead of setup.py"""
+    try:
+        from distutils.command import bdist_rpm
+        build_rpm = bdist_rpm.bdist_rpm
+    except ImportError:
+        return
+    if not hasattr(build_rpm, "_make_spec_file"):
+        return
+    orig_make_spec_file = build_rpm._make_spec_file
+    def fixed_make_spec_file(self):
+        """Generate the text of an RPM spec file and return it as a
+        list of strings (one per line).
+        """
+        orig_spec_file = orig_make_spec_file(self)
+        return [line.replace("setup.py", setupfile) for line in orig_spec_file]
+    build_rpm._make_spec_file = fixed_make_spec_file
+
+class PootleDistribution(Distribution):
   """a modified distribution class for translate"""
   def __init__(self, attrs):
     baseattrs = {}
     py2exeoptions = {}
-    py2exeoptions["packages"] = ["translate", "encodings"]
+    py2exeoptions["packages"] = ["Pootle", "encodings"]
     py2exeoptions["compressed"] = True
     py2exeoptions["excludes"] = ["PyLucene"]
-    version = attrs.get("version", translateversion)
-    py2exeoptions["dist_dir"] = "translate-toolkit-%s" % version
+    version = attrs.get("version", pootleversion)
+    py2exeoptions["dist_dir"] = "Pootle-%s" % version
     options = {"py2exe": py2exeoptions}
     baseattrs['options'] = options
     if py2exe:
@@ -174,8 +134,16 @@ class TranslateDistribution(Distribution):
       self.windows = []
       self.isapi = []
       self.console = translatescripts
-      self.zipfile = "translate.zip"
+      self.zipfile = "Pootle.zip"
+      if includepootle:
+        import jToolkitSetup
+        baseattrs['cmdclass'] = {"innosetup": jToolkitSetup.build_installer}
+        options["innosetup"] = py2exeoptions.copy()
+        options["innosetup"]["install_script"] = []
+        jToolkitSetup.exclude_python_file(join("jToolkit", "data", "ADODB.py"))
+        jToolkitSetup.map_data_file = map_data_file
     baseattrs.update(attrs)
+    fix_bdist_rpm(os.path.basename(__file__))
     Distribution.__init__(self, baseattrs)
 
 def standardsetup(name, version, custompackages=[], customdatafiles=[]):
@@ -187,12 +155,8 @@ def standardsetup(name, version, custompackages=[], customdatafiles=[]):
     manifest_in.close()
   except IOError, e:
     print >> sys.stderr, "warning: could not recreate MANIFEST.in, continuing anyway. Error was %s" % e
-  addsubpackages(subpackages)
   datafiles = getdatafiles()
   ext_modules = []
-  if not testcsvsupport():
-    csvModule = getcsvmodule()
-    ext_modules.append(csvModule)
   dosetup(name, version, packages + custompackages, datafiles + customdatafiles, translatescripts, ext_modules)
 
 classifiers = [
@@ -226,9 +190,9 @@ def dosetup(name, version, packages, datafiles, scripts, ext_modules=[]):
         data_files=datafiles,
         scripts=scripts,
         ext_modules=ext_modules,
-        distclass=TranslateDistribution
+        distclass=PootleDistribution
         )
 
 if __name__ == "__main__":
-  standardsetup("translate-toolkit", translateversion)
+  standardsetup("Pootle", pootleversion)
 
