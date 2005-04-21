@@ -294,18 +294,14 @@ class TranslateDistribution(Distribution):
     py2exeoptions = {}
     py2exeoptions["packages"] = ["translate", "encodings"]
     py2exeoptions["compressed"] = True
-    py2exeoptions["excludes"] = ["PyLucene"]
+    py2exeoptions["excludes"] = ["PyLucene", "Tkconstants", "Tkinter", "tcl", "translate.misc._csv"]
     version = attrs.get("version", translateversion)
     py2exeoptions["dist_dir"] = "translate-toolkit-%s" % version
     options = {"py2exe": py2exeoptions}
     baseattrs['options'] = options
     if py2exe:
-      self.com_server = []
-      self.service = []
-      self.windows = []
-      self.isapi = []
-      self.console = translatescripts
-      self.zipfile = "translate.zip"
+      baseattrs['console'] = translatescripts
+      baseattrs['zipfile'] = "translate.zip"
       baseattrs['cmdclass'] = {"innosetup": build_installer}
       options["innosetup"] = py2exeoptions.copy()
       options["innosetup"]["install_script"] = []
