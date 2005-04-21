@@ -30,6 +30,32 @@ initfiles = [(join(sitepackages,'Pootle'),[join('Pootle','__init__.py')])]
 packages = ["Pootle"]
 pootlescripts = [join('Pootle', 'PootleServer')]
 
+class build_exe_map(build_exe):
+    """distutils py2exe-based class that builds the exe file(s) but allows mapping data files"""
+    def reinitialize_command(self, command, reinit_subcommands=0):
+        if command == "install_data":
+            install_data = build_exe.reinitialize_command(self, command, reinit_subcommands)
+            install_data.data_files = self.remap_data_files(install_data.data_files)
+            return install_data
+        return build_exe.reinitialize_command(self, command, reinit_subcommands)
+
+    def remap_data_files(self, data_files):
+        """maps the given data files to different locations using external map_data_file function"""
+        new_data_files = []
+        for f in data_files:
+            if type(f) in (str, unicode):
+                f = map_data_file(f)
+            else:
+                datadir, files = f
+                datadir = map_data_file(datadir)
+                if datadir is None:
+                  f = None
+                else:
+                  f = datadir, files
+            if f is not None:
+              new_data_files.append(f)
+        return new_data_files
+
 class InnoScript:
     """class that builds an InnoSetup script"""
     def __init__(self, name, lib_dir, dist_dir, exe_files = [], other_files = [], install_scripts = [], version = "1.0"):
@@ -107,7 +133,7 @@ class InnoScript:
             print "Opening iss file, use InnoSetup GUI to compile manually"
             os.startfile(self.pathname)
 
-class build_installer(build_exe):
+class build_installer(build_exe_map):
     """distutils class that first builds the exe file(s), then creates a Windows installer using InnoSetup"""
     description = "create an executable installer for MS Windows using InnoSetup and py2exe"
     user_options = getattr(build_exe, 'user_options', []) + \
@@ -117,29 +143,6 @@ class build_installer(build_exe):
     def initialize_options(self):
         build_exe.initialize_options(self)
         self.install_script = None
-
-    def reinitialize_command(self, command, reinit_subcommands=0):
-        if command == "install_data":
-            install_data = build_exe.reinitialize_command(self, command, reinit_subcommands)
-            install_data.data_files = self.remap_data_files(install_data.data_files)
-            return install_data
-        return build_exe.reinitialize_command(self, command, reinit_subcommands)
-
-    def remap_data_files(self, data_files):
-        new_data_files = []
-        for f in data_files:
-            if type(f) in (str, unicode):
-                f = map_data_file(f)
-            else:
-                datadir, files = f
-                datadir = map_data_file(datadir)
-                if datadir is None:
-                  f = None
-                else:
-                  f = datadir, files
-            if f is not None:
-              new_data_files.append(f)
-        return new_data_files
 
     def run(self):
         # First, let py2exe do it's work.
@@ -258,7 +261,7 @@ class PootleDistribution(Distribution):
     if py2exe:
       baseattrs['zipfile'] = "Pootle.zip"
       baseattrs['console'] = pootlescripts
-      baseattrs['cmdclass'] = {"innosetup": build_installer}
+      baseattrs['cmdclass'] = {"py2exe": build_exe_map, "innosetup": build_installer}
       options["innosetup"] = py2exeoptions.copy()
       options["innosetup"]["install_script"] = []
     baseattrs.update(attrs)
