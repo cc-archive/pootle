@@ -28,7 +28,7 @@ infofiles = [(join(sitepackages,'Pootle'),
 initfiles = [(join(sitepackages,'Pootle'),[join('Pootle','__init__.py')])]
 
 packages = ["Pootle"]
-translatescripts = [join('Pootle', 'PootleServer')]
+pootlescripts = [join('Pootle', 'PootleServer')]
 
 class InnoScript:
     """class that builds an InnoSetup script"""
@@ -181,7 +181,7 @@ def getdatafiles():
   datafiles = initfiles + infofiles
   def listfiles(srcdir):
     return join(sitepackages, srcdir), [join(srcdir, f) for f in os.listdir(srcdir) if os.path.isfile(join(srcdir, f))]
-  pootlefiles = [(join(sitepackages, 'Pootle'), [join('Pootle', 'pootle.prefs')])]
+  pootlefiles = [(join(sitepackages, 'Pootle'), [join('Pootle', 'pootle.prefs'), join('Pootle', 'users.prefs')])]
   pootlefiles.append(listfiles(join('Pootle', 'html')))
   pootlefiles.append(listfiles(join('Pootle', 'html', 'images')))
   pootlefiles.append(listfiles(join('Pootle', 'html', 'js')))
@@ -249,18 +249,15 @@ class PootleDistribution(Distribution):
     py2exeoptions = {}
     py2exeoptions["packages"] = ["Pootle", "encodings"]
     py2exeoptions["compressed"] = True
-    py2exeoptions["excludes"] = ["PyLucene"]
+    jToolkitExcludes = ["PyLucene", "Image", "jToolkit.data.ADODB", "pgdb", "MySQLdb", "cx_Oracle", "pysqlite2"]
+    py2exeoptions["excludes"] = ["Tkconstants", "Tkinter", "tcl", "translate.misc._csv"] + jToolkitExcludes
     version = attrs.get("version", pootleversion)
     py2exeoptions["dist_dir"] = "Pootle-%s" % version
     options = {"py2exe": py2exeoptions}
     baseattrs['options'] = options
     if py2exe:
-      self.com_server = []
-      self.service = []
-      self.windows = []
-      self.isapi = []
-      self.console = translatescripts
-      self.zipfile = "Pootle.zip"
+      baseattrs['zipfile'] = "Pootle.zip"
+      baseattrs['console'] = pootlescripts
       baseattrs['cmdclass'] = {"innosetup": build_installer}
       options["innosetup"] = py2exeoptions.copy()
       options["innosetup"]["install_script"] = []
@@ -273,13 +270,13 @@ def standardsetup(name, version, custompackages=[], customdatafiles=[]):
   # TODO: make these end with .py ending on Windows...
   try:
     manifest_in = open("MANIFEST.in", "w")
-    buildmanifest_in(manifest_in, translatescripts)
+    buildmanifest_in(manifest_in, pootlescripts)
     manifest_in.close()
   except IOError, e:
     print >> sys.stderr, "warning: could not recreate MANIFEST.in, continuing anyway. Error was %s" % e
   datafiles = getdatafiles()
   ext_modules = []
-  dosetup(name, version, packages + custompackages, datafiles + customdatafiles, translatescripts, ext_modules)
+  dosetup(name, version, packages + custompackages, datafiles + customdatafiles, pootlescripts, ext_modules)
 
 classifiers = [
   "Development Status :: 5 - Production/Stable",
