@@ -198,12 +198,12 @@ def buildinfolinks():
     linkfile = shutil.copy2
   basedir = os.path.abspath(os.curdir)
   os.chdir("Pootle")
-  if os.path.exists("LICENSE"):
+  if os.path.exists("LICENSE") or os.path.islink("LICENSE"):
     os.remove("LICENSE")
   linkfile("COPYING", "LICENSE")
   os.chdir(basedir)
   for infofile in ["COPYING", "README", "LICENSE"]:
-    if os.path.exists(infofile):
+    if os.path.exists(infofile) or os.path.islink(infofile):
       os.remove(infofile)
     linkfile(os.path.join("Pootle", infofile), infofile)
 

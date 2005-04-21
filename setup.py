@@ -256,12 +256,13 @@ def buildinfolinks():
     linkdir = shutil.copytree
   basedir = os.path.abspath(os.curdir)
   os.chdir("translate")
-  if not os.path.exists("LICENSE"):
-    linkfile("COPYING", "LICENSE")
+  if os.path.exists("LICENSE") or os.path.islink("LICENSE"):
+    os.remove("LICENSE")
+  linkfile("COPYING", "LICENSE")
   if not os.path.islink("doc"):
     docdir = os.path.join(os.path.dirname(basedir), "html", "doc")
     if os.path.isdir(docdir):
-      if os.path.exists("doc"):
+      if os.path.exists("doc") or os.path.islink("doc"):
         rmtreeerrorhandler = lambda func, arg, error: sys.stderr.write("error removing doc tree: %s\n" % (error[1], ))
         shutil.rmtree("doc", onerror=rmtreeerrorhandler)
         if os.path.exists("doc"):
@@ -269,8 +270,9 @@ def buildinfolinks():
       linkdir(docdir, "doc")
   os.chdir(basedir)
   for infofile in ["COPYING", "README", "LICENSE"]:
-    if not os.path.exists(infofile):
-      linkfile(os.path.join("translate", infofile), infofile)
+    if os.path.exists(infofile) or os.path.islink(infofile):
+      os.remove(infofile)
+    linkfile(os.path.join("translate", infofile), infofile)
 
 def buildmanifest_in(file, scripts):
   """This writes the required files to a MANIFEST.in file"""
