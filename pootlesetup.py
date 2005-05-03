@@ -188,6 +188,7 @@ def getdatafiles():
   pootlefiles.append(listfiles(join('Pootle', 'html')))
   pootlefiles.append(listfiles(join('Pootle', 'html', 'images')))
   pootlefiles.append(listfiles(join('Pootle', 'html', 'js')))
+  pootlefiles.append(listfiles(join('Pootle', 'html', 'doc')))
   datafiles += pootlefiles
   return datafiles
 
