@@ -1,10 +1,38 @@
 #!/bin/bash
 
-# Usage: migrate <lamg-from> <lang-to> <templates>
+# Usage: migrate [options] <lamg-from> <lang-to> <templates>
 
-if [ $# -ne 3 ]; then
-	echo "Usage `basename $0` <product-old> <product-new> <product-templates>"
+function usage() {
+	echo "Usage `basename $0` [options] <product-old> <product-new> <product-templates>"
+        echo
+        echo "Options:"
+        echo "   -N|--no-fuzzy-matching"
+        echo "   --no-wrap  -  do not wrap long lines"
 	exit 1
+}
+
+while true
+do
+	case $1 in
+		-N|--no-fuzzy-matching)
+			option_no_fuzzy_matching = "--no-fuzzy-matching"
+			shift
+			;;
+		--no-wrap)
+			option_no_wrap = "--no-wrap"
+			shift
+			;;
+		-*|--*)
+			usage
+			;;
+		*)
+			break
+			;;
+	esac
+done
+	
+if [ $# -ne 3 ]; then
+	usage
 fi
 
 old=$1
@@ -18,9 +46,9 @@ do
 	directory=`dirname $pot`
 	mkdir -p $new/$directory
 	if [ `find $old -name "$filename" | wc -l` -ge 1 ]; then
-		msgcat -o $new/$directory/$filename `find $old -name "$filename" -printf "%p "` && echo Migrated $new/$directory/$filename
+		msgcat $option_no_wrap -o $new/$directory/$filename `find $old -name "$filename" -printf "%p "` && echo Migrated $new/$directory/$filename
 	else
-		msginit --locale=af_ZA --no-translator -i $templates/$pot -o $new/$directory/$filename
+		msginit $option_no_wrap --locale=af_ZA --no-translator -i $templates/$pot -o $new/$directory/$filename
     fi
 done
 
@@ -29,10 +57,10 @@ compendium=`mktemp`
 msgcat -o $compendium `find $old -name "*.po"`
 
 echo "** Updating files using compendium... **"
-for po in `cd $new ; find . -name "*.po"`
+for po in `cd $new ; find . -name "*.po" | sort`
 do
 	echo -n $new/$po
-	msgmerge --compendium=$compendium --backup=off --update $new/$po $templates/${po}t
+	msgmerge $option_no_fuzzy_matching $option_no_wrap --compendium=$compendium --backup=off --update $new/$po $templates/${po}t
 done
 
 rm $compendium
