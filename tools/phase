@@ -322,7 +322,7 @@ function creategsi {
 	else
 		targetgsilanguage=$3
 	fi
-	po2oo -l $targetgsilanguage -t $enusgsi $language GSI-$language.sdf && rm -f GSI-$language.sdf.bz2 && bzip2 GSI-$language.sdf
+	po2oo -l $targetgsilanguage -t $enusgsi $language GSI_$language.sdf && rm -f GSI_$language.sdf.bz2 && bzip2 GSI_$language.sdf
 }
 
 function reviewsinout {
