@@ -1,13 +1,12 @@
 #!/bin/bash
 
-# Usage: migrate [options] <lamg-from> <lang-to> <templates>
-
 function usage() {
 	echo "Usage `basename $0` [options] <product-old> <product-new> <product-templates>"
         echo
         echo "Options:"
         echo "   -N|--no-fuzzy-matching"
-        echo "   --no-wrap  -  do not wrap long lines"
+        echo "   --no-wrap      -  do not wrap long lines"
+        echo "   --locale=lang  -  set locale of destination PO files"
 	exit 1
 }
 
@@ -22,6 +21,18 @@ do
 			option_no_wrap = "--no-wrap"
 			shift
 			;;
+		--locale=*)
+			option_locale=`echo $1 | sed 's/--locale=//'`
+			shift
+			;;
+		--locale)
+			shift
+                        if [ $# -lt 1 ]; then
+                            usage
+                        fi
+			option_locale=$1
+                        shift
+			;;
 		-*|--*)
 			usage
 			;;
@@ -30,7 +41,7 @@ do
 			;;
 	esac
 done
-	
+
 if [ $# -ne 3 ]; then
 	usage
 fi
@@ -48,8 +59,8 @@ do
 	if [ `find $old -name "$filename" | wc -l` -ge 1 ]; then
 		msgcat $option_no_wrap -o $new/$directory/$filename `find $old -name "$filename" -printf "%p "` && echo Migrated $new/$directory/$filename
 	else
-		msginit $option_no_wrap --locale=af_ZA --no-translator -i $templates/$pot -o $new/$directory/$filename
-    fi
+		msginit $option_no_wrap --locale=$option_locale --no-translator -i $templates/$pot -o $new/$directory/$filename
+	fi
 done
 
 echo "** Creating compendium from old files... **"
