@@ -39,6 +39,9 @@ Commands:
         reviewsinout <language> <phase-name> -- counts the number of review files returned vs sent and shows which are missing 
 	reviewsdiff <language> <phase-name> -- create a diff between what was sent for review and what was returned
 EOF
+	#emailpot <template-dir> <phase-list> <phase-name> <emails> -- emails the POT files with wordcount to the addresses
+	#emailpo <language-dir> <phase-list> <phase-name> <emails> -- emails the PO files with wordcount to the addresses
+	#emailreview <language> <phase-name> <emails> -- emails the prepared review files to the addresses
 }
 
 function usage() {
@@ -67,7 +70,7 @@ function getphasefiles {
 		echo "No such phase exists"
 		exit 1
 	fi
-	egrep "^$phase\b" $filelist | cut -f 2
+	egrep "^$phase\b" $filelist | cut -f 2 | sort
 }
 
 function getphases {
@@ -234,7 +237,7 @@ function editpochecks {
 	phase=$2
 	editor="vim"
 	if [ -d $language-$phase-check ]; then
-		exec $editor $(find $language-$phase-check -name "*.po")
+		exec $editor $(find $language-$phase-check -name "*.po" | sort)
 	else
 		echo "No checks present for language $language phase $phase."
 		echo "Run checkpo to create them"
