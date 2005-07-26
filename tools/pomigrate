@@ -1,7 +1,26 @@
 #!/bin/bash
+#
+# Copyright 2004, 2005 Zuza Software Foundation
+#
+# This file is part of The Translate Toolkit.
+#
+# The Translate Toolkit is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# translate is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with translate; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-# This tool takes and existing directory of PO based translations and migrates
-# them based on a set of PO Template files.
+
+# pomigrate - This tool takes and existing directory of PO based translations 
+# and migrates them based on a set of PO Template files.
 #
 # If a compendium or compendium files are provided then they will be used to
 # perform rough translations during the migration.
@@ -10,6 +29,7 @@
 # TODO: -d delete all files that are in PO but not POT ie old and retired
 # TODO: handle conflicts where one file has moved to two places - msgcat the
 # old ones and place a copy in each place.
+
 
 function usage () {
 	if [ $# -lt 2 ]; then
