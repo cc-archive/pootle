@@ -40,6 +40,7 @@ Commands:
 	countpot <template-dir> <phase-list> <phase-name> -- counts POT file in the given phase
 	missingpo <language-dir> <phase-list> <phase-name> -- lists files that have not been returned for a phase
 	packpot <template-dir> <phase-list> <phase-name> -- packs all POT files for a given phase into a ZIP file
+	packpo <language-dir> <phase-list> <phase-name> -- packs all PO files for a given phase into a ZIP file
 	packall <template-dir> <phase-list> -- packs all phases found in the phase list
 	countmismatch <language-dir> <template-dir> <phase-list> <phase-name> -- compares the source word count between PO and POT to determine if there are any file errors.
 	editpo <language-dir> <phase-list> <phase-name> -- edit the PO files in a phase
@@ -158,24 +159,46 @@ function packpot {
 	directory=$1
 	filelist=$2
 	phase=$3
-    tempdir=phase$phase-templates
+    	outdir=phase$phase-templates
+	rm -rf $outdir
 	files=$(getphasefiles $filelist $phase | sed "s/\.po$/\.pot/")
 		report "Packpot: creating"
-	copy_po_to_temp_dir $directory $tempdir $files
+	copy_po_to_temp_dir $directory $outdir $files
 		report ": wordcount"
-	pocount $(find $tempdir -name "*.pot") > $tempdir/wordcount.txt
+	pocount $(find $outdir -name "*.pot") > $outdir/wordcount.txt
 		report ', PO'
-	for potfile in $(find $tempdir -name "*.pot")
+	for potfile in $(find $outdir -name "*.pot")
 	do
 		pofile=$(echo $potfile | sed "s/\.pot$/\.po/")
 		msginit --no-translator --locale=af_ZA -i $potfile -o $pofile > /dev/null 2>&1
 	done
 		report ", CSV"
-	po2csv --progress=none $tempdir $tempdir
+	po2csv --progress=none $outdir $outdir
 		report ", tarball"
-	tar czf $tempdir.tar.gz $tempdir
+	tar czf $outdir.tar.gz $outdir
 		report ", zip"
-	zip -qr9 $tempdir.zip $tempdir
+	zip -qr9 $outdir.zip $outdir
+		report DONE
+}	
+
+function packpo {
+	# Packs PO files that match the file list
+	language=$1
+	filelist=$2
+	phase=$3
+	outdir=$language-$phase-translations
+	rm -rf $outdir
+	files=$(getphasefiles $filelist $phase)
+		report "Packpo: creating"
+	copy_po_to_temp_dir $language $outdir $files
+		report ": wordcount"
+	pocount $(find $outdir -name "*.po") > $outdir/wordcount.txt
+		report ", CSV"
+	po2csv --progress=none $outdir $outdir
+		report ", tarball"
+	tar czf $outdir.tar.gz $outdir
+		report ", zip"
+	zip -qr9 $outdir.zip $outdir
 		report DONE
 }	
 
@@ -382,6 +405,8 @@ case $command in
 	missingpo) missingpo $1 $2 $3
 		;;
 	packpot) packpot $1 $2 $3
+		;;
+	packpo) packpo $1 $2 $3
 		;;
 	packall) packall $1 $2
 		;;
