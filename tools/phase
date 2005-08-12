@@ -42,6 +42,7 @@ Commands:
 	packpot <template-dir> <phase-list> <phase-name> -- packs all POT files for a given phase into a ZIP file
 	packpo <language-dir> <phase-list> <phase-name> -- packs all PO files for a given phase into a ZIP file
 	packall <template-dir> <phase-list> -- packs all phases found in the phase list
+	packallpo <language-dir> <phase-list> -- packs all phases found in the phase list for the given language
 	countmismatch <language-dir> <template-dir> <phase-list> <phase-name> -- compares the source word count between PO and POT to determine if there are any file errors.
 	editpo <language-dir> <phase-list> <phase-name> -- edit the PO files in a phase
 	editpochecks <language> <phase-name> -- edit the PO checks output by checkpo
@@ -217,6 +218,19 @@ function packall {
 	do
 			report $phase
 		packpot $1 $2 $phase
+	done
+		report DONE
+}
+
+function packallpo {
+	# Pack all phases in a project for a language
+	language=$1
+	filelist=$2
+		report "Packing all phases:"
+	for phase in $(getphases $2)
+	do
+			report $phase
+		packpo $1 $2 $phase
 	done
 		report DONE
 }
@@ -409,6 +423,8 @@ case $command in
 	packpo) packpo $1 $2 $3
 		;;
 	packall) packall $1 $2
+		;;
+	packallpo) packallpo $1 $2
 		;;
 	countmismatch) countmismatch $1 $2 $3 $4
 		;;
