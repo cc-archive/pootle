@@ -283,7 +283,11 @@ function editreviews {
 	phase=$3
 	editor="vim"
 	files=$(getphasefiles $filelist $phase)
-	(cd $language-$phase-review; exec $editor $files)
+	for file in $files
+	do
+		[ -f $language-$phase-review/$file ] && present_files=$(echo $present_files $file)
+	done
+	(cd $language-$phase-review; exec $editor $present_files)
 }
 
 function editpochecks {
