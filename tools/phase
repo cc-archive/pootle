@@ -324,10 +324,10 @@ function diffpo {
 	filelist=$2
 	phase=$3
 	files=$(getphasefiles $filelist $phase)
-    for file in $files
+	for file in $files
 	do
 		if [ -f $language/$file ]; then
-			present_file=$(echo $present_file $file)
+			present_files=$(echo $present_files $file)
 		else
 			echo "Skipping - $file - file not found"
 		fi	
