@@ -51,6 +51,7 @@ Commands:
 	mergepo <language> <phase-name> -- merge the checks back into the main language directory
 	diffpo <language-dir> <phase-list> <phase-name> -- perform a cvs diff for the phase
 	cvslog <language-dir> <phase-list> <phase-name> -- perform a cvs log against files in the phase
+	lastlog <language-dir> <phase-list> <phase-name> -- retreives the last cvs log entry for each file in a phase
 	reviewpo <language-dir> <phase-list> <phase-name> [pofilter options] -- extract items marked for review for the given phase
 	editreviews <language-dir> <phase-list> <phase-name> -- edit the extracted revie items
 	countreviews <language-dir> <phase-list> <phase-name> -- count the number of strings and words under review
@@ -430,6 +431,7 @@ function cvslog {
 	language=$1
 	phaselist=$2
 	phase=$3
+	options=$4
 	files=$(getphasefiles $phaselist $phase)
 	for file in $files
 	do
@@ -439,7 +441,7 @@ function cvslog {
 			echo "Skipping - $file - file not found"
 		fi	
 	done
-	(cd $language; cvs log $present_files)
+	(cd $language; cvs log $options $present_files)
 }
 
 command=$1
@@ -478,6 +480,8 @@ case $command in
 	diffpo) diffpo $1 $2 $3
 		;;
 	cvslog) cvslog $1 $2 $3
+		;;
+	lastlog) cvslog $1 $2 $3 -r
 		;;
 	reviewpo) reviewpo $*
 		;;
