@@ -352,9 +352,35 @@ function reviewpo {
 	files=$(getphasefiles $filelist $phase)
 	tempdir=`mktemp -d`
 	copy_po_to_temp_dir $language $tempdir $files
-	pofilter -t isreview $otheroptions $tempdir $language-$phase-review
+	review_dir=$language-$phase-review
+	pofilter -t isreview $otheroptions $tempdir $review_dir
+	po2csv $review_dir $review_dir
 	# Transform "#, review" to # REVIEW
-	sed -i "/#, review/s/#, review/# REVIEW/" $(find $language-$phase-review -name "*.po")
+	sed -i "/#, review/s/#, review/# REVIEW/" $(find $review_dir -name "*.po")
+	(cat <<-EOF
+	These are the review comments for $language phase $phase.
+
+	The format of this file is as follows:
+	Each file with errors is introduced with a line starting with the word 'File:'.  Thereafter
+	the errors appear.  Each error is seperated from the next by a blank line.  They should correspond
+	to the lines in the CSV file or the messages in the PO file.  Please edit the corrections taking
+	into consideration the comments in this file.
+
+	The error is presented first with a comment starting with #. This desribes the error.  After
+	the comments you will see a line starting with 'msgid' - this is for information only and is
+	there to assist you in locating the error if you lose your place.  Make all corrections in the
+	CSV or PO file NOT in this file.  This file is simply for your information, not for editing.
+
+	Now for the review comments:
+
+	EOF
+	cd $review_dir; for review_file in $(find . -name "*.po")
+	do
+		echo "File: $review_file (the following comments relate to this file)"
+		echo
+		egrep "^$|^# REVIEW|^#_ |^msgid \"" $review_file | egrep -v "^#_ isreview"
+	done ) > $review_dir/review-notes.txt
+	unix2dos $review_dir/review-notes.txt
         rm -rf tempdir
 }
 
