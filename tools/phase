@@ -36,6 +36,7 @@ function usagecommands {
 	cat <<EOF
 Commands:
 	listfiles <phase-list> <phase-name> -- list all files for the given phase in the phase-list file
+	checkphaselist <language-dir> <phase-list> -- checks to see which files are not included in the phaselist
 	countpo <language-dir> <phase-list> <phase-name> -- counts PO file in the given phase
 	countpot <template-dir> <phase-list> <phase-name> -- counts POT file in the given phase
 	missingpo <language-dir> <phase-list> <phase-name> -- lists files that have not been returned for a phase
@@ -49,6 +50,7 @@ Commands:
 	checkpo <language-dir> <phase-list> <phase-name> [pofilter options] -- run pofilter checks against the given phase
 	mergepo <language> <phase-name> -- merge the checks back into the main language directory
 	diffpo <language-dir> <phase-list> <phase-name> -- perform a cvs diff for the phase
+	cvslog <language-dir> <phase-list> <phase-name> -- perform a cvs log against files in the phase
 	reviewpo <language-dir> <phase-list> <phase-name> [pofilter options] -- extract items marked for review for the given phase
 	editreviews <language-dir> <phase-list> <phase-name> -- edit the extracted revie items
 	countreviews <language-dir> <phase-list> <phase-name> -- count the number of strings and words under review
@@ -409,12 +411,45 @@ function reviewsdiff {
 	diff -ur $language-$phase-review $language-$phase-review-returned
 }
 
+function checkphaselist {
+	# Checks the files against the phase-list to see wich are in and which are out
+	language=$1
+	phaselist=$2
+	currentlist=`mktemp`
+	tempphaselist=`mktemp`
+	(cd $language; find . -name "*.po" | sort ) > $currentlist
+	cat $phaselist | cut -f2- | sort > $tempphaselist
+	echo "+ new files that are not in your phaselist (you need to add these)"
+	echo "- files no longer in the destination but in your phaselist (you need to remove these)"
+	diff -u $tempphaselist $currentlist
+	rm $currentlist $tempphaselist
+}
+
+function cvslog {
+	# Run CVS log against a phase so you can see what has happened
+	language=$1
+	phaselist=$2
+	phase=$3
+	files=$(getphasefiles $phaselist $phase)
+	for file in $files
+	do
+		if [ -f $language/$file ]; then
+			present_files=$(echo $present_files $file)
+		else
+			echo "Skipping - $file - file not found"
+		fi	
+	done
+	(cd $language; cvs log $present_files)
+}
+
 command=$1
 shift
 case $command in
         -h|--help) usagecommands
 		;;
 	listfiles) getphasefiles $1 $2
+		;;
+	checkphaselist) checkphaselist $1 $2
 		;;
 	countpo) countpo $1 $2 $3
 		;;
@@ -441,6 +476,8 @@ case $command in
 	mergepo) mergepo $1 $2
 		;;
 	diffpo) diffpo $1 $2 $3
+		;;
+	cvslog) cvslog $1 $2 $3
 		;;
 	reviewpo) reviewpo $*
 		;;
