@@ -286,19 +286,30 @@ function editreviews {
 	phase=$3
 	editor="vim"
 	files=$(getphasefiles $filelist $phase)
-	for file in $files
-	do
-		[ -f $language-$phase-review/$file ] && present_files=$(echo $present_files $file)
-	done
-	(cd $language-$phase-review; exec $editor $present_files)
+	if [ -d $language-$phase-review ]; then
+		for file in $files
+		do
+			[ -f $language-$phase-review/$file ] && present_files=$(echo $present_files $file)
+		done
+		(cd $language-$phase-review; exec $editor $present_files)
+	else
+		echo "No reviews present for language $language phase $phase."
+		echo "Run reviewpo to create them"
+		exit 1
+	fi
 }
 
 function editpochecks {
 	language=$1
 	phase=$2
 	editor="vim"
+	files=$(getphasefiles $filelist $phase)
 	if [ -d $language-$phase-check ]; then
-		exec $editor $(find $language-$phase-check -name "*.po" | sort)
+		for file in $files
+		do
+			[ -f $language-$phase-check/$file ] && present_files=$(echo $present_files $file)
+		done
+		(cd $language-$phase-check; exec $editor $present_files)
 	else
 		echo "No checks present for language $language phase $phase."
 		echo "Run checkpo to create them"
