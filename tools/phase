@@ -282,10 +282,10 @@ function editpo {
 function editreviews {
 	# Edit the PO files for this phase
 	language=$1
-	filelist=$2
+	phaselist=$2
 	phase=$3
 	editor="vim"
-	files=$(getphasefiles $filelist $phase)
+	files=$(getphasefiles $phaselist $phase)
 	if [ -d $language-$phase-review ]; then
 		for file in $files
 		do
@@ -301,9 +301,10 @@ function editreviews {
 
 function editpochecks {
 	language=$1
-	phase=$2
+	phaselist=$2
+	phase=$3
 	editor="vim"
-	files=$(getphasefiles $filelist $phase)
+	files=$(getphasefiles $phaselist $phase)
 	if [ -d $language-$phase-check ]; then
 		for file in $files
 		do
@@ -508,7 +509,7 @@ case $command in
 		;;
 	editpo) editpo $1 $2 $3
 		;;
-	editpochecks) editpochecks $1 $2
+	editpochecks) editpochecks $1 $2 $3
 		;;
 	checkpo) checkpo $*
 		;;
