@@ -47,13 +47,15 @@ Commands:
 	countmismatch <language-dir> <template-dir> <phase-list> <phase-name> -- compares the source word count between PO and POT to determine if there are any file errors.
 	editpo <language-dir> <phase-list> <phase-name> -- edit the PO files in a phase
 	editpochecks <language> <phase-name> -- edit the PO checks output by checkpo
+	editconflicts <language-dir> <phase-list> <phase-name> -- edit the extracted conconflict items
 	checkpo <language-dir> <phase-list> <phase-name> [pofilter options] -- run pofilter checks against the given phase
 	mergepo <language> <phase-name> -- merge the checks back into the main language directory
+	conflictpo <language-dir> <phase-list> <phase-name> [poconflict options] -- run poconflict checks against the given phase
 	diffpo <language-dir> <phase-list> <phase-name> -- perform a cvs diff for the phase
 	cvslog <language-dir> <phase-list> <phase-name> -- perform a cvs log against files in the phase
 	lastlog <language-dir> <phase-list> <phase-name> -- retreives the last cvs log entry for each file in a phase
 	reviewpo <language-dir> <phase-list> <phase-name> [pofilter options] -- extract items marked for review for the given phase
-	editreviews <language-dir> <phase-list> <phase-name> -- edit the extracted revie items
+	editreviews <language-dir> <phase-list> <phase-name> -- edit the extracted review items
 	countreviews <language-dir> <phase-list> <phase-name> -- count the number of strings and words under review
 	packreviews <language> <phase-name> -- create a ZIP file with the reviews
 	checkinpo <language-dir> <phase-list> <phase-name> -- cvs checkin the files in the given phase
@@ -299,6 +301,21 @@ function editreviews {
 	fi
 }
 
+function editconflicts {
+	# Edit the PO files for this phase
+	language=$1
+	phaselist=$2
+	phase=$3
+	editor="vim"
+	if [ -d $language-$phase-conflicts ]; then
+		(cd $language-$phase-conflicts; exec $editor $(ls *.po))
+	else
+		echo "No conflicts present for language $language phase $phase."
+		echo "Run conflictpo to create them"
+		exit 1
+	fi
+}
+
 function editpochecks {
 	language=$1
 	phaselist=$2
@@ -329,6 +346,20 @@ function checkpo {
 	tempdir=`mktemp -d`
 	copy_po_to_temp_dir $language $tempdir $files
 	pofilter $otheroptions $tempdir $language-$phase-check
+        rm -rf $tempdir
+}
+
+function conflictpo {
+	# Uses pofilter to check a language
+	language=$1
+	filelist=$2
+	phase=$3
+	shift 3
+	otheroptions=$*
+	files=$(getphasefiles $filelist $phase)
+	tempdir=`mktemp -d`
+	copy_po_to_temp_dir $language $tempdir $files
+	poconflicts $otheroptions $tempdir $language-$phase-conflicts
         rm -rf $tempdir
 }
 
@@ -365,6 +396,7 @@ function reviewpo {
 	tempdir=`mktemp -d`
 	copy_po_to_temp_dir $language $tempdir $files
 	review_dir=$language-$phase-review
+        rm -rf $(find $review_dir -name "*.csv")
 	pofilter -t isreview $otheroptions $tempdir $review_dir
 	po2csv $review_dir $review_dir
 	# Transform "#, review" to # REVIEW
@@ -390,7 +422,7 @@ function reviewpo {
 	do
 		echo "File: $review_file (the following comments relate to this file)"
 		echo
-		egrep "^$|^# REVIEW|^#_ |^msgid \"" $review_file | egrep -v "^#_ isreview"
+		egrep "^$|^# REVIEW|^#_ |^# \(pofilter\)|^# \(review\)|^msgid \"" $review_file | egrep -v "^#_ isreview"
 	done ) > $review_dir/review-notes.txt
 	unix2dos $review_dir/review-notes.txt
         rm -rf tempdir
@@ -515,6 +547,8 @@ case $command in
 		;;
 	mergepo) mergepo $1 $2
 		;;
+	conflictpo) conflictpo $*
+		;;
 	diffpo) diffpo $1 $2 $3
 		;;
 	cvslog) cvslog $1 $2 $3
@@ -524,6 +558,8 @@ case $command in
 	reviewpo) reviewpo $*
 		;;
 	editreviews) editreviews $1 $2 $3
+		;;
+	editconflicts) editconflicts $1 $2 $3
 		;;
 	countreviews) countreviews $1 $2 $3
 		;;
