@@ -62,7 +62,7 @@ class SpellServerHandler(SocketServer.StreamRequestHandler):
     while line:
       if line == "\r\n" or line == ".\r\n":
         break
-      command, parameters = line.split('>')
+      command, parameters = line.decode("utf-8").split('>')
       if command.startswith('LANG'):
         for value in parameters.split():
           print "Language: %s" % value
@@ -70,11 +70,11 @@ class SpellServerHandler(SocketServer.StreamRequestHandler):
           break
       if command.startswith('CHECK'):
         for word in parameters.split():
-          print "Checking: %s" % word
+          print "Checking: %s" % word.encode('utf-8')
           self.request_check(word)
       if command.startswith('SUGGEST'):
         for word in parameters.split():
-          print "Suggesting: %s" % word
+          print "Suggesting: %s" % word.encode('utf-8')
           self.request_suggestion(word)
       line = io.readline()
     self.report_suggestions(io)
@@ -87,11 +87,11 @@ class SpellServerHandler(SocketServer.StreamRequestHandler):
     listed = []
     for suggestion in results:
       listed.append(suggestion.Name.encode("UTF-8"))
-    self.suggestions[word] = listed
+    self.suggestions[word.encode('utf-8')] = listed
 
   def request_check(self, word):
     result = self.server.checker.check(word)
-    self.checks[word] = result
+    self.checks[word.encode('utf-8')] = result
     
   def report_suggestions(self, output):
     for word, suggestions in self.suggestions.iteritems():
