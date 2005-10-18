@@ -54,6 +54,7 @@ Commands:
 	diffpo <language-dir> <phase-list> <phase-name> -- perform a cvs diff for the phase
 	cvslog <language-dir> <phase-list> <phase-name> -- perform a cvs log against files in the phase
 	lastlog <language-dir> <phase-list> <phase-name> -- retreives the last cvs log entry for each file in a phase
+	cvsadd <languages-dir> <phase-list> <phase-name> -- CVS adds files and directories that are not already in CVS
 	reviewpo <language-dir> <phase-list> <phase-name> [pofilter options] -- extract items marked for review for the given phase
 	editreviews <language-dir> <phase-list> <phase-name> -- edit the extracted review items
 	countreviews <language-dir> <phase-list> <phase-name> -- count the number of strings and words under review
@@ -514,6 +515,43 @@ function cvslog {
 	(cd $language; cvs log $options $present_files)
 }
 
+function cvsadd {
+	# Run CVS add against a phase so you can add files not already in CVS
+	language=$1
+	phaselist=$2
+	phase=$3
+	files=$(getphasefiles $phaselist $phase)
+	# First check for un-added directories
+	for file in $files
+	do
+		dir=`dirname $file`
+		while [ $dir != "" -a $dir != "." ]
+		do
+			potential_dirs=$(echo $potential_dirs $dir)
+			dir=`dirname $dir`
+		done
+	done
+	for dir in `cd $language; find $potential_dirs -type d | sed "s/\/CVS$//" | sort -u`
+	do
+		if [ ! -d $language/$dir/CVS ]; then
+			dir_to_add=$(echo $dir_to_add $dir)
+		fi	
+	done
+	if [ "$dir_to_add" != "" ]; then
+		(cd $language; cvs add $dir_to_add)
+	fi
+	# Now check and add un-added files
+	for file in $files
+	do
+		filename=`basename $file`
+		cvs_entry=`dirname $file`/CVS/Entries
+		if [ "$(cd $language; egrep $filename $cvs_entry)" == "" ]; then
+			files_to_add=$(echo $files_to_add $file)
+		fi
+	done
+	(cd $language; cvs add $files_to_add)
+}
+
 command=$1
 shift
 case $command in
@@ -554,6 +592,8 @@ case $command in
 	cvslog) cvslog $1 $2 $3
 		;;
 	lastlog) cvslog $1 $2 $3 -r
+		;;
+	cvsadd) cvsadd $1 $2 $3
 		;;
 	reviewpo) reviewpo $*
 		;;
