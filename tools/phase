@@ -549,7 +549,9 @@ function cvsadd {
 			files_to_add=$(echo $files_to_add $file)
 		fi
 	done
-	(cd $language; cvs add $files_to_add)
+	if [ "$files_to_add" != "" ]; then
+		(cd $language; cvs add $files_to_add)
+	fi
 }
 
 command=$1
