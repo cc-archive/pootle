@@ -83,10 +83,14 @@ do
 	filename=`basename $pot .pot`.po
 	directory=`dirname $pot`
 	mkdir -p $new/$directory
-	if [ `find $old -name "$filename" | wc -l` -ge 1 ]; then
-		msgcat $option_no_wrap -o $new/$directory/$filename `find $old -name "$filename" -printf "%p "` && echo Migrated $new/$directory/$filename
+	if [ -f $old/$directory/$filename ]; then
+		cp -p $old/$directory/$filename $new/$directory/$filename && echo Copied $new/$directory/$filename
 	else
-		msginit $option_no_wrap --locale=$option_locale --no-translator -i $templates/$pot -o $new/$directory/$filename
+		if [ `find $old -name "$filename" | wc -l` -ge 1 ]; then
+			msgcat $option_no_wrap -o $new/$directory/$filename `find $old -name "$filename" -printf "%p "` && echo Migrated $new/$directory/$filename
+		else
+			msginit $option_no_wrap --locale=$option_locale --no-translator -i $templates/$pot -o $new/$directory/$filename
+		fi
 	fi
 done
 
