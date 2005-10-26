@@ -26,10 +26,10 @@ function usage() {
 	echo "Usage `basename $0` [options] <product-old> <product-new> <product-templates>"
         echo
         echo "Options:"
-        echo "   -N|--no-fuzzy-matching - do not use the Gettext fuzzy matching algorithms"
+        echo "   -N|--no-fuzzy-matching - do not use fuzzy algorithms when merging to attempt to match strings"
         echo "   -C|--use-compendium    - create and use a compendium during the migration"
-        echo "   --no-wrap              -  do not wrap long lines"
-        echo "   --locale=lang          -  set locale of destination PO files"
+        echo "   --no-wrap              - do not wrap long lines"
+        echo "   --locale=lang          - set locale for newly born files"
 	exit 1
 }
 
