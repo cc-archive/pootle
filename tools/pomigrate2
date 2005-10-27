@@ -26,18 +26,20 @@ function usage() {
 	echo "Usage `basename $0` [options] <product-old> <product-new> <product-templates>"
         echo
         echo "Options:"
-        echo "   -N|--no-fuzzy-matching - do not use fuzzy algorithms when merging to attempt to match strings"
-        echo "   -C|--use-compendium    - create and use a compendium during the migration"
-        echo "   --no-wrap              - do not wrap long lines"
-        echo "   --locale=lang          - set locale for newly born files"
+        echo "   -F|--use-fuzzy-matching - use fuzzy algorithms when merging to attempt to match strings"
+        echo "   -C|--use-compendium     - create and use a compendium during the migration"
+        echo "   --no-wrap               - do not wrap long lines"
+        echo "   --locale=lang           - set locale for newly born files"
 	exit 1
 }
+
+option_no_fuzzy_matching="--no-fuzzy-matching"
 
 while true
 do
 	case $1 in
-		-N|--no-fuzzy-matching)
-			option_no_fuzzy_matching="--no-fuzzy-matching"
+		-F|--use-fuzzy-matching)
+			option_no_fuzzy_matching=""
 			shift
 			;;
 		-C|--use-compendium)
