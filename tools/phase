@@ -35,6 +35,8 @@ function error_notacommand {
 function usagecommands {
 	cat <<EOF
 Commands:
+	makephaselist <new-phase-list-name> -- creates a phase list
+	listphases <phase-list> -- lists the different phases that appear in the phase-list file
 	listfiles <phase-list> <phase-name> -- list all files for the given phase in the phase-list file
 	checkphaselist <language-dir> <phase-list> -- checks to see which files are not included in the phaselist
 	countpo <language-dir> <phase-list> <phase-name> -- counts PO file in the given phase
@@ -58,7 +60,6 @@ Commands:
 	reviewpo <language-dir> <phase-list> <phase-name> [pofilter options] -- extract items marked for review for the given phase
 	editreviews <language-dir> <phase-list> <phase-name> -- edit the extracted review items
 	countreviews <language-dir> <phase-list> <phase-name> -- count the number of strings and words under review
-	packreviews <language> <phase-name> -- create a ZIP file with the reviews
 	checkinpo <language-dir> <phase-list> <phase-name> -- cvs checkin the files in the given phase
 	creategsi <language-dir> <en-US.gsi> <traget-language> -- creates a BZ2 GSI/SDF file for the language against the en-US GSI file
         reviewsinout <language> <phase-name> -- counts the number of review files returned vs sent and shows which are missing 
@@ -209,14 +210,6 @@ function packpo {
 		report DONE
 }	
 
-function packreviews {
-	language=$1
-	phase=$2
-	review_dir=$language-$phase-review
-	pocount $(find $review_dir -name "*.po") > $review_dir/wordcount.txt
-	zip -qr9 $review_dir.zip $review_dir
-}
-
 function packall {
 	# Pack all phases in a project
 		report "Packing all phases:"
@@ -346,7 +339,7 @@ function checkpo {
 	files=$(getphasefiles $filelist $phase)
 	tempdir=`mktemp -d`
 	copy_po_to_temp_dir $language $tempdir $files
-	pofilter $otheroptions $tempdir $language-$phase-check
+	pofilter --excludefilter=untranslated $otheroptions $tempdir $language-$phase-check
         rm -rf $tempdir
 }
 
@@ -426,6 +419,9 @@ function reviewpo {
 		egrep "^$|^# REVIEW|^#_ |^# \(pofilter\)|^# \(review\)|^msgid \"" $review_file | egrep -v "^#_ isreview"
 	done ) > $review_dir/review-notes.txt
 	unix2dos $review_dir/review-notes.txt
+	pocount $(find $review_dir -name "*.po") > $review_dir/wordcount.txt
+	unix2dos $review_dir/wordcount.txt
+	zip -qr9 $review_dir.zip $review_dir
         rm -rf tempdir
 }
 
@@ -554,10 +550,25 @@ function cvsadd {
 	fi
 }
 
+function makephaselist {
+	templatedir=templates
+	newphaselist=$1
+	(cd $templatedir; find . -name "*.pot") | sed "s/\.pot$/.po/" | sed "s/\(^.*$\)/1	\\1/" | sort > $newphaselist
+}
+
+function listphases {
+	phaselist=$1
+	cat $phaselist | cut -d"	" -f 1 | sort | uniq -c
+}
+
 command=$1
 shift
 case $command in
         -h|--help) usagecommands
+	  	;;
+	makephaselist) makephaselist $1
+		;;
+	listphases) listphases $1
 		;;
 	listfiles) getphasefiles $1 $2
 		;;
@@ -604,8 +615,6 @@ case $command in
 	editconflicts) editconflicts $1 $2 $3
 		;;
 	countreviews) countreviews $1 $2 $3
-		;;
-	packreviews) packreviews $1 $2
 		;;
 	checkinpo) checkinpo $1 $2 $3
 		;;
