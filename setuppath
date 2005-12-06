@@ -1,13 +1,21 @@
-#!/bin/bash
-scriptname="$0"
-translatedir=`dirname $scriptname`
-translatepath=`echo ${translatedir}/translate/{convert,tools}`
-(
-echo "#!/bin/bash"
-echo export PYTHONPATH='$PYTHONPATH':"${translatedir}"
-for translatesubdir in ${translatepath}
- do
-  echo export PATH='$PATH':"${translatesubdir}"
- done
-) > $translatedir/setpath
+#!/usr/bin/env python
+
+import sys
+import os
+
+scriptname = os.path.abspath(sys.argv[0])
+translatedir = os.path.dirname(scriptname)
+pythonpathstr = ['"$PYTHONPATH"']
+pathstr = ['"$PATH"']
+for translatesubdir in ("convert", "tools", "filters"):
+  pathstr.append('"%s"' % os.path.join(translatedir, "translate", translatesubdir))
+  pythonpathstr.append('"%s"' % translatedir)
+
+setpathfile = open(os.path.join(translatedir, "setpath"), "w")
+setpathfile.write("$!/bin/bash\n")
+setpathfile.write("export PYTHONPATH=%s\n" % ":".join(pythonpathstr))
+setpathfile.write("export PATH=%s\n" % ":".join(pathstr))
+setpathfile.close()
+
+os.chmod(os.path.join(translatedir, "setpath"), 0755)
 
