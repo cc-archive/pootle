@@ -263,15 +263,6 @@ def buildinfolinks():
   if os.path.exists("LICENSE") or os.path.islink("LICENSE"):
     os.remove("LICENSE")
   linkfile("COPYING", "LICENSE")
-  if not os.path.islink("doc"):
-    docdir = os.path.join(os.path.dirname(basedir), "html", "doc")
-    if os.path.isdir(docdir):
-      if os.path.exists("doc") or os.path.islink("doc"):
-        rmtreeerrorhandler = lambda func, arg, error: sys.stderr.write("error removing doc tree: %s\n" % (error[1], ))
-        shutil.rmtree("doc", onerror=rmtreeerrorhandler)
-        if os.path.exists("doc"):
-          os.unlink("doc")
-      linkdir(docdir, "doc")
   os.chdir(basedir)
   for infofile in ["COPYING", "README", "LICENSE"]:
     if os.path.exists(infofile) or os.path.islink(infofile):
