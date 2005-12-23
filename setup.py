@@ -50,7 +50,8 @@ translatescripts = [apply(join, ('translate', ) + script) for script in
                   ('tools', 'pocount'),
                   ('tools', 'podebug'),
                   ('tools', 'pogrep'),
-                  ('tools', 'pomerge')]
+                  ('tools', 'pomerge'),
+                  ('tools', 'porestructure')]
 if includebeta:
   translatescripts.append(join('translate', 'convert', 'po2tmx'))
 
