@@ -75,3 +75,15 @@ class TestProp2PO:
         pofile = self.prop2po(propsource)
         poelement = self.singleelement(pofile)
         assert po.unquotefrompo(poelement.msgid) == "This setence will lose its 4 spaces at the end."
+
+    def test_unicode(self):
+        """checks that unicode entries convert properly"""
+        unistring = r'Norsk bokm\u00E5l'
+        propsource = 'nb = %s\n' % unistring
+        pofile = self.prop2po(propsource)
+        poelement = self.singleelement(pofile)
+        print repr(pofile.poelements[0].msgstr)
+        print repr(poelement.msgid)
+        postr = str(poelement)
+        assert po.unquotefrompo(poelement.msgid) == u'Norsk bokm\u00E5l'
+
