@@ -15,6 +15,14 @@ class TestProp2PO:
         outputpo = convertor.convertfile(inputprop)
         return outputpo
 
+    def convertprop(self, propsource):
+        """call the convertprop, return the outputfile"""
+        inputfile = wStringIO.StringIO(propsource)
+        outputfile = wStringIO.StringIO()
+        templatefile = None
+        assert prop2po.convertprop(inputfile, outputfile, templatefile)
+        return outputfile.getvalue()
+
     def singleelement(self, pofile):
         """checks that the pofile contains a single non-header element, and returns it"""
         assert len(pofile.poelements) == 2
@@ -25,6 +33,15 @@ class TestProp2PO:
         """checks that a simple properties entry converts properly to a po entry"""
         propsource = 'SAVEENTRY=Save file\n'
         pofile = self.prop2po(propsource)
+        poelement = self.singleelement(pofile)
+        assert po.unquotefrompo(poelement.msgid) == "Save file"
+        assert po.unquotefrompo(poelement.msgstr) == ""
+
+    def test_convertprop(self):
+        """checks that the convertprop function is working"""
+        propsource = 'SAVEENTRY=Save file\n'
+        posource = self.convertprop(propsource)
+        pofile = po.pofile(wStringIO.StringIO(posource))
         poelement = self.singleelement(pofile)
         assert po.unquotefrompo(poelement.msgid) == "Save file"
         assert po.unquotefrompo(poelement.msgstr) == ""
