@@ -14,6 +14,14 @@ class TestDTD2PO:
         outputpo = convertor.convertfile(inputdtd)
         return outputpo
 
+    def convertdtd(self, dtdsource):
+        """call the convertdtd, return the outputfile"""
+        inputfile = wStringIO.StringIO(dtdsource)
+        outputfile = wStringIO.StringIO()
+        templatefile = None
+        assert dtd2po.convertdtd(inputfile, outputfile, templatefile)
+        return outputfile.getvalue()
+
     def singleelement(self, pofile):
         """checks that the pofile contains a single non-header element, and returns it"""
         assert len(pofile.poelements) == 2
@@ -26,6 +34,15 @@ class TestDTD2PO:
         pofile = self.dtd2po(dtdsource)
         poelement = self.singleelement(pofile)
         assert po.unquotefrompo(poelement.msgid) == "bananas for sale"
+        assert po.unquotefrompo(poelement.msgstr) == ""
+
+    def test_convertdtd(self):
+        """checks that the convertdtd function is working"""
+        dtdsource = '<!ENTITY saveas.label "Save As...">\n'
+        posource = self.convertdtd(dtdsource)
+        pofile = po.pofile(wStringIO.StringIO(posource))
+        poelement = self.singleelement(pofile)
+        assert po.unquotefrompo(poelement.msgid) == "Save As..."
         assert po.unquotefrompo(poelement.msgstr) == ""
 
     def test_apos(self):
