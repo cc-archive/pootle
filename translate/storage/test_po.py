@@ -67,11 +67,17 @@ class TestPO:
     def test_output_str_unicode(self):
         """checks that we can str(element) which is in unicode"""
         posource = u'''#: nb
-msgid "Norwegian Bokmål"
+msgid "Norwegian Bokm\xe5l"
 msgstr ""
 '''
-        pofile = self.poparse(posource.encode("UTF-8"))
+        pofile = po.pofile(wStringIO.StringIO(posource.encode("UTF-8")), encoding="UTF-8")
         assert len(pofile.poelements) == 1
 	print str(pofile)
-	assert str(pofile.poelements[0]) == posource.encode("UTF-8")
+        thepo = pofile.poelements[0]
+	assert str(thepo) == posource.encode("UTF-8")
+        # extra test: what if we set the msgid to a unicode? this happens in prop2po etc
+        thepo.msgid = po.quoteforpo(u"Norwegian Bokm\xe5l")
+	assert str(thepo) == posource.encode("UTF-8")
+
+        
         

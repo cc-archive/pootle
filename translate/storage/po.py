@@ -363,7 +363,12 @@ class poelement:
     if self.msgid_plural or self.msgid_pluralcomments:
       lines.append(self.getmsgpartstr("msgid_plural", self.msgid_plural, self.msgid_pluralcomments))
     lines.append(self.getmsgpartstr("msgstr", self.msgstr))
-    return "".join(lines)
+    postr = "".join(lines)
+    if isinstance(postr, unicode):
+      # this will cause an horrendous error because it will transparently convert to str
+      # FIXME: we don't know what encoding to use here, so we just use UTF-8
+      postr = postr.encode("UTF-8")
+    return postr
 
   def getsources(self):
     """returns the list of sources from sourcecomments in the po element"""
