@@ -28,6 +28,13 @@ class TestDTD2PO:
         assert pofile.poelements[0].isheader()
         return pofile.poelements[1]
 
+    def countelements(self, pofile):
+        """returns the number of non-header items"""
+        if pofile.poelements[0].isheader():
+          return len(pofile.poelements) - 1
+        else:
+          return len(pofile.poelements)
+
     def test_simpleentity(self):
         """checks that a simple dtd entity definition converts properly to a po entry"""
         dtdsource = '<!ENTITY test.me "bananas for sale">\n'
@@ -80,6 +87,14 @@ class TestDTD2PO:
         # this tests the current implementation which is that the DONT_TRANSLATE string is removed, but the other remains
         assert 'editorCheck.label' not in posource
         assert 'editorCheck.accesskey' in posource
+
+    def test_donttranslate_onlyentity(self):
+        """if the entity is itself just another entity then it shouldn't appear in the output PO file"""
+        dtdsource = '''<!-- LOCALIZATION NOTE (mainWindow.title): DONT_TRANSLATE -->
+<!ENTITY mainWindow.title "&brandFullName;">'''
+        pofile = self.dtd2po(dtdsource)
+	print str(pofile.poelements[1])
+        assert self.countelements(pofile) == 0
 
     def test_spaces_at_start_of_dtd_lines(self):
         """test that pretty print spaces at the start of subsequent DTD element lines are removed from the PO file, bug 79"""
