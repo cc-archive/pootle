@@ -64,6 +64,22 @@ class TestPO:
         assert po.getunquotedstr(pofile.poelements[0].msgidcomments) == ""
         assert po.getunquotedstr(pofile.poelements[1].msgidcomments) == ""
 
+    def test_getunquotedstr(self):
+        """checks that getunquotedstr works as advertised"""
+        assert po.getunquotedstr(['"First line\nSecond line"'], includeescapes=False) == "First line\nSecond line"
+
+    def test_parse_source_string(self):
+        """parse a string"""
+        posource = '#: test.c\nmsgid "test"\nmsgstr "rest"\n'
+        pofile = po.pofile(posource)
+        assert len(pofile.poelements) == 1
+
+    def test_parse_file(self):
+        """test parsing a real file"""
+        posource = '#: test.c\nmsgid "test"\nmsgstr "rest"\n'
+        pofile = self.poparse(posource)
+        assert len(pofile.poelements) == 1
+
     def test_output_str_unicode(self):
         """checks that we can str(element) which is in unicode"""
         posource = u'''#: nb
@@ -79,5 +95,3 @@ msgstr ""
         thepo.msgid = po.quoteforpo(u"Norwegian Bokm\xe5l")
 	assert str(thepo) == posource.encode("UTF-8")
 
-        
-        
