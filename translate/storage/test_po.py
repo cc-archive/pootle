@@ -64,3 +64,14 @@ class TestPO:
         assert po.getunquotedstr(pofile.poelements[0].msgidcomments) == ""
         assert po.getunquotedstr(pofile.poelements[1].msgidcomments) == ""
 
+    def test_output_str_unicode(self):
+        """checks that we can str(element) which is in unicode"""
+        posource = u'''#: nb
+msgid "Norwegian Bokmål"
+msgstr ""
+'''
+        pofile = self.poparse(posource.encode("UTF-8"))
+        assert len(pofile.poelements) == 1
+	print str(pofile)
+	assert str(pofile.poelements[0]) == posource.encode("UTF-8")
+        
