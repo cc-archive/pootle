@@ -28,6 +28,7 @@ import os
 import sys
 from translate.misc import quote
 from translate.misc import wStringIO
+import warnings
 
 normalfilenamechars = "/#.0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 normalizetable = ""
@@ -68,7 +69,7 @@ class ooline:
   def setparts(self, parts):
     """create a line from its tab-delimited parts"""
     if len(parts) != 15:
-      print >>sys.stderr, "WRONG SIZE: %r" % parts
+      warnings.warn("oo line contains %d parts, it should contain 15: %r" % (len(parts), parts))
       newparts = list(parts)
       if len(newparts) < 15:
         newparts = newparts + [""] * (15-len(newparts))
@@ -143,7 +144,10 @@ class oofile:
     else:
       src = input
     for line in src.split("\n"):
-      parts = quote.rstripeol(line).split("\t")
+      line = quote.rstripeol(line)
+      if not line:
+        continue
+      parts = line.split("\t")
       thisline = ooline(parts)
       self.addline(thisline)
 
@@ -152,8 +156,9 @@ class oofile:
     lines = []
     for oe in self.ooelements:
       if len(oe.lines) > 2:
-        for line in oe.lines:
-          print >>sys.stderr, line.getparts()
+        warnings.warn("contains %d lines (should be 2 at most): languages %r" % (len(oe.lines), oe.languages))
+        oekeys = [line.getkey() for line in oe.lines]
+        warnings.warn("contains %d lines (should be 2 at most): keys %r" % (len(oe.lines), oekeys))
       oeline = str(oe) + "\r\n"
       lines.append(oeline)
     return "".join(lines)
