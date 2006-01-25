@@ -29,6 +29,13 @@ class TestProp2PO:
         assert pofile.poelements[0].isheader()
         return pofile.poelements[1]
 
+    def countelements(self, pofile):
+        """returns the number of non-header items"""
+        if pofile.poelements[0].isheader():
+          return len(pofile.poelements) - 1
+        else:
+          return len(pofile.poelements)
+
     def test_simpleentry(self):
         """checks that a simple properties entry converts properly to a po entry"""
         propsource = 'SAVEENTRY=Save file\n'
@@ -86,4 +93,13 @@ class TestProp2PO:
         print repr(poelement.msgid)
         postr = str(poelement)
         assert po.unquotefrompo(poelement.msgid) == u'Norsk bokm\u00E5l'
+
+    def test_multiline_escaping(self):
+        """checks that multiline enties can be parsed"""
+        propsource = r"""5093=Unable to connect to your IMAP server. You may have exceeded the maximum number \
+of connections to this server. If so, use the Advanced IMAP Server Settings dialog to \
+reduce the number of cached connections."""
+        pofile = self.prop2po(propsource)
+        print repr(pofile.poelements[1].msgstr)
+        assert self.countelements(pofile) == 1
 
