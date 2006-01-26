@@ -624,7 +624,9 @@ case $command in
 		;;
 	reviewsdiff) reviewsdiff $1 $2
 		;;
-	*) error_notacommand
+	"") usage
+		;;
+	*) error_notacommand $command
 		;;
 esac
 
