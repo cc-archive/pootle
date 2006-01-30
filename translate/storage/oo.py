@@ -87,6 +87,13 @@ class ooline:
             self.languageid, self.text, self.helptext, self.quickhelptext, self.title, self.timestamp)
 
   def __str__(self):
+    """convert to a string. double check that unicode is handled somehow here"""
+    source = self.getsource()
+    if isinstance(source, unicode):
+      return source.encode(getattr(self, "encoding", "UTF-8"))
+    return source
+
+  def getsource(self):
     """return a line in tab-delimited form"""
     return "\t".join(self.getparts()).replace("\n", "\\n")
 
@@ -107,6 +114,13 @@ class ooelement:
     self.lines.append(line)
 
   def __str__(self):
+    """convert to a string. double check that unicode is handled somehow here"""
+    source = self.getsource()
+    if isinstance(source, unicode):
+      return source.encode(getattr(self, "encoding", "UTF-8"))
+    return source
+
+  def getsource(self):
     """return the lines in tab-delimited form"""
     return "\r\n".join([str(line) for line in self.lines])
 
@@ -152,6 +166,13 @@ class oofile:
       self.addline(thisline)
 
   def __str__(self):
+    """convert to a string. double check that unicode is handled somehow here"""
+    source = self.getsource()
+    if isinstance(source, unicode):
+      return source.encode(getattr(self, "encoding", "UTF-8"))
+    return source
+
+  def getsource(self):
     """converts all the lines back to tab-delimited form"""
     lines = []
     for oe in self.ooelements:

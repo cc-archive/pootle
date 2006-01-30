@@ -344,6 +344,13 @@ class poelement:
     return partstr
 
   def __str__(self):
+    """convert to a string. double check that unicode is handled somehow here"""
+    source = self.getsource()
+    if isinstance(source, unicode):
+      return source.encode(getattr(self, "encoding", "UTF-8"))
+    return source
+
+  def getsource(self):
     """return this po element as a string"""
     lines = []
     lines.extend(self.othercomments)
@@ -683,6 +690,13 @@ class pofile:
           self.sourceindex[source] = thepo
 
   def __str__(self):
+    """convert to a string. double check that unicode is handled somehow here"""
+    source = self.getsource()
+    if isinstance(source, unicode):
+      return source.encode(getattr(self, "encoding", "UTF-8"))
+    return source
+
+  def getsource(self):
     """convert the poelements back to lines"""
     lines = []
     for pe in self.poelements:

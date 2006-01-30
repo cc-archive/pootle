@@ -141,6 +141,13 @@ class csvfile:
       self.csvelements.append(newce)
 
   def __str__(self):
+    """convert to a string. double check that unicode is handled somehow here"""
+    source = self.getsource()
+    if isinstance(source, unicode):
+      return source.encode(getattr(self, "encoding", "UTF-8"))
+    return source
+
+  def getsource(self):
     csvfile = csv.StringIO()
     writer = csv.DictWriter(csvfile, self.fieldnames)
     for ce in self.csvelements:
