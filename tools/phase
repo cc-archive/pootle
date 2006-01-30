@@ -48,7 +48,7 @@ Commands:
 	packallpo <language-dir> <phase-list> -- packs all phases found in the phase list for the given language
 	countmismatch <language-dir> <template-dir> <phase-list> <phase-name> -- compares the source word count between PO and POT to determine if there are any file errors.
 	editpo <language-dir> <phase-list> <phase-name> -- edit the PO files in a phase
-	editpochecks <language> <phase-name> -- edit the PO checks output by checkpo
+	editpochecks <language> <phase-list> <phase-name> -- edit the PO checks output by checkpo
 	editconflicts <language-dir> <phase-list> <phase-name> -- edit the extracted conconflict items
 	checkpo <language-dir> <phase-list> <phase-name> [pofilter options] -- run pofilter checks against the given phase
 	mergepo <language> <phase-name> -- merge the checks back into the main language directory
