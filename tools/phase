@@ -51,7 +51,7 @@ Commands:
 	editpochecks <language> <phase-list> <phase-name> -- edit the PO checks output by checkpo
 	editconflicts <language-dir> <phase-list> <phase-name> -- edit the extracted conconflict items
 	checkpo <language-dir> <phase-list> <phase-name> [pofilter options] -- run pofilter checks against the given phase
-	mergepo <language> <phase-name> -- merge the checks back into the main language directory
+	mergepo <language> <phase-list> <phase-name> -- merge the checks back into the main language directory
 	conflictpo <language-dir> <phase-list> <phase-name> [poconflict options] -- run poconflict checks against the given phase
 	diffpo <language-dir> <phase-list> <phase-name> -- perform a cvs diff for the phase
 	cvslog <language-dir> <phase-list> <phase-name> -- perform a cvs log against files in the phase
@@ -359,7 +359,8 @@ function conflictpo {
 
 function mergepo {
 	language=$1
-	phase=$2
+	filelist=$2
+	phase=$3
 	pomerge -t $language -o $language -i $language-$phase-check
 }
 
@@ -596,7 +597,7 @@ case $command in
 		;;
 	checkpo) checkpo $*
 		;;
-	mergepo) mergepo $1 $2
+	mergepo) mergepo $1 $2 $3
 		;;
 	conflictpo) conflictpo $*
 		;;
