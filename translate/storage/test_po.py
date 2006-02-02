@@ -94,4 +94,7 @@ msgstr ""
         # extra test: what if we set the msgid to a unicode? this happens in prop2po etc
         thepo.msgid = po.quoteforpo(u"Norwegian Bokm\xe5l")
 	assert str(thepo) == posource.encode("UTF-8")
+	# Now if we set the msgstr to Unicode
+	thepo.msgstr = po.quoteforpo("½ ...")
+	assert str(thepo) == "½ ..."
 
