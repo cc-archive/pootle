@@ -95,6 +95,7 @@ msgstr ""
         thepo.msgid = po.quoteforpo(u"Norwegian Bokm\xe5l")
 	assert str(thepo) == posource.encode("UTF-8")
 	# Now if we set the msgstr to Unicode
-	thepo.msgstr = po.quoteforpo("½ ...")
-	assert str(thepo) == "½ ..."
+        # this is an escaped half character (1/2)
+	thepo.msgstr = po.quoteforpo("\xbd ...")
+	assert str(thepo) == "\xbd ..."
 
