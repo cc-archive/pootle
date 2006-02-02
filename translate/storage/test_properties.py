@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 from translate.storage import properties
 from translate.misc import wStringIO
@@ -12,28 +11,21 @@ class TestProperties:
         return propfile
 
     def propregen(self, propsource):
-        """helper that converts properties source to propfile object and back"""
+        """helper that converts prop source to propfile object and back"""
         return str(self.propparse(propsource))
 
-    def test_simpledefinition(self):
-        """checks that a simple properties definition is parsed correctly"""
-        propsource = 'test_me=I can code!\n'
+    def test_simpleentry(self):
+        """checks that a simple properties entry is parsed correctly"""
+        propsource = 'test=testvalue'
         propfile = self.propparse(propsource)
         assert len(propfile.propelements) == 1
-        propelement = propfile.propelements[0]
-        assert propelement.name == "test_me"
-        assert propelement.msgid == "I can code!"
+        theprop = propfile.propelements[0]
+        assert theprop.name == "test"
+        assert theprop.msgid == "testvalue"
 
-    def test_simpledefinition_source(self):
-        """checks that a simple properties definition can be regenerated as source"""
-        propsource = 'test_me=I can code!\n'
-        propregen = self.propregen(propsource)
-        assert propsource == propregen
+    def test_simpleregen(self):
+        """checks that a simple properties entry is regenerated correctly"""
+        propsource = 'test=testvalue'
+        regensource = self.propregen(propsource).rstrip("\n")
+        assert regensource == propsource
 
-    def test_unicode_escaping(self):
-	"""check that escapes unicode is converted properly"""
-	propsource = "unicode=\u0411\u0416\u0419\u0428"
-        propfile = self.propparse(propsource)
-        propelement = propfile.propelements[0]
-        assert propelement.name == "unicode"
-        assert propelement.msgid.encode("UTF-8") == "БЖЙШ"
