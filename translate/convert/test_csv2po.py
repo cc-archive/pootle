@@ -50,3 +50,13 @@ msgstr ""
         assert po.unquotefrompo(pounit.msgid) == "ISO-8859-1"
         assert po.unquotefrompo(pounit.msgstr) == "UTF-16"
 
+    def test_quotes(self):
+        """Tests handling of quotes"""
+        csvsource = r''',"Hello ""all""","Hallo ""almal"""'''
+        pofile = self.csv2po(csvsource)
+        pounit = self.singleelement(pofile)
+        assert pounit.msgid[0] == '"Hello \\"all\\""'
+        assert pounit.msgstr[0] == '"Hallo \\"almal\\""'
+        assert po.unquotefrompo(pounit.msgid) == 'Hello "all"'
+        assert po.unquotefrompo(pounit.msgstr) == 'Hallo "almal"'
+
