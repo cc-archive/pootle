@@ -362,7 +362,7 @@ class poelement:
     # this will also discard any comments other than plain othercomments...
     if (len(self.msgid) == 0) or ((len(self.msgid) == 1) and (self.msgid[0] == '""')):
       if not (self.isheader() or self.msgidcomments or self.sourcecomments):
-        return
+        return ""
     lines.extend(self.sourcecomments)
     lines.extend(self.typecomments)
     lines.extend(self.visiblecomments)
