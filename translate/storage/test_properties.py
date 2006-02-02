@@ -46,11 +46,18 @@ reduce the number of cached connections."""
         assert theprop.msgid.endswith("cached connections.")
         assert "Advanced IMAP" in theprop.msgid
 
+    def test_escapedcolon(self):
+        """tests that escaped colons are handled"""
+        propsource = r"ColonTest=The \: can be escaped"
+        propfile = self.propparse(propsource)
+        theprop = self.singleentry(propfile)
+        assert theprop.msgid == r"The \: can be escaped"
+
     def test_escapedcolon_end(self):
         """tests that escaped colons at end of string are handled"""
         propsource = r"EnterLinkText=Introduzca el texto a mostrar para el enlace\:"
         propfile = self.propparse(propsource)
         theprop = self.singleentry(propfile)
         assert theprop.name == "EnterLinkText"
-        assert theprop.msgid == r'Introduzca el texto a mostrar para el enlace\:'
+        assert theprop.msgid == r"Introduzca el texto a mostrar para el enlace\:"
 
