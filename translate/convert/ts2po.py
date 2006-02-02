@@ -30,7 +30,7 @@ from translate.misc import quote
 class ts2po:
   def convertmessage(self, contextname, messagenum, msgid, msgstr, msgcomments, transtype):
     """makes a poelement from the given message"""
-    thepo = po.poelement()
+    thepo = po.poelement(encoding="UTF-8")
     thepo.sourcecomments.append("#: %s#%d\n" % (contextname, messagenum))
     thepo.msgid = [quote.quotestr(quote.rstripeol(line)) for line in msgid.split("\n")]
     if len(thepo.msgid) > 1:

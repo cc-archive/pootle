@@ -69,7 +69,7 @@ class sxw2po:
     for message in sxwdoc.getmessages():
       if not message: continue
       blocknum += 1
-      thepo = po.poelement()
+      thepo = po.poelement(encoding="UTF-8")
       thepo.sourcecomments.append("#: %s:%d\n" % (filename,blocknum))
       thepo.msgid = [quote.quotestr(quote.rstripeol(message), escapeescapes=1)]
       if len(thepo.msgid) > 1:

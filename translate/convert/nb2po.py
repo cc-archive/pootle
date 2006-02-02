@@ -31,7 +31,7 @@ class nb2po:
 
   def makepoelement(self, filename, fieldname, fieldvalue):
     """makes a poelement"""
-    thepo = po.poelement()
+    thepo = po.poelement(encoding="UTF-8")
     thepo.sourcecomments.append("#: %s#%s\n" % (filename,fieldname))
     thepo.msgid = []
     lines = fieldvalue.split("\n")

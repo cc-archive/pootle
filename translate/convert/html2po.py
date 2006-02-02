@@ -40,7 +40,7 @@ class html2po:
     for blocknum in range(len(htmlparser.blocks)):
       block = htmlparser.blocks[blocknum].strip()
       if not block: continue
-      thepo = po.poelement()
+      thepo = po.poelement(encoding="UTF-8")
       thepo.sourcecomments.append("#: %s:%d\n" % (filename,blocknum+1))
       thepo.msgid = [quote.quotestr(quote.rstripeol(block))]
       if len(thepo.msgid) > 1:
