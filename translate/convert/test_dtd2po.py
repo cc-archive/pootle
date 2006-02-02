@@ -112,3 +112,13 @@ class TestDTD2PO:
         # drop the line break but this has not been implemented yet.
         assert po.unquotefrompo(poelement.msgid) == "First line then \nnext lines."
 
+    def test_newline_escaping(self):
+	"""test that we handle all kinds of newline permutations"""
+	dtdsource = '<!ENTITY  noupdatesfound.intro "A hard coded newline.\\n">\n'
+        pofile = self.dtd2po(dtdsource)
+        poelement = self.singleelement(pofile)
+	print dtdsource
+	print poelement.msgid
+	# \n in a dtd should also appear as \n in the PO file
+        assert poelement.msgid == r"A hard coded newline.\n"
+
