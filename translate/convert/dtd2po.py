@@ -116,7 +116,10 @@ class dtd2po:
     # do a standard translation
     self.convertcomments(thedtd,thepo)
     self.convertstrings(thedtd,thepo)
-    return thepo
+    if thepo.isblank() and not thepo.getsources():
+      return None
+    else:
+      return thepo
 
   # labelsuffixes and accesskeysuffixes are combined to accelerator notation
   labelsuffixes = (".label", ".title")
