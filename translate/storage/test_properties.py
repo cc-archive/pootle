@@ -14,12 +14,17 @@ class TestProperties:
         """helper that converts prop source to propfile object and back"""
         return str(self.propparse(propsource))
 
+    def singleentry(self, propfile):
+        """checks that a propfile has a single entry, and returns it"""
+        assert len(propfile.propelements) == 1
+        theprop = propfile.propelements[0]
+        return theprop
+
     def test_simpleentry(self):
         """checks that a simple properties entry is parsed correctly"""
         propsource = 'test=testvalue'
         propfile = self.propparse(propsource)
-        assert len(propfile.propelements) == 1
-        theprop = propfile.propelements[0]
+        theprop = self.singleentry(propfile)
         assert theprop.name == "test"
         assert theprop.msgid == "testvalue"
 
@@ -28,4 +33,16 @@ class TestProperties:
         propsource = 'test=testvalue'
         regensource = self.propregen(propsource).rstrip("\n")
         assert regensource == propsource
+
+    def test_multiline(self):
+        """checks that multiline enties can be parsed"""
+        propsource = r"""5093=Unable to connect to your IMAP server. You may have exceeded the maximum number \
+of connections to this server. If so, use the Advanced IMAP Server Settings dialog to \
+reduce the number of cached connections."""
+        propfile = self.propparse(propsource)
+        theprop = self.singleentry(propfile)
+        assert theprop.name == "5093"
+        assert theprop.msgid.startswith("Unable")
+        assert theprop.msgid.endswith("cached connections.")
+        assert "Advanced IMAP" in theprop.msgid
 
