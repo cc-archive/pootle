@@ -88,14 +88,18 @@ msgstr ""
 '''
         pofile = po.pofile(wStringIO.StringIO(posource.encode("UTF-8")), encoding="UTF-8")
         assert len(pofile.poelements) == 1
-	print str(pofile)
+        print str(pofile)
         thepo = pofile.poelements[0]
-	assert str(thepo) == posource.encode("UTF-8")
+        assert str(thepo) == posource.encode("UTF-8")
         # extra test: what if we set the msgid to a unicode? this happens in prop2po etc
         thepo.msgid = po.quoteforpo(u"Norwegian Bokm\xe5l")
-	assert str(thepo) == posource.encode("UTF-8")
-	# Now if we set the msgstr to Unicode
+        assert str(thepo) == posource.encode("UTF-8")
+        # Now if we set the msgstr to Unicode
         # this is an escaped half character (1/2)
-	thepo.msgstr = po.quoteforpo("\xbd ...")
-	assert str(thepo) == "\xbd ..."
+        halfstr = "\xbd ...".decode("latin-1")
+        halfmsgstr = 'msgstr "%s"' % halfstr
+        thepo.msgstr = po.quoteforpo(halfstr)
+        assert halfmsgstr in str(thepo).decode("UTF-8")
+        thepo.msgstr = po.quoteforpo(halfstr.encode("UTF-8"))
+        assert halfmsgstr.encode("UTF-8") in thepo.getsource()
 
