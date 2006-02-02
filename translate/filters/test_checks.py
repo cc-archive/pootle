@@ -25,7 +25,7 @@ def test_accelerators():
     assert checks.fails(stdchecker.accelerators, "File", "&Fayile") 
     assert checks.passes(stdchecker.accelerators, "Mail && News", "Pos en Nuus") 
     assert checks.fails(stdchecker.accelerators, "Mail &amp; News", "Pos en Nuus") 
-    assert checks.passes(stdchecker.accelerators, "&Allow", u"&ﺲﻣﺎﺣ")
+    assert checks.passes(stdchecker.accelerators, "&Allow", u'&\ufeb2\ufee3\ufe8e\ufea3')
     kdechecker = checks.KdeChecker()
     assert checks.passes(kdechecker.accelerators, "&File", "&Fayile") 
     assert checks.fails(kdechecker.accelerators, "&File", "Fayile") 
