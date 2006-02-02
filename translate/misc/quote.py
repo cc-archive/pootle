@@ -253,8 +253,6 @@ def mozillapropertiesdecode(source):
       name = source[s:e]
       output += unicodedata.lookup(name)
       s = e + 1
-    elif s >= len(source):
-      raise ValueError("\\ at end of string")
     else:
       output += "\\" + c
   return output
