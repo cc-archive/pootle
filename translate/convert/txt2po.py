@@ -29,7 +29,7 @@ from translate.misc import quote
 class txt2po:
   def convertblock(self, filename, block, linenum):
     """makes a poelement based on the current block"""
-    thepo = po.poelement()
+    thepo = po.poelement(encoding="UTF-8")
     thepo.sourcecomments.append("#: %s:%d\n" % (filename,linenum+1))
     thepo.msgid = [quote.quotestr(quote.rstripeol(line)) for line in block]
     if len(thepo.msgid) > 1:

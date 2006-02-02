@@ -98,7 +98,8 @@ class poelement:
   # msgid = []
   # msgstr = []
 
-  def __init__(self):
+  def __init__(self, encoding="UTF-8"):
+    self.encoding = encoding
     self.othercomments = []
     self.sourcecomments = []
     self.typecomments = []
@@ -343,7 +344,18 @@ class poelement:
       partstr += partline + '\n'
     return partstr
 
+  def encodeifneccessary(self, source):
+    """encodes unicode strings and returns other strings unchanged"""
+    if isinstance(source, unicode):
+      return source.encode(getattr(self, "encoding", "UTF-8"))
+    return source
+
   def __str__(self):
+    """convert to a string. double check that unicode is handled somehow here"""
+    source = self.getsource()
+    return self.encodeifneccessary(source)
+
+  def getsource(self):
     """return this po element as a string"""
     lines = []
     lines.extend(self.othercomments)
@@ -355,7 +367,7 @@ class poelement:
     # this will also discard any comments other than plain othercomments...
     if (len(self.msgid) == 0) or ((len(self.msgid) == 1) and (self.msgid[0] == '""')):
       if not (self.isheader() or self.msgidcomments or self.sourcecomments):
-        return
+        return ""
     lines.extend(self.sourcecomments)
     lines.extend(self.typecomments)
     lines.extend(self.visiblecomments)
@@ -363,7 +375,13 @@ class poelement:
     if self.msgid_plural or self.msgid_pluralcomments:
       lines.append(self.getmsgpartstr("msgid_plural", self.msgid_plural, self.msgid_pluralcomments))
     lines.append(self.getmsgpartstr("msgstr", self.msgstr))
-    return "".join(lines)
+    lines = [self.encodeifneccessary(line) for line in lines]
+    postr = "".join(lines)
+    if isinstance(postr, unicode):
+      # this will cause an horrendous error because it will transparently convert to str
+      # FIXME: we don't know what encoding to use here, so we just use UTF-8
+      postr = postr.encode("UTF-8")
+    return postr
 
   def getsources(self):
     """returns the list of sources from sourcecomments in the po element"""
@@ -408,7 +426,7 @@ class pofile:
       if key.islower():
         key = key.title()
       headerargs[key] = value
-    headerpo = self.elementclass()
+    headerpo = self.elementclass(self.encoding)
     headerpo.markfuzzy()
     headerpo.msgid = ['""']
     headeritems = [""]
@@ -587,7 +605,7 @@ class pofile:
       posrc = input.read()
       input.close()
       input = posrc
-    lines = posrc.split("\n")
+    lines = input.split("\n")
     start = 0
     end = 0
     # make only the first one the header
@@ -596,7 +614,7 @@ class pofile:
       if (end == len(lines)) or (not lines[end].strip()):   # end of lines or blank line
         finished = 0
         while not finished:
-          newpe = self.elementclass()
+          newpe = self.elementclass(self.encoding)
           linesprocessed = newpe.parse("\n".join(lines[start:end]))
           start += linesprocessed
           if linesprocessed > 1:
@@ -678,6 +696,13 @@ class pofile:
           self.sourceindex[source] = thepo
 
   def __str__(self):
+    """convert to a string. double check that unicode is handled somehow here"""
+    source = self.getsource()
+    if isinstance(source, unicode):
+      return source.encode(getattr(self, "encoding", "UTF-8"))
+    return source
+
+  def getsource(self):
     """convert the poelements back to lines"""
     lines = []
     for pe in self.poelements:

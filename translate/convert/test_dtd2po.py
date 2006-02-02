@@ -14,11 +14,26 @@ class TestDTD2PO:
         outputpo = convertor.convertfile(inputdtd)
         return outputpo
 
+    def convertdtd(self, dtdsource):
+        """call the convertdtd, return the outputfile"""
+        inputfile = wStringIO.StringIO(dtdsource)
+        outputfile = wStringIO.StringIO()
+        templatefile = None
+        assert dtd2po.convertdtd(inputfile, outputfile, templatefile)
+        return outputfile.getvalue()
+
     def singleelement(self, pofile):
         """checks that the pofile contains a single non-header element, and returns it"""
         assert len(pofile.poelements) == 2
         assert pofile.poelements[0].isheader()
         return pofile.poelements[1]
+
+    def countelements(self, pofile):
+        """returns the number of non-header items"""
+        if pofile.poelements[0].isheader():
+          return len(pofile.poelements) - 1
+        else:
+          return len(pofile.poelements)
 
     def test_simpleentity(self):
         """checks that a simple dtd entity definition converts properly to a po entry"""
@@ -26,6 +41,15 @@ class TestDTD2PO:
         pofile = self.dtd2po(dtdsource)
         poelement = self.singleelement(pofile)
         assert po.unquotefrompo(poelement.msgid) == "bananas for sale"
+        assert po.unquotefrompo(poelement.msgstr) == ""
+
+    def test_convertdtd(self):
+        """checks that the convertdtd function is working"""
+        dtdsource = '<!ENTITY saveas.label "Save As...">\n'
+        posource = self.convertdtd(dtdsource)
+        pofile = po.pofile(wStringIO.StringIO(posource))
+        poelement = self.singleelement(pofile)
+        assert po.unquotefrompo(poelement.msgid) == "Save As..."
         assert po.unquotefrompo(poelement.msgstr) == ""
 
     def test_apos(self):
@@ -53,6 +77,13 @@ class TestDTD2PO:
         print posource
         assert posource.count('"_:') <= len(pofile.poelements)
 
+    def test_donttranslate_simple(self):
+        """check that we handle DONT_TRANSLATE messages properly"""
+        dtdsource = '''<!-- LOCALIZATION NOTE (region.Altitude): DONT_TRANSLATE -->
+<!ENTITY region.Altitude "Very High">'''
+        pofile = self.dtd2po(dtdsource)
+        assert self.countelements(pofile) == 0
+
     def test_donttranslate_label(self):
         """test strangeness when label entity is marked DONT_TRANSLATE and accesskey is not, bug 30"""
         dtdsource = '<!--LOCALIZATION NOTE (editorCheck.label): DONT_TRANSLATE -->\n' + \
@@ -63,6 +94,13 @@ class TestDTD2PO:
         # this tests the current implementation which is that the DONT_TRANSLATE string is removed, but the other remains
         assert 'editorCheck.label' not in posource
         assert 'editorCheck.accesskey' in posource
+
+    def test_donttranslate_onlyentity(self):
+        """if the entity is itself just another entity then it shouldn't appear in the output PO file"""
+        dtdsource = '''<!-- LOCALIZATION NOTE (mainWindow.title): DONT_TRANSLATE -->
+<!ENTITY mainWindow.title "&brandFullName;">'''
+        pofile = self.dtd2po(dtdsource)
+        assert self.countelements(pofile) == 0
 
     def test_spaces_at_start_of_dtd_lines(self):
         """test that pretty print spaces at the start of subsequent DTD element lines are removed from the PO file, bug 79"""

@@ -84,7 +84,7 @@ class csv2po:
 
   def convertelement(self,thecsv):
     """converts csv element to po element"""
-    thepo = po.poelement()
+    thepo = po.poelement(encoding="UTF-8")
     thepo.sourcecomments = ["#: " + thecsv.source + "\n"]
     thepo.msgid = [quotecsvstr(line) for line in thecsv.msgid.split('\n')]
     thepo.msgstr = [quotecsvstr(line) for line in thecsv.msgstr.split('\n')]

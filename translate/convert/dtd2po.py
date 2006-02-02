@@ -82,7 +82,7 @@ class dtd2po:
     thepo.msgstr = ['""']
 
   def convertelement(self,thedtd):
-    thepo = po.poelement()
+    thepo = po.poelement(encoding="UTF-8")
     # remove unwanted stuff
     for commentnum in range(len(thedtd.comments)):
       commenttype,locnote = thedtd.comments[commentnum]
@@ -116,7 +116,10 @@ class dtd2po:
     # do a standard translation
     self.convertcomments(thedtd,thepo)
     self.convertstrings(thedtd,thepo)
-    return thepo
+    if thepo.isblank() and not thepo.getsources():
+      return None
+    else:
+      return thepo
 
   # labelsuffixes and accesskeysuffixes are combined to accelerator notation
   labelsuffixes = (".label", ".title")
@@ -129,7 +132,7 @@ class dtd2po:
       return accesskeypo
     if accesskeypo is None:
       return labelpo
-    thepo = po.poelement()
+    thepo = po.poelement(encoding="UTF-8")
     thepo.sourcecomments += labelpo.sourcecomments
     thepo.sourcecomments += accesskeypo.sourcecomments
     thepo.msgidcomments += labelpo.msgidcomments

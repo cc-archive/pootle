@@ -40,7 +40,7 @@ class oo2po:
 
   def makepo(self, part1, part2, key, subkey):
     """makes a po element out of a subkey of two parts"""
-    thepo = po.poelement()
+    thepo = po.poelement(encoding="UTF-8")
     thepo.sourcecomments.append("#: " + key + "." + subkey + "\n")
     text1 = getattr(part1, subkey)
     text2 = getattr(part2, subkey)
