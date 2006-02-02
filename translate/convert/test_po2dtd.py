@@ -91,3 +91,12 @@ class TestPO2DTD:
 	print newdtd
 	assert newdtd == dtdexpected
 
+    def test_newlines_escapes(self):
+	"""check that we can handle a \n in the PO file"""
+        posource = '''#: simple.label\n#: simple.accesskey\nmsgid "A hard coded newline.\\n"\nmsgstr "Hart gekoeerde nuwe lyne\\n"\n'''
+	dtdtemplate = '<!ENTITY  simple.label "A hard coded newline.\\n">\n'
+	dtdexpected = '''<!ENTITY simple.label "Hart gekoeerde nuwe lyne\\n">\n'''
+        dtdfile = self.merge2dtd(dtdtemplate, posource)
+	print dtdfile
+        assert str(dtdfile) == dtdexpected
+
