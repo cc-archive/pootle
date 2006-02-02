@@ -32,6 +32,14 @@ class TestPO2DTD:
         outputdtd = convertor.convertfile(inputpo)
         return outputdtd
 
+    def convertdtd(self, posource, dtdtemplate):
+        """helper to exercise the command line function"""
+        inputfile = wStringIO.StringIO(posource)
+        outputfile = wStringIO.StringIO()
+        templatefile = wStringIO.StringIO(dtdtemplate)
+	assert po2dtd.convertdtd(inputfile, outputfile, templatefile)
+	return outputfile.getvalue()
+
     def test_joinlines(self):
         """tests that po lines are joined seamlessly (bug 16)"""
         multilinepo = '''#: pref.menuPath\nmsgid ""\n"<span>Tools &gt; Options</"\n"span>"\nmsgstr ""\n'''
@@ -73,4 +81,13 @@ class TestPO2DTD:
         dtdfile = self.merge2dtd(hashdtd, hashpo)
         regendtd = str(dtdfile)
         assert regendtd == hashdtd
+
+    def test_convertdtd(self):
+	"""checks that the convertdtd function is working"""
+        posource = '''#: simple.label\n#: simple.accesskey\nmsgid "Simple &String"\nmsgstr "Dimpled &Ring"\n'''
+        dtdtemplate = '''<!ENTITY simple.label "Simple String">\n<!ENTITY simple.accesskey "S">\n'''
+	dtdexpected = '''<!ENTITY simple.label "Dimpled Ring">\n<!ENTITY simple.accesskey "R">\n'''
+	newdtd = self.convertdtd(posource, dtdtemplate)
+	print newdtd
+	assert newdtd == dtdexpected
 
