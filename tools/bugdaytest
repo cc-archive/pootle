@@ -1,0 +1,32 @@
+#!/bin/bash
+# this is a script for running repeated tests on different hosts for bugday
+timestamp=`date '+%Y%m%d-%H%M'`
+bugday=`date '+%Y%m%d'`
+hostname=`hostname`
+dest=sourceforge:translate/html/bugdays/${bugday}
+scriptdir="`dirname "$0"`"
+srcdir="`cd "${scriptdir}" ; cd .. ; pwd`"
+
+logfile=${hostname}-${timestamp}.log
+
+cd "$srcdir"
+mkdir -p testlogs
+echo ${timestamp} ${logfile}
+(
+  echo -n "automated test at ${timestamp} on "
+  uname -snmo
+  echo
+  echo "cvs update:"
+  echo "-----------"
+  cvs -q up translate | grep -v ^?
+  echo "local changes:"
+  echo "--------------"
+  cvs -q diff -u translate | grep -v ^?
+  echo "running tests:"
+  echo "--------------"
+  py.test translate
+  echo
+  echo "done"
+) 2>&1 | tee testlogs/${logfile}
+scp -p testlogs/${logfile} ${dest}/$logfile
+
