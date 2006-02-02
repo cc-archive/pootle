@@ -77,6 +77,13 @@ class TestDTD2PO:
         print posource
         assert posource.count('"_:') <= len(pofile.poelements)
 
+    def test_donttranslate_simple(self):
+        """check that we handle DONT_TRANSLATE messages properly"""
+        dtdsource = '''<!-- LOCALIZATION NOTE (region.Altitude): DONT_TRANSLATE -->
+<!ENTITY region.Altitude "Very High">'''
+        pofile = self.dtd2po(dtdsource)
+        assert self.countelements(pofile) == 0
+
     def test_donttranslate_label(self):
         """test strangeness when label entity is marked DONT_TRANSLATE and accesskey is not, bug 30"""
         dtdsource = '<!--LOCALIZATION NOTE (editorCheck.label): DONT_TRANSLATE -->\n' + \
@@ -93,7 +100,6 @@ class TestDTD2PO:
         dtdsource = '''<!-- LOCALIZATION NOTE (mainWindow.title): DONT_TRANSLATE -->
 <!ENTITY mainWindow.title "&brandFullName;">'''
         pofile = self.dtd2po(dtdsource)
-	print str(pofile.poelements[1])
         assert self.countelements(pofile) == 0
 
     def test_spaces_at_start_of_dtd_lines(self):
