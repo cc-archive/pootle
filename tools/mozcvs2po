@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 
-# mozcsv2po - create po tree from existing locales in l10n directory.
+# mozcvs2po - create po tree from existing locales in l10n directory.
 # Launched from the directory where "mozilla" and "l10n" directories are located.
 # parameters:
 #   * Product: one of "C" -> Common; ·F· -> Firefox, "T", Thunderbird 
