@@ -98,7 +98,8 @@ class poelement:
   # msgid = []
   # msgstr = []
 
-  def __init__(self):
+  def __init__(self, encoding="UTF-8"):
+    self.encoding = encoding
     self.othercomments = []
     self.sourcecomments = []
     self.typecomments = []
@@ -343,12 +344,16 @@ class poelement:
       partstr += partline + '\n'
     return partstr
 
-  def __str__(self):
-    """convert to a string. double check that unicode is handled somehow here"""
-    source = self.getsource()
+  def encodeifneccessary(self, source):
+    """encodes unicode strings and returns other strings unchanged"""
     if isinstance(source, unicode):
       return source.encode(getattr(self, "encoding", "UTF-8"))
     return source
+
+  def __str__(self):
+    """convert to a string. double check that unicode is handled somehow here"""
+    source = self.getsource()
+    return self.encodeifneccessary(source)
 
   def getsource(self):
     """return this po element as a string"""
@@ -370,6 +375,7 @@ class poelement:
     if self.msgid_plural or self.msgid_pluralcomments:
       lines.append(self.getmsgpartstr("msgid_plural", self.msgid_plural, self.msgid_pluralcomments))
     lines.append(self.getmsgpartstr("msgstr", self.msgstr))
+    lines = [self.encodeifneccessary(line) for line in lines]
     postr = "".join(lines)
     if isinstance(postr, unicode):
       # this will cause an horrendous error because it will transparently convert to str
@@ -420,7 +426,7 @@ class pofile:
       if key.islower():
         key = key.title()
       headerargs[key] = value
-    headerpo = self.elementclass()
+    headerpo = self.elementclass(self.encoding)
     headerpo.markfuzzy()
     headerpo.msgid = ['""']
     headeritems = [""]
@@ -608,7 +614,7 @@ class pofile:
       if (end == len(lines)) or (not lines[end].strip()):   # end of lines or blank line
         finished = 0
         while not finished:
-          newpe = self.elementclass()
+          newpe = self.elementclass(self.encoding)
           linesprocessed = newpe.parse("\n".join(lines[start:end]))
           start += linesprocessed
           if linesprocessed > 1:
