@@ -84,7 +84,6 @@ class dtd2po:
               [quote.quotestr(lines[len(lines)-1].lstrip())]
     else:
       msgid = [quote.quotestr(lines[0])]
-    print msgid
     thepo.msgid = msgid
     thepo.msgstr = ['""']
 
