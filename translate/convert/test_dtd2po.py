@@ -104,13 +104,31 @@ class TestDTD2PO:
 
     def test_spaces_at_start_of_dtd_lines(self):
         """test that pretty print spaces at the start of subsequent DTD element lines are removed from the PO file, bug 79"""
+	# Space at the end of the line
         dtdsource = '<!ENTITY  noupdatesfound.intro "First line then \n' + \
           '                                          next lines.">\n'
         pofile = self.dtd2po(dtdsource)
         poelement = self.singleelement(pofile)
-        # We still need to decide how we handle line line breaks in the DTD entities.  It seems that we should actually
-        # drop the line break but this has not been implemented yet.
         assert po.unquotefrompo(poelement.msgid) == "First line then \nnext lines."
+	# No space at the end of the line
+        dtdsource = '<!ENTITY  noupdatesfound.intro "First line then\n' + \
+          '                                          next lines.">\n'
+        pofile = self.dtd2po(dtdsource)
+        poelement = self.singleelement(pofile)
+        assert po.unquotefrompo(poelement.msgid) == "First line then \nnext lines."
+
+    def test_preserving_spaces(self):
+	"""test that we preserve space that appear at the start of the first line of a DTD entity"""
+	# Space before first character
+	dtdsource = '<!ENTITY mainWindow.titlemodifiermenuseparator " - ">'
+        pofile = self.dtd2po(dtdsource)
+        poelement = self.singleelement(pofile)
+        assert po.unquotefrompo(poelement.msgid) == " - "
+	# Double line and spaces
+	dtdsource = '<!ENTITY mainWindow.titlemodifiermenuseparator " - with a newline\n    and more text">'
+        pofile = self.dtd2po(dtdsource)
+        poelement = self.singleelement(pofile)
+        assert po.unquotefrompo(poelement.msgid) == " - with a newline \nand more text"
 
     def test_newline_escaping(self):
 	"""test that we handle all kinds of newline permutations"""

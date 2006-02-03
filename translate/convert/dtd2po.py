@@ -77,7 +77,14 @@ class dtd2po:
     # escape backslashes...
     unquoted = unquoted.replace("\\", "\\\\")
     # now split the string into lines and quote them
-    msgid = [quote.quotestr(line.lstrip()) for line in unquoted.split('\n')]
+    lines = unquoted.split('\n')
+    if len(lines) > 1:
+      msgid = [quote.quotestr(lines[0].rstrip() + ' ')] + \
+              [quote.quotestr(line.lstrip().rstrip() + ' ') for line in lines[1:len(lines)-1]] + \
+              [quote.quotestr(lines[len(lines)-1].lstrip())]
+    else:
+      msgid = [quote.quotestr(lines[0])]
+    print msgid
     thepo.msgid = msgid
     thepo.msgstr = ['""']
 
