@@ -27,7 +27,9 @@ function usage() {
         echo
         echo "Options:"
         echo "   -F|--use-fuzzy-matching - use fuzzy algorithms when merging to attempt to match strings"
-        echo "   -C|--use-compendium     - create and use a compendium during the migration"
+        echo "   -C|--use-compendium     - create and use a compendium built from the migrating files"
+        echo "   -C|--use-compendium=some-compendium.po"
+	echo "                           - use an external compendium during the migration"
         echo "   --no-wrap               - do not wrap long lines"
         echo "   --locale=lang           - set locale for newly born files"
 	exit 1
