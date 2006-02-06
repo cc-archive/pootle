@@ -72,7 +72,7 @@ class TestDTD2PO:
         assert "credit.translation" in str(poelement)
 
     def test_emptyentity_translated(self):
-        """checks that empty entity definitions survive into po file, bug 15"""
+        """checks that if we translate an empty entity it makes it into the PO, bug 101"""
         dtdtemplate = '<!ENTITY credit.translation "">\n'
         dtdsource = '<!ENTITY credit.translation "Translators Names">\n'
         pofile = self.dtd2po(dtdsource, dtdtemplate)
@@ -114,6 +114,13 @@ class TestDTD2PO:
         """if the entity is itself just another entity then it shouldn't appear in the output PO file"""
         dtdsource = '''<!-- LOCALIZATION NOTE (mainWindow.title): DONT_TRANSLATE -->
 <!ENTITY mainWindow.title "&brandFullName;">'''
+        pofile = self.dtd2po(dtdsource)
+        assert self.countelements(pofile) == 0
+
+    def test_donttranslate_commentedout(self):
+        """check that we don't process messages in <!-- comments -->: bug 102"""
+        dtdsource = '''<!-- commenting out until bug 38906 is fixed
+<!ENTITY messagesHeader.label         "Messages"> -->'''
         pofile = self.dtd2po(dtdsource)
         assert self.countelements(pofile) == 0
 
