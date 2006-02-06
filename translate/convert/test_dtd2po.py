@@ -6,12 +6,17 @@ from translate.storage import po
 from translate.storage import dtd
 
 class TestDTD2PO:
-    def dtd2po(self, dtdsource):
+    def dtd2po(self, dtdsource, dtdtemplate=None):
         """helper that converts dtd source to po source without requiring files"""
         inputfile = wStringIO.StringIO(dtdsource)
         inputdtd = dtd.dtdfile(inputfile)
         convertor = dtd2po.dtd2po()
-        outputpo = convertor.convertfile(inputdtd)
+	if not dtdtemplate:
+          outputpo = convertor.convertfile(inputdtd)
+	else:
+          templatefile = wStringIO.StringIO(dtdtemplate)
+          templatedtd = dtd.dtdfile(templatefile)
+	  outputpo = convertor.mergefiles(inputdtd, templatedtd)
         return outputpo
 
     def convertdtd(self, dtdsource):
@@ -65,6 +70,16 @@ class TestDTD2PO:
         pofile = self.dtd2po(dtdsource)
         poelement = self.singleelement(pofile)
         assert "credit.translation" in str(poelement)
+
+    def test_emptyentity_translated(self):
+        """checks that empty entity definitions survive into po file, bug 15"""
+        dtdtemplate = '<!ENTITY credit.translation "">\n'
+        dtdsource = '<!ENTITY credit.translation "Translators Names">\n'
+        pofile = self.dtd2po(dtdsource, dtdtemplate)
+        poelement = self.singleelement(pofile)
+	print poelement
+        assert "credit.translation" in str(poelement)
+        assert po.unquotefrompo(poelement.msgstr) == "Translators Names"
 
     def test_kdecomment_merge(self):
         """test that LOCALIZATION NOTES are added properly as KDE comments and merged with duplicate comments"""
