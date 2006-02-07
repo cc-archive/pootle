@@ -23,6 +23,12 @@ class TestDTD:
         assert dtdelement.entity == "test.me"
         assert dtdelement.definition == '"bananas for sale"'
 
+    def test_blanklines(self):
+        """checks that blank lines don't break the parsing or regeneration"""
+        dtdsource = '<!ENTITY test.me "bananas for sale">\n\n'
+        dtdregen = self.dtdregen(dtdsource)
+        assert dtdsource == dtdregen
+
     def test_simpleentity_source(self):
         """checks that a simple dtd entity definition can be regenerated as source"""
         dtdsource = '<!ENTITY test.me "bananas for sale">\n'
