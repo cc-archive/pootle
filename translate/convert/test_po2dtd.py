@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 from translate.convert import po2dtd
+from translate.convert import dtd2po
 from translate.misc import wStringIO
 from translate.storage import po
 from translate.storage import dtd
@@ -39,6 +40,25 @@ class TestPO2DTD:
         templatefile = wStringIO.StringIO(dtdtemplate)
 	assert po2dtd.convertdtd(inputfile, outputfile, templatefile)
 	return outputfile.getvalue()
+
+    def roundtripstring(self, entitystring):
+        dtdintro, dtdoutro = '<!ENTITY Test.RoundTrip ', '>\n'
+        dtdsource = dtdintro + entitystring + dtdoutro
+        dtdinputfile = wStringIO.StringIO(dtdsource)
+        pooutputfile = wStringIO.StringIO()
+        dtd2po.convertdtd(dtdinputfile, pooutputfile, None)
+        posource = pooutputfile.getvalue()
+        poinputfile = wStringIO.StringIO(posource)
+        dtdtemplatefile = wStringIO.StringIO(dtdsource)
+        dtdoutputfile = wStringIO.StringIO()
+        po2dtd.convertdtd(poinputfile, dtdoutputfile, dtdtemplatefile)
+        dtdresult = dtdoutputfile.getvalue()
+        assert dtdresult.startswith(dtdintro) and dtdresult.endswith(dtdoutro)
+        return dtdresult[len(dtdintro):-len(dtdoutro)]
+
+    def check_roundtrip(self, dtdsource):
+        """Checks that the round-tripped string is the same as the original"""
+        assert self.roundtripstring(dtdsource) == dtdsource
 
     def test_joinlines(self):
         """tests that po lines are joined seamlessly (bug 16)"""
@@ -99,6 +119,10 @@ class TestPO2DTD:
         dtdfile = self.merge2dtd(dtdtemplate, posource)
 	print dtdfile
         assert str(dtdfile) == dtdexpected
+
+    def test_roundtrip_simple(self):
+        """checks that simple strings make it through a dtd->po->dtd roundtrip"""
+        self.check_roundtrip('"Hello"')
 
     def test_merging_entries_with_spaces_removed(self):
 	"""dtd2po removes pretty printed spaces, this tests that we can merge this back into the pretty printed dtd"""
