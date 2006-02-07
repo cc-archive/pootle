@@ -110,10 +110,14 @@ class dtdelement:
         (comment, self.incomment) = quote.extract(line,"<!--","-->",None,self.continuecomment)
         # print "comment(%d,%d): " % (self.incomment,self.continuecomment),comment
         self.continuecomment = self.incomment
+        # strip the comment out of what will be parsed
+        line = line.replace(comment, "", 1)
+        # check if there's actually an entity definition that's commented out
+        if comment.find('<!ENTITY') <> -1:
+          # remove the entity from the comment
+          comment, dummy = quote.extractwithoutquotes(comment, ">", "<!ENTITY", None, 1)
         # depending on the type of comment (worked out at the start), put it in the right place
         # make it record the comment and type as a tuple
-        if comment.find('<!ENTITY') <> -1:
-          comment, dummy = quote.extractwithoutquotes(comment, ">", "<!ENTITY", None, 1)
         commentpair = (self.commenttype,comment)
         if self.commenttype == "locfile":
           self.locfilenotes.append(commentpair)
@@ -125,7 +129,6 @@ class dtdelement:
           self.locnotes.append(commentpair)
         elif self.commenttype == "comment":
           self.comments.append(commentpair)
-        line = line.replace(comment, "", 1)
         # add a end of line of this is the end of the comment
         if not self.incomment: comment += '\n'
 
