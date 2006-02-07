@@ -47,6 +47,16 @@ class TestDTD:
         dtdregen = self.dtdregen(dtdsource)
         assert dtdsource == dtdregen
 
+    def test_commententity(self):
+        """check that we don't process messages in <!-- comments -->: bug 102"""
+        dtdsource = '''<!-- commenting out until bug 38906 is fixed
+<!ENTITY messagesHeader.label         "Messages"> -->'''
+        dtdfile = self.dtdparse(dtdsource)
+        assert len(dtdfile.dtdelements) == 1
+        dtdelement = dtdfile.dtdelements[0]
+        print dtdelement
+        assert dtdelement.isnull()
+
     def test_newlines_in_entity(self):
 	"""tests that we can handle newlines in the entity itself"""
 	dtdsource = '''<!ENTITY fileNotFound.longDesc "
