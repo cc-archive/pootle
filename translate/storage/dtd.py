@@ -35,6 +35,18 @@ def quotefordtd(source):
   else:
     return quote.quotestr(source)
 
+def unquotefromdtd(source):
+  """unquotes a quoted dtd definition"""
+  # extract the string, get rid of quoting
+  if len(source) == 0: source = '""'
+  quotechar = source[0]
+  extracted,quotefinished = quote.extract(source,quotechar,quotechar,None)
+  if quotechar == "'" and "&apos;" in extracted:
+    extracted = extracted.replace("&apos;", "'")
+  # the quote characters should be the first and last characters in the string
+  # of course there could also be quote characters within the string; not handled here
+  return extracted[1:-1]
+
 class dtdelement:
   """this class represents an entity definition from a dtd file (and possibly associated comments)"""
   def __init__(self):
@@ -290,8 +302,21 @@ class dtdfile:
       if not dtd.isnull():
         self.index[dtd.entity] = dtd
 
+  def rewrap(self):
+    for dtd in self.dtdelements:
+      lines = dtd.definition.split("\n")
+      if len(lines) > 1:
+        definition = lines[0]
+        for line in lines[1:]:
+          if definition[-1:].isspace() or line[:1].isspace():
+            definition += line
+          else:
+            definition += " " + line
+        dtd.definition = definition
+
 if __name__ == "__main__":
   import sys
   d = dtdfile(sys.stdin)
+  d.rewrap()
   sys.stdout.write(str(d))
 

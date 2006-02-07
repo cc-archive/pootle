@@ -60,20 +60,9 @@ class dtd2po:
     if entity.endswith(".height") or entity.endswith(".width") or entity.endswith(".size"):
       thepo.msgidcomments.append(quote.quotestr("_: Do not translate this.  Only change the numeric values if you need this dialogue box to appear bigger.\\n"))
 
-  def extractdtdstring(self,dtdstring):
-    # extract the string, get rid of quoting
-    if len(dtdstring) == 0: dtdstring = '""'
-    quotechar = dtdstring[0]
-    extracted,quotefinished = quote.extract(dtdstring,quotechar,quotechar,None)
-    if quotechar == "'" and "&apos;" in extracted:
-      extracted = extracted.replace("&apos;", "'")
-    # the quote characters should be the first and last characters in the string
-    # of course there could also be quote characters within the string; not handled here
-    return extracted[1:-1]
-
   def convertstrings(self,thedtd,thepo):
     # extract the string, get rid of quoting
-    unquoted = self.extractdtdstring(thedtd.definition)
+    unquoted = dtd.unquotefromdtd(thedtd.definition)
     # escape backslashes...
     unquoted = unquoted.replace("\\", "\\\\")
     # now split the string into lines and quote them
@@ -146,8 +135,8 @@ class dtd2po:
     thepo.othercomments += labelpo.othercomments
     thepo.othercomments += accesskeypo.othercomments
     # redo the strings from original dtd...
-    label = self.extractdtdstring(labeldtd.definition).decode('UTF-8')
-    accesskey = self.extractdtdstring(accesskeydtd.definition).decode('UTF-8')
+    label = dtd.unquotefromdtd(labeldtd.definition).decode('UTF-8')
+    accesskey = dtd.unquotefromdtd(accesskeydtd.definition).decode('UTF-8')
     if len(accesskey) == 0:
       return None
     # try and put the & in front of the accesskey in the label...
