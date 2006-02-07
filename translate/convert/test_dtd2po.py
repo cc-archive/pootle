@@ -11,12 +11,12 @@ class TestDTD2PO:
         inputfile = wStringIO.StringIO(dtdsource)
         inputdtd = dtd.dtdfile(inputfile)
         convertor = dtd2po.dtd2po()
-	if not dtdtemplate:
+        if not dtdtemplate:
           outputpo = convertor.convertfile(inputdtd)
-	else:
+        else:
           templatefile = wStringIO.StringIO(dtdtemplate)
           templatedtd = dtd.dtdfile(templatefile)
-	  outputpo = convertor.mergefiles(templatedtd, inputdtd)
+          outputpo = convertor.mergefiles(templatedtd, inputdtd)
         return outputpo
 
     def convertdtd(self, dtdsource):
@@ -77,7 +77,7 @@ class TestDTD2PO:
         dtdsource = '<!ENTITY credit.translation "Translators Names">\n'
         pofile = self.dtd2po(dtdsource, dtdtemplate)
         poelement = self.singleelement(pofile)
-	print poelement
+        print poelement
         assert "credit.translation" in str(poelement)
         assert po.unquotefrompo(poelement.msgstr) == "Translators Names"
 
@@ -126,13 +126,13 @@ class TestDTD2PO:
 
     def test_spaces_at_start_of_dtd_lines(self):
         """test that pretty print spaces at the start of subsequent DTD element lines are removed from the PO file, bug 79"""
-	# Space at the end of the line
+        # Space at the end of the line
         dtdsource = '<!ENTITY  noupdatesfound.intro "First line then \n' + \
           '                                          next lines.">\n'
         pofile = self.dtd2po(dtdsource)
         poelement = self.singleelement(pofile)
         assert po.unquotefrompo(poelement.msgid) == "First line then \nnext lines."
-	# No space at the end of the line
+        # No space at the end of the line
         dtdsource = '<!ENTITY  noupdatesfound.intro "First line then\n' + \
           '                                          next lines.">\n'
         pofile = self.dtd2po(dtdsource)
@@ -140,28 +140,28 @@ class TestDTD2PO:
         assert po.unquotefrompo(poelement.msgid) == "First line then \nnext lines."
 
     def test_preserving_spaces(self):
-	"""test that we preserve space that appear at the start of the first line of a DTD entity"""
-	# Space before first character
-	dtdsource = '<!ENTITY mainWindow.titlemodifiermenuseparator " - ">'
+        """test that we preserve space that appear at the start of the first line of a DTD entity"""
+        # Space before first character
+        dtdsource = '<!ENTITY mainWindow.titlemodifiermenuseparator " - ">'
         pofile = self.dtd2po(dtdsource)
         poelement = self.singleelement(pofile)
         assert po.unquotefrompo(poelement.msgid) == " - "
-	# Double line and spaces
-	dtdsource = '<!ENTITY mainWindow.titlemodifiermenuseparator " - with a newline\n    and more text">'
+        # Double line and spaces
+        dtdsource = '<!ENTITY mainWindow.titlemodifiermenuseparator " - with a newline\n    and more text">'
         pofile = self.dtd2po(dtdsource)
         poelement = self.singleelement(pofile)
         assert po.unquotefrompo(poelement.msgid) == " - with a newline \nand more text"
 
     def test_newline_escaping(self):
-	"""test that we handle all kinds of newline permutations"""
-	dtdsource = '<!ENTITY  noupdatesfound.intro "A hard coded newline.\\n">\n'
+        """test that we handle all kinds of newline permutations"""
+        dtdsource = '<!ENTITY  noupdatesfound.intro "A hard coded newline.\\n">\n'
         converter = dtd2po.dtd2po()
         thedtd = dtd.dtdelement()
         thedtd.parse(dtdsource)
         thepo = po.poelement()
         converter.convertstrings(thedtd, thepo)
         print thedtd
-	print thepo.msgid
-	# \n in a dtd should also appear as \n in the PO file
+        print thepo.msgid
+        # \n in a dtd should also appear as \n in the PO file
         assert po.unquotefrompo(thepo.msgid) == r"A hard coded newline.\n"
 

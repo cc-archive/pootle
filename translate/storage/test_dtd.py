@@ -58,8 +58,8 @@ class TestDTD:
         assert dtdelement.isnull()
 
     def test_newlines_in_entity(self):
-	"""tests that we can handle newlines in the entity itself"""
-	dtdsource = '''<!ENTITY fileNotFound.longDesc "
+        """tests that we can handle newlines in the entity itself"""
+        dtdsource = '''<!ENTITY fileNotFound.longDesc "
 <ul>
   <li>Check the file name for capitalisation or other typing errors.</li>
   <li>Check to see if the file was moved, renamed or deleted.</li>
@@ -67,6 +67,6 @@ class TestDTD:
 ">
 '''
         dtdregen = self.dtdregen(dtdsource)
-	print dtdregen
-	print dtdsource
-	assert dtdsource == dtdregen
+        print dtdregen
+        print dtdsource
+        assert dtdsource == dtdregen

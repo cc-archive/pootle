@@ -63,8 +63,8 @@ class dtd2po:
   def convertstrings(self,thedtd,thepo):
     # extract the string, get rid of quoting
     unquoted = dtd.unquotefromdtd(thedtd.definition)
-    # escape backslashes...
-    unquoted = unquoted.replace("\\", "\\\\")
+    # escape backslashes... but not if they're for a newline
+    unquoted = unquoted.replace("\\", "\\\\").replace("\\\\n", "\\n")
     # now split the string into lines and quote them
     lines = unquoted.split('\n')
     if len(lines) > 1:

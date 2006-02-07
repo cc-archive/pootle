@@ -10,11 +10,11 @@ class TestCSV2PO:
         """helper that converts csv source to po source without requiring files"""
         inputfile = wStringIO.StringIO(csvsource)
         inputcsv = csvl10n.csvfile(inputfile)
-	if template:
+        if template:
           templatefile = wStringIO.StringIO(template)
           inputpot = po.pofile(templatefile)
-	else:
-	  inputpot = None
+        else:
+          inputpot = None
         convertor = csv2po.csv2po(templatepo=inputpot)
         outputpo = convertor.convertfile(inputcsv)
         return outputpo
@@ -30,7 +30,7 @@ class TestCSV2PO:
 intl.charset.default,ISO-8859-1,UTF-16'''
         pofile = self.csv2po(csvsource)
         pounit = self.singleelement(pofile)
-	print dir(pounit)
+        print dir(pounit)
         assert pounit.sourcecomments == ["#: " + "intl.charset.default" + "\n"]
         assert po.unquotefrompo(pounit.msgid) == "ISO-8859-1"
         assert po.unquotefrompo(pounit.msgstr) == "UTF-16"

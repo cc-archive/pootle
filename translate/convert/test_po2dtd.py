@@ -38,8 +38,8 @@ class TestPO2DTD:
         inputfile = wStringIO.StringIO(posource)
         outputfile = wStringIO.StringIO()
         templatefile = wStringIO.StringIO(dtdtemplate)
-	assert po2dtd.convertdtd(inputfile, outputfile, templatefile)
-	return outputfile.getvalue()
+        assert po2dtd.convertdtd(inputfile, outputfile, templatefile)
+        return outputfile.getvalue()
 
     def roundtripstring(self, entitystring):
         dtdintro, dtdoutro = '<!ENTITY Test.RoundTrip ', '>\n'
@@ -120,21 +120,21 @@ class TestPO2DTD:
         assert regendtd == hashdtd
 
     def test_convertdtd(self):
-	"""checks that the convertdtd function is working"""
+        """checks that the convertdtd function is working"""
         posource = '''#: simple.label\n#: simple.accesskey\nmsgid "Simple &String"\nmsgstr "Dimpled &Ring"\n'''
         dtdtemplate = '''<!ENTITY simple.label "Simple String">\n<!ENTITY simple.accesskey "S">\n'''
-	dtdexpected = '''<!ENTITY simple.label "Dimpled Ring">\n<!ENTITY simple.accesskey "R">\n'''
-	newdtd = self.convertdtd(posource, dtdtemplate)
-	print newdtd
-	assert newdtd == dtdexpected
+        dtdexpected = '''<!ENTITY simple.label "Dimpled Ring">\n<!ENTITY simple.accesskey "R">\n'''
+        newdtd = self.convertdtd(posource, dtdtemplate)
+        print newdtd
+        assert newdtd == dtdexpected
 
     def test_newlines_escapes(self):
-	"""check that we can handle a \n in the PO file"""
+        """check that we can handle a \n in the PO file"""
         posource = '''#: simple.label\n#: simple.accesskey\nmsgid "A hard coded newline.\\n"\nmsgstr "Hart gekoeerde nuwe lyne\\n"\n'''
-	dtdtemplate = '<!ENTITY  simple.label "A hard coded newline.\\n">\n'
-	dtdexpected = '''<!ENTITY simple.label "Hart gekoeerde nuwe lyne\\n">\n'''
+        dtdtemplate = '<!ENTITY  simple.label "A hard coded newline.\\n">\n'
+        dtdexpected = '''<!ENTITY simple.label "Hart gekoeerde nuwe lyne\\n">\n'''
         dtdfile = self.merge2dtd(dtdtemplate, posource)
-	print dtdfile
+        print dtdfile
         assert str(dtdfile) == dtdexpected
 
     def test_roundtrip_simple(self):
@@ -157,12 +157,12 @@ class TestPO2DTD:
         assert self.roundtripstring(r"""'Both Quotes "" '' '""") == r"""'Both Quotes "" &apos;&apos; '"""
 
     def test_merging_entries_with_spaces_removed(self):
-	"""dtd2po removes pretty printed spaces, this tests that we can merge this back into the pretty printed dtd"""
+        """dtd2po removes pretty printed spaces, this tests that we can merge this back into the pretty printed dtd"""
         posource = '''#: simple.label\nmsgid "First line then "\n"next lines."\nmsgstr "Eerste lyne en dan volgende lyne."\n'''
         dtdtemplate = '<!ENTITY simple.label "First line then\n' + \
           '                                          next lines.">\n'
         dtdexpected = '<!ENTITY simple.label "Eerste lyne en dan volgende lyne.">\n'
         dtdfile = self.merge2dtd(dtdtemplate, posource)
-	print dtdfile
+        print dtdfile
         assert str(dtdfile) == dtdexpected
 
