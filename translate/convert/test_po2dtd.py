@@ -144,7 +144,7 @@ class TestPO2DTD:
 
     def test_roundtrip_escape(self):
         """checks that escapes in strings make it through a dtd->po->dtd roundtrip"""
-        self.check_roundtrip(r'"Simple Escape \ \n \\ \: "')
+        self.check_roundtrip(r'"Simple Escape \ \n \\ \: \t "')
         self.check_roundtrip(r'"End Line Escape \"')
 
     def test_roundtrip_quotes(self):
