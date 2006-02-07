@@ -89,6 +89,21 @@ class TestPO2DTD:
         warnings.simplefilter("error")
         assert test.raises(Warning, self.merge2dtd, simpledtd, simplepo)
 
+    def test_accesskeycase(self):
+        """tests that access keys come out with the same case as the original, regardless"""
+        simplepo_template = '''#: simple.label\n#: simple.accesskey\nmsgid "Simple &%s"\nmsgstr "Dimpled &%s"\n'''
+        simpledtd_template = '''<!ENTITY simple.label "Simple %s">\n<!ENTITY simple.accesskey "%s">'''
+        # we test each combination of label case and accelerator case
+        for srcword in ("String", "string"):
+            for destword in ("Ring", "ring"):
+                for srcaccel, destaccel in ("SR", "sr"):
+                    simplepo = simplepo_template % (srcword, destword)
+                    simpledtd = simpledtd_template % (srcword, srcaccel)
+                    dtdfile = self.merge2dtd(simpledtd, simplepo)
+                    dtdfile.makeindex()
+                    accel = dtd.unquotefromdtd(dtdfile.index["simple.accesskey"].definition)
+                    assert accel == destaccel
+
     def test_ampersandfix(self):
         """tests that invalid ampersands are fixed in the dtd"""
         simplestring = '''#: simple.string\nmsgid "Simple String"\nmsgstr "Dimpled &Ring"\n'''
