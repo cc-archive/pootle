@@ -45,14 +45,16 @@ class TestPO2DTD:
         dtdintro, dtdoutro = '<!ENTITY Test.RoundTrip ', '>\n'
         dtdsource = dtdintro + entitystring + dtdoutro
         dtdinputfile = wStringIO.StringIO(dtdsource)
+        dtdinputfile2 = wStringIO.StringIO(dtdsource)
         pooutputfile = wStringIO.StringIO()
-        dtd2po.convertdtd(dtdinputfile, pooutputfile, None)
+        dtd2po.convertdtd(dtdinputfile, pooutputfile, dtdinputfile2)
         posource = pooutputfile.getvalue()
         poinputfile = wStringIO.StringIO(posource)
         dtdtemplatefile = wStringIO.StringIO(dtdsource)
         dtdoutputfile = wStringIO.StringIO()
         po2dtd.convertdtd(poinputfile, dtdoutputfile, dtdtemplatefile)
         dtdresult = dtdoutputfile.getvalue()
+        print "original dtd:\n", dtdsource, "po version:\n", posource, "output dtd:\n", dtdresult
         assert dtdresult.startswith(dtdintro) and dtdresult.endswith(dtdoutro)
         return dtdresult[len(dtdintro):-len(dtdoutro)]
 
@@ -123,6 +125,21 @@ class TestPO2DTD:
     def test_roundtrip_simple(self):
         """checks that simple strings make it through a dtd->po->dtd roundtrip"""
         self.check_roundtrip('"Hello"')
+        self.check_roundtrip('"Hello Everybody"')
+
+    def test_roundtrip_escape(self):
+        """checks that escapes in strings make it through a dtd->po->dtd roundtrip"""
+        self.check_roundtrip(r'"Simple Escape \ \n \\ \: "')
+        self.check_roundtrip(r'"End Line Escape \"')
+
+    def test_roundtrip_quotes(self):
+        """checks that (escaped) quotes in strings make it through a dtd->po->dtd roundtrip"""
+        self.check_roundtrip(r"""'Quote Escape "" '""")
+        self.check_roundtrip(r'''"Single-Quote ' "''')
+        self.check_roundtrip(r'''"Single-Quote Escape \' "''')
+        # NOTE: if both quote marks are present, than ' is converted to &apos;
+        self.check_roundtrip(r"""'Both Quotes "" &apos;&apos; '""")
+        assert self.roundtripstring(r"""'Both Quotes "" '' '""") == r"""'Both Quotes "" &apos;&apos; '"""
 
     def test_merging_entries_with_spaces_removed(self):
 	"""dtd2po removes pretty printed spaces, this tests that we can merge this back into the pretty printed dtd"""
