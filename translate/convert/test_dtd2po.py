@@ -155,10 +155,13 @@ class TestDTD2PO:
     def test_newline_escaping(self):
 	"""test that we handle all kinds of newline permutations"""
 	dtdsource = '<!ENTITY  noupdatesfound.intro "A hard coded newline.\\n">\n'
-        pofile = self.dtd2po(dtdsource)
-        poelement = self.singleelement(pofile)
-	print dtdsource
-	print poelement.msgid
+        converter = dtd2po.dtd2po()
+        thedtd = dtd.dtdelement()
+        thedtd.parse(dtdsource)
+        thepo = po.poelement()
+        converter.convertstrings(thedtd, thepo)
+        print thedtd
+	print thepo.msgid
 	# \n in a dtd should also appear as \n in the PO file
-        assert poelement.msgid == r"A hard coded newline.\n"
+        assert po.unquotefrompo(thepo.msgid) == r"A hard coded newline.\n"
 
