@@ -16,7 +16,7 @@ class TestDTD2PO:
 	else:
           templatefile = wStringIO.StringIO(dtdtemplate)
           templatedtd = dtd.dtdfile(templatefile)
-	  outputpo = convertor.mergefiles(inputdtd, templatedtd)
+	  outputpo = convertor.mergefiles(templatedtd, inputdtd)
         return outputpo
 
     def convertdtd(self, dtdsource):
