@@ -229,7 +229,7 @@ class dtdelement:
     lines.extend([comment for commenttype,comment in self.comments])
     lines.extend(self.unparsedlines)
     if self.isnull():
-      raise StopIteration()
+      return "\n"
     # for f in self.locfilenotes: yield f
     # for ge in self.locgroupends: yield ge
     # for gs in self.locgroupstarts: yield gs
