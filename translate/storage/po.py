@@ -52,7 +52,7 @@ def getunquotedstr(lines, joinwithlinebreak=True, includeescapes=True):
 
 def escapeforpo(line):
   """escapes a line for po format. assumes no \n occurs in the line"""
-  return line.replace("\\n", "\n").replace('\\', '\\\\').replace("\n", "\\n").replace('"', '\\"')
+  return line.replace("\\n", "\n").replace('\\', '\\\\').replace("\n", "\\n").replace('"', '\\"').replace('\\\\r', '\\r').replace('\\\\t', '\\t')
 
 def quoteforpo(text):
   """quotes the given text for a PO file, returning quoted and escaped lines"""
