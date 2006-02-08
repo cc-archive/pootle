@@ -64,3 +64,13 @@ class TestOO:
         oofile = self.ooparse(oosource)
         assert len(oofile.ooelements) == 0
 
+    def test_fieldlength(self):
+        """checks that we process the length field correctly"""
+        # Since the actual field is 18 characters long and the field width in this example is 16 we're not sure if they even use this!
+        oosource = r'sd	source\ui\dlg\sdobjpal.src	0	imagebutton	FLTWIN_SDOBJPALETTE	BTN_SYMSIZE			16	en-US	-		Toggle Symbol Size		20051017 21:40:56'
+        oofile = self.ooparse(oosource)
+        assert len(oofile.ooelements) == 1
+        oe = oofile.ooelements[0]
+        assert oe.languages.keys() == ["en-US"]
+        ol = oofile.oolines[0]
+        assert int(ol.width) == 16
