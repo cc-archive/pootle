@@ -32,15 +32,25 @@ class TestPO2DTD:
         return pofile.poelements[1]
 
     def test_convertpot_blank(self):
-        """checks that the convertpot function is working"""
+        """checks that the convertpot function is working for a simple file initialisation"""
         potsource = '''#: simple.label\n#: simple.accesskey\nmsgid "A &hard coded newline.\\n"\nmsgstr ""\n'''
         newpo = self.convertpot(potsource)
         assert str(self.singleelement(newpo)) == potsource
 
     def test_convertpot_merging(self):
-        """checks that the convertpot function is working"""
+        """checks that the convertpot function is working for a simple merge"""
         potsource = '''#: simple.label\n#: simple.accesskey\nmsgid "A &hard coded newline.\\n"\nmsgstr ""\n'''
         posource = '''#: simple.label\n#: simple.accesskey\nmsgid "A &hard coded newline.\\n"\nmsgstr "&Hart gekoeerde nuwe lyne\\n"\n'''
         newpo = self.convertpot(potsource, posource)
         assert str(self.singleelement(newpo)) == posource
+
+    def test_lines_cut_differently(self):
+        """checks that the convertpot function is working"""
+        potsource = '''#: simple.label\nmsgid "Line split "\n"differently"\nmsgstr ""\n'''
+        posource = '''#: simple.label\nmsgid "Line"\n" split differently"\nmsgstr "Lyne verskillend gesny"\n'''
+        poexpected = '''#: simple.label\nmsgid "Line split "\n"differently"\nmsgstr "Lyne verskillend gesny"\n'''
+        newpo = self.convertpot(potsource, posource)
+        newpounit = self.singleelement(newpo)
+        print newpounit
+        assert str(newpounit) == poexpected
 
