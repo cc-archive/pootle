@@ -33,6 +33,30 @@ class TestOO:
         assert ol.text == 'Character'
         assert str(ol) == oosource
 
+    def test_simpleentry_quickhelptest(self):
+        """checks that a simple entry with quickhelptext is parsed correctly"""
+        oosource = r'sd	source\ui\dlg\sdobjpal.src	0	imagebutton	FLTWIN_SDOBJPALETTE	BTN_SYMSIZE			16	en-US	-		Toggle Symbol Size		20051017 21:40:56'
+        oofile = self.ooparse(oosource)
+        assert len(oofile.ooelements) == 1
+        oe = oofile.ooelements[0]
+        assert oe.languages.keys() == ["en-US"]
+        ol = oofile.oolines[0]
+        assert ol.getkey() == ('sd', r'source\ui\dlg\sdobjpal.src', 'imagebutton', 'FLTWIN_SDOBJPALETTE', 'BTN_SYMSIZE', '')
+        assert ol.quickhelptext == 'Toggle Symbol Size'
+        assert str(ol) == oosource
+
+    def test_simpleentry_title(self):
+        """checks that a simple entry with title text is parsed correctly"""
+        oosource = r'dbaccess	source\ui\dlg\indexdialog.src	0	querybox	QUERY_SAVE_CURRENT_INDEX				0	en-US	Do you want to save the changes made to the current index?			Exit Index Design	20051017 21:40:56'
+        oofile = self.ooparse(oosource)
+        assert len(oofile.ooelements) == 1
+        oe = oofile.ooelements[0]
+        assert oe.languages.keys() == ["en-US"]
+        ol = oofile.oolines[0]
+        assert ol.getkey() == ('dbaccess', r'source\ui\dlg\indexdialog.src', 'querybox', 'QUERY_SAVE_CURRENT_INDEX', '', '')
+        assert ol.title == 'Exit Index Design'
+        assert str(ol) == oosource
+
     def test_blankline(self):
         """checks that a blank line is parsed correctly"""
         oosource = '\n'
