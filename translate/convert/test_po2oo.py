@@ -79,7 +79,7 @@ class TestPO2OO:
 
     def test_roundtrip_escape(self):
         """checks that escapes in strings make it through a oo->po->oo roundtrip"""
-        self.check_roundtrip(r'"Simple Escape \ \n \\ \: \t "')
+        self.check_roundtrip(r'"Simple Escape \ \n \\ \: \t \r "')
         self.check_roundtrip(r'"End Line Escape \"')
 
     def test_roundtrip_quotes(self):
