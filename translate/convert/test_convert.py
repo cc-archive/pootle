@@ -55,6 +55,16 @@ class TestConvertCommand:
         """opens the given filename in the testdirectory in the given mode"""
         return open(self.get_testfilename(filename), mode)
 
+    def create_testfile(self, filename, contents):
+        """creates the given file in the testdirectory with the given contents"""
+        testfile = open(self.get_testfilename(filename), "w")
+        testfile.write(contents)
+
+    def read_testfile(self, filename):
+        """reads the given file in the testdirectory and returns the contents"""
+        testfile = open(self.get_testfilename(filename))
+        return testfile.read()
+
     def test_help(self):
         """tests getting help (returning the help_string so further tests can be done)"""
         stdout = sys.stdout
@@ -65,7 +75,7 @@ class TestConvertCommand:
         finally:
             sys.stdout = stdout
         helpfile.close()
-        help_string = self.open_testfile("help.txt").read()
+        help_string = self.read_testfile("help.txt")
         assert self.convertmodule.__doc__ in help_string
         usageline = help_string[:help_string.find("\n")]
         assert usageline.startswith("usage: ") and "[--version] [-h|--help]" in usageline

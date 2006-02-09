@@ -52,7 +52,7 @@ class TestOO2POCommand(test_convert.TestConvertCommand, TestOO2PO):
     def test_simple(self):
         """tests the simplest possible conversion"""
         oosource = r'svx	source\dialog\numpages.src	0	string	RID_SVXPAGE_NUM_OPTIONS	STR_BULLET			0	en-US	Character				20050924 09:13:58'
-        self.open_testfile("simple.oo", "w").write(oosource)
+        self.create_testfile("simple.oo", oosource)
         self.run_command("-P", "--nonrecursiveinput", "simple.oo", "simple.pot")
         pofile = po.pofile(self.open_testfile("simple.pot"))
         poelement = self.singleelement(pofile)
@@ -62,7 +62,7 @@ class TestOO2POCommand(test_convert.TestConvertCommand, TestOO2PO):
     def test_onefile_nonrecursive(self):
         """tests the --multifile=onefile option and make sure it doesn't produce a directory"""
         oosource = r'svx	source\dialog\numpages.src	0	string	RID_SVXPAGE_NUM_OPTIONS	STR_BULLET			0	en-US	Character				20050924 09:13:58'
-        self.open_testfile("simple.oo", "w").write(oosource)
+        self.create_testfile("simple.oo", oosource)
         self.run_command("-P", "simple.oo", "simple.pot", multifile="onefile")
         assert os.path.isfile(self.get_testfilename("simple.pot"))
 
