@@ -38,18 +38,21 @@ class TestConvertCommand:
         finally:
             os.chdir(self.rundir)
 
+    def open_testfile(self, filename, mode="r"):
+        """opens the given filename in the testdirectory in the given mode"""
+        return open(os.path.join(self.testdir, filename), mode)
+
     def test_help(self):
         """tests getting help (returning the help_string so further tests can be done)"""
         stdout = sys.stdout
-        helpfilename = os.path.join(self.testdir, "help.txt")
-        helpfile = open(helpfilename, "w")
+        helpfile = self.open_testfile("help.txt", "w")
         sys.stdout = helpfile
         try:
             test.raises(SystemExit, self.run_command, "--help")
         finally:
             sys.stdout = stdout
         helpfile.close()
-        help_string = open(helpfilename, "r").read()
+        help_string = self.open_testfile("help.txt").read()
         assert self.convertmodule.__doc__ in help_string
         usageline = help_string[:help_string.find("\n")]
         assert usageline.startswith("usage: ") and "[--version] [-h|--help]" in usageline

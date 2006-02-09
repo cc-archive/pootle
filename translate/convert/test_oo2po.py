@@ -38,7 +38,7 @@ class TestOO2PO:
         assert r"Tab \t Tab" in poelementsrc
         assert r"CR \r CR" in poelementsrc
 
-class TestOO2POCommand(test_convert.TestConvertCommand):
+class TestOO2POCommand(test_convert.TestConvertCommand, TestOO2PO):
     """Tests running actual oo2po commands on files"""
     convertmodule = oo2po
 
@@ -46,4 +46,14 @@ class TestOO2POCommand(test_convert.TestConvertCommand):
         """tests getting help"""
         help_string = test_convert.TestConvertCommand.test_help(self)
         assert "--source-language=LANG" in help_string
+
+    def test_simple(self):
+        """tests the simplest possible conversion"""
+        oosource = r'svx	source\dialog\numpages.src	0	string	RID_SVXPAGE_NUM_OPTIONS	STR_BULLET			0	en-US	Character				20050924 09:13:58'
+        self.open_testfile("simple.oo", "w").write(oosource)
+        self.run_command("-P", "--nonrecursiveinput", "simple.oo", "simple.pot")
+        pofile = po.pofile(self.open_testfile("simple.pot"))
+        poelement = self.singleelement(pofile)
+        assert po.unquotefrompo(poelement.msgid) == "Character"
+        assert po.unquotefrompo(poelement.msgstr) == ""
 
