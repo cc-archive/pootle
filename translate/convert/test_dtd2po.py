@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 from translate.convert import dtd2po
+from translate.convert import test_convert
 from translate.misc import wStringIO
 from translate.storage import po
 from translate.storage import dtd
@@ -172,4 +173,9 @@ class TestDTD2PO:
         print thepo.msgid
         # \n in a dtd should also appear as \n in the PO file
         assert po.unquotefrompo(thepo.msgid) == r"A hard coded newline.\nAnd tab\t and a \r carriage return."
+
+class TestDTD2POCommand(test_convert.TestConvertCommand, TestDTD2PO):
+    """Tests running actual dtd2po commands on files"""
+    convertmodule = dtd2po
+    defaultoptions = {"progress": "none"}
 

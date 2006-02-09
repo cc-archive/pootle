@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from translate.convert import prop2po
+from translate.convert import test_convert
 from translate.misc import wStringIO
 from translate.storage import po
 from translate.storage import properties
@@ -102,4 +103,9 @@ reduce the number of cached connections."""
         pofile = self.prop2po(propsource)
         print repr(pofile.poelements[1].msgstr)
         assert self.countelements(pofile) == 1
+
+class TestProp2POCommand(test_convert.TestConvertCommand, TestProp2PO):
+    """Tests running actual prop2po commands on files"""
+    convertmodule = prop2po
+    defaultoptions = {"progress": "none"}
 

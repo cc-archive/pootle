@@ -19,7 +19,8 @@
 # along with translate; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-"""convert a gettext .pot template to a .po translation file, merging in existing translations if present"""
+"""convert a gettext .pot template to a .po translation file, merging in 
+existing translations if present"""
 
 from translate.storage import po
 

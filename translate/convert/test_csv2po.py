@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 from translate.convert import csv2po
+from translate.convert import test_convert
 from translate.misc import wStringIO
 from translate.storage import po
 from translate.storage import csvl10n
@@ -59,4 +60,15 @@ msgstr ""
         assert pounit.msgstr[0] == '"Hallo \\"almal\\""'
         assert po.unquotefrompo(pounit.msgid) == 'Hello "all"'
         assert po.unquotefrompo(pounit.msgstr) == 'Hallo "almal"'
+
+class TestCSV2POCommand(test_convert.TestConvertCommand, TestCSV2PO):
+    """Tests running actual csv2po commands on files"""
+    convertmodule = csv2po
+    defaultoptions = {"progress": "none"}
+
+    def test_help(self):
+        """tests getting help"""
+        help_string = test_convert.TestConvertCommand.test_help(self)
+        assert "--charset=CHARSET" in help_string
+        assert "--columnorder" in help_string
 

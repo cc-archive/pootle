@@ -1,12 +1,13 @@
 #!/usr/bin/env python
 
 from translate.convert import pot2po
+from translate.convert import test_convert
 from translate.misc import wStringIO
 from translate.storage import po
 from py import test
 import warnings
 
-class TestPO2DTD:
+class TestPOT2PO:
     def setup_method(self, method):
         warnings.resetwarnings()
 
@@ -60,3 +61,9 @@ class TestPO2DTD:
         posource = '''#: simple.label\n#: simple.accesskey\n#, fuzzy\nmsgid "A &hard coded newline.\\n"\nmsgstr "&Hart gekoeerde nuwe lyne\\n"\n'''
         newpo = self.convertpot(potsource, posource)
         assert str(self.singleelement(newpo)) == posource
+
+class TestPOT2POCommand(test_convert.TestConvertCommand, TestPOT2PO):
+    """Tests running actual pot2po commands on files"""
+    convertmodule = pot2po
+    defaultoptions = {"progress": "none"}
+

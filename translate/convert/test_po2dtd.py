@@ -2,6 +2,7 @@
 
 from translate.convert import po2dtd
 from translate.convert import dtd2po
+from translate.convert import test_convert
 from translate.misc import wStringIO
 from translate.storage import po
 from translate.storage import dtd
@@ -165,4 +166,9 @@ class TestPO2DTD:
         dtdfile = self.merge2dtd(dtdtemplate, posource)
         print dtdfile
         assert str(dtdfile) == dtdexpected
+
+class TestPO2DTDCommand(test_convert.TestConvertCommand, TestPO2DTD):
+    """Tests running actual po2dtd commands on files"""
+    convertmodule = po2dtd
+    defaultoptions = {"progress": "none"}
 
