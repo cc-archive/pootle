@@ -59,10 +59,10 @@ class TestOO2POCommand(test_convert.TestConvertCommand, TestOO2PO):
         assert po.unquotefrompo(poelement.msgid) == "Character"
         assert po.unquotefrompo(poelement.msgstr) == ""
 
-    def test_singlefile(self):
-        """tests the --multifile=singlefile option"""
+    def test_onefile_nonrecursive(self):
+        """tests the --multifile=onefile option and make sure it doesn't produce a directory"""
         oosource = r'svx	source\dialog\numpages.src	0	string	RID_SVXPAGE_NUM_OPTIONS	STR_BULLET			0	en-US	Character				20050924 09:13:58'
         self.open_testfile("simple.oo", "w").write(oosource)
-        self.run_command("-P", "simple.oo", "simple.pot", multifile="single")
+        self.run_command("-P", "simple.oo", "simple.pot", multifile="onefile")
         assert os.path.isfile(self.get_testfilename("simple.pot"))
 
