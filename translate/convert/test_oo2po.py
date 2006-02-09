@@ -5,6 +5,7 @@ from translate.convert import test_convert
 from translate.misc import wStringIO
 from translate.storage import po
 from translate.storage import oo
+import os
 
 class TestOO2PO:
     def oo2po(self, oosource, sourcelanguage='en-US', targetlanguage='af-ZA'):
@@ -41,6 +42,7 @@ class TestOO2PO:
 class TestOO2POCommand(test_convert.TestConvertCommand, TestOO2PO):
     """Tests running actual oo2po commands on files"""
     convertmodule = oo2po
+    defaultoptions = {"progress": "none"}
 
     def test_help(self):
         """tests getting help"""
@@ -56,4 +58,11 @@ class TestOO2POCommand(test_convert.TestConvertCommand, TestOO2PO):
         poelement = self.singleelement(pofile)
         assert po.unquotefrompo(poelement.msgid) == "Character"
         assert po.unquotefrompo(poelement.msgstr) == ""
+
+    def test_singlefile(self):
+        """tests the --multifile=singlefile option"""
+        oosource = r'svx	source\dialog\numpages.src	0	string	RID_SVXPAGE_NUM_OPTIONS	STR_BULLET			0	en-US	Character				20050924 09:13:58'
+        self.open_testfile("simple.oo", "w").write(oosource)
+        self.run_command("-P", "simple.oo", "simple.pot", multifile="single")
+        assert os.path.isfile(self.get_testfilename("simple.pot"))
 
