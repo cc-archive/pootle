@@ -339,6 +339,8 @@ def test_variables_mozilla():
     assert checks.fails(mozillachecker.variables, "%d files of type %s saved.", "%s leers van %s tipe gestoor.")
     assert checks.passes(mozillachecker.variables, "Save $file", "Stoor $file")
     assert checks.fails(mozillachecker.variables, "Save $file", "Stoor $leer")
+    assert checks.passes(mozillachecker.variables, "Save $file$", "Stoor $file$")
+    assert checks.fails(mozillachecker.variables, "Save $file$", "Stoor $leer$")
 
 def test_variables_openoffice():
     """tests variables in OpenOffice translations"""
