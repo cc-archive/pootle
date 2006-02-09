@@ -19,6 +19,8 @@
 # along with translate; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
+"""Handles converting of files between formats (used by translate.convert tools)"""
+
 import sys
 import os.path
 from translate.misc import optrecurse
@@ -119,9 +121,9 @@ class ConvertOptionParser(optrecurse.RecursiveOptionParser, object):
     """verifies that the options are valid (required options are present, etc)"""
     pass
 
-  def run(self):
+  def run(self, argv=None):
     """parses the command line options and runs the conversion"""
-    (options, args) = self.parse_args()
+    (options, args) = self.parse_args(argv)
     options.inputformats = self.filterinputformats(options)
     options.outputoptions = self.filteroutputoptions(options)
     self.usepsyco(options)
@@ -370,4 +372,8 @@ class ArchiveConvertOptionParser(ConvertOptionParser):
     root = os.path.join(d, n[:s])
     ext = n[s+1:]
     return (root, ext)
+
+def main(argv=None):
+  parser = ArchiveConvertOptionParser({}, description=__doc__)
+  parser.run(argv)
 

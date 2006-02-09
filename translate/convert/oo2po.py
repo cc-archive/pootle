@@ -136,9 +136,9 @@ def convertoo(inputfile, outputfile, templates, pot=False, sourcelanguage=None, 
   outputfile.write(outputposrc)
   return 1
 
-def main():
+def main(argv=None):
   from translate.convert import convert
-  formats = {"oo":("po",convertoo)}
+  formats = {"oo":("po",convertoo), "sdf":("po",convertoo)}
   # always treat the input as an archive unless it is a directory
   archiveformats = {(None, "input"): oo.oomultifile}
   parser = convert.ArchiveConvertOptionParser(formats, usepots=True, description=__doc__, archiveformats=archiveformats)
@@ -153,5 +153,5 @@ def main():
   parser.passthrough.append("sourcelanguage")
   parser.passthrough.append("targetlanguage")
   parser.verifyoptions = verifyoptions
-  parser.run()
+  parser.run(argv)
 

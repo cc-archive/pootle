@@ -187,7 +187,7 @@ def convertcsv(inputfile, outputfile, templatefile, charset=None, columnorder=No
   outputfile.write(outputposrc)
   return 1
 
-def main():
+def main(argv=None):
   from translate.convert import convert
   formats = {("csv", "po"): ("po", convertcsv), ("csv", "pot"): ("po", convertcsv), 
              ("csv", None): ("po", convertcsv)}
@@ -198,5 +198,5 @@ def main():
     help="specify the order and position of columns (source,msgid,msgstr)")
   parser.passthrough.append("charset")
   parser.passthrough.append("columnorder")
-  parser.run()
+  parser.run(argv)
 

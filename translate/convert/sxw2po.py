@@ -86,9 +86,9 @@ def convertsxw(inputfile, outputfile, templates):
   outputfile.write(outputposrc)
   return 1
 
-def main():
+def main(argv=None):
   from translate.convert import convert
   formats = {"sxw":("po",convertsxw)}
   parser = convert.ConvertOptionParser(formats, description=__doc__)
-  parser.run()
+  parser.run(argv)
 

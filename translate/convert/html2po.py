@@ -59,12 +59,12 @@ def converthtml(inputfile, outputfile, templates, includeuntagged=False):
   outputfile.write(outputposrc)
   return 1
 
-def main():
+def main(argv=None):
   from translate.convert import convert
   formats = {"html":("po",converthtml), "htm":("po",converthtml)}
   parser = convert.ConvertOptionParser(formats, usepots=True, description=__doc__)
   parser.add_option("-u", "--untagged", dest="includeuntagged", default=False, action="store_true",
                     help="include untagged sections")
   parser.passthrough.append("includeuntagged")
-  parser.run()
+  parser.run(argv)
 

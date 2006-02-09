@@ -72,9 +72,9 @@ def converttxt(inputfile, outputfile, templates):
   outputfile.write(outputposrc)
   return 1
 
-def main():
+def main(argv=None):
   from translate.convert import convert
   formats = {"txt":("po",converttxt), "*":("po",converttxt)}
   parser = convert.ConvertOptionParser(formats, usepots=True, description=__doc__)
-  parser.run()
+  parser.run(argv)
 

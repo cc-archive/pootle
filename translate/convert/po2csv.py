@@ -85,12 +85,12 @@ def convertcsv(inputfile, outputfile, templatefile, columnorder=None):
   outputfile.write(outputcsvsrc)
   return 1
 
-def main():
+def main(argv=None):
   from translate.convert import convert
   formats = {"po":("csv", convertcsv)}
   parser = convert.ConvertOptionParser(formats, usepots=True, description=__doc__)
   parser.add_option("", "--columnorder", dest="columnorder", default=None,
     help="specify the order and position of columns (source,msgid,msgstr)")
   parser.passthrough.append("columnorder")
-  parser.run()
+  parser.run(argv)
 

@@ -93,9 +93,9 @@ def convertpot(inputfile, outputfile, templatefile):
   outputfile.write(str(outputpo))
   return 1
 
-def main():
+def main(argv=None):
   from translate.convert import convert
   formats = {"pot": ("po", convertpot), ("pot", "po"): ("po", convertpot)}
   parser = convert.ConvertOptionParser(formats, usepots=True, usetemplates=True, description=__doc__)
-  parser.run()
+  parser.run(argv)
 

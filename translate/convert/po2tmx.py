@@ -54,9 +54,9 @@ def convertpo(inputfile, outputfile, templatefile):
   outputfile.write(outputtmx)
   return 1
 
-def main():
+def main(argv=None):
   from translate.convert import convert
   formats = {"po": ("tmx", convertpo), ("po", "tmx"): ("tmx", convertpo)}
   parser = convert.ConvertOptionParser(formats, usepots=True, usetemplates=False, description=__doc__)
-  parser.run()
+  parser.run(argv)
 

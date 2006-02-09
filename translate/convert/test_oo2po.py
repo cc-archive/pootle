@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 from translate.convert import oo2po
+from translate.convert import test_convert
 from translate.misc import wStringIO
 from translate.storage import po
 from translate.storage import oo
@@ -36,4 +37,13 @@ class TestOO2PO:
         assert r"Newline \n Newline" in poelementsrc
         assert r"Tab \t Tab" in poelementsrc
         assert r"CR \r CR" in poelementsrc
+
+class TestOO2POCommand(test_convert.TestConvertCommand):
+    """Tests running actual oo2po commands on files"""
+    convertmodule = oo2po
+
+    def test_help(self):
+        """tests getting help"""
+        help_string = test_convert.TestConvertCommand.test_help(self)
+        assert "--source-language=LANG" in help_string
 

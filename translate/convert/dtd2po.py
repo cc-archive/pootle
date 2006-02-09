@@ -301,12 +301,15 @@ def convertdtd(inputfile, outputfile, templatefile, pot=False, duplicatestyle="m
   outputfile.write(outputposrc)
   return 1
 
-if __name__ == '__main__':
+def main(argv=None):
   # handle command line options
   from translate.convert import convert
   formats = {"dtd": ("po", convertdtd), ("dtd", "dtd"): ("po", convertdtd)}
   parser = convert.ConvertOptionParser(formats, usetemplates=True, usepots=True, description=__doc__)
   parser.add_duplicates_option()
   parser.passthrough.append("pot")
-  parser.run()
+  parser.run(argv)
+
+if __name__ == '__main__':
+  main()
 
