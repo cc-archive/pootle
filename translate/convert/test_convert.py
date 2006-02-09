@@ -31,16 +31,29 @@ class TestConvertCommand:
         if os.path.exists(self.testdir): os.rmdir(self.testdir)
         assert not os.path.exists(self.testdir)
 
-    def run_command(self, *argv):
+    def run_command(self, *argv, **kwargs):
+        """runs the command via the main function, passing self.defaultoptions and keyword arguments as --long options and argv arguments straight"""
         os.chdir(self.testdir)
+        argv = list(argv)
+        kwoptions = getattr(self, "defaultoptions", {}).copy()
+        kwoptions.update(kwargs)
+        for key, value in kwoptions.iteritems():
+            if value is True:
+                argv.append("--%s" % key)
+            else:
+                argv.append("--%s=%s" % (key, value))
         try:
-            self.convertmodule.main(list(argv))
+            self.convertmodule.main(argv)
         finally:
             os.chdir(self.rundir)
 
+    def get_testfilename(self, filename):
+        """gets the path to the test file"""
+        return os.path.join(self.testdir, filename)
+
     def open_testfile(self, filename, mode="r"):
         """opens the given filename in the testdirectory in the given mode"""
-        return open(os.path.join(self.testdir, filename), mode)
+        return open(self.get_testfilename(filename), mode)
 
     def test_help(self):
         """tests getting help (returning the help_string so further tests can be done)"""
@@ -48,7 +61,7 @@ class TestConvertCommand:
         helpfile = self.open_testfile("help.txt", "w")
         sys.stdout = helpfile
         try:
-            test.raises(SystemExit, self.run_command, "--help")
+            test.raises(SystemExit, self.run_command, help=True)
         finally:
             sys.stdout = stdout
         helpfile.close()
