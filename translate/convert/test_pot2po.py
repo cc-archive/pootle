@@ -54,3 +54,9 @@ class TestPO2DTD:
         print newpounit
         assert str(newpounit) == poexpected
 
+    def test_merging_messages_marked_fuzzy(self):
+        """test that when we merge PO files with a fuzzy message that it remains fuzzy"""
+        potsource = '''#: simple.label\n#: simple.accesskey\nmsgid "A &hard coded newline.\\n"\nmsgstr ""\n'''
+        posource = '''#: simple.label\n#: simple.accesskey\n#, fuzzy\nmsgid "A &hard coded newline.\\n"\nmsgstr "&Hart gekoeerde nuwe lyne\\n"\n'''
+        newpo = self.convertpot(potsource, posource)
+        assert str(self.singleelement(newpo)) == posource
