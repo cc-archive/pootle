@@ -171,4 +171,14 @@ class TestPO2DTDCommand(test_convert.TestConvertCommand, TestPO2DTD):
     """Tests running actual po2dtd commands on files"""
     convertmodule = po2dtd
     defaultoptions = {"progress": "none"}
+    # TODO: because of having 2 base classes, we need to call all their setup and teardown methods
+    # (otherwise we won't reset the warnings etc)
+    def setup_method(self, method):
+        """call both base classes setup_methods"""
+        test_convert.TestConvertCommand.setup_method(self, method)
+        TestPO2DTD.setup_method(self, method)
+    def teardown_method(self, method):
+        """call both base classes teardown_methods"""
+        test_convert.TestConvertCommand.teardown_method(self, method)
+        TestPO2DTD.teardown_method(self, method)
 
