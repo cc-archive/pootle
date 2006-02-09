@@ -10,9 +10,9 @@ class TestConvertCommand:
     convertmodule=convert
     def setup_method(self, method):
         """creates a clean test directory for the given method"""
-        self.tempdir = "%s_%s" % (self.__class__.__name__, method.__name__)
+        self.testdir = "%s_%s" % (self.__class__.__name__, method.__name__)
         self.cleardir()
-        os.mkdir(self.tempdir)
+        os.mkdir(self.testdir)
         self.rundir = os.path.abspath(os.getcwd())
 
     def teardown_method(self, method):
@@ -22,17 +22,17 @@ class TestConvertCommand:
 
     def cleardir(self):
         """removes the test directory"""
-        if os.path.exists(self.tempdir):
-            for dirpath, subdirs, filenames in os.walk(self.tempdir, topdown=False):
+        if os.path.exists(self.testdir):
+            for dirpath, subdirs, filenames in os.walk(self.testdir, topdown=False):
                 for name in filenames:
                     os.remove(os.path.join(dirpath, name))
                 for name in subdirs:
                     os.rmdir(os.path.join(dirpath, name))
-        if os.path.exists(self.tempdir): os.rmdir(self.tempdir)
-        assert not os.path.exists(self.tempdir)
+        if os.path.exists(self.testdir): os.rmdir(self.testdir)
+        assert not os.path.exists(self.testdir)
 
     def run_command(self, *argv):
-        os.chdir(self.tempdir)
+        os.chdir(self.testdir)
         try:
             self.convertmodule.main(list(argv))
         finally:
@@ -41,7 +41,7 @@ class TestConvertCommand:
     def test_help(self):
         """tests getting help (returning the help_string so further tests can be done)"""
         stdout = sys.stdout
-        helpfilename = os.path.join(self.tempdir, "help.txt")
+        helpfilename = os.path.join(self.testdir, "help.txt")
         helpfile = open(helpfilename, "w")
         sys.stdout = helpfile
         try:
