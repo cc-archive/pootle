@@ -2,11 +2,13 @@
 
 from translate.convert import po2oo
 from translate.convert import oo2po
+from translate.convert import test_convert
 from translate.misc import wStringIO
 from translate.storage import po
 from translate.storage import oo
 from py import test
 import warnings
+import os
 
 class TestPO2OO:
     def setup_method(self, method):
@@ -15,30 +17,12 @@ class TestPO2OO:
     def teardown_method(self, method):
         warnings.resetwarnings()
 
-    def po2oo(self, posource):
-        """helper that converts po source to oo source without requiring files"""
-        inputfile = wStringIO.StringIO(posource)
-        inputpo = po.pofile(inputfile)
-        convertor = po2oo.po2oo()
-        outputoo = convertor.convertfile(inputpo)
-        return outputoo
-
-    def merge2oo(self, oosource, posource):
-        """helper that merges po translations to oo source without requiring files"""
-        inputfile = wStringIO.StringIO(posource)
-        inputpo = po.pofile(inputfile)
-        templatefile = wStringIO.StringIO(oosource)
-        templateoo = oo.oofile(templatefile)
-        convertor = po2oo.reoo(templateoo)
-        outputoo = convertor.convertfile(inputpo)
-        return outputoo
-
-    def convertoo(self, posource, ootemplate):
+    def convertoo(self, posource, ootemplate, language="en-US"):
         """helper to exercise the command line function"""
         inputfile = wStringIO.StringIO(posource)
         outputfile = wStringIO.StringIO()
         templatefile = wStringIO.StringIO(ootemplate)
-        assert po2oo.convertoo(inputfile, outputfile, templatefile, targetlanguage="en-US", timestamp=0)
+        assert po2oo.convertoo(inputfile, outputfile, templatefile, targetlanguage=language, timestamp=0)
         return outputfile.getvalue()
 
     def roundtripstring(self, entitystring):
@@ -64,12 +48,12 @@ class TestPO2OO:
 
     def test_convertoo(self):
         """checks that the convertoo function is working"""
-        oointro, oooutro = r'svx	source\dialog\numpages.src	0	string	RID_SVXPAGE_NUM_OPTIONS	STR_BULLET			0	en-US	', '				20050924 09:13:58' + '\r\n'
+        oobase = r'svx	source\dialog\numpages.src	0	string	RID_SVXPAGE_NUM_OPTIONS	STR_BULLET			0	%s	%s				20050924 09:13:58' + '\r\n'
         posource = '''#: numpages.src#RID_SVXPAGE_NUM_OPTIONS.STR_BULLET.string.text\nmsgid "Simple String"\nmsgstr "Dimpled Ring"\n'''
-        ootemplate = oointro + 'Simple String' + oooutro
-        ooexpected = oointro + 'Dimpled Ring' + oooutro
-        newoo = self.convertoo(posource, ootemplate)
-        assert newoo == ooexpected
+        ootemplate = oobase % ('en-US', 'Simple String')
+        ooexpected = oobase % ('zu', 'Dimpled Ring')
+        newoo = self.convertoo(posource, ootemplate, language="zu")
+        assert newoo == ootemplate + ooexpected
 
     def test_roundtrip_simple(self):
         """checks that simple strings make it through a oo->po->oo roundtrip"""
@@ -88,4 +72,25 @@ class TestPO2OO:
         self.check_roundtrip(r'''"Single-Quote ' "''')
         self.check_roundtrip(r'''"Single-Quote Escape \' "''')
         self.check_roundtrip(r"""'Both Quotes "" '' '""")
+
+class TestPO2OOCommand(test_convert.TestConvertCommand, TestPO2OO):
+    """Tests running actual po2oo commands on files"""
+    convertmodule = po2oo
+
+    def test_help(self):
+        """tests getting help"""
+        help_string = test_convert.TestConvertCommand.test_help(self)
+        assert "-T, --keeptimestamp" in help_string
+
+    def merge2oo(self, oosource, posource):
+        """helper that merges po translations to oo source through files"""
+        outputoo = convertor.convertfile(inputpo)
+        return outputoo
+
+    def convertoo(self, posource, ootemplate, language="en-US"):
+        """helper to exercise the command line function"""
+        self.create_testfile(os.path.join("input", "svx", "source", "dialog.po"), posource)
+        self.create_testfile("input.oo", ootemplate)
+        self.run_command("input", "output.oo", template="input.oo", language=language, keeptimestamp=True)
+        return self.read_testfile("output.oo")
 
