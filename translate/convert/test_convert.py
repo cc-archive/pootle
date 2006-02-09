@@ -8,6 +8,8 @@ from py import test
 class TestConvertCommand:
     """Tests running actual commands on files"""
     convertmodule=convert
+    defaultoptions = {"progress": "none"}
+
     def setup_method(self, method):
         """creates a clean test directory for the given method"""
         self.testdir = "%s_%s" % (self.__class__.__name__, method.__name__)
@@ -77,7 +79,8 @@ class TestConvertCommand:
         helpfile.close()
         help_string = self.read_testfile("help.txt")
         print help_string
-        assert self.convertmodule.__doc__ in help_string
+        convertsummary = self.convertmodule.__doc__.split("\n")[0]
+        assert convertsummary in help_string
         usageline = help_string[:help_string.find("\n")]
         assert usageline.startswith("usage: ") and "[--version] [-h|--help]" in usageline
         assert "--progress=PROGRESS" in help_string
