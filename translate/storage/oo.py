@@ -264,6 +264,7 @@ class oomultifile:
     """returns a pseudo-file object for the given subfile"""
     def onclose(contents):
       self.multifile.write(contents)
+      self.multifile.flush()
     outputfile = wStringIO.CatchStringOutput(onclose)
     outputfile.filename = subfile
     return outputfile
