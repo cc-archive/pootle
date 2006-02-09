@@ -13,9 +13,11 @@ class TestConvertCommand:
         self.tempdir = "%s_%s" % (self.__class__.__name__, method.__name__)
         self.cleardir()
         os.mkdir(self.tempdir)
+        self.rundir = os.path.abspath(os.getcwd())
 
     def teardown_method(self, method):
         """removes the test directory for the given method"""
+        os.chdir(self.rundir)
         self.cleardir()
 
     def cleardir(self):
@@ -29,6 +31,13 @@ class TestConvertCommand:
         if os.path.exists(self.tempdir): os.rmdir(self.tempdir)
         assert not os.path.exists(self.tempdir)
 
+    def run_command(self, *argv):
+        os.chdir(self.tempdir)
+        try:
+            self.convertmodule.main(list(argv))
+        finally:
+            os.chdir(self.rundir)
+
     def test_help(self):
         """tests getting help (returning the help_string so further tests can be done)"""
         stdout = sys.stdout
@@ -36,7 +45,7 @@ class TestConvertCommand:
         helpfile = open(helpfilename, "w")
         sys.stdout = helpfile
         try:
-            test.raises(SystemExit, self.convertmodule.main, ["--help"])
+            test.raises(SystemExit, self.run_command, "--help")
         finally:
             sys.stdout = stdout
         helpfile.close()
