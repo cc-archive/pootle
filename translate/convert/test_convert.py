@@ -89,7 +89,8 @@ class TestConvertCommand:
         help_string = self.read_testfile("help.txt")
         print help_string
         convertsummary = self.convertmodule.__doc__.split("\n")[0]
-        assert convertsummary in help_string
+        # the convertsummary might be wrapped. this will probably unwrap it
+        assert convertsummary in help_string.replace("\n", " ")
         usageline = help_string[:help_string.find("\n")]
         assert usageline.startswith("usage: ") and "[--version] [-h|--help]" in usageline
         assert "--progress=PROGRESS" in help_string

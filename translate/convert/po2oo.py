@@ -101,7 +101,7 @@ class reoo:
         theoo = self.index[key] # find the oo
         self.applytranslation(key, subkey, theoo, thepo)
       else:
-        print >>sys.stderr, "couldn't find key %r in po:" % key
+        print >>sys.stderr, "couldn't find key %s from po in %d keys" % (key, len(self.index))
         try:
           polines = str(thepo)
           if isinstance(polines, unicode):

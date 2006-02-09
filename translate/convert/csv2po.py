@@ -19,8 +19,7 @@
 # along with translate; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-"""simple script to convert a comma-separated values (.csv) file to a 
-gettext .po localization file"""
+"""converts comma-separated values (.csv) files to gettext .po localization files"""
 
 import sys
 from translate.misc import quote
