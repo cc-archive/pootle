@@ -76,6 +76,7 @@ class TestConvertCommand:
             sys.stdout = stdout
         helpfile.close()
         help_string = self.read_testfile("help.txt")
+        print help_string
         assert self.convertmodule.__doc__ in help_string
         usageline = help_string[:help_string.find("\n")]
         assert usageline.startswith("usage: ") and "[--version] [-h|--help]" in usageline

@@ -48,6 +48,8 @@ class TestOO2POCommand(test_convert.TestConvertCommand, TestOO2PO):
         """tests getting help"""
         help_string = test_convert.TestConvertCommand.test_help(self)
         assert "--source-language=LANG" in help_string
+        assert "--language=LANG" in help_string
+        assert "--nonrecursiveinput" in help_string
 
     def test_simple(self):
         """tests the simplest possible conversion"""
