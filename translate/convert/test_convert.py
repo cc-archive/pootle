@@ -55,11 +55,20 @@ class TestConvertCommand:
 
     def open_testfile(self, filename, mode="r"):
         """opens the given filename in the testdirectory in the given mode"""
-        return open(self.get_testfilename(filename), mode)
+        filename = self.get_testfilename(filename)
+        if not mode.startswith("r"):
+            subdir = os.path.dirname(filename)
+            currentpath = ""
+            if not os.path.isdir(subdir):
+                for part in subdir.split(os.sep):
+                    currentpath = os.path.join(currentpath, part)
+                    if not os.path.isdir(currentpath):
+                        os.mkdir(currentpath)
+        return open(filename, mode)
 
     def create_testfile(self, filename, contents):
         """creates the given file in the testdirectory with the given contents"""
-        testfile = open(self.get_testfilename(filename), "w")
+        testfile = self.open_testfile(filename, "w")
         testfile.write(contents)
 
     def read_testfile(self, filename):
