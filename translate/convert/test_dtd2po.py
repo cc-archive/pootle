@@ -139,6 +139,14 @@ class TestDTD2PO:
         poelement = self.singleelement(pofile)
         assert po.unquotefrompo(poelement.msgid) == "First line then \nnext lines."
 
+    def test_carriage_return_in_multiline_dtd(self):
+        """test that we create nice PO files when we find a \r\n in a multiline DTD element"""
+        dtdsource = '<!ENTITY  noupdatesfound.intro "First line then \r\n' + \
+          '                                          next lines.">\n'
+        pofile = self.dtd2po(dtdsource)
+        poelement = self.singleelement(pofile)
+        assert po.unquotefrompo(poelement.msgid) == "First line then \nnext lines."
+
     def test_preserving_spaces(self):
         """test that we preserve space that appear at the start of the first line of a DTD entity"""
         # Space before first character
