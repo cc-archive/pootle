@@ -98,14 +98,19 @@ class csvelement:
     self.msgstr = ""
 
   def fromdict(self, cedict):
+    def remove_spreadsheet_escapes(msgid, msgstr):
+      for spreadsheetescape in ("\\+", "\\-", "\\=", "\\'"):
+        if msgid[:2] == spreadsheetescape and msgstr[:2] == spreadsheetescape:
+          msgid = msgid[1:]
+          msgstr = msgstr[1:]
+      return msgid, msgstr
     self.source = cedict.get('source', '')
     self.msgid = cedict.get('msgid', '')
     self.msgstr = cedict.get('msgstr', '')
     if self.source is None: self.source = ''
     if self.msgid is None: self.msgid = ''
     if self.msgstr is None: self.msgstr = ''
-    if self.msgid[:2] in ("\\+", "\\-"): self.msgid = self.msgid[1:]
-    if self.msgstr[:2] in ("\\+", "\\-"): self.msgstr = self.msgstr[1:]
+    self.msgid, self.msgstr = remove_spreadsheet_escapes(self.msgid, self.msgstr)
 
   def todict(self, encoding='utf-8'):
     source, msgid, msgstr = self.source, self.msgid, self.msgstr

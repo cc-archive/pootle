@@ -5,6 +5,9 @@ from translate.convert import test_convert
 from translate.misc import wStringIO
 from translate.storage import po
 from translate.storage import csvl10n
+from py import test
+import warnings
+import os
 
 class TestCSV2PO:
     def csv2po(self, csvsource, template=None):
@@ -61,6 +64,18 @@ msgstr ""
         assert po.unquotefrompo(pounit.msgid) == 'Hello "all"'
         assert po.unquotefrompo(pounit.msgstr) == 'Hallo "almal"'
 
+    def test_escapes_firstchar_excel(self):
+        """checks that we handle problematic first character escaping for Excel based CSV files"""
+        for char in ("-", "+", "=", "'"):
+          csvsource = r',"\%sSimple string","\%sDimpled ring"' % (char, char)
+          pofile = self.csv2po(csvsource)
+          pounit = self.singleelement(pofile)
+          print csvsource
+          print pounit.msgid[0]
+          print pounit.msgstr[0]
+          assert pounit.msgid[0] == '"%sSimple string"' % (char)
+          assert pounit.msgstr[0] == '"%sDimpled ring"' % (char)
+
 class TestCSV2POCommand(test_convert.TestConvertCommand, TestCSV2PO):
     """Tests running actual csv2po commands on files"""
     convertmodule = csv2po
@@ -71,4 +86,14 @@ class TestCSV2POCommand(test_convert.TestConvertCommand, TestCSV2PO):
         help_string = test_convert.TestConvertCommand.test_help(self)
         assert "--charset=CHARSET" in help_string
         assert "--columnorder" in help_string
+
+    def test_not_found_in_destination(self):
+        """test that we produce a useful error when we cannot find a CSV entry in the template POT file"""
+        csvsource = 'source,original,translation\nNotFound.label,ISO-8859-1,UTF-16'
+        template = r'#: intl.charset.default\nmsgid "ISO-8859-1"\nmsgstr ""\n'
+        self.create_testfile("simple.csv", csvsource)
+        self.create_testfile("simple.pot", template)
+        self.run_command("simple.csv", "simple.po", template="simple.pot")
+        # FIXME we should check stdout that the error is as expeceted
+        assert not os.path.isfile(self.get_testfilename("simple.po"))
 
