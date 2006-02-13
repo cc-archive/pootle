@@ -110,8 +110,6 @@ def verifyoptions(options):
   """verifies the commandline options (and modifies if allowrecursiveinput set wrong)"""
   if not options.pot and not options.targetlanguage:
     raise ValueError("You must specify the target language unless generating POT files (-P)")
-  if options.multifilestyle == "onefile" and options.allowrecursiveinput:
-    options.allowrecursiveinput = False
 
 def convertoo(inputfile, outputfile, templates, pot=False, sourcelanguage=None, targetlanguage=None, duplicatestyle="msgid_comment", multifilestyle="single"):
   """reads in stdin using fromfileclass, converts using convertorclass, writes to stdout"""

@@ -338,6 +338,10 @@ class ArchiveConvertOptionParser(ConvertOptionParser):
     """recurse through directories and convert files"""
     if hasattr(options, "multifilestyle"):
       self.setarchiveoptions(multifilestyle=options.multifilestyle)
+      for filetype in ("input", "output", "template"):
+        allowoption = "allowrecursive%s" % filetype
+        if options.multifilestyle == "onefile" and getattr(options, allowoption, True):
+          setattr(options, allowoption, False)
     self.inittemplatearchive(options)
     self.initoutputarchive(options)
     return super(ArchiveConvertOptionParser, self).recursiveprocess(options)
