@@ -112,6 +112,13 @@ class dtdelement:
         self.continuecomment = self.incomment
         # strip the comment out of what will be parsed
         line = line.replace(comment, "", 1)
+        # add a end of line of this is the end of the comment
+        if not self.incomment:
+          if line.isspace():
+            comment += line
+            line = ''
+          else:
+            comment += '\n'
         # check if there's actually an entity definition that's commented out
         if comment.find('<!ENTITY') <> -1:
           # remove the entity from the comment
@@ -129,8 +136,6 @@ class dtdelement:
           self.locnotes.append(commentpair)
         elif self.commenttype == "comment":
           self.comments.append(commentpair)
-        # add a end of line of this is the end of the comment
-        if not self.incomment: comment += '\n'
 
       if not self.inentity and not self.incomment:
         entitypos = line.find('<!ENTITY')

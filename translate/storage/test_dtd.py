@@ -70,3 +70,12 @@ class TestDTD:
         print dtdregen
         print dtdsource
         assert dtdsource == dtdregen
+
+    def test_conflate_comments(self):
+        """Tests that comments don't run onto the same line"""
+        dtdsource = '<!-- test comments -->\n<!-- getting conflated -->\n<!ENTITY sample.txt "hello">\n'
+        dtdregen = self.dtdregen(dtdsource)
+        print dtdsource
+        print dtdregen
+        assert dtdsource == dtdregen
+
