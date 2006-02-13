@@ -42,9 +42,8 @@ class TestPO2DTD:
         assert po2dtd.convertdtd(inputfile, outputfile, templatefile)
         return outputfile.getvalue()
 
-    def roundtripstring(self, entitystring):
-        dtdintro, dtdoutro = '<!ENTITY Test.RoundTrip ', '>\n'
-        dtdsource = dtdintro + entitystring + dtdoutro
+    def roundtripsource(self, dtdsource):
+        """converts dtd source to po and back again, returning the resulting source"""
         dtdinputfile = wStringIO.StringIO(dtdsource)
         dtdinputfile2 = wStringIO.StringIO(dtdsource)
         pooutputfile = wStringIO.StringIO()
@@ -56,6 +55,13 @@ class TestPO2DTD:
         po2dtd.convertdtd(poinputfile, dtdoutputfile, dtdtemplatefile)
         dtdresult = dtdoutputfile.getvalue()
         print "original dtd:\n", dtdsource, "po version:\n", posource, "output dtd:\n", dtdresult
+        return dtdresult
+
+    def roundtripstring(self, entitystring):
+        """Just takes the contents of a ENTITY definition (with quotes) and does a roundtrip on that"""
+        dtdintro, dtdoutro = '<!ENTITY Test.RoundTrip ', '>\n'
+        dtdsource = dtdintro + entitystring + dtdoutro
+        dtdresult = self.roundtripsource(dtdsource)
         assert dtdresult.startswith(dtdintro) and dtdresult.endswith(dtdoutro)
         return dtdresult[len(dtdintro):-len(dtdoutro)]
 
