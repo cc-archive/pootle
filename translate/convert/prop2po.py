@@ -101,7 +101,7 @@ class prop2po:
     """converts a .properties element to a .po element..."""
     # escape unicode
     msgid = theprop.msgid.strip(" ")
-    thepo = po.poelement()
+    thepo = po.poelement(encoding="UTF-8")
     thepo.othercomments.extend(theprop.comments)
     # TODO: handle multiline msgid
     if theprop.isblank():
@@ -130,17 +130,19 @@ def convertprop(inputfile, outputfile, templatefile, pot=False, duplicatestyle="
     outputpo = convertor.mergefiles(templateprop, inputprop, blankmsgstr=pot, duplicatestyle=duplicatestyle)
   if outputpo.isempty():
     return 0
-  outputposrc = src(outputpo)
+  outputposrc = str(outputpo)
   outputfile.write(outputposrc)
   return 1
 
-if __name__ == '__main__':
+def main(argv=None):
   # handle command line options
   from translate.convert import convert
   formats = {"properties": ("po", convertprop), ("properties", "properties"): ("po", convertprop)}
   parser = convert.ConvertOptionParser(formats, usetemplates=True, usepots=True, description=__doc__)
   parser.add_duplicates_option()
   parser.passthrough.append("pot")
-  parser.run()
+  parser.run(argv)
 
+if __name__ == '__main__':
+  main()
 

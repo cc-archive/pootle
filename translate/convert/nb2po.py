@@ -31,7 +31,7 @@ class nb2po:
 
   def makepoelement(self, filename, fieldname, fieldvalue):
     """makes a poelement"""
-    thepo = po.poelement()
+    thepo = po.poelement(encoding="UTF-8")
     thepo.sourcecomments.append("#: %s#%s\n" % (filename,fieldname))
     thepo.msgid = []
     lines = fieldvalue.split("\n")
@@ -122,9 +122,9 @@ def convertnb(inputfile, outputfile, templates):
   outputfile.write(outputposrc)
   return 1
 
-def main():
+def main(argv=None):
   from translate.convert import convert
   formats = {"htm":("po",convertnb)}
   parser = convert.ConvertOptionParser(formats, usepots=True, description=__doc__)
-  parser.run()
+  parser.run(argv)
 
