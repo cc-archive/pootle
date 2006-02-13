@@ -120,9 +120,10 @@ class dtdelement:
           else:
             comment += '\n'
         # check if there's actually an entity definition that's commented out
-        if comment.find('<!ENTITY') <> -1:
-          # remove the entity from the comment
-          comment, dummy = quote.extractwithoutquotes(comment, ">", "<!ENTITY", None, 1)
+        # TODO: parse these, store as obsolete messages
+        # if comment.find('<!ENTITY') <> -1:
+        #   # remove the entity from the comment
+        #   comment, dummy = quote.extractwithoutquotes(comment, ">", "<!ENTITY", None, 1)
         # depending on the type of comment (worked out at the start), put it in the right place
         # make it record the comment and type as a tuple
         commentpair = (self.commenttype,comment)
