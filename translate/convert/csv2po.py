@@ -19,7 +19,7 @@
 # along with translate; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-"""simple script to convert a comma-separated values (.csv) file to a gettext .po localization file"""
+"""converts comma-separated values (.csv) files to gettext .po localization files"""
 
 import sys
 from translate.misc import quote
@@ -84,7 +84,7 @@ class csv2po:
 
   def convertelement(self,thecsv):
     """converts csv element to po element"""
-    thepo = po.poelement()
+    thepo = po.poelement(encoding="UTF-8")
     thepo.sourcecomments = ["#: " + thecsv.source + "\n"]
     thepo.msgid = [quotecsvstr(line) for line in thecsv.msgid.split('\n')]
     thepo.msgstr = [quotecsvstr(line) for line in thecsv.msgstr.split('\n')]
@@ -99,15 +99,15 @@ class csv2po:
     elif simplify(thecsv.msgid) in self.simpleindex:
       thepolist = self.simpleindex[simplify(thecsv.msgid)]
       if len(thepolist) > 1:
-        pofilename = getattr(self.pofile, "filename", "(unknown)")
+        csvfilename = getattr(self.csvfile, "filename", "(unknown)")
         matches = "\n  ".join(["possible match: " + po.getunquotedstr(thepo.msgid) for thepo in thepolist])
-        print >>sys.stderr, "%s - csv entry not found in pofile, multiple matches found:\n  location\t%s\n  original\t%s\n  translation\t%s\n  %s" % (pofilename, thecsv.source, thecsv.msgid, thecsv.msgstr, matches)
+        print >>sys.stderr, "%s - csv entry not found in pofile, multiple matches found:\n  location\t%s\n  original\t%s\n  translation\t%s\n  %s" % (csvfilename, thecsv.source, thecsv.msgid, thecsv.msgstr, matches)
         self.unmatched += 1
         return
       thepo = thepolist[0]
     else:
-      pofilename = getattr(self.pofile, "filename", "(unknown)")
-      print >>sys.stderr, "%s - csv entry not found in pofile:\n  location\t%s\n  original\t%s\n  translation\t%s" % (pofilename, thecsv.source, thecsv.msgid, thecsv.msgstr)
+      csvfilename = getattr(self.csvfile, "filename", "(unknown)")
+      print >>sys.stderr, "%s - csv entry not found in pofile:\n  location\t%s\n  original\t%s\n  translation\t%s" % (csvfilename, thecsv.source, thecsv.msgid, thecsv.msgstr)
       self.unmatched += 1
       return
     csvmsgstr = [quotecsvstr(line) for line in thecsv.msgstr.split('\n')]
@@ -133,6 +133,7 @@ class csv2po:
 
   def convertfile(self, thecsvfile):
     """converts a csvfile to a pofile, and returns it. uses templatepo if given at construction"""
+    self.csvfile = thecsvfile
     if self.pofile is None:
       self.pofile = po.pofile()
       mergemode = False
@@ -143,9 +144,9 @@ class csv2po:
       headerpo.msgstr = [line.replace("CHARSET", "UTF-8").replace("ENCODING", "8bit") for line in headerpo.msgstr]
     else:
       headerpo = self.pofile.makeheader(charset="UTF-8", encoding="8bit")
-    headerpo.othercomments.append("# extracted from %s\n" % thecsvfile.filename)
+    headerpo.othercomments.append("# extracted from %s\n" % self.csvfile.filename)
     mightbeheader = True
-    for thecsv in thecsvfile.csvelements:
+    for thecsv in self.csvfile.csvelements:
       if self.charset is not None:
         thecsv.msgid = thecsv.msgid.decode(self.charset)
         thecsv.msgstr = thecsv.msgstr.decode(self.charset)
@@ -187,7 +188,7 @@ def convertcsv(inputfile, outputfile, templatefile, charset=None, columnorder=No
   outputfile.write(outputposrc)
   return 1
 
-def main():
+def main(argv=None):
   from translate.convert import convert
   formats = {("csv", "po"): ("po", convertcsv), ("csv", "pot"): ("po", convertcsv), 
              ("csv", None): ("po", convertcsv)}
@@ -198,5 +199,5 @@ def main():
     help="specify the order and position of columns (source,msgid,msgstr)")
   parser.passthrough.append("charset")
   parser.passthrough.append("columnorder")
-  parser.run()
+  parser.run(argv)
 
