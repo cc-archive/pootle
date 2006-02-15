@@ -29,7 +29,7 @@ infofiles = [(join(sitepackages,'translate'),
              [join('translate',filename) for filename in 'ChangeLog', 'COPYING', 'LICENSE', 'README'])]
 initfiles = [(join(sitepackages,'translate'),[join('translate','__init__.py')])]
 
-subpackages = ["convert", "misc", "storage", "filters", "tools"]
+subpackages = ["convert", "misc", "storage", "filters", "tools", "services", "search"]
 # TODO: elementtree doesn't work in sdist, fix this
 packages = ["translate"]
 
@@ -44,6 +44,7 @@ translatescripts = [apply(join, ('translate', ) + script) for script in
                   ('convert', 'xliff2po'), ('convert', 'po2xliff'),
                   ('convert', 'sxw2po'),
                   ('convert', 'po2tmx'),
+                  ('convert', 'csv2tbx'),
                   ('filters', 'pofilter'),
                   ('tools', 'pocompile'),
                   ('tools', 'poconflicts'),
@@ -51,7 +52,9 @@ translatescripts = [apply(join, ('translate', ) + script) for script in
                   ('tools', 'podebug'),
                   ('tools', 'pogrep'),
                   ('tools', 'pomerge'),
-                  ('tools', 'porestructure')]
+                  ('tools', 'porestructure'),
+                  ('services', 'lookupclient.py'),
+                  ('services', 'lookupservice')]
 if includebeta:
   translatescripts.append(join('translate', 'convert', 'po2tmx'))
 
