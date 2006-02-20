@@ -1,18 +1,32 @@
 #!/usr/bin/env python
 
 from translate.convert import dtd2po
+from translate.convert import test_convert
 from translate.misc import wStringIO
 from translate.storage import po
 from translate.storage import dtd
 
 class TestDTD2PO:
-    def dtd2po(self, dtdsource):
+    def dtd2po(self, dtdsource, dtdtemplate=None):
         """helper that converts dtd source to po source without requiring files"""
         inputfile = wStringIO.StringIO(dtdsource)
         inputdtd = dtd.dtdfile(inputfile)
         convertor = dtd2po.dtd2po()
-        outputpo = convertor.convertfile(inputdtd)
+        if not dtdtemplate:
+          outputpo = convertor.convertfile(inputdtd)
+        else:
+          templatefile = wStringIO.StringIO(dtdtemplate)
+          templatedtd = dtd.dtdfile(templatefile)
+          outputpo = convertor.mergefiles(templatedtd, inputdtd)
         return outputpo
+
+    def convertdtd(self, dtdsource):
+        """call the convertdtd, return the outputfile"""
+        inputfile = wStringIO.StringIO(dtdsource)
+        outputfile = wStringIO.StringIO()
+        templatefile = None
+        assert dtd2po.convertdtd(inputfile, outputfile, templatefile)
+        return outputfile.getvalue()
 
     def singleelement(self, pofile):
         """checks that the pofile contains a single non-header element, and returns it"""
@@ -20,12 +34,28 @@ class TestDTD2PO:
         assert pofile.poelements[0].isheader()
         return pofile.poelements[1]
 
+    def countelements(self, pofile):
+        """returns the number of non-header items"""
+        if pofile.poelements[0].isheader():
+          return len(pofile.poelements) - 1
+        else:
+          return len(pofile.poelements)
+
     def test_simpleentity(self):
         """checks that a simple dtd entity definition converts properly to a po entry"""
         dtdsource = '<!ENTITY test.me "bananas for sale">\n'
         pofile = self.dtd2po(dtdsource)
         poelement = self.singleelement(pofile)
         assert po.unquotefrompo(poelement.msgid) == "bananas for sale"
+        assert po.unquotefrompo(poelement.msgstr) == ""
+
+    def test_convertdtd(self):
+        """checks that the convertdtd function is working"""
+        dtdsource = '<!ENTITY saveas.label "Save As...">\n'
+        posource = self.convertdtd(dtdsource)
+        pofile = po.pofile(wStringIO.StringIO(posource))
+        poelement = self.singleelement(pofile)
+        assert po.unquotefrompo(poelement.msgid) == "Save As..."
         assert po.unquotefrompo(poelement.msgstr) == ""
 
     def test_apos(self):
@@ -42,6 +72,16 @@ class TestDTD2PO:
         poelement = self.singleelement(pofile)
         assert "credit.translation" in str(poelement)
 
+    def test_emptyentity_translated(self):
+        """checks that if we translate an empty entity it makes it into the PO, bug 101"""
+        dtdtemplate = '<!ENTITY credit.translation "">\n'
+        dtdsource = '<!ENTITY credit.translation "Translators Names">\n'
+        pofile = self.dtd2po(dtdsource, dtdtemplate)
+        poelement = self.singleelement(pofile)
+        print poelement
+        assert "credit.translation" in str(poelement)
+        assert po.unquotefrompo(poelement.msgstr) == "Translators Names"
+
     def test_kdecomment_merge(self):
         """test that LOCALIZATION NOTES are added properly as KDE comments and merged with duplicate comments"""
         dtdtemplate = '<!--LOCALIZATION NOTE (%s): Edit box appears beside this label -->\n' + \
@@ -52,6 +92,13 @@ class TestDTD2PO:
         posource = str(pofile)
         print posource
         assert posource.count('"_:') <= len(pofile.poelements)
+
+    def test_donttranslate_simple(self):
+        """check that we handle DONT_TRANSLATE messages properly"""
+        dtdsource = '''<!-- LOCALIZATION NOTE (region.Altitude): DONT_TRANSLATE -->
+<!ENTITY region.Altitude "Very High">'''
+        pofile = self.dtd2po(dtdsource)
+        assert self.countelements(pofile) == 0
 
     def test_donttranslate_label(self):
         """test strangeness when label entity is marked DONT_TRANSLATE and accesskey is not, bug 30"""
@@ -64,13 +111,71 @@ class TestDTD2PO:
         assert 'editorCheck.label' not in posource
         assert 'editorCheck.accesskey' in posource
 
+    def test_donttranslate_onlyentity(self):
+        """if the entity is itself just another entity then it shouldn't appear in the output PO file"""
+        dtdsource = '''<!-- LOCALIZATION NOTE (mainWindow.title): DONT_TRANSLATE -->
+<!ENTITY mainWindow.title "&brandFullName;">'''
+        pofile = self.dtd2po(dtdsource)
+        assert self.countelements(pofile) == 0
+
+    def test_donttranslate_commentedout(self):
+        """check that we don't process messages in <!-- comments -->: bug 102"""
+        dtdsource = '''<!-- commenting out until bug 38906 is fixed
+<!ENTITY messagesHeader.label         "Messages"> -->'''
+        pofile = self.dtd2po(dtdsource)
+        assert self.countelements(pofile) == 0
+
     def test_spaces_at_start_of_dtd_lines(self):
         """test that pretty print spaces at the start of subsequent DTD element lines are removed from the PO file, bug 79"""
+        # Space at the end of the line
         dtdsource = '<!ENTITY  noupdatesfound.intro "First line then \n' + \
           '                                          next lines.">\n'
         pofile = self.dtd2po(dtdsource)
         poelement = self.singleelement(pofile)
-        # We still need to decide how we handle line line breaks in the DTD entities.  It seems that we should actually
-        # drop the line break but this has not been implemented yet.
         assert po.unquotefrompo(poelement.msgid) == "First line then \nnext lines."
+        # No space at the end of the line
+        dtdsource = '<!ENTITY  noupdatesfound.intro "First line then\n' + \
+          '                                          next lines.">\n'
+        pofile = self.dtd2po(dtdsource)
+        poelement = self.singleelement(pofile)
+        assert po.unquotefrompo(poelement.msgid) == "First line then \nnext lines."
+
+    def test_carriage_return_in_multiline_dtd(self):
+        """test that we create nice PO files when we find a \r\n in a multiline DTD element"""
+        dtdsource = '<!ENTITY  noupdatesfound.intro "First line then \r\n' + \
+          '                                          next lines.">\n'
+        pofile = self.dtd2po(dtdsource)
+        poelement = self.singleelement(pofile)
+        assert po.unquotefrompo(poelement.msgid) == "First line then \nnext lines."
+
+    def test_preserving_spaces(self):
+        """test that we preserve space that appear at the start of the first line of a DTD entity"""
+        # Space before first character
+        dtdsource = '<!ENTITY mainWindow.titlemodifiermenuseparator " - ">'
+        pofile = self.dtd2po(dtdsource)
+        poelement = self.singleelement(pofile)
+        assert po.unquotefrompo(poelement.msgid) == " - "
+        # Double line and spaces
+        dtdsource = '<!ENTITY mainWindow.titlemodifiermenuseparator " - with a newline\n    and more text">'
+        pofile = self.dtd2po(dtdsource)
+        poelement = self.singleelement(pofile)
+        assert po.unquotefrompo(poelement.msgid) == " - with a newline \nand more text"
+
+    def test_escaping_newline_tabs(self):
+        """test that we handle all kinds of newline permutations"""
+        dtdsource = '<!ENTITY  noupdatesfound.intro "A hard coded newline.\\nAnd tab\\t and a \\r carriage return.">\n'
+        converter = dtd2po.dtd2po()
+        thedtd = dtd.dtdelement()
+        thedtd.parse(dtdsource)
+        thepo = po.poelement()
+        converter.convertstrings(thedtd, thepo)
+        print thedtd
+        print thepo.msgid
+        # \n in a dtd should also appear as \n in the PO file
+        assert po.unquotefrompo(thepo.msgid) == r"A hard coded newline.\nAnd tab\t and a \r carriage return."
+
+class TestDTD2POCommand(test_convert.TestConvertCommand, TestDTD2PO):
+    """Tests running actual dtd2po commands on files"""
+    convertmodule = dtd2po
+    defaultoptions = {"progress": "none"}
 

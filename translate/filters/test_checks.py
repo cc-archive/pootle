@@ -25,7 +25,7 @@ def test_accelerators():
     assert checks.fails(stdchecker.accelerators, "File", "&Fayile") 
     assert checks.passes(stdchecker.accelerators, "Mail && News", "Pos en Nuus") 
     assert checks.fails(stdchecker.accelerators, "Mail &amp; News", "Pos en Nuus") 
-    assert checks.passes(stdchecker.accelerators, "&Allow", u"&ﺲﻣﺎﺣ")
+    assert checks.passes(stdchecker.accelerators, "&Allow", u'&\ufeb2\ufee3\ufe8e\ufea3')
     kdechecker = checks.KdeChecker()
     assert checks.passes(kdechecker.accelerators, "&File", "&Fayile") 
     assert checks.fails(kdechecker.accelerators, "&File", "Fayile") 
@@ -339,6 +339,8 @@ def test_variables_mozilla():
     assert checks.fails(mozillachecker.variables, "%d files of type %s saved.", "%s leers van %s tipe gestoor.")
     assert checks.passes(mozillachecker.variables, "Save $file", "Stoor $file")
     assert checks.fails(mozillachecker.variables, "Save $file", "Stoor $leer")
+    assert checks.passes(mozillachecker.variables, "Save $file$", "Stoor $file$")
+    assert checks.fails(mozillachecker.variables, "Save $file$", "Stoor $leer$")
 
 def test_variables_openoffice():
     """tests variables in OpenOffice translations"""
