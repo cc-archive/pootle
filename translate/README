@@ -24,6 +24,10 @@ Download
 The latest version of the Translate Toolkit can be downloaded from:
 http://sourceforge.net/project/showfiles.php?group_id=91920
 
+This version of the translate toolkit is from the 0.8 branch.
+The documentation for this branch is avilable at:
+http://translate.sourceforge.net/wiki/toolkit-0.8/index
+
 The latest documentation is always available at:
 http://translate.sourceforge.net/wiki/toolkit/index
 
@@ -64,10 +68,10 @@ software.
 
 System Requirements
 -------------------
-Python 2.3 recommended.
+Python 2.3 or higher recommended.
 
 The Toolkit may still work using Python 2.2 but is now most extensively tested 
-using Python 2.3.  If you experience any errors and are using Python 2.2 then 
+using Python 2.4.  If you experience any errors and are using Python 2.2 then 
 please first check that the error also occurs in 2.3 before reporting it as a bug.
 
 The programs have been tested on Linux and Windows.
@@ -79,11 +83,22 @@ Installation
 To install the Translate Toolkit
 
 * Windows
-Double Click on translate-N.N-py2exe.zip and extract to a directory
+Double Click on translate-N.N-setup.exe and install to a directory
 From a DOS Window 
 <path-to-tools>\<command>
 
-* Linux
+* Linux RPM-based distros
+# either install from the rpm:
+rpm -ivh translate-N.N.py2x.rpm
+# or rebuild yourself
+rpmbuild --rebuild translate-N.N.src.rpm
+# or build from the tarball and install
+tar xzf translate-N.N.tar.gz
+cd translate-N.N
+python setup.py bdist_rpm
+su -c rpm -ivh dist/translate-N.N.noarch.rpm
+
+* Linux, etc
 tar xzf translate-N.N.tar.gz
 cd translate-N.N
 su -c ./setup.py install
@@ -97,15 +112,6 @@ Please send your bug reports to:
 translate-devel at lists sourceforge net
 
 Preferably with a patch or at least a test case.
-
-
-Documentation
-------------
-Please browse to doc/index.html to read the documentation.  They are being
-continually updated and the latest version can be viewed at:
-http://translate.sourceforge.net/doc/
-
-Please feel free to contribute new sections and suggest corrections.
 
 
 Program overview
@@ -136,3 +142,4 @@ podebug - Create comment in your PO files' msgstr which can then be used to quic
 These are not called directly but used in moz2po
 dtd2po, po2dtd, prop2po, po2prop - for conversion of DTD and .properties files
 	to PO format.
+
