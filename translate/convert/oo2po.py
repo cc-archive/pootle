@@ -107,7 +107,7 @@ class oo2po:
     return thepofile
 
 def verifyoptions(options):
-  """verifies the commandline options (and modifies if allowrecursiveinput set wrong)"""
+  """verifies the commandline options"""
   if not options.pot and not options.targetlanguage:
     raise ValueError("You must specify the target language unless generating POT files (-P)")
 
