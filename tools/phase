@@ -90,7 +90,7 @@ function report {
 function getphasefiles {
 	# Returns a list of files that are valid for this phase
 	filelist=$1
-    phase=$2
+	phase=$2
 	egrep --count "^$phase\b" $filelist > /dev/null
 	if [ $? -ne 0 ]; then
 		echo "No such phase exists"
