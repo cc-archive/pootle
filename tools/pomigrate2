@@ -86,7 +86,12 @@ new=$2
 templates=$3
 
 echo "** Migrating files... **"
-for pot in `cd $templates; find . -name "*.pot"`
+pots=`cd $templates; find . -name "*.pot"`
+if [ "$pots" == "" ]; then
+	echo "No POT templates found in: $templates"
+	exit 1
+fi
+for pot in $pots
 do
 	filename=`basename $pot .pot`.po
 	directory=`dirname $pot`
