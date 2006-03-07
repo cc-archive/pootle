@@ -321,7 +321,7 @@ function editpochecks {
 		do
 			[ -f $language-$phase-check/$file ] && present_files=$(echo $present_files $file)
 		done
-		(cd $language-$phase-check; exec $editor $present_files)
+		(cd $language-$phase-check; exec $editor $(echo $present_files| sort))
 	else
 		echo "No checks present for language $language phase $phase."
 		echo "Run checkpo to create them"
