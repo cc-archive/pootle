@@ -1,9 +1,0 @@
-#!/usr/bin/python
-
-"""takes a .po translation file and produces word counts and other statistics"""
-
-from translate.tools import pocount
-
-if __name__ == '__main__':
-  pocount.main()
-
