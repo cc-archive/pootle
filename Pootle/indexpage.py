@@ -81,35 +81,38 @@ class UserIndex(pagelayout.PootlePage):
     self.session = session
     self.localize = session.localize
     self.nlocalize = session.nlocalize
-    optionslink = pagelayout.IntroText(widgets.Link("options.html", self.localize("Change options")))
-    contents = [self.getquicklinks(), optionslink]
-    if session.issiteadmin():
-      adminlink = pagelayout.IntroText(widgets.Link("../admin/", self.localize("Admin page")))
-      contents.append(adminlink)
-    pagelayout.PootlePage.__init__(self, self.localize("User Page for: %s") % session.username, contents, session)
+    pagetitle = self.localize("User Page for: %s") % session.username
+    pagelayout.PootlePage.__init__(self, pagetitle, [], session)
+    self.templatename = "home"
+    optionslink = self.localize("Change options")
+    adminlink = self.localize("Admin page")
+    quicklinkstitle = self.localize("Quick Links")
+    instancetitle = getattr(session.instance, "title", session.localize("Pootle Demo"))
+    sessionvars = {"status": session.status, "isopen": session.isopen, "issiteadmin": session.issiteadmin()}
+    quicklinks = self.getquicklinks()
+    setoptionstext = self.localize("Please click on 'Change options' and select some languages and projects")
+    self.templatevars = {"pagetitle": pagetitle, "optionslink": optionslink,
+        "adminlink": adminlink, "quicklinkstitle": quicklinkstitle,
+        "quicklinks": quicklinks, "setoptionstext": setoptionstext,
+        "session": sessionvars, "instancetitle": pagetitle}
 
   def getquicklinks(self):
     """gets a set of quick links to user's project-languages"""
-    quicklinkstitle = pagelayout.Title(self.localize("Quick Links"))
     quicklinks = []
     for languagecode in self.session.getlanguages():
       if not self.potree.haslanguage(languagecode):
         continue
       languagename = self.potree.getlanguagename(languagecode)
-      languagelink = widgets.Link("../%s/" % languagecode, languagename)
-      quicklinks.append(pagelayout.Title(languagelink))
-      languagelinks = []
+      langlinks = []
       for projectcode in self.session.getprojects():
         if self.potree.hasproject(languagecode, projectcode):
           projectname = self.potree.getprojectname(projectcode)
-          projecturl = "../%s/%s/" % (languagecode, projectcode)
           projecttitle = self.localize("%s %s") % (languagename, projectname)
-          languagelinks.append([widgets.Link(projecturl, projecttitle), "<br/>"])
-      quicklinks.append(pagelayout.ItemDescription(languagelinks))
-    if not quicklinks:
-      setoptionstext = self.localize("Please click on 'Change options' and select some languages and projects")
-      quicklinks.append(pagelayout.ItemDescription(setoptionstext))
-    return pagelayout.Contents([quicklinkstitle, quicklinks])
+          langlinks.append({"code": projectcode, "name": projecttitle, "sep": "<br/>"})
+      if langlinks:
+        langlinks[-1]["sep"] = ""
+      quicklinks.append({"code": languagecode, "name": languagename, "projects": langlinks})
+    return quicklinks
 
 class ProjectsIndex(PootleIndex):
   """the list of projects"""
