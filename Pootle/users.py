@@ -60,21 +60,22 @@ class ActivatePage(pagelayout.PootlePage):
   """page for new registrations"""
   def __init__(self, session, argdict):
     self.localize = session.localize
-    introtext = [pagelayout.IntroText(self.localize("Please enter your activation details"))]
-    if session.status:
-      statustext = pagelayout.IntroText(session.status)
-      introtext.append(statustext)
+    introtext = self.localize("Please enter your activation details")
     self.argdict = argdict
-    contents = [introtext, self.getform()]
-    pagelayout.PootlePage.__init__(self, self.localize("Pootle Account Activation"), contents, session)
-
-  def getform(self):
-    columnlist = [("username", self.localize("Username"), self.localize("Your requested username")),
-                  ("activationcode", self.localize("Activation Code"), self.localize("The activation code you received"))]
-    formlayout = {1:("username", ), 2:("activationcode", )}
-    extrawidgets = [widgets.Input({'type': 'submit', 'name':'activate', 'value':self.localize('Activate Account')})]
-    record = dict([(column[0], self.argdict.get(column[0], "")) for column in columnlist])
-    return form.SimpleForm(record, "activate", columnlist, formlayout, {}, extrawidgets)
+    pagetitle = self.localize("Pootle Account Activation")
+    pagelayout.PootlePage.__init__(self, pagetitle, [], session)
+    self.templatename = "activate"
+    instancetitle = getattr(session.instance, "title", session.localize("Pootle Demo"))
+    sessionvars = {"status": session.status, "isopen": session.isopen, "issiteadmin": session.issiteadmin()}
+    self.templatevars = {"pagetitle": pagetitle, "introtext": introtext,
+        "username_title": self.localize("Username"),
+        "username_tooltip": self.localize("Your requested username"),
+        "username": self.argdict.get("username", ""),
+        "code_title": self.localize("Activation Code"),
+        "code_tooltip": self.localize("The activation code you received"),
+        "code": self.argdict.get("activationcode", ""),
+        "activate_text": self.localize('Activate Account'),
+        "session": sessionvars, "instancetitle": pagetitle}
 
 class UserOptions(pagelayout.PootlePage):
   """page for user to change their options"""
