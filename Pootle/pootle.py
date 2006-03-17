@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from jToolkit.web import server
+from jToolkit.web import templateserver
 from jToolkit.web import session
 from jToolkit import prefs
 from jToolkit import localize
@@ -20,13 +21,14 @@ import sys
 import os
 import random
 
-class PootleServer(users.OptionalLoginAppServer):
+class PootleServer(users.OptionalLoginAppServer, templateserver.TemplateServer):
   """the Server that serves the Pootle Pages"""
   def __init__(self, instance, webserver, sessioncache=None, errorhandler=None, loginpageclass=users.LoginPage):
     if sessioncache is None:
       sessioncache = session.SessionCache(sessionclass=users.PootleSession)
     self.potree = potree.POTree(instance)
     super(PootleServer, self).__init__(instance, webserver, sessioncache, errorhandler, loginpageclass)
+    self.templatedir = filelocations.templatedir
     self.setdefaultoptions()
 
   def saveprefs(self):
@@ -147,6 +149,8 @@ class PootleServer(users.OptionalLoginAppServer):
       jspage.content_type = "application/x-javascript"
       jspage.sendfile_path = jsfile
       return jspage
+    elif top == "testtemplates.html":
+      return templateserver.TemplateServer.getpage(self, pathwords, session, argdict)
     elif not top or top == "index.html":
       return indexpage.PootleIndex(self.potree, session)
     elif top == 'about.html':
