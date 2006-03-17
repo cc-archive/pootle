@@ -8,18 +8,24 @@
   <div id="banner">
     <table cellpadding="0" width="100%" border="0" cellspacing="0">
       <tr>
-        <td rowspan="1" colspan="1" align="left" width="180" valign="top" type="td"><img src="/images/pootle-medium.jpg" height="135" type="button" width="180" /></td>
+        <td rowspan="1" colspan="1" align="left" width="${banner_width}" valign="top" type="td">
+          <img src="/images/${banner_image}" type="button" height="${banner_height}" width="${banner_width}"/>
+        </td>
 
-        <td colspan="1" rowspan="1" type="td" width="5"><img src="/images/gap.png" height="5" type="button" width="5" /></td>
+        <td colspan="1" rowspan="1" type="td" width="5">
+          <img src="/images/gap.png" height="5" type="button" width="5"/>
+        </td>
 
         <td colspan="1" rowspan="1" type="td" width="100%">
-          <table cellspacing="0" height="135" width="100%" cellpadding="0" border="0" class="header">
+          <table cellspacing="0" height="${banner_height}" width="100%" cellpadding="0" border="0" class="header">
             <tr>
-              <td colspan="1" align="center" rowspan="1" type="td" valign="middle"><img src="/images/top.png" height="81" type="button" width="238" /></td>
+              <td colspan="1" align="center" rowspan="1" type="td" valign="middle">
+                 <img src="/images/top.png" height="${logo_height}" type="button" width="${logo_width}"/>
+              </td>
             </tr>
 
             <tr>
-              <td rowspan="1" colspan="1" align="right" valign="middle" type="td" class="border_top"></td>
+              <td rowspan="1" colspan="1" align="right" valign="middle" type="td" class="border_top"/>
             </tr>
           </table>
         </td>

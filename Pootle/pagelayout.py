@@ -113,25 +113,35 @@ class Icon(widgets.Image):
     widgets.Image.__init__(self, "/images/" + imagename, {"class": "icon"})
     self.overrideattribs(newattribs)
 
+def layout_banner(maxheight):
+  """calculates dimensions, image name for banner"""
+  banner_width, banner_height = min((180*maxheight/135, maxheight), (180, 135))
+  logo_width, logo_height = min((238*maxheight/81, 81), (238, 81))
+  if banner_width <= 108:
+    banner_image = "pootle-small.jpg"
+  elif banner_width <= 180:
+    banner_image = "pootle-medium.jpg"
+  else:
+    banner_image = "pootle.jpg"
+  return {"banner_width": banner_width, "banner_height": banner_height,
+    "logo_width": logo_width, "logo_height": logo_height, "banner_image": banner_image}
+
 class PootleBanner(widgets.Division):
   """the banner at the top"""
   def __init__(self, instance, maxheight=135):
     baseurl = instance.baseurl
     bannertable = table.TableLayout({"width":"100%", "cellpadding":0, "cellspacing":0, "border":0})
-    width, height = min((180*maxheight/135, maxheight), (180, 135))
-    if width <= 108:
-      imagename = "pootle-small.jpg"
-    elif width <= 180:
-      imagename = "pootle-medium.jpg"
-    else:
-      imagename = "pootle.jpg"
-    imagename = baseurl + "images/" + imagename
-    pootleimage = widgets.Image(imagename, {"width":width, "height":height})
-    pootlecell = table.TableCell(pootleimage, {"width": width, "align":"left", "valign":"top"})
+    layout = layout_banner(maxheight)
+    banner_width, banner_height = layout["banner_width"], layout["banner_height"]
+    logo_width, logo_height = layout["logo_width"], layout["logo_height"]
+    banner_image = layout["banner_image"]
+    imagename = baseurl + "images/" + banner_image
+    pootleimage = widgets.Image(imagename, {"width": banner_width, "height": banner_height})
+    pootlecell = table.TableCell(pootleimage, {"width": banner_width, "align":"left", "valign":"top"})
     gapimage = widgets.Image(baseurl+"images/gap.png", {"width":5, "height":5})
     gapcell = table.TableCell(gapimage, {"width":5})
     width, height = min((238*maxheight/81, 81), (238, 81))
-    logoimage = widgets.Image(baseurl+"images/top.png", {"width":width, "height":height})
+    logoimage = widgets.Image(baseurl+"images/top.png", {"width": logo_width, "height": logo_height})
     logocell = table.TableCell(logoimage, {"align":"center", "valign":"middle"})
     bordercell = table.TableCell([], {"class":"border_top", "align":"right", "valign":"middle"})
     toptable = table.TableLayout({"class":"header", "width":"100%", "style": "height: %spx" % maxheight, "cellpadding":0, "cellspacing":0, "border":0})
@@ -157,6 +167,9 @@ class PootlePage(widgets.Page):
     self.banner = PootleBanner(session.instance, bannerheight)
     self.links = PootleSidebar(session, returnurl)
     widgets.Page.__init__(self, title, contents, {"includeheading":False}, stylesheets=stylesheets, headerwidgets=[favicon])
+    banner_layout = layout_banner(bannerheight)
+    if hasattr(self, "templatevars"):
+      self.templatevars.update(banner_layout)
 
   def addsearchbox(self, searchtext, contextinfo="", action=""):
     """adds a simple search box"""
