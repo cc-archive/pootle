@@ -22,7 +22,7 @@
       <h3 class="title"><a href="languages/" py:content="languagelink">Languages</a></h3>
 
       <div class="item-description">
-        <span py:for="l in languages"><a href="${l.code}/" py:content="l.name">Language</a>${l.sep}</span>
+        <span py:for="l in languages" py:strip="True"><a href="${l.code}/" py:content="l.name">Language</a>${l.sep}</span>
       </div>
     </div>
 
@@ -30,7 +30,7 @@
       <h3 class="title"><a href="projects/" py:content="projectlink">Projects</a></h3>
 
       <div class="item-description">
-        <span py:for="p in projects">
+        <span py:for="p in projects" py:strip="True">
           <a href="projects/${p.code}/" title="${p.description}" py:content="p.name">Project</a>${p.sep}
         </span>
       </div>
