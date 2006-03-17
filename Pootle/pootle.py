@@ -31,6 +31,14 @@ class PootleServer(users.OptionalLoginAppServer, templateserver.TemplateServer):
     self.templatedir = filelocations.templatedir
     self.setdefaultoptions()
 
+  def loadurl(self, filename, context):
+    """loads a url internally for overlay code"""
+    print "call to load %s with %r" % (filename, context)
+    filename = os.path.join(self.templatedir, filename+os.extsep+"html")
+    if os.path.exists(filename):
+      return open(filename, "r").read()
+    return None
+
   def saveprefs(self):
     """saves any changes made to the preferences"""
     # TODO: this is a hack, fix it up nicely :-)
