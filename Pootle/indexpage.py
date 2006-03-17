@@ -184,29 +184,33 @@ class ProjectLanguageIndex(pagelayout.PootleNavPage):
     self.projectcode = projectcode
     self.localize = session.localize
     self.nlocalize = session.nlocalize
-    projectname = self.potree.getprojectname(self.projectcode)
-    adminlink = []
-    if session.issiteadmin():
-      adminlink = widgets.Link("admin.html", self.localize("Admin"))
     self.initpagestats()
-    languagelinks = self.getlanguagelinks()
+    languages = self.getlanguages()
     average = self.getpagestats()
     projectstats = self.nlocalize("%d language, average %d%% translated", "%d languages, average %d%% translated", self.languagecount) % (self.languagecount, average)
-    navbar = self.makenavbar(icon="project", path=self.makenavbarpath(session=session, project=(self.projectcode, projectname)), actions=adminlink, stats=projectstats)
-    pagelayout.PootleNavPage.__init__(self, self.localize("Pootle: %s") % projectname, [navbar, languagelinks], session, bannerheight=81, returnurl="projects/%s/" % self.projectcode)
+    projectname = self.potree.getprojectname(self.projectcode)
+    pagetitle =  self.localize("Pootle: %s") % projectname
+    pagelayout.PootleNavPage.__init__(self, pagetitle, [], session, bannerheight=81, returnurl="projects/%s/" % self.projectcode)
+    self.templatename = "project"
+    adminlink = self.localize("Admin")
+    instancetitle = getattr(session.instance, "title", session.localize("Pootle Demo"))
+    sessionvars = {"status": session.status, "isopen": session.isopen, "issiteadmin": session.issiteadmin()}
+    setoptionstext = self.localize("Please click on 'Change options' and select some languages and projects")
+    self.templatevars = {"pagetitle": pagetitle,
+        "project": {"code": projectcode, "name": projectname, "stats": projectstats},
+        "adminlink": adminlink, "languages": languages,
+        "session": sessionvars, "instancetitle": pagetitle}
 
-  def getlanguagelinks(self):
-    """gets the links to the languages"""
+  def getlanguages(self):
+    """gets the stats etc of the languages"""
     languages = self.potree.getlanguages(self.projectcode)
     self.languagecount = len(languages)
     languageitems = [self.getlanguageitem(languagecode, languagename) for languagecode, languagename in languages]
-    self.polarizeitems(languageitems)
+    for n, item in enumerate(languageitems):
+      item["parity"] = ["even", "odd"][n % 2]
     return languageitems
 
   def getlanguageitem(self, languagecode, languagename):
-    languagetitle = pagelayout.Title(widgets.Link("../../%s/%s/" % (languagecode, self.projectcode), languagename))
-    languageicon = self.geticon("language")
-    body = pagelayout.ContentsItem([languageicon, languagetitle])
     language = self.potree.getproject(languagecode, self.projectcode)
     numfiles = len(language.pofilenames)
     languagestats = language.combinestats()
@@ -218,9 +222,9 @@ class ProjectLanguageIndex(pagelayout.PootleNavPage):
     percentfinished = (translatedwords*100/max(totalwords, 1))
     filestats = self.nlocalize("%d file", "%d files", numfiles) % numfiles
     wordstats = self.localize("%d/%d words (%d%%) translated") % (translatedwords, totalwords, percentfinished)
-    stringstats = widgets.Span(self.localize("[%d/%d strings]") % (len(translated), len(total)), cls="string-statistics")
-    stats = pagelayout.ItemStatistics([filestats, ", ", wordstats, " ", stringstats])
-    return pagelayout.Item([body, stats])
+    stringstats = self.localize("[%d/%d strings]") % (len(translated), len(total))
+    stats = filestats + ", " + wordstats + " " + '<span class="string-statistics">%s</span>' % stringstats
+    return {"code": languagecode, "name": languagename, "stats": stats}
 
 class ProjectIndex(pagelayout.PootleNavPage):
   """the main page"""
