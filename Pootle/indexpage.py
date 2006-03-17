@@ -47,35 +47,32 @@ class PootleIndex(pagelayout.PootlePage):
     self.potree = potree
     self.localize = session.localize
     self.nlocalize = session.nlocalize
-    aboutlink = pagelayout.IntroText(widgets.Link("/about.html", self.localize("About this Pootle server")))
-    languagelinks = self.getlanguagelinks()
-    projectlinks = self.getprojectlinks()
-    contents = [aboutlink, languagelinks, projectlinks]
-    pagelayout.PootlePage.__init__(self, self.localize("Pootle"), contents, session)
+    pagetitle = self.localize("Pootle")
+    pagelayout.PootlePage.__init__(self, pagetitle, [], session)
+    self.templatename = "index"
+    aboutlink = self.localize("About this Pootle server")
+    languagelink = self.localize('Languages')
+    projectlink = self.localize('Projects')
+    instancetitle = getattr(session.instance, "title", session.localize("Pootle Demo"))
+    sessionvars = {"status": session.status, "isopen": session.isopen, "issiteadmin": session.issiteadmin()}
+    languages = [{"code": code, "name": name, "sep": ", "} for code, name in self.potree.getlanguages()]
+    if languages:
+      languages[-1]["sep"] = ""
+    self.templatevars = {"pagetitle": pagetitle, "aboutlink": aboutlink,
+        "languagelink": languagelink, "languages": languages,
+        "projectlink": projectlink, "projects": self.getprojects(),
+        "session": sessionvars, "instancetitle": pagetitle}
 
-  def getlanguagelinks(self):
-    """gets the links to the languages"""
-    languagestitle = pagelayout.Title(widgets.Link("languages/", self.localize('Languages')))
-    languagelinks = []
-    for languagecode, languagename in self.potree.getlanguages():
-      languagelink = widgets.Link(languagecode+"/", languagename)
-      languagelinks.append(languagelink)
-    listwidget = widgets.SeparatedList(languagelinks, ", ")
-    bodydescription = pagelayout.ItemDescription(listwidget)
-    return pagelayout.Contents([languagestitle, bodydescription])
-
-  def getprojectlinks(self):
-    """gets the links to the projects"""
-    projectstitle = pagelayout.Title(widgets.Link("projects/", self.localize("Projects")))
-    projectlinks = []
+  def getprojects(self):
+    """gets the options for the projects"""
+    projects = []
     for projectcode in self.potree.getprojectcodes():
       projectname = self.potree.getprojectname(projectcode)
-      projectdescription = self.potree.getprojectdescription(projectcode)
-      projectlink = widgets.Link("projects/%s/" % projectcode, projectname, {"title":projectdescription})
-      projectlinks.append(projectlink)
-    listwidget = widgets.SeparatedList(projectlinks, ", ")
-    bodydescription = pagelayout.ItemDescription(listwidget)
-    return pagelayout.Contents([projectstitle, bodydescription])
+      description = self.potree.getprojectdescription(projectcode)
+      projects.append({"code": projectcode, "name": projectname, "description": description, "sep": ", "})
+    if projects:
+      projects[-1]["sep"] = ""
+    return projects
 
 class UserIndex(pagelayout.PootlePage):
   """home page for a given user"""
