@@ -13,17 +13,25 @@ from Pootle import pagelayout
 class RegistrationError(ValueError):
   pass
 
-class LoginPage(server.LoginPage, pagelayout.PootlePage):
+class LoginPage(pagelayout.PootlePage):
   """wraps the normal login page in a PootlePage layout"""
-  def __init__(self, session, extraargs={}, confirmlogin=0, specialmessage=None, languagenames=None):
-    server.LoginPage.__init__(self, session, extraargs, confirmlogin, specialmessage, languagenames)
-    contents = pagelayout.IntroText(self.contents)
-    pagelayout.PootlePage.__init__(self, session.localize("Login to Pootle"), contents, session)
+  def __init__(self, session, languagenames=None):
+    self.languagenames = languagenames
+    pagetitle = session.localize("Login to Pootle")
+    pagelayout.PootlePage.__init__(self, pagetitle, [], session)
+    self.templatename = "login"
+    instancetitle = getattr(session.instance, "title", session.localize("Pootle Demo"))
+    sessionvars = {"status": session.status, "isopen": session.isopen, "issiteadmin": session.issiteadmin()}
+    self.templatevars = {"pagetitle": pagetitle,
+        "username_title": self.localize("Username:"),
+        "username": getattr(session, 'username', ''),
+        "password_title": self.localize("Password:"),
+        "language_title": self.localize('Language:'),
+        "languages": self.getlanguageoptions(session),
+        "login_text": self.localize('Login'),
+        "session": sessionvars, "instancetitle": pagetitle}
 
-  def getcontents(self):
-    return pagelayout.PootlePage.getcontents(self)
-
-  def getlanguageselect(self, session):
+  def getlanguageoptions(self, session):
     """returns the language selector..."""
     # TODO: work out how we handle localization of language names...
     languageoptions = [('', session.localize("Default"))]
@@ -31,8 +39,7 @@ class LoginPage(server.LoginPage, pagelayout.PootlePage):
       languageoptions += self.languagenames.items()
     else:
       languageoptions += self.languagenames
-    languageselect = widgets.Select({'name':'language','value':session.language_set}, options=languageoptions)
-    return languageselect
+    return [{"code": key, "name": value, "selected": key==session.language or None} for key, value in languageoptions]
 
 class RegisterPage(pagelayout.PootlePage):
   """page for new registrations"""
