@@ -5,6 +5,7 @@
 
 from Pootle import projects
 from Pootle import pootlefile
+from translate.misc import autoencode
 import os
 import sre
 
@@ -159,7 +160,7 @@ class POTree:
 
   def getlanguagespecialchars(self, languagecode):
     """returns the language's special characters"""
-    return getattr(self.getlanguageprefs(languagecode), "specialchars", "")
+    return autoencode.autoencode(getattr(self.getlanguageprefs(languagecode), "specialchars", ""), "utf-8")
 
   def setlanguagespecialchars(self, languagecode, languagespecialchars):
     """sets the language's special characters"""
