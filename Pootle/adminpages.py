@@ -3,10 +3,6 @@
 
 from jToolkit.widgets import widgets
 from jToolkit.widgets import table
-try:
-    from jToolkit.xml import taldom
-except ImportError:
-    taldom = None
 from Pootle import pagelayout
 from Pootle import projects
 from translate.filters import checks
@@ -27,9 +23,9 @@ class AdminPage(pagelayout.PootlePage):
     else:
       contents = pagelayout.IntroText(self.localize("You do not have the rights to administer pootle."))
     pagelayout.PootlePage.__init__(self, self.localize("Pootle Admin Page"), contents, session)
-    if taldom is not None and not getattr(self.instance, "disabletemplates", False):
+    if not getattr(self.instance, "disabletemplates", False):
         self.templatename = "adminindex"
-        sessionvars = {"status": taldom.escapedunicode(self.session.status), "isopen": self.session.isopen, "issiteadmin": self.session.issiteadmin()}
+        sessionvars = {"status": self.session.status, "isopen": self.session.isopen, "issiteadmin": self.session.issiteadmin()}
         instancetitle = getattr(self.instance, "title", session.localize("Pootle Demo"))
         self.templatevars = {"options": self.getoptions(), "session": sessionvars, "instancetitle": instancetitle}
 
@@ -73,9 +69,9 @@ class LanguagesAdminPage(pagelayout.PootlePage):
     else:
       contents = pagelayout.IntroText(self.localize("You do not have the rights to administer pootle."))
     pagelayout.PootlePage.__init__(self, self.localize("Pootle Languages Admin Page"), contents, session)
-    if taldom is not None and not getattr(self.instance, "disabletemplates", False):
+    if not getattr(self.instance, "disabletemplates", False):
         self.templatename = "adminlanguages"
-        sessionvars = {"status": taldom.escapedunicode(self.session.status), "isopen": self.session.isopen, "issiteadmin": self.session.issiteadmin()}
+        sessionvars = {"status": self.session.status, "isopen": self.session.isopen, "issiteadmin": self.session.issiteadmin()}
         instancetitle = getattr(self.instance, "title", session.localize("Pootle Demo"))
         self.templatevars = {"languages": self.getlanguagesoptions(), "options": self.getoptions(), "session": sessionvars, "instancetitle": instancetitle}
 
@@ -160,9 +156,9 @@ class ProjectsAdminPage(pagelayout.PootlePage):
     else:
       contents = pagelayout.IntroText(self.localize("You do not have the rights to administer pootle."))
     pagelayout.PootlePage.__init__(self, self.localize("Pootle Projects Admin Page"), contents, session)
-    if taldom is not None and not getattr(self.instance, "disabletemplates", False):
+    if not getattr(self.instance, "disabletemplates", False):
         self.templatename = "adminprojects"
-        sessionvars = {"status": taldom.escapedunicode(self.session.status), "isopen": self.session.isopen, "issiteadmin": self.session.issiteadmin()}
+        sessionvars = {"status": self.session.status, "isopen": self.session.isopen, "issiteadmin": self.session.issiteadmin()}
         instancetitle = getattr(self.instance, "title", session.localize("Pootle Demo"))
         self.templatevars = {"projects": self.getprojectsoptions(), "options": self.getoptions(), "session": sessionvars, "instancetitle": instancetitle}
 
@@ -176,6 +172,8 @@ class ProjectsAdminPage(pagelayout.PootlePage):
     for option in options:
       if "newvalue" in option:
         option["newname"] = "newproject" + option["name"]
+      if "type" not in option and "selectoptions" not in option:
+        type="text"
     return options
 
   def getprojectsoptions(self):
@@ -267,9 +265,9 @@ class UsersAdminPage(pagelayout.PootlePage):
     else:
       contents = pagelayout.IntroText(self.localize("You do not have the rights to administer Pootle."))
     pagelayout.PootlePage.__init__(self, self.localize("Pootle User Admin Page"), contents, session)
-    if taldom is not None and not getattr(self.instance, "disabletemplates", False):
+    if not getattr(self.instance, "disabletemplates", False):
         self.templatename = "adminusers"
-        sessionvars = {"status": taldom.escapedunicode(self.session.status), "isopen": self.session.isopen, "issiteadmin": self.session.issiteadmin()}
+        sessionvars = {"status": self.session.status, "isopen": self.session.isopen, "issiteadmin": self.session.issiteadmin()}
         instancetitle = getattr(self.instance, "title", session.localize("Pootle Demo"))
         self.templatevars = {"users": self.getusersoptions(), "options": self.getoptions(), "session": sessionvars, "instancetitle": instancetitle}
 
