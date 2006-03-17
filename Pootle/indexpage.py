@@ -25,17 +25,21 @@ class AboutPage(pagelayout.PootlePage):
   def __init__(self, session):
     self.localize = session.localize
     pagetitle = getattr(session.instance, "title")
-    title = pagelayout.Title(pagetitle)
-    description = pagelayout.IntroText(getattr(session.instance, "description"))
-    abouttitle = pagelayout.Title(self.localize("About Pootle"))
-    introtext = pagelayout.IntroText(self.localize("<strong>Pootle</strong> is a simple web portal that should allow you to <strong>translate</strong>! Since Pootle is <strong>Free Software</strong>, you can download it and run your own copy if you like. You can also help participate in the development in many ways (you don't have to be able to program)."))
-    hosttext = pagelayout.IntroText(self.localize('The Pootle project itself is hosted at <a href="http://translate.sourceforge.net/">translate.sourceforge.net</a> where you can find the details about source code, mailing lists etc.'))
-    nametext = pagelayout.IntroText(self.localize('The name stands for <b>PO</b>-based <b>O</b>nline <b>T</b>ranslation / <b>L</b>ocalization <b>E</b>ngine, but you may need to read <a href="http://www.thechestnut.com/flumps.htm">this</a>.'))
-    versiontitle = pagelayout.Title(self.localize("Versions"))
-    versiontext = pagelayout.IntroText(self.localize("This site is running:<br/>Pootle %s<br/>Translate Toolkit %s<br/>jToolkit %s<br/>Python %s (on %s/%s)") % (pootleversion.ver, toolkitversion.ver, jtoolkitversion.ver, sys.version, sys.platform, os.name))
-    aboutpootle = [abouttitle, introtext, hosttext, nametext, versiontitle, versiontext]
-    contents = pagelayout.Contents([title, description, aboutpootle])
-    pagelayout.PootlePage.__init__(self, pagetitle, contents, session)
+    description = getattr(session.instance, "description")
+    abouttitle = self.localize("About Pootle")
+    introtext = self.localize("<strong>Pootle</strong> is a simple web portal that should allow you to <strong>translate</strong>! Since Pootle is <strong>Free Software</strong>, you can download it and run your own copy if you like. You can also help participate in the development in many ways (you don't have to be able to program).")
+    hosttext = self.localize('The Pootle project itself is hosted at <a href="http://translate.sourceforge.net/">translate.sourceforge.net</a> where you can find the details about source code, mailing lists etc.')
+    nametext = self.localize('The name stands for <b>PO</b>-based <b>O</b>nline <b>T</b>ranslation / <b>L</b>ocalization <b>E</b>ngine, but you may need to read <a href="http://www.thechestnut.com/flumps.htm">this</a>.')
+    versiontitle = self.localize("Versions")
+    versiontext = self.localize("This site is running:<br/>Pootle %s<br/>Translate Toolkit %s<br/>jToolkit %s<br/>Python %s (on %s/%s)") % (pootleversion.ver, toolkitversion.ver, jtoolkitversion.ver, sys.version, sys.platform, os.name)
+    pagelayout.PootlePage.__init__(self, pagetitle, [], session)
+    self.templatename = "about"
+    instancetitle = getattr(session.instance, "title", session.localize("Pootle Demo"))
+    sessionvars = {"status": session.status, "isopen": session.isopen, "issiteadmin": session.issiteadmin()}
+    self.templatevars = {"pagetitle": pagetitle, "description": description,
+        "abouttitle": abouttitle, "introtext": introtext,
+        "hosttext": hosttext, "nametext": nametext, "versiontitle": versiontitle, "versiontext": versiontext,
+        "session": sessionvars, "instancetitle": pagetitle}
 
 class PootleIndex(pagelayout.PootlePage):
   """the main page"""
