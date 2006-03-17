@@ -115,42 +115,16 @@ class UserIndex(pagelayout.PootlePage):
     return quicklinks
 
 class ProjectsIndex(PootleIndex):
-  """the list of projects"""
-  def getlanguagelinks(self):
-    """we don't need language links on the project page"""
-    return ""
-
-  def getprojectlinks(self):
-    """gets the links to the projects"""
-    projectstitle = pagelayout.Title(self.localize("Projects"))
-    projectlinks = []
-    for projectcode in self.potree.getprojectcodes():
-      projectname = self.potree.getprojectname(projectcode)
-      projectdescription = self.potree.getprojectdescription(projectcode)
-      projectlink = widgets.Link("%s/" % projectcode, projectname, {"title":projectdescription})
-      projectlinks.append(projectlink)
-    listwidget = widgets.SeparatedList(projectlinks, ", ")
-    bodydescription = pagelayout.ItemDescription(listwidget)
-    return pagelayout.Contents([projectstitle, bodydescription])
+  """the list of languages"""
+  def __init__(self, potree, session):
+    PootleIndex.__init__(self, potree, session)
+    self.templatename = "projects"
 
 class LanguagesIndex(PootleIndex):
   """the list of languages"""
-
-  def getlanguagelinks(self):
-    """gets the links to the languages"""
-    languagestitle = pagelayout.Title(self.localize("Languages"))
-    languagelinks = []
-    for languagecode, languagename in self.potree.getlanguages():
-      languagename = self.potree.getlanguagename(languagecode)
-      languagelink = widgets.Link("../%s/" % languagecode, languagename)
-      languagelinks.append(languagelink)
-    listwidget = widgets.SeparatedList(languagelinks, ", ")
-    bodydescription = pagelayout.ItemDescription(listwidget)
-    return pagelayout.Contents([languagestitle, bodydescription])
-
-  def getprojectlinks(self):
-    """we don't need project links on the language page"""
-    return ""
+  def __init__(self, potree, session):
+    PootleIndex.__init__(self, potree, session)
+    self.templatename = "languages"
 
 class LanguageIndex(pagelayout.PootleNavPage):
   """the main page"""
