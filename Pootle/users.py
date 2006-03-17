@@ -38,23 +38,28 @@ class RegisterPage(pagelayout.PootlePage):
   """page for new registrations"""
   def __init__(self, session, argdict):
     self.localize = session.localize
-    introtext = [pagelayout.IntroText(self.localize("Please enter your registration details"))]
-    if session.status:
-      statustext = pagelayout.IntroText(session.status)
-      introtext.append(statustext)
+    introtext = self.localize("Please enter your registration details")
+    pagetitle = self.localize("Pootle Registration")
     self.argdict = argdict
-    contents = [introtext, self.getform()]
-    pagelayout.PootlePage.__init__(self, self.localize("Pootle Registration"), contents, session)
-
-  def getform(self):
-    columnlist = [("email", self.localize("Email Address"), self.localize("Must be a valid email address")),
-                  ("username", self.localize("Username"), self.localize("Your requested username")),
-                  ("name", self.localize("Full Name"), self.localize("Your full name")),
-                  ("password", self.localize("Password"), self.localize("Your desired password"))]
-    formlayout = {1:("username", ), 2:("password", ), 3:("name", ), 4:("email", )}
-    extrawidgets = [widgets.Input({'type': 'submit', 'name':'register', 'value':self.localize('Register')})]
-    record = dict([(column[0], self.argdict.get(column[0], "")) for column in columnlist])
-    return form.SimpleForm(record, "register", columnlist, formlayout, {}, extrawidgets)
+    pagelayout.PootlePage.__init__(self, pagetitle, [], session)
+    self.templatename = "register"
+    instancetitle = getattr(session.instance, "title", session.localize("Pootle Demo"))
+    sessionvars = {"status": session.status, "isopen": session.isopen, "issiteadmin": session.issiteadmin()}
+    self.templatevars = {"pagetitle": pagetitle, "introtext": introtext,
+        "username_title": self.localize("Username"),
+        "username_tooltip": self.localize("Your requested username"),
+        "username": self.argdict.get("username", ""),
+        "email_title": self.localize("Email Address"),
+        "email_tooltip": self.localize("Must be a valid email address"),
+        "email": self.argdict.get("email", ""),
+        "fullname_title": self.localize("Full Name"),
+        "fullname_tooltip": self.localize("Your full name"),
+        "fullname": self.argdict.get("name", ""),
+        "password_title": self.localize("Password"),
+        "password_tooltip": self.localize("Your desired password"),
+        "password": self.argdict.get("password", ""),
+        "register_text": self.localize('Register Account'),
+        "session": sessionvars, "instancetitle": pagetitle}
 
 class ActivatePage(pagelayout.PootlePage):
   """page for new registrations"""
