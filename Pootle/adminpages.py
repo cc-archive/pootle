@@ -195,43 +195,43 @@ class ProjectAdminPage(pagelayout.PootlePage):
         for languagecode in languagecodes:
           translationproject = self.potree.getproject(languagecode, self.projectcode)
           translationproject.converttemplates(self.session)
-      mainpagelink = pagelayout.Title(widgets.Link("index.html", self.localize("Back to main page")))
-      languagestitle = pagelayout.Title(self.localize("Existing languages"))
-      languagelinks = self.getlanguagelinks()
-      existing = pagelayout.ContentsItem([languagestitle, languagelinks])
-      updatebutton = widgets.Input({"type": "submit", "name": "doupdatelanguage", "value": self.localize("Update Languages")})
-      multiupdate = widgets.HiddenFieldList({"allowmultikey": "updatelanguage"})
-      updateform = widgets.Form([existing, updatebutton, multiupdate], {"action": "", "name":"updatelangform"})
-      newlangform = self.getnewlangform()
-      contents = [mainpagelink, updateform, newlangform]
-    else:
-      contents = pagelayout.IntroText(self.localize("You do not have the rights to administer this project."))
-    pagelayout.PootlePage.__init__(self, "Pootle Admin: "+projectname, contents, session, bannerheight=81, returnurl="projects/%s/admin.html" % projectcode)
+    main_link = self.localize("Back to main page")
+    existing_title = self.localize("Existing languages")
+    existing_languages = self.getexistinglanguages()
+    new_languages = self.getnewlanguages()
+    update_button = self.localize("Update Languages")
+    pagetitle = "Pootle Admin: "+projectname,
+    norights_text = self.localize("You do not have the rights to administer this project.")
+    update_link = self.localize("Update from templates")
+    pagelayout.PootlePage.__init__(self, pagetitle, [], session, bannerheight=81, returnurl="projects/%s/admin.html" % projectcode)
+    self.templatename = "projectadmin"
+    sessionvars = {"status": self.session.status, "isopen": self.session.isopen, "issiteadmin": self.session.issiteadmin()}
+    instancetitle = getattr(self.session.instance, "title", session.localize("Pootle Demo"))
+    self.templatevars = {"pagetitle": pagetitle, "norights_text": norights_text,
+        "project": {"code": projectcode, "name": projectname},
+        "existing_title": existing_title, "existing_languages": existing_languages,
+        "new_languages": new_languages,
+        "update_button": update_button, "add_button": self.localize("Add Language"),
+        "main_link": main_link, "update_link": update_link,
+        "session": sessionvars, "instancetitle": instancetitle}
 
-  def getlanguagelinks(self):
-    """gets the links to the languages"""
+  def getexistinglanguages(self):
+    """gets the info on existing languages"""
     languages = self.potree.getlanguages(self.projectcode)
-    languageitems = [self.getlanguageitem(languagecode, languagename) for languagecode, languagename in languages]
-    return pagelayout.Item(languageitems)
+    languageitems = [{"code": languagecode, "name": languagename} for languagecode, languagename in languages]
+    for n, item in enumerate(languageitems):
+      item["parity"] = ["even", "odd"][n % 2]
+    return languageitems
 
-  def getlanguageitem(self, languagecode, languagename):
-    adminlink = widgets.Link("../../%s/%s/admin.html" % (languagecode, self.projectcode), languagename)
-    updatecheckbox = widgets.Input({'type': 'checkbox', 'name': 'updatelanguage', 'value': languagecode})
-    updatelink = widgets.Link("?doupdatelanguage=1&updatelanguage=%s" % languagecode, self.localize("Update from templates"))
-    return pagelayout.ItemDescription([adminlink, updatecheckbox, updatelink])
-
-  def getnewlangform(self):
+  def getnewlanguages(self):
     """returns a box that lets the user add new languages"""
     existingcodes = self.potree.getlanguagecodes(self.projectcode)
     allcodes = self.potree.getlanguagecodes()
     newcodes = [code for code in allcodes if not (code in existingcodes or code == "templates")]
     newoptions = [(self.potree.getlanguagename(code), code) for code in newcodes]
     newoptions.sort()
-    newoptions = [(code, languagename) for (languagename, code) in newoptions]
-    languageselect = widgets.Select({'name':'newlanguage'}, options=newoptions)
-    submitbutton = widgets.Input({"type": "submit", "name": "doaddlanguage", "value": self.localize("Add Language")})
-    newlangform = widgets.Form([languageselect, submitbutton], {"action": "", "name":"newlangform"})
-    return newlangform
+    newoptions = [{"code": code, "name": languagename} for (languagename, code) in newoptions]
+    return newoptions
 
 class TranslationProjectAdminPage(pagelayout.PootlePage):
   """admin page for a translation project (project+language)"""
