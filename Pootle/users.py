@@ -95,78 +95,66 @@ class UserOptions(pagelayout.PootlePage):
     self.potree = potree
     self.session = session
     self.localize = session.localize
-    submitbutton = widgets.Input({"type":"submit", "name":"changeoptions", "value": self.localize("Save changes")})
-    hiddenfields = widgets.HiddenFieldList([("allowmultikey","languages"), ("allowmultikey","projects")])
-    formmembers = [self.getprojectoptions(), self.getlanguageoptions(), hiddenfields, submitbutton]
-    useroptions = widgets.Form(formmembers, {"name": "useroptions", "action":""})
-    homelink = pagelayout.IntroText(widgets.Link("index.html", self.localize("Home page")))
-    contents = [self.getpersonaloptions(), useroptions, homelink]
-    pagelayout.PootlePage.__init__(self, self.localize("Options for: %s") % session.username, contents, session)
+    pagetitle = self.localize("Options for: %s") % session.username
+    pagelayout.PootlePage.__init__(self, pagetitle, [], session)
+    self.templatename = "options"
+    instancetitle = getattr(session.instance, "title", session.localize("Pootle Demo"))
+    sessionvars = {"status": session.status, "isopen": session.isopen, "issiteadmin": session.issiteadmin()}
+    self.templatevars = {"pagetitle": pagetitle,
+        "detailstitle": self.localize("Personal Details"),
+        "option_heading": self.localize("Option"),
+        "value_heading": self.localize("Current value"),
+        "fullname_title": self.localize("Name"),
+        "fullname": self.session.prefs.name,
+        "email_title": self.localize("Email"),
+        "email": self.session.prefs.email,
+        "interface_title": self.localize("Translation Interface Configuration"),
+        "uilanguage_heading": self.localize("User Interface language"),
+        "projects_title": self.localize("My Projects"),
+        "projects": self.getprojectoptions(),
+        "languages_title": self.localize("My Languages"),
+        "languages": self.getlanguageoptions(),
+        "home_link": self.localize("Home page"),
+        "submit_button": self.localize("Save changes"),
+        "session": sessionvars, "instancetitle": pagetitle}
+    otheroptions = self.getotheroptions()
+    self.templatevars.update(otheroptions)
 
   def getprojectoptions(self):
     """gets the options box to change the user's projects"""
-    projectstitle = pagelayout.Title(self.localize("My Projects"))
     projectoptions = []
     userprojects = self.session.getprojects()
     for projectcode in self.potree.getprojectcodes():
       projectname = self.potree.getprojectname(projectcode)
-      projectoptions.append((projectcode, projectname))
-    projectselect = widgets.MultiSelect({"value": userprojects, "name": "projects"}, projectoptions)
-    bodydescription = pagelayout.ItemDescription([projectselect, widgets.HiddenFieldList({"allowmultikey":"projects"})])
-    return pagelayout.Contents([projectstitle, bodydescription])
+      projectoptions.append({"code": projectcode, "name": projectname, "selected": projectcode in userprojects or None})
+    return projectoptions
 
   def getlanguageoptions(self):
-    """gets the options box to change the user's languages"""
-    languagestitle = pagelayout.Title(self.localize("My Languages"))
-    languageoptions = []
+    """returns options for languages"""
     userlanguages = self.session.getlanguages()
     languageoptions = self.potree.getlanguages()
-    languageselect = widgets.MultiSelect({"value": userlanguages, "name": "languages"}, languageoptions)
-    bodydescription = pagelayout.ItemDescription(languageselect)
-    return pagelayout.Contents([languagestitle, bodydescription])
+    languages = []
+    for language, name in languageoptions:
+      languages.append({"code": language, "name": name, "selected": language in userlanguages or None})
+    return languages
 
-  def getpersonaloptions(self):
-    """get the options fields to change the user's personal details"""
-    personaltitle = pagelayout.Title(self.localize("Personal Details"))
-    personal = table.TableLayout()
-    personal.setcell(0, 0, table.TableCell(pagelayout.Title(self.localize("Option"))))
-    personal.setcell(0, 1, table.TableCell(pagelayout.Title(self.localize("Current value"))))
-    options = {"name": self.localize("Name"), "email": self.localize("Email")}
-    for option, optionname in options.items():
-      optionvalue = getattr(self.session.prefs, option, "")
-      valuetextbox = widgets.Input({"name": "option-%s" % option, "value": optionvalue})
-      rownum = personal.maxrownum()+1
-      personal.setcell(rownum, 0, table.TableCell(optionname))
-      personal.setcell(rownum, 1, table.TableCell(valuetextbox))
-    rownum = personal.maxrownum()+1
-    submitbutton = widgets.Input({"type":"submit", "name":"changepersonal", "value":self.localize("Save changes")})
-    personalform = widgets.Form([personal, submitbutton], {"name": "personal", "action":""})
-    interfacetitle = pagelayout.Title(self.localize("Translation Interface Configuration"))
-    interface = table.TableLayout()
-    interface.setcell(0, 0, table.TableCell(pagelayout.Title(self.localize("Option"))))
-    interface.setcell(0, 1, table.TableCell(pagelayout.Title(self.localize("Current value"))))
+  def getotheroptions(self):
     uilanguage = getattr(self.session.prefs, "uilanguage", "")
     if not uilanguage:
       userlanguages = self.session.getlanguages()
       if userlanguages:
         uilanguage = userlanguages[0]
-    languageoptions = [('', '')] + self.potree.getlanguages()
-    selectlanguage = widgets.Select({"value": uilanguage, "name": "option-uilanguage"}, languageoptions)
-    interface.setcell(1, 0, table.TableCell(self.localize("User Interface language")))
-    interface.setcell(1, 1, table.TableCell(selectlanguage))
+    languageoptions = [{"code": '', "name": ''}]
+    for code, name in self.potree.getlanguages():
+      languageoptions.append({"code": code, "name": name, "selected": uilanguage == code or None})
     options = {"inputheight": self.localize("Input Height"), "inputwidth": self.localize("Input Width"),
           "viewrows": self.localize("Number of rows in view mode"), 
           "translaterows": self.localize("Number of rows in translate mode")}
-    for option, optionname in options.items():
+    optionlist = []
+    for option, description in options.items():
       optionvalue = getattr(self.session.prefs, option, "")
-      valuetextbox = widgets.Input({"name": "option-%s" % option, "value": optionvalue})
-      rownum = interface.maxrownum()+1
-      interface.setcell(rownum, 0, table.TableCell(optionname))
-      interface.setcell(rownum, 1, table.TableCell(valuetextbox))
-    rownum = interface.maxrownum()+1
-    submitbutton = widgets.Input({"type":"submit", "name":"changeinterface", "value":self.localize("Save changes")})
-    interfaceform = widgets.Form([interface, submitbutton], {"name": "interface", "action":""})
-    return pagelayout.Contents([personaltitle, personalform, interfacetitle, interfaceform])
+      optionlist.append({"code": option, "description": description, "value": optionvalue})
+    return {"uilanguage": uilanguage, "uilanguage_options": languageoptions, "other_options": optionlist}
 
 class OptionalLoginAppServer(server.LoginAppServer):
   """a server that enables login but doesn't require it except for specified pages"""
