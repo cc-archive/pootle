@@ -62,8 +62,12 @@ Commands:
 	countreviews <language-dir> <phase-list> <phase-name> -- count the number of strings and words under review
 	checkinpo <language-dir> <phase-list> <phase-name> -- cvs checkin the files in the given phase
 	creategsi <language-dir> <en-US.gsi> <traget-language> -- creates a BZ2 GSI/SDF file for the language against the en-US GSI file
-        reviewsinout <language> <phase-name> -- counts the number of review files returned vs sent and shows which are missing 
+	reviewsinout <language> <phase-name> -- counts the number of review files returned vs sent and shows which are missing 
 	reviewsdiff <language> <phase-name> -- create a diff between what was sent for review and what was returned
+
+Note:
+	A phase-name of ALL will perform the operation against all phases.
+	phase-name can be a regex that usable by egrep eg. "(firefox|thunderbird)"
 EOF
 	#emailpot <template-dir> <phase-list> <phase-name> <emails> -- emails the POT files with wordcount to the addresses
 	#emailpo <language-dir> <phase-list> <phase-name> <emails> -- emails the PO files with wordcount to the addresses
@@ -91,12 +95,16 @@ function getphasefiles {
 	# Returns a list of files that are valid for this phase
 	filelist=$1
 	phase=$2
-	egrep --count "^$phase\b" $filelist > /dev/null
-	if [ $? -ne 0 ]; then
-		echo "No such phase exists"
-		exit 1
-	fi
-	egrep "^$phase\b" $filelist | cut -f 2 | sort
+	if [ "$phase" != "ALL" ]; then
+		egrep --count "^$phase\b" $filelist > /dev/null
+		if [ $? -ne 0 ]; then
+			echo "No such phase exists"
+			exit 1
+		fi
+		egrep "^$phase\b" $filelist
+	else
+		cat $filelist
+	fi | cut -f 2 | sort
 }
 
 function getphases {
