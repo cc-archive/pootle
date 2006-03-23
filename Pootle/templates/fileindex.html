@@ -32,10 +32,19 @@
         <a py:for="link in navactions.extended" href="${link.href}" title="${link.title}">${link.text}${link.sep}</a>
       </div>
 
-      <div class="item-statistics" py:if="navstats" py:content="XML(navstats)">
-        <div class="item-statistics">
-          1 file, 2/2 words (100%) translated <span class="string-statistics">[2/2 strings]</span>
-        </div>
+      <div class="item-statistics">
+        <span py:replace="XML(navstats.summary)">
+          2/2 words (100%) translated <span class="string-statistics">[2/2 strings]</span>
+        </span>
+        <span py:for="check in navstats.checks" py:strip="True">
+          <br/>
+          <a href="${check.href}" py:content="check.text">checkname</a>
+          <span py:content="check.stats" py:strip="True">3 strings (20%) failed</span>
+        </span>
+        <span py:for="track in navstats.tracks" py:strip="True"><br/>${track}</span>
+        <span py:for="assign in navstats.assigns" py:strip="True">
+          <br/><span py:replace="XML(assign)"/>
+        </span>
       </div>
     </div>
 
@@ -60,8 +69,19 @@
               <input type="submit" name="doeditgoalusers" value="${item.goal.adduser_title}"/>
             </form>
           </div>
-          <div class="item-statistics" py:content="XML(item.goal.stats)">
-            2/2 words (100%) translated <span class="string-statistics">[2/2 strings]</span>
+          <div class="item-statistics">
+            <span py:replace="XML(item.goal.stats.summary)">
+              2/2 words (100%) translated <span class="string-statistics">[2/2 strings]</span>
+            </span>
+            <span py:for="check in item.goal.stats.checks" py:strip="True">
+              <br/>
+              <a href="${check.href}" py:content="check.text">checkname</a>
+              <span py:content="check.stats" py:strip="True">3 strings (20%) failed</span>
+            </span>
+            <span py:for="track in item.goal.stats.tracks" py:strip="True"><br/>${track}</span>
+            <span py:for="assign in item.goal.stats.assigns" py:strip="True">
+              <br/><span py:replace="XML(assign)"/>
+            </span>
           </div>
         </div>
       </div>
@@ -76,8 +96,19 @@
             <a py:for="link in item.dir.actions.extended" href="${link.href}" title="${link.title}">${link.text}${link.sep}</a>
           </div>
         </div>
-        <div class="item-statistics" py:content="XML(item.dir.stats)">
-          2/2 words (100%) translated <span class="string-statistics">[2/2 strings]</span>
+        <div class="item-statistics">
+          <span py:replace="XML(item.dir.stats.summary)">
+            2/2 words (100%) translated <span class="string-statistics">[2/2 strings]</span>
+          </span>
+          <span py:for="check in item.dir.stats.checks" py:strip="True">
+            <br/>
+            <a href="${check.href}" py:content="check.text">checkname</a>
+            <span py:content="check.stats" py:strip="True">3 strings (20%) failed</span>
+          </span>
+          <span py:for="track in item.dir.stats.tracks" py:strip="True"><br/>${track}</span>
+          <span py:for="assign in item.dir.stats.assigns" py:strip="True">
+            <br/><span py:replace="XML(assign)"/>
+          </span>
         </div>
       </div>
 
@@ -92,8 +123,19 @@
           </div>
         </div>
   
-        <div class="item-statistics" py:content="XML(item.file.stats)">
-          2/2 words (100%) translated <span class="string-statistics">[2/2 strings]</span>
+        <div class="item-statistics">
+          <span py:replace="XML(item.file.stats.summary)">
+            2/2 words (100%) translated <span class="string-statistics">[2/2 strings]</span>
+          </span>
+          <span py:for="check in item.file.stats.checks" py:strip="True">
+            <br/>
+            <a href="${check.href}" py:content="check.text">checkname</a>
+            <span py:content="check.stats" py:strip="True">3 strings (20%) failed</span>
+          </span>
+          <span py:for="track in item.file.stats.tracks" py:strip="True"><br/>${track}</span>
+          <span py:for="assign in item.file.stats.assigns" py:strip="True">
+            <br/><span py:replace="XML(assign)"/>
+          </span>
         </div>
       </div>
     </div>

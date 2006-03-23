@@ -258,7 +258,7 @@ class ProjectIndex(pagelayout.PootleNavPage):
     self.currentgoal = self.argdict.pop("goal", None)
     if dirfilter and dirfilter.endswith(".po"):
       actionlinks = []
-      mainstats = []
+      mainstats = ""
       mainicon = "file"
     else:
       pofilenames = self.project.browsefiles(dirfilter)
@@ -284,7 +284,7 @@ class ProjectIndex(pagelayout.PootleNavPage):
         # navigation bar
         "navicon": "folder",
         "navpath": navbarpath_dict, "navactions": actionlinks,
-        "navstats": widgets.PlainContents(mainstats).gethtml(),
+        "navstats": mainstats,
         # children
         "children": childitems,
         # general vars
@@ -570,7 +570,7 @@ class ProjectIndex(pagelayout.PootleNavPage):
         goal["show_adduser"] = True
         goal["otherusers"] = unassignedusers
         goal["adduser_title"] = self.localize("Add User")
-    goal["stats"] = self.getitemstats("", projectstats, len(pofilenames), aswidget=False)
+    goal["stats"] = self.getitemstats("", projectstats, len(pofilenames))
     return {"goal": goal}
 
   def getdiritem(self, direntry, linksrequired=None, **newargs):
@@ -588,9 +588,9 @@ class ProjectIndex(pagelayout.PootleNavPage):
     actionlinks = self.getactionlinks(basename, projectstats, linksrequired=linksrequired)
     diritem["actions"] = actionlinks
     if self.showgoals and "goal" in self.argdict:
-      diritem["stats"] = self.getitemstats(basename, projectstats, (len(goalfilenames), len(pofilenames)), aswidget=False)
+      diritem["stats"] = self.getitemstats(basename, projectstats, (len(goalfilenames), len(pofilenames)))
     else:
-      diritem["stats"] = self.getitemstats(basename, projectstats, len(pofilenames), aswidget=False)
+      diritem["stats"] = self.getitemstats(basename, projectstats, len(pofilenames))
     return {"dir": diritem}
 
   def getfileitem(self, fileentry, linksrequired=None, **newargs):
@@ -634,7 +634,7 @@ class ProjectIndex(pagelayout.PootleNavPage):
       else:
         actionlink["sep"] = ""
     fileitem["actions"] = actions
-    fileitem["stats"] = self.getitemstats(basename, projectstats, None).gethtml()
+    fileitem["stats"] = self.getitemstats(basename, projectstats, None)
     return {"file": fileitem}
 
   def getgoalform(self, basename):
@@ -793,40 +793,34 @@ class ProjectIndex(pagelayout.PootleNavPage):
     print actions
     return actions
 
-  def getitemstats(self, basename, projectstats, numfiles, aswidget=True):
+  def getitemstats(self, basename, projectstats, numfiles):
     """returns a widget summarizing item statistics"""
     # TODO: refactor this to work simply with templates
-    statssummary = self.describestats(self.project, projectstats, numfiles, aswidget=True)
-    statsdetails = [statssummary]
+    statssummary = self.describestats(self.project, projectstats, numfiles, aswidget=False)
+    stats = {"summary": statssummary, "checks": [], "tracks": [], "assigns": []}
     if not basename or basename.endswith("/"):
       linkbase = basename + "translate.html?"
     else:
       linkbase = basename + "?translate=1"
     if projectstats:
-      print "project stats", projectstats, "show checks", self.showchecks
       if self.showchecks:
-        statsdetails = statsdetails + self.getcheckdetails(projectstats, linkbase)
+        stats["checks"] = self.getcheckdetails(projectstats, linkbase)
       if self.showtracks:
         trackfilter = (self.dirfilter or "") + basename
         trackpofilenames = self.project.browsefiles(trackfilter)
         projecttracks = self.project.gettracks(trackpofilenames)
-        statsdetails += self.gettrackdetails(projecttracks, linkbase)
+        stats["tracks"] = self.gettrackdetails(projecttracks, linkbase)
       if self.showassigns:
         if not basename or basename.endswith("/"):
           removelinkbase = "?showassigns=1&removeassigns=1"
         else:
           removelinkbase = "?showassigns=1&removeassigns=1&removefilter=%s" % basename
-        statsdetails = statsdetails + self.getassigndetails(projectstats, linkbase, removelinkbase)
-    statsdetails = widgets.SeparatedList(statsdetails, "<br/>\n")
-    if aswidget:
-      return pagelayout.ItemStatistics(statsdetails)
-    else:
-      return statsdetails.gethtml()
+        stats["assigns"] = self.getassigndetails(projectstats, linkbase, removelinkbase)
+    return stats
 
   def gettrackdetails(self, projecttracks, linkbase):
     """return a list of strings describing the results of tracks"""
-    for trackmessage in projecttracks:
-      yield widgets.Span(trackmessage, cls='trackerdetails')
+    return [trackmessage for trackmessage in projecttracks]
 
   def getcheckdetails(self, projectstats, linkbase):
     """return a list of strings describing the results of checks"""
@@ -840,9 +834,9 @@ class ProjectIndex(pagelayout.PootleNavPage):
       checkcount = len(projectstats[checkname])
       checkname = checkname.replace("check-", "", 1)
       if total and checkcount:
-        checklink = widgets.Link(self.makelink(linkbase, **{checkname:1}), checkname)
         stats = self.nlocalize("%d string (%d%%) failed", "%d strings (%d%%) failed", checkcount) % (checkcount, (checkcount * 100 / total))
-        checklinks += [[checklink, stats]]
+        checklink = {"href": self.makelink(linkbase, **{checkname:1}), "text": checkname, "stats": stats}
+        checklinks += checklink
     return checklinks
 
   def getassigndetails(self, projectstats, linkbase, removelinkbase):
@@ -857,7 +851,7 @@ class ProjectIndex(pagelayout.PootleNavPage):
     assignlinks = []
     keys = projectstats.keys()
     keys.sort()
-    for assignname in keys: 
+    for assignname in keys:
       if not assignname.startswith("assign-"):
         continue
       assigned = projectstats[assignname]
@@ -880,6 +874,6 @@ class ProjectIndex(pagelayout.PootleNavPage):
           removelink = widgets.Link(self.makelink(removelinkbase, assignedto=assignname), removetext)
         else:
           removelink = []
-        assignlinks += [[assignlink, ": ", stats, " ", stringstats, " - ", completestats, " ", completestringstats, " ", removelink]]
+        assignlinks += widgets.PlainContents([assignlink, ": ", stats, " ", stringstats, " - ", completestats, " ", completestringstats, " ", removelink]).gethtml()
     return assignlinks
 
