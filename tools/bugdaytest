@@ -18,13 +18,13 @@ echo ${timestamp} ${logfile}
   echo
   echo "cvs update:"
   echo "-----------"
-  cvs -q up translate | grep -v ^?
+  cvs -q up translate Pootle | grep -v ^?
   echo "local changes:"
   echo "--------------"
-  cvs -q diff -u translate | grep -v ^?
+  cvs -q diff -u translate Pootle | grep -v ^?
   echo "running tests:"
   echo "--------------"
-  py.test translate
+  py.test translate Pootle
   echo
   echo "done"
 ) 2>&1 | tee testlogs/${logfile}
