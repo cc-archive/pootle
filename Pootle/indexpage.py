@@ -283,7 +283,7 @@ class ProjectIndex(pagelayout.PootleNavPage):
         "search": {"title": self.localize("Search")}, "message": message,
         # navigation bar
         "navicon": "folder",
-        "navpath": navbarpath_dict, "navactions": pagelayout.ActionLinks(actionlinks).gethtml(),
+        "navpath": navbarpath_dict, "navactions": actionlinks,
         "navstats": widgets.PlainContents(mainstats).gethtml(),
         # children
         "children": childitems,
@@ -552,7 +552,7 @@ class ProjectIndex(pagelayout.PootleNavPage):
     goal["href"] = self.makelink("index.html", goal=goalname)
     if pofilenames:
       actionlinks = self.getactionlinks("", projectstats, linksrequired=["mine", "review", "translate", "zip"], goal=goalname)
-      goal["actions"] = pagelayout.ActionLinks(actionlinks).gethtml()
+      goal["actions"] = actionlinks
     goaluserslist = []
     if goalusers:
       goalusers.sort()
@@ -586,7 +586,7 @@ class ProjectIndex(pagelayout.PootleNavPage):
     diritem = {"href": browseurl, "title": basename}
     basename += "/"
     actionlinks = self.getactionlinks(basename, projectstats, linksrequired=linksrequired)
-    diritem["actions"] = pagelayout.ActionLinks(actionlinks).gethtml()
+    diritem["actions"] = actionlinks
     if self.showgoals and "goal" in self.argdict:
       diritem["stats"] = self.getitemstats(basename, projectstats, (len(goalfilenames), len(pofilenames)), aswidget=False)
     else:
@@ -595,48 +595,96 @@ class ProjectIndex(pagelayout.PootleNavPage):
 
   def getfileitem(self, fileentry, linksrequired=None, **newargs):
     """returns an item showing a file entry"""
-    # TODO: refactor this to work simply with templates
     if linksrequired is None:
       linksrequired = ["mine", "review", "quick", "all", "po", "xliff", "ts", "csv", "mo", "update"]
     basename = os.path.basename(fileentry)
     projectstats = self.project.combinestats([fileentry])
     browseurl = self.getbrowseurl(basename, **newargs)
     fileitem = {"href": browseurl, "title": basename}
-    actionlinks = self.getactionlinks(basename, projectstats, linksrequired=linksrequired)
+    actions = self.getactionlinks(basename, projectstats, linksrequired=linksrequired)
+    actionlinks = actions["extended"]
     if "po" in linksrequired:
-      downloadlink = widgets.Link(basename, self.localize('PO file'))
+      downloadlink = {"href": basename, "text": self.localize('PO file')}
       actionlinks.append(downloadlink)
     if "xliff" in linksrequired and "translate" in self.rights:
       xliffname = basename.replace(".po", ".xlf")
-      xlifflink = widgets.Link(xliffname, self.localize('XLIFF file'))
+      xlifflink = {"href": xliffname, "text": self.localize('XLIFF file')}
       actionlinks.append(xlifflink)
     if "ts" in linksrequired and "translate" in self.rights:
       tsname = basename.replace(".po", ".ts")
-      tslink = widgets.Link(tsname, self.localize('Qt .ts file'))
+      tslink = {"href": tsname, "text": self.localize('Qt .ts file')}
       actionlinks.append(tslink)
     if "csv" in linksrequired and "translate" in self.rights:
       csvname = basename.replace(".po", ".csv")
-      csvlink = widgets.Link(csvname, self.localize('CSV file'))
+      csvlink = {"href": csvname, "text": self.localize('CSV file')}
       actionlinks.append(csvlink)
     if "mo" in linksrequired:
       if self.project.hascreatemofiles(self.project.projectcode) and "pocompile" in self.rights:
         moname = basename.replace(".po", ".mo")
-        molink = widgets.Link(moname, self.localize('MO file'))
+        molink = {"href": moname, "text": self.localize('MO file')}
         actionlinks.append(molink)
     if "update" in linksrequired and "admin" in self.rights:
       if versioncontrol.hasversioning(os.path.join(self.project.podir, self.dirname)):
-        updatelink = widgets.Link("index.html?doupdate=1&updatefile=%s" % basename, self.localize('Update'))
+        updatelink = {"href": "index.html?doupdate=1&updatefile=%s" % basename, "text": self.localize('Update')}
         actionlinks.append(updatelink)
-    fileitem["actions"] = pagelayout.ActionLinks(actionlinks).gethtml()
+    # update the separators
+    for n, actionlink in enumerate(actionlinks):
+      if n < len(actionlinks)-1:
+        actionlink["sep"] = " | "
+      else:
+        actionlink["sep"] = ""
+    fileitem["actions"] = actions
     fileitem["stats"] = self.getitemstats(basename, projectstats, None).gethtml()
     return {"file": fileitem}
 
+  def getgoalform(self, basename):
+    """Returns a form for adjusting goals"""
+    # TODO: refactor this to work simply with templates
+    goalformname = "goal_%s" % (basename.replace("/", "_").replace(".", "_"))
+    goaloptions = [('', '')] + [(goalname, goalname) for goalname in self.project.getgoalnames()]
+    useroptions = ['']
+    for goalname in filegoals:
+      useroptions += self.project.getgoalusers(goalname)
+    if len(filegoals) > 1:
+      goalselect = widgets.MultiSelect({"name": "editgoal", "value": filegoals}, goaloptions)
+    else:
+      goalselect = widgets.Select({"name": "editgoal", "value": ''.join(filegoals)}, goaloptions)
+    editgoalfile = widgets.HiddenFieldList({"editgoalfile": basename})
+    editfilegoal = widgets.Input({"type": "submit", "name": "doeditgoal", "value": self.localize("Set Goal")})
+    if len(useroptions) > 1:
+      assignfilenames = self.project.browsefiles(dirfilter=goalfile)
+      if self.currentgoal:
+        action = "goal-" + self.currentgoal
+      else:
+        action = None
+      assignstats = self.project.combineassignstats(assignfilenames, action)
+      assignusers = [username.replace("assign-", "", 1) for username in assignstats.iterkeys()]
+      useroptions += [username for username in assignusers if username not in useroptions]
+      # need code and description for options list
+      useroptions = [(username, username) for username in useroptions]
+      if len(assignusers) > 1:
+        userselect = widgets.MultiSelect({"name": "editfileuser", "value": assignusers}, useroptions)
+      else:
+        # use a normal Select, but allow the user to convert it to a Multi at a click
+        userselect = widgets.Select({"name": "editfileuser", "value": ''.join(assignusers)}, useroptions)
+        multiscript = 'var userselect = document.forms.%s.editfileuser; userselect.multiple = true; return false' % goalformname
+        allowmulti = widgets.HiddenFieldList({"allowmultikey": "editfileuser"})
+        multilink = widgets.Link("#", self.localize("Select Multiple"), {"onclick": multiscript})
+        userselect = [userselect, multilink, allowmulti]
+      assignwhichoptions = [('all', self.localize("All Strings")), ('untranslated', self.localize("Untranslated")), ('unassigned', self.localize('Unassigned')), ('unassigneduntranslated', self.localize("Unassigned and Untranslated"))]
+      assignwhich = widgets.Select({"name": "edituserwhich", "value": "all"}, assignwhichoptions)
+      editfileuser = widgets.Input({"type": "submit", "name": "doedituser", "value": self.localize("Assign To")})
+      changeuser = [userselect, assignwhich, editfileuser]
+    else:
+      changeuser = []
+    return widgets.Form([editgoalfile, goalselect, editfilegoal, changeuser], {"action": "", "name":goalformname})
+
   def getactionlinks(self, basename, projectstats, linksrequired=None, filepath=None, goal=None):
     """get links to the actions that can be taken on an item (directory / file)"""
-    # TODO: refactor this to work simply with templates
     if linksrequired is None:
       linksrequired = ["mine", "review", "quick", "all"]
     actionlinks = []
+    actions = {}
     if not basename or basename.endswith("/"):
       baseactionlink = basename + "translate.html?"
       baseindexlink = basename + "index.html?"
@@ -651,60 +699,25 @@ class ProjectIndex(pagelayout.PootleNavPage):
         if rightrequired and not rightrequired in self.rights:
           return
         if getattr(self, attrname, False):
-          link = widgets.Link(self.makelink(baseindexlink, **{attrname:0}), hidetext)
+          link = {"href": self.makelink(baseindexlink, **{attrname:0}), "text": hidetext}
         else:
-          link = widgets.Link(self.makelink(baseindexlink, **{attrname:1}), showtext)
+          link = {"href": self.makelink(baseindexlink, **{attrname:1}), "text": showtext}
+        link["sep"] = " | "
         actionlinks.append(link)
     addoptionlink("track", None, "showtracks", self.localize("Show Tracks"), self.localize("Hide Tracks"))
     addoptionlink("check", "translate", "showchecks", self.localize("Show Checks"), self.localize("Hide Checks"))
     addoptionlink("goal", None, "showgoals", self.localize("Show Goals"), self.localize("Hide Goals"))
     addoptionlink("assign", "translate", "showassigns", self.localize("Show Assigns"), self.localize("Hide Assigns"))
+    actions["basic"] = actionlinks
+    actionlinks = []
     if not goal:
-      goalformname = "goal_%s" % (basename.replace("/", "_").replace(".", "_"))
       goalfile = os.path.join(self.dirname, basename)
       filegoals = self.project.getfilegoals(goalfile)
       if self.showgoals:
         if len(filegoals) > 1:
           actionlinks.append(self.localize("All Goals: %s") % (", ".join(filegoals)))
       if "editgoal" in linksrequired and "admin" in self.rights:
-        goaloptions = [('', '')] + [(goalname, goalname) for goalname in self.project.getgoalnames()]
-        useroptions = ['']
-        for goalname in filegoals:
-          useroptions += self.project.getgoalusers(goalname)
-        if len(filegoals) > 1:
-          goalselect = widgets.MultiSelect({"name": "editgoal", "value": filegoals}, goaloptions)
-        else:
-          goalselect = widgets.Select({"name": "editgoal", "value": ''.join(filegoals)}, goaloptions)
-        editgoalfile = widgets.HiddenFieldList({"editgoalfile": basename})
-        editfilegoal = widgets.Input({"type": "submit", "name": "doeditgoal", "value": self.localize("Set Goal")})
-        if len(useroptions) > 1:
-          assignfilenames = self.project.browsefiles(dirfilter=goalfile)
-          if self.currentgoal:
-            action = "goal-" + self.currentgoal
-          else:
-            action = None
-          assignstats = self.project.combineassignstats(assignfilenames, action)
-          assignusers = [username.replace("assign-", "", 1) for username in assignstats.iterkeys()]
-          useroptions += [username for username in assignusers if username not in useroptions]
-          # need code and description for options list
-          useroptions = [(username, username) for username in useroptions]
-          if len(assignusers) > 1:
-            userselect = widgets.MultiSelect({"name": "editfileuser", "value": assignusers}, useroptions)
-          else:
-            # use a normal Select, but allow the user to convert it to a Multi at a click
-            userselect = widgets.Select({"name": "editfileuser", "value": ''.join(assignusers)}, useroptions)
-            multiscript = 'var userselect = document.forms.%s.editfileuser; userselect.multiple = true; return false' % goalformname
-            allowmulti = widgets.HiddenFieldList({"allowmultikey": "editfileuser"})
-            multilink = widgets.Link("#", self.localize("Select Multiple"), {"onclick": multiscript})
-            userselect = [userselect, multilink, allowmulti]
-          assignwhichoptions = [('all', self.localize("All Strings")), ('untranslated', self.localize("Untranslated")), ('unassigned', self.localize('Unassigned')), ('unassigneduntranslated', self.localize("Unassigned and Untranslated"))]
-          assignwhich = widgets.Select({"name": "edituserwhich", "value": "all"}, assignwhichoptions)
-          editfileuser = widgets.Input({"type": "submit", "name": "doedituser", "value": self.localize("Assign To")})
-          changeuser = [userselect, assignwhich, editfileuser]
-        else:
-          changeuser = []
-        goalform = widgets.Form([editgoalfile, goalselect, editfilegoal, changeuser], {"action": "", "name":goalformname})
-        actionlinks.append(goalform)
+        actions["goalform"] = self.getgoalform(basename).gethtml()
     if "mine" in linksrequired and self.session.isopen:
       if "translate" in self.rights:
         minelink = self.localize("Translate My Strings")
@@ -712,24 +725,24 @@ class ProjectIndex(pagelayout.PootleNavPage):
         minelink = self.localize("View My Strings")
       mystats = projectstats.get("assign-%s" % self.session.username, [])
       if len(mystats):
-        minelink = widgets.Link(self.makelink(baseactionlink, assignedto=self.session.username), minelink)
+        minelink = {"href": self.makelink(baseactionlink, assignedto=self.session.username), "text": minelink}
       else:
-        minelink = widgets.Tooltip(self.localize("No strings assigned to you"), minelink)
+        minelink = {"title": self.localize("No strings assigned to you"), "text": minelink}
       actionlinks.append(minelink)
       if "quick" in linksrequired and "translate" in self.rights:
         mytranslatedstats = [statsitem for statsitem in mystats if statsitem in projectstats.get("translated", [])]
         quickminelink = self.localize("Quick Translate My Strings")
         if len(mytranslatedstats) < len(mystats):
-          quickminelink = widgets.Link(self.makelink(baseactionlink, assignedto=self.session.username, fuzzy=1, blank=1), quickminelink)
+          quickminelink = {"href": self.makelink(baseactionlink, assignedto=self.session.username, fuzzy=1, blank=1), "text": quickminelink}
         else:
-          quickminelink = widgets.Tooltip(self.localize("No untranslated strings assigned to you"), quickminelink)
+          quickminelink = {"title": self.localize("No untranslated strings assigned to you"), "text": quickminelink}
         actionlinks.append(quickminelink)
     if "review" in linksrequired and projectstats.get("has-suggestion", []):
       if "review" in self.rights:
         reviewlink = self.localize("Review Suggestions")
       else:
         reviewlink = self.localize("View Suggestions")
-      reviewlink = widgets.Link(self.makelink(baseactionlink, review=1, **{"has-suggestion": 1}), reviewlink)
+      reviewlink = {"href": self.makelink(baseactionlink, review=1, **{"has-suggestion": 1}), "text": reviewlink}
       actionlinks.append(reviewlink)
     if "quick" in linksrequired:
       if "translate" in self.rights:
@@ -737,12 +750,12 @@ class ProjectIndex(pagelayout.PootleNavPage):
       else:
         quicklink = self.localize("View Untranslated")
       if len(projectstats.get("translated", [])) < len(projectstats.get("total", [])):
-        quicklink = widgets.Link(self.makelink(baseactionlink, fuzzy=1, blank=1), quicklink)
+        quicklink = {"href": self.makelink(baseactionlink, fuzzy=1, blank=1), "text": quicklink}
       else:
-        quicklink = widgets.Tooltip(self.localize("No untranslated items"), quicklink)
+        quicklink = {"title": self.localize("No untranslated items"), "text": quicklink}
       actionlinks.append(quicklink)
     if "all" in linksrequired and "translate" in self.rights:
-      translatelink = widgets.Link(self.makelink(baseactionlink), self.localize('Translate All'))
+      translatelink = {"href": self.makelink(baseactionlink), "text": self.localize('Translate All')}
       actionlinks.append(translatelink)
     if "zip" in linksrequired and "archive" in self.rights:
       if filepath and filepath.endswith(".po"):
@@ -760,16 +773,25 @@ class ProjectIndex(pagelayout.PootleNavPage):
         linktext = self.localize('ZIP of goal')
       else:
         linktext = self.localize('ZIP of folder')
-      ziplink = widgets.Link(archivename, linktext, {'title': archivename})
+      ziplink = {"href": archivename, "text": linktext, "title": archivename}
       actionlinks.append(ziplink)
 
     if "sdf" in linksrequired and "pocompile" in self.rights and \
         self.project.ootemplate() and not (basename or filepath):
       archivename = self.project.languagecode + ".sdf"
       linktext = self.localize('Generate SDF')
-      oolink = widgets.Link(archivename, linktext, {'title': archivename})
+      oolink = {"href": archivename, "text": linktext, "title": archivename}
       actionlinks.append(oolink)
-    return actionlinks
+    for n, actionlink in enumerate(actionlinks):
+      if n < len(actionlinks)-1:
+        actionlink["sep"] = " | "
+      else:
+        actionlink["sep"] = ""
+    actions["extended"] = actionlinks
+    if not actions["extended"] and not actions["goalform"] and actions["basic"]:
+      actions["basic"][-1]["sep"] = ""
+    print actions
+    return actions
 
   def getitemstats(self, basename, projectstats, numfiles, aswidget=True):
     """returns a widget summarizing item statistics"""

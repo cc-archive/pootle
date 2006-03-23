@@ -26,9 +26,10 @@
         <i py:if="navpath.goal"><a href="${navpath.goal.href}">${navpath.goal.text}</a></i>
       </h3>
 
-      <div class="item-description" py:if="navactions" py:content="XML(navactions)">
-        <a href="index.html?showgoals=1">Show Goals</a> | <a href="translate.html?review=1&amp;has-suggestion=1">View Suggestions</a> | <span title=
-        "No untranslated items">View Untranslated</span>
+      <div class="item-description" py:if="navactions">
+        <a py:for="link in navactions.basic" href="${link.href}" title="${link.title}">${link.text}${link.sep}</a>
+        <form py:if="navactions.goalform" py:content="XML(navactions.goalform)"/>
+        <a py:for="link in navactions.extended" href="${link.href}" title="${link.title}">${link.text}${link.sep}</a>
       </div>
 
       <div class="item-statistics" py:if="navstats" py:content="XML(navstats)">
@@ -43,7 +44,11 @@
         <div class="contentsitem">
           <img src="/images/goal.png" type="button" class="icon" />
           <h3 class="title"><a href="${item.goal.href}">${item.goal.title}</a></h3>
-          <div class="item-description" py:if="item.goal.actions" py:content="XML(item.goal.actions)"/>
+          <div class="item-description" py:if="item.goal.actions">
+            <a py:for="link in item.goal.actions.basic" href="${link.href}" title="${link.title}">${link.text}${link.sep}</a>
+            <form py:if="item.goal.actions.goalform" py:content="XML(item.goal.actions.goalform)"/>
+            <a py:for="link in item.goal.actions.extended" href="${link.href}" title="${link.title}">${link.text}${link.sep}</a>
+          </div>
           <div py:if="item.goal.users or item.goal.show_adduser">
             <img src="/images/person.png" type="button" class="icon"/>
             <span py:for="user in item.goal.users" py:strip="True">${user.name}${user.sep}</span>
@@ -65,7 +70,11 @@
         <div class="contentsitem">
           <img src="/images/folder.png" type="button" class="icon" />
           <h3 class="title"><a href="${item.dir.href}">${item.dir.title}</a></h3>
-          <div class="item-description" py:if="item.dir.actions" py:content="XML(item.dir.actions)"/>
+          <div class="item-description" py:if="item.dir.actions">
+            <a py:for="link in item.dir.actions.basic" href="${link.href}" title="${link.title}">${link.text}${link.sep}</a>
+            <form py:if="item.dir.actions.goalform" py:content="XML(item.dir.actions.goalform)"/>
+            <a py:for="link in item.dir.actions.extended" href="${link.href}" title="${link.title}">${link.text}${link.sep}</a>
+          </div>
         </div>
         <div class="item-statistics" py:content="XML(item.dir.stats)">
           2/2 words (100%) translated <span class="string-statistics">[2/2 strings]</span>
@@ -76,7 +85,11 @@
         <div class="contentsitem">
           <img src="/images/file.png" type="button" class="icon" />
           <h3 class="title"><a href="${item.file.href}">${item.file.title}</a></h3>
-          <div class="item-description" py:if="item.file.actions" py:content="XML(item.file.actions)"/>
+          <div class="item-description" py:if="item.file.actions">
+            <a py:for="link in item.file.actions.basic" href="${link.href}" title="${link.title}">${link.text}${link.sep}</a>
+            <form py:if="item.file.actions.goalform" py:content="XML(item.file.actions.goalform)"/>
+            <a py:for="link in item.file.actions.extended" href="${link.href}" title="${link.title}">${link.text}${link.sep}</a>
+          </div>
         </div>
   
         <div class="item-statistics" py:content="XML(item.file.stats)">
