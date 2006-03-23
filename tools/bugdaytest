@@ -16,6 +16,12 @@ echo ${timestamp} ${logfile}
   echo -n "automated test at ${timestamp} on "
   uname -snmo
   echo
+  echo "cvs branches:"
+  pootlebranch=`[[ -f Pootle/CVS/Tag ]] && cat Pootle/CVS/Tag || echo HEAD`
+  toolkitbranch=`[[ -f translate/CVS/Tag ]] && cat translate/CVS/Tag || echo HEAD`
+  echo "Pootle is on branch:" $pootlebranch
+  echo "Translate Toolkit is on branch:" $translatebranch
+  echo
   echo "cvs update:"
   echo "-----------"
   cvs -q up translate Pootle | grep -v ^?
