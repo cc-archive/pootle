@@ -16,6 +16,8 @@ echo ${timestamp} ${logfile}
   echo -n "automated test at ${timestamp} on "
   uname -snmo
   echo
+  echo -n "With "
+  python -V
   echo "cvs branches:"
   pootlebranch=`[[ -f Pootle/CVS/Tag ]] && cat Pootle/CVS/Tag || echo HEAD`
   toolkitbranch=`[[ -f translate/CVS/Tag ]] && cat translate/CVS/Tag || echo HEAD`
