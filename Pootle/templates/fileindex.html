@@ -66,26 +66,20 @@
           <img src="/images/folder.png" type="button" class="icon" />
           <h3 class="title"><a href="${item.dir.href}">${item.dir.title}</a></h3>
           <div class="item-description" py:if="item.dir.actions" py:content="XML(item.dir.actions)"/>
-          <div class="item-statistics" py:content="XML(item.dir.stats)">
-            2/2 words (100%) translated <span class="string-statistics">[2/2 strings]</span>
-          </div>
+        </div>
+        <div class="item-statistics" py:content="XML(item.dir.stats)">
+          2/2 words (100%) translated <span class="string-statistics">[2/2 strings]</span>
         </div>
       </div>
 
-      <div py:if="'file' in item" class="item item-${item.parity}" py:content="XML(item.file)" py:strip="True">
-        
+      <div py:if="'file' in item" class="item item-${item.parity}">
         <div class="contentsitem">
           <img src="/images/file.png" type="button" class="icon" />
-  
-          <h3 class="title"><a href="test_existing.po?translate=1&amp;view=1">test_existing.po</a></h3>
-  
-          <div class="item-description">
-            <a href="test_existing.po?translate=1&amp;review=1&amp;has-suggestion=1">View Suggestions</a> | <span title="No untranslated items">View
-            Untranslated</span> | <a href="test_existing.po">PO file</a>
-          </div>
+          <h3 class="title"><a href="${item.file.href}">${item.file.title}</a></h3>
+          <div class="item-description" py:if="item.file.actions" py:content="XML(item.file.actions)"/>
         </div>
   
-        <div class="item-statistics">
+        <div class="item-statistics" py:content="XML(item.file.stats)">
           2/2 words (100%) translated <span class="string-statistics">[2/2 strings]</span>
         </div>
       </div>

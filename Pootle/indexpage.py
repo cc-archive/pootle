@@ -600,9 +600,8 @@ class ProjectIndex(pagelayout.PootleNavPage):
       linksrequired = ["mine", "review", "quick", "all", "po", "xliff", "ts", "csv", "mo", "update"]
     basename = os.path.basename(fileentry)
     projectstats = self.project.combinestats([fileentry])
-    folderimage = pagelayout.Icon("file.png")
     browseurl = self.getbrowseurl(basename, **newargs)
-    bodytitle = pagelayout.Title(widgets.Link(browseurl, basename))
+    fileitem = {"href": browseurl, "title": basename}
     actionlinks = self.getactionlinks(basename, projectstats, linksrequired=linksrequired)
     if "po" in linksrequired:
       downloadlink = widgets.Link(basename, self.localize('PO file'))
@@ -628,10 +627,9 @@ class ProjectIndex(pagelayout.PootleNavPage):
       if versioncontrol.hasversioning(os.path.join(self.project.podir, self.dirname)):
         updatelink = widgets.Link("index.html?doupdate=1&updatefile=%s" % basename, self.localize('Update'))
         actionlinks.append(updatelink)
-    bodydescription = pagelayout.ActionLinks(actionlinks)
-    body = pagelayout.ContentsItem([folderimage, bodytitle, bodydescription])
-    stats = self.getitemstats(basename, projectstats, None)
-    return {"file": pagelayout.Item([body, stats]).gethtml()}
+    fileitem["actions"] = pagelayout.ActionLinks(actionlinks).gethtml()
+    fileitem["stats"] = self.getitemstats(basename, projectstats, None).gethtml()
+    return {"file": fileitem}
 
   def getactionlinks(self, basename, projectstats, linksrequired=None, filepath=None, goal=None):
     """get links to the actions that can be taken on an item (directory / file)"""
