@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html  PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns:py="http://purl.org/kid/ns#" xmlns:over="http://dev.sjsoft.com/ns/overlay" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta name="generator" content="HTML Tidy for Linux/x86 (vers 1st September 2004), see www.w3.org" />
+
+  <title py:content="pagetitle">Pootle: Project ${project.name}, Language ${language.name}</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=us-ascii" />
+  <link rel="stylesheet" type="text/css" href="/pootle.css" />
+  <link rel="shortcut icon" href="/favicon.ico" />
+</head>
+
+<body bgcolor="#FFFFFF">
+  <div id="banner" over:include="pootlepage#banner"/>
+
+  <div id="content">
+    <div class="intro" py:if="message" py:content="message">Message</div>
+
+    <div class="navbar">
+      <img src="/images/${navicon}.png" type="button" class="icon" />
+
+      <h3 class="title">
+        <span py:strip="True" py:if="navpath.language">[ <a href="${navpath.language.href}">${navpath.language.text}</a> ]</span>
+        <span py:strip="True" py:if="navpath.project">[ <a href="${navpath.project.href}">${navpath.project.text}</a> ]</span>
+        <a py:for="pathlink in navpath.pathlinks" href="${pathlink.href}">${pathlink.text}</a>
+        <i py:if="navpath.goal"><a href="${navpath.goal.href}">${navpath.goal.text}</a></i>
+      </h3>
+
+      <div class="item-description" py:if="navactions" py:content="XML(navactions)">
+        <a href="index.html?showgoals=1">Show Goals</a> | <a href="translate.html?review=1&amp;has-suggestion=1">View Suggestions</a> | <span title=
+        "No untranslated items">View Untranslated</span>
+      </div>
+
+      <div class="item-statistics" py:if="navstats" py:content="XML(navstats)">
+        <div class="item-statistics">
+          1 file, 2/2 words (100%) translated <span class="string-statistics">[2/2 strings]</span>
+        </div>
+      </div>
+    </div>
+
+    <div py:for="item in children" py:strip="True">
+      <div py:if="'goal' in item" class="goalitem">
+        <div class="contentsitem">
+          <img src="/images/goal.png" type="button" class="icon" />
+          <h3 class="title"><a href="${item.goal.href}">${item.goal.title}</a></h3>
+          <div class="item-description" py:if="item.goal.actions" py:content="XML(item.goal.actions)"/>
+          <div py:if="item.goal.users or item.goal.show_adduser">
+            <img src="/images/person.png" type="button" class="icon"/>
+            <span py:for="user in item.goal.users" py:strip="True">${user.name}${user.sep}</span>
+            <form py:if="item.goal.show_adduser" action="" method="post" name="goaluserform">
+              <input type="hidden" name="editgoalname" value="${item.goal.name}"/>
+              <select name="newgoaluser">
+                <option py:for="user in item.goal.otherusers" py:content="user">Username</option>
+              </select>
+              <input type="submit" name="doeditgoalusers" value="${item.goal.adduser_title}"/>
+            </form>
+          </div>
+          <div class="item-statistics" py:content="XML(item.goal.stats)">
+            2/2 words (100%) translated <span class="string-statistics">[2/2 strings]</span>
+          </div>
+        </div>
+      </div>
+
+      <div py:if="'dir' in item" class="item item-${item.parity}">
+        <div class="contentsitem">
+          <img src="/images/folder.png" type="button" class="icon" />
+          <h3 class="title"><a href="${item.dir.href}">${item.dir.title}</a></h3>
+          <div class="item-description" py:if="item.dir.actions" py:content="XML(item.dir.actions)"/>
+          <div class="item-statistics" py:content="XML(item.dir.stats)">
+            2/2 words (100%) translated <span class="string-statistics">[2/2 strings]</span>
+          </div>
+        </div>
+      </div>
+
+      <div py:if="'file' in item" class="item item-${item.parity}" py:content="XML(item.file)" py:strip="True">
+        
+        <div class="contentsitem">
+          <img src="/images/file.png" type="button" class="icon" />
+  
+          <h3 class="title"><a href="test_existing.po?translate=1&amp;view=1">test_existing.po</a></h3>
+  
+          <div class="item-description">
+            <a href="test_existing.po?translate=1&amp;review=1&amp;has-suggestion=1">View Suggestions</a> | <span title="No untranslated items">View
+            Untranslated</span> | <a href="test_existing.po">PO file</a>
+          </div>
+        </div>
+  
+        <div class="item-statistics">
+          2/2 words (100%) translated <span class="string-statistics">[2/2 strings]</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="links" over:include="pootlepage#links">
+    <div py:if="search" class="sidetitle" py:content="search.title">
+      Search
+    </div>
+
+    <form py:if="search" action="translate.html" method="post" name="searchform" id="searchform">
+      <input type="text" name="searchtext" value="" />
+    </form>
+
+    <div class="sidetitle" py:if="assign" py:content="assign.title">
+      Assign Strings
+    </div>
+
+    <form py:if="assign" action="" method="post" name="assignform">
+      <select name="assignto" title="${assign.users_text}">
+        <option py:for="user in assign.users" value="${user}" py:content="user">Username</option>
+      </select>
+      <input type="text" name="action" value="translate" title="${assign.action_text}" />
+      <input type="submit" name="doassign" value="${assign.button}" />
+    </form>
+
+    <div class="sidetitle" py:if="goals" py:content="goals.title">
+      Goals
+    </div>
+
+    <form py:if="goals" action="" method="post" name="goalform">
+      <input type="text" name="newgoal" title="${goals.name_title}" />
+      <input type="submit" name="doaddgoal" value="${goals.button}" />
+    </form>
+
+    <div class="sidetitle" py:if="upload" py:content="upload.title">
+      Upload File
+    </div>
+
+    <form py:if="upload" action="" method="post" name="uploadform" enctype="multipart/form-data">
+      <input type="file" name="uploadfile" title="${upload.file_title}" />
+      <input type="submit" name="doupload" value="${upload.button}" />
+    </form>
+
+  </div>
+</body>
+</html>

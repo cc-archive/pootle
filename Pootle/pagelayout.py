@@ -210,20 +210,37 @@ class PootlePage(widgets.Page):
   def polarizeitems(self, itemlist):
     """take an item list and alternate the background colour"""
     polarity = False
-    for item in itemlist:
-      item.setpolarity(polarity)
+    for n, item in enumerate(itemlist):
+      if isinstance(item, dict):
+        item["parity"] = ["even", "odd"][n % 2]
+      else:
+        item.setpolarity(polarity)
       polarity = not polarity
     return itemlist
 
 class PootleNavPage(PootlePage):
   def makenavbarpath(self, project=None, session=None, currentfolder=None, language=None, goal=None):
     """create the navbar location line"""
+    links = self.makenavbarpath_dict(project, session, currentfolder, language, goal)
+    pathlinks = links["pathlinks"] and widgets.SeparatedList([widgets.Link(pathlink["href"], pathlink["text"]) for pathlink in links["pathlinks"]], " / ")
+    goallinks = links["goal"] and ["<i>", widgets.Link(links["goal"]["href"], links["goal"]["text"]), "</i>"]
+    projectlink = links["project"] and widgets.Link(links["project"]["href"], links["project"]["text"])
+    languagelink = links["language"] and widgets.Link(links["language"]["href"], links["language"]["text"])
+    adminlink = links["admin"] and widgets.Link(links["admin"]["href"], links["admin"]["text"])
+    if adminlink:
+      projectlink = [projectlink, ": ", adminlink]
+    if languagelink:
+      languagelink = ["[", languagelink, "]"]
+    if projectlink:
+      projectlink = ["[", projectlink, "]"]
+    return Title([widgets.SeparatedList(languagelink + projectlink, " "), " ", pathlinks, goallinks])
+
+  def makenavbarpath_dict(self, project=None, session=None, currentfolder=None, language=None, goal=None):
+    """create the navbar location line"""
     rootlink = ""
-    languagelink = []
-    projectlink = []
-    pathlinks = []
-    goallinks = []
+    links = {"admin": None, "project": [], "language": [], "goal": [], "pathlinks": []}
     if currentfolder:
+      pathlinks = []
       dirs = currentfolder.split("/")
       depth = len(dirs)
       if currentfolder.endswith(".po"):
@@ -237,32 +254,26 @@ class PootleNavPage(PootlePage):
         else:
           backlinks = "../" * depth + backlinkdir + "/"
         depth = depth - 1
-        dirlink = widgets.Link(self.getbrowseurl(backlinks), backlinkdir)
-        pathlinks.append(dirlink)
-      pathlinks = widgets.SeparatedList(pathlinks, " / ")
+        pathlinks.append({"href": self.getbrowseurl(backlinks), "text": backlinkdir})
+      links["pathlinks"] = pathlinks
     if goal is not None:
-      # goallink = widgets.Link(self.getbrowseurl("", goal=goal), goal)
-      allgoalslink = widgets.Link(self.getbrowseurl(""), self.localize("All goals"))
-      goallinks = ["<i>", allgoalslink, "</i>"]
+      # goallink = {"href": self.getbrowseurl("", goal=goal), "text": goal}
+      links["goal"] = {"href": self.getbrowseurl(""), "text": self.localize("All goals")}
     if project:
       if isinstance(project, tuple):
         projectcode, projectname = project
-        projectlink = widgets.Link("/projects/%s/" % projectcode, projectname)
+        links["project"] = {"href": "/projects/%s/" % projectcode, "text": projectname}
       else:
-        languagelink = widgets.Link(rootlink + "../index.html", project.languagename)
+        links["language"] = {"href": rootlink + "../index.html", "text": project.languagename}
         # don't getbrowseurl on the project link, so sticky options won't apply here
-        projectlink = widgets.Link(rootlink or "index.html", project.projectname)
+        links["project"] = {"href": rootlink or "index.html", "text": project.projectname}
         if session:
           if "admin" in project.getrights(session) or session.issiteadmin():
-            adminlink = widgets.Link(rootlink + "admin.html", self.localize("Admin"))
-            projectlink = [projectlink, ": ", adminlink]
-        languagelink = ["[", languagelink, "]"]
-      projectlink = ["[", projectlink, "]"]
+            links["admin"] = {"href": rootlink + "admin.html", "text": self.localize("Admin")}
     elif language:
       languagecode, languagename = language
-      languagelink = widgets.Link("/%s/" % languagecode, languagename)
-      languagelink = ["[", languagelink, "]"]
-    return Title([widgets.SeparatedList(languagelink + projectlink, " "), " ", pathlinks, goallinks])
+      links["language"] = {"href": "/%s/" % languagecode, "text": languagename}
+    return links
 
   def makenavbar(self, icon=None, path=[], actions=[], stats=[], pagelinks=[]):
     """create a navbar"""
@@ -305,7 +316,7 @@ class PootleNavPage(PootlePage):
     self.alltranslated += translated
     self.grandtotal += total
 
-  def describestats(self, project, projectstats, numfiles):
+  def describestats(self, project, projectstats, numfiles, aswidget=True):
     """returns a sentence summarizing item statistics"""
     translated = projectstats.get("translated", [])
     total = projectstats.get("total", [])
@@ -329,7 +340,11 @@ class PootleNavPage(PootlePage):
     else:
       filestats = self.nlocalize("%d file", "%d files", numfiles) % numfiles + ", "
     wordstats = self.localize("%d/%d words (%d%%) translated") % (translatedwords, totalwords, percentfinished)
-    stringstats = widgets.Span(self.localize("[%d/%d strings]") % (translated, total), cls="string-statistics")
-    return [filestats, wordstats, " ", stringstats]
+    if aswidget:
+      stringstats = widgets.Span(self.localize("[%d/%d strings]") % (translated, total), cls="string-statistics")
+      return [filestats, wordstats, " ", stringstats]
+    else:
+      stringstats = ' <span cls="string-statistics">[%d/%d strings]</span>' % (translated, total)
+      return filestats + wordstats + stringstats
 
 

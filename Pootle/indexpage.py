@@ -135,12 +135,21 @@ class LanguageIndex(pagelayout.PootleNavPage):
     self.nlocalize = session.nlocalize
     self.languagename = self.potree.getlanguagename(self.languagecode)
     self.initpagestats()
-    projectlinks = self.getprojectlinks()
+    languageprojects = self.getprojects()
+    self.projectcount = len(languageprojects)
     average = self.getpagestats()
-    languagestats = self.nlocalize("%d project, average %d%% translated", "%d projects, average %d%% translated", self.projectcount) % (self.projectcount, average)
-    navbar = self.makenavbar(icon="language", path=self.makenavbarpath(language=(self.languagecode, self.languagename)), stats=languagestats)
+    languagestats = self.nlocalize("%d projects, average %d%% translated", "%d projects, average %d%% translated", self.projectcount) % (self.projectcount, average)
     languageinfo = self.getlanguageinfo()
-    pagelayout.PootleNavPage.__init__(self, self.localize("Pootle: %s") % self.languagename, [navbar, languageinfo, projectlinks], session, bannerheight=81, returnurl="%s/" % self.languagecode)
+    pagetitle =  self.localize("Pootle: %s") % self.languagename
+    self.templatename = "language"
+    adminlink = self.localize("Admin")
+    instancetitle = getattr(session.instance, "title", session.localize("Pootle Demo"))
+    sessionvars = {"status": session.status, "isopen": session.isopen, "issiteadmin": session.issiteadmin()}
+    self.templatevars = {"pagetitle": pagetitle,
+        "language": {"code": languagecode, "name": self.languagename, "stats": languagestats, "info": languageinfo},
+        "projects": languageprojects,
+        "session": sessionvars, "instancetitle": pagetitle}
+    pagelayout.PootleNavPage.__init__(self, pagetitle, [], session, bannerheight=81, returnurl="%s/" % self.languagecode)
 
   def getlanguageinfo(self):
     """returns information defined for the language"""
@@ -153,29 +162,26 @@ class LanguageIndex(pagelayout.PootleNavPage):
                  (self.localize("Number of Plurals"), str(nplurals)),
                  (self.localize("Plural Equation"), pluralequation),
                 ]
-    infoparts = [(widgets.ContentWidget("b", title), ": ", value, "<br/>") for (title, value) in infoparts]
-    return pagelayout.IntroText(infoparts)
+    return [{"title": title, "value": value} for title, value in infoparts]
 
-  def getprojectlinks(self):
-    """gets the links to the projects"""
+  def getprojects(self):
+    """gets the info on the projects"""
     projectcodes = self.potree.getprojectcodes(self.languagecode)
     self.projectcount = len(projectcodes)
     projectitems = [self.getprojectitem(projectcode) for projectcode in projectcodes]
-    self.polarizeitems(projectitems)
+    for n, item in enumerate(projectitems):
+      item["parity"] = ["even", "odd"][n % 2]
     return projectitems
 
   def getprojectitem(self, projectcode):
     projectname = self.potree.getprojectname(projectcode)
     projectdescription = self.potree.getprojectdescription(projectcode)
-    projecttitle = pagelayout.Title(widgets.Link(projectcode+"/", projectname, {"title": projectdescription}))
-    projecticon = self.geticon("project")
-    body = pagelayout.ContentsItem([projecticon, projecttitle])
     project = self.potree.getproject(self.languagecode, projectcode)
     numfiles = len(project.pofilenames)
     projectstats = project.getquickstats()
     self.updatepagestats(projectstats["translatedwords"], projectstats["totalwords"])
-    stats = pagelayout.ItemStatistics(self.describestats(project, projectstats, numfiles))
-    return pagelayout.Item([body, stats])
+    projectstats = self.describestats(project, projectstats, numfiles, aswidget=False)
+    return {"code": projectcode, "name": projectname, "description": projectdescription, "stats": projectstats}
 
 class ProjectLanguageIndex(pagelayout.PootleNavPage):
   """list of languages belonging to a project"""
@@ -235,8 +241,6 @@ class ProjectIndex(pagelayout.PootleNavPage):
     self.nlocalize = session.nlocalize
     self.rights = self.project.getrights(self.session)
     message = argdict.get("message", "")
-    if message:
-      message = pagelayout.IntroText(message)
     if dirfilter == "":
       dirfilter = None
     self.dirfilter = dirfilter
@@ -262,21 +266,38 @@ class ProjectIndex(pagelayout.PootleNavPage):
       actionlinks = self.getactionlinks("", projectstats, ["mine", "review", "check", "assign", "goal", "quick", "all", "zip", "sdf"], dirfilter)
       mainstats = self.getitemstats("", projectstats, len(pofilenames))
       mainicon = "folder"
-    navbar = self.makenavbar(icon=mainicon, path=self.makenavbarpath(project=self.project, session=self.session, currentfolder=dirfilter, goal=self.currentgoal), actions=actionlinks, stats=mainstats)
+    navbarpath_dict = self.makenavbarpath_dict(project=self.project, session=self.session, currentfolder=dirfilter, goal=self.currentgoal)
     if self.showgoals:
       childitems = self.getgoalitems(dirfilter)
     else:
       childitems = self.getchilditems(dirfilter)
     pagetitle = self.localize("Pootle: Project %s, Language %s") % (self.project.projectname, self.project.languagename)
-    pagelayout.PootleNavPage.__init__(self, pagetitle, [message, navbar, childitems], session, bannerheight=81, returnurl="%s/%s/%s/" % (self.project.languagecode, self.project.projectcode, self.dirname))
+    self.templatename = "fileindex"
+    instancetitle = getattr(session.instance, "title", session.localize("Pootle Demo"))
+    sessionvars = {"status": session.status, "isopen": session.isopen, "issiteadmin": session.issiteadmin()}
+    self.templatevars = {"pagetitle": pagetitle,
+        "project": {"code": self.project.projectcode, "name": self.project.projectname},
+        "language": {"code": self.project.languagecode, "name": self.project.languagename},
+        # optional sections, will appear if these values are replaced
+        "assign": None, "goals": None, "upload": None,
+        "search": {"title": self.localize("Search")}, "message": message,
+        # navigation bar
+        "navicon": "folder",
+        "navpath": navbarpath_dict, "navactions": pagelayout.ActionLinks(actionlinks).gethtml(),
+        "navstats": widgets.PlainContents(mainstats).gethtml(),
+        # children
+        "children": childitems,
+        # general vars
+        "session": sessionvars, "instancetitle": pagetitle}
+    pagelayout.PootleNavPage.__init__(self, pagetitle, [], session, bannerheight=81, returnurl="%s/%s/%s/" % (self.project.languagecode, self.project.projectcode, self.dirname))
     self.addsearchbox(searchtext="", action="translate.html")
     if self.showassigns and "assign" in self.rights:
-      self.addassignbox()
+      self.templatevars["assign"] = self.getassignbox()
     if "admin" in self.rights:
       if self.showgoals:
-        self.addgoalbox()
+        self.templatevars["goals"] = self.getgoalbox()
     if "admin" in self.rights or "translate" in self.rights:
-      self.adduploadbox()
+      self.templatevars["upload"] = self.getuploadbox()
 
   def handleactions(self):
     """handles the given actions that must be taken (changing operations)"""
@@ -400,36 +421,32 @@ class ProjectIndex(pagelayout.PootleNavPage):
 
   def addfolderlinks(self, title, foldername, folderlink, tooltip=None, enhancelink=True):
     """adds a folder link to the sidebar"""
+    # TODO: templatise this
     if enhancelink:
       folderlink = self.makelink(folderlink)
     return pagelayout.PootlePage.addfolderlinks(self, title, foldername, folderlink, tooltip)
 
-  def addassignbox(self):
+  def getassignbox(self):
     """adds a box that lets the user assign strings"""
-    self.links.addcontents(pagelayout.SidebarTitle(self.localize("Assign Strings")))
     users = [username for username, userprefs in self.session.loginchecker.users.iteritems() if username != "__dummy__"]
     users.sort()
-    assigntoselect = widgets.Select({"name": "assignto", "value": "", "title": self.localize("Assign to User")}, options=[(user, user) for user in users])
-    actionbox = widgets.Input({"name": "action", "value": "translate", "title": self.localize("Assign Action")})
-    submitbutton = widgets.Input({"type": "submit", "name": "doassign", "value": self.localize("Assign Strings")})
-    assignform = widgets.Form([assigntoselect, actionbox, submitbutton], {"action": "", "name":"assignform"})
-    self.links.addcontents(assignform)
+    return {
+      "users": users,
+      "title": self.localize("Assign Strings"),
+      "action_text": self.localize("Assign Action"),
+      "users_text": self.localize("Assign to User"),
+      "button": self.localize("Assign Strings")
+    }
 
-  def addgoalbox(self):
+  def getgoalbox(self):
     """adds a box that lets the user add a new goal"""
-    self.links.addcontents(pagelayout.SidebarTitle(self.localize("Goals")))
-    namebox = widgets.Input({"type": "text", "name": "newgoal", "title": self.localize("Enter goal name")})
-    submitbutton = widgets.Input({"type": "submit", "name": "doaddgoal", "value": self.localize("Add Goal")})
-    goalform = widgets.Form([namebox, submitbutton], {"action": "", "name":"goalform"})
-    self.links.addcontents(goalform)
+    return {"title": self.localize('goals'), "name-title": self.localize("Enter goal name"), "button": self.localize("Add Goal")}
 
-  def adduploadbox(self):
+  def getuploadbox(self):
     """adds a box that lets the user assign strings"""
-    self.links.addcontents(pagelayout.SidebarTitle(self.localize("Upload File")))
-    filebox = widgets.Input({"type": "file", "name": "uploadfile", "title": self.localize("Select file to upload")})
-    submitbutton = widgets.Input({"type": "submit", "name": "doupload", "value": self.localize("Upload File")})
-    uploadform = widgets.Form([filebox, submitbutton], {"action": "", "name":"uploadform", "enctype": "multipart/form-data"})
-    self.links.addcontents(uploadform)
+    return {"title": self.localize("Upload File"),
+            "file_title": self.localize("Select file to upload"),
+            "button": self.localize("Upload File")}
 
   def getchilditems(self, dirfilter):
     """get all the items for directories and files viewable at this level"""
@@ -527,23 +544,22 @@ class ProjectIndex(pagelayout.PootleNavPage):
     # TODO: fix stats for goalless
     pofilenames = self.project.getgoalfiles(goalname, dirfilter, expanddirs=True, includedirs=False)
     projectstats = self.project.combinestats(pofilenames)
+    goal = {"actions": None, "name": goalname}
     if goalname:
-      bodytitle = pagelayout.Title(goalname)
+      goal["title"] = goalname
     else:
-      bodytitle = pagelayout.Title(self.localize("No goal"))
-    folderimage = pagelayout.Icon("goal.png")
-    browseurl = self.makelink("index.html", goal=goalname)
-    bodytitle = widgets.Link(browseurl, bodytitle)
+      goal["title"] = self.localize("No goal")
+    goal["href"] = self.makelink("index.html", goal=goalname)
     if pofilenames:
       actionlinks = self.getactionlinks("", projectstats, linksrequired=["mine", "review", "translate", "zip"], goal=goalname)
-      bodydescription = pagelayout.ActionLinks(actionlinks)
-    else:
-      bodydescription = []
-    usericon = pagelayout.Icon("person.png")
+      goal["actions"] = pagelayout.ActionLinks(actionlinks).gethtml()
     goaluserslist = []
     if goalusers:
       goalusers.sort()
-      goaluserslist = widgets.SeparatedList(goalusers)
+      goaluserslist = [{"name": goaluser, "sep": ", "} for goaluser in goalusers]
+      if goaluserslist:
+        goaluserslist[-1]["sep"] = ""
+    goal["users"] = goaluserslist
     if goalname and self.currentgoal == goalname:
       if "admin" in self.rights:
         unassignedusers = [username for username, userprefs in self.session.loginchecker.users.iteritems() if username != "__dummy__"]
@@ -551,20 +567,11 @@ class ProjectIndex(pagelayout.PootleNavPage):
           if user in unassignedusers:
             unassignedusers.remove(user)
         unassignedusers.sort()
-        adduserlist = widgets.Select({"name": "newgoaluser"}, options=[(user, user) for user in unassignedusers])
-        editgoalname = widgets.HiddenFieldList({"editgoalname": goalname})
-        submitbutton = widgets.Input({"type": "submit", "name": "doeditgoalusers", "value": self.localize("Add User")})
-        userwidgets = [usericon, editgoalname, goaluserslist, adduserlist, submitbutton]
-        userlist = widgets.Division(widgets.Form(userwidgets, {"action": "", "name": "goaluserform"}))
-      else:
-        userlist = widgets.Division([usericon, goaluserslist])
-    elif goalusers:
-      userlist = widgets.Division([usericon, goaluserslist])
-    else:
-      userlist = []
-    body = pagelayout.ContentsItem([folderimage, bodytitle, bodydescription, userlist])
-    stats = self.getitemstats("", projectstats, len(pofilenames))
-    return pagelayout.GoalItem([body, stats])
+        goal["show_adduser"] = True
+        goal["otherusers"] = unassignedusers
+        goal["adduser_title"] = self.localize("Add User")
+    goal["stats"] = self.getitemstats("", projectstats, len(pofilenames), aswidget=False)
+    return {"goal": goal}
 
   def getdiritem(self, direntry, linksrequired=None, **newargs):
     """returns an item showing a directory entry"""
@@ -575,22 +582,20 @@ class ProjectIndex(pagelayout.PootleNavPage):
     else:
       projectstats = self.project.combinestats(pofilenames)
     basename = os.path.basename(direntry)
-    folderimage = pagelayout.Icon("folder.png")
     browseurl = self.getbrowseurl("%s/" % basename, **newargs)
-    bodytitle = widgets.Link(browseurl, basename)
-    bodytitle = pagelayout.Title(bodytitle)
+    diritem = {"href": browseurl, "title": basename}
     basename += "/"
     actionlinks = self.getactionlinks(basename, projectstats, linksrequired=linksrequired)
-    bodydescription = pagelayout.ActionLinks(actionlinks)
-    body = pagelayout.ContentsItem([folderimage, bodytitle, bodydescription])
+    diritem["actions"] = pagelayout.ActionLinks(actionlinks).gethtml()
     if self.showgoals and "goal" in self.argdict:
-      stats = self.getitemstats(basename, projectstats, (len(goalfilenames), len(pofilenames)))
+      diritem["stats"] = self.getitemstats(basename, projectstats, (len(goalfilenames), len(pofilenames)), aswidget=False)
     else:
-      stats = self.getitemstats(basename, projectstats, len(pofilenames))
-    return pagelayout.Item([body, stats])
+      diritem["stats"] = self.getitemstats(basename, projectstats, len(pofilenames), aswidget=False)
+    return {"dir": diritem}
 
   def getfileitem(self, fileentry, linksrequired=None, **newargs):
     """returns an item showing a file entry"""
+    # TODO: refactor this to work simply with templates
     if linksrequired is None:
       linksrequired = ["mine", "review", "quick", "all", "po", "xliff", "ts", "csv", "mo", "update"]
     basename = os.path.basename(fileentry)
@@ -626,10 +631,11 @@ class ProjectIndex(pagelayout.PootleNavPage):
     bodydescription = pagelayout.ActionLinks(actionlinks)
     body = pagelayout.ContentsItem([folderimage, bodytitle, bodydescription])
     stats = self.getitemstats(basename, projectstats, None)
-    return pagelayout.Item([body, stats])
+    return {"file": pagelayout.Item([body, stats]).gethtml()}
 
   def getactionlinks(self, basename, projectstats, linksrequired=None, filepath=None, goal=None):
     """get links to the actions that can be taken on an item (directory / file)"""
+    # TODO: refactor this to work simply with templates
     if linksrequired is None:
       linksrequired = ["mine", "review", "quick", "all"]
     actionlinks = []
@@ -767,15 +773,17 @@ class ProjectIndex(pagelayout.PootleNavPage):
       actionlinks.append(oolink)
     return actionlinks
 
-  def getitemstats(self, basename, projectstats, numfiles):
+  def getitemstats(self, basename, projectstats, numfiles, aswidget=True):
     """returns a widget summarizing item statistics"""
-    statssummary = self.describestats(self.project, projectstats, numfiles)
+    # TODO: refactor this to work simply with templates
+    statssummary = self.describestats(self.project, projectstats, numfiles, aswidget=True)
     statsdetails = [statssummary]
     if not basename or basename.endswith("/"):
       linkbase = basename + "translate.html?"
     else:
       linkbase = basename + "?translate=1"
     if projectstats:
+      print "project stats", projectstats, "show checks", self.showchecks
       if self.showchecks:
         statsdetails = statsdetails + self.getcheckdetails(projectstats, linkbase)
       if self.showtracks:
@@ -790,7 +798,10 @@ class ProjectIndex(pagelayout.PootleNavPage):
           removelinkbase = "?showassigns=1&removeassigns=1&removefilter=%s" % basename
         statsdetails = statsdetails + self.getassigndetails(projectstats, linkbase, removelinkbase)
     statsdetails = widgets.SeparatedList(statsdetails, "<br/>\n")
-    return pagelayout.ItemStatistics(statsdetails)
+    if aswidget:
+      return pagelayout.ItemStatistics(statsdetails)
+    else:
+      return statsdetails.gethtml()
 
   def gettrackdetails(self, projecttracks, linkbase):
     """return a list of strings describing the results of tracks"""
@@ -816,6 +827,7 @@ class ProjectIndex(pagelayout.PootleNavPage):
 
   def getassigndetails(self, projectstats, linkbase, removelinkbase):
     """return a list of strings describing the assigned strings"""
+    # TODO: refactor this to work simply with templates
     # TODO: allow setting of action, so goals can only show the appropriate action assigns
     total = projectstats.get("total", [])
     # quick lookup of what has been translated
