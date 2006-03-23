@@ -1,6 +1,6 @@
 #!/bin/bash
 bugday=`date +'%Y%m%d'`
-cd ~/translate/htdocs/bugdays/${bugday}
+cd ~/translate/htdocs/bugdays/${bugday} || exit
 (
   echo "<html><head><title>Bug Day Summary for ${bugday} at `date`</title></head><body>"
   echo "<h1>Bug Statistics</h1><pre>" 
