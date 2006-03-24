@@ -635,20 +635,19 @@ class ProjectIndex(pagelayout.PootleNavPage):
     fileitem["stats"] = self.getitemstats(basename, projectstats, None)
     return fileitem
 
-  def getgoalform(self, basename):
+  def getgoalform(self, basename, goalfile, filegoals):
     """Returns a form for adjusting goals"""
-    # TODO: refactor this to work simply with templates
     goalformname = "goal_%s" % (basename.replace("/", "_").replace(".", "_"))
-    goaloptions = [('', '')] + [(goalname, goalname) for goalname in self.project.getgoalnames()]
-    useroptions = ['']
+    goalnames = self.project.getgoalnames()
+    useroptions = []
     for goalname in filegoals:
       useroptions += self.project.getgoalusers(goalname)
+    multifiles = None
     if len(filegoals) > 1:
-      goalselect = widgets.MultiSelect({"name": "editgoal", "value": filegoals}, goaloptions)
-    else:
-      goalselect = widgets.Select({"name": "editgoal", "value": ''.join(filegoals)}, goaloptions)
-    editgoalfile = widgets.HiddenFieldList({"editgoalfile": basename})
-    editfilegoal = widgets.Input({"type": "submit", "name": "doeditgoal", "value": self.localize("Set Goal")})
+      multifiles = "multiple"
+    multiusers = None
+    assignusers = []
+    assignwhich = []
     if len(useroptions) > 1:
       assignfilenames = self.project.browsefiles(dirfilter=goalfile)
       if self.currentgoal:
@@ -661,21 +660,20 @@ class ProjectIndex(pagelayout.PootleNavPage):
       # need code and description for options list
       useroptions = [(username, username) for username in useroptions]
       if len(assignusers) > 1:
-        userselect = widgets.MultiSelect({"name": "editfileuser", "value": assignusers}, useroptions)
-      else:
-        # use a normal Select, but allow the user to convert it to a Multi at a click
-        userselect = widgets.Select({"name": "editfileuser", "value": ''.join(assignusers)}, useroptions)
-        multiscript = 'var userselect = document.forms.%s.editfileuser; userselect.multiple = true; return false' % goalformname
-        allowmulti = widgets.HiddenFieldList({"allowmultikey": "editfileuser"})
-        multilink = widgets.Link("#", self.localize("Select Multiple"), {"onclick": multiscript})
-        userselect = [userselect, multilink, allowmulti]
-      assignwhichoptions = [('all', self.localize("All Strings")), ('untranslated', self.localize("Untranslated")), ('unassigned', self.localize('Unassigned')), ('unassigneduntranslated', self.localize("Unassigned and Untranslated"))]
-      assignwhich = widgets.Select({"name": "edituserwhich", "value": "all"}, assignwhichoptions)
-      editfileuser = widgets.Input({"type": "submit", "name": "doedituser", "value": self.localize("Assign To")})
-      changeuser = [userselect, assignwhich, editfileuser]
-    else:
-      changeuser = []
-    return widgets.Form([editgoalfile, goalselect, editfilegoal, changeuser], {"action": "", "name":goalformname})
+        multiusers = "multiple"
+      assignwhich = [('all', self.localize("All Strings")), ('untranslated', self.localize("Untranslated")), ('unassigned', self.localize('Unassigned')), ('unassigneduntranslated', self.localize("Unassigned and Untranslated"))]
+    return {
+     "name": goalformname,
+     "filename": basename,
+     "multifiles": multifiles,
+     "goalnames": goalnames,
+     "filegoals": dict([(goalname, goalname in filegoals or None) for goalname in goalnames]),
+     "setgoal_text": self.localize("Set Goal"),
+     "users": useroptions,
+     "assignusers": dict([(username, username in assignusers or None) for username in useroptions]),
+     "assignwhich": [{"value": value, "text": text} for value, text in assignwhich],
+     "assignto_text": self.localize("Assign To"),
+     }
 
   def getactionlinks(self, basename, projectstats, linksrequired=None, filepath=None, goal=None):
     """get links to the actions that can be taken on an item (directory / file)"""
@@ -715,7 +713,7 @@ class ProjectIndex(pagelayout.PootleNavPage):
         if len(filegoals) > 1:
           actionlinks.append(self.localize("All Goals: %s") % (", ".join(filegoals)))
       if "editgoal" in linksrequired and "admin" in self.rights:
-        actions["goalform"] = self.getgoalform(basename).gethtml()
+        actions["goalform"] = self.getgoalform(basename, goalfile, filegoals)
     if "mine" in linksrequired and self.session.isopen:
       if "translate" in self.rights:
         minelink = self.localize("Translate My Strings")
@@ -788,7 +786,6 @@ class ProjectIndex(pagelayout.PootleNavPage):
     actions["extended"] = actionlinks
     if not actions["extended"] and not actions["goalform"] and actions["basic"]:
       actions["basic"][-1]["sep"] = ""
-    print actions
     return actions
 
   def getitemstats(self, basename, projectstats, numfiles):
