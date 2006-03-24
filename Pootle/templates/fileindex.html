@@ -42,8 +42,11 @@
           <span py:content="check.stats" py:strip="True">3 strings (20%) failed</span>
         </span>
         <span py:for="track in navstats.tracks" py:strip="True"><br/>${track}</span>
-        <span py:for="assign in navstats.assigns" py:strip="True">
-          <br/><span py:replace="XML(assign)"/>
+        <span py:for="astats in navstats.assigns" py:strip="True">
+        <br/><a href="${astats.assign.href}">${astats.assign.text}</a>: ${astats.stats}
+          <span cls='string-statistics'>${astats.stringstats}</span> -
+          ${astats.completestats} <span cls='string-statistics'>${astats.completestringstats}</span>
+          <a py:if="astats.remove" href="${astats.remove.href}">${astats.remove.text}</a>
         </span>
       </div>
     </div>
@@ -79,8 +82,11 @@
               <span py:content="check.stats" py:strip="True">3 strings (20%) failed</span>
             </span>
             <span py:for="track in item.goal.stats.tracks" py:strip="True"><br/>${track}</span>
-            <span py:for="assign in item.goal.stats.assigns" py:strip="True">
-              <br/><span py:replace="XML(assign)"/>
+            <span py:for="astats in item.goal.stats.assigns" py:strip="True">
+            <br/><a href="${astats.assign.href}">${astats.assign.text}</a>: ${astats.stats}
+              <span cls='string-statistics'>${astats.stringstats}</span> -
+              ${astats.completestats} <span cls='string-statistics'>${astats.completestringstats}</span>
+              <a py:if="astats.remove" href="${astats.remove.href}">${astats.remove.text}</a>
             </span>
           </div>
         </div>
@@ -106,8 +112,11 @@
             <span py:content="check.stats" py:strip="True">3 strings (20%) failed</span>
           </span>
           <span py:for="track in item.dir.stats.tracks" py:strip="True"><br/>${track}</span>
-          <span py:for="assign in item.dir.stats.assigns" py:strip="True">
-            <br/><span py:replace="XML(assign)"/>
+          <span py:for="astats in item.dir.stats.assigns" py:strip="True">
+          <br/><a href="${astats.assign.href}">${astats.assign.text}</a>: ${astats.stats}
+            <span cls='string-statistics'>${astats.stringstats}</span> -
+            ${astats.completestats} <span cls='string-statistics'>${astats.completestringstats}</span>
+            <a py:if="astats.remove" href="${astats.remove.href}">${astats.remove.text}</a>
           </span>
         </div>
       </div>
@@ -133,8 +142,11 @@
             <span py:content="check.stats" py:strip="True">3 strings (20%) failed</span>
           </span>
           <span py:for="track in item.file.stats.tracks" py:strip="True"><br/>${track}</span>
-          <span py:for="assign in item.file.stats.assigns" py:strip="True">
-            <br/><span py:replace="XML(assign)"/>
+          <span py:for="astats in item.file.stats.assigns" py:strip="True">
+          <br/><a href="${astats.assign.href}">${astats.assign.text}</a>: ${astats.stats}
+            <span cls='string-statistics'>${astats.stringstats}</span> -
+            ${astats.completestats} <span cls='string-statistics'>${astats.completestringstats}</span>
+            <a py:if="astats.remove" href="${astats.remove.href}">${astats.remove.text}</a>
           </span>
         </div>
       </div>

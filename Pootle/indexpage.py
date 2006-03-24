@@ -795,7 +795,6 @@ class ProjectIndex(pagelayout.PootleNavPage):
 
   def getitemstats(self, basename, projectstats, numfiles):
     """returns a widget summarizing item statistics"""
-    # TODO: refactor this to work simply with templates
     statssummary = self.describestats(self.project, projectstats, numfiles, aswidget=False)
     stats = {"summary": statssummary, "checks": [], "tracks": [], "assigns": []}
     if not basename or basename.endswith("/"):
@@ -841,7 +840,6 @@ class ProjectIndex(pagelayout.PootleNavPage):
 
   def getassigndetails(self, projectstats, linkbase, removelinkbase):
     """return a list of strings describing the assigned strings"""
-    # TODO: refactor this to work simply with templates
     # TODO: allow setting of action, so goals can only show the appropriate action assigns
     total = projectstats.get("total", [])
     # quick lookup of what has been translated
@@ -862,18 +860,18 @@ class ProjectIndex(pagelayout.PootleNavPage):
       completewords = self.project.countwords(complete)
       assignname = assignname.replace("assign-", "", 1)
       if totalcount and assigncount:
-        assignlink = widgets.Link(self.makelink(linkbase, assignedto=assignname), assignname)
+        assignlink = {"href": self.makelink(linkbase, assignedto=assignname), "text": assignname}
         percentassigned = assignwords * 100 / max(totalwords, 1)
         percentcomplete = completewords * 100 / max(assignwords, 1)
         stats = self.localize("%d/%d words (%d%%) assigned") % (assignwords, totalwords, percentassigned)
-        stringstats = widgets.Span(self.localize("[%d/%d strings]") % (assigncount, totalcount), cls="string-statistics")
+        stringstats = self.localize("[%d/%d strings]") % (assigncount, totalcount)
         completestats = self.localize("%d/%d words (%d%%) translated") % (completewords, assignwords, percentcomplete)
-        completestringstats = widgets.Span(self.localize("[%d/%d strings]") % (completecount, assigncount), cls="string-statistics")
+        completestringstats = self.localize("[%d/%d strings]") % (completecount, assigncount)
         if "assign" in self.rights:
           removetext = self.localize("Remove")
-          removelink = widgets.Link(self.makelink(removelinkbase, assignedto=assignname), removetext)
+          removelink = {"href": self.makelink(removelinkbase, assignedto=assignname), "text": removetext}
         else:
-          removelink = []
-        assignlinks += widgets.PlainContents([assignlink, ": ", stats, " ", stringstats, " - ", completestats, " ", completestringstats, " ", removelink]).gethtml()
+          removelink = None
+        assignlinks.append({"assign": assignlink, "stats": stats, "stringstats": stringstats, "completestats": completestats, "completestringstats": completestringstats, "remove": removelink})
     return assignlinks
 
