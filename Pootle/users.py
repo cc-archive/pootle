@@ -16,8 +16,9 @@ class RegistrationError(ValueError):
 class LoginPage(pagelayout.PootlePage):
   """wraps the normal login page in a PootlePage layout"""
   def __init__(self, session, languagenames=None):
+    self.localize = session.localize
     self.languagenames = languagenames
-    pagetitle = session.localize("Login to Pootle")
+    pagetitle = self.localize("Login to Pootle")
     self.templatename = "login"
     instancetitle = getattr(session.instance, "title", session.localize("Pootle Demo"))
     sessionvars = {"status": session.status, "isopen": session.isopen, "issiteadmin": session.issiteadmin()}
