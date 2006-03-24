@@ -96,12 +96,15 @@ function getphasefiles {
 	filelist=$1
 	phase=$2
 	if [ "$phase" != "ALL" ]; then
-		egrep --count "^$phase\b" $filelist > /dev/null
-		if [ $? -ne 0 ]; then
-			echo "No such phase exists"
-			exit 1
-		fi
-		egrep "^$phase\b" $filelist
+                for i in `echo $phase | sed "s/,/ /g"`
+		do
+			egrep --count "^$i\b" $filelist > /dev/null
+			if [ $? -ne 0 ]; then
+				echo "No such phase exists"
+				exit 1
+			fi
+			egrep "^$i\b" $filelist
+		done
 	else
 		cat $filelist
 	fi | cut -f 2 | sort
