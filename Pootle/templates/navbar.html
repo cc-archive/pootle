@@ -13,7 +13,7 @@
         <a href="${link.href}" title="${link.title}">${link.text}</a>
         ${link.sep}
       </span>
-      <form py:if="item.actions.goalform" action="" name="${item.actions.goalform.name}">
+      <form py:if="item.actions.goalform" action="" name="${item.actions.goalform.name}" method="post">
         <input type="hidden" name="editgoalfile" value="${item.actions.goalform.filename}"/>
         <select name="editgoal" py:attrs="multiple=item.actions.goalform.multifiles">
           <option value=""/>

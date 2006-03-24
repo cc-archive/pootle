@@ -657,20 +657,19 @@ class ProjectIndex(pagelayout.PootleNavPage):
       assignstats = self.project.combineassignstats(assignfilenames, action)
       assignusers = [username.replace("assign-", "", 1) for username in assignstats.iterkeys()]
       useroptions += [username for username in assignusers if username not in useroptions]
-      # need code and description for options list
-      useroptions = [(username, username) for username in useroptions]
       if len(assignusers) > 1:
         multiusers = "multiple"
       assignwhich = [('all', self.localize("All Strings")), ('untranslated', self.localize("Untranslated")), ('unassigned', self.localize('Unassigned')), ('unassigneduntranslated', self.localize("Unassigned and Untranslated"))]
     return {
      "name": goalformname,
      "filename": basename,
-     "multifiles": multifiles,
      "goalnames": goalnames,
      "filegoals": dict([(goalname, goalname in filegoals or None) for goalname in goalnames]),
+     "multifiles": multifiles,
      "setgoal_text": self.localize("Set Goal"),
      "users": useroptions,
      "assignusers": dict([(username, username in assignusers or None) for username in useroptions]),
+     "multiusers": multiusers,
      "assignwhich": [{"value": value, "text": text} for value, text in assignwhich],
      "assignto_text": self.localize("Assign To"),
      }
