@@ -180,7 +180,7 @@ class LanguageIndex(pagelayout.PootleNavPage):
     numfiles = len(project.pofilenames)
     projectstats = project.getquickstats()
     self.updatepagestats(projectstats["translatedwords"], projectstats["totalwords"])
-    projectstats = self.describestats(project, projectstats, numfiles, aswidget=False)
+    projectstats = self.describestats(project, projectstats, numfiles)
     return {"code": projectcode, "name": projectname, "description": projectdescription, "stats": projectstats}
 
 class ProjectLanguageIndex(pagelayout.PootleNavPage):
@@ -787,7 +787,7 @@ class ProjectIndex(pagelayout.PootleNavPage):
 
   def getitemstats(self, basename, projectstats, numfiles):
     """returns a widget summarizing item statistics"""
-    statssummary = self.describestats(self.project, projectstats, numfiles, aswidget=False)
+    statssummary = self.describestats(self.project, projectstats, numfiles)
     stats = {"summary": statssummary, "checks": [], "tracks": [], "assigns": []}
     if not basename or basename.endswith("/"):
       linkbase = basename + "translate.html?"

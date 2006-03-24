@@ -308,7 +308,7 @@ class PootleNavPage(PootlePage):
     self.alltranslated += translated
     self.grandtotal += total
 
-  def describestats(self, project, projectstats, numfiles, aswidget=True):
+  def describestats(self, project, projectstats, numfiles):
     """returns a sentence summarizing item statistics"""
     translated = projectstats.get("translated", [])
     total = projectstats.get("total", [])
@@ -332,11 +332,7 @@ class PootleNavPage(PootlePage):
     else:
       filestats = self.nlocalize("%d file", "%d files", numfiles) % numfiles + ", "
     wordstats = self.localize("%d/%d words (%d%%) translated") % (translatedwords, totalwords, percentfinished)
-    if aswidget:
-      stringstats = widgets.Span(self.localize("[%d/%d strings]") % (translated, total), cls="string-statistics")
-      return [filestats, wordstats, " ", stringstats]
-    else:
-      stringstats = ' <span cls="string-statistics">[%d/%d strings]</span>' % (translated, total)
-      return filestats + wordstats + stringstats
+    stringstats = ' <span cls="string-statistics">[%d/%d strings]</span>' % (translated, total)
+    return filestats + wordstats + stringstats
 
 
