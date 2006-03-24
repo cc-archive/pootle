@@ -399,6 +399,11 @@ class ProjectIndex(pagelayout.PootleNavPage):
         action = "goal-" + goalname
         self.project.reassignpoitems(self.session, search, goalusers, action)
       del self.argdict["doedituser"]
+    # pop arguments we don't want to propogate through inadvertently...
+    for argname in ("assignto", "action", "assignedto", "removefilter", "uploadfile",
+        "updatefile", "newgoal", "editgoal", "editgoalfile", "editgoalname",
+        "newgoaluser", "editfileuser", "editgoalfile", "edituserwhich"):
+      self.argdict.pop(argname, "")
 
   def getboolarg(self, argname, default=False):
     """gets a boolean argument from self.argdict"""
