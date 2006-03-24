@@ -70,9 +70,30 @@ class TranslatePage(pagelayout.PootleNavPage):
     else:
       pagelinks = []
       icon="edit"
-    mainitem = self.makenavbar(icon=icon, path=self.makenavbarpath(self.project, self.session, self.pofilename), stats=mainstats, pagelinks=pagelinks)
-    translatediv = pagelayout.TranslateForm([notice, translateform, pagelinks])
-    pagelayout.PootleNavPage.__init__(self, title, [mainitem, translatediv], session, bannerheight=81, returnurl="%s/%s/%s" % (self.project.languagecode, self.project.projectcode, dirfilter))
+    navbarpath_dict = self.makenavbarpath_dict(self.project, self.session, self.pofilename)
+    # templatising
+    self.templatename = "translatepage"
+    pagetitle = self.localize("Pootle: translating %s into %s: %s") % (self.project.projectname, self.project.languagename, self.pofilename)
+    instancetitle = getattr(session.instance, "title", session.localize("Pootle Demo"))
+    sessionvars = {"status": session.status, "isopen": session.isopen, "issiteadmin": session.issiteadmin()}
+    stats = {"summary": mainstats, "checks": [], "tracks": [], "assigns": []}
+    self.templatevars = {"pagetitle": pagetitle,
+        "project": {"code": self.project.projectcode, "name": self.project.projectname},
+        "language": {"code": self.project.languagecode, "name": self.project.languagename},
+        "pofilename": self.pofilename,
+        # navigation bar
+        "navitems": [{"icon": "edit", "path": navbarpath_dict, "actions": {}, "stats": stats}],
+        "pagelinks": pagelinks,
+        # translation form
+        "notice": notice,
+        # optional sections, will appear if these values are replaced
+        "assign": None,
+        "search": {"title": self.localize("Search")},
+        # general vars
+        "session": sessionvars, "instancetitle": pagetitle}
+    if self.showassigns and "assign" in self.rights:
+      self.templatevars["assign"] = self.getassignbox()
+    pagelayout.PootleNavPage.__init__(self, title, [], session, bannerheight=81, returnurl="%s/%s/%s" % (self.project.languagecode, self.project.projectcode, dirfilter))
     self.addfilelinks(self.pofilename, self.matchnames)
     autoexpandscript = widgets.Script('text/javascript', '', newattribs={'src': self.instance.baseurl + 'js/autoexpand.js'})
     self.headerwidgets.append(autoexpandscript)
@@ -93,31 +114,34 @@ class TranslatePage(pagelayout.PootleNavPage):
       return pagelinks
     lastitem = min(pofilelen-1, self.firstitem + pagesize - 1)
     if pofilelen > pagesize and not self.firstitem == 0:
-      pagelinks.append(widgets.Link(baselink + "&item=0", self.localize("Start")))
+      pagelinks.append({"href": baselink + "&item=0", "text": self.localize("Start")})
     else:
-      pagelinks.append(self.localize("Start")) 
+      pagelinks.append({"text": self.localize("Start")})
     if self.firstitem > 0:
       linkitem = max(self.firstitem - pagesize, 0)
-      pagelinks.append(widgets.Link(baselink + "&item=%d" % linkitem, self.localize("Previous %d") % (self.firstitem - linkitem)))
+      pagelinks.append({"href": baselink + "&item=%d" % linkitem, "text": self.localize("Previous %d") % (self.firstitem - linkitem)})
     else:
-      pagelinks.append(self.localize("Previous %d") % pagesize)
+      pagelinks.append({"text": self.localize("Previous %d") % pagesize})
     pagelinks.append(self.localize("Items %d to %d of %d") % (self.firstitem+1, lastitem+1, pofilelen))
     if self.firstitem + len(self.translations) < self.project.getpofilelen(self.pofilename):
       linkitem = self.firstitem + pagesize
       itemcount = min(pofilelen - linkitem, pagesize)
-      pagelinks.append(widgets.Link(baselink + "&item=%d" % linkitem, self.localize("Next %d") % itemcount))
+      pagelinks.append({"href": baselink + "&item=%d" % linkitem, "text": self.localize("Next %d") % itemcount})
     else:
       pagelinks.append(self.localize("Next %d") % pagesize)
     if pofilelen > pagesize and (self.item + pagesize) < pofilelen:
-      pagelinks.append(widgets.Link(baselink + "&item=%d" % max(pofilelen - pagesize, 0), self.localize("End")))
+      pagelinks.append({"href": baselink + "&item=%d" % max(pofilelen - pagesize, 0), "text": self.localize("End")})
     else:
-      pagelinks.append(self.localize("End"))
-    return pagelayout.ItemStatistics(widgets.SeparatedList(pagelinks, " | "))
+      pagelinks.append({"text": self.localize("End")})
+    for n, pagelink in enumerate(pagelinks):
+      if n < len(pagelinks)-1:
+        pagelinks["sep"] = " | "
+      else:
+        pagelinks["sep"] = ""
+    return pagelinks
 
   def addfilelinks(self, pofilename, matchnames):
     """adds a section on the current file, including any checks happening"""
-    searchcontextinfo = widgets.HiddenFieldList({"pofilename": self.pofilename})
-    self.addsearchbox(self.searchtext, searchcontextinfo)
     if self.showassigns and "assign" in self.rights:
       self.addassignbox()
     if self.pofilename is not None:

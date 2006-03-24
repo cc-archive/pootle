@@ -16,19 +16,28 @@
   <div id="banner" over:include="pootlepage#banner"/>
 
   <div id="content">
-    <div class="navbar">
-      <img src="/images/edit.png" type="button" class="icon" />
+    <div class="navbar" py:for="item in navitems">
+      <div over:include="navbar#item">
+        <h3 over:replace="itemtitle" class="title">
+          <span py:strip="True" py:if="item.path.language">[ <a href="${item.path.language.href}">${item.path.language.text}</a> ]</span>
+          <span py:strip="True" py:if="item.path.project">[ <a href="${item.path.project.href}">${item.path.project.text}</a> ]</span>
+          <span py:strip="True" py:for="pathlink in item.path.pathlinks">
+            <a href="${pathlink.href}">${pathlink.text}</a>${pathlink.sep}
+          </span>
+        </h3>
+      </div>
 
-      <h3 class="title">[ <a href="../index.html">${language.name}</a> ] [ <a href="index.html">${project.name}</a> ]
-        <a href= "${pofilename}?translate=1&amp;review=1&amp;has-suggestion=1&amp;view=1">${pofilename}</a>
-      </h3>
+      <div over:include="navbar#itemstats"/>
 
-      <div class="item-description"></div>
-
-      <div class="item-statistics" py:content="XML(pofile.stats)">0/0 translated (0 blank, 0 fuzzy)</div>
+      <div class="item-statistics" py:if="pagelinks">
+        <span py:strip="True" py:for="pagelink in pagelinks">
+          <a href="${pagelink.href}">${pagelink.text}</a>${pagelink.sep}
+        </span>
+      </div>
     </div>
 
     <div class="translate-form">
+      <span py:strip="True" py:content="notice">Notice</span>
       <form action="?review=1&amp;has-suggestion=1" method="post" name="translate" id="translate">
         <table cellpadding="10" cellspacing="1" class="translate-table">
           <tr>
@@ -86,16 +95,18 @@
           </tr>
         </table><input type="hidden" name="searchtext" value="" /> <input type="hidden" name="pofilename" value="test_existing.po" />
       </form>
+
+      <div class="item-statistics" py:if="pagelinks">
+        <span py:strip="True" py:for="pagelink in pagelinks">
+          <a href="${pagelink.href}">${pagelink.text}</a>${pagelink.sep}
+        </span>
+      </div>
     </div>
   </div>
 
-  <div id="links" over:include="pootlepage#links"/>
-    <div class="sidetitle">
-      Search
-    </div>
-
-    <form action="" method="post" name="searchform" id="searchform">
-      <input type="hidden" name="pofilename" value="test_existing.po" /> <input type="text" name="searchtext" value="" />
+  <div id="links" over:include="pootlepage#links">
+    <form id="searchform">
+      <input type="hidden" name="pofilename" value="${pofilename}" />
     </form>
 
     <div class="side">
