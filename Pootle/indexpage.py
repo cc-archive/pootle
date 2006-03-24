@@ -288,7 +288,6 @@ class ProjectIndex(pagelayout.PootleNavPage):
         # general vars
         "session": sessionvars, "instancetitle": pagetitle}
     pagelayout.PootleNavPage.__init__(self, pagetitle, [], session, bannerheight=81, returnurl="%s/%s/%s/" % (self.project.languagecode, self.project.projectcode, self.dirname))
-    self.addsearchbox(searchtext="", action="translate.html")
     if self.showassigns and "assign" in self.rights:
       self.templatevars["assign"] = self.getassignbox()
     if "admin" in self.rights:
