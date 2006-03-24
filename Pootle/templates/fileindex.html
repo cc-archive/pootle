@@ -52,14 +52,14 @@
     </div>
 
     <div py:for="item in children" py:strip="True">
-      <div py:if="'goal' in item" class="goalitem">
+      <div py:if="'isgoal' in item" class="goalitem">
         <div class="contentsitem">
           <img src="/images/goal.png" type="button" class="icon" />
-          <h3 class="title"><a href="${item.goal.href}">${item.goal.title}</a></h3>
-          <div class="item-description" py:if="item.goal.actions">
-            <a py:for="link in item.goal.actions.basic" href="${link.href}" title="${link.title}">${link.text}${link.sep}</a>
-            <form py:if="item.goal.actions.goalform" py:content="XML(item.goal.actions.goalform)"/>
-            <a py:for="link in item.goal.actions.extended" href="${link.href}" title="${link.title}">${link.text}${link.sep}</a>
+          <h3 class="title"><a href="${item.href}">${item.title}</a></h3>
+          <div class="item-description" py:if="item.actions">
+            <a py:for="link in item.actions.basic" href="${link.href}" title="${link.title}">${link.text}${link.sep}</a>
+            <form py:if="item.actions.goalform" py:content="XML(item.actions.goalform)"/>
+            <a py:for="link in item.actions.extended" href="${link.href}" title="${link.title}">${link.text}${link.sep}</a>
           </div>
           <div py:if="item.goal.users or item.goal.show_adduser">
             <img src="/images/person.png" type="button" class="icon"/>
@@ -73,16 +73,16 @@
             </form>
           </div>
           <div class="item-statistics">
-            <span py:replace="XML(item.goal.stats.summary)">
+            <span py:replace="XML(item.stats.summary)">
               2/2 words (100%) translated <span class="string-statistics">[2/2 strings]</span>
             </span>
-            <span py:for="check in item.goal.stats.checks" py:strip="True">
+            <span py:for="check in item.stats.checks" py:strip="True">
               <br/>
               <a href="${check.href}" py:content="check.text">checkname</a>
               <span py:content="check.stats" py:strip="True">3 strings (20%) failed</span>
             </span>
-            <span py:for="track in item.goal.stats.tracks" py:strip="True"><br/>${track}</span>
-            <span py:for="astats in item.goal.stats.assigns" py:strip="True">
+            <span py:for="track in item.stats.tracks" py:strip="True"><br/>${track}</span>
+            <span py:for="astats in item.stats.assigns" py:strip="True">
             <br/><a href="${astats.assign.href}">${astats.assign.text}</a>: ${astats.stats}
               <span cls='string-statistics'>${astats.stringstats}</span> -
               ${astats.completestats} <span cls='string-statistics'>${astats.completestringstats}</span>
@@ -92,27 +92,27 @@
         </div>
       </div>
 
-      <div py:if="'dir' in item" class="item item-${item.parity}">
+      <div py:if="'isdir' in item" class="item item-${item.parity}">
         <div class="contentsitem">
           <img src="/images/folder.png" type="button" class="icon" />
-          <h3 class="title"><a href="${item.dir.href}">${item.dir.title}</a></h3>
-          <div class="item-description" py:if="item.dir.actions">
-            <a py:for="link in item.dir.actions.basic" href="${link.href}" title="${link.title}">${link.text}${link.sep}</a>
-            <form py:if="item.dir.actions.goalform" py:content="XML(item.dir.actions.goalform)"/>
-            <a py:for="link in item.dir.actions.extended" href="${link.href}" title="${link.title}">${link.text}${link.sep}</a>
+          <h3 class="title"><a href="${item.href}">${item.title}</a></h3>
+          <div class="item-description" py:if="item.actions">
+            <a py:for="link in item.actions.basic" href="${link.href}" title="${link.title}">${link.text}${link.sep}</a>
+            <form py:if="item.actions.goalform" py:content="XML(item.actions.goalform)"/>
+            <a py:for="link in item.actions.extended" href="${link.href}" title="${link.title}">${link.text}${link.sep}</a>
           </div>
         </div>
         <div class="item-statistics">
-          <span py:replace="XML(item.dir.stats.summary)">
+          <span py:replace="XML(item.stats.summary)">
             2/2 words (100%) translated <span class="string-statistics">[2/2 strings]</span>
           </span>
-          <span py:for="check in item.dir.stats.checks" py:strip="True">
+          <span py:for="check in item.stats.checks" py:strip="True">
             <br/>
             <a href="${check.href}" py:content="check.text">checkname</a>
             <span py:content="check.stats" py:strip="True">3 strings (20%) failed</span>
           </span>
-          <span py:for="track in item.dir.stats.tracks" py:strip="True"><br/>${track}</span>
-          <span py:for="astats in item.dir.stats.assigns" py:strip="True">
+          <span py:for="track in item.stats.tracks" py:strip="True"><br/>${track}</span>
+          <span py:for="astats in item.stats.assigns" py:strip="True">
           <br/><a href="${astats.assign.href}">${astats.assign.text}</a>: ${astats.stats}
             <span cls='string-statistics'>${astats.stringstats}</span> -
             ${astats.completestats} <span cls='string-statistics'>${astats.completestringstats}</span>
@@ -121,28 +121,28 @@
         </div>
       </div>
 
-      <div py:if="'file' in item" class="item item-${item.parity}">
+      <div py:if="'isfile' in item" class="item item-${item.parity}">
         <div class="contentsitem">
           <img src="/images/file.png" type="button" class="icon" />
-          <h3 class="title"><a href="${item.file.href}">${item.file.title}</a></h3>
-          <div class="item-description" py:if="item.file.actions">
-            <a py:for="link in item.file.actions.basic" href="${link.href}" title="${link.title}">${link.text}${link.sep}</a>
-            <form py:if="item.file.actions.goalform" py:content="XML(item.file.actions.goalform)"/>
-            <a py:for="link in item.file.actions.extended" href="${link.href}" title="${link.title}">${link.text}${link.sep}</a>
+          <h3 class="title"><a href="${item.href}">${item.title}</a></h3>
+          <div class="item-description" py:if="item.actions">
+            <a py:for="link in item.actions.basic" href="${link.href}" title="${link.title}">${link.text}${link.sep}</a>
+            <form py:if="item.actions.goalform" py:content="XML(item.actions.goalform)"/>
+            <a py:for="link in item.actions.extended" href="${link.href}" title="${link.title}">${link.text}${link.sep}</a>
           </div>
         </div>
   
         <div class="item-statistics">
-          <span py:replace="XML(item.file.stats.summary)">
+          <span py:replace="XML(item.stats.summary)">
             2/2 words (100%) translated <span class="string-statistics">[2/2 strings]</span>
           </span>
-          <span py:for="check in item.file.stats.checks" py:strip="True">
+          <span py:for="check in item.stats.checks" py:strip="True">
             <br/>
             <a href="${check.href}" py:content="check.text">checkname</a>
             <span py:content="check.stats" py:strip="True">3 strings (20%) failed</span>
           </span>
-          <span py:for="track in item.file.stats.tracks" py:strip="True"><br/>${track}</span>
-          <span py:for="astats in item.file.stats.assigns" py:strip="True">
+          <span py:for="track in item.stats.tracks" py:strip="True"><br/>${track}</span>
+          <span py:for="astats in item.stats.assigns" py:strip="True">
           <br/><a href="${astats.assign.href}">${astats.assign.text}</a>: ${astats.stats}
             <span cls='string-statistics'>${astats.stringstats}</span> -
             ${astats.completestats} <span cls='string-statistics'>${astats.completestringstats}</span>

@@ -544,7 +544,7 @@ class ProjectIndex(pagelayout.PootleNavPage):
     # TODO: fix stats for goalless
     pofilenames = self.project.getgoalfiles(goalname, dirfilter, expanddirs=True, includedirs=False)
     projectstats = self.project.combinestats(pofilenames)
-    goal = {"actions": None, "name": goalname}
+    goal = {"actions": None, "isgoal": True, "goal": {"name": goalname}}
     if goalname:
       goal["title"] = goalname
     else:
@@ -559,7 +559,7 @@ class ProjectIndex(pagelayout.PootleNavPage):
       goaluserslist = [{"name": goaluser, "sep": ", "} for goaluser in goalusers]
       if goaluserslist:
         goaluserslist[-1]["sep"] = ""
-    goal["users"] = goaluserslist
+    goal["goal"]["users"] = goaluserslist
     if goalname and self.currentgoal == goalname:
       if "admin" in self.rights:
         unassignedusers = [username for username, userprefs in self.session.loginchecker.users.iteritems() if username != "__dummy__"]
@@ -567,11 +567,11 @@ class ProjectIndex(pagelayout.PootleNavPage):
           if user in unassignedusers:
             unassignedusers.remove(user)
         unassignedusers.sort()
-        goal["show_adduser"] = True
-        goal["otherusers"] = unassignedusers
-        goal["adduser_title"] = self.localize("Add User")
+        goal["goal"]["show_adduser"] = True
+        goal["goal"]["otherusers"] = unassignedusers
+        goal["goal"]["adduser_title"] = self.localize("Add User")
     goal["stats"] = self.getitemstats("", projectstats, len(pofilenames))
-    return {"goal": goal}
+    return goal
 
   def getdiritem(self, direntry, linksrequired=None, **newargs):
     """returns an item showing a directory entry"""
@@ -583,7 +583,7 @@ class ProjectIndex(pagelayout.PootleNavPage):
       projectstats = self.project.combinestats(pofilenames)
     basename = os.path.basename(direntry)
     browseurl = self.getbrowseurl("%s/" % basename, **newargs)
-    diritem = {"href": browseurl, "title": basename}
+    diritem = {"href": browseurl, "title": basename, "isdir": True}
     basename += "/"
     actionlinks = self.getactionlinks(basename, projectstats, linksrequired=linksrequired)
     diritem["actions"] = actionlinks
@@ -591,7 +591,7 @@ class ProjectIndex(pagelayout.PootleNavPage):
       diritem["stats"] = self.getitemstats(basename, projectstats, (len(goalfilenames), len(pofilenames)))
     else:
       diritem["stats"] = self.getitemstats(basename, projectstats, len(pofilenames))
-    return {"dir": diritem}
+    return diritem
 
   def getfileitem(self, fileentry, linksrequired=None, **newargs):
     """returns an item showing a file entry"""
@@ -600,7 +600,7 @@ class ProjectIndex(pagelayout.PootleNavPage):
     basename = os.path.basename(fileentry)
     projectstats = self.project.combinestats([fileentry])
     browseurl = self.getbrowseurl(basename, **newargs)
-    fileitem = {"href": browseurl, "title": basename}
+    fileitem = {"href": browseurl, "title": basename, "isfile": True}
     actions = self.getactionlinks(basename, projectstats, linksrequired=linksrequired)
     actionlinks = actions["extended"]
     if "po" in linksrequired:
@@ -635,7 +635,7 @@ class ProjectIndex(pagelayout.PootleNavPage):
         actionlink["sep"] = ""
     fileitem["actions"] = actions
     fileitem["stats"] = self.getitemstats(basename, projectstats, None)
-    return {"file": fileitem}
+    return fileitem
 
   def getgoalform(self, basename):
     """Returns a form for adjusting goals"""
