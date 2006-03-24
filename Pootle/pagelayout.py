@@ -246,7 +246,9 @@ class PootleNavPage(PootlePage):
         else:
           backlinks = "../" * depth + backlinkdir + "/"
         depth = depth - 1
-        pathlinks.append({"href": self.getbrowseurl(backlinks), "text": backlinkdir})
+        pathlinks.append({"href": self.getbrowseurl(backlinks), "text": backlinkdir, "sep": " / "})
+      if pathlinks:
+        pathlinks[-1]["sep"] = ""
       links["pathlinks"] = pathlinks
     if goal is not None:
       # goallink = {"href": self.getbrowseurl("", goal=goal), "text": goal}

@@ -21,7 +21,9 @@
         <h3 over:replace="itemtitle" class="title">
           <span py:strip="True" py:if="item.path.language">[ <a href="${item.path.language.href}">${item.path.language.text}</a> ]</span>
           <span py:strip="True" py:if="item.path.project">[ <a href="${item.path.project.href}">${item.path.project.text}</a> ]</span>
-          <a py:for="pathlink in item.path.pathlinks" href="${pathlink.href}">${pathlink.text}</a>
+          <span py:strip="True" py:for="pathlink in item.path.pathlinks">
+            <a href="${pathlink.href}">${pathlink.text}</a>${pathlink.sep}
+          </span>
           <i py:if="item.path.goal"><a href="${item.path.goal.href}">${item.path.goal.text}</a></i>
         </h3>
       </div>
@@ -59,14 +61,6 @@
   </div>
 
   <div id="links" over:include="pootlepage#links">
-    <div py:if="search" class="sidetitle" py:content="search.title">
-      Search
-    </div>
-
-    <form py:if="search" action="translate.html" method="post" name="searchform" id="searchform">
-      <input type="text" name="searchtext" value="" />
-    </form>
-
     <div class="sidetitle" py:if="assign" py:content="assign.title">
       Assign Strings
     </div>
