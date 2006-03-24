@@ -17,26 +17,20 @@
     <div class="intro" py:if="message" py:content="message">Message</div>
 
     <div class="navbar" py:for="item in navitems">
-      <img src="/images/${item.icon}.png" type="button" class="icon" />
-
-      <h3 class="title">
-        <span py:strip="True" py:if="item.path.language">[ <a href="${item.path.language.href}">${item.path.language.text}</a> ]</span>
-        <span py:strip="True" py:if="item.path.project">[ <a href="${item.path.project.href}">${item.path.project.text}</a> ]</span>
-        <a py:for="pathlink in item.path.pathlinks" href="${pathlink.href}">${pathlink.text}</a>
-        <i py:if="item.path.goal"><a href="${item.path.goal.href}">${item.path.goal.text}</a></i>
-      </h3>
-
-      <div over:include="navbar#actionlinks"/>
-
+      <div over:include="navbar#item">
+        <h3 over:replace="itemtitle" class="title">
+          <span py:strip="True" py:if="item.path.language">[ <a href="${item.path.language.href}">${item.path.language.text}</a> ]</span>
+          <span py:strip="True" py:if="item.path.project">[ <a href="${item.path.project.href}">${item.path.project.text}</a> ]</span>
+          <a py:for="pathlink in item.path.pathlinks" href="${pathlink.href}">${pathlink.text}</a>
+          <i py:if="item.path.goal"><a href="${item.path.goal.href}">${item.path.goal.text}</a></i>
+        </h3>
+      </div>
       <div over:include="navbar#itemstats"/>
     </div>
 
     <div py:for="item in children" py:strip="True">
       <div py:if="'isgoal' in item" class="goalitem">
-        <div class="contentsitem">
-          <img src="/images/goal.png" type="button" class="icon" />
-          <h3 class="title"><a href="${item.href}">${item.title}</a></h3>
-          <div over:include="navbar#actionlinks"/>
+        <div over:include="navbar#item">
           <div py:if="item.goal.users or item.goal.show_adduser">
             <img src="/images/person.png" type="button" class="icon"/>
             <span py:for="user in item.goal.users" py:strip="True">${user.name}${user.sep}</span>
@@ -48,26 +42,17 @@
               <input type="submit" name="doeditgoalusers" value="${item.goal.adduser_title}"/>
             </form>
           </div>
-          <div over:include="navbar#itemstats"/>
-        </div>
-      </div>
-
-      <div py:if="'isdir' in item" class="item item-${item.parity}">
-        <div class="contentsitem">
-          <img src="/images/folder.png" type="button" class="icon" />
-          <h3 class="title"><a href="${item.href}">${item.title}</a></h3>
-          <div over:include="navbar#actionlinks"/>
         </div>
         <div over:include="navbar#itemstats"/>
       </div>
 
+      <div py:if="'isdir' in item" class="item item-${item.parity}">
+        <div over:include="navbar#item"/>
+        <div over:include="navbar#itemstats"/>
+      </div>
+
       <div py:if="'isfile' in item" class="item item-${item.parity}">
-        <div class="contentsitem">
-          <img src="/images/file.png" type="button" class="icon" />
-          <h3 class="title"><a href="${item.href}">${item.title}</a></h3>
-          <div over:include="navbar#actionlinks"/>
-        </div>
-  
+        <div over:include="navbar#item"/>
         <div over:include="navbar#itemstats"/>
       </div>
     </div>

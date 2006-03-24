@@ -283,9 +283,6 @@ class ProjectIndex(pagelayout.PootleNavPage):
         "search": {"title": self.localize("Search")}, "message": message,
         # navigation bar
         "navitems": [{"icon": "folder", "path": navbarpath_dict, "actions": actionlinks, "stats": mainstats}],
-        "navicon": "folder",
-        "navpath": navbarpath_dict, "navactions": actionlinks,
-        "navstats": mainstats,
         # children
         "children": childitems,
         # general vars
@@ -545,7 +542,7 @@ class ProjectIndex(pagelayout.PootleNavPage):
     # TODO: fix stats for goalless
     pofilenames = self.project.getgoalfiles(goalname, dirfilter, expanddirs=True, includedirs=False)
     projectstats = self.project.combinestats(pofilenames)
-    goal = {"actions": None, "isgoal": True, "goal": {"name": goalname}}
+    goal = {"actions": None, "icon": "goal", "isgoal": True, "goal": {"name": goalname}}
     if goalname:
       goal["title"] = goalname
     else:
@@ -584,7 +581,7 @@ class ProjectIndex(pagelayout.PootleNavPage):
       projectstats = self.project.combinestats(pofilenames)
     basename = os.path.basename(direntry)
     browseurl = self.getbrowseurl("%s/" % basename, **newargs)
-    diritem = {"href": browseurl, "title": basename, "isdir": True}
+    diritem = {"href": browseurl, "title": basename, "icon": "folder", "isdir": True}
     basename += "/"
     actionlinks = self.getactionlinks(basename, projectstats, linksrequired=linksrequired)
     diritem["actions"] = actionlinks
@@ -601,7 +598,7 @@ class ProjectIndex(pagelayout.PootleNavPage):
     basename = os.path.basename(fileentry)
     projectstats = self.project.combinestats([fileentry])
     browseurl = self.getbrowseurl(basename, **newargs)
-    fileitem = {"href": browseurl, "title": basename, "isfile": True}
+    fileitem = {"href": browseurl, "title": basename, "icon": "folder", "isfile": True}
     actions = self.getactionlinks(basename, projectstats, linksrequired=linksrequired)
     actionlinks = actions["extended"]
     if "po" in linksrequired:

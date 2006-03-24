@@ -5,11 +5,20 @@
   <title>Pootle Navigation Bar</title>
 </head>
 <body>
-  <img id="icon" py:if="type" src="/images/${iconname}.png" class="icon"/>
-  <div id="actionlinks" class="item-description" py:if="item.actions">
-    <a py:for="link in item.actions.basic" href="${link.href}" title="${link.title}">${link.text}${link.sep}</a>
-    <form py:if="item.actions.goalform" py:content="XML(item.actions.goalform)"/>
-    <a py:for="link in item.actions.extended" href="${link.href}" title="${link.title}">${link.text}${link.sep}</a>
+  <div id="item" class="contentsitem">
+    <img src="/images/${item.icon}.png" type="button" class="icon" />
+    <h3 id="itemtitle" class="title"><a href="${item.href}">${item.title}</a></h3>
+    <div id="actionlinks" class="item-description" py:if="item.actions">
+      <span py:for="link in item.actions.basic" py:strip="True">
+        <a href="${link.href}" title="${link.title}">${link.text}</a>
+        ${link.sep}
+      </span>
+      <form py:if="item.actions.goalform" py:content="XML(item.actions.goalform)"/>
+      <span py:for="link in item.actions.extended" py:strip="True">
+        <a href="${link.href}" title="${link.title}">${link.text}</a>
+        ${link.sep}
+      </span>
+    </div>
   </div>
   <div id="itemstats" class="item-statistics">
     <span py:replace="XML(item.stats.summary)">
