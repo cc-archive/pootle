@@ -16,39 +16,19 @@
   <div id="content">
     <div class="intro" py:if="message" py:content="message">Message</div>
 
-    <div class="navbar">
-      <img src="/images/${navicon}.png" type="button" class="icon" />
+    <div class="navbar" py:for="item in navitems">
+      <img src="/images/${item.icon}.png" type="button" class="icon" />
 
       <h3 class="title">
-        <span py:strip="True" py:if="navpath.language">[ <a href="${navpath.language.href}">${navpath.language.text}</a> ]</span>
-        <span py:strip="True" py:if="navpath.project">[ <a href="${navpath.project.href}">${navpath.project.text}</a> ]</span>
-        <a py:for="pathlink in navpath.pathlinks" href="${pathlink.href}">${pathlink.text}</a>
-        <i py:if="navpath.goal"><a href="${navpath.goal.href}">${navpath.goal.text}</a></i>
+        <span py:strip="True" py:if="item.path.language">[ <a href="${item.path.language.href}">${item.path.language.text}</a> ]</span>
+        <span py:strip="True" py:if="item.path.project">[ <a href="${item.path.project.href}">${item.path.project.text}</a> ]</span>
+        <a py:for="pathlink in item.path.pathlinks" href="${pathlink.href}">${pathlink.text}</a>
+        <i py:if="item.path.goal"><a href="${item.path.goal.href}">${item.path.goal.text}</a></i>
       </h3>
 
-      <div class="item-description" py:if="navactions">
-        <a py:for="link in navactions.basic" href="${link.href}" title="${link.title}">${link.text}${link.sep}</a>
-        <form py:if="navactions.goalform" py:content="XML(navactions.goalform)"/>
-        <a py:for="link in navactions.extended" href="${link.href}" title="${link.title}">${link.text}${link.sep}</a>
-      </div>
+      <div over:include="navbar#actionlinks"/>
 
-      <div class="item-statistics">
-        <span py:replace="XML(navstats.summary)">
-          2/2 words (100%) translated <span class="string-statistics">[2/2 strings]</span>
-        </span>
-        <span py:for="check in navstats.checks" py:strip="True">
-          <br/>
-          <a href="${check.href}" py:content="check.text">checkname</a>
-          <span py:content="check.stats" py:strip="True">3 strings (20%) failed</span>
-        </span>
-        <span py:for="track in navstats.tracks" py:strip="True"><br/>${track}</span>
-        <span py:for="astats in navstats.assigns" py:strip="True">
-        <br/><a href="${astats.assign.href}">${astats.assign.text}</a>: ${astats.stats}
-          <span cls='string-statistics'>${astats.stringstats}</span> -
-          ${astats.completestats} <span cls='string-statistics'>${astats.completestringstats}</span>
-          <a py:if="astats.remove" href="${astats.remove.href}">${astats.remove.text}</a>
-        </span>
-      </div>
+      <div over:include="navbar#itemstats"/>
     </div>
 
     <div py:for="item in children" py:strip="True">
@@ -56,11 +36,7 @@
         <div class="contentsitem">
           <img src="/images/goal.png" type="button" class="icon" />
           <h3 class="title"><a href="${item.href}">${item.title}</a></h3>
-          <div class="item-description" py:if="item.actions">
-            <a py:for="link in item.actions.basic" href="${link.href}" title="${link.title}">${link.text}${link.sep}</a>
-            <form py:if="item.actions.goalform" py:content="XML(item.actions.goalform)"/>
-            <a py:for="link in item.actions.extended" href="${link.href}" title="${link.title}">${link.text}${link.sep}</a>
-          </div>
+          <div over:include="navbar#actionlinks"/>
           <div py:if="item.goal.users or item.goal.show_adduser">
             <img src="/images/person.png" type="button" class="icon"/>
             <span py:for="user in item.goal.users" py:strip="True">${user.name}${user.sep}</span>
@@ -72,23 +48,7 @@
               <input type="submit" name="doeditgoalusers" value="${item.goal.adduser_title}"/>
             </form>
           </div>
-          <div class="item-statistics">
-            <span py:replace="XML(item.stats.summary)">
-              2/2 words (100%) translated <span class="string-statistics">[2/2 strings]</span>
-            </span>
-            <span py:for="check in item.stats.checks" py:strip="True">
-              <br/>
-              <a href="${check.href}" py:content="check.text">checkname</a>
-              <span py:content="check.stats" py:strip="True">3 strings (20%) failed</span>
-            </span>
-            <span py:for="track in item.stats.tracks" py:strip="True"><br/>${track}</span>
-            <span py:for="astats in item.stats.assigns" py:strip="True">
-            <br/><a href="${astats.assign.href}">${astats.assign.text}</a>: ${astats.stats}
-              <span cls='string-statistics'>${astats.stringstats}</span> -
-              ${astats.completestats} <span cls='string-statistics'>${astats.completestringstats}</span>
-              <a py:if="astats.remove" href="${astats.remove.href}">${astats.remove.text}</a>
-            </span>
-          </div>
+          <div over:include="navbar#itemstats"/>
         </div>
       </div>
 
@@ -96,59 +56,19 @@
         <div class="contentsitem">
           <img src="/images/folder.png" type="button" class="icon" />
           <h3 class="title"><a href="${item.href}">${item.title}</a></h3>
-          <div class="item-description" py:if="item.actions">
-            <a py:for="link in item.actions.basic" href="${link.href}" title="${link.title}">${link.text}${link.sep}</a>
-            <form py:if="item.actions.goalform" py:content="XML(item.actions.goalform)"/>
-            <a py:for="link in item.actions.extended" href="${link.href}" title="${link.title}">${link.text}${link.sep}</a>
-          </div>
+          <div over:include="navbar#actionlinks"/>
         </div>
-        <div class="item-statistics">
-          <span py:replace="XML(item.stats.summary)">
-            2/2 words (100%) translated <span class="string-statistics">[2/2 strings]</span>
-          </span>
-          <span py:for="check in item.stats.checks" py:strip="True">
-            <br/>
-            <a href="${check.href}" py:content="check.text">checkname</a>
-            <span py:content="check.stats" py:strip="True">3 strings (20%) failed</span>
-          </span>
-          <span py:for="track in item.stats.tracks" py:strip="True"><br/>${track}</span>
-          <span py:for="astats in item.stats.assigns" py:strip="True">
-          <br/><a href="${astats.assign.href}">${astats.assign.text}</a>: ${astats.stats}
-            <span cls='string-statistics'>${astats.stringstats}</span> -
-            ${astats.completestats} <span cls='string-statistics'>${astats.completestringstats}</span>
-            <a py:if="astats.remove" href="${astats.remove.href}">${astats.remove.text}</a>
-          </span>
-        </div>
+        <div over:include="navbar#itemstats"/>
       </div>
 
       <div py:if="'isfile' in item" class="item item-${item.parity}">
         <div class="contentsitem">
           <img src="/images/file.png" type="button" class="icon" />
           <h3 class="title"><a href="${item.href}">${item.title}</a></h3>
-          <div class="item-description" py:if="item.actions">
-            <a py:for="link in item.actions.basic" href="${link.href}" title="${link.title}">${link.text}${link.sep}</a>
-            <form py:if="item.actions.goalform" py:content="XML(item.actions.goalform)"/>
-            <a py:for="link in item.actions.extended" href="${link.href}" title="${link.title}">${link.text}${link.sep}</a>
-          </div>
+          <div over:include="navbar#actionlinks"/>
         </div>
   
-        <div class="item-statistics">
-          <span py:replace="XML(item.stats.summary)">
-            2/2 words (100%) translated <span class="string-statistics">[2/2 strings]</span>
-          </span>
-          <span py:for="check in item.stats.checks" py:strip="True">
-            <br/>
-            <a href="${check.href}" py:content="check.text">checkname</a>
-            <span py:content="check.stats" py:strip="True">3 strings (20%) failed</span>
-          </span>
-          <span py:for="track in item.stats.tracks" py:strip="True"><br/>${track}</span>
-          <span py:for="astats in item.stats.assigns" py:strip="True">
-          <br/><a href="${astats.assign.href}">${astats.assign.text}</a>: ${astats.stats}
-            <span cls='string-statistics'>${astats.stringstats}</span> -
-            ${astats.completestats} <span cls='string-statistics'>${astats.completestringstats}</span>
-            <a py:if="astats.remove" href="${astats.remove.href}">${astats.remove.text}</a>
-          </span>
-        </div>
+        <div over:include="navbar#itemstats"/>
       </div>
     </div>
   </div>

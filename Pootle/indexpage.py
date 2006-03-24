@@ -282,6 +282,7 @@ class ProjectIndex(pagelayout.PootleNavPage):
         "assign": None, "goals": None, "upload": None,
         "search": {"title": self.localize("Search")}, "message": message,
         # navigation bar
+        "navitems": [{"icon": "folder", "path": navbarpath_dict, "actions": actionlinks, "stats": mainstats}],
         "navicon": "folder",
         "navpath": navbarpath_dict, "navactions": actionlinks,
         "navstats": mainstats,
