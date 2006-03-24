@@ -422,13 +422,6 @@ class ProjectIndex(pagelayout.PootleNavPage):
         return False
     raise ValueError("Invalid boolean value for %s: %r" % (argname, value))
 
-  def addfolderlinks(self, title, foldername, folderlink, tooltip=None, enhancelink=True):
-    """adds a folder link to the sidebar"""
-    # TODO: templatise this
-    if enhancelink:
-      folderlink = self.makelink(folderlink)
-    return pagelayout.PootlePage.addfolderlinks(self, title, foldername, folderlink, tooltip)
-
   def getassignbox(self):
     """adds a box that lets the user assign strings"""
     users = [username for username, userprefs in self.session.loginchecker.users.iteritems() if username != "__dummy__"]
