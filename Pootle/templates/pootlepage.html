@@ -54,6 +54,15 @@
     <div class="side" py:if="not session.isopen">
       <a href="/login.html">Log In</a> <a href="/register.html">Register</a> <a href="/activate.html">Activate</a>
     </div>
+
+    <div py:if="search" class="sidetitle" py:content="search.title">
+      Search
+    </div>
+
+    <form py:if="search" action="translate.html" method="post" name="searchform" id="searchform">
+      <input type="text" name="searchtext" value="" />
+    </form>
+
   </div>
 </body>
 </html>
