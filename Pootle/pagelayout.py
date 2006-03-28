@@ -170,6 +170,8 @@ class PootlePage(widgets.Page):
     banner_layout = layout_banner(bannerheight)
     if hasattr(self, "templatevars"):
       self.templatevars.update(banner_layout)
+    if "search" not in self.templatevars:
+      self.templatevars["search"] = None
 
   def addsearchbox(self, searchtext, contextinfo="", action=""):
     """adds a simple search box"""
