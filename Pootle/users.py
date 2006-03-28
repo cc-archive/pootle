@@ -96,7 +96,7 @@ class UserOptions(pagelayout.PootlePage):
     self.potree = potree
     self.session = session
     self.localize = session.localize
-    pagetitle = self.localize("Options for: %s") % session.username
+    pagetitle = self.localize("Options for: %s", session.username)
     self.templatename = "options"
     instancetitle = getattr(session.instance, "title", session.localize("Pootle Demo"))
     sessionvars = {"status": session.status, "isopen": session.isopen, "issiteadmin": session.issiteadmin()}

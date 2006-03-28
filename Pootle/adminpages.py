@@ -62,7 +62,7 @@ class LanguagesAdminPage(pagelayout.PootlePage):
       languagepluralequation = self.potree.getlanguagepluralequation(languagecode)
       languageremove = None
       # TODO: make label work like this
-      removelabel = self.localize("Remove %s") % languagecode
+      removelabel = self.localize("Remove %s", languagecode)
       languageoptions = [{"name": "languagename-%s" % languagecode, "value": languagename, "type": "text"},
                          {"name": "languagespecialchars-%s" % languagecode, "value": languagespecialchars, "type": "text"},
                          {"name": "languagenplurals-%s" % languagecode, "value": languagenplurals, "type": "text"},
@@ -113,7 +113,7 @@ class ProjectsAdminPage(pagelayout.PootlePage):
       else:
         projectcreatemofiles = ""
       projectremove = None
-      removelabel = self.localize("Remove %s") % projectcode
+      removelabel = self.localize("Remove %s", projectcode)
       projectoptions = [{"name": "projectname-%s" % projectcode, "value": projectname, "type": "text"},
                         {"name": "projectdescription-%s" % projectcode, "value": projectdescription, "type": "text"},
                         {"name": "projectcheckerstyle-%s" % projectcode, "value": projectcheckerstyle, "selectoptions": self.allchecks},
@@ -163,7 +163,7 @@ class UsersAdminPage(pagelayout.PootlePage):
       else:
         activatedattr = ""
       userremove = None
-      removelabel = self.localize("Remove %s") % usercode
+      removelabel = self.localize("Remove %s", usercode)
       useroptions = [{"name": "username-%s" % usercode, "value": fullname, "type": "text"},
                      {"name": "useremail-%s" % usercode, "value": email, "type": "text"},
                      {"name": "userpassword-%s" % usercode, "value": None, "type": "text"},
@@ -236,12 +236,13 @@ class ProjectAdminPage(pagelayout.PootlePage):
 class TranslationProjectAdminPage(pagelayout.PootlePage):
   """admin page for a translation project (project+language)"""
   def __init__(self, potree, project, session, argdict):
+    # TODO: templatise this page
     self.potree = potree
     self.project = project
     self.session = session
     self.localize = session.localize
     self.rightnames = self.project.getrightnames(session)
-    title = self.localize("Pootle Admin: %s %s") % (self.project.languagename, self.project.projectname)
+    title = self.localize("Pootle Admin: %s %s", (self.project.languagename, self.project.projectname))
     mainlink = widgets.Link("index.html", self.localize("Project home page"))
     links = [pagelayout.Title(title), pagelayout.IntroText(mainlink)]
     if "admin" in self.project.getrights(self.session):
@@ -305,5 +306,5 @@ class TranslationProjectAdminPage(pagelayout.PootlePage):
     rightstable.setcell(rownum, 1, table.TableCell(selectrights))
     removecheckbox = widgets.Input({"type":"checkbox", "name":"rightsremove-%s" % username})
     if delete: 
-      rightstable.setcell(rownum, 2, table.TableCell([removecheckbox, self.localize("Remove %s") % username]))
+      rightstable.setcell(rownum, 2, table.TableCell([removecheckbox, self.localize("Remove %s", username)]))
 

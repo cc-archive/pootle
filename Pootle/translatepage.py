@@ -56,13 +56,13 @@ class TranslatePage(pagelayout.PootleNavPage):
     contextinfo = widgets.HiddenFieldList({"pofilename": self.pofilename})
     formaction = self.makelink("")
     translateform = widgets.Form([self.transtable, searchcontextinfo, contextinfo], {"name": "translate", "action":formaction})
-    title = self.localize("Pootle: translating %s into %s: %s") % (self.project.projectname, self.project.languagename, self.pofilename)
+    title = self.localize("Pootle: translating %s into %s: %s", (self.project.projectname, self.project.languagename, self.pofilename))
     mainstats = []
     if self.pofilename is not None:
       postats = self.project.getpostats(self.pofilename)
       blank, fuzzy = postats["blank"], postats["fuzzy"]
       translated, total = postats["translated"], postats["total"]
-      mainstats = self.localize("%d/%d translated\n(%d blank, %d fuzzy)") % (len(translated), len(total), len(blank), len(fuzzy))
+      mainstats = self.localize("%d/%d translated\n(%d blank, %d fuzzy)", (len(translated), len(total), len(blank), len(fuzzy)))
     if self.viewmode:
       rows = self.getdisplayrows("view")
       pagelinks = self.getpagelinks("?translate=1&view=1", rows)
@@ -73,7 +73,7 @@ class TranslatePage(pagelayout.PootleNavPage):
     navbarpath_dict = self.makenavbarpath_dict(self.project, self.session, self.pofilename)
     # templatising
     self.templatename = "translatepage"
-    pagetitle = self.localize("Pootle: translating %s into %s: %s") % (self.project.projectname, self.project.languagename, self.pofilename)
+    pagetitle = self.localize("Pootle: translating %s into %s: %s", (self.project.projectname, self.project.languagename, self.pofilename))
     instancetitle = getattr(session.instance, "title", session.localize("Pootle Demo"))
     sessionvars = {"status": session.status, "isopen": session.isopen, "issiteadmin": session.issiteadmin()}
     stats = {"summary": mainstats, "checks": [], "tracks": [], "assigns": []}
@@ -119,16 +119,16 @@ class TranslatePage(pagelayout.PootleNavPage):
       pagelinks.append({"text": self.localize("Start")})
     if self.firstitem > 0:
       linkitem = max(self.firstitem - pagesize, 0)
-      pagelinks.append({"href": baselink + "&item=%d" % linkitem, "text": self.localize("Previous %d") % (self.firstitem - linkitem)})
+      pagelinks.append({"href": baselink + "&item=%d" % linkitem, "text": self.localize("Previous %d", (self.firstitem - linkitem))})
     else:
-      pagelinks.append({"text": self.localize("Previous %d") % pagesize})
-    pagelinks.append(self.localize("Items %d to %d of %d") % (self.firstitem+1, lastitem+1, pofilelen))
+      pagelinks.append({"text": self.localize("Previous %d", pagesize)})
+    pagelinks.append(self.localize("Items %d to %d of %d", (self.firstitem+1, lastitem+1, pofilelen)))
     if self.firstitem + len(self.translations) < self.project.getpofilelen(self.pofilename):
       linkitem = self.firstitem + pagesize
       itemcount = min(pofilelen - linkitem, pagesize)
-      pagelinks.append({"href": baselink + "&item=%d" % linkitem, "text": self.localize("Next %d") % itemcount})
+      pagelinks.append({"href": baselink + "&item=%d" % linkitem, "text": self.localize("Next %d", itemcount)})
     else:
-      pagelinks.append(self.localize("Next %d") % pagesize)
+      pagelinks.append(self.localize("Next %d", pagesize))
     if pofilelen > pagesize and (self.item + pagesize) < pofilelen:
       pagelinks.append({"href": baselink + "&item=%d" % max(pofilelen - pagesize, 0), "text": self.localize("End")})
     else:
@@ -147,7 +147,7 @@ class TranslatePage(pagelayout.PootleNavPage):
     if self.pofilename is not None:
       if matchnames:
         checknames = [matchname.replace("check-", "", 1) for matchname in matchnames]
-        self.links.addcontents(pagelayout.SidebarText(self.localize("checking %s") % ", ".join(checknames)))
+        self.links.addcontents(pagelayout.SidebarText(self.localize("checking %s", ", ".join(checknames))))
 
   def addassignbox(self):
     """adds a box that lets the user assign strings"""
@@ -284,7 +284,7 @@ class TranslatePage(pagelayout.PootleNavPage):
         self.pofilename, self.item = self.project.searchpoitems(self.pofilename, self.lastitem, search).next()
       except StopIteration:
         if self.lastitem is None:
-          raise StopIteration(self.localize("There are no items matching that search ('%s')") % self.searchtext)
+          raise StopIteration(self.localize("There are no items matching that search ('%s')", self.searchtext))
         else:
           raise StopIteration(self.localize("You have finished going through the items you selected"))
     else:
@@ -448,7 +448,7 @@ class TranslatePage(pagelayout.PootleNavPage):
         pluralforms = [widgets.HiddenFieldList([("pluralforms%d" % item, len(trans))])]
         htmlbreak = "<br />"
         for pluralitem, pluraltext in enumerate(trans):
-          pluralform = self.localize("Plural Form %d") % pluralitem
+          pluralform = self.localize("Plural Form %d", pluralitem)
           pluraltext = self.escape(pluraltext).decode("utf-8")
           textid = "trans%d.%d" % (item, pluralitem)
           if not focusbox:
@@ -538,7 +538,7 @@ class TranslatePage(pagelayout.PootleNavPage):
       combineddiffs = reduce(list.__add__, pluraldiffcodes, [])
       transdiff = self.highlightdiffs(pluraltrans, combineddiffs, issrc=True)
       if hasplurals:
-        pluralform = self.localize("Plural Form %d") % pluralitem
+        pluralform = self.localize("Plural Form %d", pluralitem)
         currenttext.append([pagelayout.TranslationHeaders(pluralform), htmlbreak])
       currenttext.append([transdiff, htmlbreak])
     suggitems = []
@@ -547,12 +547,12 @@ class TranslatePage(pagelayout.PootleNavPage):
       suggestedby = self.project.getsuggester(self.pofilename, item, suggid)
       if len(suggestions) > 1:
         if suggestedby:
-          suggtitle = self.localize("Suggestion %d by %s:") % (suggid+1, suggestedby)
+          suggtitle = self.localize("Suggestion %d by %s:", (suggid+1, suggestedby))
         else:
-          suggtitle = self.localize("Suggestion %d:") % (suggid+1)
+          suggtitle = self.localize("Suggestion %d:", (suggid+1))
       else:
         if suggestedby:
-          suggtitle = self.localize("Suggestion by %s:") % (suggestedby)
+          suggtitle = self.localize("Suggestion by %s:", (suggestedby))
         else:
           suggtitle = self.localize("Suggestion:")
       suggtitle = ["<b>%s</b>" % suggtitle, htmlbreak]
@@ -563,7 +563,7 @@ class TranslatePage(pagelayout.PootleNavPage):
         if isinstance(pluralsuggestion, str):
           pluralsuggestion = pluralsuggestion.decode("utf8")
         if hasplurals:
-          pluralform = self.localize("Plural Form %d") % pluralitem
+          pluralform = self.localize("Plural Form %d", pluralitem)
           suggtext.append([pagelayout.TranslationHeaders(pluralform), htmlbreak])
         hiddensuggid = "suggest%d.%d.%d" % (item, suggid, pluralitem)
         hiddensuggvalue = widgets.Input({'type': 'hidden', "name": hiddensuggid, 'value': pluralsuggestion})
@@ -591,7 +591,7 @@ class TranslatePage(pagelayout.PootleNavPage):
       text = [editlink]
       htmlbreak = "<br />"
       for pluralitem, pluraltext in enumerate(trans):
-        pluralform = self.localize("Plural Form %d") % pluralitem
+        pluralform = self.localize("Plural Form %d", pluralitem)
         text += [pagelayout.TranslationHeaders(pluralform), htmlbreak, self.escapetext(pluraltext), htmlbreak]
       text = pagelayout.TranslationText(text)
     else:
