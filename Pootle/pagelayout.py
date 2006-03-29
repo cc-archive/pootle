@@ -332,9 +332,9 @@ class PootleNavPage(PootlePage):
     if numfiles is None:
       filestats = ""
     elif isinstance(numfiles, tuple):
-      filestats = self.localize("%d/%d files", numfiles + ", ")
+      filestats = self.localize("%d/%d files", numfiles) + ", "
     else:
-      filestats = self.nlocalize("%d file", "%d files", numfiles, numfiles + ", ")
+      filestats = self.nlocalize("%d file", "%d files", numfiles, numfiles) + ", "
     wordstats = self.localize("%d/%d words (%d%%) translated", (translatedwords, totalwords, percentfinished))
     stringstats = ' <span cls="string-statistics">[%d/%d strings]</span>' % (translated, total)
     return filestats + wordstats + stringstats
