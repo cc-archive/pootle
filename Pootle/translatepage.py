@@ -82,7 +82,7 @@ class TranslatePage(pagelayout.PootleNavPage):
         "navitems": [{"icon": "edit", "path": navbarpath_dict, "actions": {}, "stats": stats}],
         "pagelinks": pagelinks,
         # translation form
-        "actionurl": self.makelink(""),
+        "actionurl": formaction,
         "notice": notice,
         "original_title": self.localize("Original"),
         "translation_title": self.localize("Translation"),
