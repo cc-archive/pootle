@@ -65,7 +65,7 @@
 
             <td colspan="1" rowspan="1" type="td" class="translate-translation translate-translation-${item.polarity} ${item.focus_class}">
               <div id="${item.trans.itemid}" class="translate-translation ${item.trans.focus_class}">
-                <span py:if="item.trans.review" class="translation-text">
+                <span py:if="item.editable and reviewmode" class="translation-text">
                   <b>Current Translation:</b><br />
                   rest<br />
                   <b>Suggestion by testuser:</b><br />
@@ -77,10 +77,32 @@
                   <br />
                   <input py:if="item.trans.buttons.skip" accesskey="k" type="submit" name="skip0" value="skip" />
                 </span>
-                <span py:if="item.editable" py:strip="True">
+                <span py:if="item.editable and not reviewmode" py:strip="True">
+                  <span py:if="not item.trans.isplural" py:strip="True">
+                    <!--! TODO: spell checking -->
+                    <textarea name="${item.trans.itemid}" rows="${item.trans.rows}" cols="${item.trans.cols}" py:content="XML(item.trans.text)">
+                      translatable text
+                    </textarea>
+                  </span>
+                  <span py:if="item.trans.isplural" py:strip="True">
+                    <input type="hidden" name="pluralforms${item.itemid}" value="${item.trans.nplurals}"/>
+                    <span py:for="form in item.trans.forms" py:strip="True">
+                      <span class="translation-text-headers" py:content="form.title">Plural Form ${form.n}</span><br/>
+                      <!--! TODO: spell checking -->
+                      <textarea name="${form.name}" rows="${item.trans.rows}" cols="${item.trans.cols}" py:content="XML(form.text)">
+                        translatable text for plural form
+                      </textarea>
+                    </span>
+                  </span>
+                  <span py:replace="XML(item.trans.buttons)"/>
+                  <script type="text/javascript">
+                    <!--
+                    document.forms.translate['${item.trans.focusbox}'].focus()
+                    //-->
+                  </script>
                 </span>
                 <span py:if="not item.editable" py:strip="True">
-                  <span py:if="not item.trans.isplural" class="translation-text" py:content="XML(item.trans.text)">
+                  <span py:if="not item.trans.isplural" py:strip="True" py:content="XML(item.trans.text)">
                     text
                   </span>
                   <span py:if="item.trans.isplural" class="translation-text">

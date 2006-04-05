@@ -89,6 +89,7 @@ class TranslatePage(pagelayout.PootleNavPage):
         "original_title": self.localize("Original"),
         "translation_title": self.localize("Translation"),
         "items": items,
+        "reviewmode": self.reviewmode,
         # optional sections, will appear if these values are replaced
         "assign": None,
         "search": {"title": self.localize("Search")},
@@ -358,13 +359,12 @@ class TranslatePage(pagelayout.PootleNavPage):
           itemsuggestions = [suggestion.unquotedmsgstr for suggestion in suggestions[item]]
           transwidget = self.gettransreview(item, trans, itemsuggestions).gethtml()
         else:
-          transwidget = self.gettransedit(item, trans).gethtml()
+          transmerge = self.gettransedit(item, trans)
       else:
         transmerge = self.gettransview(item, trans)
       transdict = {"itemid": "trans%d" % item,
                    "focus_class": origdict["focus_class"],
                    "isplural": len(trans) > 1,
-                   "text": trans[0],
                    "widget": transwidget,
                   }
       transdict.update(transmerge)
@@ -376,6 +376,7 @@ class TranslatePage(pagelayout.PootleNavPage):
       else:
         focus_class = ""
       itemdict = {
+                 "itemid": item,
                  "orig": origdict,
                  "trans": transdict,
                  "polarity": polarity,
@@ -457,47 +458,41 @@ class TranslatePage(pagelayout.PootleNavPage):
     """returns a widget for editing the given item and translation"""
     if "translate" in self.rights or "suggest" in self.rights:
       usernode = self.getusernode()
-      rows = getattr(usernode, "inputheight", 5)
-      cols = getattr(usernode, "inputwidth", 40)
+      transdict = {
+                  "isplural": len(trans) > 1 or None,
+                  "rows": getattr(usernode, "inputheight", 5),
+                  "cols": getattr(usernode, "inputwidth", 40),
+                  }
       focusbox = ""
       spellargs = {"standby_url": "spellingstandby.html", "js_url": "/js/spellui.js", "target_url": "spellcheck.html"}
       if len(trans) > 1:
         buttons = self.gettransbuttons(item, ["skip", "suggest", "translate"])
-        pluralforms = [widgets.HiddenFieldList([("pluralforms%d" % item, len(trans))])]
-        htmlbreak = "<br />"
+        transdict["nplurals"] = len(trans)
+        forms = []
         for pluralitem, pluraltext in enumerate(trans):
-          pluralform = self.localize("Plural Form %d", pluralitem)
+          # TODO: patch jToolkit so this works without the nasty tuple wrapper
+          pluralform = self.localize("Plural Form %d", (pluralitem,))
           pluraltext = self.escape(pluraltext).decode("utf-8")
           textid = "trans%d.%d" % (item, pluralitem)
+          forms.append({"title": pluralform, "name": textid, "text": pluraltext, "n": pluralitem})
           if not focusbox:
             focusbox = textid
-          if spellcheck.can_check_lang(self.project.languagecode):
-            text = spellui.SpellCheckable({"name": textid, "rows":rows, "cols":cols}, contents=pluraltext, **spellargs)
-          else:
-            text = widgets.TextArea({"name": textid, "rows":rows, "cols":cols}, contents=pluraltext)
-          pluralforms += [pagelayout.TranslationHeaders(pluralform), htmlbreak, text, htmlbreak]
-        transdiv = widgets.Division([pluralforms, buttons], "trans%d" % item, cls="translate-translation")
+        transdict["forms"] = forms
       else:
         buttons = self.gettransbuttons(item)
-        trans = self.escape(trans[0]).decode("utf8")
+        transdict["text"] = self.escape(trans[0]).decode("utf8")
         textid = "trans%d" % item
         focusbox = textid
-        if spellcheck.can_check_lang(self.project.languagecode):
-          text = spellui.SpellCheckable({"name":textid, "rows":rows, "cols":cols}, contents=trans, **spellargs)
-        else:
-          text = widgets.TextArea({"name":textid, "rows":rows, "cols":cols}, contents=trans)
-        transdiv = widgets.Division([text, "<br />", buttons], textid, cls="translate-translation")
-      if "." in focusbox:
-        focusscript = "document.forms.translate['%s'].focus()" % focusbox
-      else:
-        focusscript = "document.forms.translate.%s.focus()" % focusbox
-      setfocusscript = widgets.Script('text/javascript', focusscript)
-      transdiv.addcontents(setfocusscript)
+      transdict["can_spell"] = spellcheck.can_check_lang(self.project.languagecode)
+      transdict["spell_args"] = spellargs
+      transdict["buttons"] = widgets.PlainContents(buttons).gethtml()
+      transdict["focusbox"] = focusbox
     else:
-      transdiv = self.gettransview(item, trans)
+      # TODO: work out how to handle this (move it up?)
+      transdict = self.gettransview(item, trans)
       buttons = self.gettransbuttons(item, ["skip"])
-      transdiv.addcontents(buttons)
-    return transdiv
+      transdict["buttons"] = buttons.gethtml()
+    return transdict
 
   def highlightdiffs(self, text, diffs, issrc=True):
     """highlights the differences in diffs in the text.
@@ -609,9 +604,11 @@ class TranslatePage(pagelayout.PootleNavPage):
     editlink = self.geteditlink(item)
     transdict = {"editlink": editlink}
     if len(trans) > 1:
-      forms = {}
+      forms = []
       for pluralitem, pluraltext in enumerate(trans):
-        form = {"title": self.localize("Plural Form %d", pluralitem), "n": pluralitem, "text": self.escapetext(pluraltext)}
+        # TODO: patch jToolkit so this works without the nasty tuple wrapper
+        form = {"title": self.localize("Plural Form %d", (pluralitem,)), "n": pluralitem, "text": self.escapetext(pluraltext)}
+        print "THE FORM!", form
         forms.append(form)
       transdict["forms"] = forms
     else:
