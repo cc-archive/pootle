@@ -3,7 +3,6 @@
 
 import sre
 from jToolkit.widgets import widgets
-from jToolkit.widgets import table
 from jToolkit.widgets import spellui
 from jToolkit import spellcheck
 from Pootle import pagelayout
@@ -101,8 +100,6 @@ class TranslatePage(pagelayout.PootleNavPage):
       self.templatevars["assign"] = self.getassignbox()
     pagelayout.PootleNavPage.__init__(self, title, [], session, bannerheight=81, returnurl="%s/%s/%s" % (self.project.languagecode, self.project.projectcode, dirfilter))
     self.addfilelinks(self.pofilename, self.matchnames)
-    autoexpandscript = widgets.Script('text/javascript', '', newattribs={'src': self.instance.baseurl + 'js/autoexpand.js'})
-    self.headerwidgets.append(autoexpandscript)
 
   def getfinishedtext(self, stoppedby):
     """gets notice to display when the translation is finished"""
@@ -355,7 +352,6 @@ class TranslatePage(pagelayout.PootleNavPage):
       item = self.firstitem + row
       origdict = self.getorigdict(item, orig, item in self.editable)
       transmerge = {}
-      transwidget = ""
       if item in self.editable:
         if self.reviewmode:
           itemsuggestions = [suggestion.unquotedmsgstr for suggestion in suggestions[item]]
@@ -367,7 +363,6 @@ class TranslatePage(pagelayout.PootleNavPage):
       transdict = {"itemid": "trans%d" % item,
                    "focus_class": origdict["focus_class"],
                    "isplural": len(trans) > 1,
-                   "widget": transwidget,
                   }
       transdict.update(transmerge)
       polarity = oddoreven(item)
@@ -512,8 +507,12 @@ class TranslatePage(pagelayout.PootleNavPage):
     textdiff = ""
     textnest = 0
     textpos = 0
+    spanempty = False
     for i, switch, tag in diffswitches:
-      textdiff += self.escape(text[textpos:i])
+      textsection = self.escape(text[textpos:i])
+      textdiff += textsection
+      if textsection:
+        spanempty = False
       if switch == 'start':
         textnest += 1
       elif switch == 'stop':
@@ -521,8 +520,12 @@ class TranslatePage(pagelayout.PootleNavPage):
       if switch == 'start' and textnest == 1:
         # start of a textition
         textdiff += "<span class='translate-diff-%s'>" % tag
+        spanempty = True
       elif switch == 'stop' and textnest == 0:
         # start of an equals block
+        if spanempty:
+          # FIXME: work out why kid swallows empty spans, and browsers display them horribly, then remove this
+          textdiff += "()"
         textdiff += "</span>"
       textpos = i
     textdiff += self.escape(text[textpos:])
