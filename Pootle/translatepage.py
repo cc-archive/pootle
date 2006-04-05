@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 import sre
-from jToolkit.widgets import widgets
 from jToolkit.widgets import spellui
 from jToolkit import spellcheck
 from Pootle import pagelayout
@@ -51,10 +50,8 @@ class TranslatePage(pagelayout.PootleNavPage):
       notice = self.getfinishedtext(stoppedby)
       self.item = None
     items = self.maketable()
-    searchcontextinfo = widgets.HiddenFieldList({"searchtext": self.searchtext})
-    contextinfo = widgets.HiddenFieldList({"pofilename": self.pofilename})
+    # contextinfo = widgets.HiddenFieldList({"pofilename": self.pofilename})
     formaction = self.makelink("")
-    translateform = widgets.Form([searchcontextinfo, contextinfo], {"name": "translate", "action":formaction})
     title = self.localize("Pootle: translating %s into %s: %s", (self.project.projectname, self.project.languagename, self.pofilename))
     mainstats = []
     if self.pofilename is not None:
@@ -94,6 +91,9 @@ class TranslatePage(pagelayout.PootleNavPage):
         # optional sections, will appear if these values are replaced
         "assign": None,
         "search": {"title": self.localize("Search")},
+        # hidden widgets
+        "searchtext": self.searchtext,
+        "pofilename": self.pofilename,
         # general vars
         "session": sessionvars, "instancetitle": pagetitle}
     if self.showassigns and "assign" in self.rights:
