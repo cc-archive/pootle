@@ -50,7 +50,8 @@ class TranslatePage(pagelayout.PootleNavPage):
       notice = self.getfinishedtext(stoppedby)
       self.item = None
     items = self.maketable()
-    # contextinfo = widgets.HiddenFieldList({"pofilename": self.pofilename})
+    # self.pofilename can change in search...
+    givenpofilename = self.pofilename
     formaction = self.makelink("")
     title = self.localize("Pootle: translating %s into %s: %s", (self.project.projectname, self.project.languagename, self.pofilename))
     mainstats = []
@@ -81,6 +82,7 @@ class TranslatePage(pagelayout.PootleNavPage):
         "navitems": [{"icon": "edit", "path": navbarpath_dict, "actions": {}, "stats": stats}],
         "pagelinks": pagelinks,
         # translation form
+        "actionurl": self.makelink(""),
         "notice": notice,
         "original_title": self.localize("Original"),
         "translation_title": self.localize("Translation"),
@@ -93,7 +95,7 @@ class TranslatePage(pagelayout.PootleNavPage):
         "search": {"title": self.localize("Search")},
         # hidden widgets
         "searchtext": self.searchtext,
-        "pofilename": self.pofilename,
+        "pofilename": givenpofilename,
         # general vars
         "session": sessionvars, "instancetitle": pagetitle}
     if self.showassigns and "assign" in self.rights:

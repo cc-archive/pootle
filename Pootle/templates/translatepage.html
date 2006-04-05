@@ -40,7 +40,7 @@
 
     <div class="translate-form">
       <span py:if="notice" py:replace="notice">Notice</span>
-      <form action="?review=1&amp;has-suggestion=1" method="post" name="translate" id="translate">
+      <form action="${actionurl}" method="post" name="translate" id="translate">
         <table cellpadding="10" cellspacing="1" class="translate-table">
           <tr>
             <td colspan="1" rowspan="1" type="td" class="translate-table-title" py:content="original_title">original</td>
