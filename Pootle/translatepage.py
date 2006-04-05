@@ -418,7 +418,7 @@ class TranslatePage(pagelayout.PootleNavPage):
     else:
       return None
 
-  def gettransbuttons(self, item, desiredbuttons=["skip", "copy", "suggest", "translate", "resize"]):
+  def gettransbuttons(self, item, desiredbuttons):
     """gets buttons for actions on translation"""
     if "suggest" in desiredbuttons and "suggest" not in self.rights:
       desiredbuttons.remove("suggest")
@@ -462,7 +462,7 @@ class TranslatePage(pagelayout.PootleNavPage):
             focusbox = textid
         transdict["forms"] = forms
       else:
-        buttons = self.gettransbuttons(item)
+        buttons = self.gettransbuttons(item, ["skip", "copy", "suggest", "translate", "resize"])
         transdict["text"] = self.escape(trans[0]).decode("utf8")
         textid = "trans%d" % item
         focusbox = textid
@@ -580,13 +580,14 @@ class TranslatePage(pagelayout.PootleNavPage):
                   "forms": forms,
                   "suggid": "%d.%d" % (item, suggid),
                   "canreview": "review" in self.rights,
-                  "buttons": None}
+                  "skip": None,
+                 }
       suggitems.append(suggdict)
-    transbuttons = self.gettransbuttons(item, ["skip"])
+    skipbutton = {"item": item, "text": self.localize("skip")}
     if suggitems:
-      suggitems[-1]["buttons"] = transbuttons
+      suggitems[-1]["skip"] = skipbutton
     else:
-      transdict["buttons"] = transbuttons
+      transdict["skip"] = skipbutton
     transdict["suggestions"] = suggitems
     return transdict
 
