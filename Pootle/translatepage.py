@@ -45,7 +45,7 @@ class TranslatePage(pagelayout.PootleNavPage):
     # TODO: clean up modes to be one variable
     self.viewmode = self.argdict.get("view", 0) and "view" in self.rights
     self.reviewmode = self.argdict.get("review", 0)
-    notice = ""
+    notice = {}
     try:
       self.finditem()
     except StopIteration, stoppedby:
@@ -100,11 +100,11 @@ class TranslatePage(pagelayout.PootleNavPage):
 
   def getfinishedtext(self, stoppedby):
     """gets notice to display when the translation is finished"""
-    title = pagelayout.Title(self.localize("End of batch"))
+    title = self.localize("End of batch")
     finishedlink = "index.html?" + "&".join(["%s=%s" % (arg, value) for arg, value in self.argdict.iteritems() if arg.startswith("show")])
-    returnlink = widgets.Link(finishedlink, self.localize("Click here to return to the index"))
+    returnlink = self.localize("Click here to return to the index")
     stoppedbytext = stoppedby.args[0]
-    return [title, pagelayout.IntroText(stoppedbytext), returnlink]
+    return {"title": title, "stoppedby": stoppedbytext, "finishedlink": returnlink}
 
   def getpagelinks(self, baselink, pagesize):
     """gets links to other pages of items, based on the given baselink"""
@@ -143,22 +143,23 @@ class TranslatePage(pagelayout.PootleNavPage):
   def addfilelinks(self, pofilename, matchnames):
     """adds a section on the current file, including any checks happening"""
     if self.showassigns and "assign" in self.rights:
-      self.addassignbox()
+      self.templatevars["assigns"] = self.getassignbox()
     if self.pofilename is not None:
       if matchnames:
         checknames = [matchname.replace("check-", "", 1) for matchname in matchnames]
-        self.links.addcontents(pagelayout.SidebarText(self.localize("checking %s", ", ".join(checknames))))
+        self.templatevars["checking_text"] = self.localize("checking %s", ", ".join(checknames))
 
-  def addassignbox(self):
-    """adds a box that lets the user assign strings"""
-    self.links.addcontents(pagelayout.SidebarTitle(self.localize("Assign Strings")))
+  def getassignbox(self):
+    """gets strings if the user can assign strings"""
     users = [username for username, userprefs in self.session.loginchecker.users.iteritems() if username != "__dummy__"]
     users.sort()
-    assigntoselect = widgets.Select({"name": "assignto", "value": "", "title": self.localize("Assign to User")}, options=[(user, user) for user in users])
-    actionbox = widgets.Input({"name": "action", "value": "translate", "title": self.localize("Assign Action")})
-    submitbutton = widgets.Input({"type": "submit", "name": "doassign", "value": self.localize("Assign Strings")})
-    assignform = widgets.Form([assigntoselect, actionbox, submitbutton], {"action": "?index=1", "name":"assignform"})
-    self.links.addcontents(assignform)
+    return {
+      title: self.localize("Assign Strings"),
+      user_title: self.localize("Assign to User"),
+      action_title: self.localize("Assign Action"),
+      submit_text: self.localize("Assign Strings"),
+      users: users,
+    }
 
   def receivetranslations(self):
     """receive any translations submitted by the user"""

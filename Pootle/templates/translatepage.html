@@ -37,7 +37,7 @@
     </div>
 
     <div class="translate-form">
-      <span py:strip="True" py:content="notice">Notice</span>
+      <span py:if="notice" py:replace="notice">Notice</span>
       <form action="?review=1&amp;has-suggestion=1" method="post" name="translate" id="translate">
         <table cellpadding="10" cellspacing="1" class="translate-table">
           <tr>
@@ -109,8 +109,17 @@
       <input type="hidden" name="pofilename" value="${pofilename}" />
     </form>
 
-    <div class="side">
-      checking has-suggestion
+    <div py:if="defined('assigns')" class="sidetitle" py:content="assigns.title">Assign Strings</div>
+    <form py:if="defined('assigns')" action="?index=1" name="assignform">
+      <select name="assignto" title="${assigns.user_title}">
+        <option py:for="user in assigns.users" value="${user}" py:content="user">Username</option>
+      </select>
+      <input name="action" value="translate" title="${assigns.action_title}"/>
+      <input name="doassign" type="submit" value="${assigns.submit_text}"/>
+    </form>
+
+    <div class="side" py:if="defined('checking_text')" py:content="checking_text">
+      checking has-suggestion, etc
     </div>
   </div>
 </body>
