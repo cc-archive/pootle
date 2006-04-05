@@ -351,15 +351,23 @@ class TranslatePage(pagelayout.PootleNavPage):
       trans = thepo.unquotedmsgstr
       item = self.firstitem + row
       origdict = self.getorigdict(item, orig, item in self.editable)
+      transmerge = {}
+      transwidget = ""
       if item in self.editable:
         if self.reviewmode:
           itemsuggestions = [suggestion.unquotedmsgstr for suggestion in suggestions[item]]
-          transwidget = self.gettransreview(item, trans, itemsuggestions)
+          transwidget = self.gettransreview(item, trans, itemsuggestions).gethtml()
         else:
-          transwidget = self.gettransedit(item, trans)
+          transwidget = self.gettransedit(item, trans).gethtml()
       else:
-        transwidget = self.gettransview(item, trans)
-      transdict = {"itemid": "trans%d" % item, "focus_class": origdict["focus_class"], "widget": transwidget.gethtml()}
+        transmerge = self.gettransview(item, trans)
+      transdict = {"itemid": "trans%d" % item,
+                   "focus_class": origdict["focus_class"],
+                   "isplural": len(trans) > 1,
+                   "text": trans[0],
+                   "widget": transwidget,
+                  }
+      transdict.update(transmerge)
       polarity = oddoreven(item)
       origcell_class = "translate-original translate-original-%s" % polarity
       transcell_class = "translate-translation translate-translation-%s" % polarity
@@ -367,7 +375,13 @@ class TranslatePage(pagelayout.PootleNavPage):
         focus_class = "translate-focus"
       else:
         focus_class = ""
-      itemdict = {"orig": origdict, "trans": transdict, "polarity": polarity, "focus_class": focus_class}
+      itemdict = {
+                 "orig": origdict,
+                 "trans": transdict,
+                 "polarity": polarity,
+                 "focus_class": focus_class,
+                 "editable": item in self.editable,
+                 }
       items.append(itemdict)
     return items
 
@@ -402,9 +416,9 @@ class TranslatePage(pagelayout.PootleNavPage):
     """gets a link to edit the given item, if the user has permission"""
     if "translate" in self.rights or "suggest" in self.rights:
       translateurl = "?translate=1&item=%d&pofilename=%s" % (item, self.quote(self.pofilename))
-      return pagelayout.TranslateActionLink(translateurl , self.localize("Edit"), "editlink%d" % item)
+      return {"href": translateurl, "text": self.localize("Edit"), "linkid": "editlink%d" % item}
     else:
-      return ""
+      return None
 
   def gettransbuttons(self, item, desiredbuttons=["skip", "copy", "suggest", "translate", "resize"]):
     """gets buttons for actions on translation"""
@@ -527,6 +541,8 @@ class TranslatePage(pagelayout.PootleNavPage):
     currenttitle = [self.localize("<b>Current Translation:</b>"), htmlbreak]
     hasplurals = len(trans) > 1
     editlink = self.geteditlink(item)
+    if editlink:
+      editlink = pagelayout.TranslateActionLink(editlink["href"], editlink["text"], editlink["linkid"])
     currenttext = [editlink]
     diffcodes = {}
     for pluralitem, pluraltrans in enumerate(trans):
@@ -591,15 +607,14 @@ class TranslatePage(pagelayout.PootleNavPage):
   def gettransview(self, item, trans):
     """returns a widget for viewing the given item's translation"""
     editlink = self.geteditlink(item)
+    transdict = {"editlink": editlink}
     if len(trans) > 1:
-      text = [editlink]
-      htmlbreak = "<br />"
+      forms = {}
       for pluralitem, pluraltext in enumerate(trans):
-        pluralform = self.localize("Plural Form %d", pluralitem)
-        text += [pagelayout.TranslationHeaders(pluralform), htmlbreak, self.escapetext(pluraltext), htmlbreak]
-      text = pagelayout.TranslationText(text)
+        form = {"title": self.localize("Plural Form %d", pluralitem), "n": pluralitem, "text": self.escapetext(pluraltext)}
+        forms.append(form)
+      transdict["forms"] = forms
     else:
-      text = pagelayout.TranslationText([editlink, self.escapetext(trans[0])])
-    transdiv = widgets.Division(text, "trans%d" % item, cls="translate-translation autoexpand")
-    return transdiv
+      transdict["text"] = self.escapetext(trans[0])
+    return transdict
 
