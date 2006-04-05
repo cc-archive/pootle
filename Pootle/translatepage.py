@@ -90,6 +90,8 @@ class TranslatePage(pagelayout.PootleNavPage):
         "translation_title": self.localize("Translation"),
         "items": items,
         "reviewmode": self.reviewmode,
+        "accept_button": self.localize("accept"),
+        "reject_button": self.localize("reject"),
         # optional sections, will appear if these values are replaced
         "assign": None,
         "search": {"title": self.localize("Search")},
@@ -357,7 +359,7 @@ class TranslatePage(pagelayout.PootleNavPage):
       if item in self.editable:
         if self.reviewmode:
           itemsuggestions = [suggestion.unquotedmsgstr for suggestion in suggestions[item]]
-          transwidget = self.gettransreview(item, trans, itemsuggestions).gethtml()
+          transmerge = self.gettransreview(item, trans, itemsuggestions)
         else:
           transmerge = self.gettransedit(item, trans)
       else:
@@ -532,13 +534,7 @@ class TranslatePage(pagelayout.PootleNavPage):
 
   def gettransreview(self, item, trans, suggestions):
     """returns a widget for reviewing the given item's suggestions"""
-    htmlbreak = "<br/>"
-    currenttitle = [self.localize("<b>Current Translation:</b>"), htmlbreak]
     hasplurals = len(trans) > 1
-    editlink = self.geteditlink(item)
-    if editlink:
-      editlink = pagelayout.TranslateActionLink(editlink["href"], editlink["text"], editlink["linkid"])
-    currenttext = [editlink]
     diffcodes = {}
     for pluralitem, pluraltrans in enumerate(trans):
       if isinstance(pluraltrans, str):
@@ -547,18 +543,26 @@ class TranslatePage(pagelayout.PootleNavPage):
       for pluralitem, pluralsugg in enumerate(suggestion):
         if isinstance(pluralsugg, str):
           suggestion[pluralitem] = pluralsugg.decode("utf-8")
+    forms = []
     for pluralitem, pluraltrans in enumerate(trans):
       pluraldiffcodes = [self.getdiffcodes(pluraltrans, suggestion[pluralitem]) for suggestion in suggestions]
       diffcodes[pluralitem] = pluraldiffcodes
       combineddiffs = reduce(list.__add__, pluraldiffcodes, [])
       transdiff = self.highlightdiffs(pluraltrans, combineddiffs, issrc=True)
+      form = {"n": pluralitem, "diff": transdiff, "title": None}
       if hasplurals:
         pluralform = self.localize("Plural Form %d", pluralitem)
-        currenttext.append([pagelayout.TranslationHeaders(pluralform), htmlbreak])
-      currenttext.append([transdiff, htmlbreak])
+        form["title"] = pluralform
+      forms.append(form)
+    transdict = {
+                "current_title": self.localize("Current Translation:"),
+                "editlink": self.geteditlink(item),
+                "forms": forms,
+                "isplural": hasplurals or None,
+                "itemid": "trans%d" % item,
+                }
     suggitems = []
     for suggid, msgstr in enumerate(suggestions):
-      suggtext = []
       suggestedby = self.project.getsuggester(self.pofilename, item, suggid)
       if len(suggestions) > 1:
         if suggestedby:
@@ -570,34 +574,32 @@ class TranslatePage(pagelayout.PootleNavPage):
           suggtitle = self.localize("Suggestion by %s:", (suggestedby))
         else:
           suggtitle = self.localize("Suggestion:")
-      suggtitle = ["<b>%s</b>" % suggtitle, htmlbreak]
+      forms = []
       for pluralitem, pluraltrans in enumerate(trans):
         pluralsuggestion = msgstr[pluralitem]
         suggdiffcodes = diffcodes[pluralitem][suggid]
         suggdiff = self.highlightdiffs(pluralsuggestion, suggdiffcodes, issrc=False)
         if isinstance(pluralsuggestion, str):
           pluralsuggestion = pluralsuggestion.decode("utf8")
+        form = {"diff": suggdiff}
+        form["suggid"] = "suggest%d.%d.%d" % (item, suggid, pluralitem)
+        form["value"] = pluralsuggestion
         if hasplurals:
-          pluralform = self.localize("Plural Form %d", pluralitem)
-          suggtext.append([pagelayout.TranslationHeaders(pluralform), htmlbreak])
-        hiddensuggid = "suggest%d.%d.%d" % (item, suggid, pluralitem)
-        hiddensuggvalue = widgets.Input({'type': 'hidden', "name": hiddensuggid, 'value': pluralsuggestion})
-        suggtext.append([pagelayout.TranslationText(suggdiff), hiddensuggvalue, htmlbreak])
-      if "review" in self.rights:
-        acceptbutton = widgets.Input({"type":"submit", "name":"accept%d.%d" % (item, suggid), "value":self.localize("accept")})
-        rejectbutton = widgets.Input({"type":"submit", "name":"reject%d.%d" % (item, suggid), "value":self.localize("reject")})
-        buttons = [acceptbutton, rejectbutton]
-      else:
-        buttons = []
-      suggdiv = [suggtitle, suggtext, htmlbreak, buttons]
-      suggitems.append(suggdiv)
-    transbuttons = self.gettransbuttons(item, ["skip"])
+          form["title"] = self.localize("Plural Form %d", pluralitem)
+        forms.append(form)
+      suggdict = {"title": suggtitle,
+                  "forms": forms,
+                  "suggid": "%d.%d" % (item, suggid),
+                  "canreview": "review" in self.rights,
+                  "buttons": None}
+      suggitems.append(suggdict)
+    transbuttons = widgets.PlainContents(self.gettransbuttons(item, ["skip"])).gethtml()
     if suggitems:
-      suggitems[-1].append(transbuttons)
+      suggitems[-1]["buttons"] = transbuttons
     else:
-      suggitems.append(transbuttons)
-    transdiv = widgets.Division(pagelayout.TranslationText([currenttitle, currenttext] + suggitems), "trans%d" % item, cls="translate-translation")
-    return transdiv
+      transdict["buttons"] = transbuttons
+    transdict["suggestions"] = suggitems
+    return transdict
 
   def gettransview(self, item, trans):
     """returns a widget for viewing the given item's translation"""
