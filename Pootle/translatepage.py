@@ -420,36 +420,22 @@ class TranslatePage(pagelayout.PootleNavPage):
 
   def gettransbuttons(self, item, desiredbuttons=["skip", "copy", "suggest", "translate", "resize"]):
     """gets buttons for actions on translation"""
-    buttons = []
-    if "skip" in desiredbuttons:
-      skipbutton = widgets.Input({"type":"submit", "name":"skip%d" % item, "accesskey": "k", "value":self.localize("skip")})
-      buttons.append(skipbutton)
-    if "copy" in desiredbuttons:
-      pureid = "orig-pure%d.0" % item
-      fullitemid = "document.forms.translate.trans%d" % (item)
-      copyscript = "%s.value = document.getElementById('%s').value ; %s.focus()" % (fullitemid, pureid, fullitemid)
-      copybutton = widgets.Button({"onclick": copyscript, "accesskey": "c"}, self.localize("copy"))
-      buttons.append(copybutton)
-    if "suggest" in desiredbuttons and "suggest" in self.rights:
-      suggestbutton = widgets.Input({"type":"submit", "name":"submitsuggest%d" % item, "accesskey": "e", "value":self.localize("suggest")})
-      buttons.append(suggestbutton)
-    if "translate" in desiredbuttons and "translate" in self.rights:
-      submitbutton = widgets.Input({"type":"submit", "name":"submit%d" % item, "accesskey": "s", "value":self.localize("submit")})
-      buttons.append(submitbutton)
-    if "translate" in desiredbuttons or "suggest" in desiredbuttons:
-      specialchars = getattr(getattr(self.session.instance.languages, self.project.languagecode, None), "specialchars", "")
-      buttons.append(specialchars)
-    if "resize" in desiredbuttons:
-      growlink = widgets.Link('#', self.localize("Grow"), newattribs={"onclick": 'return expandtextarea(this)', "accesskey": "="})
-      shrinklink = widgets.Link('#', self.localize("Shrink"), newattribs={"onclick": 'return contracttextarea(this)', "accesskey": "-"})
-      broadenlink = widgets.Link('#', self.localize("Broaden"), newattribs={"onclick": 'return broadentextarea(this)', "accesskey": "+"})
-      narrowlink = widgets.Link('#', self.localize("Narrow"), newattribs={"onclick": 'return narrowtextarea(this)', "accesskey": "_"})
-      usernode = self.getusernode()
-      rows = getattr(usernode, "inputheight", 5)
-      cols = getattr(usernode, "inputwidth", 40)
-      resetlink = widgets.Link('#', self.localize("Reset"), newattribs={"onclick": 'return resettextarea(this, %s, %s)' % (rows, cols)})
-      buttons += [growlink, shrinklink, broadenlink, narrowlink, resetlink]
-    return buttons
+    if "suggest" in desiredbuttons and "suggest" not in self.rights:
+      desiredbuttons.remove("suggest")
+    if "translate" in desiredbuttons and "translate" not in self.rights:
+      desiredbuttons.remove("translate")
+    specialchars = getattr(getattr(self.session.instance.languages, self.project.languagecode, None), "specialchars", "")
+    usernode = self.getusernode()
+    return {"desired": desiredbuttons,
+            "item": item,
+            "copy_text": self.localize("Copy"),
+            "skip": self.localize("skip"),
+            "suggest": self.localize("suggest"),
+            "submit": self.localize("submit"),
+            "specialchars": specialchars,
+            "rows": getattr(usernode, "inputheight", 5),
+            "cols": getattr(usernode, "inputwidth", 40),
+           }
 
   def gettransedit(self, item, trans):
     """returns a widget for editing the given item and translation"""
@@ -482,13 +468,13 @@ class TranslatePage(pagelayout.PootleNavPage):
         focusbox = textid
       transdict["can_spell"] = spellcheck.can_check_lang(self.project.languagecode)
       transdict["spell_args"] = spellargs
-      transdict["buttons"] = widgets.PlainContents(buttons).gethtml()
+      transdict["buttons"] = buttons
       transdict["focusbox"] = focusbox
     else:
       # TODO: work out how to handle this (move it up?)
       transdict = self.gettransview(item, trans)
       buttons = self.gettransbuttons(item, ["skip"])
-      transdict["buttons"] = buttons.gethtml()
+    transdict["buttons"] = buttons
     return transdict
 
   def highlightdiffs(self, text, diffs, issrc=True):
@@ -596,7 +582,7 @@ class TranslatePage(pagelayout.PootleNavPage):
                   "canreview": "review" in self.rights,
                   "buttons": None}
       suggitems.append(suggdict)
-    transbuttons = widgets.PlainContents(self.gettransbuttons(item, ["skip"])).gethtml()
+    transbuttons = self.gettransbuttons(item, ["skip"])
     if suggitems:
       suggitems[-1]["buttons"] = transbuttons
     else:
