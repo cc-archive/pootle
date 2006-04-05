@@ -9,6 +9,8 @@
   <link rel="stylesheet" type="text/css" href="/pootle.css" />
   <link rel="shortcut icon" href="/favicon.ico" />
 <script src="/js/autoexpand.js" type="text/javascript">
+<!--
+//-->
 </script>
 </head>
 
@@ -41,58 +43,47 @@
       <form action="?review=1&amp;has-suggestion=1" method="post" name="translate" id="translate">
         <table cellpadding="10" cellspacing="1" class="translate-table">
           <tr>
-            <td colspan="1" rowspan="1" type="td" class="translate-table-title">original</td>
+            <td colspan="1" rowspan="1" type="td" class="translate-table-title" py:content="original_title">original</td>
 
-            <td colspan="1" rowspan="1" type="td" class="translate-table-title">translation</td>
+            <td colspan="1" rowspan="1" type="td" class="translate-table-title" py:content="translation_title">translation</td>
           </tr>
 
-          <tr>
-            <td colspan="1" rowspan="1" type="td" class="translate-original translate-original-even translate-focus">
-              <div id="orig0" class="translate-original translate-original-focus">
-                <input type="hidden" name="orig-pure0.0" value="test" id="orig-pure0.0" /> test
+          <tr py:for="item in items">
+            <td colspan="1" rowspan="1" type="td" class="translate-original translate-original-${item.polarity} ${item.focus_class}">
+              <div id="${item.orig.itemid}" class="translate-original ${item.orig.focus_class}">
+                <input py:for="field in item.orig.pure" type="hidden" name="${field.pureid}" value="${field.value}" id="${field.pureid}"/>
+                <span py:if="not item.orig.isplural" py:replace="XML(item.orig.text)">
+                </span>
+                <span py:if="item.orig.isplural" py:strip="True">
+                  <span class="translation-text-headers" py:content="item.orig.singular_title">Singular</span><br/>
+                  <span py:content="XML(item.orig.singular_text)">singular text</span><br/>
+                  <span class="translation-text-headers" py:content="item.orig.plural_title">Plural</span><br/>
+                  <span py:content="XML(item.orig.plural_text)">plural text</span><br/>
+                </span>
               </div>
             </td>
 
-            <td colspan="1" rowspan="1" type="td" class="translate-translation translate-translation-even translate-focus">
-              <div id="trans0" class="translate-translation">
-                <span class="translation-text"><b>Current Translation:</b><br />
-                rest<br />
-                <b>Suggestion by testuser:</b><br />
-                <span class="translation-text">rest<span class='translate-diff-insert'>ed</span></span> <input type="hidden" name="suggest0.0.0" value=
-                "rested" /><br />
-                <br />
-                <input accesskey="k" type="submit" name="skip0" value="skip" /></span>
-              </div>
+            <td colspan="1" rowspan="1" type="td" class="translate-translation translate-translation-${item.polarity} ${item.focus_class}">
+              <!--! div id="${item.trans.itemid}" class="translate-translation ${item.trans.focus_class}">
+                <span py:if="item.trans.review" class="translation-text">
+                  <b>Current Translation:</b><br />
+                  rest<br />
+                  <b>Suggestion by testuser:</b><br />
+                  <span class="translation-text">
+                    rest<span class='translate-diff-insert'>ed</span>
+                  </span>
+                  <input type="hidden" name="suggest0.0.0" value="rested" />
+                  <br />
+                  <br />
+                  <input py:if="item.trans.buttons.skip" accesskey="k" type="submit" name="skip0" value="skip" />
+                </span>
+                <span py:if="not item.editable" class="translation-text" py:content="XML(item.trans.text)">text</span>
+              </div -->
+              <div py:replace="XML(item.trans.widget)"/>
             </td>
           </tr>
 
-          <tr>
-            <td colspan="1" rowspan="1" type="td" class="translate-original translate-original-odd">
-              <div id="orig1" class="translate-original autoexpand">
-                <input type="hidden" name="orig-pure1.0" value="tadpole" id="orig-pure1.0" /> tadpole
-              </div>
-            </td>
 
-            <td colspan="1" rowspan="1" type="td" class="translate-translation translate-translation-odd">
-              <div id="trans1" class="translate-translation autoexpand">
-                <span class="translation-text">fish</span>
-              </div>
-            </td>
-          </tr>
-
-          <tr>
-            <td colspan="1" rowspan="1" type="td" class="translate-original translate-original-even">
-              <div id="orig2" class="translate-original autoexpand">
-                <input type="hidden" name="orig-pure2.0" value="slink" id="orig-pure2.0" /> slink
-              </div>
-            </td>
-
-            <td colspan="1" rowspan="1" type="td" class="translate-translation translate-translation-even">
-              <div id="trans2" class="translate-translation autoexpand">
-                <span class="translation-text">stink</span>
-              </div>
-            </td>
-          </tr>
         </table><input type="hidden" name="searchtext" value="" /> <input type="hidden" name="pofilename" value="test_existing.po" />
       </form>
 

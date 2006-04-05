@@ -51,11 +51,11 @@ class TranslatePage(pagelayout.PootleNavPage):
     except StopIteration, stoppedby:
       notice = self.getfinishedtext(stoppedby)
       self.item = None
-    self.maketable()
+    items = self.maketable()
     searchcontextinfo = widgets.HiddenFieldList({"searchtext": self.searchtext})
     contextinfo = widgets.HiddenFieldList({"pofilename": self.pofilename})
     formaction = self.makelink("")
-    translateform = widgets.Form([self.transtable, searchcontextinfo, contextinfo], {"name": "translate", "action":formaction})
+    translateform = widgets.Form([searchcontextinfo, contextinfo], {"name": "translate", "action":formaction})
     title = self.localize("Pootle: translating %s into %s: %s", (self.project.projectname, self.project.languagename, self.pofilename))
     mainstats = []
     if self.pofilename is not None:
@@ -86,6 +86,9 @@ class TranslatePage(pagelayout.PootleNavPage):
         "pagelinks": pagelinks,
         # translation form
         "notice": notice,
+        "original_title": self.localize("Original"),
+        "translation_title": self.localize("Translation"),
+        "items": items,
         # optional sections, will appear if these values are replaced
         "assign": None,
         "search": {"title": self.localize("Search")},
@@ -254,7 +257,7 @@ class TranslatePage(pagelayout.PootleNavPage):
       self.project.acceptsuggestion(self.pofilename, item, suggid, value, self.session)
       self.lastitem = item
 
-  def getmatchnames(self, checker): 
+  def getmatchnames(self, checker):
     """returns any checker filters the user has asked to match..."""
     matchnames = []
     for checkname in self.argdict:
@@ -342,58 +345,58 @@ class TranslatePage(pagelayout.PootleNavPage):
     self.translations = self.gettranslations()
     if self.reviewmode and self.item is not None:
       suggestions = {self.item: self.project.getsuggestions(self.pofilename, self.item)}
-    self.transtable = table.TableLayout({"class":"translate-table", "cellpadding":10})
-    origtitle = table.TableCell(self.localize("original"), {"class":"translate-table-title"})
-    transtitle = table.TableCell(self.localize("translation"), {"class":"translate-table-title"})
-    self.transtable.setcell(-1, 0, origtitle)
-    self.transtable.setcell(-1, 1, transtitle)
+    items = []
     for row, thepo in enumerate(self.translations):
       orig = thepo.unquotedmsgid
       trans = thepo.unquotedmsgstr
       item = self.firstitem + row
-      origdiv = self.getorigdiv(item, orig, item in self.editable)
+      origdict = self.getorigdict(item, orig, item in self.editable)
       if item in self.editable:
         if self.reviewmode:
           itemsuggestions = [suggestion.unquotedmsgstr for suggestion in suggestions[item]]
-          transdiv = self.gettransreview(item, trans, itemsuggestions)
+          transwidget = self.gettransreview(item, trans, itemsuggestions)
         else:
-          transdiv = self.gettransedit(item, trans)
+          transwidget = self.gettransedit(item, trans)
       else:
-        transdiv = self.gettransview(item, trans)
+        transwidget = self.gettransview(item, trans)
+      transdict = {"itemid": "trans%d" % item, "focus_class": origdict["focus_class"], "widget": transwidget.gethtml()}
       polarity = oddoreven(item)
-      origcell = table.TableCell(origdiv, {"class":"translate-original translate-original-%s" % polarity})
-      self.transtable.setcell(row, 0, origcell)
-      transcell = table.TableCell(transdiv, {"class":"translate-translation translate-translation-%s" % polarity})
-      self.transtable.setcell(row, 1, transcell)
+      origcell_class = "translate-original translate-original-%s" % polarity
+      transcell_class = "translate-translation translate-translation-%s" % polarity
       if item in self.editable:
-        origcell.attribs["class"] += " translate-focus"
-        transcell.attribs["class"] += " translate-focus"
-    self.transtable.shrinkrange()
-    return self.transtable
+        focus_class = "translate-focus"
+      else:
+        focus_class = ""
+      itemdict = {"orig": origdict, "trans": transdict, "polarity": polarity, "focus_class": focus_class}
+      items.append(itemdict)
+    return items
 
   def escapetext(self, text):
     return self.escape(text).replace("\n", "</br>\n")
 
-  def getorigdiv(self, item, orig, editable):
-    origclass = "translate-original "
+  def getorigdict(self, item, orig, editable):
     if editable:
-      origclass += "translate-original-focus "
+      focus_class = "translate-original-focus"
     else:
-      origclass += "autoexpand "
+      focus_class = "autoexpand"
     purefields = []
     for pluralid, pluraltext in enumerate(orig):
       pureid = "orig-pure%d.%d" % (item, pluralid)
-      purefields.append(widgets.Input({"type": "hidden", "id": pureid, "name": pureid, "value": pluraltext}))
+      purefields.append({"pureid": pureid, "name": pureid, "value": pluraltext})
+    origdict = {
+           "focus_class": focus_class,
+           "itemid": "orig%d" % item,
+           "pure": purefields,
+           "isplural": len(orig) > 1 or None,
+           "singular_title": self.localize("Singular"),
+           "plural_title": self.localize("Plural"),
+           }
     if len(orig) > 1:
-      htmlbreak = "<br/>\n"
-      origpretty = [pagelayout.TranslationHeaders(self.localize("Singular")), htmlbreak, 
-                    self.escapetext(orig[0]), htmlbreak,
-                    pagelayout.TranslationHeaders(self.localize("Plural")), htmlbreak,
-                    self.escapetext(orig[1])]
+      origdict["singular_text"] = self.escapetext(orig[0])
+      origdict["plural_text"] = self.escapetext(orig[1])
     else:
-      origpretty = self.escapetext(orig[0])
-    origdiv = widgets.Division([purefields, origpretty], "orig%d" % item, cls=origclass)
-    return origdiv
+      origdict["text"] = self.escapetext(orig[0])
+    return origdict
 
   def geteditlink(self, item):
     """gets a link to edit the given item, if the user has permission"""
