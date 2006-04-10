@@ -140,9 +140,9 @@ class TranslatePage(pagelayout.PootleNavPage):
       pagelinks.append({"text": self.localize("End")})
     for n, pagelink in enumerate(pagelinks):
       if n < len(pagelinks)-1:
-        pagelinks["sep"] = " | "
+        pagelinks[n]["sep"] = " | "
       else:
-        pagelinks["sep"] = ""
+        pagelinks[n]["sep"] = ""
     return pagelinks
 
   def addfilelinks(self, pofilename, matchnames):
