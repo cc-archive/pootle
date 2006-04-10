@@ -3,9 +3,6 @@
 
 from jToolkit.web import server
 from jToolkit.web import session
-from jToolkit.widgets import widgets
-from jToolkit.widgets import form
-from jToolkit.widgets import table
 from jToolkit import mailer
 from jToolkit import prefs
 from Pootle import pagelayout

@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 import sre
-from jToolkit.widgets import spellui
 from jToolkit import spellcheck
 from Pootle import pagelayout
 from Pootle import projects

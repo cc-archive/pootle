@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from jToolkit.widgets import widgets
 from Pootle import pagelayout
 from Pootle import projects
 from Pootle import pootlefile
