@@ -19,10 +19,10 @@ class LoginPage(pagelayout.PootlePage):
     self.localize = session.localize
     self.languagenames = languagenames
     pagetitle = self.localize("Login to Pootle")
-    self.templatename = "login"
+    templatename = "login"
     instancetitle = getattr(session.instance, "title", session.localize("Pootle Demo"))
     sessionvars = {"status": session.status, "isopen": session.isopen, "issiteadmin": session.issiteadmin()}
-    self.templatevars = {"pagetitle": pagetitle,
+    templatevars = {"pagetitle": pagetitle,
         "username_title": self.localize("Username:"),
         "username": getattr(session, 'username', ''),
         "password_title": self.localize("Password:"),
@@ -30,7 +30,7 @@ class LoginPage(pagelayout.PootlePage):
         "languages": self.getlanguageoptions(session),
         "login_text": self.localize('Login'),
         "session": sessionvars, "instancetitle": pagetitle}
-    pagelayout.PootlePage.__init__(self, pagetitle, [], session)
+    pagelayout.PootlePage.__init__(self, templatename, templatevars, session)
 
   def getlanguageoptions(self, session):
     """returns the language selector..."""
@@ -49,10 +49,10 @@ class RegisterPage(pagelayout.PootlePage):
     introtext = self.localize("Please enter your registration details")
     pagetitle = self.localize("Pootle Registration")
     self.argdict = argdict
-    self.templatename = "register"
+    templatename = "register"
     instancetitle = getattr(session.instance, "title", session.localize("Pootle Demo"))
     sessionvars = {"status": session.status, "isopen": session.isopen, "issiteadmin": session.issiteadmin()}
-    self.templatevars = {"pagetitle": pagetitle, "introtext": introtext,
+    templatevars = {"pagetitle": pagetitle, "introtext": introtext,
         "username_title": self.localize("Username"),
         "username_tooltip": self.localize("Your requested username"),
         "username": self.argdict.get("username", ""),
@@ -67,7 +67,7 @@ class RegisterPage(pagelayout.PootlePage):
         "password": self.argdict.get("password", ""),
         "register_text": self.localize('Register Account'),
         "session": sessionvars, "instancetitle": pagetitle}
-    pagelayout.PootlePage.__init__(self, pagetitle, [], session)
+    pagelayout.PootlePage.__init__(self, templatename, templatevars, session)
 
 class ActivatePage(pagelayout.PootlePage):
   """page for new registrations"""
@@ -82,10 +82,10 @@ class ActivatePage(pagelayout.PootlePage):
       pagetitle = self.localize("Pootle Account Activation")
     else:
       pagetitle = title
-    self.templatename = "activate"
+    templatename = "activate"
     instancetitle = getattr(session.instance, "title", session.localize("Pootle Demo"))
     sessionvars = {"status": session.status, "isopen": session.isopen, "issiteadmin": session.issiteadmin()}
-    self.templatevars = {"pagetitle": pagetitle, "introtext": introtext,
+    templatevars = {"pagetitle": pagetitle, "introtext": introtext,
         "username_title": self.localize("Username"),
         "username_tooltip": self.localize("Your requested username"),
         "username": self.argdict.get("username", ""),
@@ -94,7 +94,7 @@ class ActivatePage(pagelayout.PootlePage):
         "code": self.argdict.get("activationcode", ""),
         "activate_text": self.localize('Activate Account'),
         "session": sessionvars, "instancetitle": pagetitle}
-    pagelayout.PootlePage.__init__(self, pagetitle, [], session)
+    pagelayout.PootlePage.__init__(self, templatename, templatevars, session)
 
 class UserOptions(pagelayout.PootlePage):
   """page for user to change their options"""
@@ -103,10 +103,10 @@ class UserOptions(pagelayout.PootlePage):
     self.session = session
     self.localize = session.localize
     pagetitle = self.localize("Options for: %s", session.username)
-    self.templatename = "options"
+    templatename = "options"
     instancetitle = getattr(session.instance, "title", session.localize("Pootle Demo"))
     sessionvars = {"status": session.status, "isopen": session.isopen, "issiteadmin": session.issiteadmin()}
-    self.templatevars = {"pagetitle": pagetitle,
+    templatevars = {"pagetitle": pagetitle,
         "detailstitle": self.localize("Personal Details"),
         "option_heading": self.localize("Option"),
         "value_heading": self.localize("Current value"),
@@ -124,8 +124,8 @@ class UserOptions(pagelayout.PootlePage):
         "submit_button": self.localize("Save changes"),
         "session": sessionvars, "instancetitle": pagetitle}
     otheroptions = self.getotheroptions()
-    self.templatevars.update(otheroptions)
-    pagelayout.PootlePage.__init__(self, pagetitle, [], session)
+    templatevars.update(otheroptions)
+    pagelayout.PootlePage.__init__(self, templatename, templatevars, session)
 
   def getprojectoptions(self):
     """gets the options box to change the user's projects"""

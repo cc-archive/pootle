@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from jToolkit.widgets import widgets
-
 def layout_banner(maxheight):
   """calculates dimensions, image name for banner"""
   banner_width, banner_height = min((180*maxheight/135, maxheight), (180, 135))
@@ -27,17 +25,19 @@ def completetemplatevars(templatevars, session, bannerheight=135):
   if "search" not in templatevars:
     templatevars["search"] = None
 
-class PootlePage(widgets.Page):
+class PootlePage:
   """the main page"""
-  def __init__(self, title, contents, session, bannerheight=135, returnurl=""):
+  def __init__(self, templatename, templatevars, session, bannerheight=135):
     if not hasattr(session.instance, "baseurl"):
       session.instance.baseurl = "/"
     self.localize = session.localize
     self.session = session
-    widgets.Page.__init__(self, title, contents)
+    self.templatename = templatename
+    self.templatevars = templatevars
     self.completevars(bannerheight)
 
   def completevars(self, bannerheight=135):
+    """fill out default values for template variables"""
     if hasattr(self, "templatevars"):
       completetemplatevars(self.templatevars, self.session, bannerheight=bannerheight)
 

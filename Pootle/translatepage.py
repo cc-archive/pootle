@@ -8,6 +8,7 @@ from Pootle import pagelayout
 from Pootle import projects
 from Pootle import pootlefile
 import difflib
+import urllib
 
 def oddoreven(polarity):
   if polarity % 2 == 0:
@@ -69,12 +70,12 @@ class TranslatePage(pagelayout.PootleNavPage):
       icon="edit"
     navbarpath_dict = self.makenavbarpath_dict(self.project, self.session, self.pofilename)
     # templatising
-    self.templatename = "translatepage"
+    templatename = "translatepage"
     pagetitle = self.localize("Pootle: translating %s into %s: %s", self.project.projectname, self.project.languagename, self.pofilename)
     instancetitle = getattr(session.instance, "title", session.localize("Pootle Demo"))
     sessionvars = {"status": session.status, "isopen": session.isopen, "issiteadmin": session.issiteadmin()}
     stats = {"summary": mainstats, "checks": [], "tracks": [], "assigns": []}
-    self.templatevars = {"pagetitle": pagetitle,
+    templatevars = {"pagetitle": pagetitle,
         "project": {"code": self.project.projectcode, "name": self.project.projectname},
         "language": {"code": self.project.languagecode, "name": self.project.languagename},
         "pofilename": self.pofilename,
@@ -99,8 +100,8 @@ class TranslatePage(pagelayout.PootleNavPage):
         # general vars
         "session": sessionvars, "instancetitle": pagetitle}
     if self.showassigns and "assign" in self.rights:
-      self.templatevars["assign"] = self.getassignbox()
-    pagelayout.PootleNavPage.__init__(self, title, [], session, bannerheight=81, returnurl="%s/%s/%s" % (self.project.languagecode, self.project.projectcode, dirfilter))
+      templatevars["assign"] = self.getassignbox()
+    pagelayout.PootleNavPage.__init__(self, templatename, templatevars, session, bannerheight=81)
     self.addfilelinks(self.pofilename, self.matchnames)
 
   def getfinishedtext(self, stoppedby):
@@ -127,7 +128,7 @@ class TranslatePage(pagelayout.PootleNavPage):
       pagelinks.append({"href": baselink + "&item=%d" % linkitem, "text": self.localize("Previous %d", (self.firstitem - linkitem))})
     else:
       pagelinks.append({"text": self.localize("Previous %d", pagesize)})
-    pagelinks.append(self.localize("Items %d to %d of %d", self.firstitem+1, lastitem+1, pofilelen))
+    pagelinks.append({"text": self.localize("Items %d to %d of %d", self.firstitem+1, lastitem+1, pofilelen)})
     if self.firstitem + len(self.translations) < self.project.getpofilelen(self.pofilename):
       linkitem = self.firstitem + pagesize
       itemcount = min(pofilelen - linkitem, pagesize)
@@ -140,9 +141,9 @@ class TranslatePage(pagelayout.PootleNavPage):
       pagelinks.append({"text": self.localize("End")})
     for n, pagelink in enumerate(pagelinks):
       if n < len(pagelinks)-1:
-        pagelinks[n]["sep"] = " | "
+        pagelink["sep"] = " | "
       else:
-        pagelinks[n]["sep"] = ""
+        pagelink["sep"] = ""
     return pagelinks
 
   def addfilelinks(self, pofilename, matchnames):
@@ -386,7 +387,11 @@ class TranslatePage(pagelayout.PootleNavPage):
     return items
 
   def escapetext(self, text):
-    return self.escape(text).replace("\n", "</br>\n")
+    """Replace special characters &, <, >, add and handle quotes if asked"""
+    text = text.replace("&", "&amp;") # Must be done first!
+    text = text.replace("<", "&lt;").replace(">", "&gt;")
+    text = text.replace("\n", "</br>\n")
+    return text
 
   def getorigdict(self, item, orig, editable):
     if editable:
@@ -415,7 +420,7 @@ class TranslatePage(pagelayout.PootleNavPage):
   def geteditlink(self, item):
     """gets a link to edit the given item, if the user has permission"""
     if "translate" in self.rights or "suggest" in self.rights:
-      translateurl = "?translate=1&item=%d&pofilename=%s" % (item, self.quote(self.pofilename))
+      translateurl = "?translate=1&item=%d&pofilename=%s" % (item, urllib.quote(self.pofilename, '/'))
       return {"href": translateurl, "text": self.localize("Edit"), "linkid": "editlink%d" % item}
     else:
       return None
@@ -456,7 +461,7 @@ class TranslatePage(pagelayout.PootleNavPage):
         forms = []
         for pluralitem, pluraltext in enumerate(trans):
           pluralform = self.localize("Plural Form %d", pluralitem)
-          pluraltext = self.escape(pluraltext).decode("utf-8")
+          pluraltext = self.escapetext(pluraltext)
           textid = "trans%d.%d" % (item, pluralitem)
           forms.append({"title": pluralform, "name": textid, "text": pluraltext, "n": pluralitem})
           if not focusbox:
@@ -464,7 +469,7 @@ class TranslatePage(pagelayout.PootleNavPage):
         transdict["forms"] = forms
       else:
         buttons = self.gettransbuttons(item, ["skip", "copy", "suggest", "translate", "resize"])
-        transdict["text"] = self.escape(trans[0]).decode("utf8")
+        transdict["text"] = self.escapetext(trans[0])
         textid = "trans%d" % item
         focusbox = textid
       transdict["can_spell"] = spellcheck.can_check_lang(self.project.languagecode)
@@ -496,7 +501,7 @@ class TranslatePage(pagelayout.PootleNavPage):
     textpos = 0
     spanempty = False
     for i, switch, tag in diffswitches:
-      textsection = self.escape(text[textpos:i])
+      textsection = self.escapetext(text[textpos:i])
       textdiff += textsection
       if textsection:
         spanempty = False
@@ -515,7 +520,7 @@ class TranslatePage(pagelayout.PootleNavPage):
           textdiff += "()"
         textdiff += "</span>"
       textpos = i
-    textdiff += self.escape(text[textpos:])
+    textdiff += self.escapetext(text[textpos:])
     return textdiff
 
   def getdiffcodes(self, cmp1, cmp2):
@@ -600,7 +605,6 @@ class TranslatePage(pagelayout.PootleNavPage):
       forms = []
       for pluralitem, pluraltext in enumerate(trans):
         form = {"title": self.localize("Plural Form %d", pluralitem), "n": pluralitem, "text": self.escapetext(pluraltext)}
-        print "THE FORM!", form
         forms.append(form)
       transdict["forms"] = forms
     else:

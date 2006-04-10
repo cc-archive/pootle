@@ -32,14 +32,14 @@ class AboutPage(pagelayout.PootlePage):
     nametext = self.localize('The name stands for <b>PO</b>-based <b>O</b>nline <b>T</b>ranslation / <b>L</b>ocalization <b>E</b>ngine, but you may need to read <a href="http://www.thechestnut.com/flumps.htm">this</a>.')
     versiontitle = self.localize("Versions")
     versiontext = self.localize("This site is running:<br/>Pootle %s<br/>Translate Toolkit %s<br/>jToolkit %s<br/>Python %s (on %s/%s)", pootleversion.ver, toolkitversion.ver, jtoolkitversion.ver, sys.version, sys.platform, os.name)
-    self.templatename = "about"
+    templatename = "about"
     instancetitle = getattr(session.instance, "title", session.localize("Pootle Demo"))
     sessionvars = {"status": session.status, "isopen": session.isopen, "issiteadmin": session.issiteadmin()}
-    self.templatevars = {"pagetitle": pagetitle, "description": description,
+    templatevars = {"pagetitle": pagetitle, "description": description,
         "abouttitle": abouttitle, "introtext": introtext,
         "hosttext": hosttext, "nametext": nametext, "versiontitle": versiontitle, "versiontext": versiontext,
         "session": sessionvars, "instancetitle": pagetitle}
-    pagelayout.PootlePage.__init__(self, pagetitle, [], session)
+    pagelayout.PootlePage.__init__(self, templatename, templatevars, session)
 
 class PootleIndex(pagelayout.PootlePage):
   """the main page"""
@@ -48,7 +48,7 @@ class PootleIndex(pagelayout.PootlePage):
     self.localize = session.localize
     self.nlocalize = session.nlocalize
     pagetitle = self.localize("Pootle")
-    self.templatename = "index"
+    templatename = "index"
     aboutlink = self.localize("About this Pootle server")
     languagelink = self.localize('Languages')
     projectlink = self.localize('Projects')
@@ -57,11 +57,11 @@ class PootleIndex(pagelayout.PootlePage):
     languages = [{"code": code, "name": name, "sep": ", "} for code, name in self.potree.getlanguages()]
     if languages:
       languages[-1]["sep"] = ""
-    self.templatevars = {"pagetitle": pagetitle, "aboutlink": aboutlink,
+    templatevars = {"pagetitle": pagetitle, "aboutlink": aboutlink,
         "languagelink": languagelink, "languages": languages,
         "projectlink": projectlink, "projects": self.getprojects(),
         "session": sessionvars, "instancetitle": pagetitle}
-    pagelayout.PootlePage.__init__(self, pagetitle, [], session)
+    pagelayout.PootlePage.__init__(self, templatename, templatevars, session)
 
   def getprojects(self):
     """gets the options for the projects"""
@@ -82,7 +82,7 @@ class UserIndex(pagelayout.PootlePage):
     self.localize = session.localize
     self.nlocalize = session.nlocalize
     pagetitle = self.localize("User Page for: %s", session.username)
-    self.templatename = "home"
+    templatename = "home"
     optionslink = self.localize("Change options")
     adminlink = self.localize("Admin page")
     quicklinkstitle = self.localize("Quick Links")
@@ -90,11 +90,11 @@ class UserIndex(pagelayout.PootlePage):
     sessionvars = {"status": session.status, "isopen": session.isopen, "issiteadmin": session.issiteadmin()}
     quicklinks = self.getquicklinks()
     setoptionstext = self.localize("Please click on 'Change options' and select some languages and projects")
-    self.templatevars = {"pagetitle": pagetitle, "optionslink": optionslink,
+    templatevars = {"pagetitle": pagetitle, "optionslink": optionslink,
         "adminlink": adminlink, "quicklinkstitle": quicklinkstitle,
         "quicklinks": quicklinks, "setoptionstext": setoptionstext,
         "session": sessionvars, "instancetitle": pagetitle}
-    pagelayout.PootlePage.__init__(self, pagetitle, [], session)
+    pagelayout.PootlePage.__init__(self, templatename, templatevars, session)
 
   def getquicklinks(self):
     """gets a set of quick links to user's project-languages"""
@@ -141,15 +141,15 @@ class LanguageIndex(pagelayout.PootleNavPage):
     languagestats = self.nlocalize("%d project, average %d%% translated", "%d projects, average %d%% translated", self.projectcount, self.projectcount, average)
     languageinfo = self.getlanguageinfo()
     pagetitle =  self.localize("Pootle: %s", self.languagename)
-    self.templatename = "language"
+    templatename = "language"
     adminlink = self.localize("Admin")
     instancetitle = getattr(session.instance, "title", session.localize("Pootle Demo"))
     sessionvars = {"status": session.status, "isopen": session.isopen, "issiteadmin": session.issiteadmin()}
-    self.templatevars = {"pagetitle": pagetitle,
+    templatevars = {"pagetitle": pagetitle,
         "language": {"code": languagecode, "name": self.languagename, "stats": languagestats, "info": languageinfo},
         "projects": languageprojects,
         "session": sessionvars, "instancetitle": pagetitle}
-    pagelayout.PootleNavPage.__init__(self, pagetitle, [], session, bannerheight=81, returnurl="%s/" % self.languagecode)
+    pagelayout.PootleNavPage.__init__(self, templatename, templatevars, session, bannerheight=81)
 
   def getlanguageinfo(self):
     """returns information defined for the language"""
@@ -196,16 +196,16 @@ class ProjectLanguageIndex(pagelayout.PootleNavPage):
     projectstats = self.nlocalize("%d language, average %d%% translated", "%d languages, average %d%% translated", self.languagecount, self.languagecount, average)
     projectname = self.potree.getprojectname(self.projectcode)
     pagetitle =  self.localize("Pootle: %s", projectname)
-    self.templatename = "project"
+    templatename = "project"
     adminlink = self.localize("Admin")
     instancetitle = getattr(session.instance, "title", session.localize("Pootle Demo"))
     sessionvars = {"status": session.status, "isopen": session.isopen, "issiteadmin": session.issiteadmin()}
     setoptionstext = self.localize("Please click on 'Change options' and select some languages and projects")
-    self.templatevars = {"pagetitle": pagetitle,
+    templatevars = {"pagetitle": pagetitle,
         "project": {"code": projectcode, "name": projectname, "stats": projectstats},
         "adminlink": adminlink, "languages": languages,
         "session": sessionvars, "instancetitle": pagetitle}
-    pagelayout.PootleNavPage.__init__(self, pagetitle, [], session, bannerheight=81, returnurl="projects/%s/" % self.projectcode)
+    pagelayout.PootleNavPage.__init__(self, templatename, templatevars, session, bannerheight=81)
 
   def getlanguages(self):
     """gets the stats etc of the languages"""
@@ -272,10 +272,10 @@ class ProjectIndex(pagelayout.PootleNavPage):
     else:
       childitems = self.getchilditems(dirfilter)
     pagetitle = self.localize("Pootle: Project %s, Language %s", self.project.projectname, self.project.languagename)
-    self.templatename = "fileindex"
+    templatename = "fileindex"
     instancetitle = getattr(session.instance, "title", session.localize("Pootle Demo"))
     sessionvars = {"status": session.status, "isopen": session.isopen, "issiteadmin": session.issiteadmin()}
-    self.templatevars = {"pagetitle": pagetitle,
+    templatevars = {"pagetitle": pagetitle,
         "project": {"code": self.project.projectcode, "name": self.project.projectname},
         "language": {"code": self.project.languagecode, "name": self.project.languagename},
         # optional sections, will appear if these values are replaced
@@ -287,7 +287,7 @@ class ProjectIndex(pagelayout.PootleNavPage):
         "children": childitems,
         # general vars
         "session": sessionvars, "instancetitle": pagetitle}
-    pagelayout.PootleNavPage.__init__(self, pagetitle, [], session, bannerheight=81, returnurl="%s/%s/%s/" % (self.project.languagecode, self.project.projectcode, self.dirname))
+    pagelayout.PootleNavPage.__init__(self, templatename, templatevars, session, bannerheight=81)
     if self.showassigns and "assign" in self.rights:
       self.templatevars["assign"] = self.getassignbox()
     if "admin" in self.rights:
