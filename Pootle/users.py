@@ -71,11 +71,17 @@ class RegisterPage(pagelayout.PootlePage):
 
 class ActivatePage(pagelayout.PootlePage):
   """page for new registrations"""
-  def __init__(self, session, argdict):
+  def __init__(self, session, argdict, title=None, message=None):
     self.localize = session.localize
-    introtext = self.localize("Please enter your activation details")
+    if not message:
+      introtext = self.localize("Please enter your activation details")
+    else:
+      introtext = message
     self.argdict = argdict
-    pagetitle = self.localize("Pootle Account Activation")
+    if title is None:
+      pagetitle = self.localize("Pootle Account Activation")
+    else:
+      pagetitle = title
     self.templatename = "activate"
     instancetitle = getattr(session.instance, "title", session.localize("Pootle Demo"))
     sessionvars = {"status": session.status, "isopen": session.isopen, "issiteadmin": session.issiteadmin()}
@@ -335,11 +341,17 @@ class OptionalLoginAppServer(server.LoginAppServer):
         displaymessage, redirecturl = self.handleregistration(session, argdict)
       except RegistrationError, message:
         session.status = str(message)
+        displaymessage = session.status
         return RegisterPage(session, argdict)
-      message = pagelayout.IntroText(displaymessage)
-      redirectpage = pagelayout.PootlePage("Redirecting...", [message], session)
-      redirectpage.attribs["refresh"] = 10
-      redirectpage.attribs["refreshurl"] = redirecturl
+      redirectpage = pagelayout.PootlePage("Redirecting...", [], session)
+      redirectpage.templatename = "redirect"
+      redirectpage.templatevars = {
+          "pagetitle": session.localize("Redirecting to Registration Page..."),
+          "refresh": 10,
+          "refreshurl": redirecturl,
+          "message": displaymessage,
+          }
+      redirectpage.completevars()
       return redirectpage
     else:
       return RegisterPage(session, argdict)
@@ -355,14 +367,18 @@ class OptionalLoginAppServer(server.LoginAppServer):
         if correctcode and correctcode.strip().lower() == activationcode.strip().lower():
           setattr(usernode, "activated", 1)
           session.saveprefs()
-          redirecttext = pagelayout.IntroText("Your account has been activated! Redirecting to login...")
-          redirectpage = pagelayout.PootlePage("Redirecting to login...", redirecttext, session)
-          redirectpage.attribs["refresh"] = 10
-          redirectpage.attribs["refreshurl"] = "login.html?username=%s" % username
+          redirectpage = pagelayout.PootlePage("Redirecting to login...", [], session)
+          redirectpage.templatename = "redirect"
+          redirectpage.templatevars = {
+              "pagetitle": session.localize("Redirecting to login Page..."),
+              "refresh": 10,
+              "refreshurl": "login.html?username=%s" % username,
+              "message": session.localize("Your account has been activated! Redirecting to login..."),
+              }
+          redirectpage.completevars()
           return redirectpage
-      failedtext = pagelayout.IntroText("The activation link you have entered was not valid")
-      failedpage = pagelayout.PootlePage("Activation Failed", failedtext, session)
-      return failedpage
+      failedmessage = session.localize("The activation link you have entered was not valid")
+      return ActivatePage(session, argdict, title=session.localize("Activation Failed"), message=failedmessage)
     else:
       return ActivatePage(session, argdict)
 

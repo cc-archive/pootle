@@ -2,11 +2,6 @@
 # -*- coding: utf-8 -*-
 
 from jToolkit.widgets import widgets
-from jToolkit.widgets import table
-
-class IntroText(widgets.Division):
-  def __init__(self, contents):
-    widgets.Division.__init__(self, contents, cls="intro")
 
 def layout_banner(maxheight):
   """calculates dimensions, image name for banner"""
@@ -21,6 +16,17 @@ def layout_banner(maxheight):
   return {"banner_width": banner_width, "banner_height": banner_height,
     "logo_width": logo_width, "logo_height": logo_height, "banner_image": banner_image}
 
+def completetemplatevars(templatevars, session, bannerheight=135):
+  """fill out default values for template variables"""
+  if not "instancetitle" in templatevars:
+    templatevars["instancetitle"] = getattr(session.instance, "title", session.localize("Pootle Demo"))
+  if not "session" in templatevars:
+    templatevars["session"] = {"status": session.status, "isopen": session.isopen, "issiteadmin": session.issiteadmin()}
+  banner_layout = layout_banner(bannerheight)
+  templatevars.update(banner_layout)
+  if "search" not in templatevars:
+    templatevars["search"] = None
+
 class PootlePage(widgets.Page):
   """the main page"""
   def __init__(self, title, contents, session, bannerheight=135, returnurl=""):
@@ -33,15 +39,7 @@ class PootlePage(widgets.Page):
 
   def completevars(self, bannerheight=135):
     if hasattr(self, "templatevars"):
-      session = self.session
-      if not "instancetitle" in self.templatevars:
-        self.templatevars["instancetitle"] = getattr(session.instance, "title", session.localize("Pootle Demo"))
-      if not "session" in self.templatevars:
-        self.templatevars["session"] = {"status": session.status, "isopen": session.isopen, "issiteadmin": session.issiteadmin()}
-      banner_layout = layout_banner(bannerheight)
-      self.templatevars.update(banner_layout)
-      if "search" not in self.templatevars:
-        self.templatevars["search"] = None
+      completetemplatevars(self.templatevars, self.session, bannerheight=bannerheight)
 
   def polarizeitems(self, itemlist):
     """take an item list and alternate the background colour"""

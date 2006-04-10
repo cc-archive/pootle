@@ -211,9 +211,15 @@ class PootleServer(users.OptionalLoginAppServer, templateserver.TemplateServer):
       else:
         top = ""
       if not session.isopen:
-        redirecttext = pagelayout.IntroText("Redirecting to login...")
-        redirectpage = pagelayout.PootlePage("Redirecting to login...", redirecttext, session)
-        return server.Redirect("../login.html", withpage=redirectpage)
+        templatename = "redirect"
+        templatevars = {
+            "pagetitle": session.localize("Redirecting to login..."),
+            "refresh": 1,
+            "refreshurl": "login.html",
+            "message": session.localize("Need to log in to access home page"),
+            }
+        pagelayout.completetemplatevars(templatevars, session)
+        return server.Redirect("../login.html", withtemplate=(templatename, templatevars))
       if not top or top == "index.html":
         return indexpage.UserIndex(self.potree, session)
       elif top == "options.html":
@@ -231,13 +237,25 @@ class PootleServer(users.OptionalLoginAppServer, templateserver.TemplateServer):
       else:
         top = ""
       if not session.isopen:
-        redirecttext = pagelayout.IntroText("Redirecting to login...")
-        redirectpage = pagelayout.PootlePage("Redirecting to login...", redirecttext, session)
-        return server.Redirect("../login.html", withpage=redirectpage)
+        templatename = "redirect"
+        templatevars = {
+            "pagetitle": session.localize("Redirecting to login..."),
+            "refresh": 1,
+            "refreshurl": "login.html",
+            "message": session.localize("Need to log in to access admin page"),
+            }
+        pagelayout.completetemplatevars(templatevars, session)
+        return server.Redirect("../login.html", withtemplate=(templatename, templatevars))
       if not session.issiteadmin():
-        redirecttext = pagelayout.IntroText(self.localize("You do not have the rights to administer pootle."))
-        redirectpage = pagelayout.PootlePage("Redirecting to home...", redirecttext, session)
-        return server.Redirect("../index.html", withpage=redirectpage)
+        templatename = "redirect"
+        templatevars = {
+            "pagetitle": session.localize("Redirecting to home..."),
+            "refresh": 1,
+            "refreshurl": "login.html",
+            "message": self.localize("You do not have the rights to administer pootle."),
+            }
+        pagelayout.completetemplatevars(templatevars, session)
+        return server.Redirect("../index.html", withtemplate=(templatename, templatevars))
       if not top or top == "index.html":
         if "changegeneral" in argdict:
           self.changeoptions(argdict)
