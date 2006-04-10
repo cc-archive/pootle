@@ -27,11 +27,17 @@ class PootlePage(widgets.Page):
     if not hasattr(session.instance, "baseurl"):
       session.instance.baseurl = "/"
     self.localize = session.localize
+    self.session = session
     widgets.Page.__init__(self, title, contents)
     self.completevars(bannerheight)
 
   def completevars(self, bannerheight=135):
     if hasattr(self, "templatevars"):
+      session = self.session
+      if not "instancetitle" in self.templatevars:
+        self.templatevars["instancetitle"] = getattr(session.instance, "title", session.localize("Pootle Demo"))
+      if not "session" in self.templatevars:
+        self.templatevars["session"] = {"status": session.status, "isopen": session.isopen, "issiteadmin": session.issiteadmin()}
       banner_layout = layout_banner(bannerheight)
       self.templatevars.update(banner_layout)
       if "search" not in self.templatevars:
