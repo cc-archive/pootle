@@ -239,7 +239,7 @@ class TranslationProjectAdminPage(pagelayout.PootlePage):
     self.session = session
     self.localize = session.localize
     self.rightnames = self.project.getrightnames(session)
-    pagetitle = self.localize("Pootle Admin: %s %s", (self.project.languagename, self.project.projectname))
+    pagetitle = self.localize("Pootle Admin: %s %s", self.project.languagename, self.project.projectname)
     main_link = self.localize("Project home page")
     if "admin" in self.project.getrights(self.session):
       if "doupdaterights" in argdict:

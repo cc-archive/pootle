@@ -53,13 +53,13 @@ class TranslatePage(pagelayout.PootleNavPage):
     # self.pofilename can change in search...
     givenpofilename = self.pofilename
     formaction = self.makelink("")
-    title = self.localize("Pootle: translating %s into %s: %s", (self.project.projectname, self.project.languagename, self.pofilename))
+    title = self.localize("Pootle: translating %s into %s: %s", self.project.projectname, self.project.languagename, self.pofilename)
     mainstats = []
     if self.pofilename is not None:
       postats = self.project.getpostats(self.pofilename)
       blank, fuzzy = postats["blank"], postats["fuzzy"]
       translated, total = postats["translated"], postats["total"]
-      mainstats = self.localize("%d/%d translated\n(%d blank, %d fuzzy)", (len(translated), len(total), len(blank), len(fuzzy)))
+      mainstats = self.localize("%d/%d translated\n(%d blank, %d fuzzy)", len(translated), len(total), len(blank), len(fuzzy))
     if self.viewmode:
       rows = self.getdisplayrows("view")
       pagelinks = self.getpagelinks("?translate=1&view=1", rows)
@@ -70,7 +70,7 @@ class TranslatePage(pagelayout.PootleNavPage):
     navbarpath_dict = self.makenavbarpath_dict(self.project, self.session, self.pofilename)
     # templatising
     self.templatename = "translatepage"
-    pagetitle = self.localize("Pootle: translating %s into %s: %s", (self.project.projectname, self.project.languagename, self.pofilename))
+    pagetitle = self.localize("Pootle: translating %s into %s: %s", self.project.projectname, self.project.languagename, self.pofilename)
     instancetitle = getattr(session.instance, "title", session.localize("Pootle Demo"))
     sessionvars = {"status": session.status, "isopen": session.isopen, "issiteadmin": session.issiteadmin()}
     stats = {"summary": mainstats, "checks": [], "tracks": [], "assigns": []}
@@ -127,7 +127,7 @@ class TranslatePage(pagelayout.PootleNavPage):
       pagelinks.append({"href": baselink + "&item=%d" % linkitem, "text": self.localize("Previous %d", (self.firstitem - linkitem))})
     else:
       pagelinks.append({"text": self.localize("Previous %d", pagesize)})
-    pagelinks.append(self.localize("Items %d to %d of %d", (self.firstitem+1, lastitem+1, pofilelen)))
+    pagelinks.append(self.localize("Items %d to %d of %d", self.firstitem+1, lastitem+1, pofilelen))
     if self.firstitem + len(self.translations) < self.project.getpofilelen(self.pofilename):
       linkitem = self.firstitem + pagesize
       itemcount = min(pofilelen - linkitem, pagesize)
@@ -455,8 +455,7 @@ class TranslatePage(pagelayout.PootleNavPage):
         transdict["nplurals"] = len(trans)
         forms = []
         for pluralitem, pluraltext in enumerate(trans):
-          # TODO: patch jToolkit so this works without the nasty tuple wrapper
-          pluralform = self.localize("Plural Form %d", (pluralitem,))
+          pluralform = self.localize("Plural Form %d", pluralitem)
           pluraltext = self.escape(pluraltext).decode("utf-8")
           textid = "trans%d.%d" % (item, pluralitem)
           forms.append({"title": pluralform, "name": textid, "text": pluraltext, "n": pluralitem})
@@ -557,12 +556,12 @@ class TranslatePage(pagelayout.PootleNavPage):
       suggestedby = self.project.getsuggester(self.pofilename, item, suggid)
       if len(suggestions) > 1:
         if suggestedby:
-          suggtitle = self.localize("Suggestion %d by %s:", (suggid+1, suggestedby))
+          suggtitle = self.localize("Suggestion %d by %s:", suggid+1, suggestedby)
         else:
-          suggtitle = self.localize("Suggestion %d:", (suggid+1))
+          suggtitle = self.localize("Suggestion %d:", suggid+1)
       else:
         if suggestedby:
-          suggtitle = self.localize("Suggestion by %s:", (suggestedby))
+          suggtitle = self.localize("Suggestion by %s:", suggestedby)
         else:
           suggtitle = self.localize("Suggestion:")
       forms = []
@@ -600,8 +599,7 @@ class TranslatePage(pagelayout.PootleNavPage):
     if len(trans) > 1:
       forms = []
       for pluralitem, pluraltext in enumerate(trans):
-        # TODO: patch jToolkit so this works without the nasty tuple wrapper
-        form = {"title": self.localize("Plural Form %d", (pluralitem,)), "n": pluralitem, "text": self.escapetext(pluraltext)}
+        form = {"title": self.localize("Plural Form %d", pluralitem), "n": pluralitem, "text": self.escapetext(pluraltext)}
         print "THE FORM!", form
         forms.append(form)
       transdict["forms"] = forms

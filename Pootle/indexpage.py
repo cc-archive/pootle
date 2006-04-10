@@ -31,7 +31,7 @@ class AboutPage(pagelayout.PootlePage):
     hosttext = self.localize('The Pootle project itself is hosted at <a href="http://translate.sourceforge.net/">translate.sourceforge.net</a> where you can find the details about source code, mailing lists etc.')
     nametext = self.localize('The name stands for <b>PO</b>-based <b>O</b>nline <b>T</b>ranslation / <b>L</b>ocalization <b>E</b>ngine, but you may need to read <a href="http://www.thechestnut.com/flumps.htm">this</a>.')
     versiontitle = self.localize("Versions")
-    versiontext = self.localize("This site is running:<br/>Pootle %s<br/>Translate Toolkit %s<br/>jToolkit %s<br/>Python %s (on %s/%s)") % (pootleversion.ver, toolkitversion.ver, jtoolkitversion.ver, sys.version, sys.platform, os.name)
+    versiontext = self.localize("This site is running:<br/>Pootle %s<br/>Translate Toolkit %s<br/>jToolkit %s<br/>Python %s (on %s/%s)", pootleversion.ver, toolkitversion.ver, jtoolkitversion.ver, sys.version, sys.platform, os.name)
     self.templatename = "about"
     instancetitle = getattr(session.instance, "title", session.localize("Pootle Demo"))
     sessionvars = {"status": session.status, "isopen": session.isopen, "issiteadmin": session.issiteadmin()}
@@ -107,7 +107,7 @@ class UserIndex(pagelayout.PootlePage):
       for projectcode in self.session.getprojects():
         if self.potree.hasproject(languagecode, projectcode):
           projectname = self.potree.getprojectname(projectcode)
-          projecttitle = self.localize("%s %s", (languagename, projectname))
+          projecttitle = self.localize("%s %s", languagename, projectname)
           langlinks.append({"code": projectcode, "name": projecttitle, "sep": "<br/>"})
       if langlinks:
         langlinks[-1]["sep"] = ""
@@ -138,7 +138,7 @@ class LanguageIndex(pagelayout.PootleNavPage):
     languageprojects = self.getprojects()
     self.projectcount = len(languageprojects)
     average = self.getpagestats()
-    languagestats = self.nlocalize("%d projects, average %d%% translated", "%d projects, average %d%% translated", self.projectcount, (self.projectcount, average))
+    languagestats = self.nlocalize("%d project, average %d%% translated", "%d projects, average %d%% translated", self.projectcount, self.projectcount, average)
     languageinfo = self.getlanguageinfo()
     pagetitle =  self.localize("Pootle: %s", self.languagename)
     self.templatename = "language"
@@ -193,7 +193,7 @@ class ProjectLanguageIndex(pagelayout.PootleNavPage):
     self.initpagestats()
     languages = self.getlanguages()
     average = self.getpagestats()
-    projectstats = self.nlocalize("%d language, average %d%% translated", "%d languages, average %d%% translated", self.languagecount, (self.languagecount, average))
+    projectstats = self.nlocalize("%d language, average %d%% translated", "%d languages, average %d%% translated", self.languagecount, self.languagecount, average)
     projectname = self.potree.getprojectname(self.projectcode)
     pagetitle =  self.localize("Pootle: %s", projectname)
     self.templatename = "project"
@@ -227,8 +227,8 @@ class ProjectLanguageIndex(pagelayout.PootleNavPage):
     self.updatepagestats(translatedwords, totalwords)
     percentfinished = (translatedwords*100/max(totalwords, 1))
     filestats = self.nlocalize("%d file", "%d files", numfiles, numfiles)
-    wordstats = self.localize("%d/%d words (%d%%) translated", (translatedwords, totalwords, percentfinished))
-    stringstats = self.localize("[%d/%d strings]", (len(translated), len(total)))
+    wordstats = self.localize("%d/%d words (%d%%) translated", translatedwords, totalwords, percentfinished)
+    stringstats = self.localize("[%d/%d strings]", len(translated), len(total))
     stats = filestats + ", " + wordstats + " " + '<span class="string-statistics">%s</span>' % stringstats
     return {"code": languagecode, "name": languagename, "stats": stats}
 
@@ -271,7 +271,7 @@ class ProjectIndex(pagelayout.PootleNavPage):
       childitems = self.getgoalitems(dirfilter)
     else:
       childitems = self.getchilditems(dirfilter)
-    pagetitle = self.localize("Pootle: Project %s, Language %s", (self.project.projectname, self.project.languagename))
+    pagetitle = self.localize("Pootle: Project %s, Language %s", self.project.projectname, self.project.languagename)
     self.templatename = "fileindex"
     instancetitle = getattr(session.instance, "title", session.localize("Pootle Demo"))
     sessionvars = {"status": session.status, "isopen": session.isopen, "issiteadmin": session.issiteadmin()}
@@ -824,7 +824,7 @@ class ProjectIndex(pagelayout.PootleNavPage):
       checkcount = len(projectstats[checkname])
       checkname = checkname.replace("check-", "", 1)
       if total and checkcount:
-        stats = self.nlocalize("%d string (%d%%) failed", "%d strings (%d%%) failed", checkcount, (checkcount, (checkcount * 100 / total)))
+        stats = self.nlocalize("%d string (%d%%) failed", "%d strings (%d%%) failed", checkcount, checkcount, (checkcount * 100 / total))
         checklink = {"href": self.makelink(linkbase, **{checkname:1}), "text": checkname, "stats": stats}
         checklinks += checklink
     return checklinks
@@ -854,10 +854,10 @@ class ProjectIndex(pagelayout.PootleNavPage):
         assignlink = {"href": self.makelink(linkbase, assignedto=assignname), "text": assignname}
         percentassigned = assignwords * 100 / max(totalwords, 1)
         percentcomplete = completewords * 100 / max(assignwords, 1)
-        stats = self.localize("%d/%d words (%d%%) assigned", (assignwords, totalwords, percentassigned))
-        stringstats = self.localize("[%d/%d strings]", (assigncount, totalcount))
-        completestats = self.localize("%d/%d words (%d%%) translated", (completewords, assignwords, percentcomplete))
-        completestringstats = self.localize("[%d/%d strings]", (completecount, assigncount))
+        stats = self.localize("%d/%d words (%d%%) assigned", assignwords, totalwords, percentassigned)
+        stringstats = self.localize("[%d/%d strings]", assigncount, totalcount)
+        completestats = self.localize("%d/%d words (%d%%) translated", completewords, assignwords, percentcomplete)
+        completestringstats = self.localize("[%d/%d strings]", completecount, assigncount)
         if "assign" in self.rights:
           removetext = self.localize("Remove")
           removelink = {"href": self.makelink(removelinkbase, assignedto=assignname), "text": removetext}
