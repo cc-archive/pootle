@@ -28,6 +28,9 @@ class PootlePage(widgets.Page):
       session.instance.baseurl = "/"
     self.localize = session.localize
     widgets.Page.__init__(self, title, contents)
+    self.completevars(bannerheight)
+
+  def completevars(self, bannerheight=135):
     if hasattr(self, "templatevars"):
       banner_layout = layout_banner(bannerheight)
       self.templatevars.update(banner_layout)
