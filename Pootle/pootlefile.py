@@ -128,8 +128,8 @@ class pootlefile(po.pofile):
 
   def savepofile(self):
     """saves changes to the main file to disk..."""
-    source = str(self)
-    open(self.filename, "w").write(source)
+    output = str(self)
+    open(self.filename, "w").write(output)
     # don't need to reread what we saved
     self.pomtime = getmodtime(self.filename)
 
@@ -142,7 +142,7 @@ class pootlefile(po.pofile):
       self.readpofile()
 
   def getoutput(self):
-    """returns pofile source"""
+    """returns pofile output"""
     self.pofreshen()
     return super(pootlefile, self).getoutput()
 
@@ -162,8 +162,8 @@ class pootlefile(po.pofile):
 
   def savependingfile(self):
     """saves changes to disk..."""
-    source = str(self.pendingfile)
-    open(self.pendingfilename, "w").write(source)
+    output = str(self.pendingfile)
+    open(self.pendingfilename, "w").write(output)
     self.pendingmtime = getmodtime(self.pendingfilename)
 
   def getstats(self):
@@ -568,6 +568,8 @@ class pootlefile(po.pofile):
       newpofile.makeindex()
     matches = []
     for newpo in newpofile.units:
+      if newpo.isheader():
+        continue
       foundid = False
       if useids:
         newids = newpo.getids()
@@ -623,6 +625,35 @@ class pootlefile(po.pofile):
         self.mergeitem(oldpo, newpo, username)
         # we invariably want to get the ids (source locations) from the newpo
         oldpo.sourcecomments = newpo.sourcecomments
+
+    #Let's update selected header entries. Only the ones listed below, and ones
+    #that are empty in self can be updated. The check in header_order is just
+    #a basic sanity check so that people don't insert garbage.
+    updatekeys = ['Content-Type', 
+                  'POT-Creation-Date', 
+                  'Last-Translator', 
+                  'Project-Id-Version', 
+                  'PO-Revision-Date', 
+                  'Language-Team']
+    headerstoaccept = {}
+    ownheader = self.parseheader()
+    for (key, value) in newpofile.parseheader().items():
+      if key in updatekeys or (not key in ownheader or not ownheader[key]) and key in self.header_order:
+        headerstoaccept[key] = value
+    self.updateheader(add=True, **headerstoaccept)
+    
+    #Now update the comments above the header:
+    header = self.header()
+    newheader = newpofile.header()
+    if header is None and not newheader is None:
+      header = self.elementclass("", encoding=self.encoding)
+      header.target = ""
+    if header:  
+      header.initallcomments(blankall=True)
+      if newheader:
+        for i in range(len(header.allcomments)):
+          header.allcomments[i].extend(newheader.allcomments[i])
+    
     self.savepofile()
     # the easiest way to recalculate everything
     self.readpofile()

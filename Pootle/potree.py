@@ -5,6 +5,7 @@
 
 from Pootle import projects
 from Pootle import pootlefile
+from translate.misc import autoencode
 import os
 import sre
 
@@ -66,7 +67,12 @@ class POTree:
         if not languagecode.strip():
           continue
         if not languagecode.isalpha():
-          raise ValueError("Language code must be alphabetic")
+          if languagecode.find("_") >= 0:
+            for part in languagecode.split("_"):
+              if not part.isalpha():
+                raise ValueError("Language code must be alphabetic")
+          else: 
+            raise ValueError("Language code must be alphabetic")
         if self.haslanguage(languagecode):
           raise ValueError("Already have language with the code %s" % languagecode)
         languagename = argdict.get("newlanguagename", languagecode)
@@ -159,7 +165,7 @@ class POTree:
 
   def getlanguagespecialchars(self, languagecode):
     """returns the language's special characters"""
-    return getattr(self.getlanguageprefs(languagecode), "specialchars", "")
+    return autoencode.autoencode(getattr(self.getlanguageprefs(languagecode), "specialchars", ""), "utf-8")
 
   def setlanguagespecialchars(self, languagecode, languagespecialchars):
     """sets the language's special characters"""

@@ -10,6 +10,7 @@ from translate.convert import po2csv
 from translate.convert import po2xliff
 from translate.convert import po2ts
 from translate.convert import pot2po
+from translate.convert import po2oo
 from translate.tools import pocompile
 from translate.tools import pogrep
 from Pootle import pootlefile
@@ -116,31 +117,44 @@ class TranslationProject(object):
             ("admin", localize("Administrate")),
            ]
 
-  def getrights(self, session=None, username=None):
-    """gets the rights for the given user (name or session, or not-logged-in if username is None)"""
+  def getrights(self, session=None, username=None, usedefaults=True):
+    """gets the rights for the given user (name or session, or not-logged-in if username is None)
+    if usedefaults is False then None will be returned if no rights are defined (useful for editing rights)"""
     # internal admin sessions have all rights
     if isinstance(session, InternalAdminSession):
       return [right for right, localizedright in self.getrightnames(session)]
     if session is not None and session.isopen and username is None:
       username = session.username
-    if hasattr(self.prefs, "rights"):
-      rights = self.prefs.rights
-    else:
-      rights = None
+    rightstree = getattr(self.prefs, "rights", None)
     if username is None:
-      rights = getattr(rights, "nobody", "view")
-    else:
-      rights = getattr(rights, username, getattr(rights, "default", None))
-      if rights is None:
-        if self.languagecode == "en":
-          rights = "view, archive, pocompile"
+      username = "nobody"
+    if rightstree is not None:
+      if rightstree.__hasattr__(username):
+        rights = rightstree.__getattr__(username)
+      else:
+        rights = None
+    if rights is None:
+      if usedefaults:
+        if username == "nobody":
+          rights = "view"
+        elif rightstree is None:
+          if self.languagecode == "en":
+            rights = "view, archive, pocompile"
+          else:
+            rights = "view, review, translate, archive, pocompile"
         else:
-          rights = "view, review, translate, archive, pocompile"
+          rights = getattr(rightstree, "default", None)
+      else:
+        return rights
     rights = [right.strip() for right in rights.split(",")]
     if session is not None and session.issiteadmin():
       if "admin" not in rights:
         rights.append("admin")
     return rights
+
+  def getuserswithrights(self):
+    """gets all users that have rights defined for this project"""
+    return [username for username, user_rights in getattr(self.prefs, "rights", {}).iteritems()]
 
   def setrights(self, username, rights):
     """sets the rights for the given username... (or not-logged-in if username is None)"""
@@ -149,14 +163,14 @@ class TranslationProject(object):
       rights = ", ".join(rights)
     if not hasattr(self.prefs, "rights"):
       self.prefs.rights = prefs.PrefNode(self.prefs, "rights")
-    setattr(self.prefs.rights, username, rights)
+    self.prefs.rights.__setattr__(username, rights)
     self.saveprefs()
 
   def delrights(self, username):
     """deletes teh rights for the given username"""
     if username == "nobody" or username == "default":
       raise RightsError(session.localize('You cannot remove the "nobody" or "default" user'))
-    delattr(self.prefs.rights, username)
+    self.prefs.rights.__delattr__(username)
     self.saveprefs()
 
   def getgoalnames(self):
@@ -293,8 +307,8 @@ class TranslationProject(object):
       self.prefs.goals = prefs.PrefNode(self.prefs, "goals")
     if not hasattr(self.prefs.goals, goalname):
       # TODO: check that its a valid goalname (alphanumeric etc)
-      setattr(self.prefs.goals, goalname, prefs.PrefNode(self.prefs.goals, goalname))
-    goalnode = getattr(self.prefs.goals, goalname)
+      self.prefs.goals.__setattr__(goalname, prefs.PrefNode(self.prefs.goals, goalname))
+    goalnode = self.prefs.goals.__getattr__(goalname)
     goalnode.files = goalfiles
     self.saveprefs()
 
@@ -349,8 +363,8 @@ class TranslationProject(object):
     if not hasattr(self.prefs, "goals"):
       self.prefs.goals = prefs.PrefNode(self.prefs, "goals")
     if not hasattr(self.prefs.goals, goalname):
-      setattr(self.prefs.goals, goalname, prefs.PrefNode(self.prefs.goals, goalname))
-    goalnode = getattr(self.prefs.goals, goalname)
+      self.prefs.goals.__setattr__(goalname, prefs.PrefNode(self.prefs.goals, goalname))
+    goalnode = self.prefs.goals.__getattr__(goalname)
     goalnode.users = goalusers
     self.saveprefs()
 
@@ -560,6 +574,27 @@ class TranslationProject(object):
         print "error adding %s" % filename, e
         continue
     archive.close()
+
+  def ootemplate(self):
+    """Tests whether this project has an OpenOffice.org template SDF file in
+    the templates directory."""
+    projectdir = os.path.join(self.potree.podirectory, self.projectcode)
+    templatefilename = os.path.join(projectdir, "templates", "en-US.sdf")
+    if os.path.exists(templatefilename):
+      return templatefilename
+    else:
+      return None
+
+  def getoo(self):
+    """Returns an OpenOffice.org gsi file"""
+    #TODO: implement caching
+    templateoo = self.ootemplate()
+    if templateoo is None:
+      return
+    outputoo = os.path.join(self.podir, self.languagecode + ".sdf")
+    inputdir = os.path.join(self.potree.podirectory, self.projectcode, self.languagecode)
+    po2oo.main(["-i%s"%inputdir, "-t%s"%templateoo, "-o%s"%outputoo, "-l%s"%self.languagecode, "--progress=none"])
+    return file(os.path.join(self.podir, self.languagecode + ".sdf"), "r").read()
 
   def browsefiles(self, dirfilter=None, depth=None, maxdepth=None, includedirs=False, includefiles=True):
     """gets a list of pofilenames, optionally filtering with the parent directory"""
@@ -1213,10 +1248,11 @@ class TemplatesProject(TranslationProject):
   def __init__(self, projectcode, potree):
     super(TemplatesProject, self).__init__("templates", projectcode, potree, create=False)
 
-  def getrights(self, session=None, username=None):
+  def getrights(self, session=None, username=None, usedefaults=True):
     """gets the rights for the given user (name or session, or not-logged-in if username is None)"""
     # internal admin sessions have all rights
     rights = super(TemplatesProject, self).getrights(session=session, username=username)
-    rights = [right for right in rights if right not in ["translate", "suggest", "pocompile"]]
+    if rights is not None:
+      rights = [right for right in rights if right not in ["translate", "suggest", "pocompile"]]
     return rights
 
