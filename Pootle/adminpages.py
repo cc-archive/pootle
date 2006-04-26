@@ -244,6 +244,8 @@ class TranslationProjectAdminPage(pagelayout.PootlePage):
     if "admin" in self.project.getrights(self.session):
       if "doupdaterights" in argdict:
         for key, value in argdict.iteritems():
+          if isinstance(key, str):
+            key = key.decode("utf-8")
           if key.startswith("rights-"):
             username = key.replace("rights-", "", 1)
             self.project.setrights(username, value)
@@ -278,38 +280,48 @@ class TranslationProjectAdminPage(pagelayout.PootlePage):
       filestyle_text = self.localize("This is a standard style project (one directory per language).")
     permissions_title = self.localize("User Permissions")
     username_title = self.localize("Username")
+    adduser_text = self.localize("(select to add user)")
     rights_title = self.localize("Rights")
     remove_title = self.localize("Remove")
-    nobody_dict = self.getuserdict("nobody", self.project.getrights(username=None), delete=False)
+    nobodyrights = self.project.getrights(username=None)
+    nobody_dict = self.getuserdict("nobody", delete=False)
     defaultrights = self.project.getrights(username="default")
-    default_dict = self.getuserdict("default", defaultrights, delete=False)
-    user_dicts = [nobody_dict, default_dict]
-    userlist = []
-    for username, rights in getattr(self.project.prefs, "rights", {}).iteritems():
+    default_dict = self.getuserdict("default", delete=False)
+    users_with_rights = ["nobody", "default"]
+    rights = {"nobody": nobodyrights, "default": defaultrights}
+    for username in self.project.getuserswithrights():
       if username in ("nobody", "default"): continue
-      userlist.append(username)
-    userlist.sort()
-    for username in userlist:
-      user_dict = self.getuserdict(username, self.project.getrights(username=username))
-      user_dicts.append(user_dict)
-    newuser_dict = self.getuserdict(None, defaultrights, delete=False)
+      users_with_rights.append(username)
+      rights[username] = self.project.getrights(username=username)
+    users = self.session.loginchecker.users.iteritems(sorted=True)
+    user_details = {"nobody": nobody_dict, "default": default_dict}
+    for username, usernode in users:
+      if not isinstance(username, unicode):
+        username = username.decode("utf-8")
+      user_dict = self.getuserdict(username, usernode=usernode)
+      user_details[username] = user_dict
+    users_without_rights = [username for username in user_details if username not in users_with_rights]
+    newuser_dict = self.getuserdict(None, delete=False)
     updaterights_text = self.localize("Update Rights")
     return {"filestyle_text": filestyle_text,
             "permissions_title": permissions_title,
             "username_title": username_title,
             "rights_title": rights_title,
             "remove_title": remove_title,
-            "users": user_dicts,
+            "users_with_rights": users_with_rights,
+            "users_without_rights": users_without_rights,
+            "user_details": user_details,
+            "rights": rights,
             "newuser": newuser_dict,
             "updaterights_text": updaterights_text,
+            "rightnames": self.rightnames,
+            "adduser_text": adduser_text,
            }
 
-  def getuserdict(self, username, user_rights, delete=True):
-    """adds a row for the given user's rights"""
-    if not isinstance(user_rights, list):
-      user_rights = [right.strip() for right in rights.split(",")]
-    rights = [{"code": code, "name": name, "selected": code in user_rights or None} for code, name in self.rightnames]
+  def getuserdict(self, username, delete=True, usernode=None):
+    """gets a dictionary for the given user given user's rights"""
     remove_text = self.localize("Remove %s", username)
-    rightsdict = {"username": username, "rights": rights, "delete": delete or None, "remove_text": remove_text}
-    return rightsdict
+    fullname = getattr(usernode, "name", None) or username
+    userdict = {"username": username, "delete": delete or None, "remove_text": remove_text, "fullname": fullname}
+    return userdict
 

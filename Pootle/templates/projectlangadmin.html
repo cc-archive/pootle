@@ -42,32 +42,37 @@
           </td>
         </tr>
 
-        <tr py:for="user in users">
-          <td colspan="1" rowspan="1" type="td" py:content="user.username">username</td>
+        <tr py:for="username in users_with_rights">
+          <td colspan="1" rowspan="1" type="td" py:content="username">username</td>
 
           <td colspan="1" rowspan="1" type="td">
-            <select multiple="multiple" name="rights-${user.username}">
-              <option py:for="right in user.rights" py:attrs="selected=right.selected, value=right.code" py:content="right.name">
+            <select multiple="multiple" name="rights-${username}">
+              <option py:for="rightcode, rightname in rightnames" py:attrs="value=rightcode, selected=rightcode in rights[username] or None" py:content="rightname">
                 Right
               </option>
             </select>
-            <input type="hidden" name="allowmultikey" value="rights-${user.username}"/>
+            <input type="hidden" name="allowmultikey" value="rights-${username}"/>
           </td>
 
           <td colspan="1" rowspan="1" type="td">
-            <span py:if="user.delete" py:strip="True">
-              <input type="checkbox" name="rightsremove-${user.username}"/>
-              <span py:content="user.remove_text">Remove username</span>
+            <span py:if="user_details[username].delete" py:strip="True">
+              <input type="checkbox" name="rightsremove-${username}"/>
+              <span py:content="user_details[username].remove_text">Remove username</span>
             </span>
           </td>
         </tr>
 
         <tr>
-          <td colspan="1" rowspan="1" type="td"><input type="text" name="rightsnew-username" value="" /></td>
+          <td colspan="1" rowspan="1" type="td">
+            <select name="rightsnew-username">
+              <option value="" selected="selected" py:content="adduser_text">(select to add user)</option>
+              <option py:for="username in users_without_rights" py:attrs="value=username" py:content="user_details[username].fullname"/>
+            </select>
+          </td>
 
           <td colspan="1" rowspan="1" type="td">
             <select multiple="multiple" name="rightsnew">
-              <option py:for="right in user.rights" py:attrs="selected=right.selected, value=right.code" py:content="right.name">
+              <option py:for="rightcode, rightname in rightnames" py:attrs="value=rightcode, selected=rightcode in rights.default or None" py:content="rightname">
                 Right
               </option>
             </select>
