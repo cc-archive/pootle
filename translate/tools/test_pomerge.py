@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 from translate.tools import pomerge
 from translate.storage import po
@@ -60,52 +59,8 @@ class TestPOMerge:
         """ensure that we do not delete comments in the PO file that are not assocaited with a message block"""
         templatepo = '''# Lonely comment\n\n# Translation comment\nmsgid "Bob"\nmsgstr "Toolmaker"\n'''
         mergepo = '''# Translation comment\nmsgid "Bob"\nmsgstr "Builder"\n'''
-        expectedpo = '''# Lonely comment\n\n# Translation comment\nmsgid "Bob"\nmsgstr "Builder"\n\n'''
+        expectedpo = '''# Lonely comment\n\n# Translation comment\nmsgid "Bob"\nmsgstr "Builder"\n'''
         pofile = self.mergepo(templatepo, mergepo)
-#        pounit = self.singleunit(pofile)
+        pounit = self.singleunit(pofile)
         print pofile
         assert pofile.getoutput() == expectedpo
-
-    def test_preserve_format(self):
-        """Tests that the layout of the po doesn't change unnecessarily"""
-        templatepo = '''msgid "First part\\nSecond part"\nmsgstr ""\n"Eerste deel\\nTweede deel"\n\n'''
-        mergepo = '''msgid "First part\\n"\n"Second part"\nmsgstr ""\n"Eerste deel\\n"\n"Tweede deel"'''
-        pofile = self.mergepo(templatepo, mergepo)
-        assert str(pofile) == templatepo
-
-        templatepo = '''msgid "Use a scissor"\nmsgstr "Gebruik 'n sker "\n"om dit te doen"\n'''
-        mergepo = '''msgid "Use a scissor"\nmsgstr "Gebruik 'n skêr om dit te doen"\n'''
-        expectedpo = '''msgid "Use a scissor"\nmsgstr "Gebruik 'n skêr "\n"om dit te doen"\n\n'''
-        pofile = self.mergepo(templatepo, mergepo)
-        assert str(pofile) == expectedpo
-
-        templatepo = '''msgid "To do it, use a scissor, please."\nmsgstr "Om dit te doen, "\n"gebruik 'n sker, "\n"asseblief."\n'''
-        mergepo = '''msgid "To do it, use a scissor, please."\nmsgstr "Om dit te doen, gebruik 'n skêr, asseblief."\n'''
-        expectedpo = '''msgid "To do it, use a scissor, please."\nmsgstr "Om dit te doen, "\n"gebruik 'n skêr, "\n"asseblief."\n\n'''
-        pofile = self.mergepo(templatepo, mergepo)
-        assert str(pofile) == expectedpo
-        mergepo = '''msgid "To do it, use a scissor, please."\nmsgstr "Om dit te doen, gebruik 'n skêr, "\n"asseblief."\n'''
-        pofile = self.mergepo(templatepo, mergepo)
-        assert str(pofile) == expectedpo
-        mergepo = '''msgid "To do it, use a scissor, please."\nmsgstr ""\n"Om dit te doen, "\n"gebruik 'n skêr, asseblief."\n'''
-        pofile = self.mergepo(templatepo, mergepo)
-        assert str(pofile) == expectedpo
-
-        mergepo = '''msgid ""\n"To do it, use a scissor, "\n"please."\nmsgstr ""\n"Om dit te doen, "\n"gebruik 'n skêr, asseblief."\n'''
-        pofile = self.mergepo(templatepo, mergepo)
-        assert str(pofile) == expectedpo
-
-        templatepo = '''msgid "To do it, use a scissor, please."\nmsgstr ""\n"Om dit te doen, "\n"gebruik 'n sker, "\n"asseblief."\n'''
-        mergepo = '''msgid "To do it, use a scissor, please."\nmsgstr "Om dit te doen, gebruik 'n skêr, asseblief."\n'''
-        expectedpo = '''msgid "To do it, use a scissor, please."\nmsgstr ""\n"Om dit te doen, "\n"gebruik 'n skêr, "\n"asseblief."\n\n'''
-        pofile = self.mergepo(templatepo, mergepo)
-        assert str(pofile) == expectedpo
-
-    def test_merge_dos2unix(self):
-        """Test that merging a comment line with dos newlines doesn't add a new line"""
-        templatepo = '''# User comment\n# (pofilter) Translate Toolkit comment\n#. Automatic comment\n#: location_comment.c:110\nmsgid "File"\nmsgstr "File"\n\n'''
-        mergepo =  '''# User comment\r\n# (pofilter) Translate Toolkit comment\r\n#. Automatic comment\r\n#: location_comment.c:110\r\nmsgid "File"\r\nmsgstr "Ifayile"\r\n\r\n'''
-        expectedpo = '''# User comment\n# (pofilter) Translate Toolkit comment\n#. Automatic comment\n#: location_comment.c:110\nmsgid "File"\nmsgstr "Ifayile"\n\n'''
-        pofile = self.mergepo(templatepo, mergepo)
-        assert str(pofile) == expectedpo
-

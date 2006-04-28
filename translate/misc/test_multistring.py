@@ -18,25 +18,3 @@ class TestMultistring(test_autoencode.TestAutoencode):
         assert s2.strings == ["test", "me"]
         assert s2 != s1
 
-    def test_replace(self):
-        t = self.type2test
-        s1 = t(["abcdef", "def"])
-
-        result = s1.replace("e", "")
-        assert type(result) == t
-        assert result == t(["abcdf", "df"])
-
-        result = s1.replace("e", "xx")
-        assert result == t(["abcdxxf", "dxxf"])
-
-        result = s1.replace("e", u"\xe9")
-        assert result == t([u"abcd\xe9f", u"d\xe9f"])
-
-	result = s1.replace("e", "\n")
-	assert result == t([u"abcd\nf", u"d\nf"])
-
-	result = result.replace("\n", "\\n")
-	assert result == t([u"abcd\\nf", u"d\\nf"])
-	
-	result = result.replace("\\n", "\n")
-	assert result == t([u"abcd\nf", u"d\nf"])

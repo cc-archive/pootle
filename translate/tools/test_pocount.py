@@ -71,7 +71,6 @@ class TestPOCount:
 
     # Counting strings
     #  We need to check how we count strings also and if we call it translated or untranslated
-    # ie an all spaces msgid should be translated if there are spaces in the msgstr
    
     # Make sure we don't count obsolete messages
 

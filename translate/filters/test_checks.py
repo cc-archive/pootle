@@ -80,8 +80,6 @@ def test_accronyms():
     # We shouldn't worry about acronyms that appear in a musttranslate file
     stdchecker = checks.StandardChecker(checks.CheckerConfig(musttranslatewords=["OK"]))
     assert checks.passes(stdchecker.acronyms, "OK", "Kulungile")
-    # Assert punctuation should not hide accronyms
-    assert checks.fails(stdchecker.acronyms, "Location (URL) not found", "Blah blah blah")
 
 def test_blank():
     """tests blank"""
@@ -168,9 +166,6 @@ A sentence""", "I'm correct.")
     assert checks.fails(stdchecker.escapes, r"An escape escape \\", r"Escape escape")
     assert checks.passes(stdchecker.escapes, r"A double quote \"", r"Double quote \"")
     assert checks.fails(stdchecker.escapes, r"A double quote \"", r"Double quote")
-    # Escaped escapes
-    assert checks.passes(stdchecker.escapes, r"An escaped newline \\n", r"Escaped newline \\n")
-    assert checks.fails(stdchecker.escapes, r"An escaped newline \\n", r"Escaped newline \n")
 
 def test_filepaths():
     """tests filepaths"""

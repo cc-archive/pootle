@@ -23,6 +23,16 @@
 
 import sys
 from translate.storage import po
+from translate.misc import quote
+
+def readpofile(infile):
+  posrc = infile.read()
+  pf = po.pofile()
+  pf.parse(posrc)
+  return pf
+
+def writepofile(outfile, pf):
+  outfile.write(str(pf))
 
 def mergepofiles(p1, p2, mergeblanks, mergecomments):
   """take any new translations in p2 and write them into p1"""
@@ -30,12 +40,14 @@ def mergepofiles(p1, p2, mergeblanks, mergecomments):
     if po2.isheader():
       continue
     # there may be more than one entity due to msguniq merge
-    entities = po2.getids()
+    entities = []
+    for sourcecomment in po2.sourcecomments:
+      entities += quote.rstripeol(sourcecomment)[3:].split()
     if len(entities) == 0:
-      source = po2.source
+      unquotedid = po.unquotefrompo(po2.msgid)
       po1 = None
-      if source in p1.msgidindex:
-        po1 = p1.msgidindex[source]
+      if unquotedid in p1.msgidindex:
+        po1 = p1.msgidindex[unquotedid]
       if po1 is None:
         sys.stderr.write(str(po2) + "\n")
       else:
@@ -52,17 +64,17 @@ def mergepofiles(p1, p2, mergeblanks, mergecomments):
           po1 = None
       # if sourceindex was not unique, use the msgidindex
       if po1 is None:
-        source = po2.source
-        if source in p1.msgidindex:
-          po1 = p1.msgidindex[source]
+        unquotedid = po.unquotefrompo(po2.msgid)
+        if unquotedid in p1.msgidindex:
+          po1 = p1.msgidindex[unquotedid]
       # check if we found a matching po element
       if po1 is None:
         print >>sys.stderr, "# the following po element was not found"
         sys.stderr.write(str(po2) + "\n")
       else:
         if not mergeblanks:
-          target = po2.target
-          if len(target.strip()) == 0: continue
+          unquotedstr = po.unquotefrompo(po2.msgstr)
+          if len(unquotedstr.strip()) == 0: continue
         # finally set the new definition in po1
         po1.merge(po2, overwrite=True, comments=mergecomments)
   return p1

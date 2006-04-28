@@ -38,6 +38,10 @@ class po2tmx:
         continue
       source = thepo.source
       translation = thepo.target
+      if isinstance(source, str):
+        source = source.decode("utf-8")
+      if isinstance(translation, str):
+        translation = translation.decode("utf-8")
       # TODO place source location in comments
       tmxfile.addtranslation(source, sourcelanguage, translation, targetlanguage)
     return str(tmxfile)
@@ -50,6 +54,10 @@ class po2tmx:
         continue
       source = thepo.source
       translation = thepo.target
+      if isinstance(source, str):
+        source = source.decode("utf-8")
+      if isinstance(translation, str):
+        translation = translation.decode("utf-8")
       # TODO place source location in comments
       tmxfile.addtranslation(source, sourcelanguage, translation, targetlanguage)
 

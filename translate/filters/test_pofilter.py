@@ -112,7 +112,7 @@ class TestPOFilter:
 
     def test_unicode(self):
         """tests that we can handle UTF-8 encoded characters when there is no known header specified encoding"""
-        posource = u'#: test.c\nmsgid "Bézier curve"\nmsgstr "Bézier-kurwe"'
+        posource = '#: test.c\nmsgid "Bézier curve"\nmsgstr "Bézier-kurwe"'
         poresult = self.pofilter(posource)
         assert poresult == ''
 

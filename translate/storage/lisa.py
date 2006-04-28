@@ -25,42 +25,6 @@
 from translate.storage import base
 from xml.dom import minidom
 
-def getText(nodelist):
-    """joins together the text from all the text nodes in the nodelist and their children"""
-    rc = []
-    if not isinstance(nodelist, list):
-        nodelist = [nodelist]
-    for node in nodelist:
-        if node.nodeType == node.TEXT_NODE:
-            rc.append(node.data)
-        elif node.nodeType == node.ELEMENT_NODE:
-            rc += getText(node.childNodes)
-    return ''.join(rc)
-    #return "".join([t.data for t in node.childNodes if t.nodeType == t.TEXT_NODE])
-
-def _findAllMatches(text,re_obj):
-    'generate match objects for all @re_obj matches in @text'
-    start = 0
-    max = len(text)
-    while start < max:
-        m = re_obj.search(text, start)
-        if not m: break
-        yield m
-        start = m.end()
-
-import re
-placeholders = ['(%[diouxXeEfFgGcrs])',r'(\\+.?)','(%[0-9]$lx)','(%[0-9]\$[a-z])','(<.+?>)']
-re_placeholders = [re.compile(ph) for ph in placeholders]
-def _getPhMatches(text):
-    'return list of regexp matchobjects for with all place holders in the @text'
-    matches = []
-    for re_ph in re_placeholders:
-        matches.extend(list(_findAllMatches(text,re_ph)))
-
-    # sort them so they come sequentially
-    matches.sort(lambda a,b: cmp(a.start(),b.start()))
-    return matches
-
 class LISAunit(base.TranslationUnit):
     """A single unit in the file. 
 Provisional work is done to make several languages possible."""
@@ -87,8 +51,8 @@ Provisional work is done to make several languages possible."""
 
     def __eq__(self, other):
         """Compares two units"""
-        languageNodes = self.getlanguageNodes()
-        otherlanguageNodes = other.getlanguageNodes()
+        languageNodes = self.xmlelement.getElementsByTagName(self.languageNode)
+        otherlanguageNodes = other.xmlelement.getElementsByTagName(self.languageNode)
         if len(languageNodes) != len(otherlanguageNodes):
             return False
         for i in range(len(languageNodes)):
@@ -100,8 +64,8 @@ Provisional work is done to make several languages possible."""
         return True
         
     def setsource(self, source, sourcelang='en'):
-        languageNodes = self.getlanguageNodes()
-        sourcelanguageNode = self.createlanguageNode(sourcelang, source, "source")
+        languageNodes = self.xmlelement.getElementsByTagName(self.languageNode)
+        sourcelanguageNode = self.createlanguageNode(sourcelang, source)
         if len(languageNodes) > 0:
             self.xmlelement.replaceChild(sourcelanguageNode, languageNodes[0])
         else:
@@ -117,10 +81,10 @@ Provisional work is done to make several languages possible."""
         #Firstly deal with reinitialising to None or setting to identical string
         if self.gettarget() == text:
             return
-        languageNodes = self.getlanguageNodes()
+        languageNodes = self.xmlelement.getElementsByTagName(self.languageNode)
         assert len(languageNodes) > 0
-        if not text is None:
-            languageNode = self.createlanguageNode(lang, text, "target")
+        if text:
+            languageNode = self.createlanguageNode(lang, text)
             if append or len(languageNodes) == 1:
                 self.xmlelement.appendChild(languageNode)
             else:
@@ -138,37 +102,16 @@ Provisional work is done to make several languages possible."""
         return self.getNodeText(node)
     target = property(gettarget, settarget)
                    
-    def createlanguageNode(self, lang, text, purpose=None):
+    def createlanguageNode(self, lang, text):
         """Returns a xml Element setup with given parameters to represent a 
         single language entry. Has to be overridden."""
         return None
-
-    def createPHnodes(self, parent, text):
-        """Create the text node in parent containing all the ph tags"""
-        if isinstance(text, str):
-            text = text.decode("utf-8")
-        start = 0
-        for i,m in enumerate(_getPhMatches(text)):
-            #pretext
-            parent.appendChild(self.document.createTextNode(text[start:m.start()]))
-            #ph node
-            phnode = minidom.Element("ph")
-            phnode.setAttribute("id", str(i+1))
-            phnode.appendChild(self.document.createTextNode(m.group()))
-            parent.appendChild(phnode)
-            start = m.end()
-        #post text
-        parent.appendChild(self.document.createTextNode(text[start:]))
-
-    def getlanguageNodes(self):
-        """Returns a list of all nodes that contain per language information."""
-        return self.xmlelement.getElementsByTagName(self.languageNode)
 
     def getlanguageNode(self, lang=None, index=None):
         """Retrieves a languageNode either by language or by index"""
         if lang is None and index is None:
             raise KeyError("No criterea for languageNode given")
-        languageNodes = self.getlanguageNodes()
+        languageNodes = self.xmlelement.getElementsByTagName(self.languageNode)
         if lang:
             for set in languageNodes:
                 if set.getAttribute("xml:lang") == lang:
@@ -184,16 +127,24 @@ Provisional work is done to make several languages possible."""
         """Retrieves the term from the given languageNode"""
         if languageNode is None:
             return None
-        if self.textNode:
-            terms = languageNode.getElementsByTagName(self.textNode)
-            if len(terms) == 0:
-                return None
-            return getText([terms[0]])
-        else:
-            return getText([languageNode])
+        terms = languageNode.getElementsByTagName(self.textNode)
+        if len(terms) == 0:
+            return None
+        return self.getText([terms[0]])
+
+    def getText(self, nodelist):
+        """joins together the text from all the text nodes in the nodelist and their children"""
+        rc = []
+        for node in nodelist:
+            if node.nodeType == node.TEXT_NODE:
+                rc.append(node.data)
+            elif node.nodeType == node.ELEMENT_NODE:
+                rc += self.getText(node.childNodes)
+        return ''.join(rc)
+        #return "".join([t.data for t in node.childNodes if t.nodeType == t.TEXT_NODE])
 
     def __str__(self):
-        return self.xmlelement.toxml().encode('utf-8')
+        return self.xmlelement.toxml()
 
     def createfromxmlElement(cls, element, document):
         term = cls(None, document=document, empty=True)
@@ -257,7 +208,7 @@ class LISAfile(base.TranslationStore):
             xml = posrc
         self.document = minidom.parseString(xml)
         assert self.document.documentElement.tagName == self.rootNode
-        self.initbody()
+        self.initbody()           
         termEntries = self.document.getElementsByTagName(self.UnitClass.rootNode)
         if termEntries is None:
             return

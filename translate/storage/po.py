@@ -36,61 +36,11 @@ import codecs
 
 def escapeforpo(line):
   """escapes a line for po format. assumes no \n occurs in the line"""
-  return line.replace('\\', '\\\\').replace('\n', '\\n').replace('"', '\\"').replace('\t', '\\t').replace('\\\\r', '\\r')
+  return line.replace("\\n", "\n").replace('\\', '\\\\').replace("\n", "\\n").replace('"', '\\"').replace('\\\\r', '\\r').replace('\\\\t', '\\t')
 
-def quoteforpo(text, template=None):
+def quoteforpo(text):
   """quotes the given text for a PO file, returning quoted and escaped lines"""
-  if template:
-    return quoteforpofromtemplate(text, template)
-  polines = []
-  if text is None:
-    return polines
-  lines = text.split("\n")
-  if len(lines) > 1:
-    polines.extend(['""'])
-    polines.extend(['"' + escapeforpo(line) + '\\n"' for line in lines[:-1]])
-    
-  polines.extend(['"' + escapeforpo(lines[-1]) + '"'])
-  return polines
-
-def quoteforpofromtemplate(text, template):
-  """Same as quoteforpo, but try to to use same format as template as far as
-  possible. template is a list of polines (such as pounit.msgstr)"""
-  for position, item in enumerate(template):
-    if not isinstance(item, unicode):
-      template[position] = item.decode('utf-8')
-  templatetext = unquotefrompo(template)
-  #unchanged is a list containing tuples indicating
-  #    (start in text, end in text, quoted part)
-  unchanged = []
-  index = -1
-  searchfrom = 0
-  for part in template:
-    unquotedpart = unquotefrompo([part])
-    if len(unquotedpart) == 0:
-      continue
-    index = text.find(unquotedpart, searchfrom)
-    if index >= 0:
-      searchfrom = index + len(unquotedpart)
-      unchanged.append((index, searchfrom, part))
-
-  #index indicates up to where in text we have processed:
-  index = 0
-  polines = []    
-  while index < len(text):
-    if len(unchanged) == 0:
-      polines.extend(quoteforpo(text[index:]))
-      index = len(text)
-    else:
-      (start, end, part) = unchanged.pop(0)
-      if index < start:
-        polines.extend(quoteforpo(text[index:start]))
-      polines.append(part)
-      index = end
-  if len(template) > 1 and template[0] == '""':
-    polines = ['""'] + polines
-    
-  return polines 
+  return ['"' + escapeforpo(line) + '"' for line in text.split("\n")]
 
 def isnewlineescape(escape):
   return escape == "\\n"
@@ -178,7 +128,7 @@ class pounit(base.TranslationUnit):
     multi = multistring(unquotefrompo(self.msgid), self.encoding)
     if self.hasplural():
       multi.strings.append(unquotefrompo(self.msgid_plural))
-    return multi.replace("\\n", "\n").replace("\\t", "\t")
+    return multi
 
   def setsource(self, source):
     """Sets the msgstr to the given (unescaped) value"""
@@ -186,10 +136,9 @@ class pounit(base.TranslationUnit):
       source = source.strings
     if isinstance(source, list):
       self.msgid = quoteforpo(source[0])
-      if len(source) > 1:
-        self.msgid_plural = quoteforpo(source[1], self.msgid_plural)
+      self.msgid_plural = quoteforpo(source[1])
     else:
-      self.msgid = quoteforpo(source, self.msgid)
+      self.msgid = quoteforpo(source)
   source = property(getsource, setsource)
 
   def gettarget(self):
@@ -198,21 +147,18 @@ class pounit(base.TranslationUnit):
       multi = multistring(map(unquotefrompo, self.msgstr.values()), self.encoding)
     else:
       multi = multistring(unquotefrompo(self.msgstr), self.encoding)
-    return multi.replace("\\n", "\n").replace("\\t", "\t")
+    return multi
 
   def settarget(self, target):
     """Sets the msgstr to the given (unescaped) value"""
-    if target == self.target:
-      return
-    if isinstance(target, multistring) and len(target.strings) > 1:
+    if isinstance(target, multistring):
       target = target.strings
-    #TODO: use template for quoteforpo where possible
     if isinstance(target, list):
       self.msgstr = dict(zip(range(len(target)), map(quoteforpo, target)))
     elif isinstance(target, dict):
       self.msgstr = dict(zip(target.keys(), map(quoteforpo, target.values())))
     else:
-      self.msgstr = quoteforpo(target, template=self.msgstr)
+      self.msgstr = quoteforpo(target)
   target = property(gettarget, settarget)
 
   def copy(self):
@@ -253,7 +199,6 @@ class pounit(base.TranslationUnit):
     overwrite non-blank self.msgstr only if overwrite is True
     merge comments only if comments is True"""
     def mergelists(list1, list2, split=False):
-      #decode where necessary
       if unicode in [type(item) for item in list2] + [type(item) for item in list1]:
         for position, item in enumerate(list1):
           if isinstance(item, str):
@@ -261,18 +206,6 @@ class pounit(base.TranslationUnit):
         for position, item in enumerate(list2):
           if isinstance(item, str):
             list2[position] = item.decode("utf-8")
-            
-      #Determine the newline style of list1
-      lineend = ""
-      if list1:
-        if list1[0]:
-          for candidate in ["\n", "\r", "\n\r"]:
-            if list1[0].endswith(candidate):
-              lineend = candidate
-      if not lineend:
-        lineend = "\n"
-        
-      #Split if directed to do so:    
       if split:
         splitlist1 = []
         splitlist2 = []
@@ -283,13 +216,9 @@ class pounit(base.TranslationUnit):
         for item in list2:
           splitlist2.extend(item.split()[1:])
           prefix = item.split()[0]
-        list1.extend(["%s %s%s" % (prefix,item,lineend) for item in splitlist2 if not item in splitlist1])
+        list1.extend(["%s %s\n" % (prefix,item) for item in splitlist2 if not item in splitlist1])
       else:
-        #Normal merge, but conform to list1 newline style
-        for item in list2:
-          item = item.rstrip() + lineend
-          if item not in list1:
-            list1.append(item)
+        list1.extend([item for item in list2 if not item in list1])
     if comments:
       mergelists(self.othercomments, otherpo.othercomments)
       #We don't bring acros otherpo.automaticcomments as we consider ourself
@@ -301,7 +230,7 @@ class pounit(base.TranslationUnit):
       mergelists(self.obsoletemessages, otherpo.obsoletemessages)
       mergelists(self.msgidcomments, otherpo.msgidcomments)
     if self.isblankmsgstr() or overwrite:
-      self.target = otherpo.target
+      self.msgstr = otherpo.msgstr
     elif otherpo.isblankmsgstr():
       if self.msgid != otherpo.msgid:
         self.markfuzzy()
