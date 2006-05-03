@@ -35,7 +35,7 @@ function error_notacommand {
 function usagecommands {
 	cat <<EOF
 Commands:
-	makephaselist <new-phase-list-name> -- creates a phase list
+	makephaselist <template-dir> <new-phase-list-name> -- creates a phase list
 	listphases <phase-list> -- lists the different phases that appear in the phase-list file
 	listfiles <phase-list> <phase-name> -- list all files for the given phase in the phase-list file
 	checkphaselist <language-dir> <phase-list> -- checks to see which files are not included in the phaselist
@@ -51,6 +51,7 @@ Commands:
 	editpochecks <language> <phase-list> <phase-name> -- edit the PO checks output by checkpo
 	editconflicts <language-dir> <phase-list> <phase-name> -- edit the extracted conconflict items
 	checkpo <language-dir> <phase-list> <phase-name> [pofilter options] -- run pofilter checks against the given phase
+	greppo <language-dir> <phase-list> <phase-name> [pogrep options] -- run pogrep against the given phase
 	mergepo <language> <phase-list> <phase-name> -- merge the checks back into the main language directory
 	conflictpo <language-dir> <phase-list> <phase-name> [poconflict options] -- run poconflict checks against the given phase
 	diffpo <language-dir> <phase-list> <phase-name> -- perform a cvs diff for the phase
@@ -61,7 +62,7 @@ Commands:
 	editreviews <language-dir> <phase-list> <phase-name> -- edit the extracted review items
 	countreviews <language-dir> <phase-list> <phase-name> -- count the number of strings and words under review
 	checkinpo <language-dir> <phase-list> <phase-name> -- cvs checkin the files in the given phase
-	creategsi <language-dir> <en-US.gsi> <traget-language> -- creates a BZ2 GSI/SDF file for the language against the en-US GSI file
+	creategsi <language-dir> <en-US.gsi> <traget-language> [scp target destination] -- creates a BZ2 GSI/SDF file for the language against the en-US GSI file
 	reviewsinout <language> <phase-name> -- counts the number of review files returned vs sent and shows which are missing 
 	reviewsdiff <language> <phase-name> -- create a diff between what was sent for review and what was returned
 
@@ -100,7 +101,7 @@ function getphasefiles {
 		do
 			egrep --count "^$i\b" $filelist > /dev/null
 			if [ $? -ne 0 ]; then
-				echo "No such phase exists"
+				echo "No such phase exists" > /dev/stderr
 				exit 1
 			fi
 			egrep "^$i\b" $filelist
@@ -354,6 +355,20 @@ function checkpo {
         rm -rf $tempdir
 }
 
+function greppo {
+	# Uses pogrep to grep a language
+	language=$1
+	filelist=$2
+	phase=$3
+	shift 3
+	otheroptions=$*
+	files=$(getphasefiles $filelist $phase)
+	tempdir=`mktemp -d`
+	copy_po_to_temp_dir $language $tempdir $files
+	pogrep $otheroptions $tempdir $language-$phase-grep
+        rm -rf $tempdir
+}
+
 function conflictpo {
 	# Uses pofilter to check a language
 	language=$1
@@ -364,8 +379,10 @@ function conflictpo {
 	files=$(getphasefiles $filelist $phase)
 	tempdir=`mktemp -d`
 	copy_po_to_temp_dir $language $tempdir $files
-	poconflicts $otheroptions $tempdir $language-$phase-conflicts
+        rm -rf $language-$phase-conflicts
+	(curdir=$(pwd); cd $tempdir ; poconflicts $otheroptions . $curdir/$language-$phase-conflicts)
         rm -rf $tempdir
+        zip -qr9 $language-$phase-conflicts.zip $language-$phase-conflicts
 }
 
 function mergepo {
@@ -460,12 +477,17 @@ function creategsi {
 	# Creates a GSI file for the given language
 	language=$1
 	enusgsi=$2
-	if [ "$3" == "" ]; then
+	if [ "$3" == "" -o "$3" == "-" ]; then
 		targetgsilanguage=$language
 	else
 		targetgsilanguage=$3
 	fi
-	po2oo -l $targetgsilanguage -t $enusgsi $language GSI_$language.sdf && rm -f GSI_$language.sdf.bz2 && bzip2 GSI_$language.sdf
+        publish=$4
+	po2oo -l $targetgsilanguage -t $enusgsi $language GSI_$targetgsilanguage.sdf && rm -f GSI_$targetgsilanguage.sdf.bz2 && bzip2 GSI_$targetgsilanguage.sdf
+        if [ "$publish" != "" ]; then
+		echo "Publishing GSI"
+		scp -p GSI_$targetgsilanguage.sdf.bz2 $publish
+	fi
 }
 
 function reviewsinout {
@@ -563,8 +585,8 @@ function cvsadd {
 }
 
 function makephaselist {
-	templatedir=templates
-	newphaselist=$1
+	templatedir=$1
+	newphaselist=$2
 	(cd $templatedir; find . -name "*.pot") | sed "s/\.pot$/.po/" | sed "s/\(^.*$\)/1	\\1/" | sort > $newphaselist
 }
 
@@ -578,7 +600,7 @@ shift
 case $command in
         -h|--help) usagecommands
 	  	;;
-	makephaselist) makephaselist $1
+	makephaselist) makephaselist $1 $2
 		;;
 	listphases) listphases $1
 		;;
@@ -608,6 +630,8 @@ case $command in
 		;;
 	checkpo) checkpo $*
 		;;
+	greppo) greppo $*
+		;;
 	mergepo) mergepo $1 $2 $3
 		;;
 	conflictpo) conflictpo $*
@@ -630,7 +654,7 @@ case $command in
 		;;
 	checkinpo) checkinpo $1 $2 $3
 		;;
-	creategsi) creategsi $1 $2 $3
+	creategsi) creategsi $1 $2 $3 $4
 		;;
         reviewsinout) reviewsinout $1 $2
 		;;
