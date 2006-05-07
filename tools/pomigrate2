@@ -36,6 +36,7 @@ function usage() {
 }
 
 option_no_fuzzy_matching="--no-fuzzy-matching"
+option_verbose="Y"
 
 while true
 do
@@ -68,6 +69,11 @@ do
 			option_locale=$1
                         shift
 			;;
+		-q|--quiet)
+			option_verbose=""
+			option_verbose_msgmerge="--quiet"
+			shift
+			;;
 		-*|--*)
 			usage
 			;;
@@ -97,12 +103,16 @@ do
 	directory=`dirname $pot`
 	mkdir -p $new/$directory
 	if [ -f $old/$directory/$filename ]; then
-		cp -p $old/$directory/$filename $new/$directory/$filename && echo Copied $new/$directory/$filename
+		cp -p $old/$directory/$filename $new/$directory/$filename && [ $option_verbose ] && echo Copied $new/$directory/$filename
 	else
 		if [ `find $old -name "$filename" | wc -l` -ge 1 ]; then
-			msgcat $option_no_wrap -o $new/$directory/$filename `find $old -name "$filename" -printf "%p "` && echo Migrated $new/$directory/$filename
+			msgcat $option_no_wrap -o $new/$directory/$filename `find $old -name "$filename" -printf "%p "` && [ $option_verbose ] && echo Migrated $new/$directory/$filename
 		else
-			msginit $option_no_wrap --locale=$option_locale --no-translator -i $templates/$pot -o $new/$directory/$filename
+			if [ ! $option_verbose ]; then
+				msginit $option_no_wrap --locale=$option_locale --no-translator -i $templates/$pot -o $new/$directory/$filename 2>&1 | egrep -v "^Created"
+			else
+				msginit $option_no_wrap --locale=$option_locale --no-translator -i $templates/$pot -o $new/$directory/$filename
+			fi
 		fi
 	fi
 done
@@ -117,8 +127,8 @@ fi
 echo "** Updating files against templates (optionally with compendium)... **"
 for po in `cd $new ; find . -name "*.po" | sort`
 do
-	echo -n $new/$po
-	msgmerge $option_no_fuzzy_matching $option_no_wrap $option_use_compendium $option_use_own_compendium --backup=off --update $new/$po $templates/${po}t
+	[ $option_verbose ] && echo -n $new/$po
+	msgmerge $option_verbose_msgmerge $option_no_fuzzy_matching $option_no_wrap $option_use_compendium $option_use_own_compendium --backup=off --update $new/$po $templates/${po}t
 done
 
 if [ "$option_use_compendium" != "" ]; then
