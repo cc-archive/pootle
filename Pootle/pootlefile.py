@@ -9,6 +9,7 @@ from translate.misc.multistring import multistring
 from translate.filters import checks
 from Pootle import __version__
 from jToolkit import timecache
+from jToolkit import glock
 import time
 import os
 
@@ -97,9 +98,7 @@ class pootlefile(po.pofile):
       self.checker = self.project.checker
       self.filename = os.path.join(self.project.podir, self.pofilename)
     self.statsfilename = self.filename + os.extsep + "stats"
-    self.pendingfilename = self.filename + os.extsep + "pending"
     self.assignsfilename = self.filename + os.extsep + "assigns"
-    self.pendingfile = None
     # we delay parsing until it is required
     self.pomtime = None
     self.classify = {}
@@ -146,26 +145,6 @@ class pootlefile(po.pofile):
     self.pofreshen()
     return super(pootlefile, self).getoutput()
 
-  def readpendingfile(self):
-    """reads and parses the pending file corresponding to this po file"""
-    if os.path.exists(self.pendingfilename):
-      pendingmtime = getmodtime(self.pendingfilename)
-      if pendingmtime == getattr(self, "pendingmtime", None):
-        return
-      inputfile = open(self.pendingfilename, "r")
-      self.pendingmtime, self.pendingfile = pendingmtime, po.pofile(inputfile, elementclass=self.elementclass)
-      if self.pomtime:
-        self.reclassifysuggestions()
-    else:
-      self.pendingfile = po.pofile(elementclass=self.elementclass)
-      self.savependingfile()
-
-  def savependingfile(self):
-    """saves changes to disk..."""
-    output = str(self.pendingfile)
-    open(self.pendingfilename, "w").write(output)
-    self.pendingmtime = getmodtime(self.pendingfilename)
-
   def getstats(self):
     """reads the stats if neccessary or returns them from the cache"""
     if os.path.exists(self.statsfilename):
@@ -176,12 +155,8 @@ class pootlefile(po.pofile):
         raise
         self.statspomtime = None
     pomtime = getmodtime(self.filename)
-    pendingmtime = getmodtime(self.pendingfilename, None)
-    if hasattr(self, "pendingmtime"):
-      self.readpendingfile()
     lastpomtime = getattr(self, "statspomtime", None)
-    lastpendingmtime = getattr(self, "statspendingmtime", None)
-    if pomtime is None or pomtime != lastpomtime or pendingmtime != lastpendingmtime:
+    if pomtime is None or pomtime != lastpomtime:
       self.calcstats()
       self.savestats()
     return self.stats
@@ -196,10 +171,8 @@ class pootlefile(po.pofile):
     mtimes = mtimes.strip().split()
     if len(mtimes) == 1:
       frompomtime = int(mtimes[0])
-      frompendingmtime = None
     elif len(mtimes) == 2:
       frompomtime = int(mtimes[0])
-      frompendingmtime = int(mtimes[1])
     postats = {}
     msgidwordcounts = []
     msgstrwordcounts = []
@@ -218,7 +191,7 @@ class pootlefile(po.pofile):
         items = [int(item.strip()) for item in items.strip().split(",") if item]
         postats[name.strip()] = items
     # save all the read times, data simultaneously
-    self.statspomtime, self.statspendingmtime, self.statsmtime, self.stats, self.msgidwordcounts, self.msgstrwordcounts = frompomtime, frompendingmtime, statsmtime, postats, msgidwordcounts, msgstrwordcounts
+    self.statspomtime, self.statsmtime, self.stats, self.msgidwordcounts, self.msgstrwordcounts = frompomtime, statsmtime, postats, msgidwordcounts, msgstrwordcounts
     # if in old-style format (counts instead of items), recalculate
     totalitems = postats.get("total", [])
     if len(totalitems) == 1 and totalitems[0] != 0:
@@ -241,10 +214,7 @@ class pootlefile(po.pofile):
       wordcountsstring = "msgidwordcounts:" + ",".join(["/".join(map(str,subitems)) for subitems in self.msgidwordcounts])
       wordcountsstring += "\nmsgstrwordcounts:" + ",".join(["/".join(map(str,subitems)) for subitems in self.msgstrwordcounts])
       statsfile = open(self.statsfilename, "w")
-      if os.path.exists(self.pendingfilename):
-        statsfile.write("%d %d\n" % (getmodtime(self.filename), getmodtime(self.pendingfilename)))
-      else:
-        statsfile.write("%d\n" % getmodtime(self.filename))
+      statsfile.write("%d\n" % getmodtime(self.filename))
       statsfile.write(postatsstring + "\n" + wordcountsstring)
       statsfile.close()
     except IOError:
@@ -407,8 +377,6 @@ class pootlefile(po.pofile):
       self.classify["check-" + checkname] = []
     for item, poel in enumerate(self.transelements):
       classes = poel.classify(self.checker)
-      if self.getsuggestions(item):
-        classes.append("has-suggestion")
       for classname in classes:
         if classname in self.classify:
           self.classify[classname].append(item)
@@ -430,8 +398,6 @@ class pootlefile(po.pofile):
     self.msgidwordcounts[item] = [wordcount(text) for text in poel.unquotedmsgid]
     self.msgstrwordcounts[item] = [wordcount(text) for text in poel.unquotedmsgstr]
     classes = poel.classify(self.checker)
-    if self.getsuggestions(item):
-      classes.append("has-suggestion")
     for classname, matchingitems in self.classify.items():
       if (classname in classes) != (item in matchingitems):
         if classname in classes:
@@ -441,59 +407,6 @@ class pootlefile(po.pofile):
         self.classify[classname].sort()
     self.calcstats()
     self.savestats()
-
-  def reclassifysuggestions(self):
-    """shortcut to only update classification of has-suggestion for all items"""
-    suggitems = []
-    sugglocations = {}
-    for thesugg in self.pendingfile.units:
-      locations = tuple(thesugg.getlocations())
-      sugglocations[locations] = thesugg
-    suggitems = [item for item in self.transelements if tuple(item.getlocations()) in sugglocations]
-    havesuggestions = self.classify["has-suggestion"]
-    for item, poel in enumerate(self.transelements):
-      if (poel in suggitems) != (item in havesuggestions):
-        if poel in suggitems:
-          havesuggestions.append(item)
-        else:
-          havesuggestions.remove(item)
-        havesuggestions.sort()
-    self.calcstats()
-    self.savestats()
-
-  def getsuggestions(self, item):
-    """find all the suggestion items submitted for the given (pofile or pofilename) and item"""
-    self.readpendingfile()
-    thepo = self.transelements[item]
-    locations = thepo.getlocations()
-    # TODO: review the matching method
-    suggestpos = [suggestpo for suggestpo in self.pendingfile.units if suggestpo.getlocations() == locations]
-    return suggestpos
-
-  def addsuggestion(self, item, suggmsgstr, username):
-    """adds a new suggestion for the given item to the pendingfile"""
-    self.readpendingfile()
-    thepo = self.transelements[item]
-    newpo = thepo.copy()
-    if username is not None:
-      newpo.msgidcomments.append('"_: suggested by %s"' % username)
-    newpo.unquotedmsgstr = suggmsgstr
-    newpo.markfuzzy(False)
-    self.pendingfile.units.append(newpo)
-    self.savependingfile()
-    self.reclassifyelement(item)
-
-  def deletesuggestion(self, item, suggitem):
-    """removes the suggestion from the pending file"""
-    self.readpendingfile()
-    thepo = self.transelements[item]
-    locations = thepo.getlocations()
-    # TODO: remove the suggestion in a less brutal manner
-    pendingitems = [pendingitem for pendingitem, suggestpo in enumerate(self.pendingfile.units) if suggestpo.getlocations() == locations]
-    pendingitem = pendingitems[suggitem]
-    del self.pendingfile.units[pendingitem]
-    self.savependingfile()
-    self.reclassifyelement(item)
 
   def getitemslen(self):
     """gets the number of items in the file"""
@@ -606,7 +519,9 @@ class pootlefile(po.pofile):
     else:
       for item, matchpo in enumerate(self.transelements):
         if matchpo == oldpo:
-          self.addsuggestion(item, newpo.unquotedmsgstr, username)
+          # TODO: copy over old
+          raise NotImplementedError("need to add code for merging without suggestions")
+          # self.addsuggestion(item, newpo.unquotedmsgstr, username)
           return
       raise KeyError("Could not find item for merge")
 
