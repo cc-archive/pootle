@@ -206,6 +206,23 @@ class ServerTester:
 		assert pocontents_download == mergedcontents
 	test_upload_over_file.userprefs = {"rights.siteadmin": True}
 
+	def test_submit_translation(self):
+		"""tests that we can upload a new file into a project"""
+		self.login()
+		podir = self.setup_testproject_dir()
+		pofile_storename = os.path.join(podir, "test_upload.po")
+		pocontents = '#: test.c\nmsgid "test"\nmsgstr "rest"\n'
+                open(pofile_storename, "w").write(pocontents)
+		expected_pocontents = '#: test.c\nmsgid "test"\nmsgstr "restrain"\n'
+                fields = {"orig-pure0.0": "test", "trans0": "restrain", "submit0": "submit", "pofilename": "test_upload.po"}
+		content_type, post_contents = postMultipart.encode_multipart_formdata(fields.items(), [])
+		headers = {"Content-Type": content_type, "Content-Length": len(post_contents)}
+		translatepage = self.post_request("zxx/testproject/test_upload.po?translate=1&editing=1", post_contents, headers)
+		tree = potree.POTree(self.prefs.Pootle)
+		project = projects.TranslationProject("zxx", "testproject", tree)
+                pofile = project.getpofile("test_upload.po")
+		assert str(pofile.units[1]) == expected_pocontents
+
 def MakeServerTester(baseclass):
 	"""Makes a new Server Tester class using the base class to setup webserver etc"""
 	class TestServer(baseclass, ServerTester):
