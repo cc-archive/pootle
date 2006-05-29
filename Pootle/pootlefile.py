@@ -26,7 +26,7 @@ def wordcount(unquotedstr):
 
 class pootleelement(po.pounit, object):
   """a pounit with helpful methods for pootle"""
-  def getunquotedmsgid(self, joinwithlinebreak=False):
+  def getunquotedmsgid(self):
     """returns the msgid as a list of unquoted strings (one per plural form present)"""
     if self.hasplural():
       return self.source.strings
@@ -34,7 +34,7 @@ class pootleelement(po.pounit, object):
       return [self.source]
   unquotedmsgid = property(getunquotedmsgid)
 
-  def getunquotedmsgstr(self, joinwithlinebreak=False):
+  def getunquotedmsgstr(self):
     """returns the msgstr as a list of unquoted strings (one per plural form present)"""
     if self.hasplural() and isinstance(self.target, multistring):
       return self.target.strings
