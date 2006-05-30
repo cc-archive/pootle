@@ -145,11 +145,11 @@ msgid "chair"
 msgstr ""'''
         pofile = self.poparse(posource)
         pofile.transelements = [poel for poel in pofile.units if not (poel.isheader() or poel.isblank())]
-        pofile.classifyelements()
-        print pofile.classify
+        pofile.statistics.classifyelements()
+        print pofile.statistics.classify
         for i in pofile.units:
             print str(i)
-        assert pofile.classify['fuzzy'] == [1]
-        assert pofile.classify['blank'] == [2]
-        assert len(pofile.classify['total']) == 3
+        assert pofile.statistics.classify['fuzzy'] == [1]
+        assert pofile.statistics.classify['blank'] == [2]
+        assert len(pofile.statistics.classify['total']) == 3
 
