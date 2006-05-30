@@ -73,68 +73,18 @@ class pootleelement(po.pounit, object):
       classes.append("check-" + filtername)
     return classes
 
-class pootlefile(po.pofile):
-  """this represents a pootle-managed .po file and its associated files"""
-  x_generator = "Pootle %s" % __version__.ver
-  def __init__(self, project=None, pofilename=None, stats=True):
-    po.pofile.__init__(self, elementclass=pootleelement)
-    self.pofilename = pofilename
-    if project is None:
-      from Pootle import projects
-      self.project = projects.DummyProject(None)
-      self.checker = None
-      self.filename = self.pofilename
-    else:
-      self.project = project
-      self.checker = self.project.checker
-      self.filename = os.path.join(self.project.podir, self.pofilename)
-    self.statsfilename = self.filename + os.extsep + "stats"
-    self.assignsfilename = self.filename + os.extsep + "assigns"
-    # we delay parsing until it is required
-    self.pomtime = None
+class pootlestatistics:
+  """this represents the statistics known about a file"""
+  def __init__(self, basefile, generatestats=True):
+    """constructs statistic object for the given file"""
+    # TODO: try and remove circular references between basefile and this class
+    self.basefile = basefile
+    self.statsfilename = self.basefile.filename + os.extsep + "stats"
     self.classify = {}
     self.msgidwordcounts = []
     self.msgstrwordcounts = []
-    if stats:
+    if generatestats:
       self.getstats()
-    self.getassigns()
-    self.tracker = timecache.timecache(20*60)
-
-  def track(self, item, message):
-    """sets the tracker message for the given item"""
-    self.tracker[item] = message
-
-  def readpofile(self):
-    """reads and parses the main po file"""
-    # make sure encoding is reset so it is read from the file
-    self.encoding = None
-    self.units = []
-    pomtime = getmodtime(self.filename)
-    self.parse(open(self.filename, 'r'))
-    # we ignore all the headers by using this filtered set
-    self.transelements = [poel for poel in self.units if not (poel.isheader() or poel.isblank())]
-    self.classifyelements()
-    self.pomtime = pomtime
-
-  def savepofile(self):
-    """saves changes to the main file to disk..."""
-    output = str(self)
-    open(self.filename, "w").write(output)
-    # don't need to reread what we saved
-    self.pomtime = getmodtime(self.filename)
-
-  def pofreshen(self):
-    """makes sure we have a freshly parsed pofile"""
-    if not os.path.exists(self.filename):
-      # the file has been removed, update the project index (and fail below)
-      self.project.scanpofiles()
-    if self.pomtime != getmodtime(self.filename):
-      self.readpofile()
-
-  def getoutput(self):
-    """returns pofile output"""
-    self.pofreshen()
-    return super(pootlefile, self).getoutput()
 
   def getstats(self):
     """reads the stats if neccessary or returns them from the cache"""
@@ -145,7 +95,7 @@ class pootlefile(po.pofile):
         print "Error reading stats from %s, so recreating (Error was %s)" % (self.statsfilename, e)
         raise
         self.statspomtime = None
-    pomtime = getmodtime(self.filename)
+    pomtime = getmodtime(self.basefile.filename)
     lastpomtime = getattr(self, "statspomtime", None)
     if pomtime is None or pomtime != lastpomtime:
       self.calcstats()
@@ -189,13 +139,13 @@ class pootlefile(po.pofile):
       self.calcstats()
       self.savestats()
     if (len(msgidwordcounts) < len(totalitems)) or (len(msgstrwordcounts) < len(totalitems)):
-      self.pofreshen()
+      self.basefile.pofreshen()
       self.countwords()
       self.savestats()
 
   def savestats(self):
     """saves the current statistics to file"""
-    if not os.path.exists(self.filename):
+    if not os.path.exists(self.basefile.filename):
       if os.path.exists(self.statsfilename):
         os.remove(self.statsfilename)
       return
@@ -205,7 +155,7 @@ class pootlefile(po.pofile):
       wordcountsstring = "msgidwordcounts:" + ",".join(["/".join(map(str,subitems)) for subitems in self.msgidwordcounts])
       wordcountsstring += "\nmsgstrwordcounts:" + ",".join(["/".join(map(str,subitems)) for subitems in self.msgstrwordcounts])
       statsfile = open(self.statsfilename, "w")
-      statsfile.write("%d\n" % getmodtime(self.filename))
+      statsfile.write("%d\n" % getmodtime(self.basefile.filename))
       statsfile.write(postatsstring + "\n" + wordcountsstring)
       statsfile.close()
     except IOError:
@@ -218,13 +168,130 @@ class pootlefile(po.pofile):
     translated = self.stats.get("translated")
     translatedwords = sum([sum(self.msgidwordcounts[item]) for item in translated if 0 <= item < len(self.msgidwordcounts)])
     totalwords = sum([sum(partcounts) for partcounts in self.msgidwordcounts])
-    self.project.updatequickstats(self.pofilename, translatedwords, len(translated), totalwords, len(self.msgidwordcounts))
+    self.basefile.project.updatequickstats(self.basefile.pofilename, translatedwords, len(translated), totalwords, len(self.msgidwordcounts))
 
   def calcstats(self):
     """calculates translation statistics for the given po file"""
-    self.pofreshen()
+    # handle this being called when self.basefile.statistics is being set and calcstats is called from self.__init__
+    if not hasattr(self.basefile, "statistics"):
+      self.basefile.statistics = self
+    self.basefile.pofreshen()
     postats = dict([(name, items) for name, items in self.classify.iteritems()])
     self.stats = postats
+
+  def classifyelements(self):
+    """makes a dictionary of which elements fall into which classifications"""
+    self.classify = {}
+    self.classify["fuzzy"] = []
+    self.classify["blank"] = []
+    self.classify["translated"] = []
+    self.classify["has-suggestion"] = []
+    self.classify["total"] = []
+    for checkname in self.basefile.checker.getfilters().keys():
+      self.classify["check-" + checkname] = []
+    for item, poel in enumerate(self.basefile.transelements):
+      classes = poel.classify(self.basefile.checker)
+      for classname in classes:
+        if classname in self.classify:
+          self.classify[classname].append(item)
+        else:
+          self.classify[classname] = item
+    self.countwords()
+
+  def countwords(self):
+    """counts the words in each of the elements"""
+    self.msgidwordcounts = []
+    self.msgstrwordcounts = []
+    for poel in self.basefile.transelements:
+      self.msgidwordcounts.append([wordcount(text) for text in poel.unquotedmsgid])
+      self.msgstrwordcounts.append([wordcount(text) for text in poel.unquotedmsgstr])
+
+  def reclassifyelement(self, item):
+    """updates the classification of poel in self.classify"""
+    poel = self.basefile.transelements[item]
+    self.msgidwordcounts[item] = [wordcount(text) for text in poel.unquotedmsgid]
+    self.msgstrwordcounts[item] = [wordcount(text) for text in poel.unquotedmsgstr]
+    classes = poel.classify(self.basefile.checker)
+    for classname, matchingitems in self.classify.items():
+      if (classname in classes) != (item in matchingitems):
+        if classname in classes:
+          self.classify[classname].append(item)
+        else:
+          self.classify[classname].remove(item)
+        self.classify[classname].sort()
+    self.calcstats()
+    self.savestats()
+
+  def getitemslen(self):
+    """gets the number of items in the file"""
+    # TODO: simplify this, and use wherever its needed
+    if hasattr(self.basefile, "transelements"):
+      return len(self.basefile.transelements)
+    elif hasattr(self, "stats") and "total" in self.stats:
+      return len(self.stats["total"])
+    elif hasattr(self, "classify") and "total" in self.classify:
+      return len(self.classify["total"])
+    else:
+      # we hadn't read stats...
+      return len(self.getstats()["total"])
+
+class pootlefile(po.pofile):
+  """this represents a pootle-managed .po file and its associated files"""
+  x_generator = "Pootle %s" % __version__.ver
+  def __init__(self, project=None, pofilename=None, stats=True):
+    po.pofile.__init__(self, elementclass=pootleelement)
+    self.pofilename = pofilename
+    if project is None:
+      from Pootle import projects
+      self.project = projects.DummyProject(None)
+      self.checker = None
+      self.filename = self.pofilename
+    else:
+      self.project = project
+      self.checker = self.project.checker
+      self.filename = os.path.join(self.project.podir, self.pofilename)
+    self.assignsfilename = self.filename + os.extsep + "assigns"
+    # we delay parsing until it is required
+    self.pomtime = None
+    self.statistics = pootlestatistics(self, stats)
+    self.getassigns()
+    self.tracker = timecache.timecache(20*60)
+
+  def track(self, item, message):
+    """sets the tracker message for the given item"""
+    self.tracker[item] = message
+
+  def readpofile(self):
+    """reads and parses the main po file"""
+    # make sure encoding is reset so it is read from the file
+    self.encoding = None
+    self.units = []
+    pomtime = getmodtime(self.filename)
+    self.parse(open(self.filename, 'r'))
+    # we ignore all the headers by using this filtered set
+    self.transelements = [poel for poel in self.units if not (poel.isheader() or poel.isblank())]
+    self.statistics.classifyelements()
+    self.pomtime = pomtime
+
+  def savepofile(self):
+    """saves changes to the main file to disk..."""
+    output = str(self)
+    open(self.filename, "w").write(output)
+    # don't need to reread what we saved
+    self.pomtime = getmodtime(self.filename)
+
+  def pofreshen(self):
+    """makes sure we have a freshly parsed pofile"""
+    if not os.path.exists(self.filename):
+      # the file has been removed, update the project index (and fail below)
+      self.project.scanpofiles()
+    if self.pomtime != getmodtime(self.filename):
+      self.readpofile()
+
+  def getoutput(self):
+    """returns pofile output"""
+    self.pofreshen()
+    return super(pootlefile, self).getoutput()
 
   def getassigns(self):
     """reads the assigns if neccessary or returns them from the cache"""
@@ -354,67 +421,11 @@ class pootlefile(po.pofile):
       if nplurals and pluralequation:
         self.updateheaderplural(nplurals, pluralequation)
     self.savepofile()
-    self.reclassifyelement(item)
-
-  def classifyelements(self):
-    """makes a dictionary of which elements fall into which classifications"""
-    self.classify = {}
-    self.classify["fuzzy"] = []
-    self.classify["blank"] = []
-    self.classify["translated"] = []
-    self.classify["has-suggestion"] = []
-    self.classify["total"] = []
-    for checkname in self.checker.getfilters().keys():
-      self.classify["check-" + checkname] = []
-    for item, poel in enumerate(self.transelements):
-      classes = poel.classify(self.checker)
-      for classname in classes:
-        if classname in self.classify:
-          self.classify[classname].append(item)
-        else:
-          self.classify[classname] = item
-    self.countwords()
-
-  def countwords(self):
-    """counts the words in each of the elements"""
-    self.msgidwordcounts = []
-    self.msgstrwordcounts = []
-    for poel in self.transelements:
-      self.msgidwordcounts.append([wordcount(text) for text in poel.unquotedmsgid])
-      self.msgstrwordcounts.append([wordcount(text) for text in poel.unquotedmsgstr])
-
-  def reclassifyelement(self, item):
-    """updates the classification of poel in self.classify"""
-    poel = self.transelements[item]
-    self.msgidwordcounts[item] = [wordcount(text) for text in poel.unquotedmsgid]
-    self.msgstrwordcounts[item] = [wordcount(text) for text in poel.unquotedmsgstr]
-    classes = poel.classify(self.checker)
-    for classname, matchingitems in self.classify.items():
-      if (classname in classes) != (item in matchingitems):
-        if classname in classes:
-          self.classify[classname].append(item)
-        else:
-          self.classify[classname].remove(item)
-        self.classify[classname].sort()
-    self.calcstats()
-    self.savestats()
-
-  def getitemslen(self):
-    """gets the number of items in the file"""
-    # TODO: simplify this, and use wherever its needed
-    if hasattr(self, "transelements"):
-      return len(self.transelements)
-    elif hasattr(self, "stats") and "total" in self.stats:
-      return len(self.stats["total"])
-    elif hasattr(self, "classify") and "total" in self.classify:
-      return len(self.classify["total"])
-    else:
-      # we hadn't read stats...
-      return len(self.getstats()["total"])
+    self.statistics.reclassifyelement(item)
 
   def getunassigned(self, action=None):
     """gets all strings that are unassigned (for the given action if given)"""
-    unassigneditems = range(0, self.getitemslen())
+    unassigneditems = range(0, self.statistics.getitemslen())
     assigns = self.getassigns()
     for username in self.assigns:
       if action is not None:
@@ -429,7 +440,7 @@ class pootlefile(po.pofile):
   def iteritems(self, search, lastitem=None):
     """iterates through the items in this pofile starting after the given lastitem, using the given search"""
     # update stats if required
-    self.getstats()
+    self.statistics.getstats()
     if lastitem is None:
       minitem = 0
     else:
@@ -461,7 +472,7 @@ class pootlefile(po.pofile):
       if not search.matchnames:
         yield item
       for name in search.matchnames:
-        if item in self.classify[name]:
+        if item in self.statistics.classify[name]:
           yield item
 
   def matchitems(self, newpofile, uselocations=False):

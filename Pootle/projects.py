@@ -673,7 +673,7 @@ class TranslationProject(object):
     gooditems = self.searcher.search(gooditemsquery, "itemno")
     allitems = self.searcher.search(pofilenamequery, "itemno")
     if items is None:
-      if len(gooditems) == len(allitems) == pofile.getitemslen():
+      if len(gooditems) == len(allitems) == pofile.statistics.getitemslen():
         return
       print "updating", self.projectcode, self.languagecode, "index for", pofilename
       self.searcher.deleteDoc({"pofilename": pofilename})
@@ -818,7 +818,7 @@ class TranslationProject(object):
     assigncount = 0
     if not usercount:
       return assigncount
-    docountwords = lambda pofilename: self.countwords([(pofilename, item) for item in range(self.pofiles[pofilename].getitemslen())])
+    docountwords = lambda pofilename: self.countwords([(pofilename, item) for item in range(self.pofiles[pofilename].statistics.getitemslen())])
     pofilenames = [pofilename for pofilename in self.searchpofilenames(None, search, includelast=True)]
     wordcounts = [(pofilename, docountwords(pofilename)) for pofilename in pofilenames]
     totalwordcount = sum([wordcount for pofilename, wordcount in wordcounts])
@@ -948,8 +948,8 @@ class TranslationProject(object):
     wordcount = 0
     for pofilename, item in stats:
       pofile = self.pofiles[pofilename]
-      if 0 <= item < len(pofile.msgidwordcounts):
-        wordcount += sum(pofile.msgidwordcounts[item])
+      if 0 <= item < len(pofile.statistics.msgidwordcounts):
+        wordcount += sum(pofile.statistics.msgidwordcounts[item])
     return wordcount
 
   def track(self, pofilename, item, message):
@@ -973,7 +973,7 @@ class TranslationProject(object):
 
   def getpostats(self, pofilename):
     """calculates translation statistics for the given po file"""
-    return self.pofiles[pofilename].getstats()
+    return self.pofiles[pofilename].statistics.getstats()
 
   def getassignstats(self, pofilename, action=None):
     """calculates translation statistics for the given po file (can filter by action if given)"""
