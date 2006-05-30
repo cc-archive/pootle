@@ -235,6 +235,42 @@ class pootlestatistics:
       # we hadn't read stats...
       return len(self.getstats()["total"])
 
+class LockedFile:
+  """locked interaction with a filesystem file"""
+  def __init__(self, filename):
+    self.filename = filename
+    self.lock = glock.GlobalLock(self.filename + os.extsep + "lock")
+
+  def readmodtime(self):
+    """returns the modification time of the file (locked operation)"""
+    self.lock.acquire()
+    try:
+      return getmodtime(self.filename)
+    finally:
+      self.lock.forcerelease()
+
+  def getcontents(self):
+    """returns modtime, contents tuple (locked operation)"""
+    self.lock.acquire()
+    try:
+      pomtime = getmodtime(self.filename)
+      filecontents = open(self.filename, 'r').read()
+      return pomtime, filecontents
+    finally:
+      self.lock.forcerelease()
+
+  def writecontents(self, contents):
+    """writes contents to file, returning modification time (locked operation)"""
+    self.lock.acquire()
+    try:
+      f = open(self.filename, 'w')
+      f.write(contents)
+      f.close()
+      pomtime = getmodtime(self.filename)
+      return pomtime
+    finally:
+      self.lock.release()
+
 class pootleassigns:
   """this represents the assignments for a file"""
   def __init__(self, basefile):
@@ -389,7 +425,7 @@ class pootleassigns:
           for actionitems in assigns[username].itervalues():
             assignitems.extend(actionitems)
     return assignitems
-    
+
 class pootlefile(po.pofile):
   """this represents a pootle-managed .po file and its associated files"""
   x_generator = "Pootle %s" % __version__.ver
@@ -405,7 +441,7 @@ class pootlefile(po.pofile):
       self.project = project
       self.checker = self.project.checker
       self.filename = os.path.join(self.project.podir, self.pofilename)
-    self.lock = glock.GlobalLock(self.filename + os.extsep + "lock")
+    self.lockedfile = LockedFile(self.filename)
     # we delay parsing until it is required
     self.pomtime = None
     self.statistics = pootlestatistics(self, stats)
@@ -421,12 +457,8 @@ class pootlefile(po.pofile):
     # make sure encoding is reset so it is read from the file
     self.encoding = None
     self.units = []
-    self.lock.acquire()
-    try:
-      pomtime = getmodtime(self.filename)
-      filecontents = open(self.filename, 'r')
-    finally:
-      self.lock.release()
+    pomtime, filecontents = self.lockedfile.getcontents()
+    # note: we rely on this not resetting the filename, which we set earlier, when given a string
     self.parse(filecontents)
     # we ignore all the headers by using this filtered set
     self.transelements = [poel for poel in self.units if not (poel.isheader() or poel.isblank())]
@@ -436,20 +468,14 @@ class pootlefile(po.pofile):
   def savepofile(self):
     """saves changes to the main file to disk..."""
     output = str(self)
-    self.lock.acquire()
-    try:
-      open(self.filename, "w").write(output)
-      # don't need to reread what we saved
-      self.pomtime = getmodtime(self.filename)
-    finally:
-      self.lock.release()
+    self.pomtime = self.lockedfile.writecontents(output)
 
   def pofreshen(self):
     """makes sure we have a freshly parsed pofile"""
     if not os.path.exists(self.filename):
       # the file has been removed, update the project index (and fail below)
       self.project.scanpofiles()
-    if self.pomtime != getmodtime(self.filename):
+    if self.pomtime != self.lockedfile.readmodtime():
       self.readpofile()
 
   def getoutput(self):
