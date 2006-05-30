@@ -44,22 +44,13 @@ class pootleelement(po.pounit, object):
   def setunquotedmsgstr(self, text):
     """quotes text in po-style"""
     if isinstance(text, dict):
-      quotedtext = {}
-      for pluralid in text:
-        pluraltext = text[pluralid].replace("\r\n", "\n")
-        quotedtext[pluralid] = po.quoteforpo(pluraltext)
-      self.msgstr = quotedtext
+      self.target = dict([(key, value.replace("\r\n", "\n")) for key, value in text.items()])
     elif isinstance(text, list):
-      if self.hasplural():
-        for i, pluraltext in enumerate(text):
-          self.msgstr[i] = po.quoteforpo(pluraltext)
-      else:
-        if len(text) != 1:
-          raise ValueError("po element has no plural but msgstr has %d elements (%s)" % (len(text), text))
-        self.msgstr = po.quoteforpo(text[0])
+      if self.hasplural() and len(text) != 1:
+        raise ValueError("po element has no plural but msgstr has %d elements (%s)" % (len(text), text))
+      self.target = [value.replace("\r\n", "\n") for value in text]
     else:
-      text = text.replace("\r\n", "\n")
-      self.msgstr = po.quoteforpo(text)
+      self.target = text.replace("\r\n", "\n")
 
   unquotedmsgstr = property(getunquotedmsgstr, setunquotedmsgstr)
 
