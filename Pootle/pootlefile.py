@@ -235,63 +235,14 @@ class pootlestatistics:
       # we hadn't read stats...
       return len(self.getstats()["total"])
 
-class pootlefile(po.pofile):
-  """this represents a pootle-managed .po file and its associated files"""
-  x_generator = "Pootle %s" % __version__.ver
-  def __init__(self, project=None, pofilename=None, stats=True):
-    po.pofile.__init__(self, elementclass=pootleelement)
-    self.pofilename = pofilename
-    if project is None:
-      from Pootle import projects
-      self.project = projects.DummyProject(None)
-      self.checker = None
-      self.filename = self.pofilename
-    else:
-      self.project = project
-      self.checker = self.project.checker
-      self.filename = os.path.join(self.project.podir, self.pofilename)
-    self.assignsfilename = self.filename + os.extsep + "assigns"
-    # we delay parsing until it is required
-    self.pomtime = None
-    self.statistics = pootlestatistics(self, stats)
+class pootleassigns:
+  """this represents the assignments for a file"""
+  def __init__(self, basefile):
+    """constructs assignments object for the given file"""
+    # TODO: try and remove circular references between basefile and this class
+    self.basefile = basefile
+    self.assignsfilename = self.basefile.filename + os.extsep + "assigns"
     self.getassigns()
-    self.tracker = timecache.timecache(20*60)
-
-  def track(self, item, message):
-    """sets the tracker message for the given item"""
-    self.tracker[item] = message
-
-  def readpofile(self):
-    """reads and parses the main po file"""
-    # make sure encoding is reset so it is read from the file
-    self.encoding = None
-    self.units = []
-    pomtime = getmodtime(self.filename)
-    self.parse(open(self.filename, 'r'))
-    # we ignore all the headers by using this filtered set
-    self.transelements = [poel for poel in self.units if not (poel.isheader() or poel.isblank())]
-    self.statistics.classifyelements()
-    self.pomtime = pomtime
-
-  def savepofile(self):
-    """saves changes to the main file to disk..."""
-    output = str(self)
-    open(self.filename, "w").write(output)
-    # don't need to reread what we saved
-    self.pomtime = getmodtime(self.filename)
-
-  def pofreshen(self):
-    """makes sure we have a freshly parsed pofile"""
-    if not os.path.exists(self.filename):
-      # the file has been removed, update the project index (and fail below)
-      self.project.scanpofiles()
-    if self.pomtime != getmodtime(self.filename):
-      self.readpofile()
-
-  def getoutput(self):
-    """returns pofile output"""
-    self.pofreshen()
-    return super(pootlefile, self).getoutput()
 
   def getassigns(self):
     """reads the assigns if neccessary or returns them from the cache"""
@@ -403,6 +354,77 @@ class pootlefile(po.pofile):
     assignsfile.writelines(assignstrings)
     assignsfile.close()
 
+  def getunassigned(self, action=None):
+    """gets all strings that are unassigned (for the given action if given)"""
+    unassigneditems = range(0, self.statistics.getitemslen())
+    assigns = self.getassigns()
+    for username in self.assigns:
+      if action is not None:
+        assigneditems = self.assigns[username].get(action, [])
+      else:
+        assigneditems = []
+        for action, actionitems in self.assigns[username].iteritems():
+          assigneditems += actionitems
+      unassigneditems = [item for item in unassigneditems if item not in assigneditems]
+    return unassigneditems
+
+class pootlefile(po.pofile):
+  """this represents a pootle-managed .po file and its associated files"""
+  x_generator = "Pootle %s" % __version__.ver
+  def __init__(self, project=None, pofilename=None, stats=True):
+    po.pofile.__init__(self, elementclass=pootleelement)
+    self.pofilename = pofilename
+    if project is None:
+      from Pootle import projects
+      self.project = projects.DummyProject(None)
+      self.checker = None
+      self.filename = self.pofilename
+    else:
+      self.project = project
+      self.checker = self.project.checker
+      self.filename = os.path.join(self.project.podir, self.pofilename)
+    # we delay parsing until it is required
+    self.pomtime = None
+    self.statistics = pootlestatistics(self, stats)
+    self.assigns = pootleassigns(self)
+    self.tracker = timecache.timecache(20*60)
+
+  def track(self, item, message):
+    """sets the tracker message for the given item"""
+    self.tracker[item] = message
+
+  def readpofile(self):
+    """reads and parses the main po file"""
+    # make sure encoding is reset so it is read from the file
+    self.encoding = None
+    self.units = []
+    pomtime = getmodtime(self.filename)
+    self.parse(open(self.filename, 'r'))
+    # we ignore all the headers by using this filtered set
+    self.transelements = [poel for poel in self.units if not (poel.isheader() or poel.isblank())]
+    self.statistics.classifyelements()
+    self.pomtime = pomtime
+
+  def savepofile(self):
+    """saves changes to the main file to disk..."""
+    output = str(self)
+    open(self.filename, "w").write(output)
+    # don't need to reread what we saved
+    self.pomtime = getmodtime(self.filename)
+
+  def pofreshen(self):
+    """makes sure we have a freshly parsed pofile"""
+    if not os.path.exists(self.filename):
+      # the file has been removed, update the project index (and fail below)
+      self.project.scanpofiles()
+    if self.pomtime != getmodtime(self.filename):
+      self.readpofile()
+
+  def getoutput(self):
+    """returns pofile output"""
+    self.pofreshen()
+    return super(pootlefile, self).getoutput()
+
   def setmsgstr(self, item, newmsgstr, userprefs, languageprefs):
     """updates a translation with a new msgstr value"""
     self.pofreshen()
@@ -423,20 +445,6 @@ class pootlefile(po.pofile):
     self.savepofile()
     self.statistics.reclassifyelement(item)
 
-  def getunassigned(self, action=None):
-    """gets all strings that are unassigned (for the given action if given)"""
-    unassigneditems = range(0, self.statistics.getitemslen())
-    assigns = self.getassigns()
-    for username in self.assigns:
-      if action is not None:
-        assigneditems = self.assigns[username].get(action, [])
-      else:
-        assigneditems = []
-        for action, actionitems in self.assigns[username].iteritems():
-          assigneditems += actionitems
-      unassigneditems = [item for item in unassigneditems if item not in assigneditems]
-    return unassigneditems
-
   def iteritems(self, search, lastitem=None):
     """iterates through the items in this pofile starting after the given lastitem, using the given search"""
     # update stats if required
@@ -453,18 +461,19 @@ class pootlefile(po.pofile):
         assignitems = self.getunassigned(search.assignedaction)
       else:
         # filter based on assign criteria
-        self.getassigns()
+        # TODO: see if this can be moved into the pootleassigns class
+        assigns = self.assigns.getassigns()
         if search.assignedto:
           usernames = [search.assignedto]
         else:
-          usernames = self.assigns.iterkeys()
+          usernames = assigns.iterkeys()
         assignitems = []
         for username in usernames:
           if search.assignedaction:
-            actionitems = self.assigns[username].get(search.assignedaction, [])
+            actionitems = assigns[username].get(search.assignedaction, [])
             assignitems.extend(actionitems)
           else:
-            for actionitems in self.assigns[username].itervalues():
+            for actionitems in assigns[username].itervalues():
               assignitems.extend(actionitems)
       validitems = [item for item in validitems if item in assignitems]
     # loop through, filtering on matchnames if required

@@ -710,9 +710,9 @@ class TranslationProject(object):
     # search.assignedto == [None] means assigned to nobody
     if search.assignedto or search.assignedaction:
       if search.assignedto == [None]:
-        assigns = self.pofiles[pofilename].getunassigned(search.assignedaction)
+        assigns = self.pofiles[pofilename].assigns.getunassigned(search.assignedaction)
       else:
-        assigns = self.pofiles[pofilename].getassigns()
+        assigns = self.pofiles[pofilename].assigns.getassigns()
         if search.assignedto is not None:
           if search.assignedto not in assigns:
             return False
@@ -843,7 +843,7 @@ class TranslationProject(object):
           usernum = min(usernum+1, len(assignto)-1)
           userwords = 0
         userwords += itemwordcount
-        pofile.assignto(item, assignto[usernum], action)
+        pofile.assigns.assignto(item, assignto[usernum], action)
         assigncount += 1
     return assigncount
 
@@ -861,10 +861,10 @@ class TranslationProject(object):
         if search.searchtext:
           thepo = pofile.transelements[item]
           if pogrepfilter.filterelement(thepo):
-            pofile.unassign(item, assignedto, action)
+            pofile.assigns.unassign(item, assignedto, action)
             assigncount += 1
         else:
-          pofile.unassign(item, assignedto, action)
+          pofile.assigns.unassign(item, assignedto, action)
           assigncount += 1
     return assigncount
 
@@ -978,7 +978,7 @@ class TranslationProject(object):
   def getassignstats(self, pofilename, action=None):
     """calculates translation statistics for the given po file (can filter by action if given)"""
     polen = len(self.getpostats(pofilename)["total"])
-    assigns = self.pofiles[pofilename].getassigns()
+    assigns = self.pofiles[pofilename].assigns.getassigns()
     assignstats = {}
     for username, userassigns in assigns.iteritems():
       allitems = []
