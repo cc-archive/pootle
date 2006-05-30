@@ -405,6 +405,7 @@ class pootlefile(po.pofile):
       self.project = project
       self.checker = self.project.checker
       self.filename = os.path.join(self.project.podir, self.pofilename)
+    self.lock = glock.GlobalLock(self.filename + os.extsep + "lock")
     # we delay parsing until it is required
     self.pomtime = None
     self.statistics = pootlestatistics(self, stats)
@@ -420,8 +421,13 @@ class pootlefile(po.pofile):
     # make sure encoding is reset so it is read from the file
     self.encoding = None
     self.units = []
-    pomtime = getmodtime(self.filename)
-    self.parse(open(self.filename, 'r'))
+    self.lock.acquire()
+    try:
+      pomtime = getmodtime(self.filename)
+      filecontents = open(self.filename, 'r')
+    finally:
+      self.lock.release()
+    self.parse(filecontents)
     # we ignore all the headers by using this filtered set
     self.transelements = [poel for poel in self.units if not (poel.isheader() or poel.isblank())]
     self.statistics.classifyelements()
@@ -430,9 +436,13 @@ class pootlefile(po.pofile):
   def savepofile(self):
     """saves changes to the main file to disk..."""
     output = str(self)
-    open(self.filename, "w").write(output)
-    # don't need to reread what we saved
-    self.pomtime = getmodtime(self.filename)
+    self.lock.acquire()
+    try:
+      open(self.filename, "w").write(output)
+      # don't need to reread what we saved
+      self.pomtime = getmodtime(self.filename)
+    finally:
+      self.lock.release()
 
   def pofreshen(self):
     """makes sure we have a freshly parsed pofile"""
