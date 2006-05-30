@@ -46,7 +46,7 @@ class pootleelement(po.pounit, object):
     if isinstance(text, dict):
       self.target = dict([(key, value.replace("\r\n", "\n")) for key, value in text.items()])
     elif isinstance(text, list):
-      if self.hasplural() and len(text) != 1:
+      if not self.hasplural() and len(text) != 1:
         raise ValueError("po element has no plural but msgstr has %d elements (%s)" % (len(text), text))
       self.target = [value.replace("\r\n", "\n") for value in text]
     else:
