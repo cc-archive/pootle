@@ -447,9 +447,9 @@ class pootlefile(po.pofile):
     suggitems = []
     suggids = {}
     for thesugg in self.pendingfile.units:
-      ids = tuple(thesugg.getids())
+      ids = tuple(thesugg.getlocations())
       suggids[ids] = thesugg
-    suggitems = [item for item in self.transelements if tuple(item.getids()) in suggids]
+    suggitems = [item for item in self.transelements if tuple(item.getlocations()) in suggids]
     havesuggestions = self.classify["has-suggestion"]
     for item, poel in enumerate(self.transelements):
       if (poel in suggitems) != (item in havesuggestions):
@@ -465,9 +465,9 @@ class pootlefile(po.pofile):
     """find all the suggestion items submitted for the given (pofile or pofilename) and item"""
     self.readpendingfile()
     thepo = self.transelements[item]
-    ids = thepo.getids()
+    ids = thepo.getlocations()
     # TODO: review the matching method
-    suggestpos = [suggestpo for suggestpo in self.pendingfile.units if suggestpo.getids() == ids]
+    suggestpos = [suggestpo for suggestpo in self.pendingfile.units if suggestpo.getlocations() == ids]
     return suggestpos
 
   def addsuggestion(self, item, suggmsgstr, username):
@@ -487,9 +487,9 @@ class pootlefile(po.pofile):
     """removes the suggestion from the pending file"""
     self.readpendingfile()
     thepo = self.transelements[item]
-    ids = thepo.getids()
+    ids = thepo.getlocations()
     # TODO: remove the suggestion in a less brutal manner
-    pendingitems = [pendingitem for pendingitem, suggestpo in enumerate(self.pendingfile.units) if suggestpo.getids() == ids]
+    pendingitems = [pendingitem for pendingitem, suggestpo in enumerate(self.pendingfile.units) if suggestpo.getlocations() == ids]
     pendingitem = pendingitems[suggitem]
     del self.pendingfile.units[pendingitem]
     self.savependingfile()
@@ -572,7 +572,7 @@ class pootlefile(po.pofile):
         continue
       foundid = False
       if useids:
-        newids = newpo.getids()
+        newids = newpo.getlocations()
         mergedids = []
         for id in newids:
           if id in mergedids:
