@@ -21,7 +21,8 @@
 
 """this is a set of string filters that should be run before the results are analysed..."""
 
-from translate.misc import sparse
+from translate.misc import quote
+import sre
 from translate.filters import helpers
 from translate.filters import decoration
 
@@ -54,7 +55,7 @@ def filteraccelerators(accelmarker):
   else: accelmarkerlen = len(accelmarker)
   def filtermarkedaccelerators(str1):
     """modifies the accelerators in str1 marked with a given marker, using a given filter"""
-    acclocs = decoration.findaccelerators(str1, accelmarker, ignoreaccelerators)
+    acclocs, badlocs = decoration.findaccelerators(str1, accelmarker, ignoreaccelerators)
     fstr1, pos = "", 0
     for accelstart, accelerator in acclocs:
       fstr1 += str1[pos:accelstart]
@@ -105,29 +106,33 @@ wordswithpunctuation = dict([(word, filter(str.isalnum, word)) for word in words
 
 def filterwordswithpunctuation(str1):
   """goes through a list of known words that have punctuation and removes the punctuation from them"""
-  parser = sparse.SimpleParser()
-  parser.defaulttokenlist.extend(['\\n', '\\"'])
-  parser.quotechars = ()
-  words = parser.tokenize(str1, [parser.removewhitespace, parser.separatetokens])
+  occurrences = []
+  for word, replacement in wordswithpunctuation.iteritems():
+    occurrences.extend([(pos, word, replacement) for pos in quote.find_all(str1, word)])
+  for match in sre.finditer("\w+'\w+", str1, sre.UNICODE):
+    word = match.group()
+    if isinstance(word, unicode):
+      replacement = filter(unicode.isalnum, word)
+    else:
+      replacement = filter(str.isalnum, word)
+    occurrences.append((match.start(), word, replacement))
+  occurrences.sort()
   replacements = []
-  for n in range(len(words)-1):
-    testword = words[n]
-    if len(testword) > 1:
-      # remove any ' in the middle of a word...
-      removeapostrophe = testword[:1] + testword[1:-1].replace("'","") + testword[-1:]
-      if removeapostrophe != testword:
-        replacements.append((parser.findtokenpos(n), testword, removeapostrophe))
-        continue
-    npword = wordswithpunctuation.get(testword.lower(), None)
-    if npword is not None:
-      replacements.append((parser.findtokenpos(n), testword, npword))
-  newstr1 = ""
-  lastpos = 0
-  for pos, origword, newword in replacements:
-    newstr1 += str1[lastpos:pos]
-    newstr1 += newword
-    lastpos = pos + len(origword)
-  newstr1 += str1[lastpos:]
-  return newstr1
+  for pos, word, replacement in occurrences:
+    previouschar = (pos == 0) and " " or str1[pos-1]
+    nextchar = (pos+len(word) == len(str1)) and " " or str1[pos+len(word)]
+    if (previouschar.isspace() or previouschar == '"') and (nextchar.isspace() or nextchar == '"'):
+      replacements.append((pos, word, replacement))
+  if replacements:
+    lastpos = 0
+    newstr1 = ""
+    for pos, word, replacement in replacements:
+      newstr1 += str1[lastpos:pos]
+      newstr1 += replacement
+      lastpos = pos + len(word)
+    newstr1 += str1[lastpos:]
+    return newstr1
+  else:
+    return str1
 
 

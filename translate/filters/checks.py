@@ -360,8 +360,8 @@ class StandardChecker(TranslationChecker):
 
   def singlequoting(self, str1, str2):
     """checks whether singlequoting is consistent between the two strings"""
-    str1 = self.filteraccelerators(self.filtervariables(self.filterwordswithpunctuation(prefilters.removekdecomments(str1))))
-    str2 = self.filteraccelerators(self.filtervariables(self.filterwordswithpunctuation(str2)))
+    str1 = self.filterwordswithpunctuation(self.filteraccelerators(self.filtervariables(prefilters.removekdecomments(str1))))
+    str2 = self.filterwordswithpunctuation(self.filteraccelerators(self.filtervariables(str2)))
     return helpers.countsmatch(str1, str2, ("'", "''", "\\'"))
 
   def doublequoting(self, str1, str2):
@@ -399,12 +399,17 @@ class StandardChecker(TranslationChecker):
     messages = []
     for accelmarker in self.config.accelmarkers:
       counter = decoration.countaccelerators(accelmarker)
-      count1 = counter(str1)
-      count2 = counter(str2)
+      count1, countbad1 = counter(str1)
+      count2, countbad2 = counter(str2)
+      getaccel = decoration.getaccelerators(accelmarker)
+      accel2, bad2 = getaccel(str2)
       if count1 == count2:
         continue
       if count1 == 1 and count2 == 0:
-        messages.append("accelerator %s is missing from translation" % accelmarker)
+        if countbad2 == 1:
+          messages.append("accelerator %s appears before an invalid accelerator character '%s' (eg. space)" % (accelmarker, bad2[0]))
+        else:
+          messages.append("accelerator %s is missing from translation" % accelmarker)
       elif count1 == 0:
         messages.append("accelerator %s does not occur in original and should not be in translation" % accelmarker)
       elif count1 == 1 and count2 > count1:
@@ -715,6 +720,7 @@ class StandardChecker(TranslationChecker):
       raise FilterFailure(messages)
     return True
 
+  # If the precondition filter is run and fails then the other tests listed are ignored
   preconditions = {"untranslated": ("simplecaps", "variables", "startcaps",
                                     "accelerators", "brackets", "endpunc",
                                     "acronyms", "xmltags", "startpunc",
@@ -722,7 +728,9 @@ class StandardChecker(TranslationChecker):
                                     "escapes", "doublequoting", "singlequoting", 
                                     "filepaths", "purepunc", "doublespacing",
                                     "sentencecount", "numbers", "isfuzzy",
-                                    "isreview", "notranslatewords", "musttranslatewords"),
+                                    "isreview", "notranslatewords", "musttranslatewords",
+                                    "emails", "simpleplurals", "urls"),
+                   "unchanged": ("doublewords",), 
                    "compendiumconflicts": ("accelerators", "brackets", "escapes", 
                                     "numbers", "startpunc", "long", "variables", 
                                     "startcaps", "sentencecount", "simplecaps",
