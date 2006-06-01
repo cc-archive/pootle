@@ -65,6 +65,14 @@ class TestDTD2PO:
         pounit = self.singleelement(pofile)
         assert po.unquotefrompo(pounit.msgid) == "bananas ' for sale"
 
+    def test_quotes(self):
+        """quotes should be handled in a single-quoted entity definition"""
+        dtdsource = """<!ENTITY test.metoo '"Bananas" for sale'>\n"""
+        pofile = self.dtd2po(dtdsource)
+        pounit = self.singleelement(pofile)
+        print str(pounit)
+        assert po.unquotefrompo(pounit.msgid) == '"Bananas" for sale'
+
     def test_emptyentity(self):
         """checks that empty entity definitions survive into po file, bug 15"""
         dtdsource = '<!ENTITY credit.translation "">\n'
@@ -208,6 +216,21 @@ class TestDTD2PO:
         unit = self.singleelement(pofile)
         assert po.unquotefrompo(unit.msgid) == "Test"
         assert po.unquotefrompo(unit.msgstr) == "Toets"
+
+    def test_exclude_entity_includes(self):
+        """test that we don't turn an include into a translatable string"""
+        dtdsource = '<!ENTITY % brandDTD SYSTEM "chrome://branding/locale/brand.dtd">'
+        pofile = self.dtd2po(dtdsource)
+        assert self.countelements(pofile) == 0
+
+    def test_linewraps(self):
+        """check that empty line wraps are not placed in po file"""
+        dtdsource = '''<!ENTITY generic.longDesc "
+<p>Test me.</p>
+">'''
+        pofile = self.dtd2po(dtdsource)
+        pounit = self.singleelement(pofile)
+        assert po.unquotefrompo(pounit.msgid, True) == "<p>Test me.</p>"
 
 class TestDTD2POCommand(test_convert.TestConvertCommand, TestDTD2PO):
     """Tests running actual dtd2po commands on files"""

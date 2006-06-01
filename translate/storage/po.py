@@ -46,7 +46,7 @@ def isnewlineescape(escape):
   return escape == "\\n"
 
 def isnewlineortabescape(escape):
-  return escape == "\\n" or escape == "\\t"
+  return escape == "\\n" or escape == "\\t" or escape == "\\r"
 
 def extractpoline(line):
   backslash = '\\'

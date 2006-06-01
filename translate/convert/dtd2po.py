@@ -62,21 +62,33 @@ class dtd2po:
 
   def convertstrings(self,thedtd,thepo):
     # extract the string, get rid of quoting
-    unquoted = dtd.unquotefromdtd(thedtd.definition)
+    unquoted = dtd.unquotefromdtd(thedtd.definition).replace("\r", "")
     # escape backslashes... but not if they're for a newline
-    unquoted = unquoted.replace("\\", "\\\\").replace("\\\\n", "\\n")
+    # unquoted = unquoted.replace("\\", "\\\\").replace("\\\\n", "\\n")
     # now split the string into lines and quote them
-    lines = unquoted.split('\n')
+    lines = [po.escapeforpo(line) for line in unquoted.split('\n')]
+    while lines and not lines[0].strip():
+      del lines[0]
+    while lines and not lines[-1].strip():
+      del lines[-1]
+    # quotes have been escaped already by escapeforpo, so just add the start and end quotes
+    simplequotestr = lambda line: '"' + line + '"'
     if len(lines) > 1:
-      msgid = [quote.quotestr(lines[0].rstrip() + ' ')] + \
-              [quote.quotestr(line.lstrip().rstrip() + ' ') for line in lines[1:len(lines)-1]] + \
-              [quote.quotestr(lines[len(lines)-1].lstrip())]
+      thepo.msgid = [simplequotestr(lines[0].rstrip() + ' ')] + \
+              [simplequotestr(line.strip() + ' ') for line in lines[1:-1]] + \
+              [simplequotestr(lines[-1].lstrip())]
+    elif lines:
+      thepo.msgid = [simplequotestr(lines[0])]
     else:
-      msgid = [quote.quotestr(lines[0])]
-    thepo.msgid = msgid
-    thepo.msgstr = ['""']
+      thepo.source = ""
+    thepo.target = ""
 
   def convertelement(self,thedtd):
+    """converts a dtd element to a po element, returns None if empty or not for translation"""
+    if thedtd is None:
+      return None
+    if getattr(thedtd, "entityparameter", None) == "SYSTEM":
+      return None
     thepo = po.pounit(encoding="UTF-8")
     # remove unwanted stuff
     for commentnum in range(len(thedtd.comments)):
@@ -207,6 +219,8 @@ class dtd2po:
         return None
       elif alreadymixed is None:
         # depending on what we come across first, work out the label and the accesskey
+        labeldtd, accesskeydtd = None, None
+        labelentity, accesskeyentity = None, None
         for labelsuffix in self.labelsuffixes:
           if thedtd.entity.endswith(labelsuffix):
             entitybase = thedtd.entity[:thedtd.entity.rfind(labelsuffix)]
@@ -227,13 +241,17 @@ class dtd2po:
                   break
         thepo = self.convertmixedelement(labeldtd, accesskeydtd)
         if thepo is not None:
-          self.mixedentities[accesskeyentity][mixbucket] = True
-          self.mixedentities[labelentity][mixbucket] = True
+          if accesskeyentity is not None:
+            self.mixedentities[accesskeyentity][mixbucket] = True
+          if labelentity is not None:
+            self.mixedentities[labelentity][mixbucket] = True
           return thepo
         else:
           # otherwise the mix failed. add each one separately and remember they weren't mixed
-          self.mixedentities[accesskeyentity][mixbucket] = False
-          self.mixedentities[labelentity][mixbucket] = False
+          if accesskeyentity is not None:
+            self.mixedentities[accesskeyentity][mixbucket] = False
+          if labelentity is not None:
+            self.mixedentities[labelentity][mixbucket] = False
     return self.convertelement(thedtd)
 
   def convertfile(self, thedtdfile):
@@ -267,8 +285,16 @@ class dtd2po:
       if origdtd.isnull():
         continue
       origpo = self.convertdtdelement(origdtdfile, origdtd, mixbucket="orig")
-      if origdtd.entity in self.mixedentities and not self.mixedentities[origdtd.entity]["orig"]:
-        mixbucket = "orig"
+      if origdtd.entity in self.mixedentities:
+        mixedentitydict = self.mixedentities[origdtd.entity]
+        if "orig" not in mixedentitydict:
+          # this means that the entity is mixed in the translation, but not the original - treat as unmixed
+          mixbucket = "orig"
+          del self.mixedentities[origdtd.entity]
+        elif mixedentitydict["orig"]:
+          mixbucket = "orig"
+        else:
+          mixbucket = "translate"
       else:
         mixbucket = "translate"
       if origpo is None:
