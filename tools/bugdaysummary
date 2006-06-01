@@ -2,7 +2,7 @@
 bugday=`date +'%Y%m%d'`
 cd ~/translate/htdocs/bugdays/${bugday} || exit
 (
-  echo "<html><head><title>Bug Day Summary for ${bugday} at `date`</title><meta http-equiv="refresh" content="600"></head><body>"
+  echo "<html><head><title>Bug Day Summary for ${bugday} at `date`</title><meta http-equiv="refresh" content="60"></head><body>"
   echo "<h1>Bug Statistics</h1><pre>" 
   for b in *-bugreport-${bugday}-*
     do
