@@ -35,9 +35,19 @@ class TestOO2PO:
         pofile = self.oo2po(oosource)
         pounit = self.singleelement(pofile)
         poelementsrc = str(pounit)
-        assert r"Newline \n Newline" in poelementsrc
-        assert r"Tab \t Tab" in poelementsrc
-        assert r"CR \r CR" in poelementsrc
+        print poelementsrc
+        assert "Newline \n Newline" in pounit.source 
+        assert "Tab \t Tab" in pounit.source 
+        assert "CR \r CR" in pounit.source 
+
+    def test_escapes_helpcontent2(self):
+        """checks that a helpcontent2 entry converts escapes properly to a po entry"""
+        oosource = r"wizards	source\formwizard\dbwizres.src	0	string	RID_DB_FORM_WIZARD_START + 19				0	en-US	%s				20050924 09:13:58" % r'size *2 \\langle x \\rangle'
+        pofile = self.oo2po(oosource)
+        pounit = self.singleelement(pofile)
+        poelementsrc = str(pounit)
+        print poelementsrc
+        assert pounit.source == 'size *2 \\\\langle x \\\\rangle'
 
     def test_msgid_bug_error_address(self):
         """tests the we have the correct url for reporting msgid bugs"""
