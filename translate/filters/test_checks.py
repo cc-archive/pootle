@@ -39,6 +39,7 @@ def test_accelerators():
     assert checks.passes(stdchecker.accelerators, "Mail && News", "Pos en Nuus") 
     assert checks.fails(stdchecker.accelerators, "Mail &amp; News", "Pos en Nuus") 
     assert checks.passes(stdchecker.accelerators, "&Allow", u'&\ufeb2\ufee3\ufe8e\ufea3')
+    assert checks.fails(stdchecker.accelerators, "Open &File", "Vula& Ifayile") 
     kdechecker = checks.KdeChecker()
     assert checks.passes(kdechecker.accelerators, "&File", "&Fayile") 
     assert checks.fails(kdechecker.accelerators, "&File", "Fayile") 
@@ -80,6 +81,8 @@ def test_accronyms():
     # We shouldn't worry about acronyms that appear in a musttranslate file
     stdchecker = checks.StandardChecker(checks.CheckerConfig(musttranslatewords=["OK"]))
     assert checks.passes(stdchecker.acronyms, "OK", "Kulungile")
+    # Assert punctuation should not hide accronyms
+    assert checks.fails(stdchecker.acronyms, "Location (URL) not found", "Blah blah blah")
 
 def test_blank():
     """tests blank"""
@@ -146,6 +149,8 @@ def test_endpunc():
     assert checks.passes(stdchecker.endpunc, "A nickname that identifies this publishing site (e.g.: 'MySite')", "Vito ro duvulela leri tirhisiwaka ku kuma sayiti leri ro kandziyisa (xik.: 'Sayiti ra Mina')")
     # FIXME fix later
     assert checks.fails(stdchecker.endpunc, "Question", "Wrong\xe2\x80\xa6")
+    # Making sure singlequotes don't confuse things
+    assert checks.passes(stdchecker.endpunc, "Pseudo-elements can't be negated '%1$S'.", "Pseudo-elemente kan nie '%1$S' ontken word nie.")
 
 def test_endwhitespace():
     """tests endwhitespace"""
@@ -160,6 +165,8 @@ def test_escapes():
 A sentence""", "I'm correct.")
     assert checks.passes(stdchecker.escapes, r"A file\n", r"'n Leer\n")
     assert checks.fails(stdchecker.escapes, r"A file\n", r"'n Leer")
+    assert checks.fails(stdchecker.escapes, r"blah.\nA file", r"bleah. 'n leer")
+    assert checks.fails(stdchecker.escapes, r"blah. A file", r"bleah.\n'n leer")
     assert checks.passes(stdchecker.escapes, r"A tab\t", r"'n Tab\t")
     assert checks.fails(stdchecker.escapes, r"A tab\t", r"'n Tab")
     assert checks.passes(stdchecker.escapes, r"An escape escape \\", r"Escape escape \\")
@@ -215,7 +222,11 @@ def test_musttranslatewords():
     assert checks.fails(stdchecker.musttranslatewords, "Click Mozilla!", "Kliek Mozilla!")
     ## We need to define more word separators to allow us to find those hidden untranslated items
     #assert checks.fails(stdchecker.musttranslatewords, "Click OK", "Blah we-OK")
-
+    # Don't get confused when variables are the same as a musttranslate word
+    stdchecker = checks.StandardChecker(checks.CheckerConfig(varmatches=[("%", None),], musttranslatewords=["OK"]))
+    assert checks.passes(stdchecker.musttranslatewords, "Click %OK to start", "Kliek %OK om te begin")
+    # Unicode
+    assert checks.passes(stdchecker.musttranslatewords, "Click OK", "Kiḽikani OK")
 
 def test_notranslatewords():
     """tests stopwords"""
@@ -319,10 +330,15 @@ Converting...""", "Kugucula...")
     assert checks.passes(stdchecker.singlequoting, "Blah 'format' blah?", "Blah blah 'sebopego'?")
     # Real examples
     assert checks.passes(stdchecker.singlequoting, "A nickname that identifies this publishing site (e.g.: 'MySite')", "Vito ro duvulela leri tirhisiwaka ku kuma sayiti leri ro kandziyisa (xik.: 'Sayiti ra Mina')")
-    #assert checks.passes(stdchecker.singlequoting, "isn't", "ayikho")
+    assert checks.passes(stdchecker.singlequoting, "isn't", "ayikho")
     # Afrikaans 'n
     assert checks.passes(stdchecker.singlequoting, "Please enter a different site name.", "Tik 'n ander werfnaam in.")
     assert checks.passes(stdchecker.singlequoting, "\"%name%\" already exists. Please enter a different site name.", "\"%name%\" bestaan reeds. Tik 'n ander werfnaam in.")
+    # Check that accelerators don't mess with removing singlequotes
+    mozillachecker = checks.MozillaChecker()
+    assert checks.passes(mozillachecker.singlequoting, "&Don't import anything", "&Moenie enigiets invoer nie")
+    ooochecker = checks.OpenOfficeChecker()
+    assert checks.passes(ooochecker.singlequoting, "~Don't import anything", "~Moenie enigiets invoer nie")
 
 def test_simplecaps():
     """tests simple caps"""
@@ -342,6 +358,8 @@ def test_simplecaps():
     #assert checks.passes(stdchecker.simplecaps, "COUPDAYS", "COUPMALANGA")
     # Just some that at times have failed but should always pass
     assert checks.passes(stdchecker.simplecaps, "Create a query  entering an SQL statement directly.", "Yakha sibuti singena SQL inkhomba yesitatimende.")
+    assert checks.passes(stdchecker.simplecaps, "SOLK (%PRODUCTNAME Link)", "SOLK (%PRODUCTNAME Thumanyo)")
+    assert checks.passes(stdchecker.simplecaps, "%STAROFFICE Image", "Tshifanyiso tsha %STAROFFICE")
 
 # def test_spellcheck():
 #     """tests simple caps"""
