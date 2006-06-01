@@ -9,6 +9,8 @@ srcdir="`cd "${scriptdir}" ; cd .. ; pwd`"
 
 logfile=${hostname}-${timestamp}.log
 
+versions=$(PootleServer --version)
+
 cd "$srcdir"
 mkdir -p testlogs
 echo ${timestamp} ${logfile}
@@ -23,6 +25,9 @@ echo ${timestamp} ${logfile}
   toolkitbranch=`[[ -f translate/CVS/Tag ]] && cat translate/CVS/Tag || echo HEAD`
   echo "Pootle is on branch:" $pootlebranch
   echo "Translate Toolkit is on branch:" $toolkitbranch
+  echo
+  echo "Versions:"
+  echo $versions
   echo
   echo "cvs update:"
   echo "-----------"
