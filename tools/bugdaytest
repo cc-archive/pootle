@@ -22,7 +22,7 @@ echo ${timestamp} ${logfile}
   pootlebranch=`[[ -f Pootle/CVS/Tag ]] && cat Pootle/CVS/Tag || echo HEAD`
   toolkitbranch=`[[ -f translate/CVS/Tag ]] && cat translate/CVS/Tag || echo HEAD`
   echo "Pootle is on branch:" $pootlebranch
-  echo "Translate Toolkit is on branch:" $translatebranch
+  echo "Translate Toolkit is on branch:" $toolkitbranch
   echo
   echo "cvs update:"
   echo "-----------"
