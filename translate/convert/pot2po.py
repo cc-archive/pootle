@@ -78,11 +78,11 @@ def convertpot(inputfile, outputfile, templatefile):
     if not thepo.isheader():
       if templatefile:
         possiblematches = []
-        for source in thepo.getids():
+        for source in thepo.getlocations():
           otherpo = templatepo.sourceindex.get(source, None)
           if otherpo is not None:
             possiblematches.append(otherpo)
-        if len(thepo.getids()) == 0:
+        if len(thepo.getlocations()) == 0:
           otherpo = templatepo.findunit(thepo.source)
         if otherpo:
           possiblematches.append(otherpo)

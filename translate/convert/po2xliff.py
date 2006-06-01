@@ -150,7 +150,7 @@ class po2xliff:
           targetnode.setAttribute("state-qualifier", "fuzzy-match")
         else:
           targetnode.setAttribute("state", "translated")
-      for sourcelocation in thepo.getids():
+      for sourcelocation in thepo.getlocations():
         transunitnode.appendChild(self.createcontextgroup(sourcelocation))
       return transunitnode
     else:

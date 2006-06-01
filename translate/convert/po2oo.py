@@ -89,7 +89,7 @@ class reoo:
 
   def handlepoelement(self, thepo):
     # TODO: make this work for multiple columns in oo...
-    sources = thepo.getids()
+    sources = thepo.getlocations()
     # technically our formats should just have one source for each entry...
     # but we handle multiple ones just to be safe...
     for source in sources:
@@ -176,10 +176,10 @@ class oopocheckfilter(pofilter.pocheckfilter):
       if filterresult != autocorrect:
         for filtername, filtermessage in filterresult:
           if filtername in self.options.error:
-            print >> sys.stderr, "Error at %s::%s: %s" % (filename, thepo.getids()[0], filtermessage)
+            print >> sys.stderr, "Error at %s::%s: %s" % (filename, thepo.getlocations()[0], filtermessage)
             return not filteraction in ["exclude", "exclude-serious"]
           if filtername in self.options.warning or self.options.alwayswarn:
-            print >> sys.stderr, "Warning at %s::%s: %s" % (filename, thepo.getids()[0], filtermessage)
+            print >> sys.stderr, "Warning at %s::%s: %s" % (filename, thepo.getlocations()[0], filtermessage)
             return not filteraction in ["exclude"]
     return True
 

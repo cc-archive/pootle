@@ -464,7 +464,7 @@ class pounit(base.TranslationUnit):
     postr = "".join(lines)
     return postr
 
-  def getids(self):
+  def getlocations(self):
     """returns the list of sources from sourcecomments in the po element"""
     sources = []
     for sourcecomment in self.sourcecomments:
@@ -753,7 +753,7 @@ class pofile(base.TranslationStore):
     # TODO: this is using a list as the pos aren't hashable, but this is slow...
     markedpos = []
     def addcomment(thepo):
-      thepo.msgidcomments.append('"_: %s\\n"' % " ".join(thepo.getids()))
+      thepo.msgidcomments.append('"_: %s\\n"' % " ".join(thepo.getlocations()))
       markedpos.append(thepo)
     for thepo in self.units:
       if duplicatestyle.startswith("msgid_comment"):
@@ -798,7 +798,7 @@ class pofile(base.TranslationStore):
       if thepo.hasplural():
         msgid_plural = unquotefrompo(thepo.msgid_plural)
         self.msgidindex[msgid_plural] = thepo
-      for source in thepo.getids():
+      for source in thepo.getlocations():
         if source in self.sourceindex:
           # if sources aren't unique, don't use them
           self.sourceindex[source] = None
