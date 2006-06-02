@@ -12,6 +12,22 @@ def layout_banner(maxheight):
   return {"logo_width": logo_width, "logo_height": logo_height,
     "banner_width": banner_width, "banner_height": banner_height, "logo_image": logo_image}
 
+def localize_links(session):
+  """Localize all the generic links"""
+  links = {}
+  links["home"] = session.localize("Home")
+  links["projects"] = session.localize("All projects")
+  links["languages"] = session.localize("All languages")
+  links["account"] = session.localize("My account")
+  links["admin"] = session.localize("Admin")
+  links["doc"] = session.localize("Docs & help")
+  links["logout"] = session.localize("Log out")
+  links["login"] = session.localize("Log in")
+  #l10n: Verb, as in "to register"
+  links["register"] = session.localize("Register")
+  links["activate"] = session.localize("Activate")
+  return links
+
 def completetemplatevars(templatevars, session, bannerheight=135):
   """fill out default values for template variables"""
   if not "instancetitle" in templatevars:
@@ -20,6 +36,7 @@ def completetemplatevars(templatevars, session, bannerheight=135):
     templatevars["session"] = {"status": session.status, "isopen": session.isopen, "issiteadmin": session.issiteadmin()}
   banner_layout = layout_banner(bannerheight)
   templatevars.update(banner_layout)
+  templatevars["links"] = localize_links(session)
   if "search" not in templatevars:
     templatevars["search"] = None
 
