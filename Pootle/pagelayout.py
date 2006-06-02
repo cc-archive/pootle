@@ -3,14 +3,14 @@
 
 def layout_banner(maxheight):
   """calculates dimensions, image name for banner"""
-  banner_width, banner_height = min((98*maxheight/130, maxheight), (98, 130))
-  logo_width, logo_height = min((290*maxheight/160, maxheight), (290, 160))
-  if banner_width <= 61:
-    banner_image = "pootle-medium.png"
+  logo_width, logo_height = min((98*maxheight/130, maxheight), (98, 130))
+  banner_width, banner_height = min((290*maxheight/160, maxheight), (290, 160))
+  if logo_width <= 61:
+    logo_image = "pootle-medium.png"
   else:
-    banner_image = "pootle.png"
-  return {"banner_width": banner_width, "banner_height": banner_height,
-    "logo_width": logo_width, "logo_height": logo_height, "banner_image": banner_image}
+    logo_image = "pootle.png"
+  return {"logo_width": logo_width, "logo_height": logo_height,
+    "banner_width": banner_width, "banner_height": banner_height, "logo_image": logo_image}
 
 def completetemplatevars(templatevars, session, bannerheight=135):
   """fill out default values for template variables"""
