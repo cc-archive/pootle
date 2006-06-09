@@ -61,8 +61,9 @@ def test_accelerators():
     # Problems:
     # Accelerator before variable - see test_acceleratedvariables
 
-def test_acceleratedvariables():
+def xtest_acceleratedvariables():
     """test for accelerated variables"""
+    # FIXME: disabled since acceleratedvariables has been removed, but these checks are still needed
     mozillachecker = checks.MozillaChecker()
     assert checks.fails(mozillachecker.acceleratedvariables, "%S &Options", "&%S Ikhetho")
     assert checks.passes(mozillachecker.acceleratedvariables, "%S &Options", "%S &Ikhetho")
