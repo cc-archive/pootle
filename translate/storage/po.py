@@ -38,7 +38,7 @@ po_unescape_map = {"\\r": "\r", "\\t": "\t", '\\"': '"', '\\n': '\n', '\\\\': '\
 po_escape_map = dict([(value, key) for (key, value) in po_unescape_map.items()])
 
 def escapeforpo(line):
-  """escapes a line for po format"""
+  """escapes a line for po format. assumes no \n occurs in the line"""
   special_locations = []
   for special_key in po_escape_map:
     special_locations.extend(quote.find_all(line, special_key))
@@ -283,6 +283,19 @@ class pounit(base.TranslationUnit):
         for position, item in enumerate(list2):
           if isinstance(item, str):
             list2[position] = item.decode("utf-8")
+            
+      #Determine the newline style of list1
+      lineend = ""
+      if list1 and list1[0]:
+        for candidate in ["\n", "\r", "\n\r"]:
+          if list1[0].endswith(candidate):
+            lineend = candidate
+        if not lineend:
+          lineend = ""
+      else:
+        lineend = "\n"
+      
+      #Split if directed to do so:    
       if split:
         splitlist1 = []
         splitlist2 = []
@@ -293,9 +306,17 @@ class pounit(base.TranslationUnit):
         for item in list2:
           splitlist2.extend(item.split()[1:])
           prefix = item.split()[0]
-        list1.extend(["%s %s\n" % (prefix,item) for item in splitlist2 if not item in splitlist1])
+        list1.extend(["%s %s%s" % (prefix,item,lineend) for item in splitlist2 if not item in splitlist1])
       else:
-        list1.extend([item for item in list2 if not item in list1])
+        #Normal merge, but conform to list1 newline style
+        for item in list2:
+          if lineend:
+            item = item.rstrip() + lineend
+          if item not in list1:
+            list1.append(item)
+    if not isinstance(otherpo, pounit):
+      super(pounit, self).merge(otherpo, overwrite, comments)
+      return
     if comments:
       mergelists(self.othercomments, otherpo.othercomments)
       #We don't bring acros otherpo.automaticcomments as we consider ourself
