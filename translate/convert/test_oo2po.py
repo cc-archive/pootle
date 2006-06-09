@@ -36,9 +36,9 @@ class TestOO2PO:
         pounit = self.singleelement(pofile)
         poelementsrc = str(pounit)
         print poelementsrc
-        assert "Newline \n Newline" in pounit.source 
-        assert "Tab \t Tab" in pounit.source 
-        assert "CR \r CR" in pounit.source 
+        assert "Newline \n Newline" in pounit.source
+        assert "Tab \t Tab" in pounit.source
+        assert "CR \r CR" in pounit.source
 
     def test_escapes_helpcontent2(self):
         """checks that a helpcontent2 entry converts escapes properly to a po entry"""
