@@ -156,12 +156,12 @@ class TestPO2DTD:
 
     def test_roundtrip_quotes(self):
         """checks that (escaped) quotes in strings make it through a dtd->po->dtd roundtrip"""
-        self.check_roundtrip(r"""'Quote Escape "" '""")
+        self.check_roundtrip(r"""'Double Quote " '""")
         self.check_roundtrip(r'''"Single-Quote ' "''')
-        self.check_roundtrip(r'''"Single-Quote Escape \' "''')
+        # backslash does not mean escape, but check it is preserved
+        self.check_roundtrip(r'''"Backslash Single-Quote \' "''')
         # NOTE: if both quote marks are present, than ' is converted to &apos;
         self.check_roundtrip(r"""'Both Quotes "" &apos;&apos; '""")
-        assert self.roundtripstring(r"""'Both Quotes "" '' '""") == r"""'Both Quotes "" &apos;&apos; '"""
 
     def test_merging_entries_with_spaces_removed(self):
         """dtd2po removes pretty printed spaces, this tests that we can merge this back into the pretty printed dtd"""

@@ -104,19 +104,19 @@ def extractcomment(lines):
   "Extracts <!-- > XML comments from lines"
   return extractfromlines(lines,"<!--","-->",None)
 
-def extractwithoutquotes(source,startdelim,enddelim,escape,startinstring=0,includeescapes=1):
+def extractwithoutquotes(source,startdelim,enddelim,escape=None,startinstring=0,includeescapes=1):
   """Extracts a doublequote-delimited string from a string, allowing for backslash-escaping
-  includeescapes can also be a function that takes the whole escaped string and returns whether to escape it"""
+  includeescapes can also be a function that takes the whole escaped string and returns the replaced version"""
   instring = startinstring
   lenstart = len(startdelim)
   lenend = len(enddelim)
-  lenescape = len(escape)
   startdelim_places = find_all(source, startdelim)
   if startdelim == enddelim:
     enddelim_places = startdelim_places[:]
   else:
     enddelim_places = find_all(source, enddelim)
   if escape is not None:
+    lenescape = len(escape)
     escape_places = find_all(source, escape)
     last_escape_pos = -1
     # filter escaped escapes
@@ -150,8 +150,16 @@ def extractwithoutquotes(source,startdelim,enddelim,escape,startinstring=0,inclu
         last_epos = 0
         for epos in escape_list:
           new_section += section[last_epos:epos]
-          if callable_includeescapes and includeescapes(section[epos:epos+lenescape+1]):
-              last_epos = epos
+          if callable_includeescapes:
+              replace_escape = includeescapes(section[epos:epos+lenescape+1])
+              # TODO: deprecate old method of returning boolean from includeescape, by removing this if block
+              if not isinstance(replace_escape, basestring):
+                  if replace_escape:
+                      replace_escape = section[epos:epos+lenescape+1]
+                  else:
+                      replace_escape = section[epos+lenescape:epos+lenescape+1]
+              new_section += replace_escape
+              last_epos = epos + lenescape + 1
           else:
               last_epos = epos + lenescape
         section = new_section + section[last_epos:]
