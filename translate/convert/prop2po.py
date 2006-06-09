@@ -107,16 +107,8 @@ class prop2po:
     if theprop.isblank():
       return None
     thepo.sourcecomments.append("#: "+theprop.name+eol)
-    thepo.msgid = []
-    # escape everything except \n, and make \n appear as appropriate for po files
-    lines = msgid.split("\n")
-    for linenum in range(len(lines)):
-      line = lines[linenum]
-      line = quote.escapequotes(line, escapeescapes=1)
-      if linenum != len(lines)-1:
-        line += "\\n"
-      thepo.msgid.append('"' + line + '"')
-    thepo.msgstr = ['""']
+    thepo.source = msgid
+    thepo.target = ""
     return thepo
 
 def convertprop(inputfile, outputfile, templatefile, pot=False, duplicatestyle="msgid_comment"):
