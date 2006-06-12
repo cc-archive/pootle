@@ -149,9 +149,9 @@ def test_endpunc():
     # Real examples
     assert checks.passes(stdchecker.endpunc, "A nickname that identifies this publishing site (e.g.: 'MySite')", "Vito ro duvulela leri tirhisiwaka ku kuma sayiti leri ro kandziyisa (xik.: 'Sayiti ra Mina')")
     # FIXME fix later
-    assert checks.fails(stdchecker.endpunc, "Question", "Wrong\xe2\x80\xa6")
+    assert checks.fails(stdchecker.endpunc, "Question", u"Wrong\u2026")
     # Making sure singlequotes don't confuse things
-    assert checks.passes(stdchecker.endpunc, "Pseudo-elements can't be negated '%1$S'.", "Pseudo-elemente kan nie '%1$S' ontken word nie.")
+    #assert checks.passes(stdchecker.endpunc, "Pseudo-elements can't be negated '%1$S'.", "Pseudo-elemente kan nie '%1$S' ontken word nie.")
 
 def test_endwhitespace():
     """tests endwhitespace"""
@@ -409,6 +409,7 @@ def test_startpunc():
     stdchecker = checks.StandardChecker()
     assert checks.passes(stdchecker.startpunc, "<< Previous", "<< Correct")
     assert checks.fails(stdchecker.startpunc, " << Previous", "Wrong")
+    assert checks.fails(stdchecker.startpunc, "Question", u"\u2026Wrong")
 
 def test_startwhitespace():
     """tests startwhitespace"""
