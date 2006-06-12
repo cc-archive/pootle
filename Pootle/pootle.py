@@ -34,7 +34,11 @@ class PootleServer(users.OptionalLoginAppServer, templateserver.TemplateServer):
 
   def loadurl(self, filename, context):
     """loads a url internally for overlay code"""
-    print "call to load %s with context:\n%s" % (filename, pprint.pformat(context))
+    try:
+        # print "call to load %s with context:\n%s" % (filename, pprint.pformat(context))
+        pass
+    except:
+        pass
     filename = os.path.join(self.templatedir, filename+os.extsep+"html")
     if os.path.exists(filename):
       return open(filename, "r").read()

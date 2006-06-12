@@ -11,7 +11,7 @@ from translate.misc import wStringIO
 import os
 
 class TestPootleUnit(test_po.TestPOUnit):
-    UnitClass = pootlefile.pootleelement
+    UnitClass = pootlefile.pootleunit
     def poparse(self, posource):
         """helper that parses po source without requiring files"""
         dummyfile = wStringIO.StringIO(posource)
@@ -131,8 +131,8 @@ msgstr ""'''
         assert thepo.source == "test"
         assert thepo.target == "rest"
 
-    def test_classifyelements(self):
-        "Tests basic use of classifyelements."
+    def test_classifyunits(self):
+        "Tests basic use of classifyunits."
         posource = r'''#: test.c
 msgid "test"
 msgstr "rest"
@@ -144,8 +144,8 @@ msgstr "tafel"
 msgid "chair"
 msgstr ""'''
         pofile = self.poparse(posource)
-        pofile.transelements = [poel for poel in pofile.units if not (poel.isheader() or poel.isblank())]
-        pofile.statistics.classifyelements()
+        pofile.transunits = [poel for poel in pofile.units if not (poel.isheader() or poel.isblank())]
+        pofile.statistics.classifyunits()
         print pofile.statistics.classify
         for i in pofile.units:
             print str(i)

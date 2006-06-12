@@ -3,6 +3,7 @@
 
 """manages po files and their associated files"""
 
+from translate.storage import base
 from translate.storage import po
 from translate.misc import quote
 from translate.misc.multistring import multistring
@@ -24,8 +25,9 @@ def wordcount(unquotedstr):
   """returns the number of words in an unquoted str"""
   return len(unquotedstr.split())
 
-class pootleelement(po.pounit, object):
+class pootleunit(po.pounit, object):
   """a pounit with helpful methods for pootle"""
+  # TODO: try and replace with underlying baseunit properties as much as possible
   def getunquotedmsgid(self):
     """returns the msgid as a list of unquoted strings (one per plural form present)"""
     if self.hasplural():
@@ -47,7 +49,7 @@ class pootleelement(po.pounit, object):
       self.target = dict([(key, value.replace("\r\n", "\n")) for key, value in text.items()])
     elif isinstance(text, list):
       if not self.hasplural() and len(text) != 1:
-        raise ValueError("po element has no plural but msgstr has %d elements (%s)" % (len(text), text))
+        raise ValueError("po unit has no plural but msgstr has %d elements (%s)" % (len(text), text))
       self.target = [value.replace("\r\n", "\n") for value in text]
     else:
       self.target = text.replace("\r\n", "\n")
@@ -55,7 +57,7 @@ class pootleelement(po.pounit, object):
   unquotedmsgstr = property(getunquotedmsgstr, setunquotedmsgstr)
 
   def classify(self, checker):
-    """returns all classify keys that this element should match, using the checker"""
+    """returns all classify keys that this unit should match, using the checker"""
     classes = ["total"]
     if self.isfuzzy():
       classes.append("fuzzy")
@@ -179,8 +181,8 @@ class pootlestatistics:
     postats = dict([(name, items) for name, items in self.classify.iteritems()])
     self.stats = postats
 
-  def classifyelements(self):
-    """makes a dictionary of which elements fall into which classifications"""
+  def classifyunits(self):
+    """makes a dictionary of which units fall into which classifications"""
     self.classify = {}
     self.classify["fuzzy"] = []
     self.classify["blank"] = []
@@ -189,7 +191,7 @@ class pootlestatistics:
     self.classify["total"] = []
     for checkname in self.basefile.checker.getfilters().keys():
       self.classify["check-" + checkname] = []
-    for item, poel in enumerate(self.basefile.transelements):
+    for item, poel in enumerate(self.basefile.transunits):
       classes = poel.classify(self.basefile.checker)
       for classname in classes:
         if classname in self.classify:
@@ -199,16 +201,16 @@ class pootlestatistics:
     self.countwords()
 
   def countwords(self):
-    """counts the words in each of the elements"""
+    """counts the words in each of the units"""
     self.msgidwordcounts = []
     self.msgstrwordcounts = []
-    for poel in self.basefile.transelements:
+    for poel in self.basefile.transunits:
       self.msgidwordcounts.append([wordcount(text) for text in poel.unquotedmsgid])
       self.msgstrwordcounts.append([wordcount(text) for text in poel.unquotedmsgstr])
 
-  def reclassifyelement(self, item):
+  def reclassifyunit(self, item):
     """updates the classification of poel in self.classify"""
-    poel = self.basefile.transelements[item]
+    poel = self.basefile.transunits[item]
     self.msgidwordcounts[item] = [wordcount(text) for text in poel.unquotedmsgid]
     self.msgstrwordcounts[item] = [wordcount(text) for text in poel.unquotedmsgstr]
     classes = poel.classify(self.basefile.checker)
@@ -225,8 +227,8 @@ class pootlestatistics:
   def getitemslen(self):
     """gets the number of items in the file"""
     # TODO: simplify this, and use wherever its needed
-    if hasattr(self.basefile, "transelements"):
-      return len(self.basefile.transelements)
+    if hasattr(self.basefile, "transunits"):
+      return len(self.basefile.transunits)
     elif hasattr(self, "stats") and "total" in self.stats:
       return len(self.stats["total"])
     elif hasattr(self, "classify") and "total" in self.classify:
@@ -430,7 +432,7 @@ class pootlefile(po.pofile):
   """this represents a pootle-managed .po file and its associated files"""
   x_generator = "Pootle %s" % __version__.ver
   def __init__(self, project=None, pofilename=None, stats=True):
-    po.pofile.__init__(self, elementclass=pootleelement)
+    po.pofile.__init__(self, elementclass=pootleunit)
     self.pofilename = pofilename
     if project is None:
       from Pootle import projects
@@ -461,8 +463,8 @@ class pootlefile(po.pofile):
     # note: we rely on this not resetting the filename, which we set earlier, when given a string
     self.parse(filecontents)
     # we ignore all the headers by using this filtered set
-    self.transelements = [poel for poel in self.units if not (poel.isheader() or poel.isblank())]
-    self.statistics.classifyelements()
+    self.transunits = [poel for poel in self.units if not (poel.isheader() or poel.isblank())]
+    self.statistics.classifyunits()
     self.pomtime = pomtime
 
   def savepofile(self):
@@ -486,7 +488,7 @@ class pootlefile(po.pofile):
   def setmsgstr(self, item, newmsgstr, userprefs, languageprefs):
     """updates a translation with a new msgstr value"""
     self.pofreshen()
-    thepo = self.transelements[item]
+    thepo = self.transunits[item]
     thepo.unquotedmsgstr = newmsgstr
     thepo.markfuzzy(False)
     po_revision_date = time.strftime("%F %H:%M%z")
@@ -501,7 +503,7 @@ class pootlefile(po.pofile):
       if nplurals and pluralequation:
         self.updateheaderplural(nplurals, pluralequation)
     self.savepofile()
-    self.statistics.reclassifyelement(item)
+    self.statistics.reclassifyunit(item)
 
   def iteritems(self, search, lastitem=None):
     """iterates through the items in this pofile starting after the given lastitem, using the given search"""
@@ -511,7 +513,7 @@ class pootlefile(po.pofile):
       minitem = 0
     else:
       minitem = lastitem + 1
-    maxitem = len(self.transelements)
+    maxitem = len(self.transunits)
     validitems = range(minitem, maxitem)
     if search.assignedto or search.assignedaction:
       assignitems = self.assigns.finditems(search)
@@ -568,7 +570,7 @@ class pootlefile(po.pofile):
     if oldpo.isblankmsgstr() or newpo.isblankmsgstr() or oldpo.isheader() or newpo.isheader() or unchanged:
       oldpo.merge(newpo)
     else:
-      for item, matchpo in enumerate(self.transelements):
+      for item, matchpo in enumerate(self.transunits):
         if matchpo == oldpo:
           # TODO: copy over old
           raise NotImplementedError("need to add code for merging without suggestions")

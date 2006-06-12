@@ -14,7 +14,7 @@ import pstats
 class PootleBenchmarker:
     """class to aid in benchmarking pootle"""
     StoreClass = pootlefile.pootlefile
-    UnitClass = pootlefile.pootleelement
+    UnitClass = pootlefile.pootleunit
     def __init__(self, test_dir):
         """sets up benchmarking on the test directory"""
         self.test_dir = os.path.abspath(test_dir)
@@ -95,7 +95,7 @@ Pootle:
                 pofilename = os.path.join(dirpath, name)
                 parsedfile = po.pofile(open(pofilename, 'r'))
                 count += len(parsedfile.units)
-        print "counted %d elements" % count
+        print "counted %d units" % count
 
     def parse_and_create_stats(self):
         """parses all the po files in the test directory into memory, using pootlefile, which creates Stats"""
@@ -106,7 +106,7 @@ Pootle:
                 pofilename = os.path.join(dirpath, name)
                 parsedfile = pootlefile.pootlefile(pofilename=pofilename, stats=True)
                 count += len(parsedfile.units)
-        print "stats on %d elements" % count
+        print "stats on %d units" % count
 
     def parse_and_create_index(self):
         """parses all the po files in the test directory into memory, using pootlefile, and allow index creation"""
@@ -116,7 +116,7 @@ Pootle:
         project = self.server.potree.getproject("zxx", "benchmark")
         for name in project.browsefiles():
             count += len(project.getpofile(name).units)
-        print "indexed %d elements" % count
+        print "indexed %d units" % count
         assert os.path.exists(os.path.join(self.po_dir, ".poindex-%s-%s" % (project.projectcode, project.languagecode)))
 
     def generate_main_page(self):
@@ -148,9 +148,9 @@ Pootle:
         args = {"pofilename": pofilename, "submit0": "true", "trans0": "changed"}
         page = self.server.getpage(["zxx", "benchmark", "translate.html"], session, args)
         pofile = project.getpofile(pofilename)
-        print str(pofile.transelements[0])
+        print str(pofile.transunits[0])
         # assert fails because of multistring
-        # assert pofile.transelements[0].unquotedmsgstr == "changed"
+        # assert pofile.transunits[0].unquotedmsgstr == "changed"
         print page.templatevars
 
 if __name__ == "__main__":

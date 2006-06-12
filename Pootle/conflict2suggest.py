@@ -32,7 +32,7 @@ def processfile(filename):
   pofile = pootlefile.pootlefile(dummyproject, os.path.basename(filename))
   pofile.readpofile()
   conflictitems = []
-  for item, poentry in enumerate(pofile.transelements):
+  for item, poentry in enumerate(pofile.transunits):
     msgstrs = poentry.unquotedmsgstr
     for msgstr in msgstrs:
       if conflictmarker in msgstr:
