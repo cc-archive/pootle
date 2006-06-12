@@ -25,25 +25,15 @@ def wordcount(unquotedstr):
   """returns the number of words in an unquoted str"""
   return len(unquotedstr.split())
 
-class pootleunit(base.TranslationUnit):
-  """a pounit with helpful methods for pootle"""
-  WrapUnitClass = po.pounit
-  def __init__(self, source=None, encoding="UTF-8", wrapunit=None):
-    if wrapunit is None:
-      self.wrapunit = self.WrapUnitClass()
-    else:
-      self.wrapunit = wrapunit
-    self.encoding = po.encodingToUse(encoding)
-    if source is not None:
-      self.source = source
-
+class Wrapper(object):
+  """An object which wraps an inner object, delegating to the encapsulated methods etc"""
   def __getattr__(self, attrname, *args):
     if attrname in self.__dict__:
       return self.__dict__[attrname]
-    return getattr(self.__dict__["wrapunit"], attrname, *args)
+    return getattr(self.__dict__["__innerobj__"], attrname, *args)
 
   def __setattr__(self, attrname, value):
-    if attrname == "wrapunit":
+    if attrname == "__innerobj__":
       self.__dict__[attrname] = value
     elif attrname in self.__dict__:
       if isinstance(self.__dict__[attrname], property):
@@ -56,39 +46,73 @@ class pootleunit(base.TranslationUnit):
       else:
         self.__dict__[attrname] = value
     else:
-      return setattr(self.__dict__["wrapunit"], attrname, value)
+      return setattr(self.__dict__["__innerobj__"], attrname, value)
+
+class pootleunit(base.TranslationUnit, Wrapper):
+  """a pounit with helpful methods for pootle"""
+  WrapUnitClass = po.pounit
+  def __init__(self, source=None, encoding="UTF-8", wrapunit=None):
+    # self.__innerobj__ must be the first attribute set
+    if wrapunit is None:
+      self.__innerobj__ = self.WrapUnitClass()
+    else:
+      self.__innerobj__ = wrapunit
+    self.encoding = po.encodingToUse(encoding)
+    if source is not None:
+      self.source = source
+
+  def __getattr__(self, attrname, *args):
+    if attrname in self.__dict__:
+      return self.__dict__[attrname]
+    return getattr(self.__dict__["__innerobj__"], attrname, *args)
+
+  def __setattr__(self, attrname, value):
+    if attrname == "__innerobj__":
+      self.__dict__[attrname] = value
+    elif attrname in self.__dict__:
+      if isinstance(self.__dict__[attrname], property):
+        self.__dict__[attrname].fset(value)
+      else:
+        self.__dict__[attrname] = value
+    elif attrname in self.__class__.__dict__:
+      if isinstance(self.__class__.__dict__[attrname], property):
+        self.__class__.__dict__[attrname].fset(self, value)
+      else:
+        self.__dict__[attrname] = value
+    else:
+      return setattr(self.__dict__["__innerobj__"], attrname, value)
 
   def __str__(self):
-    return self.wrapunit.__str__()
+    return self.__innerobj__.__str__()
 
   def parse(self, src):
-    return self.wrapunit.parse(src)
+    return self.__innerobj__.parse(src)
 
   def getsource(self):
-    return self.wrapunit.source
+    return self.__innerobj__.source
 
   def setsource(self, source):
-    self.wrapunit.source = source
+    self.__innerobj__.source = source
   source = property(getsource, setsource)
 
   def gettarget(self):
-    return self.wrapunit.target
+    return self.__innerobj__.target
 
   def settarget(self, target):
-    self.wrapunit.target = target
+    self.__innerobj__.target = target
   target = property(gettarget, settarget)
 
   def getlocations(self):
-    return self.wrapunit.getlocations()
+    return self.__innerobj__.getlocations()
 
   def hasplural(self):
-    return self.wrapunit.hasplural()
+    return self.__innerobj__.hasplural()
 
   def merge(self, otherunit, overwrite=False, comments=True):
     if isinstance(otherunit, pootleunit):
-      return self.wrapunit.merge(otherunit.wrapunit, overwrite=overwrite, comments=comments)
+      return self.__innerobj__.merge(otherunit.__innerobj__, overwrite=overwrite, comments=comments)
     else:
-      return self.wrapunit.merge(otherunit, overwrite=overwrite, comments=comments)
+      return self.__innerobj__.merge(otherunit, overwrite=overwrite, comments=comments)
 
   # TODO: try and replace with underlying baseunit properties as much as possible
   def getunquotedmsgid(self):
