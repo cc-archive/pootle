@@ -208,10 +208,8 @@ def mozillapropertiesencode(source):
     charnum = ord(char)
     if char in controlchars:
       output += controlchars[char]
-    elif 0 <= charnum < 128:
-      output += str(char)
     else:
-      output += "\\u%04X" % charnum
+      output += char
   return output
 
 propertyescapes = {

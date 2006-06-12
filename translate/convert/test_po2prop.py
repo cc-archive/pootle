@@ -38,6 +38,15 @@ class TestPO2Prop:
         print propfile
         assert propfile == [propexpected]
 
+    def test_unicode_utf8(self):
+        """check that we encode unicode in utf8 (not escaped \uNNNN)"""
+        posource = u'''#: prop\nmsgid "\\nvalue\\n\\n"\nmsgstr "\\nwa\xe7rde\\n\\n"\n'''.encode("UTF-8")
+        proptemplate = '''prop=\\nvalue\\n\\n\n'''
+        propexpected = u'''prop=\\nwa\xe7rde\\n\\n\n'''.encode("UTF-8")
+        propfile = self.merge2prop(proptemplate, posource)
+        print propfile
+        assert propfile == [propexpected]
+
 class TestPO2PropCommand(test_convert.TestConvertCommand, TestPO2Prop):
     """Tests running actual po2prop commands on files"""
     convertmodule = po2prop

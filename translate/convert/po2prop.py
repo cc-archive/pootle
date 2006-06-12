@@ -43,6 +43,8 @@ class reprop:
     outputlines = []
     for line in self.templatefile.readlines():
       outputstr = self.convertline(line)
+      if isinstance(outputstr, unicode):
+        outputstr = outputstr.encode("UTF-8")
       outputlines.append(outputstr)
     return outputlines
 
