@@ -134,8 +134,8 @@ def test_doublewords():
     assert checks.passes(stdchecker.doublewords, "Save the rhino", "Save the rhino")
     assert checks.fails(stdchecker.doublewords, "Save the rhino", "Save the the rhino")
     # Double variables are not an error
-    #stdchecker = checks.StandardChecker(checks.CheckerConfig(varmatches=[("%", 1)]))
-    #assert checks.passes(stdchecker.doublewords, "%s %s installation", "tsenyo ya %s %s")
+    stdchecker = checks.StandardChecker(checks.CheckerConfig(varmatches=[("%", 1)]))
+    assert checks.passes(stdchecker.doublewords, "%s %s installation", "tsenyo ya %s %s")
 
 def test_endpunc():
     """tests endpunc"""
