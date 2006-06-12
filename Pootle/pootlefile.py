@@ -515,11 +515,13 @@ class pootleassigns:
             assignitems.extend(actionitems)
     return assignitems
 
-class pootlefile(po.pofile):
+class pootlefile(base.TranslationStore, Wrapper):
   """this represents a pootle-managed .po file and its associated files"""
+  UnitClass = pootleunit
+  WrapStoreClass = po.pofile
   x_generator = "Pootle %s" % __version__.ver
   def __init__(self, project=None, pofilename=None, stats=True):
-    po.pofile.__init__(self, unitclass=pootleunit)
+    self.__innerobj__ = po.pofile(unitclass=self.UnitClass)
     self.pofilename = pofilename
     if project is None:
       from Pootle import projects
@@ -536,6 +538,18 @@ class pootlefile(po.pofile):
     self.statistics = pootlestatistics(self, stats)
     self.assigns = pootleassigns(self)
     self.tracker = timecache.timecache(20*60)
+
+  def makeindex(self):
+    return self.__innerobj__.makeindex()
+
+  def __str__(self):
+    return self.__innerobj__.__str__()
+
+  def parsestring(cls, storestring):
+    newstore = cls()
+    newstore.parse(storestring)
+    return newstore
+  parsestring = classmethod(parsestring)
 
   def track(self, item, message):
     """sets the tracker message for the given item"""
