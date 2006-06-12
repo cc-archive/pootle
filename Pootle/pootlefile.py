@@ -25,8 +25,71 @@ def wordcount(unquotedstr):
   """returns the number of words in an unquoted str"""
   return len(unquotedstr.split())
 
-class pootleunit(po.pounit, object):
+class pootleunit(base.TranslationUnit):
   """a pounit with helpful methods for pootle"""
+  WrapUnitClass = po.pounit
+  def __init__(self, source=None, encoding="UTF-8", wrapunit=None):
+    if wrapunit is None:
+      self.wrapunit = self.WrapUnitClass()
+    else:
+      self.wrapunit = wrapunit
+    self.encoding = po.encodingToUse(encoding)
+    if source is not None:
+      self.source = source
+
+  def __getattr__(self, attrname, *args):
+    if attrname in self.__dict__:
+      return self.__dict__[attrname]
+    return getattr(self.__dict__["wrapunit"], attrname, *args)
+
+  def __setattr__(self, attrname, value):
+    if attrname == "wrapunit":
+      self.__dict__[attrname] = value
+    elif attrname in self.__dict__:
+      if isinstance(self.__dict__[attrname], property):
+        self.__dict__[attrname].fset(value)
+      else:
+        self.__dict__[attrname] = value
+    elif attrname in self.__class__.__dict__:
+      if isinstance(self.__class__.__dict__[attrname], property):
+        self.__class__.__dict__[attrname].fset(self, value)
+      else:
+        self.__dict__[attrname] = value
+    else:
+      return setattr(self.__dict__["wrapunit"], attrname, value)
+
+  def __str__(self):
+    return self.wrapunit.__str__()
+
+  def parse(self, src):
+    return self.wrapunit.parse(src)
+
+  def getsource(self):
+    return self.wrapunit.source
+
+  def setsource(self, source):
+    self.wrapunit.source = source
+  source = property(getsource, setsource)
+
+  def gettarget(self):
+    return self.wrapunit.target
+
+  def settarget(self, target):
+    self.wrapunit.target = target
+  target = property(gettarget, settarget)
+
+  def getlocations(self):
+    return self.wrapunit.getlocations()
+
+  def hasplural(self):
+    return self.wrapunit.hasplural()
+
+  def merge(self, otherunit, overwrite=False, comments=True):
+    if isinstance(otherunit, pootleunit):
+      return self.wrapunit.merge(otherunit.wrapunit, overwrite=overwrite, comments=comments)
+    else:
+      return self.wrapunit.merge(otherunit, overwrite=overwrite, comments=comments)
+
   # TODO: try and replace with underlying baseunit properties as much as possible
   def getunquotedmsgid(self):
     """returns the msgid as a list of unquoted strings (one per plural form present)"""
@@ -432,7 +495,7 @@ class pootlefile(po.pofile):
   """this represents a pootle-managed .po file and its associated files"""
   x_generator = "Pootle %s" % __version__.ver
   def __init__(self, project=None, pofilename=None, stats=True):
-    po.pofile.__init__(self, elementclass=pootleunit)
+    po.pofile.__init__(self, unitclass=pootleunit)
     self.pofilename = pofilename
     if project is None:
       from Pootle import projects
@@ -614,9 +677,9 @@ class pootlefile(po.pofile):
     header = self.header()
     newheader = newpofile.header()
     if header is None and not newheader is None:
-      header = self.elementclass("", encoding=self.encoding)
+      header = self.UnitClass("", encoding=self.encoding)
       header.target = ""
-    if header:  
+    if header:
       header.initallcomments(blankall=True)
       if newheader:
         for i in range(len(header.allcomments)):

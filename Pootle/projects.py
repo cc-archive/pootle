@@ -402,7 +402,7 @@ class TranslationProject(object):
     if os.path.exists(pathname):
       origpofile = self.getpofile(os.path.join(dirname, pofilename))
       # TODO: work out how to handle locking here...
-      newpofile = po.pofile(elementclass=pootlefile.pootleunit)
+      newpofile = po.pofile(unitclass=pootlefile.pootleunit)
       infile = cStringIO.StringIO(contents)
       newpofile.parse(infile)
       if "admin" in self.getrights(session):
