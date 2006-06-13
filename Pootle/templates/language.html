@@ -15,7 +15,7 @@
 
   <div id="content">
     <div class="navbar">
-      <img src="/images/language.png" type="button" class="icon" />
+      <img src="/images/language.png" class="icon" />
 
       <h3 class="title">[ <a href="/${language.code}/" py:content="language.name">Language</a> ]</h3>
 
@@ -30,7 +30,7 @@
 
     <div py:for="p in projects" class="item item-${p.parity}">
       <div class="contentsitem">
-        <img src="/images/folder.png" type="button" class="icon" />
+        <img src="/images/folder.png" class="icon" />
         <h3 class="title"><a href="${p.code}/" py:content="p.name" py:title="p.description">Project</a></h3>
       </div>
       <div class="item-statistics" py:content="XML(p.stats)">0 files, 0/0 words (0%) translated
