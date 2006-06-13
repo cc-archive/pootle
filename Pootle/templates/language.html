@@ -25,12 +25,12 @@
     </div>
 
     <div class="intro">
-      <span py:for="i in language.info" py:strip="True"><b>${i.title}</b>: ${i.value}<br/></span>
+      <span py:for="i in language.info" py:strip="True"><b>${i.title}</b>: ${i.value}<br /></span>
     </div>
 
     <div py:for="p in projects" class="item item-${p.parity}">
       <div class="contentsitem">
-        <img src="/images/folder.png" type="button" class="icon"></img>
+        <img src="/images/folder.png" type="button" class="icon" />
         <h3 class="title"><a href="${p.code}/" py:content="p.name" py:title="p.description">Project</a></h3>
       </div>
       <div class="item-statistics" py:content="XML(p.stats)">0 files, 0/0 words (0%) translated
