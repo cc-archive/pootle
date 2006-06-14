@@ -34,7 +34,7 @@
     <div py:for="p in projects" class="item item-${p.parity}">
       <div class="contentsitem">
         <img src="/images/folder.png" class="icon" alt="" />
-        <h3 class="title"><a href="${p.code}/" py:content="p.name" py:title="p.description">Project</a></h3>
+        <h3 class="title"><a href="${p.code}/" py:content="p.name" title="${p.description}">Project</a></h3>
       </div>
       <div class="item-statistics" py:content="XML(p.stats)">0 files, 0/0 words (0%) translated
         <span class="string-statistics">[0/0 strings]</span>
