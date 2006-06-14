@@ -12,18 +12,25 @@ from translate.misc.wStringIO import StringIO
 
 def prop2inc(pf):
   """convert a properties file back to a .inc file with #defines in it"""
+  # any leftover blanks will not be included at the end
+  pendingblanks = []
   for pe in pf.propelements:
     for comment in pe.comments:
       if comment.startswith("# converted from") and "#defines" in comment:
         pass
       else:
+        for blank in pendingblanks:
+          yield blank
+        # TODO: could convert commented # x=y back to # #define x y
         yield comment
     if pe.isblank():
-      yield "\n"
+      pendingblanks.append("\n")
     else:
       definition = "#define %s %s\n" % (pe.name, pe.msgid.replace("\n", "\\n"))
       if isinstance(definition, unicode):
         definition = definition.encode("UTF-8")
+      for blank in pendingblanks:
+        yield blank
       yield definition
 
 def prop2it(pf):
@@ -70,7 +77,7 @@ def po2inc(inputfile, outputfile, templatefile, encoding=None, includefuzzy=Fals
   outputpropfile = StringIO()
   if templatefile is not None:
     templatelines = templatefile.readlines()
-    templateproplines = [quote.mozillapropertiesencode(line) for line in mozfunny2prop.inc2prop(templatelines)]
+    templateproplines = [mozfunny2prop.encodepropline(line) for line in mozfunny2prop.inc2prop(templatelines)]
     templatepropfile = StringIO("".join(templateproplines))
   else:
     templatepropfile = None
@@ -87,7 +94,7 @@ def po2it(inputfile, outputfile, templatefile, encoding="cp1252", includefuzzy=F
   outputpropfile = StringIO()
   if templatefile is not None:
     templatelines = templatefile.readlines()
-    templateproplines = [quote.mozillapropertiesencode(line) for line in mozfunny2prop.it2prop(templatelines, encoding=encoding)]
+    templateproplines = [mozfunny2prop.encodepropline(line) for line in mozfunny2prop.it2prop(templatelines, encoding=encoding)]
     templatepropfile = StringIO("".join(templateproplines))
   else:
     templatepropfile = None
