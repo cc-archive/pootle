@@ -30,6 +30,9 @@ initfiles = [(join(sitepackages,'Pootle'),[join('Pootle','__init__.py')])]
 packages = ["Pootle"]
 pootlescripts = [join('Pootle', 'PootleServer')]
 
+#Enter the codes for all languages that must be packaged here
+approvedlanguages = ['af', 'eu', 'hr', 'fr', 'fur', 'de', 'it', 'pl', 'pt', 'sr', 'sl', 'es', 'sv', 'tr', 'vi']
+
 class build_exe_map(build_exe):
     """distutils py2exe-based class that builds the exe file(s) but allows mapping data files"""
     def reinitialize_command(self, command, reinit_subcommands=0):
@@ -190,6 +193,10 @@ def getdatafiles():
   pootlefiles.append(listfiles(join('Pootle', 'html', 'js')))
   pootlefiles.append(listfiles(join('Pootle', 'html', 'doc')))
   pootlefiles.append(listfiles(join('Pootle', 'templates')))
+  pootlefiles.append(listfiles(join('Pootle', 'po')))
+  pootlefiles.append(listfiles(join('Pootle', 'po', 'pootle')))
+  for dir in approvedlanguages :
+    pootlefiles.append(listfiles(join('Pootle', 'po', 'pootle', dir)))
   datafiles += pootlefiles
   return datafiles
 
