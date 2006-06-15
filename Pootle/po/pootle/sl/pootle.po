@@ -1,0 +1,1174 @@
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: translate-pootle@lists.sourceforge.net\n"
+"POT-Creation-Date: 2006-06-14 10:14+0200\n"
+"PO-Revision-Date: 2006-06-14 14:28+0200\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+"Generated-By: pygettext.py 1.1\n"
+"X-Generator: Translate Toolkit 0.9rc1\n"
+
+#: translatepage.py:56 translatepage.py:73
+#, python-format
+msgid "Pootle: translating %s into %s: %s"
+msgstr "Pootle: prevajanje %s v %s: %s"
+
+#: translatepage.py:62
+#, python-format
+msgid ""
+"%d/%d translated\n"
+"(%d blank, %d fuzzy)"
+msgstr ""
+"%d/%d prevedenih\n"
+"(%d neprevedenih, %d ohlapnih)"
+
+#: translatepage.py:74 adminpages.py:17 adminpages.py:53 adminpages.py:107
+#: adminpages.py:167 adminpages.py:250 adminpages.py:309 indexpage.py:35
+#: indexpage.py:54 indexpage.py:88 indexpage.py:145 indexpage.py:200
+#: indexpage.py:275 pagelayout.py:34 users.py:20 users.py:50 users.py:83
+#: users.py:104
+msgid "Pootle Demo"
+msgstr "Pootle Demo"
+
+#: translatepage.py:87
+#, fuzzy
+msgid "Original"
+msgstr "original"
+
+#: translatepage.py:88
+#, fuzzy
+msgid "Translation"
+msgstr "prevod"
+
+#: translatepage.py:91
+#, fuzzy
+msgid "Accept"
+msgstr "sprejmi"
+
+#: translatepage.py:92
+#, fuzzy
+msgid "Reject"
+msgstr "zavrni"
+
+#: translatepage.py:95 indexpage.py:282
+msgid "Search"
+msgstr "Išči"
+
+#: translatepage.py:108
+msgid "End of batch"
+msgstr "Konec paketa"
+
+#: translatepage.py:110
+msgid "Click here to return to the index"
+msgstr "Kliknite tu, da se vrnete na kazalo"
+
+#: translatepage.py:122 translatepage.py:124
+msgid "Start"
+msgstr "Začetek"
+
+#: translatepage.py:127 translatepage.py:129
+#, python-format
+msgid "Previous %d"
+msgstr "Prejšnjih %d"
+
+#: translatepage.py:130
+#, python-format
+msgid "Items %d to %d of %d"
+msgstr "Predmeti %d do %d od %d"
+
+#: translatepage.py:134 translatepage.py:136
+#, python-format
+msgid "Next %d"
+msgstr "Naslednji %d"
+
+#: translatepage.py:138 translatepage.py:140
+msgid "End"
+msgstr "Konec"
+
+#: translatepage.py:155
+#, python-format
+msgid "checking %s"
+msgstr "preverjanje %s"
+
+#: translatepage.py:162 translatepage.py:165 indexpage.py:429 indexpage.py:432
+msgid "Assign Strings"
+msgstr "Dodeli nize"
+
+#: translatepage.py:163 indexpage.py:431
+msgid "Assign to User"
+msgstr "Dodeli uporabniku"
+
+#: translatepage.py:164 indexpage.py:430
+msgid "Assign Action"
+msgstr "Dodeli dejanje"
+
+#: translatepage.py:292
+#, python-format
+msgid "There are no items matching that search ('%s')"
+msgstr "Nobenih zadetkov za niz '%s'"
+
+#: translatepage.py:294
+msgid "You have finished going through the items you selected"
+msgstr "Končali ste z selekcijo izbranih stvari"
+
+#: translatepage.py:429
+msgid "Singular"
+msgstr "Ednina"
+
+#: translatepage.py:430
+msgid "Plural"
+msgstr "Množina"
+
+#: translatepage.py:443
+msgid "Edit"
+msgstr "Uredi"
+
+#: translatepage.py:459
+#, fuzzy
+msgid "Copy"
+msgstr "kopiraj"
+
+#: translatepage.py:460 translatepage.py:617
+#, fuzzy
+msgid "Skip"
+msgstr "preskoči"
+
+#: translatepage.py:461 projects.py:111
+msgid "Suggest"
+msgstr "Predlagaj"
+
+#: translatepage.py:462
+#, fuzzy
+msgid "Submit"
+msgstr "pošlji"
+
+#: translatepage.py:466
+msgid "Grow"
+msgstr "Povišaj"
+
+#: translatepage.py:467
+msgid "Shrink"
+msgstr "Znižaj"
+
+#: translatepage.py:468
+msgid "Broaden"
+msgstr "Razširi"
+
+#: translatepage.py:469
+msgid "Narrow"
+msgstr "Skrči"
+
+#: translatepage.py:470
+msgid "Reset"
+msgstr "Ponastavi"
+
+#: translatepage.py:488 translatepage.py:574 translatepage.py:608
+#: translatepage.py:636
+#, python-format
+msgid "Plural Form %d"
+msgstr "Množinska oblika %d"
+
+#: translatepage.py:578
+#, fuzzy
+msgid "Current Translation:"
+msgstr "<b>Trenutna registracija</b>"
+
+#: translatepage.py:589
+#, python-format
+msgid "Suggestion %d by %s:"
+msgstr "Predlog %d do %s:"
+
+#: translatepage.py:591
+#, python-format
+msgid "Suggestion %d:"
+msgstr "Predlogi %d"
+
+#: translatepage.py:594
+#, python-format
+msgid "Suggestion by %s:"
+msgstr "Predlogi od %s"
+
+#: translatepage.py:596
+msgid "Suggestion:"
+msgstr "Predlogi:"
+
+#: adminpages.py:25 adminpages.py:61 adminpages.py:115 adminpages.py:175
+#: pagelayout.py:18
+msgid "Home"
+msgstr "Domov"
+
+#: adminpages.py:26 adminpages.py:177
+msgid "Users"
+msgstr "Uporabniki"
+
+#: adminpages.py:27 adminpages.py:63 indexpage.py:52
+msgid "Languages"
+msgstr "Jeziki"
+
+#: adminpages.py:28 adminpages.py:117 indexpage.py:53
+msgid "Projects"
+msgstr "Projekti"
+
+#: adminpages.py:29
+#, fuzzy
+msgid "General options"
+msgstr "Glavne opcije"
+
+#: adminpages.py:30 users.py:108
+msgid "Option"
+msgstr "Opcija"
+
+#: adminpages.py:31 users.py:109
+msgid "Current value"
+msgstr "Trenutna vrednost"
+
+#: adminpages.py:32 adminpages.py:64 adminpages.py:118 adminpages.py:178
+#: users.py:121
+msgid "Save changes"
+msgstr "Shrani spremembe"
+
+#: adminpages.py:36
+msgid "Title"
+msgstr "Naslov"
+
+#: adminpages.py:36
+msgid "Description"
+msgstr "Opis"
+
+#: adminpages.py:36
+msgid "Base URL"
+msgstr "Glavni URL"
+
+#: adminpages.py:36
+msgid "Home Page"
+msgstr "Domača stran"
+
+#: adminpages.py:62 adminpages.py:116 adminpages.py:176
+#, fuzzy
+msgid "Main admin page"
+msgstr "Glavna admistratorjeva stran "
+
+#: adminpages.py:68
+msgid "ISO Code"
+msgstr "ISO koda"
+
+#: adminpages.py:69 adminpages.py:123 adminpages.py:183 users.py:59
+msgid "Full Name"
+msgstr "Polno ime"
+
+#: adminpages.py:69
+msgid "(add language here)"
+msgstr "(dodaj jezik tukaj)"
+
+#: adminpages.py:70
+msgid "Special Chars"
+msgstr "Posebne sposobnosti"
+
+#: adminpages.py:70
+msgid "(special characters)"
+msgstr "(posebne karakteristike)"
+
+#: adminpages.py:71 indexpage.py:161
+msgid "Number of Plurals"
+msgstr "Število množin"
+
+#: adminpages.py:71
+msgid "(number of plurals)"
+msgstr "(število množin)"
+
+#: adminpages.py:72 indexpage.py:162
+msgid "Plural Equation"
+msgstr "Množinska enačba"
+
+#: adminpages.py:72
+msgid "(plural equation)"
+msgstr "(Izenači množino)"
+
+#: adminpages.py:73
+#, fuzzy
+msgid "Remove Language"
+msgstr "Odstrani jezik"
+
+#: adminpages.py:87 adminpages.py:148 adminpages.py:208 adminpages.py:367
+#, python-format
+msgid "Remove %s"
+msgstr "Odstrani %s"
+
+#: adminpages.py:105
+msgid "Standard"
+msgstr "Standrtno"
+
+#: adminpages.py:122
+msgid "Project Code"
+msgstr "Šifra projekta"
+
+#: adminpages.py:123
+msgid "(add project here)"
+msgstr "(dodaj projekt tukaj)"
+
+#: adminpages.py:124
+msgid "Project Description"
+msgstr "Opis projekta"
+
+#: adminpages.py:124
+msgid "(project description)"
+msgstr "(opis projekta)"
+
+#: adminpages.py:125
+msgid "Checker Style"
+msgstr "Preveri slog"
+
+#: adminpages.py:126
+msgid "Create MO Files"
+msgstr "Ustvari MO datoteke"
+
+#: adminpages.py:127
+#, fuzzy
+msgid "Remove Project"
+msgstr "Odstrani projekt"
+
+#: adminpages.py:182 users.py:28
+msgid "Login"
+msgstr "Vpis"
+
+#: adminpages.py:183 users.py:253
+msgid "(add full name here)"
+msgstr "(dodaj polno ime tukaj)"
+
+#: adminpages.py:184 users.py:56
+msgid "Email Address"
+msgstr "Email naslov"
+
+#: adminpages.py:184 users.py:256
+msgid "(add email here)"
+msgstr "(dodaj email tukaj)"
+
+#: adminpages.py:185 users.py:62
+msgid "Password"
+msgstr "Geslo"
+
+#: adminpages.py:185 users.py:250
+msgid "(add password here)"
+msgstr "(dodaj geslo tukaj)"
+
+#: adminpages.py:186
+msgid "Activated"
+msgstr "Aktivirano"
+
+#: adminpages.py:186
+msgid "Activate New User"
+msgstr "Aktiviraj Novega Uporabnika"
+
+#: adminpages.py:187
+#, fuzzy
+msgid "Remove User"
+msgstr "Odstrani %s"
+
+#: adminpages.py:240
+msgid "Back to main page"
+msgstr "Nazaj na glavno stran"
+
+#: adminpages.py:241
+msgid "Existing languages"
+msgstr "Obstoječi jezik"
+
+#: adminpages.py:244
+msgid "Update Languages"
+msgstr "Posodobi jezik"
+
+#: adminpages.py:245
+#, fuzzy, python-format
+#, python-format
+msgid "Pootle Admin: %s"
+msgstr "Pootle Administrator"
+
+#: adminpages.py:246 adminpages.py:306
+msgid "You do not have the rights to administer this project."
+msgstr "Nimate pravic urejati tega projekta."
+
+#: adminpages.py:247
+msgid "Update from templates"
+msgstr "Posodobljeno iz vzorca"
+
+#: adminpages.py:255
+msgid "Add Language"
+msgstr "Dodaj jezik"
+
+#: adminpages.py:286
+#, python-format
+msgid "Pootle Admin: %s %s"
+msgstr "Pootle Administrator"
+
+#: adminpages.py:287
+msgid "Project home page"
+msgstr "Domača stran projekta"
+
+#: adminpages.py:305
+#, python-format
+msgid "Cannot set rights for username %s - user does not exist"
+msgstr ""
+"Ne morem nasatviti pravice za uporabniško ime %s - uporabnik ne obstaja"
+
+#: adminpages.py:322
+msgid "This is a GNU-style project (one directory, files named per language)."
+msgstr ""
+"Ta projekt temelji na GNU stilu (en direktorij, datoteke imenovane po jeziku)"
+
+#: adminpages.py:324
+msgid "This is a standard style project (one directory per language)."
+msgstr "Stil tega projekta je standrtni (en direktorij na jezik)"
+
+#: adminpages.py:325
+msgid "User Permissions"
+msgstr "Uporabniške pravice"
+
+#: adminpages.py:326 users.py:53 users.py:86
+msgid "Username"
+msgstr "Uporabniško ime"
+
+#: adminpages.py:327
+msgid "(select to add user)"
+msgstr ""
+
+#: adminpages.py:328
+msgid "Rights"
+msgstr "Pravice"
+
+#: adminpages.py:329 indexpage.py:864
+msgid "Remove"
+msgstr "Odstrani"
+
+#: adminpages.py:349
+msgid "Update Rights"
+msgstr "Posodobi pravice"
+
+#: indexpage.py:28
+msgid "About Pootle"
+msgstr "O Pootle"
+
+#: indexpage.py:29
+msgid ""
+"<strong>Pootle</strong> is a simple web portal that should allow you to "
+"<strong>translate</strong>! Since Pootle is <strong>Free Software</strong>, "
+"you can download it and run your own copy if you like. You can also help "
+"participate in the development in many ways (you don't have to be able to "
+"program)."
+msgstr ""
+"<strong>Pootle</strong> je preprost spletni portal, ki omogoča "
+"<strong>prevajanje</strong>! Ker je Pootle <strong>Prosto Programje</"
+"strong>, si ga lahko prenese in poganja vsak. Vsak lahko na mnogo načinov "
+"tudi pomaga pri njegovem razvoju (znanje programiranja ni potrebno)."
+
+#: indexpage.py:30
+msgid ""
+"The Pootle project itself is hosted at <a href=\"http://translate."
+"sourceforge.net/\">translate.sourceforge.net</a> where you can find the "
+"details about source code, mailing lists etc."
+msgstr ""
+"Projekt Pootle gostuje na <a href=\"http://translate.sourceforge.net/"
+"\">translate.sourceforge.net</a>, kjer lahko najdete podrobnosti o izvorni "
+"kodi, poštnih seznamih itd."
+
+#: indexpage.py:31
+#, fuzzy
+msgid ""
+"The name stands for <b>PO</b>-based <b>O</b>nline <b>T</b>ranslation / <b>L</"
+"b>ocalization <b>E</b>ngine, but you may need to read <a href=\"http://www."
+"thechestnut.com/flumps.htm\">this</a>."
+msgstr ""
+"#-#-#-#-#  pootle.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ime pomeni <b>PO</b>-based <b>O</b>nline <b>T</b>ranslation / <b>L</"
+"b>ocalization <b>E</b>ngine, za dodatne podatke si pa preberite <a href="
+"\"http://www.thechestnut.com/flumps.htm\">tole</a>.\n"
+"#-#-#-#-#  pootle.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ime pomeni <b>PO</b>-based <b>O</b>nline <b>T</b>ranslation / <b>L</"
+"b>ocalization <b>E</b>ngine, ampak morda si preberite še <a href=\"http://"
+"www.thechestnut.com/flumps.htm\">tole</a>."
+
+#: indexpage.py:32
+msgid "Versions"
+msgstr "Različice"
+
+#: indexpage.py:33
+#, fuzzy, python-format
+#, python-format
+msgid ""
+"This site is running:<br />Pootle %s<br />Translate Toolkit %s<br />jToolkit "
+"%s<br />Python %s (on %s/%s)"
+msgstr ""
+"Ta stran poganja:</br>Pootle %s</br>jToolkit %s</br>Python %s (na %s/%s)"
+
+#: indexpage.py:49
+msgid "Pootle"
+msgstr "Pootle"
+
+#: indexpage.py:51
+msgid "About this Pootle server"
+msgstr "O tem Pootle strežniku"
+
+#: indexpage.py:83
+#, python-format
+msgid "User Page for: %s"
+msgstr "Uporabnikova stran za: %s"
+
+#: indexpage.py:85
+msgid "Change options"
+msgstr "Spremeni možnosti"
+
+#: indexpage.py:86
+msgid "Admin page"
+msgstr "Adminstratorska stran"
+
+#: indexpage.py:87
+msgid "Quick Links"
+msgstr "Hitre povezave"
+
+#: indexpage.py:91 indexpage.py:202
+msgid "Please click on 'Change options' and select some languages and projects"
+msgstr "Prosim pritisnite na 'Spremeni možnosti' in izberite jezik in projekte"
+
+#: indexpage.py:109
+#, python-format
+msgid "%s %s"
+msgstr "%s %s"
+
+#: indexpage.py:140
+#, python-format
+msgid "%d project, average %d%% translated"
+msgid_plural "%d projects, average %d%% translated"
+msgstr[0] "%d projekt, srednja vrednost %d%% prevedeno"
+msgstr[1] "%d projekti, srednje vrednosti %d%% prevedeni"
+
+#: indexpage.py:142 indexpage.py:197
+#, python-format
+msgid "Pootle: %s"
+msgstr "Pootle: %s"
+
+#: indexpage.py:144 indexpage.py:199 pagelayout.py:22 pagelayout.py:107
+msgid "Admin"
+msgstr "Administrator"
+
+#: indexpage.py:158
+#, fuzzy
+msgid "Language Code"
+msgstr "Jeziki"
+
+#: indexpage.py:159
+#, fuzzy
+msgid "Language Name"
+msgstr "Jeziki"
+
+#: indexpage.py:195
+#, python-format
+msgid "%d language, average %d%% translated"
+msgid_plural "%d languages, average %d%% translated"
+msgstr[0] "%d jezik, srednja vrednost %d%% prevedeno"
+msgstr[1] "%d jeziki, srednje vrednosti %d%% prevedeni"
+
+#: indexpage.py:228 pagelayout.py:169
+#, python-format
+msgid "%d file"
+msgid_plural "%d files"
+msgstr[0] "%d datoteka"
+msgstr[1] "%d datoteke"
+
+#: indexpage.py:229 indexpage.py:861 pagelayout.py:170
+#, python-format
+msgid "%d/%d words (%d%%) translated"
+msgstr "%d/%d besede (%d%%) prevedene"
+
+#: indexpage.py:230 indexpage.py:860 indexpage.py:862
+#, python-format
+msgid "[%d/%d strings]"
+msgstr "[%d/%d vrstice]"
+
+#: indexpage.py:273
+#, python-format
+msgid "Pootle: Project %s, Language %s"
+msgstr "Pootle: Projekt %s, Jezik %s"
+
+#: indexpage.py:325
+msgid "Cannot upload file, no file attached"
+msgstr "Ne morem naložiti datoteke, dobena ni izbrana"
+
+#: indexpage.py:331
+msgid "Can only upload PO files and zips of PO files"
+msgstr "Naložis lahko le PO datoteke in PO.zip datoteke"
+
+#: indexpage.py:437
+#, fuzzy
+msgid "goals"
+msgstr "Zadetki"
+
+#: indexpage.py:437
+msgid "Enter goal name"
+msgstr "Vpiši ime zadetka"
+
+#: indexpage.py:437
+msgid "Add Goal"
+msgstr "Dodaj zadetek"
+
+#: indexpage.py:441 indexpage.py:443
+msgid "Upload File"
+msgstr "Naloži datoteko"
+
+#: indexpage.py:442
+msgid "Select file to upload"
+msgstr "Izberi datoteko za nalaganje"
+
+#: indexpage.py:545
+#, fuzzy
+msgid "Not in a goal"
+msgstr "Dobeden zadetek"
+
+#: indexpage.py:566
+msgid "Add User"
+msgstr "Dodaj uporabnika"
+
+#: indexpage.py:601
+msgid "PO file"
+msgstr "PO datoteka"
+
+#: indexpage.py:605
+msgid "XLIFF file"
+msgstr "XLIFF datoteka"
+
+#: indexpage.py:609
+msgid "Qt .ts file"
+msgstr ""
+
+#: indexpage.py:613
+msgid "CSV file"
+msgstr "CSV datoteka"
+
+#: indexpage.py:618
+msgid "MO file"
+msgstr "MO datoteka"
+
+#: indexpage.py:622
+msgid "Update"
+msgstr "Posodobi"
+
+#: indexpage.py:658
+msgid "All Strings"
+msgstr "Vsi nizi"
+
+#: indexpage.py:658
+msgid "Untranslated"
+msgstr "Neprevedeno"
+
+#: indexpage.py:658
+msgid "Unassigned"
+msgstr "Nedodeljeno"
+
+#: indexpage.py:658
+msgid "Unassigned and Untranslated"
+msgstr "Neprevedeno in nedodeljeno"
+
+#: indexpage.py:665
+msgid "Set Goal"
+msgstr "Nastavi cilj"
+
+#: indexpage.py:670
+msgid "Assign To"
+msgstr "Dodeli"
+
+#: indexpage.py:699
+msgid "Show Tracks"
+msgstr "Pokaži sledi"
+
+#: indexpage.py:699
+msgid "Hide Tracks"
+msgstr "Skrij sledi"
+
+#: indexpage.py:700
+msgid "Show Checks"
+msgstr "Pokaži "
+
+#: indexpage.py:700
+msgid "Hide Checks"
+msgstr "Skrij kontrole"
+
+#: indexpage.py:701
+msgid "Show Goals"
+msgstr "Pokaži zadetke"
+
+#: indexpage.py:701
+msgid "Hide Goals"
+msgstr "Skrij zadetke"
+
+#: indexpage.py:702
+msgid "Show Assigns"
+msgstr "Pokaži prirejene nize/dejanja"
+
+#: indexpage.py:702
+msgid "Hide Assigns"
+msgstr "Skrij prirejene nize/dejanja"
+
+#: indexpage.py:711
+#, python-format
+msgid "All Goals: %s"
+msgstr "Vsi cilji: %s"
+
+#: indexpage.py:717
+msgid "Translate My Strings"
+msgstr "Prevajanje Mojih nizov"
+
+#: indexpage.py:719
+msgid "View My Strings"
+msgstr "Poglej Moje nize"
+
+#: indexpage.py:724
+msgid "No strings assigned to you"
+msgstr "Vam ni dodeljenih nobenih nizov"
+
+#: indexpage.py:728
+msgid "Quick Translate My Strings"
+msgstr "Hitro prevajanje Mojih nizov"
+
+#: indexpage.py:732
+msgid "No untranslated strings assigned to you"
+msgstr "Vam ni dodeljenih nobenih neprevedenih nizov"
+
+#: indexpage.py:736
+msgid "Review Suggestions"
+msgstr "Ponovno poglej predloge"
+
+#: indexpage.py:738
+msgid "View Suggestions"
+msgstr "Poglej predloge"
+
+#: indexpage.py:743
+msgid "Quick Translate"
+msgstr "Hitro prevajanje"
+
+#: indexpage.py:745
+msgid "View Untranslated"
+msgstr "Poglej neprevedeno"
+
+#: indexpage.py:749
+msgid "No untranslated items"
+msgstr "Ni neprevedenih predmetov"
+
+#: indexpage.py:752
+msgid "Translate All"
+msgstr "Prevedi vse"
+
+#: indexpage.py:767
+msgid "ZIP of goal"
+msgstr "ZIP cilja"
+
+#: indexpage.py:769
+msgid "ZIP of folder"
+msgstr "ZIP mape"
+
+#: indexpage.py:776
+msgid "Generate SDF"
+msgstr ""
+
+#: indexpage.py:829
+#, python-format
+msgid "%d string (%d%%) failed"
+msgid_plural "%d strings (%d%%) failed"
+msgstr[0] "%d niz (%d%%) je spodletel"
+msgstr[1] "%d nizov (%d%%) je spodletelo"
+
+#: indexpage.py:859
+#, python-format
+msgid "%d/%d words (%d%%) assigned"
+msgstr "%d/%d besed (%d%%) je prirejenih"
+
+#: pagelayout.py:19
+#, fuzzy
+msgid "All projects"
+msgstr "Vsi projekti"
+
+#: pagelayout.py:20
+#, fuzzy
+msgid "All languages"
+msgstr "Vsi jeziki"
+
+#: pagelayout.py:21
+msgid "My account"
+msgstr ""
+
+#: pagelayout.py:23
+#, fuzzy
+msgid "Docs & help"
+msgstr "Dokumenti & Pomoč"
+
+#: pagelayout.py:24
+#, fuzzy
+msgid "Log out"
+msgstr "Odjava"
+
+#: pagelayout.py:25
+#, fuzzy
+msgid "Log in"
+msgstr "Vpis"
+
+#. l10n: Verb, as in "to register"
+#: pagelayout.py:27
+msgid "Register"
+msgstr "Registracija"
+
+#: pagelayout.py:28
+msgid "Activate"
+msgstr "Aktiviraj"
+
+#: pagelayout.py:96
+msgid "All goals"
+msgstr "Vsi cilji"
+
+#: pagelayout.py:167
+#, python-format
+msgid "%d/%d files"
+msgstr "%d/%d datoteke"
+
+#: pagelayout.py:171
+#, fuzzy, python-format
+#, python-format
+msgid "%d/%d strings"
+msgstr "[%d/%d vrstice]"
+
+#: pootle.py:228 pootle.py:254
+msgid "Redirecting to login..."
+msgstr ""
+
+#: pootle.py:231
+msgid "Need to log in to access home page"
+msgstr ""
+
+#: pootle.py:257
+msgid "Need to log in to access admin page"
+msgstr ""
+
+#: pootle.py:264
+msgid "Redirecting to home..."
+msgstr ""
+
+#: pootle.py:267
+msgid "You do not have the rights to administer pootle."
+msgstr "Nimate pravic oskrbovati pootle."
+
+#: projects.py:110
+msgid "View"
+msgstr "Poglej"
+
+#: projects.py:112
+msgid "Translate"
+msgstr "Prevedi"
+
+#: projects.py:113
+msgid "Review"
+msgstr "Preglej"
+
+#: projects.py:114
+msgid "Archive"
+msgstr "Arhiviraj"
+
+#: projects.py:115
+msgid "Compile PO files"
+msgstr "Ustvari PO datoteke"
+
+#: projects.py:116
+msgid "Assign"
+msgstr "Dodeli"
+
+#: projects.py:117
+msgid "Administrate"
+msgstr "Administriraj"
+
+#: projects.py:173
+msgid "You cannot remove the \"nobody\" or \"default\" user"
+msgstr "Ne morete odstraniti uporabnikov \"nobody\" in \"default\""
+
+#: projects.py:310 projects.py:370
+msgid "You do not have rights to alter goals here"
+msgstr "Nimate pravic za spreminjanje ciljev"
+
+#: projects.py:422
+msgid "You do not have rights to upload files here"
+msgstr "Nimate pravic za nalaganje datotek "
+
+#: projects.py:425
+msgid "You do not have rights to upload new files here"
+msgstr "Nimate pravic za nalaganje novih datotek "
+
+#: projects.py:434
+msgid "You do not have rights to update files here"
+msgstr "Nimate pravic za posodabljanje datotek "
+
+#: projects.py:822 projects.py:863
+msgid "You do not have rights to alter assignments here"
+msgstr "Nimate pravic za spreminjanje dodeljenih nizov/dejanj"
+
+#: projects.py:1047
+msgid "You do not have rights to change translations here"
+msgstr "Nimate pravic za spreminjanje prevodov"
+
+#: projects.py:1057
+msgid "You do not have rights to suggest changes here"
+msgstr "Nimate pravic za predlaganje sprememb"
+
+#: projects.py:1073 projects.py:1096
+msgid "You do not have rights to review suggestions here"
+msgstr "Nimate pravic za pregledovanje predlogov"
+
+#: users.py:18
+msgid "Login to Pootle"
+msgstr "Prijava v Pootle"
+
+#: users.py:23
+#, fuzzy
+msgid "Username:"
+msgstr "Uporabniško ime"
+
+#: users.py:25
+#, fuzzy
+msgid "Password:"
+msgstr "Geslo"
+
+#: users.py:26
+#, fuzzy
+msgid "Language:"
+msgstr "Jeziki"
+
+#: users.py:35
+msgid "Default"
+msgstr ""
+
+#: users.py:46
+msgid "Please enter your registration details"
+msgstr "Prosim vpišite vašo registracijo"
+
+#: users.py:47
+msgid "Pootle Registration"
+msgstr "Pootle registracija"
+
+#: users.py:54 users.py:87
+msgid "Your requested username"
+msgstr "Vaše zahtevano uporabniško ime"
+
+#: users.py:57
+msgid "Must be a valid email address"
+msgstr "Email naslov mora biti veljaven"
+
+#: users.py:60
+msgid "Your full name"
+msgstr "Vaše polno ime"
+
+#: users.py:63
+msgid "Your desired password"
+msgstr "Vaše zahtevano geslo"
+
+#: users.py:65
+#, fuzzy
+msgid "Register Account"
+msgstr "Aktiviraj račun"
+
+#: users.py:74
+msgid "Please enter your activation details"
+msgstr "Prosimo vpišite vašo registracijo"
+
+#: users.py:79
+msgid "Pootle Account Activation"
+msgstr "Pootle aktivacijski račun"
+
+#: users.py:89
+msgid "Activation Code"
+msgstr "Aktivacijska koda"
+
+#: users.py:90
+msgid "The activation code you received"
+msgstr "Prejeli ste aktivacijsko kodo"
+
+#: users.py:92
+msgid "Activate Account"
+msgstr "Aktiviraj račun"
+
+#: users.py:102
+#, python-format
+msgid "Options for: %s"
+msgstr "Možnosti za: %s"
+
+#: users.py:107
+msgid "Personal Details"
+msgstr "Osebni podatki"
+
+#: users.py:110
+msgid "Name"
+msgstr "Ime"
+
+#: users.py:112
+msgid "Email"
+msgstr "Email"
+
+#: users.py:114
+msgid "Translation Interface Configuration"
+msgstr "Nastavitve vmesnika za prevajanje"
+
+#: users.py:115
+msgid "User Interface language"
+msgstr ""
+
+#: users.py:116
+msgid "My Projects"
+msgstr "Moji projekti"
+
+#: users.py:118
+msgid "My Languages"
+msgstr "Moji jeziki"
+
+#: users.py:120
+msgid "Home page"
+msgstr "Domača stran"
+
+#: users.py:154
+#, fuzzy
+msgid "Input Height (in lines)"
+msgstr "Višina vnosnega polja"
+
+#: users.py:154
+msgid "Input Width (in characters)"
+msgstr ""
+
+#: users.py:155
+msgid "Number of rows in view mode"
+msgstr "Število vrstic v navadnem načinu"
+
+#: users.py:156
+msgid "Number of rows in translate mode"
+msgstr "Število vrstic v prevajalnem načinu"
+
+#: users.py:209
+msgid "You need to be siteadmin to change users"
+msgstr "Biti morate glavni administrator, da lahko spreminjate uporabnike"
+
+#: users.py:348
+msgid "Redirecting to Registration Page..."
+msgstr ""
+
+#: users.py:372
+msgid "Redirecting to login Page..."
+msgstr ""
+
+#: users.py:375
+msgid "Your account has been activated! Redirecting to login..."
+msgstr ""
+
+#: users.py:379
+msgid "The activation link you have entered was not valid"
+msgstr ""
+
+#: users.py:380
+#, fuzzy
+msgid "Activation Failed"
+msgstr "Aktivacijska koda"
+
+#: users.py:474
+msgid "Input height must be numeric"
+msgstr "Višina vnosnega polja mora biti številka"
+
+#: users.py:475
+msgid "Input width must be numeric"
+msgstr "Širina vnosnega polja mora biti številka"
+
+#: users.py:476
+msgid "The number of rows displayed in view mode must be numeric"
+msgstr "Število prikazanih vrstic v navadnem načinu mora biti številka"
+
+#: users.py:477
+msgid "The number of rows displayed in translate mode must be numeric"
+msgstr "Število prikazanih vrstic v prevajalnem načinu mora biti številka"
+
+#~ msgid ""
+#~ "<strong>Pootle</strong> is a simple web portal that should allow you to "
+#~ "<strong>translate</strong>!"
+#~ msgstr ""
+#~ "<strong>Pootle</temno> je preprosti internetni portal, ki vam nudi "
+#~ "možnost <strong>prevajanja</strong>!"
+
+#~ msgid "parent folder"
+#~ msgstr "Matična datoteka"
+
+#~ msgid "<h3 class=\"title\">Projects</h3>"
+#~ msgstr "<h3 class=\"title\">Projekti</h3>"
+
+#~ msgid "%d files, %d/%d strings (%d%%) translated"
+#~ msgstr "%d datoteke, %d/%d vrstice (%d%%) prevedene"
+
+#~ msgid "%s language"
+#~ msgstr "%s jezik"
+
+#~ msgid "%d strings (%d%%) failed"
+#~ msgstr "%d nizov (%d%%) je spodletelo"
+
+#~ msgid "this is a demo installation of pootle"
+#~ msgstr "to je demo namestitev Pootle-a"
+
+#~ msgid "current folder"
+#~ msgstr "trenutna mapa"
+
+#~ msgid "Log In"
+#~ msgstr "Prijava"
+
+#~ msgid "login status"
+#~ msgstr "Status"
+
+#~ msgid "project root"
+#~ msgstr "izvor projekta"
+
+#~ msgid "%s project"
+#~ msgstr "%s projekt"
+
+#~ msgid "you do not have rights to suggest changes here"
+#~ msgstr "Nimate pravic da naredite spremembe tukaj"
+
+#~ msgid "you do not have rights to change translations here"
+#~ msgstr "Nimate pravic da spremeninjate prevedeni tekst"
+
+#~ msgid "%d/%d strings (%d%%) translated"
+#~ msgstr "%d/%d nizov je prevedenih (%d%%)"
+
+#~ msgid "%d files, "
+#~ msgstr "%d datoteke"
+
+#~ msgid "<h3 class=\"title\">Languages</h3>"
+#~ msgstr "<h3 class=\"title\">Jeziki</h3>"
+
+#~ msgid "current file"
+#~ msgstr "trenutna datoteka"
+
+#~ msgid "not logged in"
+#~ msgstr "niste prijavljeni"
+
+#~ msgid "Pootle Admin Page"
+#~ msgstr "Pootle adminstracijska stran"
+
+#~ msgid "Pootle Languages Admin Page"
+#~ msgstr "Pootle administrativna stran za jezike"
+
+#~ msgid "Pootle Projects Admin Page"
+#~ msgstr "Pootle adminstracijska stran projektov"
+
+#~ msgid "You do not have the rights to administer Pootle."
+#~ msgstr "Nimate pravic urejevati Pootle."
+
+#~ msgid "Pootle User Admin Page"
+#~ msgstr "Pootle uporabniško adminstracijska stran"
+
+#~ msgid "Select Multiple"
+#~ msgstr "Izberi večkrat"
+
+#~ msgid "suggest"
+#~ msgstr "predlagaj"
+
+#~ msgid "Input Width"
+#~ msgstr "Širina vnosnega polja"
