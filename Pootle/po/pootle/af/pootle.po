@@ -1,0 +1,1210 @@
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: translate-pootle@lists.sourceforge.net\n"
+"POT-Creation-Date: 2006-06-14 10:14+0200\n"
+"PO-Revision-Date: 2006-06-14 14:22+0200\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Pootle 0.9rc1\n"
+"Generated-By: pygettext.py 1.1\n"
+
+#: translatepage.py:56 translatepage.py:73
+#, python-format
+msgid "Pootle: translating %s into %s: %s"
+msgstr "Pootle: vertaal %s in %s: %s"
+
+#: translatepage.py:62
+#, python-format
+msgid ""
+"%d/%d translated\n"
+"(%d blank, %d fuzzy)"
+msgstr ""
+"%d/%d vertaal\n"
+"(%d leeg, %d wasig)"
+
+#: translatepage.py:74 adminpages.py:17 adminpages.py:53 adminpages.py:107
+#: adminpages.py:167 adminpages.py:250 adminpages.py:309 indexpage.py:35
+#: indexpage.py:54 indexpage.py:88 indexpage.py:145 indexpage.py:200
+#: indexpage.py:275 pagelayout.py:34 users.py:20 users.py:50 users.py:83
+#: users.py:104
+msgid "Pootle Demo"
+msgstr "Pootle-demonstrasie"
+
+#: translatepage.py:87
+msgid "Original"
+msgstr "Oorspronklike"
+
+#: translatepage.py:88
+msgid "Translation"
+msgstr "Vertaling"
+
+#: translatepage.py:91
+msgid "Accept"
+msgstr "Aanvaar"
+
+#: translatepage.py:92
+msgid "Reject"
+msgstr "Verwerp"
+
+#: translatepage.py:95 indexpage.py:282
+msgid "Search"
+msgstr "Soek"
+
+#: translatepage.py:108
+msgid "End of batch"
+msgstr "Einde van bondel"
+
+#: translatepage.py:110
+msgid "Click here to return to the index"
+msgstr "Kliek hier om terug te keer na indeks"
+
+#: translatepage.py:122 translatepage.py:124
+msgid "Start"
+msgstr "Begin"
+
+#: translatepage.py:127 translatepage.py:129
+#, python-format
+msgid "Previous %d"
+msgstr "Vorige %d"
+
+#: translatepage.py:130
+#, python-format
+msgid "Items %d to %d of %d"
+msgstr "Items %d tot %d van %d"
+
+#: translatepage.py:134 translatepage.py:136
+#, python-format
+msgid "Next %d"
+msgstr "Volgende %d"
+
+#: translatepage.py:138 translatepage.py:140
+msgid "End"
+msgstr "Einde"
+
+#: translatepage.py:155
+#, python-format
+msgid "checking %s"
+msgstr "gaan \"%s\" na"
+
+#: translatepage.py:162 translatepage.py:165 indexpage.py:429 indexpage.py:432
+msgid "Assign Strings"
+msgstr "Ken stringe toe"
+
+#: translatepage.py:163 indexpage.py:431
+msgid "Assign to User"
+msgstr "Ken toe aan gebruiker"
+
+#: translatepage.py:164 indexpage.py:430
+msgid "Assign Action"
+msgstr "Ken aksie toe"
+
+#: translatepage.py:292
+#, python-format
+msgid "There are no items matching that search ('%s')"
+msgstr "Daar is geen items wat met u soeknavraag, ('%s') ooreenstem nie"
+
+#: translatepage.py:294
+msgid "You have finished going through the items you selected"
+msgstr "U het klaar deur die items wat u gekies het gegaan"
+
+#: translatepage.py:429
+msgid "Singular"
+msgstr "Enkelvoud"
+
+#: translatepage.py:430
+msgid "Plural"
+msgstr "Meervoud"
+
+#: translatepage.py:443
+msgid "Edit"
+msgstr "Redigeer"
+
+#: translatepage.py:459
+msgid "Copy"
+msgstr "Kopieer"
+
+#: translatepage.py:460 translatepage.py:617
+msgid "Skip"
+msgstr "Slaan oor"
+
+#: translatepage.py:461 projects.py:111
+msgid "Suggest"
+msgstr "Stel voor"
+
+#: translatepage.py:462
+msgid "Submit"
+msgstr "Dien in"
+
+#: translatepage.py:466
+msgid "Grow"
+msgstr "Verleng"
+
+#: translatepage.py:467
+msgid "Shrink"
+msgstr "Verkort"
+
+#: translatepage.py:468
+msgid "Broaden"
+msgstr "Verbreed"
+
+#: translatepage.py:469
+msgid "Narrow"
+msgstr "Vernou"
+
+#: translatepage.py:470
+msgid "Reset"
+msgstr "Herstel"
+
+#: translatepage.py:488 translatepage.py:574 translatepage.py:608
+#: translatepage.py:636
+#, python-format
+msgid "Plural Form %d"
+msgstr "Meervoudsvorm %d"
+
+#: translatepage.py:578
+msgid "Current Translation:"
+msgstr "Huidige vertaling:"
+
+#: translatepage.py:589
+#, python-format
+msgid "Suggestion %d by %s:"
+msgstr "Voorstel %d deur %s:"
+
+#: translatepage.py:591
+#, python-format
+msgid "Suggestion %d:"
+msgstr "Voorstel %d:"
+
+#: translatepage.py:594
+#, python-format
+msgid "Suggestion by %s:"
+msgstr "Voorstel deur %s:"
+
+#: translatepage.py:596
+msgid "Suggestion:"
+msgstr "Voorstel:"
+
+#: adminpages.py:25 adminpages.py:61 adminpages.py:115 adminpages.py:175
+#: pagelayout.py:18
+msgid "Home"
+msgstr "Tuisblad"
+
+#: adminpages.py:26 adminpages.py:177
+msgid "Users"
+msgstr "Gebruikers"
+
+#: adminpages.py:27 adminpages.py:63 indexpage.py:52
+msgid "Languages"
+msgstr "Tale"
+
+#: adminpages.py:28 adminpages.py:117 indexpage.py:53
+msgid "Projects"
+msgstr "Projekte"
+
+#: adminpages.py:29
+msgid "General options"
+msgstr "Algemene keuses"
+
+#: adminpages.py:30 users.py:108
+msgid "Option"
+msgstr "Keuses"
+
+#: adminpages.py:31 users.py:109
+msgid "Current value"
+msgstr "Huidige waarde"
+
+#: adminpages.py:32 adminpages.py:64 adminpages.py:118 adminpages.py:178
+#: users.py:121
+msgid "Save changes"
+msgstr "Stoor veranderinge"
+
+#: adminpages.py:36
+msgid "Title"
+msgstr "Titel"
+
+#: adminpages.py:36
+msgid "Description"
+msgstr "Beskrywing"
+
+#: adminpages.py:36
+msgid "Base URL"
+msgstr "Basis-URL"
+
+#: adminpages.py:36
+msgid "Home Page"
+msgstr "Tuisblad"
+
+#: adminpages.py:62 adminpages.py:116 adminpages.py:176
+msgid "Main admin page"
+msgstr "Hoof-adminblad"
+
+#: adminpages.py:68
+msgid "ISO Code"
+msgstr "ISO-kode"
+
+#: adminpages.py:69 adminpages.py:123 adminpages.py:183 users.py:59
+msgid "Full Name"
+msgstr "Volle naam"
+
+#: adminpages.py:69
+msgid "(add language here)"
+msgstr "(voeg taal hier by)"
+
+#: adminpages.py:70
+msgid "Special Chars"
+msgstr "Spes. karakters"
+
+#: adminpages.py:70
+msgid "(special characters)"
+msgstr "(spesiale karakters)"
+
+#: adminpages.py:71 indexpage.py:161
+msgid "Number of Plurals"
+msgstr "Aantal meervoude"
+
+#: adminpages.py:71
+msgid "(number of plurals)"
+msgstr "(aantal meervoude)"
+
+#: adminpages.py:72 indexpage.py:162
+msgid "Plural Equation"
+msgstr "Meervoudvergelyking"
+
+#: adminpages.py:72
+msgid "(plural equation)"
+msgstr "(meervoudvergelyking)"
+
+#: adminpages.py:73
+msgid "Remove Language"
+msgstr "Verwyder taal"
+
+#: adminpages.py:87 adminpages.py:148 adminpages.py:208 adminpages.py:367
+#, python-format
+msgid "Remove %s"
+msgstr "Vee %s uit"
+
+#: adminpages.py:105
+msgid "Standard"
+msgstr "Standaard"
+
+#: adminpages.py:122
+msgid "Project Code"
+msgstr "Projekkode"
+
+#: adminpages.py:123
+msgid "(add project here)"
+msgstr "(voeg projek hier by)"
+
+#: adminpages.py:124
+msgid "Project Description"
+msgstr "Projekbeskrywing"
+
+#: adminpages.py:124
+msgid "(project description)"
+msgstr "(projekbeskrywing)"
+
+#: adminpages.py:125
+msgid "Checker Style"
+msgstr "Toetserstyl"
+
+#: adminpages.py:126
+msgid "Create MO Files"
+msgstr "Skep MO-lêers"
+
+#: adminpages.py:127
+msgid "Remove Project"
+msgstr "Verwyder projek"
+
+#: adminpages.py:182 users.py:28
+msgid "Login"
+msgstr "Meld aan"
+
+#: adminpages.py:183 users.py:253
+msgid "(add full name here)"
+msgstr "(voeg volle naam hier by)"
+
+#: adminpages.py:184 users.py:56
+msgid "Email Address"
+msgstr "E-posadres"
+
+#: adminpages.py:184 users.py:256
+msgid "(add email here)"
+msgstr "(voeg e-pos hier by)"
+
+#: adminpages.py:185 users.py:62
+msgid "Password"
+msgstr "Wagwoord"
+
+#: adminpages.py:185 users.py:250
+msgid "(add password here)"
+msgstr "(voeg wagwoord hier by)"
+
+#: adminpages.py:186
+msgid "Activated"
+msgstr "Geaktiveer"
+
+#: adminpages.py:186
+msgid "Activate New User"
+msgstr "Aktiveer nuwe gebruiker"
+
+#: adminpages.py:187
+msgid "Remove User"
+msgstr "Verwyder gebruiker"
+
+#: adminpages.py:240
+msgid "Back to main page"
+msgstr "Terug na hoofblad"
+
+#: adminpages.py:241
+msgid "Existing languages"
+msgstr "Bestaande tale"
+
+#: adminpages.py:244
+msgid "Update Languages"
+msgstr "Dateer tale op"
+
+#: adminpages.py:245
+#, python-format
+msgid "Pootle Admin: %s"
+msgstr "Pootle-admin: %s"
+
+#: adminpages.py:246 adminpages.py:306
+msgid "You do not have the rights to administer this project."
+msgstr "U het nie administrasieregte vir hierdie projek nie."
+
+#: adminpages.py:247
+msgid "Update from templates"
+msgstr "Dateer op vanaf sjablone"
+
+#: adminpages.py:255
+msgid "Add Language"
+msgstr "Voeg taal by"
+
+#: adminpages.py:286
+#, python-format
+msgid "Pootle Admin: %s %s"
+msgstr "Pootle admin: %s %s"
+
+#: adminpages.py:287
+msgid "Project home page"
+msgstr "Projektuisblad"
+
+#: adminpages.py:305
+#, python-format
+msgid "Cannot set rights for username %s - user does not exist"
+msgstr ""
+"Kan nie regte verstel vir gebruikersnaam %s nie - gebruiker bestaan nie"
+
+#: adminpages.py:322
+msgid "This is a GNU-style project (one directory, files named per language)."
+msgstr ""
+"Hierdie is 'n GNU-styl projek (een gids waarin die lêers volgens taal genoem "
+"word)."
+
+#: adminpages.py:324
+msgid "This is a standard style project (one directory per language)."
+msgstr "Hierdie is 'n standaardstyl projek (een gids per taal)."
+
+#: adminpages.py:325
+msgid "User Permissions"
+msgstr "Gebruikersregte"
+
+#: adminpages.py:326 users.py:53 users.py:86
+msgid "Username"
+msgstr "Gebruikersnaam"
+
+#: adminpages.py:327
+msgid "(select to add user)"
+msgstr "(kies om gebruiker by te voeg)"
+
+#: adminpages.py:328
+msgid "Rights"
+msgstr "Regte"
+
+#: adminpages.py:329 indexpage.py:864
+msgid "Remove"
+msgstr "Haal uit"
+
+#: adminpages.py:349
+msgid "Update Rights"
+msgstr "Dateer regte op"
+
+#: indexpage.py:28
+msgid "About Pootle"
+msgstr "Aangaande Pootle"
+
+#: indexpage.py:29
+msgid ""
+"<strong>Pootle</strong> is a simple web portal that should allow you to "
+"<strong>translate</strong>! Since Pootle is <strong>Free Software</strong>, "
+"you can download it and run your own copy if you like. You can also help "
+"participate in the development in many ways (you don't have to be able to "
+"program)."
+msgstr ""
+"<strong>Pootle</strong> is 'n eenvoudige webportaal wat mens toelaat om te "
+"<strong>vertaal</strong>! Aangesien Pootle <strong>vrye sagteware</strong> "
+"is kan mens dit aflaai en 'n eie kopie loop as mens wil. U kan ook hand "
+"bysit met die ontwikkeling op verskillende maniere (u hoef nie noodwendig "
+"eers te kan programeer nie)."
+
+#: indexpage.py:30
+msgid ""
+"The Pootle project itself is hosted at <a href=\"http://translate."
+"sourceforge.net/\">translate.sourceforge.net</a> where you can find the "
+"details about source code, mailing lists etc."
+msgstr ""
+"Die Pootle-projek word gehuisves by <a href=\"http://translate.sourceforge."
+"net/\">translate.sourceforge.net</a> waar detail oor die bronkode, poslyste, "
+"ens. gekry kan word."
+
+#: indexpage.py:31
+msgid ""
+"The name stands for <b>PO</b>-based <b>O</b>nline <b>T</b>ranslation / <b>L</"
+"b>ocalization <b>E</b>ngine, but you may need to read <a href=\"http://www."
+"thechestnut.com/flumps.htm\">this</a>."
+msgstr ""
+"Die naam staan vir <b>PO</b>-based <b>O</b>nline <b>T</b>ranslation / <b>L</"
+"b>ocalization <b>E</b>ngine, maar moet dalk <a href=\"http://www.thechestnut."
+"com/flumps.htm\">hierdie</a> lees."
+
+#: indexpage.py:32
+msgid "Versions"
+msgstr "Weergawes"
+
+#: indexpage.py:33
+#, python-format
+msgid ""
+"This site is running:<br />Pootle %s<br />Translate Toolkit %s<br />jToolkit "
+"%s<br />Python %s (on %s/%s)"
+msgstr ""
+"Hierdie werf loop:<br />Pootle %s<br />Translate Toolkit %s<br />jToolkit %"
+"s<br />Python %s (on %s/%s)"
+
+#: indexpage.py:49
+msgid "Pootle"
+msgstr "Pootle"
+
+#: indexpage.py:51
+msgid "About this Pootle server"
+msgstr "Aangaande hierdie Pootle-bediener"
+
+#: indexpage.py:83
+#, python-format
+msgid "User Page for: %s"
+msgstr "Gebruikersblad vir: %s"
+
+#: indexpage.py:85
+msgid "Change options"
+msgstr "Verander keuses"
+
+#: indexpage.py:86
+msgid "Admin page"
+msgstr "Adminblad"
+
+#: indexpage.py:87
+msgid "Quick Links"
+msgstr "Snelskakels"
+
+#: indexpage.py:91 indexpage.py:202
+msgid "Please click on 'Change options' and select some languages and projects"
+msgstr "Kliek asb. op 'Verander keuses' en kies u tale en projekte"
+
+#: indexpage.py:109
+#, python-format
+msgid "%s %s"
+msgstr "%s %s"
+
+#: indexpage.py:140
+#, python-format
+msgid "%d project, average %d%% translated"
+msgid_plural "%d projects, average %d%% translated"
+msgstr[0] "%d projek, gemiddeld %d%% vertaal"
+msgstr[1] "%d projekte, gemiddeld %d%% vertaal"
+
+#: indexpage.py:142 indexpage.py:197
+#, python-format
+msgid "Pootle: %s"
+msgstr "Pootle: %s"
+
+#: indexpage.py:144 indexpage.py:199 pagelayout.py:22 pagelayout.py:107
+msgid "Admin"
+msgstr "Admin"
+
+#: indexpage.py:158
+msgid "Language Code"
+msgstr "Taalkode"
+
+#: indexpage.py:159
+msgid "Language Name"
+msgstr "Taalnaam"
+
+#: indexpage.py:195
+#, python-format
+msgid "%d language, average %d%% translated"
+msgid_plural "%d languages, average %d%% translated"
+msgstr[0] "%d taal, gemiddeld %d%% vertaal"
+msgstr[1] "%d tale, gemiddeld %d%% vertaal"
+
+#: indexpage.py:228 pagelayout.py:169
+#, python-format
+msgid "%d file"
+msgid_plural "%d files"
+msgstr[0] "%d lêer"
+msgstr[1] "%d lêers"
+
+#: indexpage.py:229 indexpage.py:861 pagelayout.py:170
+#, python-format
+msgid "%d/%d words (%d%%) translated"
+msgstr "%d/%d woorde (%d%%) vertaal"
+
+#: indexpage.py:230 indexpage.py:860 indexpage.py:862
+#, python-format
+msgid "[%d/%d strings]"
+msgstr "[%d/%d stringe]"
+
+#: indexpage.py:273
+#, python-format
+msgid "Pootle: Project %s, Language %s"
+msgstr "Pootle: projek %s, taal %s"
+
+#: indexpage.py:325
+msgid "Cannot upload file, no file attached"
+msgstr "Kan nie lêer oplaai nie, geen lêer aangeheg nie."
+
+#: indexpage.py:331
+msgid "Can only upload PO files and zips of PO files"
+msgstr "Kan slegs PO-lêers en ZIP's van PO-lêers oplaai."
+
+#: indexpage.py:437
+msgid "goals"
+msgstr "doelwitte"
+
+#: indexpage.py:437
+msgid "Enter goal name"
+msgstr "Tik die doelwit se naam in"
+
+#: indexpage.py:437
+msgid "Add Goal"
+msgstr "Voeg doelwit by"
+
+#: indexpage.py:441 indexpage.py:443
+msgid "Upload File"
+msgstr "Laai lêer op"
+
+#: indexpage.py:442
+msgid "Select file to upload"
+msgstr "Kies lêer om op te laai"
+
+#: indexpage.py:545
+msgid "Not in a goal"
+msgstr "Nie in 'n doelwit nie"
+
+#: indexpage.py:566
+msgid "Add User"
+msgstr "Voeg gebruiker by"
+
+#: indexpage.py:601
+msgid "PO file"
+msgstr "PO-lêer"
+
+#: indexpage.py:605
+msgid "XLIFF file"
+msgstr "XLIFF-lêer"
+
+#: indexpage.py:609
+msgid "Qt .ts file"
+msgstr "Qt .ts-lêer"
+
+#: indexpage.py:613
+msgid "CSV file"
+msgstr "CSV-lêer"
+
+#: indexpage.py:618
+msgid "MO file"
+msgstr "MO-lêer"
+
+#: indexpage.py:622
+msgid "Update"
+msgstr "Dateer op"
+
+#: indexpage.py:658
+msgid "All Strings"
+msgstr "Alle stringe"
+
+#: indexpage.py:658
+msgid "Untranslated"
+msgstr "Onvertaald"
+
+#: indexpage.py:658
+msgid "Unassigned"
+msgstr "Nie toegeken nie"
+
+#: indexpage.py:658
+msgid "Unassigned and Untranslated"
+msgstr "Nie toegeken nie en onvertaald"
+
+#: indexpage.py:665
+msgid "Set Goal"
+msgstr "Stel doelwit"
+
+#: indexpage.py:670
+msgid "Assign To"
+msgstr "Ken toe aan"
+
+#: indexpage.py:699
+msgid "Show Tracks"
+msgstr "Vertoon naspeursels"
+
+#: indexpage.py:699
+msgid "Hide Tracks"
+msgstr "Versteek naspeursels"
+
+#: indexpage.py:700
+msgid "Show Checks"
+msgstr "Vertoon toetse"
+
+#: indexpage.py:700
+msgid "Hide Checks"
+msgstr "Versteek toetse"
+
+#: indexpage.py:701
+msgid "Show Goals"
+msgstr "Vertoon doelwitte"
+
+#: indexpage.py:701
+msgid "Hide Goals"
+msgstr "Versteek doelwitte"
+
+#: indexpage.py:702
+msgid "Show Assigns"
+msgstr "Vertoon toekennings"
+
+#: indexpage.py:702
+msgid "Hide Assigns"
+msgstr "Versteek toekennings"
+
+#: indexpage.py:711
+#, python-format
+msgid "All Goals: %s"
+msgstr "Alle doelwitte: %s"
+
+#: indexpage.py:717
+msgid "Translate My Strings"
+msgstr "Vertaal my stringe"
+
+#: indexpage.py:719
+msgid "View My Strings"
+msgstr "Bekyk my stringe"
+
+#: indexpage.py:724
+msgid "No strings assigned to you"
+msgstr "Geen stringe aan u toegeken nie"
+
+#: indexpage.py:728
+msgid "Quick Translate My Strings"
+msgstr "Snel-vertaal my stringe"
+
+#: indexpage.py:732
+msgid "No untranslated strings assigned to you"
+msgstr "Geen onvertaalde stringe aan u toegeken nie"
+
+#: indexpage.py:736
+msgid "Review Suggestions"
+msgstr "Gaan voorstelle na"
+
+#: indexpage.py:738
+msgid "View Suggestions"
+msgstr "Vertoon voorstelle"
+
+#: indexpage.py:743
+msgid "Quick Translate"
+msgstr "Snel-vertaal"
+
+#: indexpage.py:745
+msgid "View Untranslated"
+msgstr "Vertoon onvertaalde"
+
+#: indexpage.py:749
+msgid "No untranslated items"
+msgstr "Geen onvertaalde items"
+
+#: indexpage.py:752
+msgid "Translate All"
+msgstr "Vertaal alles"
+
+#: indexpage.py:767
+msgid "ZIP of goal"
+msgstr "ZIP van doelwit"
+
+#: indexpage.py:769
+msgid "ZIP of folder"
+msgstr "ZIP van gids"
+
+#: indexpage.py:776
+msgid "Generate SDF"
+msgstr "Genereer SDF"
+
+#: indexpage.py:829
+#, python-format
+msgid "%d string (%d%%) failed"
+msgid_plural "%d strings (%d%%) failed"
+msgstr[0] "%d string (%d%%) het misluk"
+msgstr[1] "%d stringe (%d%%) het misluk"
+
+#: indexpage.py:859
+#, python-format
+msgid "%d/%d words (%d%%) assigned"
+msgstr "%d/%d woorde (%d%%) toegeken"
+
+#: pagelayout.py:19
+msgid "All projects"
+msgstr "Alle projekte"
+
+#: pagelayout.py:20
+msgid "All languages"
+msgstr "Alle tale"
+
+#: pagelayout.py:21
+msgid "My account"
+msgstr "My rekening"
+
+#: pagelayout.py:23
+msgid "Docs & help"
+msgstr "Dokumentasie & hulp"
+
+#: pagelayout.py:24
+msgid "Log out"
+msgstr "Meld af"
+
+#: pagelayout.py:25
+msgid "Log in"
+msgstr "Meld aan"
+
+#. l10n: Verb, as in "to register"
+#: pagelayout.py:27
+msgid "Register"
+msgstr "Registreer"
+
+#: pagelayout.py:28
+msgid "Activate"
+msgstr "Aktiveer"
+
+#: pagelayout.py:96
+msgid "All goals"
+msgstr "Alle doelwitte"
+
+#: pagelayout.py:167
+#, python-format
+msgid "%d/%d files"
+msgstr "%d/%d lêers"
+
+#: pagelayout.py:171
+#, python-format
+msgid "%d/%d strings"
+msgstr "%d/%d stringe"
+
+#: pootle.py:228 pootle.py:254
+msgid "Redirecting to login..."
+msgstr "Gaan nou aanstuur vir aanmelding..."
+
+#: pootle.py:231
+msgid "Need to log in to access home page"
+msgstr "Moet aanteken vir toegang tot tuisblad"
+
+#: pootle.py:257
+msgid "Need to log in to access admin page"
+msgstr "Moet aanteken vir toegang tot adminblad"
+
+#: pootle.py:264
+msgid "Redirecting to home..."
+msgstr "Gaan nou aanstuur na tuisblad..."
+
+#: pootle.py:267
+msgid "You do not have the rights to administer pootle."
+msgstr "U het nie administrasieregte vir pootle nie."
+
+#: projects.py:110
+msgid "View"
+msgstr "Vertoon"
+
+#: projects.py:112
+msgid "Translate"
+msgstr "Vertaal"
+
+#: projects.py:113
+msgid "Review"
+msgstr "Sien na"
+
+#: projects.py:114
+msgid "Archive"
+msgstr "Argiveer"
+
+#: projects.py:115
+msgid "Compile PO files"
+msgstr "Bou PO-lêers"
+
+#: projects.py:116
+msgid "Assign"
+msgstr "Ken toe"
+
+#: projects.py:117
+msgid "Administrate"
+msgstr "Administreer"
+
+#: projects.py:173
+msgid "You cannot remove the \"nobody\" or \"default\" user"
+msgstr "U kan nie die \"nobody\"- of \"default\"-gebruiker verwyder nie."
+
+#: projects.py:310 projects.py:370
+msgid "You do not have rights to alter goals here"
+msgstr "U het nie regte om doelwitte hier te wysig nie."
+
+#: projects.py:422
+msgid "You do not have rights to upload files here"
+msgstr "U het nie regte om lêers hier op te laai nie."
+
+#: projects.py:425
+msgid "You do not have rights to upload new files here"
+msgstr "U het nie regte om nuwe lêers hier op te laai nie."
+
+#: projects.py:434
+msgid "You do not have rights to update files here"
+msgstr "U het nie regte om lêers hier op te dateer nie."
+
+#: projects.py:822 projects.py:863
+msgid "You do not have rights to alter assignments here"
+msgstr "U het nie die regte om toekennings hier te verander nie."
+
+#: projects.py:1047
+msgid "You do not have rights to change translations here"
+msgstr "U het nie die regte om vertalings hier te verander nie."
+
+#: projects.py:1057
+msgid "You do not have rights to suggest changes here"
+msgstr "U het nie die regte om veranderings hier voor te stel nie."
+
+#: projects.py:1073 projects.py:1096
+msgid "You do not have rights to review suggestions here"
+msgstr "U het nie die regte om voorstelle hier na te gaan nie."
+
+#: users.py:18
+msgid "Login to Pootle"
+msgstr "Meld aan by Pootle"
+
+#: users.py:23
+msgid "Username:"
+msgstr "Gebruikernaam:"
+
+#: users.py:25
+msgid "Password:"
+msgstr "Wagwoord:"
+
+#: users.py:26
+msgid "Language:"
+msgstr "Taal:"
+
+#: users.py:35
+msgid "Default"
+msgstr "Verstek"
+
+#: users.py:46
+msgid "Please enter your registration details"
+msgstr "Tik asb. u registrasie-inligting in"
+
+#: users.py:47
+msgid "Pootle Registration"
+msgstr "Pootle-registrasie"
+
+#: users.py:54 users.py:87
+msgid "Your requested username"
+msgstr "U aangevraagde wagwoord"
+
+#: users.py:57
+msgid "Must be a valid email address"
+msgstr "Moet 'n geldige e-posadres wees"
+
+#: users.py:60
+msgid "Your full name"
+msgstr "U volledige naam"
+
+#: users.py:63
+msgid "Your desired password"
+msgstr "U verkose wagwoord"
+
+#: users.py:65
+msgid "Register Account"
+msgstr "Registreer rekening"
+
+#: users.py:74
+msgid "Please enter your activation details"
+msgstr "Tik asb. u aktiveringsinligting in"
+
+#: users.py:79
+msgid "Pootle Account Activation"
+msgstr "Pootle-rekeningaktivering"
+
+#: users.py:89
+msgid "Activation Code"
+msgstr "Aktiveringskode"
+
+#: users.py:90
+msgid "The activation code you received"
+msgstr "Die aktiveringskode wat u ontvang het"
+
+#: users.py:92
+msgid "Activate Account"
+msgstr "Aktiveer rekening"
+
+#: users.py:102
+#, python-format
+msgid "Options for: %s"
+msgstr "Keuses vir: %s"
+
+#: users.py:107
+msgid "Personal Details"
+msgstr "Persoonlike detail"
+
+#: users.py:110
+msgid "Name"
+msgstr "Naam"
+
+#: users.py:112
+msgid "Email"
+msgstr "E-pos"
+
+#: users.py:114
+msgid "Translation Interface Configuration"
+msgstr "Opstelling van vertaalkoppelvlak"
+
+#: users.py:115
+msgid "User Interface language"
+msgstr "Taal vir gebruikerkoppelvlak"
+
+#: users.py:116
+msgid "My Projects"
+msgstr "My projekte"
+
+#: users.py:118
+msgid "My Languages"
+msgstr "My tale"
+
+#: users.py:120
+msgid "Home page"
+msgstr "Tuisblad"
+
+#: users.py:154
+msgid "Input Height (in lines)"
+msgstr "Invoerhoogte (in lyne)"
+
+#: users.py:154
+msgid "Input Width (in characters)"
+msgstr "Invoerwydte (in karakters)"
+
+#: users.py:155
+msgid "Number of rows in view mode"
+msgstr "Aantal rye in bekyk-modus"
+
+#: users.py:156
+msgid "Number of rows in translate mode"
+msgstr "Aantal rye in vertaal-modus"
+
+#: users.py:209
+msgid "You need to be siteadmin to change users"
+msgstr "U moet die werfadministrateur wees om gebruikers te kan verander."
+
+#: users.py:348
+msgid "Redirecting to Registration Page..."
+msgstr "Gaan nou aanstuur na registrasieblad..."
+
+#: users.py:372
+msgid "Redirecting to login Page..."
+msgstr "Gaan nou aanstuur na aanmeldblad..."
+
+#: users.py:375
+msgid "Your account has been activated! Redirecting to login..."
+msgstr "U rekening is geaktiveer! Gaan nou aanstuur vir aanmelding..."
+
+#: users.py:379
+msgid "The activation link you have entered was not valid"
+msgstr "Die aktiveringskakel wat ingevoer is, is nie geldig nie."
+
+#: users.py:380
+msgid "Activation Failed"
+msgstr "Aktivering het misluk"
+
+#: users.py:474
+msgid "Input height must be numeric"
+msgstr "Invoerhoogte moet numeries wees"
+
+#: users.py:475
+msgid "Input width must be numeric"
+msgstr "Invoerwydte moet numeries wees"
+
+#: users.py:476
+msgid "The number of rows displayed in view mode must be numeric"
+msgstr "Aantal rye in bekykmodus moet numeries wees"
+
+#: users.py:477
+msgid "The number of rows displayed in translate mode must be numeric"
+msgstr "Aantal rye in vertaalmodus moet numeries wees"
+
+#~ msgid ""
+#~ "<strong>Pootle</strong> is a simple web portal that should allow you to "
+#~ "<strong>translate</strong>!"
+#~ msgstr ""
+#~ "<strong>Pootle</strong> is 'n eenvoudige web-portaal wat u toelaat om te "
+#~ "<strong>vertaal</strong>!"
+
+#~ msgid "parent folder"
+#~ msgstr "ouer-vouer"
+
+#~ msgid "<h3 class=\"title\">Projects</h3>"
+#~ msgstr "<h3 class=\"title\">Projekte</h3>"
+
+#~ msgid "%d files, %d/%d strings (%d%%) translated"
+#~ msgstr "%d lêers, %d/%d stringe (%d%%) reeds vertaal"
+
+#~ msgid "%s language"
+#~ msgstr "%s taal"
+
+#~ msgid "%d strings (%d%%) failed"
+#~ msgstr "%d stringe (%d%%) het misluk"
+
+#~ msgid "this is a demo installation of pootle"
+#~ msgstr "hierdie is 'n demonstrasie-installasie van pootle"
+
+#~ msgid "current folder"
+#~ msgstr "huidige lêer"
+
+#~ msgid "Log In"
+#~ msgstr "Teken in"
+
+#~ msgid "login status"
+#~ msgstr "intekenings-status"
+
+#~ msgid "project root"
+#~ msgstr "projek-basis"
+
+#~ msgid "%s project"
+#~ msgstr "%s projek"
+
+#~ msgid "you do not have rights to suggest changes here"
+#~ msgstr "u het nie regte om hier voorstelle te verskaf nie"
+
+#~ msgid "you do not have rights to change translations here"
+#~ msgstr "u het nie regte om hier te vertaal nie"
+
+#~ msgid "%d/%d strings (%d%%) translated"
+#~ msgstr "%d/%d stringe (%d%%) reeds vertaal"
+
+#~ msgid "%d files, "
+#~ msgstr "%d lêers,"
+
+#~ msgid "<h3 class=\"title\">Languages</h3>"
+#~ msgstr "<h3 class=\"title\">Tale</h3>"
+
+#~ msgid "current file"
+#~ msgstr "huidige lêer"
+
+#~ msgid "not logged in"
+#~ msgstr "nie tans ingeteken nie"
+
+#~ msgid "Pootle Admin Page"
+#~ msgstr "Pootle Administrasieblad"
+
+#~ msgid "Pootle Languages Admin Page"
+#~ msgstr "Pootle Taaladministrasie-blad"
+
+#~ msgid "Pootle Projects Admin Page"
+#~ msgstr "Pootle projek-administrasieblad"
+
+#~ msgid "(checker style)"
+#~ msgstr "(toetser-styl)"
+
+#~ msgid "You do not have the rights to administer Pootle."
+#~ msgstr "Jy het nie die regte toegang om Pootle te administreer nie."
+
+#~ msgid "Pootle User Admin Page"
+#~ msgstr "Pootle-gebruiker admin-blad"
+
+#~ msgid "%d strings (%d%%) assigned"
+#~ msgstr "%d stringe (%d%%) toegeken"
+
+#~ msgid "Select Multiple"
+#~ msgstr "Kies verskeie"
+
+#~ msgid "suggest"
+#~ msgstr "stel voor"
+
+#~ msgid "Input Width"
+#~ msgstr "Invoerwydte"
+
+#~ msgid "skip"
+#~ msgstr "slaan oor"
+
+#~ msgid "Log Out"
+#~ msgstr "Teken uit"
+
+#~ msgid "<b>Current Translation:</b>"
+#~ msgstr "<b>Huidige vertaling:</b>"
+
+#~ msgid "General Options"
+#~ msgstr "Algemene opsies"
+
+#~ msgid "Main Admin page"
+#~ msgstr "Hoof Admin-blad"
+
+#~ msgid "Remove language"
+#~ msgstr "Vee taal uit"
+
+#~ msgid "Remove project"
+#~ msgstr "Vee projek uit"
+
+#~ msgid "Goals"
+#~ msgstr "Doelwitte"
+
+#~ msgid "No goal"
+#~ msgstr "Geen doelwit"
+
+#~ msgid "Docs & Help"
+#~ msgstr "Dokumente & hulp"
+
+#~ msgid "original"
+#~ msgstr "oorspronklike"
+
+#~ msgid "translation"
+#~ msgstr "vertaling"
+
+#~ msgid ""
+#~ "This site is running:<br/>Pootle %s</br>jToolkit %s</br>Python %s (on %s/%"
+#~ "s)"
+#~ msgstr ""
+#~ "Hierdie webwerf loop:<br/>Pootle %s</br>jToolkit %s</br>Python %s (op %s/%"
+#~ "s)"
+
+#~ msgid "All Projects"
+#~ msgstr "Alle projekte"
+
+#~ msgid "All Languages"
+#~ msgstr "Alle tale"
+
+#~ msgid "copy"
+#~ msgstr "kopieer"
+
+#~ msgid "submit"
+#~ msgstr "dien in"
+
+#~ msgid "accept"
+#~ msgstr "aanvaar"
+
+#~ msgid "reject"
+#~ msgstr "verwerp"
+
+#~ msgid "Input Height"
+#~ msgstr "Invoerhoogte"
