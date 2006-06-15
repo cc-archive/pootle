@@ -2,4 +2,5 @@
 # -*- coding: utf-8 -*-
 """this file contains the version of translate"""
 ver = "0.9"
+build = 9000
 
