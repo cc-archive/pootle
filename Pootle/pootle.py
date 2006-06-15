@@ -433,7 +433,7 @@ class PootleOptionParser(simplewebserver.WebOptionParser):
 
 def checkversions():
   """Checks that version dependencies are met"""
-  if toolkitversion.build < 9000:
+  if not hasattr(toolkitversion, "build") or toolkitversion.build < 9000:
     raise RuntimeError("requires Translate Toolkit version >= 0.9.  Current installed version is: %s" % toolkitversion.ver)
 
 def main():
