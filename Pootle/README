@@ -48,7 +48,7 @@ much easier! To install jToolkit run:
 	cd jToolkit-N.N.N
 	python jToolkitSetup.py install
 
-From version 0.9 of Pootle, kid (http://kid.lesskode.org/), and elementtree
+From version 0.9 of Pootle, kid (http://kid.lesscode.org/), and elementtree
 (http://effbot.org/downloads/#elementtree) are also needed.
 
 Installation of PyLucene is optional, but helps to speed up searching.
