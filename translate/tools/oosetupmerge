@@ -19,13 +19,6 @@
 # along with translate; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-# NOTE:
-# This is a class created from the original msgfmt.py written by 
-# Martin v. Löwis <loewis@informatik.hu-berlin.de> which is release
-# as part of 4Suite (Python tools and libraries for XML processing and databases.)
-# which is itself released under the Apache License.
-#
-
 """tool for building multilingual openoffice.org setup files"""
 
 try:
