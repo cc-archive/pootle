@@ -1,3 +1,548 @@
+2006-06-19 11:21  dwaynebailey
+
+	* README: Its lesscode not lesskode
+
+2006-06-19 09:00  friedelwolff
+
+	* translatepage.py: Fix traceback when searching for nonexisting
+	  text
+
+2006-06-19 08:59  friedelwolff
+
+	* templates/pootlepage.html: Add link tags (stylesheet, favicon),
+	  Add Content-Type
+
+2006-06-15 17:18  friedelwolff
+
+	* README: Mention dependencies on kid and elementreee, mention
+	  PyLucene
+
+2006-06-15 16:30  dwaynebailey
+
+	* PootleServer, __init__.py, adminpages.py, benchmark.py,
+	  conflict2suggest.py, filelocations.py, indexpage.py,
+	  pagelayout.py, pootle.py, pootlefile.py, potree.py, projects.py,
+	  translatepage.py, users.py, versioncontrol.py: Update copyright
+	  dates and add missing copyright headers to files.
+
+2006-06-15 16:09  dwaynebailey
+
+	* pootle.py: Make sure we also fail if toolkit is so old it doesn't
+	  know anything about a build number.
+
+2006-06-15 16:01  dwaynebailey
+
+	* pootle.py: Only run PootleServer if the correct version of
+	  jToolkit is installed.
+
+2006-06-15 09:50  dwaynebailey
+
+	* createpootlepot: Make copyright clear that Zuza is
+	  Translate.org.za
+
+2006-06-15 09:50  friedelwolff
+
+	* __version__.py: Version 0.9
+
+2006-06-15 09:43  friedelwolff
+
+	* createpootlepot: [Backport] Script to create pootle pot file
+
+2006-06-15 09:37  friedelwolff
+
+	* po/pootle/: af/jToolkit.po, af/pootle.po, aka/jToolkit.po,
+	  aka/pootle.po, am/jToolkit.po, am/pootle.po, ar/jToolkit.po,
+	  ar/pootle.po, az/jToolkit.po, az/pootle.po, ca/jToolkit.po,
+	  ca/pootle.po, da/jToolkit.po, da/pootle.po, de/jToolkit.po,
+	  de/pootle.po, el/jToolkit.po, el/pootle.po, en/jToolkit.po,
+	  en/pootle.po, es/jToolkit.po, es/pootle.po, et/jToolkit.po,
+	  et/pootle.po, eu/jToolkit.po, eu/pootle.po, fa/jToolkit.po,
+	  fa/pootle.po, fi/jToolkit.po, fi/pootle.po, fr/jToolkit.po,
+	  fr/pootle.po, fur/jToolkit.po, fur/pootle.po, gl/jToolkit.po,
+	  gl/pootle.po, he/jToolkit.po, he/pootle.po, hi/jToolkit.po,
+	  hi/pootle.po, hr/jToolkit.po, hr/pootle.po, hu/jToolkit.po,
+	  hu/pootle.po, is/jToolkit.po, is/pootle.po, it/jToolkit.po,
+	  it/pootle.po, ja/jToolkit.po, ja/pootle.po, ka/jToolkit.po,
+	  ka/pootle.po, ko/jToolkit.po, ko/pootle.po, kon/jToolkit.po,
+	  kon/pootle.po, ku/jToolkit.po, ku/pootle.po, lt/jToolkit.po,
+	  lt/pootle.po, lv/jToolkit.po, lv/pootle.po, mr/jToolkit.po,
+	  mr/pootle.po, ms/jToolkit.po, ms/pootle.po, nb/jToolkit.po,
+	  nb/pootle.po, ne/jToolkit.po, ne/pootle.po, nl/jToolkit.po,
+	  nl/pootle.po, no/jToolkit.po, no/pootle.po, ns/jToolkit.po,
+	  ns/pootle.po, pa/jToolkit.po, pa/pootle.po, pl/jToolkit.po,
+	  pl/pootle.po, pt/jToolkit.po, pt/pootle.po, ru/jToolkit.po,
+	  ru/pootle.po, sl/jToolkit.po, sl/pootle.po, sr/jToolkit.po,
+	  sr/pootle.po, sv/jToolkit.po, sv/pootle.po, sw/jToolkit.po,
+	  templates/jToolkit.pot, templates/pootle.pot, tr/jToolkit.po,
+	  tr/pootle.po, ts/jToolkit.po, ts/pootle.po, uk/jToolkit.po,
+	  uk/pootle.po, ve/jToolkit.po, ve/pootle.po, vi/jToolkit.po,
+	  vi/pootle.po, xh/jToolkit.po, xh/pootle.po, zu/jToolkit.po,
+	  zu/pootle.po: All po and pot files. Only 15 will be installed.
+
+2006-06-15 09:07  friedelwolff
+
+	* pootle.prefs: Include some languages in default preference file,
+	  many others in comments
+
+2006-06-15 01:17  dwaynebailey
+
+	* templates/projectadmin.html: Remove proprietary attribute from
+	  select tag
+
+2006-06-15 01:15  dwaynebailey
+
+	* templates/language.html: Correctly insert title attribute
+
+2006-06-15 01:04  dwaynebailey
+
+	* templates/: fileindex.html, language.html, navbar.html,
+	  pootlepage.html, project.html: Add all missing alt tags.  A
+	  better fix is on head to actually have real alt tags with
+	  lcoalisable content.
+
+2006-06-15 00:48  friedelwolff
+
+	* templates/: fileindex.html, language.html, pootlepage.html,
+	  project.html: Remove erroneously backported alt tags and table
+	  sorting JavaScript
+
+2006-06-15 00:37  friedelwolff
+
+	* templates/: about.html, activate.html, adminindex.html,
+	  adminlanguages.html, adminprojects.html, adminusers.html,
+	  fileindex.html, home.html, index.html, language.html,
+	  languages.html, login.html, navbar.html, options.html,
+	  pootlepage.html, project.html, projectadmin.html,
+	  projectlangadmin.html, projects.html, redirect.html,
+	  register.html, translatepage.html: Include JavaScript to correct
+	  IE PNG deficiency\n+ some alt tags for bonus
+
+2006-06-15 00:34  friedelwolff
+
+	* html/js/correctpng.js: [Backport] JavaScript for IE PNG fix
+
+2006-06-14 18:08  friedelwolff
+
+	* users.prefs: Add empty name and email to example user (backtrace
+	  otherwise), change indenting
+
+2006-06-14 18:05  friedelwolff
+
+	* adminpages.py, templates/adminusers.html: Fix editing of user
+	  admin interface
+
+2006-06-14 17:28  friedelwolff
+
+	* pootle.py: Hack to ensure we always have unicode arguments
+	  (should be in jToolkit)
+
+2006-06-14 15:52  friedelwolff
+
+	* pootle.py: Enable caching for CSS, JS, and images
+
+2006-06-14 00:44  friedelwolff
+
+	* translatepage.py: Another capitalisation fix skip->Skip
+
+2006-06-13 20:33  friedelwolff
+
+	* translatepage.py: [Backport] Display escapes correctly in
+	  translatepage
+
+2006-06-13 14:49  friedelwolff
+
+	* indexpage.py: Temporary fix for link at multigoal file
+
+2006-06-13 14:25  friedelwolff
+
+	* indexpage.py: Reword "No Goal" -> "Not in a goal"
+
+2006-06-13 13:38  dwaynebailey
+
+	* templates/: fileindex.html, options.html, projectlangadmin.html:
+	  Remove type= attributes from tags (img, td, etc)
+
+2006-06-13 13:27  dwaynebailey
+
+	* templates/: adminindex.html, adminlanguages.html,
+	  adminprojects.html, adminusers.html, fileindex.html,
+	  language.html, navbar.html, project.html, translatepage.html:
+	  Remove type= attributes from tags (img, td, etc)
+
+2006-06-13 13:03  dwaynebailey
+
+	* templates/login.html: Remove type= attributes from tags (img, td,
+	  etc)
+
+2006-06-13 12:58  dwaynebailey
+
+	* templates/activate.html: Remove type= attributes from tags (img,
+	  td, etc)
+
+2006-06-13 12:52  dwaynebailey
+
+	* templates/register.html: Remove type= attributes from tags (img,
+	  td, etc)
+
+2006-06-13 12:23  dwaynebailey
+
+	* templates/pootlepage.html: Remove type= attributes from tags
+	  (img, td, etc)
+
+2006-06-13 12:15  friedelwolff
+
+	* translatepage.py: Make capitalisation consitent
+
+2006-06-13 11:05  dwaynebailey
+
+	* pagelayout.py, templates/navbar.html: Change cls -> class
+
+2006-06-13 10:53  dwaynebailey
+
+	* templates/pootlepage.html: Height is not a valid attribute,
+	  change it to a style attribute.
+
+2006-06-13 10:38  dwaynebailey
+
+	* templates/pootlepage.html: Only show 'logged in as...' if a
+	  session is actually open.
+
+2006-06-13 08:42  friedelwolff
+
+	* projects.py: Support non-ascii goalnames
+
+2006-06-13 08:19  dwaynebailey
+
+	* indexpage.py, templates/fileindex.html, templates/language.html,
+	  templates/navbar.html, templates/pootlepage.html,
+	  templates/project.html, templates/translatepage.html: Make all
+	  empty tags ie <br>, <img>, etc end in [space]/> remove lonely
+	  </img> if not needed.
+
+2006-06-12 10:50  friedelwolff
+
+	* potree.py, projects.py: Detect gnu style projects differently
+
+2006-06-10 16:00  friedelwolff
+
+	* __version__.py: versions -> 0.9rc1 (no dash) for the sake of
+	  building rpms
+
+2006-06-10 14:48  friedelwolff
+
+	* __version__.py: Take version down to 0.9-rc1 to avoid confusion
+	  later
+
+2006-06-09 22:26  friedelwolff
+
+	* __version__.py: Up the Pootle version number to 0.9
+
+2006-06-09 21:36  friedelwolff
+
+	* test_client.py: Adapt tests to new pofile output
+
+2006-06-09 20:02  friedelwolff
+
+	* test_client.py: Fix unit test (a PO header ofsets the part that
+	  is tested for)
+
+2006-06-08 14:26  friedelwolff
+
+	* templates/translatepage.html: Don't use HTML comment for
+	  JavaScript, lest kid ignores it
+
+2006-06-08 14:16  friedelwolff
+
+	* templates/translatepage.html: Make resizing javascript work again
+
+2006-06-08 12:42  friedelwolff
+
+	* translatepage.py: Decode special characters if necessary
+
+2006-06-08 12:20  friedelwolff
+
+	* templates/translatepage.html: Show special characters again
+
+2006-06-08 11:38  friedelwolff
+
+	* templates/translatepage.html: Fix copy button on translate page
+
+2006-06-05 10:39  friedelwolff
+
+	* projects.py: Stale source vs id renaming outstanding (all fixed
+	  properly on HEAD with "location")
+
+2006-06-05 07:16  friedelwolff
+
+	* pagelayout.py: Internationalise string-statistics
+
+2006-06-05 07:07  friedelwolff
+
+	* templates/register.html: Internationalise one last string
+
+2006-06-02 16:03  friedelwolff
+
+	* createpootlepot: Specify outputfile
+
+2006-06-02 16:03  friedelwolff
+
+	* createpootlepot: file createpootlepot was added on branch
+	  wordforge-0-9-branch on 2006-06-15 07:43:46 +0000
+
+2006-06-02 14:18  friedelwolff
+
+	* adminpages.py, templates/adminlanguages.html,
+	  templates/adminprojects.html, templates/adminusers.html,
+	  templates/projectlangadmin.html: Internationalise admin pages
+
+2006-06-02 13:21  friedelwolff
+
+	* adminpages.py, templates/adminindex.html: Internationalise main
+	  admin page
+
+2006-06-02 11:32  friedelwolff
+
+	* pagelayout.py, templates/pootlepage.html: Internationalise side
+	  links
+
+2006-06-02 11:20  friedelwolff
+
+	* templates/languages.html: Use localised aboutlink
+
+2006-06-02 10:08  friedelwolff
+
+	* createpootlepot: Create pot file with "l10n" as automatic comment
+	  keyword
+
+2006-06-02 09:40  friedelwolff
+
+	* templates/pootlepage.html, pagelayout.py: Resolve banner vs. logo
+	  confusion
+
+2006-06-02 09:18  friedelwolff
+
+	* potree.py: Encode special characters before comparison
+
+2006-06-01 20:11  friedelwolff
+
+	* potree.py: Format new language code correctly as la_CO, allow
+	  user to enter with dash instead of underscore
+
+2006-06-01 19:13  friedelwolff
+
+	* potree.py: Prefer regional dialect over generic language
+
+2006-06-01 17:16  dwaynebailey
+
+	* test_client.py: [Sidewaysport] from Pootle-locking branch.  Less
+	  verbose logging. Add submit translations test.
+
+2006-06-01 16:54  dwaynebailey
+
+	* test_client.py: Use lowercase HTML tags jsut as KID does.
+
+2006-06-01 13:49  davidfraser
+
+	* pootle.py: disable logging every internal url load which outputs
+	  loads of stuff...
+
+2006-06-01 12:33  davidfraser
+
+	* pootlefile.py, projects.py, test_pootlefile.py: renamed getids to
+	  getlocations to fit with HEAD and now-changes translate toolkit
+	  0.9 branch
+
+2006-06-01 11:18  davidfraser
+
+	* pootle.py: pass through Pootle, jToolkit and Translate Toolkit
+	  versions [Dwayne Bailey]
+
+2006-05-31 16:52  friedelwolff
+
+	* html/pootle.css: make default sizes biger to make a basic line
+	  display even if collapsed
+
+2006-05-31 16:19  friedelwolff
+
+	* translatepage.py: Bring back resize buttons
+
+2006-05-29 11:15  friedelwolff
+
+	* templates/translatepage.html, translatepage.py: Remove dead code
+	  for number of plurals (caused traceback with plurals in view
+	  mode)
+
+2006-05-25 17:07  friedelwolff
+
+	* potree.py: Fix broken backport of MO update code
+
+2006-05-25 17:02  friedelwolff
+
+	* adminpages.py, potree.py, templates/adminprojects.html:
+	  [Backport] Fix all the project admin stuff (display and update of
+	  MO file option)
+
+2006-05-25 08:33  friedelwolff
+
+	* projects.py: Rename variable correctly to fix version control
+
+2006-05-24 09:48  friedelwolff
+
+	* templates/adminprojects.html: Fix double display of checker
+	  styles
+
+2006-05-24 07:36  friedelwolff
+
+	* templates/adminprojects.html: [Backport] Fix display of
+	  checkerstyle
+
+2006-05-23 14:17  friedelwolff
+
+	* templates/pootlepage.html: [Backport] Reorder links, add real
+	  Home, seperate Log in, Register, Activate
+
+2006-05-23 13:14  friedelwolff
+
+	* html/js/correctpng.js: Fix IE PNG transparency deficiency by
+	  including conditional JavaScript only with IE
+
+2006-05-23 13:14  friedelwolff
+
+	* html/js/correctpng.js: file correctpng.js was added on branch
+	  wordforge-0-9-branch on 2006-06-14 22:34:49 +0000
+
+2006-05-22 13:31  friedelwolff
+
+	* templates/translatepage.html: Restore original formatting of
+	  notices
+
+2006-05-19 16:36  friedelwolff
+
+	* html/doc/: howto.html, index.html, resources.html: padding-top
+	  for new wordforge logo
+
+2006-05-19 16:30  friedelwolff
+
+	* templates/translatepage.html: Restore pre-kid edit link behaviour
+	  in view mode
+
+2006-05-19 13:14  friedelwolff
+
+	* html/images/: WordForge-blue.png, WordForge-white.png,
+	  pootle-medium.png, pootle.png: Readd images as binary
+
+2006-05-19 13:13  friedelwolff
+
+	* html/images/: WordForge-blue.png, WordForge-white.png: Remove
+	  images to readd them as binary
+
+2006-05-19 13:05  friedelwolff
+
+	* html/images/: pootle-medium.png, pootle.png: remove files to
+	  readd them as binary
+
+2006-05-19 11:36  friedelwolff
+
+	* pagelayout.py, html/favicon.ico, html/pootle.css,
+	  html/doc/howto.html, html/doc/index.html,
+	  html/doc/resources.html, html/images/WordForge-blue.png,
+	  html/images/WordForge-white.png, html/images/language.png,
+	  html/images/pootle-medium.png, html/images/pootle.png,
+	  templates/pootlepage.html: New look and feel, WordForge branding,
+	  etc.
+
+2006-05-19 09:47  friedelwolff
+
+	* templates/: about.html, activate.html, fileindex.html, home.html,
+	  index.html, language.html, languages.html, login.html,
+	  options.html, project.html, projectlangadmin.html, projects.html,
+	  redirect.html, register.html, translatepage.html: Use UTF-8
+	  always (was still us-ascii)
+
+2006-05-18 13:56  friedelwolff
+
+	* indexpage.py: Fix traceback with all goals view
+
+2006-05-18 10:35  friedelwolff
+
+	* translatepage.py: Fix traceback when clicking "end" in view mode
+
+2006-05-18 09:31  friedelwolff
+
+	* templates/translatepage.html: Display notice correctly and hide
+	  table if notice is present
+
+2006-05-18 09:16  friedelwolff
+
+	* translatepage.py: add missing parameter to dictionary for
+	  templatevars (notice)
+
+2006-05-16 11:29  friedelwolff
+
+	* adminpages.py: Insert input type in dictionary
+
+2006-05-15 23:33  friedelwolff
+
+	* users.py, templates/adminusers.html: Fix user adding by adming
+
+2006-05-15 12:26  friedelwolff
+
+	* indexpage.py: fix checks
+
+2006-05-15 12:24  friedelwolff
+
+	* templates/redirect.html: Need raw xml to make link in message
+
+2006-05-15 11:58  friedelwolff
+
+	* users.py: templatevars is dictionary, not list
+
+2006-05-15 10:12  friedelwolff
+
+	* translatepage.py: string keys for dictionary
+
+2006-05-05 09:51  friedelwolff
+
+	* indexpage.py: [Backport from HEAD] Display file icon for files
+
+2006-05-03 16:17  friedelwolff
+
+	* translatepage.py: Correct </br>  ->  <br />
+
+2006-05-03 07:44  friedelwolff
+
+	* projects.py: Reorder and fix traceback with unassigned "rights"
+
+2006-04-28 12:22  davidfraser
+
+	* benchmark.py, potree.py: move DummyPoTree into potree module
+	  adjusted default sample sizes for quicker testing
+
+2006-04-28 12:14  davidfraser
+
+	* benchmark.py: added ability to measure stats creation and index
+	  creation this uses a Dummy PO Tree (need to move into potree)
+	  index testing should be more robust in particular also would be
+	  nice to be able to measure stats creation and index creation
+	  without reparsing etc this may require a refactor
+
+2006-04-28 11:32  davidfraser
+
+	* benchmark.py: added start of benchmarking tool
+
+2006-04-26 14:53  davidfraser
+
+	* test_client.py: fixed test for template style code
+
+2006-04-26 14:37  davidfraser
+
+	* ChangeLog: Up-to-date ChangeLog that includes branch
+
+2006-04-26 14:31  davidfraser
+
+	* __version__.py: bump version up (need to resolve this better
+	  soon)
+
 2006-04-26 14:26  davidfraser
 
 	* adminpages.py, indexpage.py, pagelayout.py, pootle.py, potree.py,
