@@ -419,7 +419,7 @@ function reviewpo {
 	tempdir=`mktemp -d`
 	copy_po_to_temp_dir $language $tempdir $files
 	review_dir=$language-$phase-review
-        rm -rf $(find $review_dir -name "*.csv")
+        rm -rf $review_dir
 	pofilter -t isreview $otheroptions $tempdir $review_dir
 	po2csv $review_dir $review_dir
 	# Transform "#, review" to # REVIEW
