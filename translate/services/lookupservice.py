@@ -47,9 +47,8 @@ class lookupServer(SimpleXMLRPCServer):
         """Loads the initial tbx file from the given filename"""
         SimpleXMLRPCServer.__init__(self, addr, requestHandler=lookupRequestHandler, logRequests=1)
         self.storage = storage
-        self.matcher = match.matcher(storage)
-        print "Performing lookup from %d units" % len(storage.units)
-        print "Translation memory using %d units" % len(self.matcher.candidates)
+        #self.keys = [unit.source for unit in storage.units]
+        print "Serving from %d units" % len(storage.units)
 
     def _dispatch(self, method, params):
         try:
@@ -68,7 +67,7 @@ class lookupServer(SimpleXMLRPCServer):
             return None
         try:
             unit = self.storage.findunit(message)
-        except Exception:
+        except KeyError:
             return None
         return unit
     
@@ -84,16 +83,14 @@ class lookupServer(SimpleXMLRPCServer):
         """Translates the message from the storage and returns a plain string"""
         unit = self.internal_lookup(message)
         if unit and unit.target:
-            return string(unit.target)
+            return unit.target
         else:
             return ""
 
     def public_matches(self, message, max_candidates=15, min_similarity=50):
         """Returns matches from the storage with the associated similarity"""
-        self.matcher.setparameters(max_candidates=max_candidates, min_similarity=min_similarity)
-        candidates = self.matcher.matches(message)
-        # We might have gotten multistrings, so just convert them for now
-        candidates = [(score, str(original), str(translation)) for (score, original, translation) in candidates]
+        matcher = match.matcher(max_candidates, min_similarity)
+        candidates = matcher.matches(message, self.storage.units)
         return candidates
 
 class lookupOptionParser(convert.ConvertOptionParser):
