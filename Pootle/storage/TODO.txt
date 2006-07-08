@@ -6,7 +6,10 @@ Easy:
 + TranslationStore.translate
 
 Important:
-- wrapper for translate.pofile
++ preliminary .po parser
+- complete definition of TranslationUnit
+- complete .po parser
+- .po serializer
 - demo XML-RPC server
 - demo app that uses the XML-RPC server
 
@@ -15,7 +18,7 @@ Long term:
 
 Misc:
 + Update interface checker to handle subclassing
-- Propose move of Subversion
+- Propose move to Subversion
 
 
 Other subsystems to consider:
