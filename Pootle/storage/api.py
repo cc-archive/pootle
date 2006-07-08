@@ -14,10 +14,9 @@ Here is a rough sketch of the class containment hierarchy:
   IDatabase
     IFolder
       ...
-        IModuleContainer
-          IModule (maps to a .po file)
-            ITranslationStore (one for each language)
-              ITranslationUnit
+        IModule (maps to a .po file)
+          ITranslationStore (one for each language)
+            ITranslationUnit
 
 """
 
@@ -120,17 +119,18 @@ class IDatabase(IFolder):
 
 
 class ILanguageInfo(Interface):
-   """Basic information about a language."""
+    """Basic information about a language."""
 
-   # TODO: Specify if this object could/should be shared between projects.
+    # TODO: Specify if this object could/should be shared between projects.
 
-   code = String # ISO639 language code
-   country = String # optional - ISO3166 two-letter country code
-   name = Unicode # complete language name (native)
-   name_eng = Unicode # complete language name in English; optional TODO needed?
-   specialchars = [Unicode] # list of special chars
-   nplurals = Integer
-   pluralequation = String # optional
+    # TODO: use simple ln/ln_LN as primary key instead of tuple?
+    code = String # ISO639 language code
+    country = String # optional - ISO3166 two-letter country code
+    name = Unicode # complete language name (native)
+    name_eng = Unicode # complete language name in English; optional TODO needed?
+    specialchars = [Unicode] # list of special chars
+    nplurals = Integer
+    pluralequation = String # optional
 
 
 class IModule(IHaveStatistics, IMapping):
