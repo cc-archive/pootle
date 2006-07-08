@@ -7,18 +7,16 @@ Easy:
 
 Important:
 + preliminary .po parser
-- complete definition of TranslationUnit
++ preliminary readonly layer over Pootle's storage
++ demo XML-RPC server
+- thorough definition of TranslationUnit + parser
+- read/write layer over Pootle's storage
+- Pootle's metadata (special files) support in storage layer
 - complete .po parser
 - .po serializer
-- demo XML-RPC server
-- demo app that uses the XML-RPC server
 
 Long term:
-- use of SQLObject?
-
-Misc:
-+ Update interface checker to handle subclassing
-- Propose move to Subversion
+- consider use of SQLObject for RDB storage
 
 
 Other subsystems to consider:
