@@ -1,86 +1,116 @@
-"""A backend that stores all the data directly in memory."""
+"""A backend that stores all the data directly in objects.
+
+If needed, the database can be trivially serialized by use of pickle.
+"""
 
 from Pootle.storage.api import IStatistics, IDatabase, ITranslationUnit
-from Pootle.storage.api import ILanguageInfo, ILanguage, IProject
-from Pootle.storage.api import IUnitCollection, ISuggestion
+from Pootle.storage.api import ILanguageInfo, IModule, IMapping, IFolder
+from Pootle.storage.api import ITranslationStore, ISuggestion, IHaveStatistics
 
 
-class Database(object):
+class MappingMixin(object):
+    _interface = IMapping
+    # TODO: just subclass dict?
+
+    def __init__(self):
+        self._items = {}
+
+    def keys(self):
+        return self._items.keys()
+
+    def values(self):
+        return self._items.values()
+
+    def items(self):
+        return self._items.items()
+
+    def __getitem__(self, key):
+        return self._items[key]
+
+    def __delitem__(self, key):
+        del self._items[key]
+
+    def __len__(self):
+        return len(self._items)
+
+    def add(self, name):
+        raise NotImplementedError("override this")
+
+
+class AccumStatsMixin(object):
+    _interface = IHaveStatistics
+
+    def statistics(self):
+        stats = Statistics()
+        for item in self.values():
+            itemstats = item.statistics()
+            stats.accum(itemstats)
+        return stats
+
+
+class ModuleContainer(MappingMixin):
+
+    def __init__(self, folder):
+        MappingMixin.__init__(self)
+        self.folder = folder
+
+    def add(self, key):
+        module = self._items[key] = Module(key, self.folder)
+        return module
+
+
+class FolderContainer(MappingMixin):
+
+    def __init__(self, folder):
+        MappingMixin.__init__(self)
+        self.folder = folder
+
+    def add(self, key):
+        # TODO: check that a module with this key does not exist
+        newfolder = self._items[key] = Folder(key, self.folder)
+        return newfolder
+
+
+class Folder(AccumStatsMixin):
+    _interface = IFolder
+
+    key = None
+    folder = None
+
+    modules = None
+    subfolders = None
+
+    def __init__(self, key, folder):
+        self.key = key
+        self.folder = folder
+        self.modules = ModuleContainer(self)
+        self.subfolders = FolderContainer(self)
+
+    def __repr__(self):
+        return '<Folder %s>' % self.key
+
+    def __getitem__(self, key):
+        try:
+            return 'module', self.modules[key]
+        except KeyError:
+            return 'folder', self.subfolders[key]
+
+    def __len__(self):
+        return len(self.modules) + len(self.subfolders)
+
+    def values(self):
+        # This is for internal use in AccumStatsMixin.
+        return self.modules.values() + self.subfolders.values()
+
+
+class Database(Folder):
     _interface = IDatabase
 
     def __init__(self):
-        self._languages = {}
-
-    def keys(self):
-        return self._languages.keys()
-
-    def values(self):
-        return self._languages.values()
-
-    def __getitem__(self, key):
-        return self._languages[key]
-
-    def add(self, code, country):
-        langinfo = LanguageInfo(code=code, country=country)
-        lang = Language(langinfo, self)
-        self._languages[lang.key] = lang
-        return lang
-
-    def statistics(self):
-        stats = Statistics()
-        for lang in self.values():
-            langstats = lang.statistics()
-            stats.accum(langstats)
-        return stats
-
-
-class Language(object):
-
-    _interface = ILanguage
-
-    db = None
-    languageinfo = None
-
-    def __init__(self, langinfo, db):
-        self.db = db
-        self.languageinfo = langinfo
-        self._projects = {}
-
-    @property
-    def key(self):
-        info = self.languageinfo
-        return (info.code, info.country)
-
-    def __repr__(self):
-        country = ''
-        if self.languageinfo.country:
-            country = '-' + self.languageinfo.country
-        return '<Language %s%s>' % (self.languageinfo.code, country)
-
-    def keys(self):
-        return self._projects.keys()
-
-    def values(self):
-        return self._projects.values()
-
-    def __getitem__(self, projectid):
-        return self._projects[key]
-
-    def add(self, projectid):
-        project = Project(projectid, self)
-        self._projects[project.key] = project
-        return project
-
-    def statistics(self):
-        stats = Statistics()
-        for proj in self.values():
-            langstats = proj.statistics()
-            stats.accum(projstats)
-        return stats
+        Folder.__init__(self, None, None)
 
 
 class LanguageInfo(object):
-
     _interface = ILanguageInfo
 
     code = None
@@ -102,56 +132,41 @@ class LanguageInfo(object):
         self.pluralequation = pluralequation
 
 
-class Project(object):
-    _interface = IProject
+class Module(MappingMixin, AccumStatsMixin):
+    _interface = IModule
 
-    language = None
     key = None
+    folder = None
+
     name = None
     description = None
     checker = None
     template = None
 
-    def __init__(self, projectid, language):
-        self.language = language
-        self.key = projectid
-        self.name = projectid # until something else is set
-        self._collections = {}
+    def __init__(self, key, folder):
+        MappingMixin.__init__(self)
+        self.key = key
+        self.folder = folder
+        self.name = key # until something else is set
 
     def __repr__(self):
-        return '<Project %s>' % self.key
+        return '<Module %s>' % self.key
 
-    def keys(self):
-        return self._collections.keys()
-
-    def values(self):
-        return self._collections.values()
-
-    def __getitem__(self, code):
-        return self._collections[code]
-
-    def add(self, name):
-        coll = UnitCollection(name, self)
-        self._collections[name] = coll
-        return coll
-
-    def statistics(self):
-        stats = Statistics()
-        for coll in self.values():
-            collstats = coll.statistics()
-            stats.accum(collstats)
-        return stats
+    def add(self, language, country):
+        raise NotImplementedError('XXX TODO')
 
 
-class UnitCollection(object):
-    _interface = IUnitCollection
+class TranslationStore(object):
+    _interface = ITranslationStore
 
-    name = None
-    project = None
+    module = None
+    langinfo = None
+    key = None # TODO property
 
-    def __init__(self, name, project):
+    def __init__(self, name, module, langinfo):
         self.name = name
-        self.project = project
+        self.module = module
+        self.langinfo = langinfo
         self._units = []
 
     def __iter__(self):
@@ -167,29 +182,30 @@ class UnitCollection(object):
         return self._units[start:end]
 
     def fill(self, units):
+        self._units = [] # TODO: unlink the previous units?
         for unit in units:
-            self._units.append(unit)
-
-    def clear(self):
-        del self._units[:]
+            self._units.append(unit) # TODO: link new units?
 
     def save(self):
         raise NotImplementedError()
 
-    def statistics(self):
-        stats = Statistics()
-        for unit in self.values():
-            stats.total_strings += len(unit.trans)
-            state = unit.unitstate()
-            if state == 'translated':
-                stats.translated_strings += len(unit.trans)
-            elif state == 'fuzzy':
-                stats.fuzzy_strings += len(unit.trans)
-        return stats
-
     def makeunit(self, trans):
         """See TranslationUnit.__init__."""
         return TranslationUnit(self, trans)
+
+    def statistics(self):
+        stats = Statistics()
+        stats.total_strings = len(self)
+        for unit in self:
+            if unit.fuzzy:
+                stats.fuzzy_strings += 1
+            else:
+                for source, target in unit.trans:
+                    if not target:
+                        break
+                else:
+                    stats.translated_strings += 1
+        return stats
 
 
 class Suggestion(object):
@@ -207,6 +223,7 @@ class Suggestion(object):
 
 
 class TranslationUnit(object):
+    _interface = ITranslationUnit
 
     collection = None
     suggestions = None
@@ -216,8 +233,8 @@ class TranslationUnit(object):
     automatic_comments = None
     reference = None
 
-    datatype = set()
-    state = set()
+    datatype = None
+    fuzzy = False
 
     trans = None
 
@@ -228,15 +245,7 @@ class TranslationUnit(object):
         """
         self.collection = collection
         self.trans = trans
-        # TODO: check that len(trans) == language.nplurals?
-
-    def unitstate(self):
-        if 'fuzzy' in self.state:
-            return 'fuzzy'
-        for source, target in self.trans:
-            if target is None:
-                return 'untranslated'
-        return 'translated'
+        # TODO: assert len(trans) == language.nplurals?
 
 
 class Statistics(object):

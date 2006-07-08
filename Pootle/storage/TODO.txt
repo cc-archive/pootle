@@ -1,0 +1,24 @@
+Easy, urgent:
++ UnitCollection -> TranslationStore
++ language to the bottom layer (above UnitCollection)
++ folders
+- TranslationStore.find
+
+Important:
+- wrapper for translate.pofile
+- demo XML-RPC server
+- demo app that uses the XML-RPC server
+
+Long term:
+- use of SQLObject?
+
+Misc:
++ Update interface checker to handle subclassing
+
+
+Other subsystems to consider:
+- Security model (important!)
+- Versioning
+- Language information DB (language name, plural equations, etc.)
+- Translation compendium
+- Merging mechanisms

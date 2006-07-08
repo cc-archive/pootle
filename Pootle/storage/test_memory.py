@@ -4,6 +4,51 @@ import sys
 sys.path.append('../..') # in case this module is run directly
 import doctest
 
+
+def test_MappingMixin():
+    """
+
+        >>> from Pootle.storage.memory import MappingMixin
+        >>> mm = MappingMixin()
+        >>> mm._items = {'k': 'v'}
+        >>> mm.keys(), mm.values(), mm.items()
+        (['k'], ['v'], [('k', 'v')])
+        >>> mm['k']
+        'v'
+        >>> len(mm)
+        1
+
+        >>> del mm['k']
+        >>> mm._items
+        {}
+        >>> mm.add('foo')
+        Traceback (most recent call last):
+            ...
+        NotImplementedError: override this
+
+
+    """
+
+
+def test_AccumStatsMixin():
+    """
+
+        >>> from Pootle.storage.memory import AccumStatsMixin, Statistics
+        >>> accum = AccumStatsMixin()
+        >>> class StatStub:
+        ...     def __init__(self, *args):
+        ...         self.args = args
+        ...     def statistics(self):
+        ...         return Statistics(*self.args)
+        >>> accum.values = lambda: [StatStub(3, 2, 1), StatStub(8, 6, 4)]
+        >>> stats = accum.statistics()
+
+        >>> stats.total_strings, stats.translated_strings, stats.fuzzy_strings
+        (11, 8, 5)
+
+    """
+
+
 def test_db():
     """
 
@@ -11,55 +56,83 @@ def test_db():
 
         >>> from Pootle.storage.memory import Database
         >>> db = Database()
-
-    Now we add a language:
-
-        >>> lang = db.add('lt', 'LT')
-        >>> lang
-        <Language lt-LT>
-
-        >>> db.keys()
-        [('lt', 'LT')]
-        >>> db.values()
-        [<Language lt-LT>]
+        >>> db.key, db.folder
+        (None, None)
 
     """
 
 
-def test_language():
-    """Tests for Language.
+def test_folder():
+    """
 
-        >>> from Pootle.storage.memory import Language, LanguageInfo
-        >>> info = LanguageInfo('lt', 'LT')
-        >>> lang = Language(info, None)
+    Let's create a folder:
 
-        >>> proj = lang.add('pootle')
-        >>> proj
-        <Project pootle>
+        >>> from Pootle.storage.memory import Folder
+        >>> folder = Folder('key', 'some folder')
+
+    Let's add some things:
+
+        >>> mod = folder.modules.add('newmodule')
+        >>> fold = folder.subfolders.add('newfolder')
+
+        >>> len(folder)
+        2
+        >>> folder.modules.values(), folder.subfolders.values()
+        ([<Module newmodule>], [<Folder newfolder>])
+
+        >>> folder['newmodule']
+        ('module', <Module newmodule>)
+        >>> folder['newfolder']
+        ('folder', <Folder newfolder>)
 
     """
 
 
-def test_unitcollection():
-    """Tests for UnitCollection.
+def test_Module():
+    """
 
-        >>> from Pootle.storage.memory import UnitCollection
-        >>> coll = UnitCollection('web_ui', object())
+        >>> from Pootle.storage.memory import Module
+        >>> module = Module('some', object())
+        >>> module.name
+        'some'
 
-        >>> tr1 = coll.makeunit(['foo', 'faa'])
-        >>> tr2 = coll.makeunit(['boo', 'baa'])
+    """
+
+
+def test_TranslationStore():
+    """Tests for TranslationStore.
+
+        >>> from Pootle.storage.memory import TranslationStore
+        >>> coll = TranslationStore('web_ui', object(), None)
+
+        >>> coll.langinfo = None
+
+        >>> tr1 = coll.makeunit([('foo', 'faa')])
+        >>> tr2 = coll.makeunit([('boo', 'baa')])
         >>> coll.fill([tr1, tr2])
 
         >>> len(coll)
         2
+        >>> list(coll) == [tr1, tr2]
+        True
+        >>> coll[:1] == [coll[0]]
+        True
         >>> coll[0] == tr1
         True
+
+    Let's check statistics:
+
+        >>> tr1.fuzzy = True
+
+        >>> stats = coll.statistics()
+        >>> stats.total_strings, stats.translated_strings, stats.fuzzy_strings
+        (2, 1, 1)
 
     """
 
 
 def test_unit():
-    """Tests for UnitCollection.
+    """Tests for TranslationStore.
 
         >>> from Pootle.storage.memory import TranslationUnit
         >>> unit = TranslationUnit(object(), [('boo', 'baa')])
@@ -67,27 +140,13 @@ def test_unit():
         >>> unit.trans
         [('boo', 'baa')]
 
-    Let's play around with state:
-
-        >>> unit.unitstate()
-        'translated'
-
-        >>> unit.state.add('fuzzy')
-        >>> unit.unitstate()
-        'fuzzy'
-
-        >>> unit.state.remove('fuzzy')
-        >>> unit.trans = [('boo', None)]
-        >>> unit.unitstate()
-        'untranslated'
-
     """
 
 
 def test_interface():
     """Test conformance to the API interface.
 
-    This is a bit buggy.
+    Poor man's alternative to zope.interface.
 
         >>> from Pootle.storage.api import validateModule
         >>> import Pootle.storage.memory

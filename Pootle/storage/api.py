@@ -11,11 +11,13 @@ implements the interfaces described here.
 
 Here is a rough sketch of the class containment hierarchy:
 
-    IDatabase
-        ILanguage
-            IProject
-                IUnitCollection
-                    ITranslationUnit
+  IDatabase
+    IFolder
+      ...
+        IModuleContainer
+          IModule (maps to a .po file)
+            ITranslationStore (one for each language)
+              ITranslationUnit
 
 """
 
@@ -29,6 +31,7 @@ class Unicode(Interface): pass
 class Username(Unicode): pass
 class Id(Unicode): pass
 class Integer(Interface): pass
+class Boolean(Interface): pass
 class Date(Interface): pass
 class Class(Interface): pass
 
@@ -44,38 +47,80 @@ class IHaveStatistics(Interface):
 
 
 class IStatistics(Interface):
-    """Statistics."""
+    """Statistics.
+
+    Several plurals are counted as a single string.
+
+    Fuzzy strings are not counted as translated.
+    """
 
     total_strings = Integer
     translated_strings = Integer
     fuzzy_strings = Integer
-    # TODO: untranslated, but suggested? other?
+    # TODO: untranslated, but suggested? word counts? other?
 
     def accum(self, otherstats):
         """Add up statistics from another IStatistics object."""
 
 
-class IDatabase(IHaveStatistics):
+class IMapping(Interface):
 
     def keys(self):
-        """Get list of available language codes."""
-        return [(String, String)]
+        """Return list of object keys."""
+        return [String]
 
     def values(self):
-        """Get list of available language objects."""
-        return [ILanguage]
+        """Return list of object values."""
+        return [object]
 
-    def __getitem__(self, (code, country)):
-        """Get language object by language code."""
-        return ILanguage
+    def items(self):
+        """Return list of tuples (key, value)."""
+        return [(String, object)]
 
-    def add(self, code, country):
-        """Add a new language."""
-        return ILanguage
+    def __getitem__(self, key):
+        """Get object by key."""
+        return object
+
+    def __delitem__(self, key):
+        """Delete key from container."""
+
+    def __len__(self):
+        """Return length of collection."""
+        return Integer
+
+    def add(self, key):
+        """Create a new object, add it to this container and return it."""
+        return object
+
+
+class IFolder(IHaveStatistics):
+    """A folder is a collection of modules and possibly other folders."""
+
+    # TODO: specify traversal precedence
+    key = String
+    folder = None # =IFolder -- containing folder (not the subcontainer)
+
+    modules = IMapping # name -> IModule
+    subfolders = IMapping # name -> IFolder
+
+    def __getitem__(self, key):
+        """Return a module or a subfolder.
+
+        Returns a tuple ('module', module_obj) or a tuple ('folder', folder).
+        """
+
+    def __len__(self):
+        return Integer
+
+
+class IDatabase(IFolder):
+    """A database."""
+
+    # TODO: start/end transaction? (if supported)
 
 
 class ILanguageInfo(Interface):
-   """General information about a language."""
+   """Basic information about a language."""
 
    # TODO: Specify if this object could/should be shared between projects.
 
@@ -88,75 +133,32 @@ class ILanguageInfo(Interface):
    pluralequation = String # optional
 
 
-class ILanguage(IHaveStatistics):
-    """A set of unit collections of a given project in some language."""
-
-    db = IDatabase
-    languageinfo = ILanguageInfo
-    key = (String, String) # code, country: should be a property that gets
-                           # the data from languageinfo; country may be None.
-
-    def keys(self):
-        """Get list of available project keys."""
-        return [Unicode]
-
-    def values(self):
-        """Get list of available project objects."""
-        return [IProject]
-
-    def __getitem__(self, projectid):
-        """Get project object by project id."""
-        return IProject
-
-    def add(self, projectid):
-        """Add a new project.
-
-        Creates and returns a project with the given id after adding it to the
-        database.
-        """
-        return IProject
-
-
-class IProject(IHaveStatistics):
+class IModule(IHaveStatistics, IMapping):
     """An object corresponding to a project.
 
-    This loosely corresponds to a set of .po files for some project.
+    This loosely corresponds to a .pot file and a set of its translations.
 
-    A project may have translations to a number of languages, each translation
-    divided into unit collections divided into translation units.
+    Maps (language, country) to TranslationStore.
+
+    A module contains a 'template' translation store (no translations) and
+    a set of translation stores with translated data.
+
+    Note that the different translations can differ structurally from the
+    normal template.  The differences can be resolved using merging as an
+    external process.
     """
 
-    language = ILanguage
-    key = Id # project id
-    name = Unicode # project name
+    key = Id # module id
+    folder = IFolder # containing folder
+    name = Unicode # module name
     description = Unicode # project description (unwrapped)
     checker = [String] # A list of string identifiers for checkers
-    # TODO Maybe checkers should belong to unit collections instead?
-    template = Interface # IUnitCollection without the actual translations
+    template = Interface # ITranslationStore without the actual translations
     # TODO: Have a link to the project's ViewVC page so that we can produce
     #       direct hyperlinks to unit context in the source code.
 
-    def keys(self):
-        """Return list of unit collection ids."""
-        return [String]
 
-    def values(self):
-        """Return list of unit collection objects."""
-        return [IUnitCollection]
-
-    def __getitem__(self, name):
-        """Get unit collection by id."""
-        return IUnitCollection
-
-    def add(self, name):
-        """Add a new module."""
-        return IUnitCollection
-
-    def statistics(self):
-        return IStatistics
-
-
-class IUnitCollection(IHaveStatistics):
+class ITranslationStore(IHaveStatistics):
     """A collection of translation units
 
     This loosely corresponds to a .po file.
@@ -169,8 +171,10 @@ class IUnitCollection(IHaveStatistics):
     TODO: is this really needed?
     """
 
-    name = Unicode # the id for this collection
-    project = IProject
+    module = IModule
+    langinfo = ILanguageInfo
+    key = (String, String) # (code, country): should be a property that gets
+                           # the data from langinfo; country may be None.
 
     def __iter__(self):
         """Return an iterable of translation units."""
@@ -186,15 +190,14 @@ class IUnitCollection(IHaveStatistics):
     def __getslice__(self, start, end):
         """Return a half-open range (by number) of translations.
 
-        This allows slice-notation: collection[0:5] would get the first 5
+        This allows slice-notation: store[0:5] would get the first 5
         units.
         """
 
     def fill(self, units):
-        """Clear the collection and import units from the given iterable."""
+        """Clear this store and import list of units from given iterable."""
 
-    def clear(self):
-        """Clear all units from this collection."""
+    # TODO: find() by translation unit source
 
     def save(self):
         """Save the current state of this collection to persistent storage."""
@@ -206,17 +209,14 @@ class IUnitCollection(IHaveStatistics):
         trans is a list of tuples (source, target).
         """
 
-    def statistics(self):
-        """Return module statistics."""
-        return IStatistics
-
 
 class ISuggestion(Interface):
     """A suggestion for a particular message.
 
     The intention of this class is to store an unapproved string, possibly
-    submitted by an irregular or even unregistered translator.  The interface
-    should offer a convenient way of "upgrading" suggestions to translations.
+    submitted by an irregular or even unregistered translator.  The user
+    interface should offer a convenient way of "upgrading" suggestions to
+    translations.
     """
 
     unit = None # =ITranslationUnit
@@ -227,19 +227,17 @@ class ISuggestion(Interface):
 class ITranslationUnit(Interface):
     """A single translatable string."""
 
-    collection = IUnitCollection
-    # TODO: store index number in collection?
+    collection = ITranslationStore
     suggestions = [ISuggestion]
-    context = String # context information
+    context = Unicode # context information
 
     # Comments: optional; can be multiline, but should be whitespace-stripped
     translator_comments = Unicode
     automatic_comments = Unicode
     reference = Unicode # TODO Should we be smarter here?
 
-    datatype = set([String]) # c-format, no-c-format, java-format, etc.
-    state = set([String]) # fuzzy
-    # rather low-tech, but I see little wins in using real objects here.
+    datatype = String # optional -- c-format, no-c-format, java-format, etc.
+    fuzzy = Boolean
 
     # Use the XLIFF model here: plural sources are stored together with targets
     # The list of tuples is ordered.  If a plural is not translated, the target
@@ -248,9 +246,7 @@ class ITranslationUnit(Interface):
     trans = [(Unicode,  # plural msgid (source)
               Unicode)] # plural translation (target)
 
-    def unitstate(self):
-        """Return the state: one of 'untranslated', 'fuzzy' or 'translated'."""
-        # TODO: rename this (must not conflict with self.state)
+    # TODO: it would be nice to have a "dirty" attribute
 
 
 # === Validation helpers ===
@@ -263,9 +259,16 @@ class ImplementationError(Exception):
     pass
 
 
+def iface_attrs(iface):
+    attrs = iface.__dict__.items()
+    for base in iface.__bases__:
+        attrs.extend(iface_attrs(base))
+    return attrs
+
+
 def validateClass(cls, iface):
     """Validate a given class against an interface."""
-    for attrname, attr in iface.__dict__.items():
+    for attrname, attr in iface_attrs(iface):
         if attrname.startswith('__'):
             continue # ignore internal attributes
 
