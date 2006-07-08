@@ -43,5 +43,30 @@ def test_read_po():
     """
 
 
+sample_po_plurals = r"""# translation of foo
+#. Plural test
+msgid "One"
+msgid_plural "Many"
+msgstr[0] "Vienas"
+msgstr[1] "Keli"
+msgstr[2] "Daug"
+"""
+
+def test_read_po_plurals():
+    """
+
+        >>> from Pootle.storage.po import read_po
+        >>> from Pootle.storage.memory import TranslationStore
+
+        >>> store = TranslationStore('foo', None, 'some langinfo')
+        >>> read_po(sample_po_plurals, store)
+
+        >>> for unit in store:
+        ...     print unit.trans
+        [('One', 'Vienas'), ('Many', 'Keli'), ('Many', 'Daug')]
+
+    """
+
+
 if __name__ == '__main__':
     doctest.testmod()
