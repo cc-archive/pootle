@@ -1,9 +1,9 @@
-Easy, urgent:
+Easy:
 + UnitCollection -> TranslationStore
-- collection -> store
++ collection -> store
 + language to the bottom layer (above UnitCollection)
 + folders
-- TranslationStore.find
++ TranslationStore.translate
 
 Important:
 - wrapper for translate.pofile

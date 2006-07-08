@@ -232,7 +232,7 @@ class Suggestion(object):
 class TranslationUnit(object):
     _interface = ITranslationUnit
 
-    collection = None
+    store = None
     suggestions = None
     context = None
 
@@ -245,12 +245,12 @@ class TranslationUnit(object):
 
     trans = None
 
-    def __init__(self, collection, trans):
+    def __init__(self, store, trans):
         """Construct a TranslationUnit.
 
         trans should be a list of tuples (source, target).
         """
-        self.collection = collection
+        self.store = store
         self.trans = trans
         # TODO: assert len(trans) == language.nplurals?
 

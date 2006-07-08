@@ -109,7 +109,7 @@ def test_TranslationStore():
 
         >>> tr1 = coll.makeunit([('foo', 'faa')])
         >>> tr2 = coll.makeunit([('boo', 'baa')])
-        >>> tr1.collection == tr2.collection == coll
+        >>> tr1.store == tr2.store == coll
         True
 
         >>> coll.fill([tr1, tr2])

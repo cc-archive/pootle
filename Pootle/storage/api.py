@@ -85,7 +85,7 @@ class IMapping(Interface):
         """Delete key from container."""
 
     def __len__(self):
-        """Return length of collection."""
+        """Return length of store."""
         return Integer
 
     def add(self, key):
@@ -198,14 +198,14 @@ class ITranslationStore(IHaveStatistics):
         """Clear this store and import list of units from given iterable."""
 
     def save(self):
-        """Save the current state of this collection to persistent storage."""
+        """Save the current state of this store to persistent storage."""
         # TODO: is this really needed if we have 'fill'?
 
     def makeunit(self, trans):
         """Construct a new translation unit.
 
         Only put units constructed by this method inside this store, or
-        update their collection attribute.
+        update their store attribute.
 
         trans is a list of tuples (source, target).
         """
@@ -234,9 +234,12 @@ class ISuggestion(Interface):
 
 
 class ITranslationUnit(Interface):
-    """A single translatable string."""
+    """A translatable string.
 
-    collection = ITranslationStore
+    Plurals and metadata are also stored here.
+    """
+
+    store = ITranslationStore
     suggestions = [ISuggestion]
     context = Unicode # context information
 
@@ -251,7 +254,9 @@ class ITranslationUnit(Interface):
     # Use the XLIFF model here: plural sources are stored together with targets
     # The list of tuples is ordered.  If a plural is not translated, the target
     # in the tuple should be None.  When copying a translation unit from a
-    # template, this list may grow if there are >2 plurals.
+    # template, this list may have to be enlarged if the target language
+    # has more than 2 plurals.
+    # For singular, just use a single tuple in the list.
     trans = [(Unicode,  # plural msgid (source)
               Unicode)] # plural translation (target)
 
