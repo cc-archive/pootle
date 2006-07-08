@@ -197,8 +197,6 @@ class ITranslationStore(IHaveStatistics):
     def fill(self, units):
         """Clear this store and import list of units from given iterable."""
 
-    # TODO: find() by translation unit source
-
     def save(self):
         """Save the current state of this collection to persistent storage."""
         # TODO: is this really needed if we have 'fill'?
@@ -206,7 +204,18 @@ class ITranslationStore(IHaveStatistics):
     def makeunit(self, trans):
         """Construct a new translation unit.
 
+        Only put units constructed by this method inside this store, or
+        update their collection attribute.
+
         trans is a list of tuples (source, target).
+        """
+
+    def translate(self, source, plural=0):
+        """Translate the given source message.
+
+        If a plural is requested, its index must be provided.
+
+        Raises ValueError if source is not found.
         """
 
 

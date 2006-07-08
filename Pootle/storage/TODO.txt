@@ -1,5 +1,6 @@
 Easy, urgent:
 + UnitCollection -> TranslationStore
+- collection -> store
 + language to the bottom layer (above UnitCollection)
 + folders
 - TranslationStore.find
@@ -14,11 +15,12 @@ Long term:
 
 Misc:
 + Update interface checker to handle subclassing
+- Propose move of Subversion
 
 
 Other subsystems to consider:
 - Security model (important!)
-- Versioning
+- Versioning, "dirty" state
 - Language information DB (language name, plural equations, etc.)
 - Translation compendium
 - Merging mechanisms

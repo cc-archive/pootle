@@ -109,8 +109,10 @@ def test_TranslationStore():
 
         >>> tr1 = coll.makeunit([('foo', 'faa')])
         >>> tr2 = coll.makeunit([('boo', 'baa')])
-        >>> coll.fill([tr1, tr2])
+        >>> tr1.collection == tr2.collection == coll
+        True
 
+        >>> coll.fill([tr1, tr2])
         >>> len(coll)
         2
         >>> list(coll) == [tr1, tr2]
@@ -127,6 +129,31 @@ def test_TranslationStore():
         >>> stats = coll.statistics()
         >>> stats.total_strings, stats.translated_strings, stats.fuzzy_strings
         (2, 1, 1)
+
+    """
+
+
+def test_TranslationStore_translate():
+    """Tests for TranslationStore.translate.
+
+        >>> from Pootle.storage.memory import TranslationStore
+        >>> coll = TranslationStore('web_ui', object(), None)
+
+        >>> coll.langinfo = None
+
+        >>> tr1 = coll.makeunit([('%d chair', '%d Stuhl'),
+        ...                      ('%d chairs', '%d Stuehle')])
+        >>> tr2 = coll.makeunit([('foo', 'bar')])
+        >>> coll.fill([tr1, tr2])
+
+        >>> coll.translate('%d chair')
+        '%d Stuhl'
+        >>> coll.translate('%d chairs')
+        Traceback (most recent call last):
+            ...
+        ValueError: no translation found for '%d chairs'
+        >>> coll.translate('%d chairs', plural=1)
+        '%d Stuehle'
 
     """
 

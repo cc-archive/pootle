@@ -193,6 +193,13 @@ class TranslationStore(object):
         """See TranslationUnit.__init__."""
         return TranslationUnit(self, trans)
 
+    def translate(self, source, plural=0):
+        for unit in self._units:
+            if len(unit.trans) > plural and unit.trans[plural][0] == source:
+                return unit.trans[plural][1]
+        else:
+            raise ValueError('no translation found for %r' % source)
+
     def statistics(self):
         stats = Statistics()
         stats.total_strings = len(self)
