@@ -39,6 +39,9 @@ from Pootle import filelocations
 from Pootle import __version__ as pootleversion
 from translate import __version__ as toolkitversion
 from jToolkit import __version__ as jtoolkitversion
+# We don't need kid in this file, but this will show quickly if it is not 
+# installed. jToolkit won't complain, so we have to stop here if we don't have kid
+import kid
 import sys
 import os
 import random
@@ -377,7 +380,6 @@ class PootleServer(users.OptionalLoginAppServer, templateserver.TemplateServer):
             pofile = project.getpofile(pofilename, freshen=False)
             page = widgets.SendFile(pofile.filename)
             page.etag = str(pofile.pomtime)
-            page.allowcaching = True
             encoding = pofile.encoding or "UTF-8"
             page.content_type = "text/plain; charset=%s" % encoding
             return page
@@ -395,7 +397,6 @@ class PootleServer(users.OptionalLoginAppServer, templateserver.TemplateServer):
             page.etag = str(etag)
           else:
             page = widgets.PlainContents(filepath_or_contents)
-          page.allowcaching = True
           if extension == "csv":
             page.content_type = "text/plain; charset=UTF-8"
           elif extension == "xlf" or extension == "ts":
