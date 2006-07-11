@@ -160,12 +160,18 @@ class TestDTD2PO:
 
     def test_accesskeys_folding(self):
 	"""test that we fold accesskeys into message strings"""
-	# .label, .accesskey style
-	dtdsource = '<!ENTITY  fileSaveAs.label "Save As...">\n' + \
-           '<!ENTITY  fileSaveAs.accesskey "S">\n'
-        pofile = self.dtd2po(dtdsource)
-        pounit = self.singleelement(pofile)
-        assert pounit.source == "&Save As..."
+        dtdsource_template = '<!ENTITY  fileSaveAs.%s "Save As...">\n<!ENTITY  fileSaveAs.%s "S">\n'
+        lang_template = '<!ENTITY  fileSaveAs.%s "Gcina ka...">\n<!ENTITY  fileSaveAs.%s "G">\n'
+        for label in ("label", "title"):
+          for accesskey in ("accesskey", "accessKey", "akey"):
+            pofile = self.dtd2po(dtdsource_template % (label, accesskey))
+            pounit = self.singleelement(pofile)
+            assert pounit.source == "&Save As..."
+            # Test with template (bug 155)
+            pofile = self.dtd2po(lang_template % (label, accesskey), dtdsource_template % (label, accesskey))
+            pounit = self.singleelement(pofile)
+            assert pounit.source == "&Save As..."
+            assert pounit.target == "&Gcina ka..."
 
     def test_accesskeys_mismatch(self):
         """check that we can handle accesskeys that don't match and thus can't be folded into the .label entry"""
