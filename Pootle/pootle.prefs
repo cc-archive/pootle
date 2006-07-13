@@ -102,11 +102,10 @@ Pootle:
     af.nplurals = 2
     af.pluralequation = "(n != 1)"
 
- Arabic
+# Arabic
     ar.fullname = 'Arabic'
     ar.nplurals = '4'
     ar.pluralequation ='n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n>=3 && n<=10 ? 3 : n>=11 && n<=99 ? 4 : 5'
-
 
 # Azerbaijani
 #    az.fullname = 'Azerbaijani'
@@ -139,9 +138,9 @@ Pootle:
 #    bs.pluralequation ='(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10< =4 && (n%100<10 or n%100>=20) ? 1 : 2)'
 
 # Catalan
-#    ca.fullname = 'Catalan'
-#    ca.nplurals = '2'
-#    ca.pluralequation ='(n != 1)'
+    ca.fullname = 'Catalan'
+    ca.nplurals = '2'
+    ca.pluralequation ='(n != 1)'
 
 # Czech
 #    cs.fullname = 'Czech'
@@ -154,9 +153,9 @@ Pootle:
 #    cy.pluralequation ='(n==2) ? 1 : 0'
 
 # Danish
-#    da.fullname = 'Danish'
-#    da.nplurals = '2'
-#    da.pluralequation ='(n != 1)'
+    da.fullname = 'Danish'
+    da.nplurals = '2'
+    da.pluralequation ='(n != 1)'
 
 # German
     de.fullname = 'German'
@@ -234,9 +233,9 @@ Pootle:
 #    ga.pluralequation ='n==1 ? 0 : n==2 ? 1 : 2'
 
 # Galician
-#    gl.fullname = 'Galician'
-#    gl.nplurals = '2'
-#    gl.pluralequation ='(n != 1)'
+    gl.fullname = 'Galician'
+    gl.nplurals = '2'
+    gl.pluralequation ='(n != 1)'
 
 # Gujarati
 #    gu.fullname = 'Gujarati'
@@ -274,9 +273,9 @@ Pootle:
     it.pluralequation ='(n != 1)'
 
 # Japanese
-#    ja.fullname = 'Japanese'
-#    ja.nplurals = '1'
-#    ja.pluralequation ='0'
+    ja.fullname = 'Japanese'
+    ja.nplurals = '1'
+    ja.pluralequation ='0'
 
 # Georgian
 #    ka.fullname = 'Georgian'
@@ -314,9 +313,9 @@ Pootle:
 #    mn.pluralequation ='(n != 1)'
 
 # Maltese
-#    mt.fullname = 'Maltese'
-#    mt.nplurals = '4'
-#    mt.pluralequation ='(n==1 ? 0 : n==0 or ( n%100>1 && n%100<11) ? 1 : n%100>10 && n%100<20 ) ? 2 : 3)'
+    mt.fullname = 'Maltese'
+    mt.nplurals = '4'
+    mt.pluralequation ='(n==1 ? 0 : n==0 or ( n%100>1 && n%100<11) ? 1 : n%100>10 && n%100<20 ) ? 2 : 3)'
 
 # Nahuatl
 #    nah.fullname = 'Nahuatl'
