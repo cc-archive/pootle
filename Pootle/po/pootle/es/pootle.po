@@ -1,18 +1,17 @@
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: translate-pootle@lists.sourceforge.net\n"
 "POT-Creation-Date: 2006-06-14 10:14+0200\n"
-"PO-Revision-Date: 2006-06-14 14:29+0200\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"PO-Revision-Date: 2006-06-21 19:04+0200\n"
+"Last-Translator: Daniel Espinosa Ortiz <esodan@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "Generated-By: pygettext.py 1.1\n"
-"X-Generator: Translate Toolkit 0.9rc1\n"
+"X-Generator: Pootle 0.9\n"
 
 #: translatepage.py:56 translatepage.py:73
 #, python-format
@@ -37,24 +36,20 @@ msgid "Pootle Demo"
 msgstr "Demo de Pootle"
 
 #: translatepage.py:87
-#, fuzzy
 msgid "Original"
-msgstr "original"
+msgstr "Original"
 
 #: translatepage.py:88
-#, fuzzy
 msgid "Translation"
-msgstr "traducción"
+msgstr "Traducción"
 
 #: translatepage.py:91
-#, fuzzy
 msgid "Accept"
-msgstr "aceptar"
+msgstr "Aceptar"
 
 #: translatepage.py:92
-#, fuzzy
 msgid "Reject"
-msgstr "rechazar"
+msgstr "Rechazar"
 
 #: translatepage.py:95 indexpage.py:282
 msgid "Search"
@@ -130,23 +125,20 @@ msgid "Edit"
 msgstr "Editar"
 
 #: translatepage.py:459
-#, fuzzy
 msgid "Copy"
-msgstr "copiar"
+msgstr "Copiar"
 
 #: translatepage.py:460 translatepage.py:617
-#, fuzzy
 msgid "Skip"
-msgstr "saltar"
+msgstr "Saltar"
 
 #: translatepage.py:461 projects.py:111
 msgid "Suggest"
 msgstr "Segerir"
 
 #: translatepage.py:462
-#, fuzzy
 msgid "Submit"
-msgstr "enviar"
+msgstr "Enviar"
 
 #: translatepage.py:466
 msgid "Grow"
@@ -175,7 +167,6 @@ msgid "Plural Form %d"
 msgstr "Forma Plural %d"
 
 #: translatepage.py:578
-#, fuzzy
 msgid "Current Translation:"
 msgstr "<b>Traducción Actual:</b>"
 
@@ -209,14 +200,13 @@ msgstr "Usuarios"
 
 #: adminpages.py:27 adminpages.py:63 indexpage.py:52
 msgid "Languages"
-msgstr "Lenguajes"
+msgstr "Idiomas"
 
 #: adminpages.py:28 adminpages.py:117 indexpage.py:53
 msgid "Projects"
 msgstr "Proyectos"
 
 #: adminpages.py:29
-#, fuzzy
 msgid "General options"
 msgstr "Opciones Generales"
 
@@ -250,7 +240,6 @@ msgid "Home Page"
 msgstr "Página Principal"
 
 #: adminpages.py:62 adminpages.py:116 adminpages.py:176
-#, fuzzy
 msgid "Main admin page"
 msgstr "Página Principal de Administración"
 
@@ -291,9 +280,8 @@ msgid "(plural equation)"
 msgstr "(ecuación del plural)"
 
 #: adminpages.py:73
-#, fuzzy
 msgid "Remove Language"
-msgstr "Eliminar idioma"
+msgstr "Eliminar Idioma"
 
 #: adminpages.py:87 adminpages.py:148 adminpages.py:208 adminpages.py:367
 #, python-format
@@ -329,9 +317,8 @@ msgid "Create MO Files"
 msgstr "Crear Archivos MO"
 
 #: adminpages.py:127
-#, fuzzy
 msgid "Remove Project"
-msgstr "Eliminar proyecto"
+msgstr "Eliminar Proyecto"
 
 #: adminpages.py:182 users.py:28
 msgid "Login"
@@ -366,9 +353,8 @@ msgid "Activate New User"
 msgstr "Activar Nuevo Usuario"
 
 #: adminpages.py:187
-#, fuzzy
 msgid "Remove User"
-msgstr "Eliminar %s"
+msgstr "Eliminar Usuario"
 
 #: adminpages.py:240
 msgid "Back to main page"
@@ -383,10 +369,10 @@ msgid "Update Languages"
 msgstr "Actualizar Idiomas"
 
 #: adminpages.py:245
-#, fuzzy, python-format
+#, , python-format
 #, python-format
 msgid "Pootle Admin: %s"
-msgstr "Administración Pootle: %s %s"
+msgstr "Administración de Pootle: %s"
 
 #: adminpages.py:246 adminpages.py:306
 msgid "You do not have the rights to administer this project."
@@ -418,9 +404,7 @@ msgstr ""
 
 #: adminpages.py:322
 msgid "This is a GNU-style project (one directory, files named per language)."
-msgstr ""
-"Este es un proyecto al estilo GNU (un directorio, archivos nombrados por "
-"idioma)."
+msgstr "Este es un proyecto al estilo GNU (un directorio, archivos nombrados por idioma)."
 
 #: adminpages.py:324
 msgid "This is a standard style project (one directory per language)."
@@ -436,7 +420,7 @@ msgstr "Nombre de usuario"
 
 #: adminpages.py:327
 msgid "(select to add user)"
-msgstr ""
+msgstr "(selecciona para agregar un usuario)"
 
 #: adminpages.py:328
 msgid "Rights"
@@ -479,36 +463,23 @@ msgstr ""
 "del código, lista de correos, etc."
 
 #: indexpage.py:31
-#, fuzzy
 msgid ""
 "The name stands for <b>PO</b>-based <b>O</b>nline <b>T</b>ranslation / <b>L</"
 "b>ocalization <b>E</b>ngine, but you may need to read <a href=\"http://www."
 "thechestnut.com/flumps.htm\">this</a>."
-msgstr ""
-"#-#-#-#-#  pootle.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"El nombre significa como <b>PO</b>-based <b>O</b>nline <b>T</b>ranslation / "
-"<b>L</b>ocalization <b>E</b>ngine \"Motor de Traducción en Línea basado en "
-"archivos PO\", pero puede leer <a href=\"http://www.thechestnut.com/flumps."
-"htm\">this</a>.\n"
-"#-#-#-#-#  pootle.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"El nombre se entiende por <b>PO</b>-based <b>O</b>nline <b>T</b>ranslation / "
-"<b>L</b>ocalization <b>E</b>ngine (Motor de Traducción / Localización basado "
-"en PO), pero puede leer <a href=\"http://www.thechestnut.com/flumps.htm"
-"\">esto</a>."
+msgstr "El nombre quiere decir \"<b>PO</b>-based <b>O</b>nline <b>T</b>ranslation / <b>L</b>ocalization <b>E</b>ngine (Motor para la Traducción en Línea basado en PO), pero probablemente necesite leer <a href=\"http://www.thechestnut.com/flumps.htm\">ésto</a>."
 
 #: indexpage.py:32
 msgid "Versions"
 msgstr "Versiones"
 
 #: indexpage.py:33
-#, fuzzy, python-format
+#, , python-format
 #, python-format
 msgid ""
 "This site is running:<br />Pootle %s<br />Translate Toolkit %s<br />jToolkit "
 "%s<br />Python %s (on %s/%s)"
-msgstr ""
-"Este sitio está ejecutando:<br/>Pootle %s</br>jToolkit %s</br>Python %s (en %"
-"s/%s)"
+msgstr "Este sitio está ejecutando:<br />Pootle %s<br />Herramientas de Traducción (Toolkit) %s<br />jToolkit %s<br />Python %s (en %s/%s)"
 
 #: indexpage.py:49
 msgid "Pootle"
@@ -537,9 +508,7 @@ msgstr "Vínculos Rápidos"
 
 #: indexpage.py:91 indexpage.py:202
 msgid "Please click on 'Change options' and select some languages and projects"
-msgstr ""
-"Por favor haga click en 'Cambiar opciones' y seleccione algunos idiomas y "
-"proyectos"
+msgstr "Por favor haga click en 'Cambiar opciones' y seleccione algunos idiomas y proyectos"
 
 #: indexpage.py:109
 #, python-format
@@ -563,14 +532,12 @@ msgid "Admin"
 msgstr "Administración"
 
 #: indexpage.py:158
-#, fuzzy
 msgid "Language Code"
-msgstr "Lenguajes"
+msgstr "Código del Idioma"
 
 #: indexpage.py:159
-#, fuzzy
 msgid "Language Name"
-msgstr "Lenguajes"
+msgstr "Nombre del Idioma"
 
 #: indexpage.py:195
 #, python-format
@@ -610,9 +577,8 @@ msgid "Can only upload PO files and zips of PO files"
 msgstr "Sólo se pueden enviar archivos PO y archivos PO comprimidos"
 
 #: indexpage.py:437
-#, fuzzy
 msgid "goals"
-msgstr "Metas"
+msgstr "metas"
 
 #: indexpage.py:437
 msgid "Enter goal name"
@@ -631,9 +597,8 @@ msgid "Select file to upload"
 msgstr "Seleccionar archivo para enviar"
 
 #: indexpage.py:545
-#, fuzzy
 msgid "Not in a goal"
-msgstr "Sin meta"
+msgstr "No forma parte de una meta"
 
 #: indexpage.py:566
 msgid "Add User"
@@ -649,7 +614,7 @@ msgstr "Archivo XLIFF"
 
 #: indexpage.py:609
 msgid "Qt .ts file"
-msgstr ""
+msgstr "Archivo Qt .ts"
 
 #: indexpage.py:613
 msgid "CSV file"
@@ -778,7 +743,7 @@ msgstr "ZIP de la carpeta"
 
 #: indexpage.py:776
 msgid "Generate SDF"
-msgstr ""
+msgstr "Generar SDF"
 
 #: indexpage.py:829
 #, python-format
@@ -793,31 +758,26 @@ msgid "%d/%d words (%d%%) assigned"
 msgstr "%d/%d palabras (%d%%) asignadas"
 
 #: pagelayout.py:19
-#, fuzzy
 msgid "All projects"
 msgstr "Todos los Proyectos"
 
 #: pagelayout.py:20
-#, fuzzy
 msgid "All languages"
 msgstr "Todos los Idiomas"
 
 #: pagelayout.py:21
 msgid "My account"
-msgstr ""
+msgstr "Mi cuenta"
 
 #: pagelayout.py:23
-#, fuzzy
 msgid "Docs & help"
 msgstr "Documentos & Ayuda"
 
 #: pagelayout.py:24
-#, fuzzy
 msgid "Log out"
 msgstr "Terminar Sesión"
 
 #: pagelayout.py:25
-#, fuzzy
 msgid "Log in"
 msgstr "Iniciar sesión"
 
@@ -840,26 +800,26 @@ msgid "%d/%d files"
 msgstr "%d/%d archivos"
 
 #: pagelayout.py:171
-#, fuzzy, python-format
+#, , python-format
 #, python-format
 msgid "%d/%d strings"
-msgstr "[%d/%d cadenas]"
+msgstr "%d/%d cadenas"
 
 #: pootle.py:228 pootle.py:254
 msgid "Redirecting to login..."
-msgstr ""
+msgstr "Redirigiendo para iniciar sesión"
 
 #: pootle.py:231
 msgid "Need to log in to access home page"
-msgstr ""
+msgstr "Necesita iniciar sesión para accesar a la página principal"
 
 #: pootle.py:257
 msgid "Need to log in to access admin page"
-msgstr ""
+msgstr "Necesita iniciar sesión para accesar a la página de administración"
 
 #: pootle.py:264
 msgid "Redirecting to home..."
-msgstr ""
+msgstr "Redirigiendo a la página principal..."
 
 #: pootle.py:267
 msgid "You do not have the rights to administer pootle."
@@ -934,23 +894,20 @@ msgid "Login to Pootle"
 msgstr "Inisión de Sesión en Pootle"
 
 #: users.py:23
-#, fuzzy
 msgid "Username:"
-msgstr "Nombre de usuario"
+msgstr "Nombre de usuario:"
 
 #: users.py:25
-#, fuzzy
 msgid "Password:"
-msgstr "Contraseña"
+msgstr "Contraseña:"
 
 #: users.py:26
-#, fuzzy
 msgid "Language:"
-msgstr "Lenguajes"
+msgstr "Idioma:"
 
 #: users.py:35
 msgid "Default"
-msgstr ""
+msgstr "Por Defecto"
 
 #: users.py:46
 msgid "Please enter your registration details"
@@ -977,9 +934,8 @@ msgid "Your desired password"
 msgstr "Su contraseña seleccionada"
 
 #: users.py:65
-#, fuzzy
 msgid "Register Account"
-msgstr "Activar Cuenta"
+msgstr "Registrar Cuenta"
 
 #: users.py:74
 msgid "Please enter your activation details"
@@ -1024,7 +980,7 @@ msgstr "Configuración de la Interface de Traducción"
 
 #: users.py:115
 msgid "User Interface language"
-msgstr ""
+msgstr "Idioma de la Interfase con el Usuario"
 
 #: users.py:116
 msgid "My Projects"
@@ -1039,13 +995,12 @@ msgid "Home page"
 msgstr "Página principal"
 
 #: users.py:154
-#, fuzzy
 msgid "Input Height (in lines)"
-msgstr "Alto de la Entrada"
+msgstr "Alto de la Entrada (en líneas)"
 
 #: users.py:154
 msgid "Input Width (in characters)"
-msgstr ""
+msgstr "Ancho de la Entrada (en carácteres)"
 
 #: users.py:155
 msgid "Number of rows in view mode"
@@ -1061,24 +1016,23 @@ msgstr "Necesita ser el administrador del sitio para cambiar usuarios"
 
 #: users.py:348
 msgid "Redirecting to Registration Page..."
-msgstr ""
+msgstr "Redirigiendo a la página de Registro"
 
 #: users.py:372
 msgid "Redirecting to login Page..."
-msgstr ""
+msgstr "Redirigiendo a la página de inicio de sesión..."
 
 #: users.py:375
 msgid "Your account has been activated! Redirecting to login..."
-msgstr ""
+msgstr "Su cuenta ha sido activada! Redirigiendo al inicio de sesión..."
 
 #: users.py:379
 msgid "The activation link you have entered was not valid"
-msgstr ""
+msgstr "El vínculo de activación no es válido"
 
 #: users.py:380
-#, fuzzy
 msgid "Activation Failed"
-msgstr "Código de Activación"
+msgstr "Falló la Activación"
 
 #: users.py:474
 msgid "Input height must be numeric"

@@ -1,26 +1,25 @@
-#, fuzzy
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2006-06-14 14:23+0200\n"
+"PO-Revision-Date: 2006-06-24 11:11+0200\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "Generated-By: pygettext.py 1.5\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Last-Translator: Toni Hermoso Pulido <toniher@softcatala.org>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "POT-Creation-Date: 2005-06-13 14:54-0500\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "MIME-Version: 1.0\n"
-"X-Generator: Translate Toolkit 0.9rc1\n"
+"X-Generator: Pootle 0.9\n"
 
 #: attachments.py:70
 msgid "attachment is too large"
-msgstr "l'adjunt és massa gran"
+msgstr "l'adjunció és massa gran"
 
 #: widgets/thumbgallery.py:289 attachments.py:322
 msgid "(no attachment)"
-msgstr "(no hi ha adjunts)"
+msgstr "(no hi ha adjuncions)"
 
 #: widgets/thumbgallery.py:233 attachments.py:348
 msgid "remove"
@@ -28,7 +27,7 @@ msgstr "elimina"
 
 #: attachments.py:349
 msgid "remove this attachment"
-msgstr "elimina aquest adjunt"
+msgstr "elimina aquesta adjunció"
 
 #: attachments.py:350
 msgid "restore"
@@ -36,7 +35,7 @@ msgstr "restaura"
 
 #: attachments.py:351
 msgid "this attachment has been removed. click here to restore it"
-msgstr "s'ha eliminat aquest adjunt. cliqueu aqui per a restaurar-lo"
+msgstr "s'ha eliminat aquesta adjunció, cliqueu aqui per a restaurar-la"
 
 #: attachments.py:362
 msgid "attach a file"
@@ -45,7 +44,7 @@ msgstr "adjunta un fitxer"
 #: web/server.py:57
 #, python-format
 msgid "Login for %s"
-msgstr "Logueig per a %s"
+msgstr "Entrada de %s"
 
 #: web/server.py:91
 msgid "Cancel this action and start a new session"
@@ -53,7 +52,7 @@ msgstr "Cancel·la aquesta acció i inicia una nova sessió"
 
 #: web/server.py:92
 msgid "Instead of confirming this action, log out and start from scratch"
-msgstr "En lloc de confirmar aquesta acció, deslogueja'm i comença des de zero"
+msgstr "En lloc de confirmar aquesta acció, finalitza la sessió i comença des de zero"
 
 #: web/server.py:97
 msgid "Exit application"
@@ -65,11 +64,11 @@ msgstr "Surt d'aquesta aplicació i retorna a l'aplicació pare"
 
 #: web/server.py:105
 msgid ", please confirm login"
-msgstr ", si us plau, confirmeu el logueig"
+msgstr "confirmeu la vostra entrada"
 
 #: web/server.py:110
 msgid "Login"
-msgstr "Logueig"
+msgstr "Entrada"
 
 #: web/server.py:123
 msgid "Username:"
@@ -98,7 +97,7 @@ msgstr "Surt"
 #: web/session.py:191 web/session.py:344 web/session.py:350
 #, python-format
 msgid "logged in as <b>%s</b>"
-msgstr "loguejat com a <b>%s</b>"
+msgstr "registrat com <b>%s</b>"
 
 #: web/session.py:193
 msgid "couldn't add new session"
@@ -131,7 +130,7 @@ msgstr "cal definir l'entrada dels usuaris a la configuració del servidor"
 
 #: web/session.py:433 web/session.py:437
 msgid "failed login confirmation"
-msgstr "ha fallat la confirmació de logueig"
+msgstr "ha fallat la confirmació d'entrada"
 
 #: widgets/form.py:79 widgets/thumbgallery.py:292
 msgid "No"
@@ -143,4 +142,4 @@ msgstr "Si"
 
 #: web/session.py:314
 msgid "need to define the users or userprefs entry on the server config"
-msgstr ""
+msgstr "cal definir els usuaris o llurs preferències en la configuració del servidor"

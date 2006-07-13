@@ -1,18 +1,17 @@
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: translate-pootle@lists.sourceforge.net\n"
 "POT-Creation-Date: 2006-06-14 10:14+0200\n"
-"PO-Revision-Date: 2006-06-14 14:23+0200\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"PO-Revision-Date: 2006-06-25 21:37+0200\n"
+"Last-Translator: Nicki Brøchner <nicki.brochner@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "Generated-By: pygettext.py 1.5\n"
-"X-Generator: Translate Toolkit 0.9rc1\n"
+"X-Generator: Pootle 0.9\n"
 
 #: translatepage.py:56 translatepage.py:73
 #, python-format
@@ -34,25 +33,21 @@ msgstr ""
 #: indexpage.py:275 pagelayout.py:34 users.py:20 users.py:50 users.py:83
 #: users.py:104
 msgid "Pootle Demo"
-msgstr "Pootle-demo"
+msgstr "Pootle Demo"
 
 #: translatepage.py:87
-#, fuzzy
 msgid "Original"
 msgstr "original"
 
 #: translatepage.py:88
-#, fuzzy
 msgid "Translation"
 msgstr "oversættelse"
 
 #: translatepage.py:91
-#, fuzzy
 msgid "Accept"
 msgstr "godkend"
 
 #: translatepage.py:92
-#, fuzzy
 msgid "Reject"
 msgstr "afvis"
 
@@ -130,12 +125,10 @@ msgid "Edit"
 msgstr "Rediger"
 
 #: translatepage.py:459
-#, fuzzy
 msgid "Copy"
 msgstr "Kopier"
 
 #: translatepage.py:460 translatepage.py:617
-#, fuzzy
 msgid "Skip"
 msgstr "Spring over"
 
@@ -144,9 +137,8 @@ msgid "Suggest"
 msgstr "Foreslå"
 
 #: translatepage.py:462
-#, fuzzy
 msgid "Submit"
-msgstr "send"
+msgstr "Send"
 
 #: translatepage.py:466
 msgid "Grow"
@@ -175,7 +167,6 @@ msgid "Plural Form %d"
 msgstr "Flertalsform %d"
 
 #: translatepage.py:578
-#, fuzzy
 msgid "Current Translation:"
 msgstr "<b>Nuværede oversættelse:</b>"
 
@@ -216,7 +207,6 @@ msgid "Projects"
 msgstr "Projekter"
 
 #: adminpages.py:29
-#, fuzzy
 msgid "General options"
 msgstr "Generelle indstillinger"
 
@@ -250,7 +240,6 @@ msgid "Home Page"
 msgstr "Hovedside"
 
 #: adminpages.py:62 adminpages.py:116 adminpages.py:176
-#, fuzzy
 msgid "Main admin page"
 msgstr "Hovedsiden for administration"
 
@@ -276,22 +265,21 @@ msgstr "(specialtegn)"
 
 #: adminpages.py:71 indexpage.py:161
 msgid "Number of Plurals"
-msgstr ""
+msgstr "Antalet af flertals"
 
 #: adminpages.py:71
 msgid "(number of plurals)"
-msgstr ""
+msgstr "(antalet af flertals)"
 
 #: adminpages.py:72 indexpage.py:162
 msgid "Plural Equation"
-msgstr ""
+msgstr "Flertals Ligning"
 
 #: adminpages.py:72
 msgid "(plural equation)"
-msgstr ""
+msgstr "(flertals ligning)"
 
 #: adminpages.py:73
-#, fuzzy
 msgid "Remove Language"
 msgstr "Fjern sprog"
 
@@ -326,12 +314,11 @@ msgstr "Stil-tjekker"
 
 #: adminpages.py:126
 msgid "Create MO Files"
-msgstr "Opret MO filer"
+msgstr "Opret MO Filer"
 
 #: adminpages.py:127
-#, fuzzy
 msgid "Remove Project"
-msgstr "Fjern projekt"
+msgstr "Fjern Projekt"
 
 #: adminpages.py:182 users.py:28
 msgid "Login"
@@ -366,9 +353,8 @@ msgid "Activate New User"
 msgstr "Aktivér ny bruger"
 
 #: adminpages.py:187
-#, fuzzy
 msgid "Remove User"
-msgstr "Fjern %s"
+msgstr "Fjern Bruger"
 
 #: adminpages.py:240
 msgid "Back to main page"
@@ -433,7 +419,7 @@ msgstr "Brugernavn"
 
 #: adminpages.py:327
 msgid "(select to add user)"
-msgstr ""
+msgstr "(vælg for at tilføje bruger)"
 
 #: adminpages.py:328
 msgid "Rights"
@@ -452,70 +438,39 @@ msgid "About Pootle"
 msgstr "Om Pootle"
 
 #: indexpage.py:29
-#, fuzzy
 msgid ""
 "<strong>Pootle</strong> is a simple web portal that should allow you to "
 "<strong>translate</strong>! Since Pootle is <strong>Free Software</strong>, "
 "you can download it and run your own copy if you like. You can also help "
 "participate in the development in many ways (you don't have to be able to "
 "program)."
-msgstr ""
-"#-#-#-#-#  pootle.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"<strong>Pootle</strong> er en simpel web portal som skulle tillade dig at "
-"<strong>oversætte</strong>! Eftersom Pootle er <strong>fri software</"
-"strong>, så kan du downloade og køre din egen kopi efter ønske. Du kan også "
-"hjælpe ved at deltage i udviklingen på mange måder (du skal ikke "
-"nødvendigvis kunne programmere).\n"
-"#-#-#-#-#  pootle.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"<strong>Pootle</strong> er en simpel web portal som lader dig "
-"<strong>oversætte</strong>! Da Pootle er <strong>Fri Software</strong>, så "
-"kan du hente og køre din egen kopi hvis du ønsker. Du kan også hjælpe ved at "
-"deltage i udviklingen på mange måder (du behøver ikke at kunne programmere)."
+msgstr "<strong>Pootle</strong> er en simpel web portal som skulle tillade dig at <strong>oversætte</strong>! Eftersom Pootle er <strong>Gratis Software</strong>, så kan du downloade og køre din egen kopi efter ønske. Du kan også hjælpe ved at deltage i udviklingen på mange måder (du skal ikke nødvendigvis kunne programmere)."
 
 #: indexpage.py:30
-#, fuzzy
 msgid ""
 "The Pootle project itself is hosted at <a href=\"http://translate."
 "sourceforge.net/\">translate.sourceforge.net</a> where you can find the "
 "details about source code, mailing lists etc."
-msgstr ""
-"#-#-#-#-#  pootle.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Selve Pootle-projektet har værtsside på <a href=\"http://translate."
-"sourceforge.net/\">translate.sourceforge.net</a>, hvor du kan find detaljer "
-"om kildekoden, mailinglister etc.\n"
-"#-#-#-#-#  pootle.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Pootle-projektet er hosted på <a href=\"http://translate.sourceforge.net/"
-"\">translate.sourceforge.net</a> hvor du kan finde detaljer om kildekoden, "
-"mailingliste etc."
+msgstr "Selve Pootle-projektet har værtsside på <a href=\"http://translate.sourceforge.net/\">translate.sourceforge.net</a>, hvor du kan find detaljer om kildekoden, mailinglister osv."
 
 #: indexpage.py:31
-#, fuzzy
 msgid ""
 "The name stands for <b>PO</b>-based <b>O</b>nline <b>T</b>ranslation / <b>L</"
 "b>ocalization <b>E</b>ngine, but you may need to read <a href=\"http://www."
 "thechestnut.com/flumps.htm\">this</a>."
-msgstr ""
-"#-#-#-#-#  pootle.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Navnet står for <b>PO</b>-based <b>O</b>nline <b>T</b>ranslation / <b>L</"
-"b>ocalization <b>E</b>ngine, men du vil måske have behov for at <a href="
-"\"http://www.thechestnut.com/flumps.htm\">læse dette.</a>\n"
-"#-#-#-#-#  pootle.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Navnet står for <b>PO</b>-based <b>O</b>nline <b>T</b>ranslation / <b>L</"
-"b>ocalization <b>E</b>ngine, men du har måske behov for at læse <a href="
-"\"http://www.thechestnut.com/flumps.htm\">dette</a>."
+msgstr "Navnet står for <b>PO</b>-based <b>O</b>nline <b>T</b>ranslation / <b>L</b>ocalization <b>E</b>ngine, men du vil måske have behov for at <a href=\"http://www.thechestnut.com/flumps.htm\">læse dette.</a>."
 
 #: indexpage.py:32
 msgid "Versions"
 msgstr "Versioner"
 
 #: indexpage.py:33
-#, fuzzy, python-format
+#, , python-format
 #, python-format
 msgid ""
 "This site is running:<br />Pootle %s<br />Translate Toolkit %s<br />jToolkit "
 "%s<br />Python %s (on %s/%s)"
-msgstr ""
-"Dette site kører:<br/>Pootle %s</br>jToolkit %s</br>Python %s (on %s/%s)"
+msgstr "Dette site kører:<br />Pootle %s<br />Oversættelse værktøjssæt %s<br />jToolkit %s <br />Python %s (på %s/%s)"
 
 #: indexpage.py:49
 msgid "Pootle"
@@ -556,8 +511,8 @@ msgstr "%s %s"
 #, python-format
 msgid "%d project, average %d%% translated"
 msgid_plural "%d projects, average %d%% translated"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d projekt, gennemsnitlig %d%% oversat"
+msgstr[1] "%d projekter, gennemsnitlig %d%% oversat"
 
 #: indexpage.py:142 indexpage.py:197
 #, python-format
@@ -569,12 +524,10 @@ msgid "Admin"
 msgstr "Admin"
 
 #: indexpage.py:158
-#, fuzzy
 msgid "Language Code"
-msgstr "Sprog"
+msgstr "Sprog Kode"
 
 #: indexpage.py:159
-#, fuzzy
 msgid "Language Name"
 msgstr "Sprog"
 
@@ -582,15 +535,15 @@ msgstr "Sprog"
 #, python-format
 msgid "%d language, average %d%% translated"
 msgid_plural "%d languages, average %d%% translated"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d sprog, gennemsnitlig %d%% oversat"
+msgstr[1] "%d sprog, gennemsnitlig %d%% oversat"
 
 #: indexpage.py:228 pagelayout.py:169
 #, python-format
 msgid "%d file"
 msgid_plural "%d files"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d fil"
+msgstr[1] "%d filer"
 
 #: indexpage.py:229 indexpage.py:861 pagelayout.py:170
 #, python-format
@@ -616,9 +569,8 @@ msgid "Can only upload PO files and zips of PO files"
 msgstr "Kan kun uploade PO-filer and zippede PO-filer"
 
 #: indexpage.py:437
-#, fuzzy
 msgid "goals"
-msgstr "Mål"
+msgstr "mål"
 
 #: indexpage.py:437
 msgid "Enter goal name"
@@ -637,9 +589,8 @@ msgid "Select file to upload"
 msgstr "Vælg fil som skal sendes"
 
 #: indexpage.py:545
-#, fuzzy
 msgid "Not in a goal"
-msgstr "Intet mål"
+msgstr "Ikke i et mål"
 
 #: indexpage.py:566
 msgid "Add User"
@@ -655,7 +606,7 @@ msgstr "XLIFF fil"
 
 #: indexpage.py:609
 msgid "Qt .ts file"
-msgstr ""
+msgstr "Qt.ts fil"
 
 #: indexpage.py:613
 msgid "CSV file"
@@ -784,14 +735,14 @@ msgstr "ZIP af mappe"
 
 #: indexpage.py:776
 msgid "Generate SDF"
-msgstr ""
+msgstr "Skab SDF"
 
 #: indexpage.py:829
 #, python-format
 msgid "%d string (%d%%) failed"
 msgid_plural "%d strings (%d%%) failed"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d streng (%d%%) fejlede"
+msgstr[1] "%d strenge (%d%%) fejlede"
 
 #: indexpage.py:859
 #, python-format
@@ -799,31 +750,26 @@ msgid "%d/%d words (%d%%) assigned"
 msgstr "%d/%d ord (%d%%) tildelt"
 
 #: pagelayout.py:19
-#, fuzzy
 msgid "All projects"
 msgstr "Alle projekter"
 
 #: pagelayout.py:20
-#, fuzzy
 msgid "All languages"
 msgstr "Alle sprog"
 
 #: pagelayout.py:21
 msgid "My account"
-msgstr ""
+msgstr "Min konto"
 
 #: pagelayout.py:23
-#, fuzzy
 msgid "Docs & help"
-msgstr "Dok. & Hjælp"
+msgstr "Dok. & hjælp"
 
 #: pagelayout.py:24
-#, fuzzy
 msgid "Log out"
 msgstr "Log ud"
 
 #: pagelayout.py:25
-#, fuzzy
 msgid "Log in"
 msgstr "Login"
 
@@ -843,29 +789,29 @@ msgstr "Alle mål"
 #: pagelayout.py:167
 #, python-format
 msgid "%d/%d files"
-msgstr " %d/%d filer"
+msgstr "%d/%d filer"
 
 #: pagelayout.py:171
-#, fuzzy, python-format
+#, , python-format
 #, python-format
 msgid "%d/%d strings"
-msgstr "[%d/%d tekststrenge]"
+msgstr "%d/%d strenge"
 
 #: pootle.py:228 pootle.py:254
 msgid "Redirecting to login..."
-msgstr ""
+msgstr "Omdiriger til log ind..."
 
 #: pootle.py:231
 msgid "Need to log in to access home page"
-msgstr ""
+msgstr "Log ind for at få adgang til hjemme siden"
 
 #: pootle.py:257
 msgid "Need to log in to access admin page"
-msgstr ""
+msgstr "Log ind for at få adgang til administartor siden"
 
 #: pootle.py:264
 msgid "Redirecting to home..."
-msgstr ""
+msgstr "Omdiriger til hjem..."
 
 #: pootle.py:267
 msgid "You do not have the rights to administer pootle."
@@ -881,7 +827,7 @@ msgstr "Oversæt"
 
 #: projects.py:113
 msgid "Review"
-msgstr "Review"
+msgstr "Vurdering"
 
 #: projects.py:114
 msgid "Archive"
@@ -901,12 +847,11 @@ msgstr "Administrér"
 
 #: projects.py:173
 msgid "You cannot remove the \"nobody\" or \"default\" user"
-msgstr ""
-"Du kan ikke fjerne \"nobody/ingen\"- eller \"default/standard\"-brugeren"
+msgstr "Du kan ikke fjerne \"ingen\" eller \"standard\" brugeren"
 
 #: projects.py:310 projects.py:370
 msgid "You do not have rights to alter goals here"
-msgstr "Du har ikke rettigheder til at ændre mål her"
+msgstr "Du har ikke rettigheder til at ændre målene her"
 
 #: projects.py:422
 msgid "You do not have rights to upload files here"
@@ -941,23 +886,20 @@ msgid "Login to Pootle"
 msgstr "Login på Pootle"
 
 #: users.py:23
-#, fuzzy
 msgid "Username:"
-msgstr "Brugernavn"
+msgstr "Brugernavn:"
 
 #: users.py:25
-#, fuzzy
 msgid "Password:"
-msgstr "Kodeord"
+msgstr "Kodeord:"
 
 #: users.py:26
-#, fuzzy
 msgid "Language:"
-msgstr "Sprog"
+msgstr "Sprog:"
 
 #: users.py:35
 msgid "Default"
-msgstr ""
+msgstr "standard"
 
 #: users.py:46
 msgid "Please enter your registration details"
@@ -984,9 +926,8 @@ msgid "Your desired password"
 msgstr "Dit ønskede kodeord"
 
 #: users.py:65
-#, fuzzy
 msgid "Register Account"
-msgstr "Aktiver konto"
+msgstr "Register konto"
 
 #: users.py:74
 msgid "Please enter your activation details"
@@ -1027,11 +968,11 @@ msgstr "Email"
 
 #: users.py:114
 msgid "Translation Interface Configuration"
-msgstr "Oversættelses-grænseflade konfiguration"
+msgstr "Oversættelsesgrænseflade konfiguration"
 
 #: users.py:115
 msgid "User Interface language"
-msgstr ""
+msgstr "Brugergrænseflade sprog"
 
 #: users.py:116
 msgid "My Projects"
@@ -1046,13 +987,12 @@ msgid "Home page"
 msgstr "Hjemmeside"
 
 #: users.py:154
-#, fuzzy
 msgid "Input Height (in lines)"
-msgstr "Input højde"
+msgstr "Input højde (i linier)"
 
 #: users.py:154
 msgid "Input Width (in characters)"
-msgstr ""
+msgstr "Input bredde (I karaktere)"
 
 #: users.py:155
 msgid "Number of rows in view mode"
@@ -1068,40 +1008,39 @@ msgstr "Du skal være sideadministrator for at ændre brugerne"
 
 #: users.py:348
 msgid "Redirecting to Registration Page..."
-msgstr ""
+msgstr "Omdirigering til registerings siden..."
 
 #: users.py:372
 msgid "Redirecting to login Page..."
-msgstr ""
+msgstr "Omdirigering til log ind siden..."
 
 #: users.py:375
 msgid "Your account has been activated! Redirecting to login..."
-msgstr ""
+msgstr "Din konto er blevet aktiveret! Omdirigering til log ind..."
 
 #: users.py:379
 msgid "The activation link you have entered was not valid"
-msgstr ""
+msgstr "Aktiveringslinket du har indtastet var ikke gyldigt"
 
 #: users.py:380
-#, fuzzy
 msgid "Activation Failed"
-msgstr "Aktiveringskode"
+msgstr "Aktiveringen fejlede"
 
 #: users.py:474
 msgid "Input height must be numeric"
-msgstr "Input højde skal være tal"
+msgstr "Input højde skal være numerisk"
 
 #: users.py:475
 msgid "Input width must be numeric"
-msgstr "Input bredde skal være tal"
+msgstr "Input bredde skal være numerisk"
 
 #: users.py:476
 msgid "The number of rows displayed in view mode must be numeric"
-msgstr "Antallet af rækker vist i visningstilstand skal være tal"
+msgstr "Antallet af rækker vist i visningstilstand skal være numerisk"
 
 #: users.py:477
 msgid "The number of rows displayed in translate mode must be numeric"
-msgstr "Antallet af rækker vist i oversættelsestilstand skal være et tal"
+msgstr "Antallet af rækker vist i oversættelsestilstand skal være et numerisk"
 
 #~ msgid "Pootle Admin Page"
 #~ msgstr "Pootle Administrationsside"

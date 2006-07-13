@@ -1,18 +1,17 @@
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: translate-pootle@lists.sourceforge.net\n"
 "POT-Creation-Date: 2006-06-14 10:14+0200\n"
-"PO-Revision-Date: 2006-06-14 14:27+0200\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"PO-Revision-Date: 2006-07-11 20:46+0200\n"
+"Last-Translator: justas <justunas@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 or n%100>=20) ? 1 : 2);\n"
 "Generated-By: pygettext.py 1.1\n"
-"X-Generator: Translate Toolkit 0.9rc1\n"
+"X-Generator: Pootle 0.9\n"
 
 #: translatepage.py:56 translatepage.py:73
 #, python-format
@@ -25,6 +24,8 @@ msgid ""
 "%d/%d translated\n"
 "(%d blank, %d fuzzy)"
 msgstr ""
+"%d/%d išversta\n"
+"(%d blank, %d fuzzy)"
 
 #: translatepage.py:74 adminpages.py:17 adminpages.py:53 adminpages.py:107
 #: adminpages.py:167 adminpages.py:250 adminpages.py:309 indexpage.py:35
@@ -32,59 +33,58 @@ msgstr ""
 #: indexpage.py:275 pagelayout.py:34 users.py:20 users.py:50 users.py:83
 #: users.py:104
 msgid "Pootle Demo"
-msgstr ""
+msgstr "Pootle demonstracija"
 
 #: translatepage.py:87
 msgid "Original"
-msgstr ""
+msgstr "Originalas"
 
 #: translatepage.py:88
-#, fuzzy
 msgid "Translation"
 msgstr "Greitas vertimas"
 
 #: translatepage.py:91
 msgid "Accept"
-msgstr ""
+msgstr "Patvirtinti"
 
 #: translatepage.py:92
 msgid "Reject"
-msgstr ""
+msgstr "Atmesti"
 
 #: translatepage.py:95 indexpage.py:282
 msgid "Search"
-msgstr ""
+msgstr "Ieškoti"
 
 #: translatepage.py:108
 msgid "End of batch"
-msgstr ""
+msgstr "Paketo pabaiga"
 
 #: translatepage.py:110
 msgid "Click here to return to the index"
-msgstr ""
+msgstr "Spustelėkite čia, norėdami sugrįžti į rodyklę"
 
 #: translatepage.py:122 translatepage.py:124
 msgid "Start"
-msgstr ""
+msgstr "Pradžia"
 
 #: translatepage.py:127 translatepage.py:129
 #, python-format
 msgid "Previous %d"
-msgstr ""
+msgstr "Ankstesnis %d"
 
 #: translatepage.py:130
 #, python-format
 msgid "Items %d to %d of %d"
-msgstr ""
+msgstr "Elementų nuo %d iki %d iš %d"
 
 #: translatepage.py:134 translatepage.py:136
 #, python-format
 msgid "Next %d"
-msgstr ""
+msgstr "Kitas %d"
 
 #: translatepage.py:138 translatepage.py:140
 msgid "End"
-msgstr ""
+msgstr "Pabaiga"
 
 #: translatepage.py:155
 #, python-format
@@ -93,97 +93,97 @@ msgstr "tikrinama"
 
 #: translatepage.py:162 translatepage.py:165 indexpage.py:429 indexpage.py:432
 msgid "Assign Strings"
-msgstr ""
+msgstr "Priskirti seką"
 
 #: translatepage.py:163 indexpage.py:431
 msgid "Assign to User"
-msgstr ""
+msgstr "Priskirti vartotojui"
 
 #: translatepage.py:164 indexpage.py:430
 msgid "Assign Action"
-msgstr ""
+msgstr "Priskirti veiksmą"
 
 #: translatepage.py:292
 #, python-format
 msgid "There are no items matching that search ('%s')"
-msgstr ""
+msgstr "Nėra užklausą atitinkančių elementų ('%s')"
 
 #: translatepage.py:294
 msgid "You have finished going through the items you selected"
-msgstr ""
+msgstr "Jūs baigėte peržiūrėti pasirinktus elementus"
 
 #: translatepage.py:429
 msgid "Singular"
-msgstr ""
+msgstr "Vienaskaita"
 
 #: translatepage.py:430
 msgid "Plural"
-msgstr ""
+msgstr "Daugiskaita"
 
 #: translatepage.py:443
 msgid "Edit"
-msgstr ""
+msgstr "Taisyti"
 
 #: translatepage.py:459
 msgid "Copy"
-msgstr ""
+msgstr "Kopijuoti"
 
 #: translatepage.py:460 translatepage.py:617
 msgid "Skip"
-msgstr ""
+msgstr "Praleisti"
 
 #: translatepage.py:461 projects.py:111
 msgid "Suggest"
-msgstr ""
+msgstr "Siūlyti"
 
 #: translatepage.py:462
 msgid "Submit"
-msgstr ""
+msgstr "Pateikti"
 
 #: translatepage.py:466
 msgid "Grow"
-msgstr ""
+msgstr "Didinti"
 
 #: translatepage.py:467
 msgid "Shrink"
-msgstr ""
+msgstr "Mažinti"
 
 #: translatepage.py:468
 msgid "Broaden"
-msgstr ""
+msgstr "Plėsti"
 
 #: translatepage.py:469
 msgid "Narrow"
-msgstr ""
+msgstr "Siaurinti"
 
 #: translatepage.py:470
 msgid "Reset"
-msgstr ""
+msgstr "Nustatyti iš naujo"
 
 #: translatepage.py:488 translatepage.py:574 translatepage.py:608
 #: translatepage.py:636
 #, python-format
 msgid "Plural Form %d"
-msgstr ""
+msgstr "Daugiskaitos forma %d"
 
 #: translatepage.py:578
 msgid "Current Translation:"
-msgstr ""
+msgstr "Esamas vertimas"
 
 #: translatepage.py:589
 #, python-format
 msgid "Suggestion %d by %s:"
-msgstr ""
+msgstr "Pasiūlymą %d pasiūlė %s:"
 
 #: translatepage.py:591
 #, python-format
 msgid "Suggestion %d:"
-msgstr ""
+msgstr "Pasiūlymas %d:"
 
 #: translatepage.py:594
 #, python-format
 msgid "Suggestion by %s:"
-msgstr ""
+msgstr "Pasiūlymą pasiūlė %s:"
 
 #: translatepage.py:596
 msgid "Suggestion:"
@@ -192,225 +192,224 @@ msgstr "Pasiūlymas:"
 #: adminpages.py:25 adminpages.py:61 adminpages.py:115 adminpages.py:175
 #: pagelayout.py:18
 msgid "Home"
-msgstr ""
+msgstr "Į pradžią"
 
 #: adminpages.py:26 adminpages.py:177
 msgid "Users"
-msgstr ""
+msgstr "Vartotojai"
 
 #: adminpages.py:27 adminpages.py:63 indexpage.py:52
 msgid "Languages"
-msgstr ""
+msgstr "Kalbos"
 
 #: adminpages.py:28 adminpages.py:117 indexpage.py:53
 msgid "Projects"
-msgstr ""
+msgstr "Projektai"
 
 #: adminpages.py:29
 msgid "General options"
-msgstr ""
+msgstr "Bendrosios parinktys"
 
 #: adminpages.py:30 users.py:108
 msgid "Option"
-msgstr ""
+msgstr "Parinktis"
 
 #: adminpages.py:31 users.py:109
 msgid "Current value"
-msgstr ""
+msgstr "Dabartinė reikšmė"
 
 #: adminpages.py:32 adminpages.py:64 adminpages.py:118 adminpages.py:178
 #: users.py:121
 msgid "Save changes"
-msgstr ""
+msgstr "Įrašyti pakeitimus"
 
 #: adminpages.py:36
 msgid "Title"
-msgstr ""
+msgstr "Pavadinimas"
 
 #: adminpages.py:36
 msgid "Description"
-msgstr ""
+msgstr "Apibūdinimas"
 
 #: adminpages.py:36
 msgid "Base URL"
-msgstr ""
+msgstr "Bazinis URL"
 
 #: adminpages.py:36
 msgid "Home Page"
-msgstr ""
+msgstr "Pradinis puslapis"
 
 #: adminpages.py:62 adminpages.py:116 adminpages.py:176
 msgid "Main admin page"
-msgstr ""
+msgstr "Pagrindinis administravimo puslapis"
 
 #: adminpages.py:68
 msgid "ISO Code"
-msgstr ""
+msgstr "ISO kodas"
 
 #: adminpages.py:69 adminpages.py:123 adminpages.py:183 users.py:59
 msgid "Full Name"
-msgstr ""
+msgstr "Vardas, Pavardė"
 
 #: adminpages.py:69
 msgid "(add language here)"
-msgstr ""
+msgstr "(pridėkite kalbas...)"
 
 #: adminpages.py:70
 msgid "Special Chars"
-msgstr ""
+msgstr "Specialieji simboliai"
 
 #: adminpages.py:70
 msgid "(special characters)"
-msgstr ""
+msgstr "(specialieji simboliai)"
 
 #: adminpages.py:71 indexpage.py:161
 msgid "Number of Plurals"
-msgstr ""
+msgstr "Daugiskaitų skaičius"
 
 #: adminpages.py:71
 msgid "(number of plurals)"
-msgstr ""
+msgstr "(daugiskaitų skaičius)"
 
 #: adminpages.py:72 indexpage.py:162
 msgid "Plural Equation"
-msgstr ""
+msgstr "Daugiskaitos lygtis"
 
 #: adminpages.py:72
 msgid "(plural equation)"
-msgstr ""
+msgstr "(daugiskaitos lygtis)"
 
 #: adminpages.py:73
-#, fuzzy
 msgid "Remove Language"
-msgstr "kalba"
+msgstr "Šalinti kalbą"
 
 #: adminpages.py:87 adminpages.py:148 adminpages.py:208 adminpages.py:367
 #, python-format
 msgid "Remove %s"
-msgstr ""
+msgstr "Šalinti %s"
 
 #: adminpages.py:105
 msgid "Standard"
-msgstr ""
+msgstr "Standartinis"
 
 #: adminpages.py:122
 msgid "Project Code"
-msgstr ""
+msgstr "Projekto kodas"
 
 #: adminpages.py:123
 msgid "(add project here)"
-msgstr ""
+msgstr "(pridėti projektą...)"
 
 #: adminpages.py:124
 msgid "Project Description"
-msgstr ""
+msgstr "Projekto apibūdinimas"
 
 #: adminpages.py:124
 msgid "(project description)"
-msgstr ""
+msgstr "(projekto apibūdinimas)"
 
 #: adminpages.py:125
 msgid "Checker Style"
-msgstr ""
+msgstr "Tikrintuvo stilius"
 
 #: adminpages.py:126
 msgid "Create MO Files"
-msgstr ""
+msgstr "Sukurti MO rinkmenas"
 
 #: adminpages.py:127
 msgid "Remove Project"
-msgstr ""
+msgstr "Šalinti projektą"
 
 #: adminpages.py:182 users.py:28
 msgid "Login"
-msgstr ""
+msgstr "Registruotis į seansą"
 
 #: adminpages.py:183 users.py:253
 msgid "(add full name here)"
-msgstr ""
+msgstr "(nurodykite pilną vardą...)"
 
 #: adminpages.py:184 users.py:56
 msgid "Email Address"
-msgstr ""
+msgstr "El. pašto adresas"
 
 #: adminpages.py:184 users.py:256
 msgid "(add email here)"
-msgstr ""
+msgstr "(el. paštas...)"
 
 #: adminpages.py:185 users.py:62
 msgid "Password"
-msgstr ""
+msgstr "Slaptažodis"
 
 #: adminpages.py:185 users.py:250
 msgid "(add password here)"
-msgstr ""
+msgstr "(nurodykite slaptažodį...)"
 
 #: adminpages.py:186
 msgid "Activated"
-msgstr ""
+msgstr "Aktyvuota"
 
 #: adminpages.py:186
 msgid "Activate New User"
-msgstr ""
+msgstr "Aktyvuoti naująjį vartotoją"
 
 #: adminpages.py:187
 msgid "Remove User"
-msgstr ""
+msgstr "Šalinti vartotoją"
 
 #: adminpages.py:240
 msgid "Back to main page"
-msgstr ""
+msgstr "Grįžti į pagrindinį puslapį"
 
 #: adminpages.py:241
 msgid "Existing languages"
-msgstr ""
+msgstr "Esamos kalbos"
 
 #: adminpages.py:244
 msgid "Update Languages"
-msgstr ""
+msgstr "Naujinti kalbas"
 
 #: adminpages.py:245
 #, python-format
 msgid "Pootle Admin: %s"
-msgstr ""
+msgstr "Pootle administratorius: %s"
 
 #: adminpages.py:246 adminpages.py:306
 msgid "You do not have the rights to administer this project."
-msgstr ""
+msgstr "Jums nesuteiktos teisės administuoti šį projektą."
 
 #: adminpages.py:247
 msgid "Update from templates"
-msgstr ""
+msgstr "Naujinti naudojant šablonus"
 
 #: adminpages.py:255
 msgid "Add Language"
-msgstr ""
+msgstr "Pridėti kalbą"
 
 #: adminpages.py:286
 #, python-format
 msgid "Pootle Admin: %s %s"
-msgstr ""
+msgstr "Pootle administratorius:%s %s"
 
 #: adminpages.py:287
 msgid "Project home page"
-msgstr ""
+msgstr "Pradinis projekto puslapis"
 
 #: adminpages.py:305
 #, python-format
 msgid "Cannot set rights for username %s - user does not exist"
-msgstr ""
+msgstr "Negali suteikti vartotojo teisių - tokio vartotojo nėra"
 
 #: adminpages.py:322
 msgid "This is a GNU-style project (one directory, files named per language)."
-msgstr ""
+msgstr "Tai GNU-tipo projektas (vienas katalogas; rinkmenoms pavadinimai suteikiami pagal kalbą)."
 
 #: adminpages.py:324
 msgid "This is a standard style project (one directory per language)."
-msgstr ""
+msgstr "Tai - standartinio tipo projektas (vienas katalogas vienai kalbai)."
 
 #: adminpages.py:325
 msgid "User Permissions"
-msgstr ""
+msgstr "Vartotojo prieigos teisės"
 
 #: adminpages.py:326 users.py:53 users.py:86
 msgid "Username"
@@ -418,23 +417,23 @@ msgstr "Vartotojo vardas"
 
 #: adminpages.py:327
 msgid "(select to add user)"
-msgstr ""
+msgstr "(pasirinkite, norėdami pridėti vartotoją)"
 
 #: adminpages.py:328
 msgid "Rights"
-msgstr ""
+msgstr "Teisės"
 
 #: adminpages.py:329 indexpage.py:864
 msgid "Remove"
-msgstr ""
+msgstr "Šalinti"
 
 #: adminpages.py:349
 msgid "Update Rights"
-msgstr ""
+msgstr "Naujinti teises"
 
 #: indexpage.py:28
 msgid "About Pootle"
-msgstr ""
+msgstr "Apie Pootle"
 
 #: indexpage.py:29
 msgid ""
@@ -443,155 +442,155 @@ msgid ""
 "you can download it and run your own copy if you like. You can also help "
 "participate in the development in many ways (you don't have to be able to "
 "program)."
-msgstr ""
+msgstr "<strong>Pootle</strong> yra nesudėtingas internetinis portalas leidžiantis jums <strong>versti</strong>! Pootle programinė įranga yra <strong>nemokama</strong>, todėl jūs galite ją parsisiųsti ir įdiegti savo asmeniniame kompiuteryje. Jūs taip pat įvaitiais būdais galite prisidėti prie mūsų tobulėjimo (ir visai nebūtina mokėti programuoti)."
 
 #: indexpage.py:30
 msgid ""
 "The Pootle project itself is hosted at <a href=\"http://translate."
 "sourceforge.net/\">translate.sourceforge.net</a> where you can find the "
 "details about source code, mailing lists etc."
-msgstr ""
+msgstr "Pootle projektas yra globojamas <a href=\"http://translate.sourceforge.net/\">translate.sourceforge.net</a> Čia jūs surasite daugiau informacijos programinį kodą, kontaktus."
 
 #: indexpage.py:31
 msgid ""
 "The name stands for <b>PO</b>-based <b>O</b>nline <b>T</b>ranslation / <b>L</"
 "b>ocalization <b>E</b>ngine, but you may need to read <a href=\"http://www."
 "thechestnut.com/flumps.htm\">this</a>."
-msgstr ""
+msgstr "Pavadinimas yra žodžių <b>PO</b>-based <b>O</b>nline <b>T</b>ranslation / <b>L</b>ocalization <b>E</b>ngine santrumpa. Jei reikia papildomos informacijos skaitykite <a href=\"http://www.thechestnut.com/flumps.htm\">this</a>."
 
 #: indexpage.py:32
 msgid "Versions"
-msgstr ""
+msgstr "Versijos"
 
 #: indexpage.py:33
 #, python-format
 msgid ""
 "This site is running:<br />Pootle %s<br />Translate Toolkit %s<br />jToolkit "
 "%s<br />Python %s (on %s/%s)"
-msgstr ""
+msgstr "Šioje tinklavietėje veikia:<br />Pootle %s<br />Translate Toolkit %s<br />jToolkit %s<br />Python %s (on %s/%s)"
 
 #: indexpage.py:49
 msgid "Pootle"
-msgstr ""
+msgstr "Pootle"
 
 #: indexpage.py:51
 msgid "About this Pootle server"
-msgstr ""
+msgstr "Apie Pootle serverį"
 
 #: indexpage.py:83
 #, python-format
 msgid "User Page for: %s"
-msgstr ""
+msgstr "Vartotojo puslapis: %s"
 
 #: indexpage.py:85
 msgid "Change options"
-msgstr ""
+msgstr "Keisti pasirinktis"
 
 #: indexpage.py:86
 msgid "Admin page"
-msgstr ""
+msgstr "Administratoriaus puslapis"
 
 #: indexpage.py:87
 msgid "Quick Links"
-msgstr ""
+msgstr "Greitosios nuorodos"
 
 #: indexpage.py:91 indexpage.py:202
 msgid "Please click on 'Change options' and select some languages and projects"
-msgstr ""
+msgstr "Spustelėkite \"Keisti pasirinktis\" ir pasirinkite kalbas bei projektus"
 
 #: indexpage.py:109
 #, python-format
 msgid "%s %s"
-msgstr ""
+msgstr "%s %s"
 
 #: indexpage.py:140
 #, python-format
 msgid "%d project, average %d%% translated"
 msgid_plural "%d projects, average %d%% translated"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d projektas, vidutiniškai %d%% išversta"
+msgstr[1] "%d projektai, vidutiniškai %d%% išversta"
 
 #: indexpage.py:142 indexpage.py:197
 #, python-format
 msgid "Pootle: %s"
-msgstr ""
+msgstr "Pootle: %s"
 
 #: indexpage.py:144 indexpage.py:199 pagelayout.py:22 pagelayout.py:107
 msgid "Admin"
-msgstr ""
+msgstr "Administratorius"
 
 #: indexpage.py:158
 msgid "Language Code"
-msgstr ""
+msgstr "Kalbos kodas"
 
 #: indexpage.py:159
 msgid "Language Name"
-msgstr ""
+msgstr "Kalbos pavadinimas"
 
 #: indexpage.py:195
 #, python-format
 msgid "%d language, average %d%% translated"
 msgid_plural "%d languages, average %d%% translated"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d kalba, vidutiniškai %d%% išversta"
+msgstr[1] "%d kalbos, vidutiniškai %d%% išversta"
 
 #: indexpage.py:228 pagelayout.py:169
 #, python-format
 msgid "%d file"
 msgid_plural "%d files"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d rinkmena"
+msgstr[1] "%d rinkmenos"
 
 #: indexpage.py:229 indexpage.py:861 pagelayout.py:170
 #, python-format
 msgid "%d/%d words (%d%%) translated"
-msgstr ""
+msgstr "%d/%d žodžių (%d%%) išversta"
 
 #: indexpage.py:230 indexpage.py:860 indexpage.py:862
 #, python-format
 msgid "[%d/%d strings]"
-msgstr ""
+msgstr "[%d/%d eilučių]"
 
 #: indexpage.py:273
 #, python-format
 msgid "Pootle: Project %s, Language %s"
-msgstr ""
+msgstr "Pootle: Projektas %s, Kalba %s"
 
 #: indexpage.py:325
 msgid "Cannot upload file, no file attached"
-msgstr ""
+msgstr "Negali nusiųsti rinkmenos - nepridėta rinkmena"
 
 #: indexpage.py:331
 msgid "Can only upload PO files and zips of PO files"
-msgstr ""
+msgstr "Negali siųsti PO rinkmenų bei suspaustų PO rinkmenų."
 
 #: indexpage.py:437
 msgid "goals"
-msgstr ""
+msgstr "Užduotis"
 
 #: indexpage.py:437
 msgid "Enter goal name"
-msgstr ""
+msgstr "Suveskite užduoties pavadinimą"
 
 #: indexpage.py:437
 msgid "Add Goal"
-msgstr ""
+msgstr "Pridėkite užduotį"
 
 #: indexpage.py:441 indexpage.py:443
 msgid "Upload File"
-msgstr ""
+msgstr "Siųsti rinkmeną"
 
 #: indexpage.py:442
 msgid "Select file to upload"
-msgstr ""
+msgstr "Pasirinkite siunčiamą rinkmeną"
 
 #: indexpage.py:545
 msgid "Not in a goal"
-msgstr ""
+msgstr "Nėra tarp uždavinių"
 
 #: indexpage.py:566
 msgid "Add User"
-msgstr ""
+msgstr "Pridėti vartotoją"
 
 #: indexpage.py:601
 msgid "PO file"
@@ -599,47 +598,47 @@ msgstr "PO rinkmena"
 
 #: indexpage.py:605
 msgid "XLIFF file"
-msgstr ""
+msgstr "XLIFF rinkmena"
 
 #: indexpage.py:609
 msgid "Qt .ts file"
-msgstr ""
+msgstr "Qt .ts rinkmena"
 
 #: indexpage.py:613
 msgid "CSV file"
-msgstr ""
+msgstr "CSV rinkmena"
 
 #: indexpage.py:618
 msgid "MO file"
-msgstr ""
+msgstr "MO rinkmena"
 
 #: indexpage.py:622
 msgid "Update"
-msgstr ""
+msgstr "Naujinti"
 
 #: indexpage.py:658
 msgid "All Strings"
-msgstr ""
+msgstr "Visos eilutės"
 
 #: indexpage.py:658
 msgid "Untranslated"
-msgstr ""
+msgstr "Neišversta"
 
 #: indexpage.py:658
 msgid "Unassigned"
-msgstr ""
+msgstr "Nepriskirta"
 
 #: indexpage.py:658
 msgid "Unassigned and Untranslated"
-msgstr ""
+msgstr "Nepriskirta ir neišversta"
 
 #: indexpage.py:665
 msgid "Set Goal"
-msgstr ""
+msgstr "Nustatyti uždavinį"
 
 #: indexpage.py:670
 msgid "Assign To"
-msgstr ""
+msgstr "Priskirti:"
 
 #: indexpage.py:699
 msgid "Show Tracks"
@@ -651,11 +650,11 @@ msgstr ""
 
 #: indexpage.py:700
 msgid "Show Checks"
-msgstr ""
+msgstr "Rodyti tikrinimus"
 
 #: indexpage.py:700
 msgid "Hide Checks"
-msgstr ""
+msgstr "Slėpti tikrinimus"
 
 #: indexpage.py:701
 msgid "Show Goals"
@@ -700,19 +699,19 @@ msgstr ""
 
 #: indexpage.py:736
 msgid "Review Suggestions"
-msgstr ""
+msgstr "Siūlymų peržiūra"
 
 #: indexpage.py:738
 msgid "View Suggestions"
-msgstr ""
+msgstr "Žiūrėti siūlymus"
 
 #: indexpage.py:743
 msgid "Quick Translate"
-msgstr "Greitas vertimas"
+msgstr "Greitasis vertimas"
 
 #: indexpage.py:745
 msgid "View Untranslated"
-msgstr ""
+msgstr "Peržiūrėti tai, kas neišversta"
 
 #: indexpage.py:749
 msgid "No untranslated items"
@@ -720,7 +719,7 @@ msgstr ""
 
 #: indexpage.py:752
 msgid "Translate All"
-msgstr ""
+msgstr "Versti viską"
 
 #: indexpage.py:767
 msgid "ZIP of goal"
@@ -728,11 +727,11 @@ msgstr ""
 
 #: indexpage.py:769
 msgid "ZIP of folder"
-msgstr ""
+msgstr "katalogo ZIP"
 
 #: indexpage.py:776
 msgid "Generate SDF"
-msgstr ""
+msgstr "Generuoti SDF"
 
 #: indexpage.py:829
 #, python-format
@@ -744,41 +743,40 @@ msgstr[1] ""
 #: indexpage.py:859
 #, python-format
 msgid "%d/%d words (%d%%) assigned"
-msgstr ""
+msgstr "%d/%d žodžių (%d%%) priskirta"
 
 #: pagelayout.py:19
 msgid "All projects"
-msgstr ""
+msgstr "Visi projektai"
 
 #: pagelayout.py:20
-#, fuzzy
 msgid "All languages"
-msgstr "kalba"
+msgstr "Visos kalbos"
 
 #: pagelayout.py:21
 msgid "My account"
-msgstr ""
+msgstr "Mano paskyra"
 
 #: pagelayout.py:23
 msgid "Docs & help"
-msgstr ""
+msgstr "Dokumentacija ir pagalba"
 
 #: pagelayout.py:24
 msgid "Log out"
-msgstr ""
+msgstr "Atsijungti"
 
 #: pagelayout.py:25
 msgid "Log in"
-msgstr ""
+msgstr "Registruotis į sistemą"
 
 #. l10n: Verb, as in "to register"
 #: pagelayout.py:27
 msgid "Register"
-msgstr ""
+msgstr "Registruotis"
 
 #: pagelayout.py:28
 msgid "Activate"
-msgstr ""
+msgstr "Aktyvuoti"
 
 #: pagelayout.py:96
 msgid "All goals"
@@ -787,7 +785,7 @@ msgstr ""
 #: pagelayout.py:167
 #, python-format
 msgid "%d/%d files"
-msgstr ""
+msgstr "%d/%d rinkmenų"
 
 #: pagelayout.py:171
 #, python-format
@@ -796,51 +794,51 @@ msgstr ""
 
 #: pootle.py:228 pootle.py:254
 msgid "Redirecting to login..."
-msgstr ""
+msgstr "Nukreipiama registravimuisi į sistemą..."
 
 #: pootle.py:231
 msgid "Need to log in to access home page"
-msgstr ""
+msgstr "Norint patekti į pagrindinį puslapį, būtina registruotis"
 
 #: pootle.py:257
 msgid "Need to log in to access admin page"
-msgstr ""
+msgstr "Norint patekti į administratoriaus puslapį, būtina registruotis"
 
 #: pootle.py:264
 msgid "Redirecting to home..."
-msgstr ""
+msgstr "Nukreipiama į pagrindinį puslapį..."
 
 #: pootle.py:267
 msgid "You do not have the rights to administer pootle."
-msgstr ""
+msgstr "Neturite teisių administruoti Pootle."
 
 #: projects.py:110
 msgid "View"
-msgstr ""
+msgstr "Rodinys"
 
 #: projects.py:112
 msgid "Translate"
-msgstr ""
+msgstr "Versti"
 
 #: projects.py:113
 msgid "Review"
-msgstr ""
+msgstr "Peržiūra"
 
 #: projects.py:114
 msgid "Archive"
-msgstr ""
+msgstr "Archyvas"
 
 #: projects.py:115
 msgid "Compile PO files"
-msgstr ""
+msgstr "Kompiliuoti PO rinkmenas"
 
 #: projects.py:116
 msgid "Assign"
-msgstr ""
+msgstr "Priskirti"
 
 #: projects.py:117
 msgid "Administrate"
-msgstr ""
+msgstr "Administruoti"
 
 #: projects.py:173
 msgid "You cannot remove the \"nobody\" or \"default\" user"
@@ -889,40 +887,39 @@ msgstr "Vartotojo vardas"
 
 #: users.py:25
 msgid "Password:"
-msgstr ""
+msgstr "Slaptažodis"
 
 #: users.py:26
-#, fuzzy
 msgid "Language:"
-msgstr "kalba"
+msgstr "Kalba:"
 
 #: users.py:35
 msgid "Default"
-msgstr ""
+msgstr "Numatytasis"
 
 #: users.py:46
 msgid "Please enter your registration details"
-msgstr "Prašau, užpildykite registracijos duomenis"
+msgstr "Prašau, įveskite registracijos duomenis"
 
 #: users.py:47
 msgid "Pootle Registration"
-msgstr ""
+msgstr "Pootle registracija"
 
 #: users.py:54 users.py:87
 msgid "Your requested username"
-msgstr ""
+msgstr "Jūsų norimas vartotojo vardas"
 
 #: users.py:57
 msgid "Must be a valid email address"
-msgstr ""
+msgstr "Būtinas galiojantis el. pašto adresas"
 
 #: users.py:60
 msgid "Your full name"
-msgstr ""
+msgstr "Vardas, Pavardė"
 
 #: users.py:63
 msgid "Your desired password"
-msgstr ""
+msgstr "Jūsų pageidaujamas slaptažodis"
 
 #: users.py:65
 msgid "Register Account"
