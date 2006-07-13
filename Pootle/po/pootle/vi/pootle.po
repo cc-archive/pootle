@@ -1,23 +1,22 @@
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: translate-pootle@lists.sourceforge.net\n"
 "POT-Creation-Date: 2006-06-14 10:14+0200\n"
-"PO-Revision-Date: 2006-06-14 14:30+0200\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"PO-Revision-Date: 2006-07-04 13:50+0200\n"
+"Last-Translator: Clytie Siddall <clytie@riverland.net.au>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 "Generated-By: pygettext.py 1.1\n"
-"X-Generator: Translate Toolkit 0.9rc1\n"
+"X-Generator: Pootle 0.9\n"
 
 #: translatepage.py:56 translatepage.py:73
 #, python-format
 msgid "Pootle: translating %s into %s: %s"
-msgstr "Pootle: hiện có dịch %s sang %s: %s"
+msgstr "Pootle: hiện thời dịch %s sang %s: %s"
 
 #: translatepage.py:62
 #, python-format
@@ -25,8 +24,8 @@ msgid ""
 "%d/%d translated\n"
 "(%d blank, %d fuzzy)"
 msgstr ""
-"<BR>%d/%d đã dịch\n"
-"<BR>(%d trống, %d mờ)"
+"%d/%d đã dịch\n"
+"(%d trắng, %d mờ)"
 
 #: translatepage.py:74 adminpages.py:17 adminpages.py:53 adminpages.py:107
 #: adminpages.py:167 adminpages.py:250 adminpages.py:309 indexpage.py:35
@@ -34,27 +33,23 @@ msgstr ""
 #: indexpage.py:275 pagelayout.py:34 users.py:20 users.py:50 users.py:83
 #: users.py:104
 msgid "Pootle Demo"
-msgstr "Chứng minh Pootle"
+msgstr "Thao diễn Pootle"
 
 #: translatepage.py:87
-#, fuzzy
 msgid "Original"
-msgstr "gốc"
+msgstr "Chuỗi gốc"
 
 #: translatepage.py:88
-#, fuzzy
 msgid "Translation"
-msgstr "bản dịch"
+msgstr "Chuỗi dịch"
 
 #: translatepage.py:91
-#, fuzzy
 msgid "Accept"
-msgstr "chấp nhận"
+msgstr "Chấp nhận"
 
 #: translatepage.py:92
-#, fuzzy
 msgid "Reject"
-msgstr "từ chối"
+msgstr "Từ chối"
 
 #: translatepage.py:95 indexpage.py:282
 msgid "Search"
@@ -62,11 +57,11 @@ msgstr "Tìm kiếm"
 
 #: translatepage.py:108
 msgid "End of batch"
-msgstr "Kết thức bộ chuỗi"
+msgstr "Kết thúc của chuỗi bó"
 
 #: translatepage.py:110
 msgid "Click here to return to the index"
-msgstr "Hãy nhắp vào đây để trở về mục lục."
+msgstr "Nhấn vào đây để trở về mục lục"
 
 #: translatepage.py:122 translatepage.py:124
 msgid "Start"
@@ -80,7 +75,7 @@ msgstr "%d trước"
 #: translatepage.py:130
 #, python-format
 msgid "Items %d to %d of %d"
-msgstr "Mục %d đến %d của %d"
+msgstr "Mục %d đến %d trên %d"
 
 #: translatepage.py:134 translatepage.py:136
 #, python-format
@@ -89,7 +84,7 @@ msgstr "%d kế"
 
 #: translatepage.py:138 translatepage.py:140
 msgid "End"
-msgstr "Kết thức"
+msgstr "Cuối"
 
 #: translatepage.py:155
 #, python-format
@@ -115,7 +110,7 @@ msgstr "Không có kết quả nào khớp với ('%s')"
 
 #: translatepage.py:294
 msgid "You have finished going through the items you selected"
-msgstr "Lúc này bạn xem xong mọi mục đã chọn"
+msgstr "Bạn mới xem lại xong những mục được chọn"
 
 #: translatepage.py:429
 msgid "Singular"
@@ -127,26 +122,23 @@ msgstr "Ở số nhiều"
 
 #: translatepage.py:443
 msgid "Edit"
-msgstr "Sửa đổi"
+msgstr "Sửa"
 
 #: translatepage.py:459
-#, fuzzy
 msgid "Copy"
-msgstr "chép"
+msgstr "Chép"
 
 #: translatepage.py:460 translatepage.py:617
-#, fuzzy
 msgid "Skip"
-msgstr "bỏ qua"
+msgstr "Bỏ qua"
 
 #: translatepage.py:461 projects.py:111
 msgid "Suggest"
-msgstr "Đệ nghị"
+msgstr "Góp ý"
 
 #: translatepage.py:462
-#, fuzzy
 msgid "Submit"
-msgstr "góp đi"
+msgstr "Đệ trình"
 
 #: translatepage.py:466
 msgid "Grow"
@@ -166,7 +158,7 @@ msgstr "hẹp"
 
 #: translatepage.py:470
 msgid "Reset"
-msgstr "lập lại"
+msgstr "đặt lại"
 
 #: translatepage.py:488 translatepage.py:574 translatepage.py:608
 #: translatepage.py:636
@@ -175,14 +167,13 @@ msgid "Plural Form %d"
 msgstr "Dạng số nhiều"
 
 #: translatepage.py:578
-#, fuzzy
 msgid "Current Translation:"
-msgstr "&lt;b&gt;Bản dịch hiện có:&lt;/b&gt;"
+msgstr "Dịch hiện thời:"
 
 #: translatepage.py:589
 #, python-format
 msgid "Suggestion %d by %s:"
-msgstr "Đệ nghị: %d do %s:"
+msgstr "Đề nghị: %d bởi %s:"
 
 #: translatepage.py:591
 #, python-format
@@ -201,7 +192,7 @@ msgstr "Đề nghị:"
 #: adminpages.py:25 adminpages.py:61 adminpages.py:115 adminpages.py:175
 #: pagelayout.py:18
 msgid "Home"
-msgstr "Trang Chính"
+msgstr "Trang chủ"
 
 #: adminpages.py:26 adminpages.py:177
 msgid "Users"
@@ -216,9 +207,8 @@ msgid "Projects"
 msgstr "Dự án"
 
 #: adminpages.py:29
-#, fuzzy
 msgid "General options"
-msgstr "Tủy chọn Chung"
+msgstr "Tủy chọn chung"
 
 #: adminpages.py:30 users.py:108
 msgid "Option"
@@ -235,7 +225,7 @@ msgstr "Lưu các thay đổi"
 
 #: adminpages.py:36
 msgid "Title"
-msgstr "Tựa đề"
+msgstr "Tựa"
 
 #: adminpages.py:36
 msgid "Description"
@@ -250,9 +240,8 @@ msgid "Home Page"
 msgstr "Trang chủ"
 
 #: adminpages.py:62 adminpages.py:116 adminpages.py:176
-#, fuzzy
 msgid "Main admin page"
-msgstr "Trang Quản lý Chính"
+msgstr "Trang quản trị chính"
 
 #: adminpages.py:68
 msgid "ISO Code"
@@ -276,11 +265,11 @@ msgstr "(ký tự đặc biệt)"
 
 #: adminpages.py:71 indexpage.py:161
 msgid "Number of Plurals"
-msgstr "Tổng số hình thức số nhiều"
+msgstr "Tổng số cách số nhiều"
 
 #: adminpages.py:71
 msgid "(number of plurals)"
-msgstr "(tổng số hình thức số nhiều)"
+msgstr "(tổng số cách số nhiều)"
 
 #: adminpages.py:72 indexpage.py:162
 msgid "Plural Equation"
@@ -291,14 +280,13 @@ msgid "(plural equation)"
 msgstr "(biểu thức số nhiều)"
 
 #: adminpages.py:73
-#, fuzzy
 msgid "Remove Language"
-msgstr "Loại bỏ ngôn ngữ"
+msgstr "Gỡ bỏ ngôn ngữ"
 
 #: adminpages.py:87 adminpages.py:148 adminpages.py:208 adminpages.py:367
 #, python-format
 msgid "Remove %s"
-msgstr "Loại bỏ %s"
+msgstr "Gỡ bỏ %s"
 
 #: adminpages.py:105
 msgid "Standard"
@@ -306,7 +294,7 @@ msgstr "Chuẩn"
 
 #: adminpages.py:122
 msgid "Project Code"
-msgstr "Mã Dự án"
+msgstr "Mã dự án"
 
 #: adminpages.py:123
 msgid "(add project here)"
@@ -314,7 +302,7 @@ msgstr "(thêm dự án vào đây)"
 
 #: adminpages.py:124
 msgid "Project Description"
-msgstr "Mô tả Dự án"
+msgstr "Mô tả dự án"
 
 #: adminpages.py:124
 msgid "(project description)"
@@ -322,16 +310,15 @@ msgstr "(mô tả dự án)"
 
 #: adminpages.py:125
 msgid "Checker Style"
-msgstr "Kiểu dạng Kiểm tra"
+msgstr "Kiểu dạng kiểm tra"
 
 #: adminpages.py:126
 msgid "Create MO Files"
 msgstr "Tạo tập tin dạng .mo"
 
 #: adminpages.py:127
-#, fuzzy
 msgid "Remove Project"
-msgstr "Loại bỏ dự án"
+msgstr "Gỡ bỏ dự án"
 
 #: adminpages.py:182 users.py:28
 msgid "Login"
@@ -363,12 +350,11 @@ msgstr "Hoạt động"
 
 #: adminpages.py:186
 msgid "Activate New User"
-msgstr "Hoạt hóa người dùng mới"
+msgstr "Kích hoạt người dùng mới"
 
 #: adminpages.py:187
-#, fuzzy
 msgid "Remove User"
-msgstr "Loại bỏ %s"
+msgstr "Gỡ bỏ người dùng"
 
 #: adminpages.py:240
 msgid "Back to main page"
@@ -389,11 +375,11 @@ msgstr "Quản trị Pootle: %s"
 
 #: adminpages.py:246 adminpages.py:306
 msgid "You do not have the rights to administer this project."
-msgstr "Bạn không có đủ quyền truy cập để quản lý dự án này."
+msgstr "Bạn không có quyền quản trị dự án này."
 
 #: adminpages.py:247
 msgid "Update from templates"
-msgstr "Cập nhật từ mẫu"
+msgstr "Cập nhật từ biểu mẫu"
 
 #: adminpages.py:255
 msgid "Add Language"
@@ -406,24 +392,20 @@ msgstr "Quản trị Pootle: %s %s"
 
 #: adminpages.py:287
 msgid "Project home page"
-msgstr "Trang chủ dự án"
+msgstr "Trang chủ Pootle"
 
 #: adminpages.py:305
 #, python-format
 msgid "Cannot set rights for username %s - user does not exist"
-msgstr ""
-"Không lập được quyền truy cập cho tên người dùng «%s» vì không có người dùng "
-"ấy."
+msgstr "Không thể đặt quyền hạn cho người dùng tên « %s » vì người dùng này không tồn tại."
 
 #: adminpages.py:322
 msgid "This is a GNU-style project (one directory, files named per language)."
-msgstr ""
-"Dự án này có kiểu dạng GNU: chỉ có một thư mục, và mỗi tập tin có tên theo "
-"ngôn ngữ."
+msgstr "Đây là một dự án kiểu dáng GNU : chỉ một thư mục, mỗi tập tin có tên theo ngôn ngữ."
 
 #: adminpages.py:324
 msgid "This is a standard style project (one directory per language)."
-msgstr "Dự án này có kiểu dạng chuẩn: có chỉ một thư mục cho mỗi ngôn ngữ."
+msgstr "Đây là một dự án kiểu dáng chuẩn: một thư mục cho mỗi ngôn ngữ."
 
 #: adminpages.py:325
 msgid "User Permissions"
@@ -431,11 +413,11 @@ msgstr "Quyền hạn người dùng"
 
 #: adminpages.py:326 users.py:53 users.py:86
 msgid "Username"
-msgstr "Tên dùng"
+msgstr "Tên người dùng"
 
 #: adminpages.py:327
 msgid "(select to add user)"
-msgstr ""
+msgstr "(chọn để thêm người dùng)"
 
 #: adminpages.py:328
 msgid "Rights"
@@ -443,7 +425,7 @@ msgstr "Quyền"
 
 #: adminpages.py:329 indexpage.py:864
 msgid "Remove"
-msgstr "Loại bỏ"
+msgstr "Gỡ bỏ"
 
 #: adminpages.py:349
 msgid "Update Rights"
@@ -451,10 +433,9 @@ msgstr "Cập nhật quyền"
 
 #: indexpage.py:28
 msgid "About Pootle"
-msgstr "Giới thiệu Pootle"
+msgstr "Giới thiệu về Pootle"
 
 #: indexpage.py:29
-#, fuzzy
 msgid ""
 "<strong>Pootle</strong> is a simple web portal that should allow you to "
 "<strong>translate</strong>! Since Pootle is <strong>Free Software</strong>, "
@@ -462,67 +443,34 @@ msgid ""
 "participate in the development in many ways (you don't have to be able to "
 "program)."
 msgstr ""
-"#-#-#-#-#  pootle.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"<strong>Pootle</strong> là một giao diện Mạng đơn giản sẽ cho phép bạn "
-"<strong>dịch</strong>. :)  Vì Pootle là <strong>Phần mềm Tự do</strong>, bạn "
-"có thể tải nó về rồi chạy bản sao mình, nếu bạn muốn. Bạn cũng có thể tham "
-"dự cùng tiến trình phát triển của nó, bằng cách nhiều — không cần phải có "
-"khả năng lập trình.\n"
-"#-#-#-#-#  pootle.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"<strong>Pootle</strong> là một giao diện Mạng đơn giản cho phép bạn "
-"<strong>dịch</strong>. :)  Vì Pootle là <strong>Phần mềm Tự do</strong>, bạn "
-"có thể tải nó về rồi chạy bản sao riêng nếu bạn muốn. Bạn cũng có thể tham "
-"dự cùng tiến trình phát triển bằng cách nhiều: không cần phải là một lập "
-"trình viên."
+"<strong>Pootle</strong> là một giao diện Mạng đơn giản sẽ cho phép bạn <strong>dịch</strong>. :)  Vì Pootle là <strong>Phần mềm Tự do</strong>, bạn có thể tải nó về rồi chạy bản sao của mình, nếu bạn muốn. Bạn cũng có thể tham dự cùng tiến trình phát triển nó, bằng cách nhiều — không cần phải có khả năng lập trình.\n"
 
 #: indexpage.py:30
-#, fuzzy
 msgid ""
 "The Pootle project itself is hosted at <a href=\"http://translate."
 "sourceforge.net/\">translate.sourceforge.net</a> where you can find the "
 "details about source code, mailing lists etc."
 msgstr ""
-"#-#-#-#-#  pootle.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Dự án Pootle chính có tại <a href=\"http://translate.sourceforge.net/"
-"\">translate.sourceforge.net</a> nơi bạn có thể tìm chi tiết về mã nguồn, "
-"hộp thư chung v.v.\n"
-"#-#-#-#-#  pootle.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Dự án Pootle chính tại <a href=\"http://translate.sourceforge.net/"
-"\">translate.sourceforge.net</a> nơi bạn có thể tìm chi tiết về mã nguồn, "
-"hộp thư chung v.v."
+"Dự án Pootle chính nằm tại <a href=\"http://translate.sourceforge.net/\">translate.sourceforge.net</a> nơi bạn có thể tìm chi tiết về mã nguồn, hộp thư chung v.v.\n"
 
 #: indexpage.py:31
-#, fuzzy
 msgid ""
 "The name stands for <b>PO</b>-based <b>O</b>nline <b>T</b>ranslation / <b>L</"
 "b>ocalization <b>E</b>ngine, but you may need to read <a href=\"http://www."
 "thechestnut.com/flumps.htm\">this</a>."
-msgstr ""
-"#-#-#-#-#  pootle.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Tên \"Pootle\" là từ cấu tạo có nghĩa là &lt;b&gt;PO&lt;/b&gt;-based &lt;"
-"b&gt;O&lt;/b&gt;nline &lt;b&gt;T&lt;/b&gt;ranslation / &lt;b&gt;L&lt;/b&gt;"
-"ocalization &lt;b&gt;E&lt;/b&gt;ngine (Dụng cụ địa phương hóa dịch trực "
-"tuyến đựa vào .po), nhưng mà có lễ bạn sẽ muốn đọc &lt;a href=\"http://www."
-"thechestnut.com/flumps.htm\"&gt;thông tin này&lt;/a&gt; (tiếng Anh‚..\n"
-"#-#-#-#-#  pootle.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Tên Pootle là từ cấu tạo cho <b>PO</b>-based <b>O</b>nline <b>T</"
-"b>ranslation / <b>L</b>ocalization <b>E</b>ngine, (Cơ chế địa phương hóa "
-"thông dịch trực tuyến đựa vào dạng .po), nhưng mà bạn có lẽ sẽ muốn đọc <a "
-"href=\"http://www.thechestnut.com/flumps.htm\">trang này</a>."
+msgstr "Tên \"Pootle\" là từ cấu tạo có nghĩa là &lt;b&gt;PO&lt;/b&gt;-based &lt;b&gt;O&lt;/b&gt;nline &lt;b&gt;T&lt;/b&gt;ranslation / &lt;b&gt;L&lt;/b&gt;ocalization &lt;b&gt;E&lt;/b&gt;ngine (Dụng cụ địa phương hóa dịch trực tuyến đựa vào .po), nhưng mà có lễ bạn sẽ muốn đọc &lt;a href=\"http://www.thechestnut.com/flumps.htm\"&gt;thông tin này&lt;/a&gt; (tiếng Anh)."
 
 #: indexpage.py:32
 msgid "Versions"
 msgstr "Phiên bản"
 
 #: indexpage.py:33
-#, fuzzy, python-format
+#, , python-format
 #, python-format
 msgid ""
 "This site is running:<br />Pootle %s<br />Translate Toolkit %s<br />jToolkit "
 "%s<br />Python %s (on %s/%s)"
-msgstr ""
-"Nơi Mạng này có chạy:<br/>Pootle %s</br>jToolkit %s</br>Python %s (trên %s/%"
-"s)"
+msgstr "Nơi Mạng này có chạy:<br/>Pootle %s</br>Translate Toolkit %s</br>jToolkit %s</br>Python %s (trên %s/%s)"
 
 #: indexpage.py:49
 msgid "Pootle"
@@ -530,20 +478,20 @@ msgstr "Pootle"
 
 #: indexpage.py:51
 msgid "About this Pootle server"
-msgstr "Giới thiệu máy phục vụ Pootle này"
+msgstr "Giới thiệu về trình phục vụ Pootle này"
 
 #: indexpage.py:83
 #, python-format
 msgid "User Page for: %s"
-msgstr "Trang người dùng cho: %s"
+msgstr "Trang người dùng của: %s"
 
 #: indexpage.py:85
 msgid "Change options"
-msgstr "Sửa đổi tùy chọn"
+msgstr "Đổi tùy chọn"
 
 #: indexpage.py:86
 msgid "Admin page"
-msgstr "Trang quản lý"
+msgstr "Trang quản trị"
 
 #: indexpage.py:87
 msgid "Quick Links"
@@ -551,7 +499,7 @@ msgstr "Liên kết nhanh"
 
 #: indexpage.py:91 indexpage.py:202
 msgid "Please click on 'Change options' and select some languages and projects"
-msgstr "Hãy nhắp vào «Sửa đổi tùy chọn», rồi chọn một số ngôn ngữ và dự án."
+msgstr "Hãy nhấn vào « Đổi tùy chọn » rồi chọn một số ngôn ngữ và dự án."
 
 #: indexpage.py:109
 #, python-format
@@ -572,17 +520,15 @@ msgstr "Pootle: %s"
 
 #: indexpage.py:144 indexpage.py:199 pagelayout.py:22 pagelayout.py:107
 msgid "Admin"
-msgstr "Quản lý"
+msgstr "Quản trị"
 
 #: indexpage.py:158
-#, fuzzy
 msgid "Language Code"
-msgstr "Ngôn ngữ"
+msgstr "Mã ngôn ngữ"
 
 #: indexpage.py:159
-#, fuzzy
 msgid "Language Name"
-msgstr "Ngôn ngữ"
+msgstr "Tên ngôn ngữ"
 
 #: indexpage.py:195
 #, python-format
@@ -615,16 +561,15 @@ msgstr "Pootle: dự án %s, ngôn ngữ %s"
 
 #: indexpage.py:325
 msgid "Cannot upload file, no file attached"
-msgstr "Không tải tập tin lên được vì chưa đính kèm tập tin"
+msgstr "Không thể tải lên tập tin nên không có tập tin được đính kèm."
 
 #: indexpage.py:331
 msgid "Can only upload PO files and zips of PO files"
-msgstr "Có thể tải lên chỉ tập tin dạng .po và kho .zip của tập tin .po thôi"
+msgstr "Có thể tải lên chỉ tập tin dạng .po và kho .zip của tập tin .po thôi."
 
 #: indexpage.py:437
-#, fuzzy
 msgid "goals"
-msgstr "Mục đích"
+msgstr "mục đích"
 
 #: indexpage.py:437
 msgid "Enter goal name"
@@ -636,16 +581,15 @@ msgstr "Thêm mục đích"
 
 #: indexpage.py:441 indexpage.py:443
 msgid "Upload File"
-msgstr "Tải tập tin lên"
+msgstr "Tải lên tập tin"
 
 #: indexpage.py:442
 msgid "Select file to upload"
 msgstr "Hãy chọn tập tin cần tải lên"
 
 #: indexpage.py:545
-#, fuzzy
 msgid "Not in a goal"
-msgstr "Không có mục đích"
+msgstr "Không thuộc về mục đích"
 
 #: indexpage.py:566
 msgid "Add User"
@@ -661,11 +605,11 @@ msgstr "Tập tin XLIFF"
 
 #: indexpage.py:609
 msgid "Qt .ts file"
-msgstr ""
+msgstr "Tập tin dạng .ts của Qt"
 
 #: indexpage.py:613
 msgid "CSV file"
-msgstr "tập tin CSV"
+msgstr "Tập tin CSV"
 
 #: indexpage.py:618
 msgid "MO file"
@@ -693,7 +637,7 @@ msgstr "Chưa gán, chưa dịch"
 
 #: indexpage.py:665
 msgid "Set Goal"
-msgstr "Lập mục đích"
+msgstr "Đặt mục đích"
 
 #: indexpage.py:670
 msgid "Assign To"
@@ -701,7 +645,7 @@ msgstr "Gán cho"
 
 #: indexpage.py:699
 msgid "Show Tracks"
-msgstr "Hiển thị đường dẫn"
+msgstr "Hiện đường dẫn"
 
 #: indexpage.py:699
 msgid "Hide Tracks"
@@ -709,11 +653,11 @@ msgstr "Ẩn đường dẫn"
 
 #: indexpage.py:700
 msgid "Show Checks"
-msgstr "Hiển thị dữ liệu kiểm tra"
+msgstr "Hiện kết quả kiểm tra"
 
 #: indexpage.py:700
 msgid "Hide Checks"
-msgstr "Ẩn dữ liệu kiểm tra"
+msgstr "Ẩn kết quả kiểm tra"
 
 #: indexpage.py:701
 msgid "Show Goals"
@@ -725,11 +669,11 @@ msgstr "Ẩn mục đích"
 
 #: indexpage.py:702
 msgid "Show Assigns"
-msgstr "Hiển thị cách gán"
+msgstr "Hiện kết quả gán"
 
 #: indexpage.py:702
 msgid "Hide Assigns"
-msgstr "Ẩn cách gán"
+msgstr "Ẩn kết quả gán"
 
 #: indexpage.py:711
 #, python-format
@@ -746,7 +690,7 @@ msgstr "Xem chuỗi mình"
 
 #: indexpage.py:724
 msgid "No strings assigned to you"
-msgstr "Chưa gán cho bạn chuỗi nào"
+msgstr "Không có chuỗi được gán cho bạn"
 
 #: indexpage.py:728
 msgid "Quick Translate My Strings"
@@ -754,15 +698,15 @@ msgstr "Dịch nhanh chuỗi mình"
 
 #: indexpage.py:732
 msgid "No untranslated strings assigned to you"
-msgstr "Chưa gán cho bạn chuỗi chưa dịch nào."
+msgstr "Không có chuỗi chưa dịch được gán cho bạn"
 
 #: indexpage.py:736
 msgid "Review Suggestions"
-msgstr "Sửa đổi mọi mục đề nghị"
+msgstr "Xem lại các sự góp ý"
 
 #: indexpage.py:738
 msgid "View Suggestions"
-msgstr "Xem mọi mục đề nghị"
+msgstr "Xem các sự góp ý"
 
 #: indexpage.py:743
 msgid "Quick Translate"
@@ -778,7 +722,7 @@ msgstr "Không có mục chưa dịch"
 
 #: indexpage.py:752
 msgid "Translate All"
-msgstr "Dịch tất cả"
+msgstr "Dịch hết"
 
 #: indexpage.py:767
 msgid "ZIP of goal"
@@ -786,52 +730,47 @@ msgstr "Kho .zip của mục đích"
 
 #: indexpage.py:769
 msgid "ZIP of folder"
-msgstr "Kho .zip của danh mục"
+msgstr "Kho .zip của thư mục"
 
 #: indexpage.py:776
 msgid "Generate SDF"
-msgstr ""
+msgstr "Tạo ra SDF"
 
 #: indexpage.py:829
 #, python-format
 msgid "%d string (%d%%) failed"
 msgid_plural "%d strings (%d%%) failed"
-msgstr[0] "%d chuỗi (%d%%) đã thất bại"
-msgstr[1] "%d chuỗi (%d%%) đã thất bại"
+msgstr[0] "%d chuỗi (%d%%) bị lỗi"
+msgstr[1] "%d chuỗi (%d%%) bị lỗi"
 
 #: indexpage.py:859
 #, python-format
 msgid "%d/%d words (%d%%) assigned"
-msgstr "%d/%d từ (%d%%) đã gán rồi"
+msgstr "%d/%d từ (%d%%) được gán"
 
 #: pagelayout.py:19
-#, fuzzy
 msgid "All projects"
 msgstr "Mọi dự án"
 
 #: pagelayout.py:20
-#, fuzzy
 msgid "All languages"
 msgstr "Mọi ngôn ngữ"
 
 #: pagelayout.py:21
 msgid "My account"
-msgstr ""
+msgstr "Tài khoản tôi"
 
 #: pagelayout.py:23
-#, fuzzy
 msgid "Docs & help"
 msgstr "Tài liệu và Trợ giúp"
 
 #: pagelayout.py:24
-#, fuzzy
 msgid "Log out"
 msgstr "Đăng xuất"
 
 #: pagelayout.py:25
-#, fuzzy
 msgid "Log in"
-msgstr "Đang nhập"
+msgstr "Đăng nhập"
 
 #. l10n: Verb, as in "to register"
 #: pagelayout.py:27
@@ -840,7 +779,7 @@ msgstr "Đăng ký"
 
 #: pagelayout.py:28
 msgid "Activate"
-msgstr "Hoạt hóa"
+msgstr "Kích hoạt"
 
 #: pagelayout.py:96
 msgid "All goals"
@@ -852,30 +791,30 @@ msgid "%d/%d files"
 msgstr "%d/%d tập tin"
 
 #: pagelayout.py:171
-#, fuzzy, python-format
+#, , python-format
 #, python-format
 msgid "%d/%d strings"
-msgstr "[%d/%d chuỗi]"
+msgstr "%d/%d chuỗi"
 
 #: pootle.py:228 pootle.py:254
 msgid "Redirecting to login..."
-msgstr ""
+msgstr "Đang chuyển hướng tới đơn đăng nhập..."
 
 #: pootle.py:231
 msgid "Need to log in to access home page"
-msgstr ""
+msgstr "Cần phải đăng nhập để truy cập trang chủ"
 
 #: pootle.py:257
 msgid "Need to log in to access admin page"
-msgstr ""
+msgstr "Cần phải đăng nhập để truy cập trang quản trị"
 
 #: pootle.py:264
 msgid "Redirecting to home..."
-msgstr ""
+msgstr "Đang chuyển hướng về nhà..."
 
 #: pootle.py:267
 msgid "You do not have the rights to administer pootle."
-msgstr "Bạn không có đủ quyền truy cập để quản lý Pootle."
+msgstr "Bạn không quyền quản trị Pootle."
 
 #: projects.py:110
 msgid "View"
@@ -903,66 +842,63 @@ msgstr "Gán"
 
 #: projects.py:117
 msgid "Administrate"
-msgstr "Quản lý"
+msgstr "Quản trị"
 
 #: projects.py:173
 msgid "You cannot remove the \"nobody\" or \"default\" user"
-msgstr "Không thể loại bỏ người dùng tên «không ai» hay «mặc định»."
+msgstr "Không cho phép bạn gỡ bỏ người dùng « nobody » (không ai) hay « default » (mặc định)."
 
 #: projects.py:310 projects.py:370
 msgid "You do not have rights to alter goals here"
-msgstr "Bạn không có đủ quyền truy cập để sửa đổi mục đích tại đây."
+msgstr "Bạn không có quyền sửa đổi mục đích ở đây."
 
 #: projects.py:422
 msgid "You do not have rights to upload files here"
-msgstr "Bạn không có đủ quyền truy cập để tải tập tin lên đây."
+msgstr "Bạn không có quyền tải tập tin lên đây."
 
 #: projects.py:425
 msgid "You do not have rights to upload new files here"
-msgstr "Bạn không có đủ quyền truy cập để tải tập tin mới lên đây."
+msgstr "Bạn không có quyền tải tập tin mới lên đây."
 
 #: projects.py:434
 msgid "You do not have rights to update files here"
-msgstr "Bạn không có đủ quyền truy cập để cập nhật tập tin tại đây."
+msgstr "Bạn không có quyền cập nhật tập tin ở đây."
 
 #: projects.py:822 projects.py:863
 msgid "You do not have rights to alter assignments here"
-msgstr "Bạn không có đủ quyền truy cập để sửa đổi cách gán tại đây."
+msgstr "Bạn không có quyền sửa đổi kết quả gán ở đây."
 
 #: projects.py:1047
 msgid "You do not have rights to change translations here"
-msgstr "Bạn không có đủ quyền truy cập để sửa đổi bản dịch tại đây."
+msgstr "Bạn không có quyền sửa đổi bản dịch ở đây."
 
 #: projects.py:1057
 msgid "You do not have rights to suggest changes here"
-msgstr "Bạn không có đủ quyền truy cập để đệ nghị cách sửa đổi tại đây."
+msgstr "Bạn không có quyền đề nghị thay đổi ở đây."
 
 #: projects.py:1073 projects.py:1096
 msgid "You do not have rights to review suggestions here"
-msgstr "Bạn không có đủ quyền truy cập để xem lại sự gợi ý tại đây."
+msgstr "Bạn không có quyền xem lại sự góp ý ở đây."
 
 #: users.py:18
 msgid "Login to Pootle"
 msgstr "Đăng nhập vào Pootle nhé"
 
 #: users.py:23
-#, fuzzy
 msgid "Username:"
-msgstr "Tên dùng"
+msgstr "Tên người dùng:"
 
 #: users.py:25
-#, fuzzy
 msgid "Password:"
-msgstr "Mật khẩu"
+msgstr "Mật khẩu :"
 
 #: users.py:26
-#, fuzzy
 msgid "Language:"
-msgstr "Ngôn ngữ"
+msgstr "Ngôn ngữ :"
 
 #: users.py:35
 msgid "Default"
-msgstr ""
+msgstr "Mặc định"
 
 #: users.py:46
 msgid "Please enter your registration details"
@@ -974,49 +910,48 @@ msgstr "Đăng ký với Pootle"
 
 #: users.py:54 users.py:87
 msgid "Your requested username"
-msgstr "Tên dùng yêu cầu"
+msgstr "Tên người dùng được yêu cầu của bạn"
 
 #: users.py:57
 msgid "Must be a valid email address"
-msgstr "Phải có địa chỉ thư điện tử hợp lệ"
+msgstr "Phải là địa chỉ thư điện tử hợp lệ"
 
 #: users.py:60
 msgid "Your full name"
-msgstr "Họ tên bạn"
+msgstr "Họ tên của bạn"
 
 #: users.py:63
 msgid "Your desired password"
-msgstr "Mật khẩu yêu cầu"
+msgstr "Mật khẩu được yêu cầu của bạn"
 
 #: users.py:65
-#, fuzzy
 msgid "Register Account"
-msgstr "Hoạt hóa tài khoản"
+msgstr "Đăng ký tài khoản"
 
 #: users.py:74
 msgid "Please enter your activation details"
-msgstr "Vui lòng nhập thông tin hoạt hóa của bạn"
+msgstr "Vui lòng nhập thông tin kích hoạt của bạn"
 
 #: users.py:79
 msgid "Pootle Account Activation"
-msgstr "Hoạt hóa tài khoản Pootle"
+msgstr "Kích hoạt tài khoản Pootle"
 
 #: users.py:89
 msgid "Activation Code"
-msgstr "Mã hoạt hóa"
+msgstr "Mã kích hoạt"
 
 #: users.py:90
 msgid "The activation code you received"
-msgstr "Mã hoạt hóa mà bạn đã nhận"
+msgstr "Mã kích hoạt bạn đã nhận"
 
 #: users.py:92
 msgid "Activate Account"
-msgstr "Hoạt hóa tài khoản"
+msgstr "Kích hoạt tài khoản"
 
 #: users.py:102
 #, python-format
 msgid "Options for: %s"
-msgstr "Tùy chọn cho: %s"
+msgstr "Tùy chọn cho : %s"
 
 #: users.py:107
 msgid "Personal Details"
@@ -1036,81 +971,75 @@ msgstr "Cấu hình giao diện thông dịch"
 
 #: users.py:115
 msgid "User Interface language"
-msgstr ""
+msgstr "Ngôn ngữ của giao diện người dùng"
 
 #: users.py:116
 msgid "My Projects"
-msgstr "Dự án mình"
+msgstr "Dự án tôi"
 
 #: users.py:118
 msgid "My Languages"
-msgstr "Ngôn ngữ mình"
+msgstr "Ngôn ngữ tôi"
 
 #: users.py:120
 msgid "Home page"
-msgstr "Trang chính"
+msgstr "Trang chủ"
 
 #: users.py:154
-#, fuzzy
 msgid "Input Height (in lines)"
-msgstr "Độ cao gõ"
+msgstr "Độ cao nhập (theo dòng)"
 
 #: users.py:154
 msgid "Input Width (in characters)"
-msgstr ""
+msgstr "Độ rộng nhập (theo ký tự)"
 
 #: users.py:155
 msgid "Number of rows in view mode"
-msgstr "Tổng số hàng trong chế độ xem"
+msgstr "Số hàng trong chế độ xem"
 
 #: users.py:156
 msgid "Number of rows in translate mode"
-msgstr "Tổng số hàng trong chế độ dịch"
+msgstr "Số hàng trong chế độ dịch"
 
 #: users.py:209
 msgid "You need to be siteadmin to change users"
-msgstr "Chỉ quản trị nơi Mạng này có thể thay đổi người dùng."
+msgstr "Chỉ quản trị nơi Mạng này có quyền thay đổi người dùng."
 
 #: users.py:348
 msgid "Redirecting to Registration Page..."
-msgstr ""
+msgstr "Đang chuyển hướng tới trang đăng ký..."
 
 #: users.py:372
 msgid "Redirecting to login Page..."
-msgstr ""
+msgstr "Đang chuyển hướng tới trang đăng nhập..."
 
 #: users.py:375
 msgid "Your account has been activated! Redirecting to login..."
-msgstr ""
+msgstr "Tài khoản của bạn đã được kích hoạt ! Đang chuyển hướng tới việc đăng nhập..."
 
 #: users.py:379
 msgid "The activation link you have entered was not valid"
-msgstr ""
+msgstr "Bạn đã nhập một liên kết kích hoạt không phải hợp lệ"
 
 #: users.py:380
-#, fuzzy
 msgid "Activation Failed"
-msgstr "Mã hoạt hóa"
+msgstr "Lỗi kích hoạt"
 
 #: users.py:474
 msgid "Input height must be numeric"
-msgstr "Phải nhập một giá trị thuộc số vào trường độ cao khung gõ."
+msgstr "Độ cao nhập phải có dạng số"
 
 #: users.py:475
 msgid "Input width must be numeric"
-msgstr "Phải nhập một giá trị thuộc số vào trường độ rộng khung gõ."
+msgstr "Độ rộng nhập phải có dạng số"
 
 #: users.py:476
 msgid "The number of rows displayed in view mode must be numeric"
-msgstr ""
-"Phải nhập một giá trị thuộc số vào trường tổng số hàng cần hiển thị trong "
-"chế độ gõ."
+msgstr "Số hàng được hiển thị trong chế độ xem phải có dạng số"
 
 #: users.py:477
 msgid "The number of rows displayed in translate mode must be numeric"
-msgstr ""
-"Phải nhập một giá trị thuộc số vào trường tổng số hàng cần hiển thị trong "
-"chế độ dịch."
+msgstr "Số hàng được hiển thị trong chế độ dịch phải có dạng số"
 
 #~ msgid ""
 #~ "<strong>Pootle</strong> is a simple web portal that should allow you to "
