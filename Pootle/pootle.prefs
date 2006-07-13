@@ -102,10 +102,11 @@ Pootle:
     af.nplurals = 2
     af.pluralequation = "(n != 1)"
 
-# Arabic
-#    ar.fullname = 'Arabic'
-#    ar.nplurals = '4'
-#    ar.pluralequation ='n==1 ? 0 : n==2 ? 1 : n>=3 && n< =10 ? 2 : 3'
+ Arabic
+    ar.fullname = 'Arabic'
+    ar.nplurals = '4'
+    ar.pluralequation ='n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n>=3 && n<=10 ? 3 : n>=11 && n<=99 ? 4 : 5'
+
 
 # Azerbaijani
 #    az.fullname = 'Azerbaijani'
