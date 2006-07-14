@@ -104,7 +104,7 @@ Pootle:
 
 # Arabic
     ar.fullname = 'Arabic'
-    ar.nplurals = '4'
+    ar.nplurals = '6'
     ar.pluralequation ='n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n>=3 && n<=10 ? 3 : n>=11 && n<=99 ? 4 : 5'
 
 # Azerbaijani
@@ -432,10 +432,15 @@ Pootle:
 #    wa.nplurals = '2'
 #    wa.pluralequation ='(n > 1)'
 
-# Chinese
-#    zh.fullname = 'Chinese'
-#    zh.nplurals = '1'
-#    zh.pluralequation ='0'
+# Simplified Chinese (China mainland used below, but also used Singapore and Malaysia)
+#    zh_CN.fullname = 'Chinese'
+#    zh_CN.nplurals = '1'
+#    zh_CN.pluralequation ='0'
+
+# Traditional Chinese (Taiwan used below, but also used in Hong Kong and Macau)
+#    zh_TW.fullname = 'Chinese'
+#    zh_TW.nplurals = '1'
+#    zh_TW.pluralequation ='0'
 
   # This is a "language" that gives people access to the (untranslated) template files
     templates.fullname = 'Templates'
