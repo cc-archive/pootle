@@ -1,0 +1,1037 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: translate-pootle@lists.sourceforge.net\n"
+"POT-Creation-Date: 2006-06-14 10:14+0200\n"
+"PO-Revision-Date: 2006-07-05 04:46+0200\n"
+"Last-Translator: Ramon Casha <rcasha@waldonet.net.mt>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=(n==1 ? 0 : n==0 or ( n%100>1 && n%100<11) ? 1 : n%100>10 && n%100<20 ) ? 2 : 3);\n"
+"X-Generator: Pootle 0.9\n"
+
+#: translatepage.py:56 translatepage.py:73
+#, python-format
+msgid "Pootle: translating %s into %s: %s"
+msgstr "Pootle: qed nittraduċi %s għall-%s: %s"
+
+#: translatepage.py:62
+#, python-format
+msgid ""
+"%d/%d translated\n"
+"(%d blank, %d fuzzy)"
+msgstr ""
+"%d/%d tradotti\n"
+"(%d vojta, %d approssimattivi)"
+
+#: translatepage.py:74 adminpages.py:17 adminpages.py:53 adminpages.py:107
+#: adminpages.py:167 adminpages.py:250 adminpages.py:309 indexpage.py:35
+#: indexpage.py:54 indexpage.py:88 indexpage.py:145 indexpage.py:200
+#: indexpage.py:275 pagelayout.py:34 users.py:20 users.py:50 users.py:83
+#: users.py:104
+msgid "Pootle Demo"
+msgstr "Dimostrazzjoni ta' Pootle"
+
+#: translatepage.py:87
+msgid "Original"
+msgstr "Oriġinali"
+
+#: translatepage.py:88
+msgid "Translation"
+msgstr "Traduzzjoni"
+
+#: translatepage.py:91
+msgid "Accept"
+msgstr "Aċċetta"
+
+#: translatepage.py:92
+msgid "Reject"
+msgstr "Armi"
+
+#: translatepage.py:95 indexpage.py:282
+msgid "Search"
+msgstr "Fittex"
+
+#: translatepage.py:108
+msgid "End of batch"
+msgstr "Tmiem il-grupp"
+
+#: translatepage.py:110
+msgid "Click here to return to the index"
+msgstr "Klikkja hawn biex terġa' lura fl-indiċi"
+
+#: translatepage.py:122 translatepage.py:124
+msgid "Start"
+msgstr "Bidu"
+
+#: translatepage.py:127 translatepage.py:129
+#, python-format
+msgid "Previous %d"
+msgstr "%d ta' qabel"
+
+#: translatepage.py:130
+#, python-format
+msgid "Items %d to %d of %d"
+msgstr "Elementi %d sa' %d minn %d"
+
+#: translatepage.py:134 translatepage.py:136
+#, python-format
+msgid "Next %d"
+msgstr "%d li jmiss"
+
+#: translatepage.py:138 translatepage.py:140
+msgid "End"
+msgstr "Tmiem"
+
+#: translatepage.py:155
+#, python-format
+msgid "checking %s"
+msgstr "qed niċċekkja %s"
+
+#: translatepage.py:162 translatepage.py:165 indexpage.py:429 indexpage.py:432
+msgid "Assign Strings"
+msgstr "Assenja elementi"
+
+#: translatepage.py:163 indexpage.py:431
+msgid "Assign to User"
+msgstr "Assenja lil utent"
+
+#: translatepage.py:164 indexpage.py:430
+msgid "Assign Action"
+msgstr "Assenja azzjoni"
+
+#: translatepage.py:292
+#, python-format
+msgid "There are no items matching that search ('%s')"
+msgstr "M'hemmx elementi li jaqblu ma' dik it-tfittxija (\"%s\")"
+
+#: translatepage.py:294
+msgid "You have finished going through the items you selected"
+msgstr "Int għaddejt mill-elementi li għażilt kollha"
+
+#: translatepage.py:429
+msgid "Singular"
+msgstr "Singular"
+
+#: translatepage.py:430
+msgid "Plural"
+msgstr "Plural"
+
+#: translatepage.py:443
+msgid "Edit"
+msgstr "Ibdel"
+
+#: translatepage.py:459
+msgid "Copy"
+msgstr "Ikkopja"
+
+#: translatepage.py:460 translatepage.py:617
+msgid "Skip"
+msgstr "Aqbeż"
+
+#: translatepage.py:461 projects.py:111
+msgid "Suggest"
+msgstr "Issuġġerixxi"
+
+#: translatepage.py:462
+msgid "Submit"
+msgstr "Ibgħat"
+
+#: translatepage.py:466
+msgid "Grow"
+msgstr "Kabbar"
+
+#: translatepage.py:467
+msgid "Shrink"
+msgstr "Ċekken"
+
+#: translatepage.py:468
+msgid "Broaden"
+msgstr "Wessa'"
+
+#: translatepage.py:469
+msgid "Narrow"
+msgstr "Dejjaq"
+
+#: translatepage.py:470
+msgid "Reset"
+msgstr "Irrisettja"
+
+#: translatepage.py:488 translatepage.py:574 translatepage.py:608
+#: translatepage.py:636
+#, python-format
+msgid "Plural Form %d"
+msgstr "Forma %d ta' plural"
+
+#: translatepage.py:578
+msgid "Current Translation:"
+msgstr "Traduzzjoni attwali:"
+
+#: translatepage.py:589
+#, python-format
+msgid "Suggestion %d by %s:"
+msgstr "Suġġeriment %d ta' %s:"
+
+#: translatepage.py:591
+#, python-format
+msgid "Suggestion %d:"
+msgstr "Suġġeriment %d:"
+
+#: translatepage.py:594
+#, python-format
+msgid "Suggestion by %s:"
+msgstr "Suġġeriment ta' %s:"
+
+#: translatepage.py:596
+msgid "Suggestion:"
+msgstr "Suġġeriment:"
+
+#: adminpages.py:25 adminpages.py:61 adminpages.py:115 adminpages.py:175
+#: pagelayout.py:18
+msgid "Home"
+msgstr "Paġna ewlenija"
+
+#: adminpages.py:26 adminpages.py:177
+msgid "Users"
+msgstr "Utenti"
+
+#: adminpages.py:27 adminpages.py:63 indexpage.py:52
+msgid "Languages"
+msgstr "Lingwi"
+
+#: adminpages.py:28 adminpages.py:117 indexpage.py:53
+msgid "Projects"
+msgstr "Proġetti"
+
+#: adminpages.py:29
+msgid "General options"
+msgstr "Għażliet ġenerali"
+
+#: adminpages.py:30 users.py:108
+msgid "Option"
+msgstr "Għażliet"
+
+#: adminpages.py:31 users.py:109
+msgid "Current value"
+msgstr "Valur attwali"
+
+#: adminpages.py:32 adminpages.py:64 adminpages.py:118 adminpages.py:178
+#: users.py:121
+msgid "Save changes"
+msgstr "Issejvja l-bidliet"
+
+#: adminpages.py:36
+msgid "Title"
+msgstr "Titlu"
+
+#: adminpages.py:36
+msgid "Description"
+msgstr "Deskrizzjoni"
+
+#: adminpages.py:36
+msgid "Base URL"
+msgstr "URL bażi"
+
+#: adminpages.py:36
+msgid "Home Page"
+msgstr "Paġna tal-bidu"
+
+#: adminpages.py:62 adminpages.py:116 adminpages.py:176
+msgid "Main admin page"
+msgstr "Paġna amministrattiva ewlenija"
+
+#: adminpages.py:68
+msgid "ISO Code"
+msgstr "Kodiċi ISO"
+
+#: adminpages.py:69 adminpages.py:123 adminpages.py:183 users.py:59
+msgid "Full Name"
+msgstr "Isem sħiħ"
+
+#: adminpages.py:69
+msgid "(add language here)"
+msgstr "(żid lingwa hawn)"
+
+#: adminpages.py:70
+msgid "Special Chars"
+msgstr "Karattri speċjali"
+
+#: adminpages.py:70
+msgid "(special characters)"
+msgstr "(karattri speċjali)"
+
+#: adminpages.py:71 indexpage.py:161
+msgid "Number of Plurals"
+msgstr "Numru ta' plurali"
+
+#: adminpages.py:71
+msgid "(number of plurals)"
+msgstr "(numru ta' plurali)"
+
+#: adminpages.py:72 indexpage.py:162
+msgid "Plural Equation"
+msgstr "Formola tal-plurali"
+
+#: adminpages.py:72
+msgid "(plural equation)"
+msgstr "(formola tal-plurali)"
+
+#: adminpages.py:73
+msgid "Remove Language"
+msgstr "Neħħi lingwa"
+
+#: adminpages.py:87 adminpages.py:148 adminpages.py:208 adminpages.py:367
+#, python-format
+msgid "Remove %s"
+msgstr "Neħħi %s"
+
+#: adminpages.py:105
+msgid "Standard"
+msgstr "Standard"
+
+#: adminpages.py:122
+msgid "Project Code"
+msgstr "Kodiċi tal-proġett"
+
+#: adminpages.py:123
+msgid "(add project here)"
+msgstr "(żid proġett hawn)"
+
+#: adminpages.py:124
+msgid "Project Description"
+msgstr "Deskrizzjoni tal-proġett"
+
+#: adminpages.py:124
+msgid "(project description)"
+msgstr "(deskrizzjoni tal-proġett)"
+
+#: adminpages.py:125
+msgid "Checker Style"
+msgstr "Stil tal-iċċekkjar"
+
+#: adminpages.py:126
+msgid "Create MO Files"
+msgstr "Oħloq fajls MO"
+
+#: adminpages.py:127
+msgid "Remove Project"
+msgstr "Neħħi proġett"
+
+#: adminpages.py:182 users.py:28
+msgid "Login"
+msgstr "Illoggja"
+
+#: adminpages.py:183 users.py:253
+msgid "(add full name here)"
+msgstr "(daħħal ismek sħiħ hawn)"
+
+#: adminpages.py:184 users.py:56
+msgid "Email Address"
+msgstr "Indirizz tal-imejl"
+
+#: adminpages.py:184 users.py:256
+msgid "(add email here)"
+msgstr "(daħħal l-imejl hawn)"
+
+#: adminpages.py:185 users.py:62
+msgid "Password"
+msgstr "Password"
+
+#: adminpages.py:185 users.py:250
+msgid "(add password here)"
+msgstr "(daħħal il-password hawn)"
+
+#: adminpages.py:186
+msgid "Activated"
+msgstr "Attivat"
+
+#: adminpages.py:186
+msgid "Activate New User"
+msgstr "Attiva utent ġdid"
+
+#: adminpages.py:187
+msgid "Remove User"
+msgstr "Neħħi utent"
+
+#: adminpages.py:240
+msgid "Back to main page"
+msgstr "Lura għall-paġna ewlenija"
+
+#: adminpages.py:241
+msgid "Existing languages"
+msgstr "Lingwi eżistenti"
+
+#: adminpages.py:244
+msgid "Update Languages"
+msgstr "Aġġorna lingwi"
+
+#: adminpages.py:245
+#, python-format
+msgid "Pootle Admin: %s"
+msgstr "Amministratur Pootle: %s"
+
+#: adminpages.py:246 adminpages.py:306
+msgid "You do not have the rights to administer this project."
+msgstr "M'għandekx jedd tamministra dan il-proġett."
+
+#: adminpages.py:247
+msgid "Update from templates"
+msgstr "Aġġorna minn mudelli"
+
+#: adminpages.py:255
+msgid "Add Language"
+msgstr "Żid lingwa"
+
+#: adminpages.py:286
+#, python-format
+msgid "Pootle Admin: %s %s"
+msgstr "Amministratur Pootle: %s %s"
+
+#: adminpages.py:287
+msgid "Project home page"
+msgstr "Paġna ewlenija tal-proġett"
+
+#: adminpages.py:305
+#, python-format
+msgid "Cannot set rights for username %s - user does not exist"
+msgstr "Ma nistax nissettja d-drittijiet għall-utent %s - utent ma jeżistix"
+
+#: adminpages.py:322
+msgid "This is a GNU-style project (one directory, files named per language)."
+msgstr "Dan huwa proġett stil GNU (direttorju wieħed u fajls imsemmija skond il-lingwa)."
+
+#: adminpages.py:324
+msgid "This is a standard style project (one directory per language)."
+msgstr "Dan huwa proġett stil standard (direttorju għal kull lingwa)."
+
+#: adminpages.py:325
+msgid "User Permissions"
+msgstr "Permessi ta' l-utent"
+
+#: adminpages.py:326 users.py:53 users.py:86
+msgid "Username"
+msgstr "Isem l-utent"
+
+#: adminpages.py:327
+msgid "(select to add user)"
+msgstr "(agħżel biex iżżid utent)"
+
+#: adminpages.py:328
+msgid "Rights"
+msgstr "Drittijiet"
+
+#: adminpages.py:329 indexpage.py:864
+msgid "Remove"
+msgstr "Neħħi"
+
+#: adminpages.py:349
+msgid "Update Rights"
+msgstr "Aġġorna drittijiet"
+
+#: indexpage.py:28
+msgid "About Pootle"
+msgstr "Dwar Pootle"
+
+#: indexpage.py:29
+msgid ""
+"<strong>Pootle</strong> is a simple web portal that should allow you to "
+"<strong>translate</strong>! Since Pootle is <strong>Free Software</strong>, "
+"you can download it and run your own copy if you like. You can also help "
+"participate in the development in many ways (you don't have to be able to "
+"program)."
+msgstr "<strong>Pootle</strong> huwa portal tal-web sempliċi li jħallik <strong>tittraduċi</strong>! Peress li Pootle huwa <strong>softwer ħieles</strong>, tista' tniżżel kopja u tħaddem il-kopja tiegħek jekk trid. Tista' wkoll tipparteċipa fl-iżviluppar f'diversi modi (mhux bilfors tkun kapaċi tipprogramma)."
+
+#: indexpage.py:30
+msgid ""
+"The Pootle project itself is hosted at <a href=\"http://translate."
+"sourceforge.net/\">translate.sourceforge.net</a> where you can find the "
+"details about source code, mailing lists etc."
+msgstr "Il-proġett Pootle innifsu huwa miżmum fuq <a href=\"http://translate.sourceforge.net/\">translate.sourceforge.net</a>, fejn tista' ssib iżjed dettalji dwar is-sors, listi postali eċċ."
+
+#: indexpage.py:31
+msgid ""
+"The name stands for <b>PO</b>-based <b>O</b>nline <b>T</b>ranslation / <b>L</"
+"b>ocalization <b>E</b>ngine, but you may need to read <a href=\"http://www."
+"thechestnut.com/flumps.htm\">this</a>."
+msgstr "L-isem bl-Ingliż huwa mqassar minn <b>PO</b>-based <b>O</b>nline <b>T</b>ranslation / <b>L</b>ocalization <b>E</b>ngine, imma tista' wkoll taqra <a href=\"http://www.thechestnut.com/flumps.htm\">dan</a>."
+
+#: indexpage.py:32
+msgid "Versions"
+msgstr "Verżjonijiet"
+
+#: indexpage.py:33
+#, python-format
+msgid ""
+"This site is running:<br />Pootle %s<br />Translate Toolkit %s<br />jToolkit "
+"%s<br />Python %s (on %s/%s)"
+msgstr "Dan is-sit qed juża :<br />Pootle %s<br />Translate Toolkit %s<br />jToolkit %s<br />Python %s (fuq %s/%s)"
+
+#: indexpage.py:49
+msgid "Pootle"
+msgstr "Pootle"
+
+#: indexpage.py:51
+msgid "About this Pootle server"
+msgstr "Dwar dan is-server Pootle"
+
+#: indexpage.py:83
+#, python-format
+msgid "User Page for: %s"
+msgstr "Paġna personali għal: %s"
+
+#: indexpage.py:85
+msgid "Change options"
+msgstr "Ibdel l-għażliet"
+
+#: indexpage.py:86
+msgid "Admin page"
+msgstr "Paġna amministrattiva"
+
+#: indexpage.py:87
+msgid "Quick Links"
+msgstr "Links ta' malajr"
+
+#: indexpage.py:91 indexpage.py:202
+msgid "Please click on 'Change options' and select some languages and projects"
+msgstr "Jekk jogħġbok agħżel \"Ibdel l-għażliet\" u agħżel xi lingwi u proġetti"
+
+#: indexpage.py:109
+#, python-format
+msgid "%s %s"
+msgstr "%s %s"
+
+#: indexpage.py:140
+#, python-format
+msgid "%d project, average %d%% translated"
+msgid_plural "%d projects, average %d%% translated"
+msgstr[0] ""
+msgstr[1] ""
+
+#: indexpage.py:142 indexpage.py:197
+#, python-format
+msgid "Pootle: %s"
+msgstr "Pootle: %s"
+
+#: indexpage.py:144 indexpage.py:199 pagelayout.py:22 pagelayout.py:107
+msgid "Admin"
+msgstr "Amministrazzjoni"
+
+#: indexpage.py:158
+msgid "Language Code"
+msgstr "Kodiċi tal-lingwa"
+
+#: indexpage.py:159
+msgid "Language Name"
+msgstr "Isem il-lingwa"
+
+#: indexpage.py:195
+#, python-format
+msgid "%d language, average %d%% translated"
+msgid_plural "%d languages, average %d%% translated"
+msgstr[0] ""
+msgstr[1] ""
+
+#: indexpage.py:228 pagelayout.py:169
+#, python-format
+msgid "%d file"
+msgid_plural "%d files"
+msgstr[0] ""
+msgstr[1] ""
+
+#: indexpage.py:229 indexpage.py:861 pagelayout.py:170
+#, python-format
+msgid "%d/%d words (%d%%) translated"
+msgstr "%d/%d kliem (%d%%) tradotti"
+
+#: indexpage.py:230 indexpage.py:860 indexpage.py:862
+#, python-format
+msgid "[%d/%d strings]"
+msgstr "[%d/%d versi]"
+
+#: indexpage.py:273
+#, python-format
+msgid "Pootle: Project %s, Language %s"
+msgstr "Pootle - Proġett: %s, Lingwa: %s"
+
+#: indexpage.py:325
+msgid "Cannot upload file, no file attached"
+msgstr "Ma jistax jittella' fajl - ebda fajl mehmuż"
+
+#: indexpage.py:331
+msgid "Can only upload PO files and zips of PO files"
+msgstr "Jistgħu jittellgħu biss fajls PO jew zips ta' fajls PO"
+
+#: indexpage.py:437
+msgid "goals"
+msgstr "miri"
+
+#: indexpage.py:437
+msgid "Enter goal name"
+msgstr "Daħħal isem il-mira"
+
+#: indexpage.py:437
+msgid "Add Goal"
+msgstr "Żid mira"
+
+#: indexpage.py:441 indexpage.py:443
+msgid "Upload File"
+msgstr "Tella' fajl"
+
+#: indexpage.py:442
+msgid "Select file to upload"
+msgstr "Agħżel fajl biex ittella'"
+
+#: indexpage.py:545
+msgid "Not in a goal"
+msgstr "Mhux f'mira"
+
+#: indexpage.py:566
+msgid "Add User"
+msgstr "Żid utent"
+
+#: indexpage.py:601
+msgid "PO file"
+msgstr "Fajl PO"
+
+#: indexpage.py:605
+msgid "XLIFF file"
+msgstr "Fajl XLIFF"
+
+#: indexpage.py:609
+msgid "Qt .ts file"
+msgstr "Fajl .ts tal-Qt"
+
+#: indexpage.py:613
+msgid "CSV file"
+msgstr "Fajl CSV"
+
+#: indexpage.py:618
+msgid "MO file"
+msgstr "Fajl MO"
+
+#: indexpage.py:622
+msgid "Update"
+msgstr "Aġġorna"
+
+#: indexpage.py:658
+msgid "All Strings"
+msgstr "L-istrings kollha"
+
+#: indexpage.py:658
+msgid "Untranslated"
+msgstr "Mhux tradotti"
+
+#: indexpage.py:658
+msgid "Unassigned"
+msgstr "Mhux assenjati"
+
+#: indexpage.py:658
+msgid "Unassigned and Untranslated"
+msgstr "Mhux assenjati u mhux tradotti"
+
+#: indexpage.py:665
+msgid "Set Goal"
+msgstr "Issettja l-mira"
+
+#: indexpage.py:670
+msgid "Assign To"
+msgstr "Assenja lil"
+
+#: indexpage.py:699
+msgid "Show Tracks"
+msgstr "Uri l-passi"
+
+#: indexpage.py:699
+msgid "Hide Tracks"
+msgstr "Aħbi l-passi"
+
+#: indexpage.py:700
+msgid "Show Checks"
+msgstr "Uri l-iċċekkjar"
+
+#: indexpage.py:700
+msgid "Hide Checks"
+msgstr "Aħbi l-iċċekkjar"
+
+#: indexpage.py:701
+msgid "Show Goals"
+msgstr "Uri l-miri"
+
+#: indexpage.py:701
+msgid "Hide Goals"
+msgstr "Aħbi l-miri"
+
+#: indexpage.py:702
+msgid "Show Assigns"
+msgstr "Uri l-assenjazzjonijiet"
+
+#: indexpage.py:702
+msgid "Hide Assigns"
+msgstr "Aħbi l-assenjazzjonijiet"
+
+#: indexpage.py:711
+#, python-format
+msgid "All Goals: %s"
+msgstr "Miri kollha: %s"
+
+#: indexpage.py:717
+msgid "Translate My Strings"
+msgstr "Ittraduċi l-istrings tiegħi"
+
+#: indexpage.py:719
+msgid "View My Strings"
+msgstr "Uri l-istrings tiegħi"
+
+#: indexpage.py:724
+msgid "No strings assigned to you"
+msgstr "M'hemmx strings assenjati lilek"
+
+#: indexpage.py:728
+msgid "Quick Translate My Strings"
+msgstr "Traduzzjoni malajr ta' l-istrings tiegħek"
+
+#: indexpage.py:732
+msgid "No untranslated strings assigned to you"
+msgstr "M'hemmx strings mhux tradotti assenjati lilek"
+
+#: indexpage.py:736
+msgid "Review Suggestions"
+msgstr "Irrevedi suġġerimenti"
+
+#: indexpage.py:738
+msgid "View Suggestions"
+msgstr "Ara suġġerimenti"
+
+#: indexpage.py:743
+msgid "Quick Translate"
+msgstr "Traduzzjoni malajr"
+
+#: indexpage.py:745
+msgid "View Untranslated"
+msgstr "Uri mhux tradotti"
+
+#: indexpage.py:749
+msgid "No untranslated items"
+msgstr "M'hemmx elementi mhux tradotti"
+
+#: indexpage.py:752
+msgid "Translate All"
+msgstr "Ittraduċi kollox"
+
+#: indexpage.py:767
+msgid "ZIP of goal"
+msgstr "ZIP tal-mira"
+
+#: indexpage.py:769
+msgid "ZIP of folder"
+msgstr "ZIP tal-fowlder"
+
+#: indexpage.py:776
+msgid "Generate SDF"
+msgstr "Iġġenera SDF"
+
+#: indexpage.py:829
+#, python-format
+msgid "%d string (%d%%) failed"
+msgid_plural "%d strings (%d%%) failed"
+msgstr[0] ""
+msgstr[1] ""
+
+#: indexpage.py:859
+#, python-format
+msgid "%d/%d words (%d%%) assigned"
+msgstr "%d/%d kliem (%d%%) assenjati"
+
+#: pagelayout.py:19
+msgid "All projects"
+msgstr "Proġetti kollha"
+
+#: pagelayout.py:20
+msgid "All languages"
+msgstr "Lingwi kollha"
+
+#: pagelayout.py:21
+msgid "My account"
+msgstr "Kont tiegħi"
+
+#: pagelayout.py:23
+msgid "Docs & help"
+msgstr "Dokumenti u għajnuna"
+
+#: pagelayout.py:24
+msgid "Log out"
+msgstr "Illoggja 'l barra"
+
+#: pagelayout.py:25
+msgid "Log in"
+msgstr "Illoggja"
+
+#. l10n: Verb, as in "to register"
+#: pagelayout.py:27
+msgid "Register"
+msgstr "Irreġistra"
+
+#: pagelayout.py:28
+msgid "Activate"
+msgstr "Attiva"
+
+#: pagelayout.py:96
+msgid "All goals"
+msgstr "Miri kollha"
+
+#: pagelayout.py:167
+#, python-format
+msgid "%d/%d files"
+msgstr "%d/%d fajls"
+
+#: pagelayout.py:171
+#, python-format
+msgid "%d/%d strings"
+msgstr "%d/%d strings"
+
+#: pootle.py:228 pootle.py:254
+msgid "Redirecting to login..."
+msgstr "Qed nittrasferixxi għal-login..."
+
+#: pootle.py:231
+msgid "Need to log in to access home page"
+msgstr "Trid tagħmel login biex taċċessa l-paġna ewlenija"
+
+#: pootle.py:257
+msgid "Need to log in to access admin page"
+msgstr "Trid tagħmel login biex taċċessa l-paġna amministrattiva"
+
+#: pootle.py:264
+msgid "Redirecting to home..."
+msgstr "Qed nittrasferixxi għall-paġna ewlenija..."
+
+#: pootle.py:267
+msgid "You do not have the rights to administer pootle."
+msgstr "M'għandekx jedd tamministra lil pootle."
+
+#: projects.py:110
+msgid "View"
+msgstr "Ara"
+
+#: projects.py:112
+msgid "Translate"
+msgstr "Ittraduċi"
+
+#: projects.py:113
+msgid "Review"
+msgstr "Irrevedi"
+
+#: projects.py:114
+msgid "Archive"
+msgstr "Arkivja"
+
+#: projects.py:115
+msgid "Compile PO files"
+msgstr "Ikkompila fajls PO"
+
+#: projects.py:116
+msgid "Assign"
+msgstr "Assenja"
+
+#: projects.py:117
+msgid "Administrate"
+msgstr "Amministra"
+
+#: projects.py:173
+msgid "You cannot remove the \"nobody\" or \"default\" user"
+msgstr "Ma tistax tneħħi l-utenti \"nobody\" jew \"default\""
+
+#: projects.py:310 projects.py:370
+msgid "You do not have rights to alter goals here"
+msgstr "M'għandekx jedd tibdel il-miri hawn"
+
+#: projects.py:422
+msgid "You do not have rights to upload files here"
+msgstr "M'għandekx jedd ittella' fajls hawn"
+
+#: projects.py:425
+msgid "You do not have rights to upload new files here"
+msgstr "M'għandekx jedd ittella' fajls ġodda hawn"
+
+#: projects.py:434
+msgid "You do not have rights to update files here"
+msgstr "M'għandekx jedd taġġorna fajls hawn"
+
+#: projects.py:822 projects.py:863
+msgid "You do not have rights to alter assignments here"
+msgstr "M'għandekx jedd tibdel l-assenjazzjonijiet hawn"
+
+#: projects.py:1047
+msgid "You do not have rights to change translations here"
+msgstr "M'għandekx jedd tibdel traduzzjonijiet hawn"
+
+#: projects.py:1057
+msgid "You do not have rights to suggest changes here"
+msgstr "M'għandekx jedd tissuġġerixxi tibdiliet hawn"
+
+#: projects.py:1073 projects.py:1096
+msgid "You do not have rights to review suggestions here"
+msgstr "M'għandekx jedd tirrevedi suġġerimenti hawn"
+
+#: users.py:18
+msgid "Login to Pootle"
+msgstr "Illoggja fuq pootle"
+
+#: users.py:23
+msgid "Username:"
+msgstr "Isem l-utent:"
+
+#: users.py:25
+msgid "Password:"
+msgstr "Password:"
+
+#: users.py:26
+msgid "Language:"
+msgstr "Lingwa:"
+
+#: users.py:35
+msgid "Default"
+msgstr "Impliċitu"
+
+#: users.py:46
+msgid "Please enter your registration details"
+msgstr "Jekk jogħġbok daħħal id-dettalji tar-reġistrazzjoni"
+
+#: users.py:47
+msgid "Pootle Registration"
+msgstr "Reġistrazzjoni fuq Pootle"
+
+#: users.py:54 users.py:87
+msgid "Your requested username"
+msgstr "L-isem ta' utent li tixtieq"
+
+#: users.py:57
+msgid "Must be a valid email address"
+msgstr "Irid ikun indirizz tal-imejl validu"
+
+#: users.py:60
+msgid "Your full name"
+msgstr "Isem sħiħ"
+
+#: users.py:63
+msgid "Your desired password"
+msgstr "Il-password li tixtieq"
+
+#: users.py:65
+msgid "Register Account"
+msgstr "Irreġistra kont"
+
+#: users.py:74
+msgid "Please enter your activation details"
+msgstr "Jekk jogħġbok daħħal id-dettalji ta' attivazzjoni"
+
+#: users.py:79
+msgid "Pootle Account Activation"
+msgstr "Attivazzjoni tal-kont ta' Pootle"
+
+#: users.py:89
+msgid "Activation Code"
+msgstr "Kodiċi ta' attivazzjoni"
+
+#: users.py:90
+msgid "The activation code you received"
+msgstr "Il-kodiċi ta' attivazzjoni li rċevejt"
+
+#: users.py:92
+msgid "Activate Account"
+msgstr "Attiva kont"
+
+#: users.py:102
+#, python-format
+msgid "Options for: %s"
+msgstr "Għażliet għal: %s"
+
+#: users.py:107
+msgid "Personal Details"
+msgstr "Dettalji personali"
+
+#: users.py:110
+msgid "Name"
+msgstr "Isem"
+
+#: users.py:112
+msgid "Email"
+msgstr "Imejl"
+
+#: users.py:114
+msgid "Translation Interface Configuration"
+msgstr "Konfigurazzjoni tal-interfaċċja tat-traduzzjoni"
+
+#: users.py:115
+msgid "User Interface language"
+msgstr "Lingwa tal-interfaċċja"
+
+#: users.py:116
+msgid "My Projects"
+msgstr "Proġetti tiegħi"
+
+#: users.py:118
+msgid "My Languages"
+msgstr "Lingwi tiegħi"
+
+#: users.py:120
+msgid "Home page"
+msgstr "Paġna ewlenija"
+
+#: users.py:154
+msgid "Input Height (in lines)"
+msgstr "Għoli ta' l-input (linji)"
+
+#: users.py:154
+msgid "Input Width (in characters)"
+msgstr "Wisgħa ta' l-input (karattri)"
+
+#: users.py:155
+msgid "Number of rows in view mode"
+msgstr "Numru ta' linji fil-modalità tal-wiri"
+
+#: users.py:156
+msgid "Number of rows in translate mode"
+msgstr "Numru ta' linji fil-modalità tat-traduzzjoni"
+
+#: users.py:209
+msgid "You need to be siteadmin to change users"
+msgstr "Trid tkun amministratur tas-sit biex tibdel utenti"
+
+#: users.py:348
+msgid "Redirecting to Registration Page..."
+msgstr "Qed nittrasferixxi għall-paġna ta' reġistrazzjoni..."
+
+#: users.py:372
+msgid "Redirecting to login Page..."
+msgstr "Qed nittrasferixxi għall-paġna tal-login..."
+
+#: users.py:375
+msgid "Your account has been activated! Redirecting to login..."
+msgstr "Il-kont tiegħek ġie attivat. Qed nittrasferixxi għall-paġna ta' reġistrazzjoni..."
+
+#: users.py:379
+msgid "The activation link you have entered was not valid"
+msgstr "Il-link ta' attivazzjoni li daħħalt mhux valida"
+
+#: users.py:380
+msgid "Activation Failed"
+msgstr "Attivazzjoni falliet"
+
+#: users.py:474
+msgid "Input height must be numeric"
+msgstr "L-għoli ta' l-input irid ikun numru"
+
+#: users.py:475
+msgid "Input width must be numeric"
+msgstr "Il-wisgħa ta' l-input irid ikun numru"
+
+#: users.py:476
+msgid "The number of rows displayed in view mode must be numeric"
+msgstr "In-numru ta' ringieli fil-modalità tal-wiri irid ikun numeriku"
+
+#: users.py:477
+msgid "The number of rows displayed in translate mode must be numeric"
+msgstr "In-numru ta' ringieli fil-modalità tat-traduzzjoni irid ikun numeriku"
