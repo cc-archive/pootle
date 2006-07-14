@@ -1,18 +1,17 @@
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: translate-pootle@lists.sourceforge.net\n"
 "POT-Creation-Date: 2006-06-14 10:14+0200\n"
-"PO-Revision-Date: 2006-06-14 14:28+0200\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"PO-Revision-Date: 2006-06-21 19:28+0200\n"
+"Last-Translator: Evgeniy Dushistov <dushistov@mail.ru>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10< =4 && (n%100<10 or n%100>=20) ? 1 : 2);\n"
 "Generated-By: pygettext.py 1.1\n"
-"X-Generator: Translate Toolkit 0.9rc1\n"
+"X-Generator: Pootle 0.9\n"
 
 #: translatepage.py:56 translatepage.py:73
 #, python-format
@@ -34,25 +33,23 @@ msgstr ""
 #: indexpage.py:275 pagelayout.py:34 users.py:20 users.py:50 users.py:83
 #: users.py:104
 msgid "Pootle Demo"
-msgstr ""
+msgstr "Демо версия Pootle "
 
 #: translatepage.py:87
-#, fuzzy
 msgid "Original"
 msgstr "Источник"
 
 #: translatepage.py:88
-#, fuzzy
 msgid "Translation"
 msgstr "Перевод"
 
 #: translatepage.py:91
 msgid "Accept"
-msgstr ""
+msgstr "Принять"
 
 #: translatepage.py:92
 msgid "Reject"
-msgstr ""
+msgstr "Отказаться"
 
 #: translatepage.py:95 indexpage.py:282
 msgid "Search"
@@ -60,20 +57,20 @@ msgstr "Поиск"
 
 #: translatepage.py:108
 msgid "End of batch"
-msgstr ""
+msgstr "Конец пачки"
 
 #: translatepage.py:110
 msgid "Click here to return to the index"
-msgstr ""
+msgstr "Нажмите сюда для возвращению к индексу"
 
 #: translatepage.py:122 translatepage.py:124
 msgid "Start"
-msgstr ""
+msgstr "Начать"
 
 #: translatepage.py:127 translatepage.py:129
 #, python-format
 msgid "Previous %d"
-msgstr ""
+msgstr "Предыдущий %d"
 
 #: translatepage.py:130
 #, python-format
@@ -87,7 +84,7 @@ msgstr "Следующие"
 
 #: translatepage.py:138 translatepage.py:140
 msgid "End"
-msgstr ""
+msgstr "Конец"
 
 #: translatepage.py:155
 #, python-format
@@ -96,15 +93,15 @@ msgstr "проверка %s"
 
 #: translatepage.py:162 translatepage.py:165 indexpage.py:429 indexpage.py:432
 msgid "Assign Strings"
-msgstr ""
+msgstr "Определить Строки"
 
 #: translatepage.py:163 indexpage.py:431
 msgid "Assign to User"
-msgstr ""
+msgstr "Назначить Пользователю"
 
 #: translatepage.py:164 indexpage.py:430
 msgid "Assign Action"
-msgstr ""
+msgstr "Определить Действие"
 
 #: translatepage.py:292
 #, python-format

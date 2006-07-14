@@ -1,18 +1,17 @@
-#, fuzzy
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2006-06-14 14:25+0200\n"
+"PO-Revision-Date: 2006-07-05 17:03+0200\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "Generated-By: pygettext.py 1.5\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Last-Translator: eWorks <ellermann@eworks.de>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "POT-Creation-Date: 2005-06-13 14:54-0500\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "MIME-Version: 1.0\n"
-"X-Generator: Translate Toolkit 0.9rc1\n"
+"X-Generator: Pootle 0.9\n"
 
 #: attachments.py:70
 msgid "attachment is too large"
@@ -50,7 +49,7 @@ msgstr "Anmeldung für %s"
 
 #: web/server.py:91
 msgid "Cancel this action and start a new session"
-msgstr "Abbruch dieser Aktion und Start einer neuen Sitzung"
+msgstr "Abbruch dieser Aktion und Start einer neuen Sitzungen"
 
 #: web/server.py:92
 msgid "Instead of confirming this action, log out and start from scratch"

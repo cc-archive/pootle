@@ -1,17 +1,16 @@
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: translate-pootle@lists.sourceforge.net\n"
 "POT-Creation-Date: 2006-06-14 10:14+0200\n"
-"PO-Revision-Date: 2006-06-14 14:23+0200\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"PO-Revision-Date: 2006-06-20 23:04+0200\n"
+"Last-Translator: Piarres Beobide <pi@beobide.net>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Pootle 0.9rc1\n"
+"X-Generator: Pootle 0.9\n"
 "Generated-By: pygettext.py 1.1\n"
 
 #: translatepage.py:56 translatepage.py:73
@@ -517,7 +516,7 @@ msgstr "Pootle: %s"
 
 #: indexpage.py:144 indexpage.py:199 pagelayout.py:22 pagelayout.py:107
 msgid "Admin"
-msgstr "Kudeatzailea"
+msgstr "Kudeaketa"
 
 #: indexpage.py:158
 msgid "Language Code"

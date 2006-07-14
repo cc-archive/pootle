@@ -1,18 +1,17 @@
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: translate-pootle@lists.sourceforge.net\n"
 "POT-Creation-Date: 2006-06-14 10:14+0200\n"
-"PO-Revision-Date: 2006-06-14 14:25+0200\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"PO-Revision-Date: 2006-07-12 13:36+0200\n"
+"Last-Translator: Karl Eichwalder <ke@suse.de>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "Generated-By: pygettext.py 1.1\n"
-"X-Generator: Translate Toolkit 0.9rc1\n"
+"X-Generator: Pootle 0.9\n"
 
 #: translatepage.py:56 translatepage.py:73
 #, python-format
@@ -175,9 +174,8 @@ msgid "Plural Form %d"
 msgstr "Plural-Form %d"
 
 #: translatepage.py:578
-#, fuzzy
 msgid "Current Translation:"
-msgstr "<b>aktuelle Übersetzung:</b>"
+msgstr "Aktuelle Übersetzung:"
 
 #: translatepage.py:589
 #, python-format
@@ -1066,7 +1064,7 @@ msgstr ""
 
 #: users.py:375
 msgid "Your account has been activated! Redirecting to login..."
-msgstr ""
+msgstr "Ihr Konto wurde aktiviert! Sie werden zum Anmelden weitergeleitet..."
 
 #: users.py:379
 msgid "The activation link you have entered was not valid"
