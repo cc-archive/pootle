@@ -31,7 +31,7 @@ packages = ["Pootle"]
 pootlescripts = [join('Pootle', 'PootleServer')]
 
 #Enter the codes for all languages that must be packaged here
-approvedlanguages = ['af', 'eu', 'hr', 'fr', 'fur', 'de', 'it', 'pl', 'pt', 'sr', 'sl', 'es', 'sv', 'tr', 'vi']
+approvedlanguages = ['af', 'ar', 'eu', 'ca', 'hr', 'da', 'fr', 'fur', 'gl', 'de', 'it', 'ja', 'mt', 'pl', 'pt', 'sr', 'sl', 'es', 'sv', 'tr', 'vi']
 
 class build_exe_map(build_exe):
     """distutils py2exe-based class that builds the exe file(s) but allows mapping data files"""
