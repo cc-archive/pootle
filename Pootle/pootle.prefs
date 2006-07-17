@@ -433,12 +433,12 @@ Pootle:
 #    wa.pluralequation ='(n > 1)'
 
 # Simplified Chinese (China mainland used below, but also used Singapore and Malaysia)
-#    zh_CN.fullname = 'Chinese'
+#    zh_CN.fullname = 'Chinese (simplified)'
 #    zh_CN.nplurals = '1'
 #    zh_CN.pluralequation ='0'
 
 # Traditional Chinese (Taiwan used below, but also used in Hong Kong and Macau)
-#    zh_TW.fullname = 'Chinese'
+#    zh_TW.fullname = 'Chinese (traditional)'
 #    zh_TW.nplurals = '1'
 #    zh_TW.pluralequation ='0'
 
