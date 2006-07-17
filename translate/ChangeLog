@@ -1,3 +1,32 @@
+2006-07-13 13:36  friedelwolff
+
+	* convert/dtd2po.py: [Backport] Fix problem with accelerators if
+	  labels changed
+
+2006-07-11 17:18  friedelwolff
+
+	* __version__.py: Version 0.9.1
+
+2006-07-11 13:32  dwaynebailey
+
+	* convert/test_dtd2po.py: [Backport] test for bug #155
+
+2006-07-11 12:25  friedelwolff
+
+	* convert/dtd2po.py: [Backport] Fix the problem of not merging in
+	  translations with accelerators
+
+2006-07-05 20:10  dwaynebailey
+
+	* filters/prefilters.py: [Backport] A fix for Bug #153:
+	  sre.finditer seems to not accept the third and optional flags=
+	  paramater in Python 2.3.x.  So reverted to including the flags in
+	  the actual regex using the (?xxx) syntax
+
+2006-06-20 11:08  friedelwolff
+
+	* ChangeLog: Remove branch/HEAD duplicates
+
 2006-06-20 08:38  dwaynebailey
 
 	* convert/: __init__.py, convert.py, csv2po, csv2po.py, csv2tbx,

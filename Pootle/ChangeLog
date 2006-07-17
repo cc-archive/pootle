@@ -1,3 +1,81 @@
+2006-07-17 08:57  friedelwolff
+
+	* projects.py: Don't print search to console to avoid encoding
+	  problems
+
+2006-07-17 08:44  friedelwolff
+
+	* po/pootle/: ar/jToolkit.po, hu/pootle.po, nl/pootle.po: Last
+	  minute translation updates
+
+2006-07-14 17:03  friedelwolff
+
+	* README: Mention that ZIP is needed, minor updates
+
+2006-07-14 16:45  friedelwolff
+
+	* po/pootle/mt/: jToolkit.po, pootle.po: Maltese translations from
+	  pootle.wordforge.org
+
+2006-07-14 14:10  friedelwolff
+
+	* pootle.prefs: Correct nplurals for Arabic, split Chinese,
+	  +comments
+
+2006-07-14 09:27  friedelwolff
+
+	* po/pootle/: de/jToolkit.po, de/pootle.po, el/pootle.po,
+	  eu/pootle.po, hi/pootle.po, ku/pootle.po, pa/pootle.po,
+	  ru/jToolkit.po, ru/pootle.po: Update with minor translation
+	  updates
+
+2006-07-13 18:27  friedelwolff
+
+	* po/pootle/ar/: jToolkit.po, pootle.po: Update Arabic
+	  translations, including new plurals
+
+2006-07-13 18:06  friedelwolff
+
+	* pootle.prefs: Remove spaces between symbols at 'less than or
+	  equal to' signs
+
+2006-07-13 18:03  friedelwolff
+
+	* pootle.prefs: Enable all languages that have translations at more
+	  than 75%
+
+2006-07-13 17:58  friedelwolff
+
+	* pootle.prefs: Enable Arabic by defalt and update Arabic plural
+	  form (see
+	  http://translate.sourceforge.net/wiki/guide/translation/arabic_plurals)
+
+2006-07-13 16:11  friedelwolff
+
+	* po/pootle/: ca/jToolkit.po, ca/pootle.po, da/pootle.po,
+	  es/jToolkit.po, es/pootle.po, fr/jToolkit.po, fr/pootle.po,
+	  gl/jToolkit.po, gl/pootle.po, hu/jToolkit.po, hu/pootle.po,
+	  ja/jToolkit.po, ja/pootle.po, lt/jToolkit.po, lt/pootle.po: Most
+	  of the big translation updates from pootle.wordforge.org
+
+2006-07-13 14:05  friedelwolff
+
+	* po/pootle/vi/: jToolkit.po, pootle.po: Commit from Pootle 0.9 by
+	  user admin
+
+2006-07-11 17:18  friedelwolff
+
+	* __version__.py: Version 0.9.1
+
+2006-07-10 15:52  friedelwolff
+
+	* pootle.py: Disable page caching for translation files Import kid,
+	  so we know if it is not installed.
+
+2006-06-20 10:11  friedelwolff
+
+	* ChangeLog: Update ChangeLog with entries from 2006-04-26
+
 2006-06-19 11:21  dwaynebailey
 
 	* README: Its lesscode not lesskode
