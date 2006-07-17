@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: translate-pootle@lists.sourceforge.net\n"
 "POT-Creation-Date: 2006-06-14 10:14+0200\n"
-"PO-Revision-Date: 2006-07-10 21:44+0200\n"
+"PO-Revision-Date: 2006-07-16 10:07+0200\n"
 "Last-Translator: Dani Zsolt <dzsolt@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -106,7 +106,7 @@ msgstr "Kiosztott feladatok"
 #: translatepage.py:292
 #, python-format
 msgid "There are no items matching that search ('%s')"
-msgstr "Nincs a ('%s') feltételnek  megfelelő találat"
+msgstr "Nincs a ('%s') feltételnek megfelelő találat"
 
 #: translatepage.py:294
 msgid "You have finished going through the items you selected"
@@ -265,11 +265,11 @@ msgstr "(egyedi jelek, karakterek)"
 
 #: adminpages.py:71 indexpage.py:161
 msgid "Number of Plurals"
-msgstr "Páratlanok száma"
+msgstr "Többesszám száma"
 
 #: adminpages.py:71
 msgid "(number of plurals)"
-msgstr "Többszörösök száma"
+msgstr "(többes számúak száma)"
 
 #: adminpages.py:72 indexpage.py:162
 msgid "Plural Equation"
@@ -442,14 +442,14 @@ msgid ""
 "you can download it and run your own copy if you like. You can also help "
 "participate in the development in many ways (you don't have to be able to "
 "program)."
-msgstr ""
+msgstr "<strong>Pootle</strong> egy egyszerű WebPortál, ami hozzájárul az Ön <strong>fordításaihoz</strong>! Mivel a Pootle <strong>Szabad Szoftver</strong>, töltse le és használja sajátjaként, ha szeretné. You can also help participate in the development in many ways (you don't have to be able to program)."
 
 #: indexpage.py:30
 msgid ""
 "The Pootle project itself is hosted at <a href=\"http://translate."
 "sourceforge.net/\">translate.sourceforge.net</a> where you can find the "
 "details about source code, mailing lists etc."
-msgstr ""
+msgstr "A Pootle projekt honlapja <a href=\"http://translate.sourceforge.net/\">translate.sourceforge.net</a> helyen található, ahol részletek találhatók a forráskódról, levelezőlistákról, egyebekről."
 
 #: indexpage.py:31
 msgid ""
@@ -586,7 +586,7 @@ msgstr "Feltöltendő fájl kiválasztása"
 
 #: indexpage.py:545
 msgid "Not in a goal"
-msgstr ""
+msgstr "Nincs célban"
 
 #: indexpage.py:566
 msgid "Add User"
@@ -626,11 +626,11 @@ msgstr "Fordítatlan"
 
 #: indexpage.py:658
 msgid "Unassigned"
-msgstr ""
+msgstr "Kiosztatlan"
 
 #: indexpage.py:658
 msgid "Unassigned and Untranslated"
-msgstr ""
+msgstr "Kiosztatlan és fordítatlan"
 
 #: indexpage.py:665
 msgid "Set Goal"
@@ -687,7 +687,7 @@ msgstr "Mondataim megtekintése"
 
 #: indexpage.py:724
 msgid "No strings assigned to you"
-msgstr "Nincsenek mondatok Önhöz rendelve"
+msgstr "Nincsenek mondatok Önnek kiosztva"
 
 #: indexpage.py:728
 msgid "Quick Translate My Strings"
@@ -695,7 +695,7 @@ msgstr "Mondataim gyorsfordítása"
 
 #: indexpage.py:732
 msgid "No untranslated strings assigned to you"
-msgstr "Nincsenek fordítatlan mondatok Önhöz rendelve"
+msgstr "Nincsenek fordítatlan mondatok Önnek kiosztva"
 
 #: indexpage.py:736
 msgid "Review Suggestions"
@@ -755,7 +755,7 @@ msgstr "Minden nyelv"
 
 #: pagelayout.py:21
 msgid "My account"
-msgstr "Jelentésem"
+msgstr "Saját adatok"
 
 #: pagelayout.py:23
 msgid "Docs & help"
@@ -798,83 +798,83 @@ msgstr "Átirányítás a bejelentkezéshez..."
 
 #: pootle.py:231
 msgid "Need to log in to access home page"
-msgstr ""
+msgstr "A honlap hozzáfáféréséhez szükség van bejelentkezésre"
 
 #: pootle.py:257
 msgid "Need to log in to access admin page"
-msgstr ""
+msgstr "Az adminisztrációs lap hozzáfáféréséhez szükség van bejelentkezésre"
 
 #: pootle.py:264
 msgid "Redirecting to home..."
-msgstr ""
+msgstr "Átirányítás a kezdőlapra"
 
 #: pootle.py:267
 msgid "You do not have the rights to administer pootle."
-msgstr ""
+msgstr "Önnek nincs joga adminisztrálni a pootle-t"
 
 #: projects.py:110
 msgid "View"
-msgstr ""
+msgstr "Nézet"
 
 #: projects.py:112
 msgid "Translate"
-msgstr ""
+msgstr "Lefordít"
 
 #: projects.py:113
 msgid "Review"
-msgstr ""
+msgstr "Áttekintés"
 
 #: projects.py:114
 msgid "Archive"
-msgstr ""
+msgstr "Arhívum"
 
 #: projects.py:115
 msgid "Compile PO files"
-msgstr ""
+msgstr "PO fájlok szerkesztése"
 
 #: projects.py:116
 msgid "Assign"
-msgstr ""
+msgstr "Kioszt"
 
 #: projects.py:117
 msgid "Administrate"
-msgstr ""
+msgstr "Adminisztráció"
 
 #: projects.py:173
 msgid "You cannot remove the \"nobody\" or \"default\" user"
-msgstr ""
+msgstr "Ön nem tudja eltávolítani a \"nobody\" vagy \"default\" felhasználót"
 
 #: projects.py:310 projects.py:370
 msgid "You do not have rights to alter goals here"
-msgstr ""
+msgstr "Ön itt nem rendelkezik jogokkal a cél módosításához"
 
 #: projects.py:422
 msgid "You do not have rights to upload files here"
-msgstr ""
+msgstr "Ön itt nem rendelkezik jogokkal fájl feltöltéshez"
 
 #: projects.py:425
 msgid "You do not have rights to upload new files here"
-msgstr ""
+msgstr "Ön itt nem rendelkezik jogokkal új fájl feltöltéshez"
 
 #: projects.py:434
 msgid "You do not have rights to update files here"
-msgstr ""
+msgstr "Ön itt nem rendelkezik jogokkal fájl aktualizáláshoz"
 
 #: projects.py:822 projects.py:863
 msgid "You do not have rights to alter assignments here"
-msgstr ""
+msgstr "Ön itt nem rendelkezik jogokkal kijelölt feladat megváltoztatásához"
 
 #: projects.py:1047
 msgid "You do not have rights to change translations here"
-msgstr ""
+msgstr "Ön itt nem rendelkezik jogokkal fordítás megváltoztatásához"
 
 #: projects.py:1057
 msgid "You do not have rights to suggest changes here"
-msgstr ""
+msgstr "Ön itt nem rendelkezik jogokkal javaslat megváltoztatásához"
 
 #: projects.py:1073 projects.py:1096
 msgid "You do not have rights to review suggestions here"
-msgstr ""
+msgstr "Ön itt nem rendelkezik jogokkal javaslatok bírálatához"
 
 #: users.py:18
 msgid "Login to Pootle"
@@ -894,7 +894,7 @@ msgstr "Nyelv:"
 
 #: users.py:35
 msgid "Default"
-msgstr ""
+msgstr "Alapértelmezés"
 
 #: users.py:46
 msgid "Please enter your registration details"
@@ -914,7 +914,7 @@ msgstr "Valós e-mail cím szükséges"
 
 #: users.py:60
 msgid "Your full name"
-msgstr ""
+msgstr "Az Ön teljes neve"
 
 #: users.py:63
 msgid "Your desired password"
@@ -947,75 +947,75 @@ msgstr "Hozzáférés aktiválása"
 #: users.py:102
 #, python-format
 msgid "Options for: %s"
-msgstr ""
+msgstr "%s opciói"
 
 #: users.py:107
 msgid "Personal Details"
-msgstr ""
+msgstr "Személyes részletek"
 
 #: users.py:110
 msgid "Name"
-msgstr ""
+msgstr "Név"
 
 #: users.py:112
 msgid "Email"
-msgstr ""
+msgstr "Email"
 
 #: users.py:114
 msgid "Translation Interface Configuration"
-msgstr ""
+msgstr "Fordító felület konfiguráció"
 
 #: users.py:115
 msgid "User Interface language"
-msgstr ""
+msgstr "Felhasználói felület nyelve"
 
 #: users.py:116
 msgid "My Projects"
-msgstr ""
+msgstr "Saját projektek"
 
 #: users.py:118
 msgid "My Languages"
-msgstr ""
+msgstr "Saját nyelvek"
 
 #: users.py:120
 msgid "Home page"
-msgstr ""
+msgstr "Honlap"
 
 #: users.py:154
 msgid "Input Height (in lines)"
-msgstr ""
+msgstr "Beviteli magasság (sorokban)"
 
 #: users.py:154
 msgid "Input Width (in characters)"
-msgstr ""
+msgstr "Beviteli szélesség (karakterekben)"
 
 #: users.py:155
 msgid "Number of rows in view mode"
-msgstr ""
+msgstr "Sorok száma áttekintés módban"
 
 #: users.py:156
 msgid "Number of rows in translate mode"
-msgstr ""
+msgstr "Sorok száma fordítás módban"
 
 #: users.py:209
 msgid "You need to be siteadmin to change users"
-msgstr ""
+msgstr "Önnek szüksége lesz a rendszergazdára a felhasználó váltáshoz"
 
 #: users.py:348
 msgid "Redirecting to Registration Page..."
-msgstr ""
+msgstr "Átirányítás a regisztrációs lapra"
 
 #: users.py:372
 msgid "Redirecting to login Page..."
-msgstr ""
+msgstr "Átirányítás a bejelentkező lapra"
 
 #: users.py:375
 msgid "Your account has been activated! Redirecting to login..."
-msgstr ""
+msgstr "Az Ön hozzáférése aktiválva! Átirányítás bejelentkezéshez..."
 
 #: users.py:379
 msgid "The activation link you have entered was not valid"
-msgstr ""
+msgstr "Az aktiválás hivatkozása nem érvényes"
 
 #: users.py:380
 msgid "Activation Failed"
@@ -1023,19 +1023,19 @@ msgstr "Aktiválás hiányzik"
 
 #: users.py:474
 msgid "Input height must be numeric"
-msgstr ""
+msgstr "Beviteli magasságot számokkal kell megadni"
 
 #: users.py:475
 msgid "Input width must be numeric"
-msgstr ""
+msgstr "Beviteli szélességet számokkal kell megadni"
 
 #: users.py:476
 msgid "The number of rows displayed in view mode must be numeric"
-msgstr ""
+msgstr "A sorok számát az áttekintés módhoz számokkal kell megadni"
 
 #: users.py:477
 msgid "The number of rows displayed in translate mode must be numeric"
-msgstr ""
+msgstr "A sorok számát a fordító módhoz számokkal kell megadni"
 
 #~ msgid ""
 #~ "<strong>Pootle</strong> is a simple web portal that should allow you to "

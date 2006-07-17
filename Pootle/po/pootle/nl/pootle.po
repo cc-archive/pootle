@@ -1,18 +1,17 @@
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: translate-pootle@lists.sourceforge.net\n"
 "POT-Creation-Date: 2006-06-14 10:14+0200\n"
-"PO-Revision-Date: 2006-06-14 14:23+0200\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"PO-Revision-Date: 2006-07-16 19:42+0200\n"
+"Last-Translator: Ace Suares <ace@suares.an>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "Generated-By: pygettext.py 1.1\n"
-"X-Generator: Translate Toolkit 0.9rc1\n"
+"X-Generator: Pootle 0.9\n"
 
 #: translatepage.py:56 translatepage.py:73
 #, python-format
@@ -38,20 +37,19 @@ msgstr ""
 
 #: translatepage.py:87
 msgid "Original"
-msgstr ""
+msgstr "Origineel"
 
 #: translatepage.py:88
-#, fuzzy
 msgid "Translation"
-msgstr "Vertaal Alles"
+msgstr "Vertaling"
 
 #: translatepage.py:91
 msgid "Accept"
-msgstr ""
+msgstr "Accepteer"
 
 #: translatepage.py:92
 msgid "Reject"
-msgstr ""
+msgstr "Weiger"
 
 #: translatepage.py:95 indexpage.py:282
 msgid "Search"
@@ -59,20 +57,20 @@ msgstr "Zoek"
 
 #: translatepage.py:108
 msgid "End of batch"
-msgstr ""
+msgstr "Einde serie"
 
 #: translatepage.py:110
 msgid "Click here to return to the index"
-msgstr ""
+msgstr "Klik hier om terug te gaan naar de index"
 
 #: translatepage.py:122 translatepage.py:124
 msgid "Start"
-msgstr ""
+msgstr "Begin"
 
 #: translatepage.py:127 translatepage.py:129
 #, python-format
 msgid "Previous %d"
-msgstr ""
+msgstr "Vorige %d"
 
 #: translatepage.py:130
 #, python-format
@@ -86,7 +84,7 @@ msgstr "Volgende %d"
 
 #: translatepage.py:138 translatepage.py:140
 msgid "End"
-msgstr ""
+msgstr "Einde"
 
 #: translatepage.py:155
 #, python-format
@@ -99,11 +97,11 @@ msgstr ""
 
 #: translatepage.py:163 indexpage.py:431
 msgid "Assign to User"
-msgstr ""
+msgstr "Toewijzen aan Gebruiker"
 
 #: translatepage.py:164 indexpage.py:430
 msgid "Assign Action"
-msgstr ""
+msgstr "Wijs een aktie toe"
 
 #: translatepage.py:292
 #, python-format
@@ -116,57 +114,57 @@ msgstr "U bent klaar met de door u geselecteerde woorden"
 
 #: translatepage.py:429
 msgid "Singular"
-msgstr ""
+msgstr "Enkelvoud"
 
 #: translatepage.py:430
 msgid "Plural"
-msgstr ""
+msgstr "Meervoud"
 
 #: translatepage.py:443
 msgid "Edit"
-msgstr ""
+msgstr "Bewerk"
 
 #: translatepage.py:459
 msgid "Copy"
-msgstr ""
+msgstr "Kopieer"
 
 #: translatepage.py:460 translatepage.py:617
 msgid "Skip"
-msgstr ""
+msgstr "Overslaan"
 
 #: translatepage.py:461 projects.py:111
 msgid "Suggest"
-msgstr ""
+msgstr "Stel voor"
 
 #: translatepage.py:462
 msgid "Submit"
-msgstr ""
+msgstr "Verstuur"
 
 #: translatepage.py:466
 msgid "Grow"
-msgstr ""
+msgstr "Groter"
 
 #: translatepage.py:467
 msgid "Shrink"
-msgstr ""
+msgstr "Kleiner"
 
 #: translatepage.py:468
 msgid "Broaden"
-msgstr ""
+msgstr "Breder"
 
 #: translatepage.py:469
 msgid "Narrow"
-msgstr ""
+msgstr "Smaller"
 
 #: translatepage.py:470
 msgid "Reset"
-msgstr ""
+msgstr "Herstellen"
 
 #: translatepage.py:488 translatepage.py:574 translatepage.py:608
 #: translatepage.py:636
 #, python-format
 msgid "Plural Form %d"
-msgstr ""
+msgstr "Meervoudsvorm %d"
 
 #: translatepage.py:578
 #, fuzzy
@@ -199,11 +197,11 @@ msgstr ""
 
 #: adminpages.py:26 adminpages.py:177
 msgid "Users"
-msgstr ""
+msgstr "Gebruikers"
 
 #: adminpages.py:27 adminpages.py:63 indexpage.py:52
 msgid "Languages"
-msgstr ""
+msgstr "Talen"
 
 #: adminpages.py:28 adminpages.py:117 indexpage.py:53
 msgid "Projects"
@@ -211,68 +209,68 @@ msgstr "Projecten"
 
 #: adminpages.py:29
 msgid "General options"
-msgstr ""
+msgstr "Algemene instellingen"
 
 #: adminpages.py:30 users.py:108
 msgid "Option"
-msgstr ""
+msgstr "Optie"
 
 #: adminpages.py:31 users.py:109
 msgid "Current value"
-msgstr ""
+msgstr "Huidige waarde"
 
 #: adminpages.py:32 adminpages.py:64 adminpages.py:118 adminpages.py:178
 #: users.py:121
 msgid "Save changes"
-msgstr ""
+msgstr "Veranderingen opslaan"
 
 #: adminpages.py:36
 msgid "Title"
-msgstr ""
+msgstr "Titel"
 
 #: adminpages.py:36
 msgid "Description"
-msgstr ""
+msgstr "Beschrijving"
 
 #: adminpages.py:36
 msgid "Base URL"
-msgstr ""
+msgstr "Basis-URL"
 
 #: adminpages.py:36
 msgid "Home Page"
-msgstr ""
+msgstr "Home Page"
 
 #: adminpages.py:62 adminpages.py:116 adminpages.py:176
 msgid "Main admin page"
-msgstr ""
+msgstr "Administratie Pagina"
 
 #: adminpages.py:68
 msgid "ISO Code"
-msgstr ""
+msgstr "ISO Code"
 
 #: adminpages.py:69 adminpages.py:123 adminpages.py:183 users.py:59
 msgid "Full Name"
-msgstr ""
+msgstr "Volledige Naam"
 
 #: adminpages.py:69
 msgid "(add language here)"
-msgstr ""
+msgstr "(voeg hier een taal toe)"
 
 #: adminpages.py:70
 msgid "Special Chars"
-msgstr ""
+msgstr "Speciale Tekens"
 
 #: adminpages.py:70
 msgid "(special characters)"
-msgstr ""
+msgstr "(speciale tekens)"
 
 #: adminpages.py:71 indexpage.py:161
 msgid "Number of Plurals"
-msgstr ""
+msgstr "Aantal meervouden"
 
 #: adminpages.py:71
 msgid "(number of plurals)"
-msgstr ""
+msgstr "(aantal meervouden)"
 
 #: adminpages.py:72 indexpage.py:162
 msgid "Plural Equation"
@@ -283,18 +281,17 @@ msgid "(plural equation)"
 msgstr ""
 
 #: adminpages.py:73
-#, fuzzy
 msgid "Remove Language"
-msgstr "%s taal"
+msgstr "Verwijder Taal"
 
 #: adminpages.py:87 adminpages.py:148 adminpages.py:208 adminpages.py:367
 #, python-format
 msgid "Remove %s"
-msgstr ""
+msgstr "Verwijder %s"
 
 #: adminpages.py:105
 msgid "Standard"
-msgstr ""
+msgstr "Standaard"
 
 #: adminpages.py:122
 msgid "Project Code"
@@ -306,11 +303,11 @@ msgstr ""
 
 #: adminpages.py:124
 msgid "Project Description"
-msgstr ""
+msgstr "Projektbeschrijving"
 
 #: adminpages.py:124
 msgid "(project description)"
-msgstr ""
+msgstr "(projektbeschrijving)"
 
 #: adminpages.py:125
 msgid "Checker Style"

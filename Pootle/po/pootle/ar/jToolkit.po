@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2006-07-12 18:19+0200\n"
+"PO-Revision-Date: 2006-07-16 16:37+0200\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=4; plural=n==1 ? 0 : n==2 ? 1 : n>=3 && n< =10 ? 2 : 3;\n"
+"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n>=3 && n<=10 ? 3 : n>=11 && n<=99 ? 4 : 5;\n"
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "Generated-By: pygettext.py 1.5\n"
@@ -97,7 +97,7 @@ msgstr "مغادرة"
 #: web/session.py:191 web/session.py:344 web/session.py:350
 #, python-format
 msgid "logged in as <b>%s</b>"
-msgstr "داخل بإسم <b>%s</b>"
+msgstr "داخل باسم <b>%s</b>"
 
 #: web/session.py:193
 msgid "couldn't add new session"
