@@ -49,7 +49,7 @@ Pootle:
   # This is the projects internal name and corresponds to the
   # directory entry that stores all the translations.
   #
-  #   fullname = "Pootles
+  #   fullname = "Pootle
   # The human readable version of the projects internal name.
   #
   #   description = "Web translation software"
