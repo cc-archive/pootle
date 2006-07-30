@@ -20,8 +20,9 @@ Important:
 - .po serializer
 
 Long term:
-- consider use of SQLObject for RDB storage
+- consider use of SQLObject or SQLAlchemy for RDB storage
 - Implement a merger using external 'msgmerge'.
+- Wrap pootle's internal pounit.merge.
 - Import language info from Pootle config.
 
 Debian-specific:
@@ -30,8 +31,9 @@ Debian-specific:
 
 Other subsystems to consider:
 - Security model (important!)
-- Merging mechanism
+- Checkers
++ Merging mechanism
 - Pootle-like "goals"
 - Versioning, "dirty" state
-- Language information DB (language name, plural equations, etc.)
++ Language information DB (language name, plural equations, etc.)
 - Translation compendium
