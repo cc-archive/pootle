@@ -103,15 +103,33 @@ class Folder(AccumStatsMixin):
         return self.modules.values() + self.subfolders.values()
 
 
+class LanguageInfoContainer(MappingMixin):
+
+    def add(self):
+        pass # TODO
+
+
 class Database(Folder):
     _interface = IDatabase
+    languages = None
 
     def __init__(self):
         Folder.__init__(self, None, None)
+        self.languages = LanguageInfoContainer()
+
+    def startTransaction(self):
+        pass
+
+    def commitTransaction(self):
+        pass
+
+    def rollbackTransaction(self):
+        pass
 
 
 class LanguageInfo(object):
     _interface = ILanguageInfo
+    db = None
 
     code = None
     country = None
@@ -121,15 +139,8 @@ class LanguageInfo(object):
     nplurals = None
     pluralequation = None
 
-    def __init__(self, code, country=None, name=None, name_eng=None,
-                 specialchars=None, nplurals=None, pluralequation=None):
-        self.code = code
-        self.country = country
-        self.name = name
-        self.name_eng = name_eng
-        self.specialchars = specialchars
-        self.nplurals = nplurals
-        self.pluralequation = pluralequation
+    def __init__(self, db):
+        self.db = db
 
 
 class Module(MappingMixin, AccumStatsMixin):

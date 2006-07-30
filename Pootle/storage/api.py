@@ -133,6 +133,8 @@ class IDatabase(IFolder):
     TODO: unified way to open a database (a config parser object)?
     """
 
+    languages = IMapping # (code, country) -> ILanguageInfo
+
     def startTransaction(self):
         """Start a transaction.
 
@@ -155,9 +157,14 @@ class IDatabase(IFolder):
 
 
 class ILanguageInfo(Interface):
-    """Basic information about a language."""
+    """Basic information about a language.
 
-    # TODO: Specify if this object could/should be shared between projects.
+    One ILanguageInfo object exists for each language, stored in
+    IDatabase.languages.  Copies of translation stores for the same
+    language should reference the same language info instance.
+    """
+
+    db = IDatabase
 
     # TODO: use simple ln/ln_LN as primary key instead of tuple?
     code = String # ISO639 language code

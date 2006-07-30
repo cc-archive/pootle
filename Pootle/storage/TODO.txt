@@ -5,7 +5,8 @@ Easy:
 + folders
 + TranslationStore.translate
 + Document storage semantics.
-- Add a language store.
++ Add a language store.
+- Import language info from Pootle config.
 
 Important:
 + preliminary .po parser
