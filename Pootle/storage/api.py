@@ -314,6 +314,10 @@ class IMerger(object):
         """Update translation from template.
 
         Modifies the translation object in place.
+
+        translation and template are translation stores.
+
+        TODO: It would be nicer to return a new TranslationStore.
         """
 
 

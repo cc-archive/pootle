@@ -6,9 +6,8 @@ Easy:
 + TranslationStore.translate
 + Document storage semantics.
 + Add a language store.
-- Define merger interface.
-- Implement a naive merger.
-- Implement a merger using external 'msgmerge'.
++ Define merger interface.
++ Implement a naive merger.
 
 Important:
 + preliminary .po parser
@@ -22,6 +21,7 @@ Important:
 
 Long term:
 - consider use of SQLObject for RDB storage
+- Implement a merger using external 'msgmerge'.
 - Import language info from Pootle config.
 
 Debian-specific:
