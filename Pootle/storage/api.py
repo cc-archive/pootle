@@ -305,6 +305,17 @@ class ITranslationUnit(Interface):
 
     # TODO: it would be nice to have a "dirty" attribute
 
+# === Merging ===
+
+class IMerger(object):
+    """An object that can merge translation files."""
+
+    def merge(self, translation, template):
+        """Update translation from template.
+
+        Modifies the translation object in place.
+        """
+
 
 # === Validation helpers ===
 
