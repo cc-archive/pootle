@@ -4,6 +4,8 @@ Easy:
 + language to the bottom layer (above UnitCollection)
 + folders
 + TranslationStore.translate
++ Document storage semantics.
+- Add a language store.
 
 Important:
 + preliminary .po parser

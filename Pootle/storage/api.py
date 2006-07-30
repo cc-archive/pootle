@@ -14,9 +14,21 @@ Here is a rough sketch of the class containment hierarchy:
   IDatabase
     IFolder
       ...
-        IModule (maps to a .po file)
+        IModule (maps to a .pot file)
           ITranslationStore (one for each language)
-            ITranslationUnit
+            ITranslationUnit (maps to a msgid)
+
+
+Object lifecycle semantics
+==========================
+
+All content objects (folders, modules, translation stores, etc.) are
+to be simultaneously created and added to a container.  Afterwards their
+name or reference to parent must not be changed. The only exception is
+TranslationUnits which are constructed and added in separate steps.
+
+This policy allows the backend to commit changes immediately and avoid floating
+unserialized objects.
 
 """
 
@@ -113,9 +125,33 @@ class IFolder(IHaveStatistics):
 
 
 class IDatabase(IFolder):
-    """A database."""
+    """A database.
 
-    # TODO: start/end transaction? (if supported)
+    This acts as the root of the content object hierarchy.
+
+    Its constructor may accept arbitrary arguments for configuration.
+    TODO: unified way to open a database (a config parser object)?
+    """
+
+    def startTransaction(self):
+        """Start a transaction.
+
+        Does nothing if transactions are not supported.
+        May enable exclusive file locks in case of a file-based backend.
+        """
+
+    def commitTransaction(self):
+        """Commit a transaction.
+
+        Does nothing if transactions are not supported.
+        May disable exclusive file locks in case of a file-based backend.
+        """
+
+    def rollbackTransaction(self):
+        """Commit a transaction.
+
+        Does nothing if transactions are not supported.
+        """
 
 
 class ILanguageInfo(Interface):
