@@ -202,6 +202,17 @@ class IModule(IHaveStatistics, IMapping):
     #       direct hyperlinks to unit context in the source code.
 
 
+class IHeader(IMapping):
+    """Information about a translation store (maps to a .po header).
+
+    Behaves like an ordered dictionary: keys() should return an ordered list.
+    New entries are added at the end.  Insertion is not provided (if needed,
+    the header can be recreated).
+    """
+
+    store = None # Parent ITranslationStore
+
+
 class ITranslationStore(IHaveStatistics):
     """A collection of translation units
 
@@ -216,6 +227,7 @@ class ITranslationStore(IHaveStatistics):
     """
 
     module = IModule
+    header = IHeader # maps to a .po header
     langinfo = ILanguageInfo
     key = String # e.g., 'pt_BR'
 

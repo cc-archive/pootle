@@ -1,15 +1,6 @@
-Easy:
-+ UnitCollection -> TranslationStore
-+ collection -> store
-+ language to the bottom layer (above UnitCollection)
-+ folders
-+ TranslationStore.translate
-+ Document storage semantics.
-+ Add a language store.
-+ Define merger interface.
-+ Implement a naive merger.
-+ Use 'en_EN' instead of ('en', 'EN') to identify languages.
+Small tasks:
 - Separate .po header
+- Deal with obsolete .po entries (#~)
 
 Important:
 + preliminary .po parser
@@ -34,6 +25,7 @@ Debian-specific:
 Other subsystems to consider:
 - Security model (important!)
 - Translation review (important!)
+- "Changesets" (related with review)
 - Checkers
 + Merging mechanism
 - Pootle-like "goals"

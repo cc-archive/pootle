@@ -6,6 +6,7 @@ If needed, the database can be trivially serialized by use of pickle.
 from Pootle.storage.api import IStatistics, IDatabase, ITranslationUnit
 from Pootle.storage.api import ILanguageInfo, IModule, IMapping, IFolder
 from Pootle.storage.api import ITranslationStore, ISuggestion, IHaveStatistics
+from Pootle.storage.api import IHeader
 
 
 class MappingMixin(object):
@@ -172,10 +173,31 @@ class Module(MappingMixin, AccumStatsMixin):
         raise NotImplementedError('XXX TODO')
 
 
+class Header(MappingMixin):
+    _interface = IHeader
+
+    store = None
+
+    def __init__(self, store):
+        self.store = store
+        MappingMixin.__init__(self)
+        self._order = []
+
+    def keys(self):
+        return self._order[:]
+
+    def values(self):
+        return [self[k] for k in self._order]
+
+    def items(self):
+        return [(k, self[k]) for k in self._order]
+
+
 class TranslationStore(object):
     _interface = ITranslationStore
 
     module = None
+    header = None
     langinfo = None
     key = None # TODO property
 
