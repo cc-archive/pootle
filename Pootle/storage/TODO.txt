@@ -8,6 +8,8 @@ Easy:
 + Add a language store.
 + Define merger interface.
 + Implement a naive merger.
++ Use 'en_EN' instead of ('en', 'EN') to identify languages.
+- Separate .po header
 
 Important:
 + preliminary .po parser
@@ -31,6 +33,7 @@ Debian-specific:
 
 Other subsystems to consider:
 - Security model (important!)
+- Translation review (important!)
 - Checkers
 + Merging mechanism
 - Pootle-like "goals"

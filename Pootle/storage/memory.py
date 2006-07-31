@@ -133,6 +133,11 @@ class LanguageInfo(object):
 
     code = None
     country = None
+
+    @property
+    def key(self):
+        return '%s_%s' % (self.code, self.country.upper())
+
     name = None
     name_eng = None
     specialchars = None
@@ -163,7 +168,7 @@ class Module(MappingMixin, AccumStatsMixin):
     def __repr__(self):
         return '<Module %s>' % self.key
 
-    def add(self, language, country):
+    def add(self, language):
         raise NotImplementedError('XXX TODO')
 
 

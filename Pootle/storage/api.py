@@ -133,7 +133,7 @@ class IDatabase(IFolder):
     TODO: unified way to open a database (a config parser object)?
     """
 
-    languages = IMapping # (code, country) -> ILanguageInfo
+    languages = IMapping # 'la_CO' -> ILanguageInfo
 
     def startTransaction(self):
         """Start a transaction.
@@ -169,6 +169,7 @@ class ILanguageInfo(Interface):
     # TODO: use simple ln/ln_LN as primary key instead of tuple?
     code = String # ISO639 language code
     country = String # optional - ISO3166 two-letter country code
+    key = String # Should be a property.  E.g., 'en', 'pt_BR', etc.
     name = Unicode # complete language name (native)
     name_eng = Unicode # complete language name in English; optional TODO needed?
     specialchars = [Unicode] # list of special chars
@@ -181,7 +182,7 @@ class IModule(IHaveStatistics, IMapping):
 
     This loosely corresponds to a .pot file and a set of its translations.
 
-    Maps (language, country) to TranslationStore.
+    Maps 'la_CO' identifier to TranslationStore.
 
     A module contains a 'template' translation store (no translations) and
     a set of translation stores with translated data.
@@ -216,8 +217,7 @@ class ITranslationStore(IHaveStatistics):
 
     module = IModule
     langinfo = ILanguageInfo
-    key = (String, String) # (code, country): should be a property that gets
-                           # the data from langinfo; country may be None.
+    key = String # e.g., 'pt_BR'
 
     def __iter__(self):
         """Return an iterable of translation units."""
@@ -302,6 +302,7 @@ class ITranslationUnit(Interface):
     # For singular, just use a single tuple in the list.
     trans = [(Unicode,  # plural msgid (source)
               Unicode)] # plural translation (target)
+    # XXX Is it really a good idea to have this instead of the .po model?
 
     # TODO: it would be nice to have a "dirty" attribute
 
