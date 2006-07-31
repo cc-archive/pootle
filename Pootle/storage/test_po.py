@@ -8,7 +8,6 @@ import doctest
 sample_po = r"""# translation of foo
 # Copyright (C) Foo, Inc.
 # Gintautas Miliauskas <gintas@akl.lt>, 2006.
-
 msgid ""
 msgstr ""
 "Project-Id-Version: foo\n"
@@ -34,10 +33,14 @@ def test_read_po():
         >>> store = TranslationStore('foo', None, 'some langinfo')
         >>> read_po(sample_po, store)
 
+        >>> store.header.items()
+        [('Project-Id-Version', u'foo'),
+         ('Last-Translator', u'Gintautas Miliauskas <gintas@akl.lt>'),
+         ...
+         ('Content-Transfer-Encoding', u'8bit')]
+
         >>> for unit in store:
-        ...     print unit.trans # doctest: +ELLIPSIS
-        [('', '')]
-        [('', 'Project-Id-Version: foo\nLast-Translator: ...\n')]
+        ...     print unit.trans
         [('Hello', 'Labas')]
 
     """
@@ -69,4 +72,4 @@ def test_read_po_plurals():
 
 
 if __name__ == '__main__':
-    doctest.testmod()
+    doctest.testmod(optionflags=doctest.ELLIPSIS | doctest.NORMALIZE_WHITESPACE)

@@ -192,6 +192,15 @@ class Header(MappingMixin):
     def items(self):
         return [(k, self[k]) for k in self._order]
 
+    def __delitem__(self, key):
+        MappingMixin.__delitem__(self, key)
+        del self._order[key]
+
+    def add(self, key, value):
+        assert key not in self._order
+        self._order.append(key)
+        self._items[key] = value
+
 
 class TranslationStore(object):
     _interface = ITranslationStore

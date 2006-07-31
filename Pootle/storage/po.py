@@ -6,11 +6,17 @@ Uses translate.storage.po classes to parse/serialize .po translations.
 from translate.storage.po import pofile
 
 def read_po(potext, store):
-    """Fill TranslationStore store with data in potext."""
+    """Fill TranslationStore store with data in potext.
+
+    Imports the header separately.  Deals with plurals.
+    """
     po = pofile(potext)
+    store.header = po.parseheader() # uses ordereddict from jToolkit
     units = []
     for oldunit in po.units:
         # TODO: comments, etc.
+        if oldunit.isheader():
+            continue
         trans = [(str(oldunit.source), str(oldunit.target))]
         if oldunit.hasplural():
             plural_msgid = str(oldunit.source.strings[1])

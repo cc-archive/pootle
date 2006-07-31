@@ -1,5 +1,5 @@
 Small tasks:
-- Separate .po header
++ Separate .po header
 - Deal with obsolete .po entries (#~)
 
 Important:
