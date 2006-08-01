@@ -1,6 +1,7 @@
 Small tasks:
 + Separate .po header
 - Deal with obsolete .po entries (#~)
+- Flesh out ITranslationUnit
 
 Important:
 + preliminary .po parser

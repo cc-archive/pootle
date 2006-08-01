@@ -298,13 +298,16 @@ class ITranslationUnit(Interface):
     suggestions = [ISuggestion]
     context = Unicode # context information
 
-    # Comments: optional; can be multiline, but should be whitespace-stripped
-    translator_comments = Unicode
-    automatic_comments = Unicode
-    reference = Unicode # TODO Should we be smarter here?
+    # Comments; taken straight off translate.storage.po.pounit
+    other_comments = [Unicode]     #  # this is another comment
+    automatic_comments = [Unicode] #  #. comment extracted from the source code
+    source_comments = [Unicode]    #  #: sourcefile.xxx:35
+    type_comments = [Unicode]      #  #, fuzzy
+    visible_comments = [Unicode]   #  #_ note to translator  (this is nonsense)
+    obsolete_messages = [Unicode]  #  #~ msgid ""
+    msgid_comments = [Unicode]     #  _: within msgid
 
-    datatype = String # optional -- c-format, no-c-format, java-format, etc.
-    fuzzy = Boolean
+    # TODO: type comments are special. Abstract them.
 
     # Use the XLIFF model here: plural sources are stored together with targets
     # The list of tuples is ordered.  If a plural is not translated, the target
@@ -314,7 +317,8 @@ class ITranslationUnit(Interface):
     # For singular, just use a single tuple in the list.
     trans = [(Unicode,  # plural msgid (source)
               Unicode)] # plural translation (target)
-    # XXX Is it really a good idea to have this instead of the .po model?
+    # TODO Is it really a good idea to have this instead of the .po model:
+    #      msgid=Unicode, msgid_plural=Unicode, msgstr=[Unicode]
 
     # TODO: it would be nice to have a "dirty" attribute
 

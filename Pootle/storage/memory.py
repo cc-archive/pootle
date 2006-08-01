@@ -251,7 +251,7 @@ class TranslationStore(object):
         stats = Statistics()
         stats.total_strings = len(self)
         for unit in self:
-            if unit.fuzzy:
+            if 'fuzzy' in unit.type_comments:
                 stats.fuzzy_strings += 1
             else:
                 for source, target in unit.trans:
@@ -283,12 +283,13 @@ class TranslationUnit(object):
     suggestions = None
     context = None
 
-    translator_comments = None
+    other_comments = None
     automatic_comments = None
-    reference = None
-
-    datatype = None
-    fuzzy = False
+    source_comments = None
+    type_comments = None
+    visible_comments = None
+    obsolete_messages = None
+    msgid_comments = None
 
     trans = None
 
@@ -300,6 +301,14 @@ class TranslationUnit(object):
         self.store = store
         self.trans = trans
         # TODO: assert len(trans) == language.nplurals?
+
+        self.other_comments = []
+        self.automatic_comments = []
+        self.source_comments = []
+        self.type_comments = []
+        self.visible_comments = []
+        self.obsolete_messages = []
+        self.msgid_comments = []
 
 
 class Statistics(object):
