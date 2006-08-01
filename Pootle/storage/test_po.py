@@ -56,7 +56,7 @@ msgstr[2] "Daug"
 """
 
 def test_read_po_plurals():
-    """
+    r"""
 
         >>> from Pootle.storage.po import read_po
         >>> from Pootle.storage.memory import TranslationStore
@@ -67,6 +67,8 @@ def test_read_po_plurals():
         >>> for unit in store:
         ...     print unit.trans
         [('One', 'Vienas'), ('Many', 'Keli'), ('Many', 'Daug')]
+        >>> print store[0].automatic_comments
+        ['#. Plural test\n']
 
     """
 

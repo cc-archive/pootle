@@ -299,6 +299,7 @@ class ITranslationUnit(Interface):
     context = Unicode # context information
 
     # Comments; taken straight off translate.storage.po.pounit
+    # Maybe these should be put into a subobject?
     other_comments = [Unicode]     #  # this is another comment
     automatic_comments = [Unicode] #  #. comment extracted from the source code
     source_comments = [Unicode]    #  #: sourcefile.xxx:35
@@ -306,7 +307,6 @@ class ITranslationUnit(Interface):
     visible_comments = [Unicode]   #  #_ note to translator  (this is nonsense)
     obsolete_messages = [Unicode]  #  #~ msgid ""
     msgid_comments = [Unicode]     #  _: within msgid
-
     # TODO: type comments are special. Abstract them.
 
     # Use the XLIFF model here: plural sources are stored together with targets
