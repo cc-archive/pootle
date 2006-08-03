@@ -169,6 +169,24 @@ class Module(MappingMixin, AccumStatsMixin):
     def __repr__(self):
         return '<Module %s>' % self.key
 
+    def makestore(self, lang_key):
+        if lang_key is not None:
+            # TODO: put this into a function
+            obj = self
+            while not isinstance(obj, Database):
+                obj = obj.folder
+
+            langs = obj.languages
+            langinfo = langs[lang_key] # TODO: catch KeyError
+        else:
+            langinfo = None
+        return TranslationStore(self, langinfo)
+
+    def clonestore(self, lang_key):
+        store = self.makestore(lang_key)
+        # TODO: clone
+        return store
+
     def add(self, language):
         raise NotImplementedError('XXX TODO')
 
@@ -210,8 +228,7 @@ class TranslationStore(object):
     langinfo = None
     key = None # TODO property
 
-    def __init__(self, name, module, langinfo):
-        self.name = name
+    def __init__(self, module, langinfo):
         self.module = module
         self.langinfo = langinfo
         self._units = []

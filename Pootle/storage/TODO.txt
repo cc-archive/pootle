@@ -1,23 +1,35 @@
+Write down use cases:
+a) developer runs Pootle for software translation
+b) coordinator runs Pootle for project translation
+c) commit small fixes
+d) translation repository
+...
+
 Small tasks:
 + Separate .po header
 - Deal with obsolete .po entries (#~)
+- Fix containment mess (make constructor and adding separate).
 - Flesh out ITranslationUnit
 
 Important:
 + preliminary .po parser
 + preliminary readonly layer over Pootle's storage
 + demo XML-RPC server
+- substring search
 - thorough definition of TranslationUnit + parser
 - read/write layer over Pootle's storage
 - Pootle's metadata (special files) support in storage layer
 - complete .po parser
 - .po serializer
+- ask around about DDTP access
+- ask around about debconf template access
 
 Long term:
 - consider use of SQLObject or SQLAlchemy for RDB storage
 - Implement a merger using external 'msgmerge'.
 - Wrap pootle's internal pounit.merge.
 - Import language info from Pootle config.
+- Go through TODOs and XXXes.
 
 Debian-specific:
 - Add a script to import debconf translations

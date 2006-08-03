@@ -30,7 +30,7 @@ def test_read_po():
         >>> from Pootle.storage.po import read_po
         >>> from Pootle.storage.memory import TranslationStore
 
-        >>> store = TranslationStore('foo', None, 'some langinfo')
+        >>> store = TranslationStore('foo', None)
         >>> read_po(sample_po, store)
 
         >>> store.header.items()
@@ -61,7 +61,7 @@ def test_read_po_plurals():
         >>> from Pootle.storage.po import read_po
         >>> from Pootle.storage.memory import TranslationStore
 
-        >>> store = TranslationStore('foo', None, 'some langinfo')
+        >>> store = TranslationStore('foo', None)
         >>> read_po(sample_po_plurals, store)
 
         >>> for unit in store:

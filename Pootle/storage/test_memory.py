@@ -103,7 +103,7 @@ def test_TranslationStore():
     """Tests for TranslationStore.
 
         >>> from Pootle.storage.memory import TranslationStore
-        >>> coll = TranslationStore('web_ui', object(), None)
+        >>> coll = TranslationStore('web_ui', object())
 
         >>> coll.langinfo = None
 
@@ -137,7 +137,7 @@ def test_TranslationStore_translate():
     """Tests for TranslationStore.translate.
 
         >>> from Pootle.storage.memory import TranslationStore
-        >>> coll = TranslationStore('web_ui', object(), None)
+        >>> coll = TranslationStore('web_ui', object())
 
         >>> coll.langinfo = None
 

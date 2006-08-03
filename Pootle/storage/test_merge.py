@@ -13,7 +13,7 @@ def test_SimpleMerger():
         >>> from Pootle.storage.merge import SimpleMerger
         >>> from Pootle.storage.memory import TranslationStore
 
-        >>> template = TranslationStore('template', object(), None)
+        >>> template = TranslationStore('template', None)
         >>> tr1 = template.makeunit([('%d chair', '%d Stuhl'),
         ...                          ('%d chairs', '%d Stuehle')])
         >>> tr2 = template.makeunit([('foo', 'bar')])
@@ -23,7 +23,7 @@ def test_SimpleMerger():
 
     And a translation object:
 
-        >>> translation = TranslationStore('template', object(), None)
+        >>> translation = TranslationStore('template', None)
         >>> tr1 = translation.makeunit([('foo', 'not bar')])
         >>> tr2 = translation.makeunit([('%d chair', '%d stool'),
         ...                             ('%d chairs', '%d stools')])

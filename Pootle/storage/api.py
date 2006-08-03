@@ -182,7 +182,7 @@ class IModule(IHaveStatistics, IMapping):
 
     This loosely corresponds to a .pot file and a set of its translations.
 
-    Maps 'la_CO' identifier to TranslationStore.
+    Maps 'la_CO' identifiers to TranslationStores.
 
     A module contains a 'template' translation store (no translations) and
     a set of translation stores with translated data.
@@ -200,6 +200,21 @@ class IModule(IHaveStatistics, IMapping):
     template = Interface # ITranslationStore without the actual translations
     # TODO: Have a link to the project's ViewVC page so that we can produce
     #       direct hyperlinks to unit context in the source code.
+
+    def makestore(self, lang_key):
+        """Create a new empty TranslationStore bound to this module.
+
+        `lang_key` is a language identifier, e.g., 'pt_BR' or 'lt'.
+        TODO: what happens if a corresponding langinfo object doesn't exist?
+        If creating a template, `lang_key` should be None.
+        """
+        return None # ITranslationStore
+
+    def clonestore(self, lang_key):
+        """Create a new TranslationStore by copying from the template.
+
+        TODO: fix makestore() vs. clonestore().
+        """
 
 
 class IHeader(IMapping):
