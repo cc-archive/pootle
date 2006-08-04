@@ -5,14 +5,14 @@ msgstr ""
 "Project-Id-Version: pootle\n"
 "Report-Msgid-Bugs-To: translate-pootle@lists.sourceforge.net\n"
 "POT-Creation-Date: 2006-06-14 10:14+0200\n"
-"PO-Revision-Date: 2006-07-13 17:32+0200\n"
-"Last-Translator: Munzir Taha <munzirtaha@newhorizons.com.sa>\n"
+"PO-Revision-Date: 2006-07-16 16:50+0200\n"
+"Last-Translator: YoussefChahibi <chahibi@gmail.com>\n"
 "Language-Team: Arabic\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n>=3 && n<=10 ? 3 : n>=11 && n<=99 ? 4 : 5;\n"
-"X-Generator: Pootle 0.10beta\n"
+"X-Generator: Pootle 0.9\n"
 
 #: translatepage.py:56 translatepage.py:73
 #, python-format
@@ -159,7 +159,7 @@ msgstr "تضييق"
 
 #: translatepage.py:470
 msgid "Reset"
-msgstr "استرجاع"
+msgstr "مسح"
 
 #: translatepage.py:488 translatepage.py:574 translatepage.py:608
 #: translatepage.py:636
@@ -457,7 +457,7 @@ msgid ""
 "The name stands for <b>PO</b>-based <b>O</b>nline <b>T</b>ranslation / <b>L</"
 "b>ocalization <b>E</b>ngine, but you may need to read <a href=\"http://www."
 "thechestnut.com/flumps.htm\">this</a>."
-msgstr "أصل إسم البرنامج إنجليزي وهو <b>PO</b>-based <b>O</b>nline <b>T</b>ranslation / <b>L</b>ocalization <b>E</b>ngine أو آلة ترجمة وتوطين على الخط مبنية على PO، لكن يمكنك قراءة <a href=\"http://www.thechestnut.com/flumps.htm\">هذا</a>."
+msgstr "أصل اسم البرنامج إنجليزي وهو <b>PO</b>-based <b>O</b>nline <b>T</b>ranslation / <b>L</b>ocalization <b>E</b>ngine أو آلة ترجمة وتوطين على الخط مبنية على PO، لكن يمكنك قراءة <a href=\"http://www.thechestnut.com/flumps.htm\">هذا</a>."
 
 #: indexpage.py:32
 msgid "Versions"
