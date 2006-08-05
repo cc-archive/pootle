@@ -27,9 +27,23 @@ def read_po(potext, store):
                      'msgid_comments']:
             value = getattr(oldunit, attr.replace('_', ''), [])
             setattr(unit, attr, value)
+            # XXX This is wrong; in Pootle the comment strings have #?.
         units.append(unit)
     store.fill(units)
 
 
-def write_po(module):
-    pass # TODO
+def write_po(store):
+    """Serialize translation store to .po format."""
+    po = pofile()
+    for unit in store:
+        msgid = [trans[0] for trans in unit.trans]
+        pounit = po.UnitClass(msgid)
+        pounit.target = [trans[1] for trans in unit.trans]
+        for attr in ['other_comments', 'automatic_comments', 'source_comments',
+                     'type_comments', 'visible_comments', 'obsolete_messages',
+                     'msgid_comments']:
+            value = getattr(unit, attr, [])
+            setattr(pounit, attr.replace('_', ''), value)
+        po.units.append(pounit)
+
+    return po.getoutput()

@@ -8,20 +8,20 @@ d) translation repository
 Small tasks:
 + Separate .po header
 - Deal with obsolete .po entries (#~)
-- Fix containment mess (make constructor and adding separate).
+- Fix containment mess (make constructor and adding separate)?
 - Flesh out ITranslationUnit
 
 Important:
 + preliminary .po parser
 + preliminary readonly layer over Pootle's storage
 + demo XML-RPC server
-- substring search
+- substring search in API
 - thorough definition of TranslationUnit + parser
 - read/write layer over Pootle's storage
 - Pootle's metadata (special files) support in storage layer
 - complete .po parser
 - .po serializer
-- ask around about DDTP access
++ ask around about DDTP access
 - ask around about debconf template access
 
 Long term:
@@ -30,6 +30,7 @@ Long term:
 - Wrap pootle's internal pounit.merge.
 - Import language info from Pootle config.
 - Go through TODOs and XXXes.
+- Language information DB storage
 
 Debian-specific:
 - Add a script to import debconf translations
