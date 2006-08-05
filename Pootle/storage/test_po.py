@@ -20,6 +20,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #. Something
+#. Anything else.
 #: ../hello.c:5
 msgid "Hello"
 msgstr "Labas"
@@ -43,6 +44,11 @@ def test_read_po():
         >>> for unit in store:
         ...     print unit.trans
         [('Hello', 'Labas')]
+
+        >>> store[0].automatic_comments
+        ['Something', 'Anything else.']
+        >>> store[0].source_comments
+        ['../hello.c:5']
 
     """
 
@@ -68,7 +74,7 @@ def test_read_po_plurals():
         ...     print unit.trans
         [('One', 'Vienas'), ('Many', 'Keli'), ('Many', 'Daug')]
         >>> print store[0].automatic_comments
-        ['#. Plural test\n']
+        ['Plural test']
 
     """
 
@@ -84,11 +90,8 @@ def test_write_po():
 
         >>> t2 = store.makeunit([('spirit', 'der Geist'),
         ...                      ('spirits', 'die Geiste')])
-
-        >>> t2.type_comments = ['#, fuzzy\n']
-        >>> t2.automatic_comments = ['#. roboto\n']
-
-    TODO: fix comments
+        >>> t2.type_comments = ['fuzzy']
+        >>> t2.automatic_comments = ['roboto']
 
         >>> store.fill([t1, t2])
 
@@ -107,7 +110,25 @@ def test_write_po():
         msgstr[1] "die Geiste"
         <BLANKLINE>
 
-    TODO: check Unicode support
+    """
+
+
+def test_write_po_unicode():
+    r"""
+
+        >>> store = TranslationStore('foo', None)
+
+    We provide proper unicode:
+
+        >>> t1 = store.makeunit([(u'm\xfcssen', u'prival\u0117ti')])
+        >>> store.fill([t1])
+
+        >>> from Pootle.storage.po import write_po
+
+    Output is encoded to UTF-8:
+
+        >>> print repr(write_po(store))
+        'msgid "m\xc3\xbcssen"\nmsgstr[0] "prival\xc4\x97ti"\n'
 
     """
 

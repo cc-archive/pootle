@@ -5,6 +5,16 @@ Uses translate.storage.po classes to parse/serialize .po translations.
 
 from translate.storage.po import pofile
 
+
+comment_types = dict(other_comments='#',
+                     automatic_comments='#.',
+                     source_comments='#:',
+                     type_comments='#,',
+                     visible_comments='#_',
+                     obsolete_messages='#~',
+                     msgid_comments='')
+
+
 def read_po(potext, store):
     """Fill TranslationStore store with data in potext.
 
@@ -25,9 +35,11 @@ def read_po(potext, store):
         for attr in ['other_comments', 'automatic_comments', 'source_comments',
                      'type_comments', 'visible_comments', 'obsolete_messages',
                      'msgid_comments']:
-            value = getattr(oldunit, attr.replace('_', ''), [])
-            setattr(unit, attr, value)
-            # XXX This is wrong; in Pootle the comment strings have #?.
+            values = getattr(oldunit, attr.replace('_', ''), [])
+            for value in values:
+                start = len(comment_types[attr])
+                value = value[start+1:-1] # chomp leading #? and trailing \n
+                getattr(unit, attr).append(value)
         units.append(unit)
     store.fill(units)
 
@@ -42,8 +54,10 @@ def write_po(store):
         for attr in ['other_comments', 'automatic_comments', 'source_comments',
                      'type_comments', 'visible_comments', 'obsolete_messages',
                      'msgid_comments']:
-            value = getattr(unit, attr, [])
-            setattr(pounit, attr.replace('_', ''), value)
+            values = getattr(unit, attr, [])
+            for value in values:
+                comment = '%s %s\n' % (comment_types[attr], value)
+                getattr(pounit, attr.replace('_', '')).append(comment)
         po.units.append(pounit)
 
     return po.getoutput()
