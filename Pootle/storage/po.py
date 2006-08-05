@@ -47,6 +47,7 @@ def read_po(potext, store):
 def write_po(store):
     """Serialize translation store to .po format."""
     po = pofile()
+    po.updateheader(add=True, **store.header)
     for unit in store:
         msgid = [trans[0] for trans in unit.trans]
         pounit = po.UnitClass(msgid)

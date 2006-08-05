@@ -232,6 +232,7 @@ class TranslationStore(object):
         self.module = module
         self.langinfo = langinfo
         self._units = []
+        self.header = {}
 
     def __iter__(self):
         return iter(self._units)

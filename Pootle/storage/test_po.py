@@ -85,6 +85,10 @@ def test_write_po():
     We will need a few example units:
 
         >>> store = TranslationStore('foo', None)
+        >>> store.header['Project-Id-Version'] = 'sample'
+        >>> store.header['Plural-Forms'] = 'nplurals=1; plural=0;'
+        >>> store.header['POT-Creation-Date'] = '2006-08-05 22:35+0300\n'
+        >>> store.header['Last-Translator'] = 'Gintautas Miliauskas <gintas@akl.lt>'
 
         >>> t1 = store.makeunit([('simple', 'einfach')])
 
@@ -98,7 +102,21 @@ def test_write_po():
     Now let's convert all this to a .po file:
 
         >>> from Pootle.storage.po import write_po
-        >>> print write_po(store)
+        >>> print write_po(store) # doctest: +REPORT_UDIFF
+        msgid ""
+        msgstr ""
+        "Project-Id-Version: sample\n"
+        "Report-Msgid-Bugs-To: \n"
+        "POT-Creation-Date: 2006-08-05 22:35+0300\n"
+        "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+        "Last-Translator: Gintautas Miliauskas <gintas@akl.lt>\n"
+        "Language-Team: LANGUAGE <LL@li.org>\n"
+        "MIME-Version: 1.0\n"
+        "Content-Type: text/plain; charset=CHARSET\n"
+        "Content-Transfer-Encoding: ENCODING\n"
+        "Plural-Forms: nplurals=1; plural=0;\n"
+        "X-Generator: Translate Toolkit 0.99a1\n"
+        <BLANKLINE>
         msgid "simple"
         msgstr[0] "einfach"
         <BLANKLINE>
@@ -127,8 +145,9 @@ def test_write_po_unicode():
 
     Output is encoded to UTF-8:
 
-        >>> print repr(write_po(store))
-        'msgid "m\xc3\xbcssen"\nmsgstr[0] "prival\xc4\x97ti"\n'
+        >>> lines = write_po(store).splitlines()
+        >>> print lines[-2:]
+        ['msgid "m\xc3\xbcssen"', 'msgstr[0] "prival\xc4\x97ti"']
 
     """
 
