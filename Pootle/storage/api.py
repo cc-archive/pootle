@@ -164,11 +164,12 @@ class ILanguageInfo(Interface):
     language should reference the same language info instance.
     """
 
-    db = IDatabase
+    db = IDatabase # XXX Why not ILanguageContainer?
 
-    # TODO: use simple ln/ln_LN as primary key instead of tuple?
-    code = String # ISO639 language code
-    country = String # optional - ISO3166 two-letter country code
+    # TODO: inheritance? e.g., pt_BR from pt.  Could be tricky.
+
+    code = String # ISO639 language code (lowercase)
+    country = String # optional - ISO3166 two-letter country code (uppercase)
     key = String # Should be a property.  E.g., 'en', 'pt_BR', etc.
     name = Unicode # complete language name (native)
     name_eng = Unicode # complete language name in English; optional TODO needed?

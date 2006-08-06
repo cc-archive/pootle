@@ -88,6 +88,38 @@ def test_folder():
     """
 
 
+def test_LanguageInfo():
+    """
+
+        >>> from Pootle.storage.memory import LanguageInfo
+        >>> langinfo = LanguageInfo('db')
+        >>> langinfo.db
+        'db'
+    """
+
+def test_LanguageInfoContainer():
+    """
+
+        >>> from Pootle.storage.memory import LanguageInfoContainer
+        >>> langs = LanguageInfoContainer('db')
+
+    Keys are split up when adding:
+
+        >>> lt = langs.add('lt_LT')
+        >>> lt.code, lt.country
+        ('lt', 'LT')
+        >>> lt.key
+        'lt_LT'
+
+        >>> de = langs.add('de')
+        >>> de.code, de.country
+        ('de', None)
+        >>> de.key
+        'de'
+
+    """
+
+
 def test_Module():
     """
 

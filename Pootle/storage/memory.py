@@ -106,8 +106,18 @@ class Folder(AccumStatsMixin):
 
 class LanguageInfoContainer(MappingMixin):
 
-    def add(self):
-        pass # TODO
+    def __init__(self, db):
+        self.db = db
+        MappingMixin.__init__(self)
+
+    def add(self, key):
+        lang = self._items[key] = LanguageInfo(self.db)
+        if '_' in key:
+            lang.code, lang.country = key.split('_')
+        else:
+            lang.code = key
+        assert lang.key == key
+        return lang
 
 
 class Database(Folder):
@@ -116,7 +126,7 @@ class Database(Folder):
 
     def __init__(self):
         Folder.__init__(self, None, None)
-        self.languages = LanguageInfoContainer()
+        self.languages = LanguageInfoContainer(self)
 
     def startTransaction(self):
         pass
@@ -137,7 +147,10 @@ class LanguageInfo(object):
 
     @property
     def key(self):
-        return '%s_%s' % (self.code, self.country.upper())
+        if self.country is not None:
+            return '%s_%s' % (self.code, self.country.upper())
+        else:
+            return self.code
 
     name = None
     name_eng = None
@@ -175,9 +188,13 @@ class Module(MappingMixin, AccumStatsMixin):
             obj = self
             while not isinstance(obj, Database):
                 obj = obj.folder
+            db = obj
 
-            langs = obj.languages
-            langinfo = langs[lang_key] # TODO: catch KeyError
+            langs = db.languages
+            try:
+                langinfo = langs[lang_key]
+            except KeyError:
+                langinfo = db.languages.add(lang_key) # TODO: stop-gap measure.
         else:
             langinfo = None
         return TranslationStore(self, langinfo)
