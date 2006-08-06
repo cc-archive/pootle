@@ -204,8 +204,9 @@ class Module(MappingMixin, AccumStatsMixin):
         # TODO: clone
         return store
 
-    def add(self, language):
-        raise NotImplementedError('XXX TODO')
+    def add(self, lang_key):
+        store = self._items[lang_key] = self.makestore(lang_key)
+        return store
 
 
 class Header(MappingMixin):
@@ -243,7 +244,10 @@ class TranslationStore(object):
     module = None
     header = None
     langinfo = None
-    key = None # TODO property
+
+    @property
+    def key(self):
+        return self.langinfo.key
 
     def __init__(self, module, langinfo):
         self.module = module

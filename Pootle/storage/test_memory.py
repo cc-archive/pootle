@@ -123,10 +123,15 @@ def test_LanguageInfoContainer():
 def test_Module():
     """
 
-        >>> from Pootle.storage.memory import Module
-        >>> module = Module('some', object())
+        >>> from Pootle.storage.memory import Module, Database
+        >>> db = Database()
+        >>> module = Module('some', db)
         >>> module.name
         'some'
+
+        >>> storage = module.add('lt_LT')
+        >>> storage.langinfo.key
+        'lt_LT'
 
     """
 
@@ -134,10 +139,13 @@ def test_Module():
 def test_TranslationStore():
     """Tests for TranslationStore.
 
-        >>> from Pootle.storage.memory import TranslationStore
-        >>> coll = TranslationStore('web_ui', object())
+        >>> from Pootle.storage.memory import TranslationStore, LanguageInfo
+        >>> langinfo = LanguageInfo(None)
+        >>> langinfo.code = 'lt'
 
-        >>> coll.langinfo = None
+        >>> coll = TranslationStore('web_ui', langinfo)
+        >>> coll.key
+        'lt'
 
         >>> tr1 = coll.makeunit([('foo', 'faa')])
         >>> tr2 = coll.makeunit([('boo', 'baa')])
