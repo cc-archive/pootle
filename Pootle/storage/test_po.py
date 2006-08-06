@@ -118,7 +118,7 @@ def test_write_po():
         "X-Generator: Translate Toolkit 0.99a1\n"
         <BLANKLINE>
         msgid "simple"
-        msgstr[0] "einfach"
+        msgstr "einfach"
         <BLANKLINE>
         #. roboto
         #, fuzzy
@@ -147,7 +147,7 @@ def test_write_po_unicode():
 
         >>> lines = write_po(store).splitlines()
         >>> print lines[-2:]
-        ['msgid "m\xc3\xbcssen"', 'msgstr[0] "prival\xc4\x97ti"']
+        ['msgid "m\xc3\xbcssen"', 'msgstr "prival\xc4\x97ti"']
 
     """
 
