@@ -48,6 +48,7 @@ def read_po(potext, store):
             for value in values:
                 start = len(comment_types[attr])
                 value = value[start+1:-1] # chomp leading #? and trailing \n
+                value = unicode(value)
                 getattr(unit, attr).append(value)
         units.append(unit)
     store.fill(units)

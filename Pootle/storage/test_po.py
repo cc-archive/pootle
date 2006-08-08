@@ -43,12 +43,12 @@ def test_read_po():
 
         >>> for unit in store:
         ...     print unit.trans
-        [('Hello', 'Labas')]
+        [(u'Hello', u'Labas')]
 
         >>> store[0].automatic_comments
-        ['Something', 'Anything else.']
+        [u'Something', u'Anything else.']
         >>> store[0].source_comments
-        ['../hello.c:5']
+        [u'../hello.c:5']
 
     """
 
@@ -72,9 +72,9 @@ def test_read_po_plurals():
 
         >>> for unit in store:
         ...     print unit.trans
-        [('One', 'Vienas'), ('Many', 'Keli'), ('Many', 'Daug')]
+        [(u'One', u'Vienas'), (u'Many', u'Keli'), (u'Many', u'Daug')]
         >>> print store[0].automatic_comments
-        ['Plural test']
+        [u'Plural test']
 
     """
 
