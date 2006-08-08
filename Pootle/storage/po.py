@@ -3,6 +3,7 @@
 Uses translate.storage.po classes to parse/serialize .po translations.
 """
 
+import os
 from translate.storage.po import pofile
 
 
@@ -22,6 +23,8 @@ comment_attrs = ['other_comments', 'automatic_comments', 'source_comments',
 def read_po(potext, store):
     """Fill TranslationStore store with data in potext.
 
+    `potext` can be a string or a file-like object.
+
     Imports the header separately.  Deals with plurals.
     """
     po = pofile(potext)
@@ -30,11 +33,15 @@ def read_po(potext, store):
     for oldunit in po.units:
         if oldunit.isheader():
             continue
-        trans = [(str(oldunit.source), str(oldunit.target))]
+        try:
+            trans = [(unicode(oldunit.source), unicode(oldunit.target))]
+        except UnicodeDecodeError: # XXX
+            trans = [(u'b0rk', u'')]
+            print oldunit.msgid
         if oldunit.hasplural():
-            plural_msgid = str(oldunit.source.strings[1])
+            plural_msgid = unicode(oldunit.source.strings[1])
             for s in oldunit.target.strings[1:]:
-                trans.append((plural_msgid, str(s)))
+                trans.append((plural_msgid, unicode(s)))
         unit = store.makeunit(trans)
         for attr in comment_attrs:
             values = getattr(oldunit, attr.replace('_', ''), [])
@@ -65,3 +72,59 @@ def write_po(store):
         po.units.append(pounit)
 
     return po.getoutput()
+
+
+# --- Interfacing with Pootle ---
+
+# TODO: write a proper transparent Pootle-storage-compatible backend.
+
+def export_module_to_pootle(module, project_dir):
+    """Export translations from an IModule to Pootle as a Pootle project.
+
+    The required directories are created automatically, but the project
+    itself needs to be set up and `project_dir` must already exist.
+
+    Beware: existing files will be overwritten.  Files on the filesystem
+    but not in the given module are not touched. TODO: clean them up?
+    """
+    template_dir = os.path.join(project_dir, 'templates')
+    try:
+        os.mkdir(template_dir)
+    except OSError, e:
+        if e.errno != 17: # file already exists
+            raise
+
+    template_file = os.path.join(template_dir, '%s.pot' % module.key)
+    template_data = write_po(module.template)
+    file(template_file, 'w').write(template_data)
+
+    for store in module.values():
+        translation_dir = os.path.join(project_dir, store.langinfo.key)
+        try:
+            os.mkdir(translation_dir)
+        except OSError, e:
+            if e.errno != 17: # file already exists
+                raise
+        translation_file = os.path.join(translation_dir, '%s.po' % module.key)
+        translation_data = write_po(store)
+        file(translation_file, 'w').write(translation_data)
+
+
+def import_module_from_pootle(project_dir, module):
+    """Import an IModule from Pootle.
+
+    Imports the template and any translations.
+    """
+    template_file = os.path.join(project_dir, 'templates',
+                                 '%s.pot' % module.key)
+    module.add(None)
+    read_po(file(template_file).read(), module.template)
+
+    for language in os.listdir(project_dir):
+        if language == 'templates':
+            continue
+        print language # XXX
+        store = module.add(language)
+        translation_file = os.path.join(project_dir, language,
+                                        '%s.po' % module.key)
+        read_po(file(translation_file), store)

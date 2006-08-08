@@ -201,11 +201,15 @@ class Module(MappingMixin, AccumStatsMixin):
 
     def clonestore(self, lang_key):
         store = self.makestore(lang_key)
-        # TODO: clone
+        # TODO: clone; do we really need this?
         return store
 
     def add(self, lang_key):
-        store = self._items[lang_key] = self.makestore(lang_key)
+        store = self.makestore(lang_key)
+        if lang_key is None:
+            self.template = store # TODO: document this
+        else:
+            self._items[lang_key] = store
         return store
 
 

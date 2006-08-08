@@ -144,8 +144,12 @@ Let's examine the template:
 
     >>> for unit in module.template:
     ...     msgid, translation = unit.trans[0]
+    ...     name, md5sum = unit.automatic_comments
+    ...     print '%s (MD5: %s)' % (name, md5sum)
     ...     print msgid[:20], '... -', translation and translation[:20]
+    abook (MD5: b3df98dd5a16801ef603bb31eff45bf6)
     text-based ncurses a ... - None
+    aap (MD5: 709f30bc0912c0a4fd248e9ba50e6c78)
     make-like "expert sy ... - None
 
 Now let's look at the translation:
@@ -155,8 +159,12 @@ Now let's look at the translation:
 
     >>> for unit in module['de']:
     ...     msgid, translation = unit.trans[0]
+    ...     name, md5sum = unit.automatic_comments
+    ...     print '%s (MD5: %s)' % (name, md5sum)
     ...     print msgid[:20], '... -', translation and translation[:20]
+    abook (MD5: b3df98dd5a16801ef603bb31eff45bf6)
     text-based ncurses a ... - Ein textbasiertes Ad
+    aap (MD5: 709f30bc0912c0a4fd248e9ba50e6c78)
     make-like "expert sy ... - None
 
     """

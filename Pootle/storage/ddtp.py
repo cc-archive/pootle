@@ -90,6 +90,7 @@ def import_descriptions(module, template, translations):
     for (name, md5sum, description) in parsed_template:
         trans = [(description, None)]
         unit = template_store.makeunit(trans)
+        unit.automatic_comments = [name, md5sum]
         units.append(unit)
     template_store.fill(units)
     module.template = template_store
@@ -108,8 +109,32 @@ def import_descriptions(module, template, translations):
         for (name, md5sum, description) in parsed_template:
             trans = [(description, lookup.get((name, md5sum)))]
             unit = translation_store.makeunit(trans)
+            unit.automatic_comments = [name, md5sum]
             units.append(unit)
         translation_store.fill(units)
+
+
+ddtp_entry = """Package: %(name)s
+Description-md5: %(md5)s
+Description-%(lang)s: %(description)s
+"""
+
+def export_translation(store, stream):
+    for unit in store:
+        name, md5sum = unit.automatic_comments
+        translation = unit.trans[0][1]
+        if translation == 0:
+            import pdb; pdb.set_trace()
+        if translation:
+            args = dict(name=name, md5=md5sum, lang=store.key,
+                        description=translation.encode('utf-8'))
+            stream.write(ddtp_entry % args)
+
+
+def export_translations(module, translations_dir):
+    for store in module.values():
+        filename = os.path.join(translations_dir, 'Translation-%s' % store.key)
+        export_translation(store, file(filename, 'w'))
 
 
 # --- executable part ---
@@ -117,15 +142,25 @@ def import_descriptions(module, template, translations):
 usage = """Usage:
 
 ddtp.py import <path/to/Packages> <path/to/translations> <project_dir>
+ddtp.py export <project_dir> <path/to/translations>
 """
 
 
 sys.path.append('../../')
 from Pootle.storage.memory import Database
-from Pootle.storage.po import write_po
+from Pootle.storage.po import export_module_to_pootle, import_module_from_pootle
 
 
 def do_import(template_path, translations_dir, project_dir):
+    """Import DDTP templates and translations into Pootle.
+
+    `template_path` is a path to the Packages index.
+    `translations_dir` is the path of the directory where Translation-?? files
+    reside.
+    `project_dir` is the path of the corresponding Pootle project.
+
+    XXX: perform merging!
+    """
     template = file(template_path)
     translation_fns = os.listdir(translations_dir)
     translation_files = []
@@ -140,31 +175,20 @@ def do_import(template_path, translations_dir, project_dir):
     db = Database()
     module = db.modules.add('ddtp')
     import_descriptions(module, template, translation_files)
-    export_descriptions_to_pootle(module, project_dir)
+    export_module_to_pootle(module, project_dir)
 
 
-def export_descriptions_to_pootle(module, project_dir):
-    template_dir = os.path.join(project_dir, 'templates')
-    try:
-        os.mkdir(template_dir)
-    except OSError, e:
-        if e.errno != 17: # file already exists
-            raise
+def do_export(project_dir, translations_dir):
+    """Export DDTP translations from Pootle.
 
-    template_file = os.path.join(template_dir, 'ddtp.pot')
-    template_data = write_po(module.template)
-    file(template_file, 'w').write(template_data)
-
-    for store in module.values():
-        translation_dir = os.path.join(project_dir, store.langinfo.key)
-        try:
-            os.mkdir(translation_dir)
-        except OSError, e:
-            if e.errno != 17: # file already exists
-                raise
-        translation_file = os.path.join(translation_dir, 'ddtp.po')
-        translation_data = write_po(store)
-        file(translation_file, 'w').write(translation_data)
+    `project_dir` is the path of the corresponding Pootle project.
+    `translations_dir` is the path of the directory where to
+    put Translation-?? files.
+    """
+    db = Database()
+    module = db.modules.add('ddtp')
+    import_module_from_pootle(project_dir, module)
+    export_translations(module, translations_dir)
 
 
 def main(argv=[]):
@@ -174,6 +198,8 @@ def main(argv=[]):
     cmd = argv[1]
     if cmd == 'import':
         do_import(argv[2], argv[3], argv[4])
+    elif cmd == 'export':
+        do_export(argv[2], argv[3])
     else:
         print usage
         sys.exit(1)
