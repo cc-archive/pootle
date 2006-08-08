@@ -8,9 +8,36 @@ Only read-only access is provided at the moment and there is no caching.
 import os
 from Pootle.storage.memory import TranslationStore
 from Pootle.storage.po import read_po
+from Pootle.storage.api import IDatabase, IFolder, IModule, ITranslationStore
 
 
-class Database(object):
+class HaveStatistics(object):
+    def statistics(self):
+        raise NotImplementedError('TODO')
+
+
+class Database(HaveStatistics):
+    _interface = IDatabase
+
+    key = None
+    folder = None
+
+    languages = None
+    modules = None
+    subfolders = None
+
+    def __init__(self, root_path):
+        self.subfolders = FolderContainer(root_path)
+
+    def startTransaction(self):
+        pass
+    def commitTransaction(self):
+        pass
+    def rollbackTransaction(self):
+        pass
+
+
+class FolderContainer(object):
 
     def __init__(self, root_path):
         self.root_path = root_path
@@ -21,12 +48,26 @@ class Database(object):
     def __getitem__(self, key):
         if key in self.keys():
             path = os.path.join(self.root_path, key)
-            return Folder(path)
+            return Folder(path, key)
         else:
             raise KeyError(key)
 
 
-class Folder(object):
+class Folder(HaveStatistics):
+    _interface = IFolder
+
+    folder = None
+    modules = None
+    subfolders = None
+    key = None
+
+    def __init__(self, path, key, db):
+        self.modules = ModuleContainer(path)
+        self.key = key
+        self.folder = db
+
+
+class ModuleContainer(object):
 
     def __init__(self, path):
         self.path = path
@@ -42,16 +83,33 @@ class Folder(object):
 
     def __getitem__(self, key):
         if key in self.keys():
-            return Module(self.path, key)
+            return Module(self.path, key, self)
         else:
             raise KeyError(key)
 
 
-class Module(object):
+class Module(HaveStatistics):
+    _interface = IModule
 
-    def __init__(self, path, key):
+    key = None
+    folder = None
+    description = None
+    name = None
+    checker = None
+
+    def __init__(self, path, key, folder):
         self.path = path
         self.key = key
+        self.name = key
+        self.folder = folder
+
+    @property
+    def template(self):
+        pot_path = os.path.join(self.path, 'templates', self.key + '.po')
+        pot_text = file(pot_path).read()
+        store = TranslationStore(self.key, None, None)
+        read_po(potext, store)
+        return store
 
     def keys(self):
         langkeys = []
@@ -81,3 +139,19 @@ class Module(object):
             return store
         else:
             raise KeyError((lang, country))
+
+    def values(self):
+        # TODO: A generator would be nicer here.
+        return [self[key] for key in self.keys()]
+
+    def items(self):
+        return [(key, self[key]) for key in self.keys()]
+
+    def add(self):
+        raise NotImplementedError('TODO')
+
+    def makestore(self):
+        raise NotImplementedError('TODO')
+
+    def clonestore(self):
+        raise NotImplementedError('TODO')
