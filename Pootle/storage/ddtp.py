@@ -19,8 +19,7 @@ def parse_template(f):
     description = None
     for line in f:
         if line.startswith('Package: '):
-            name = line.split(' ', 1)[1]
-            name = name[:-1] # XXX chomp trailing newline
+            name = line.split(' ', 1)[1].strip()
         elif line.startswith('Description: '):
             description = [line.split(' ', 1)[1]]
         elif description:
@@ -52,11 +51,9 @@ def parse_translation(f):
     description = None
     for line in f:
         if line.startswith('Package: '):
-            name = line.split(' ', 1)[1]
-            name = name[:-1] # XXX chomp trailing newline - could be \r\n
+            name = line.split(' ', 1)[1].strip()
         elif line.startswith('Description-md5: '):
-            md5sum = line.split(' ', 1)[1]
-            md5sum = md5sum[:-1] # XXX chomp trailing newline - could be \r\n
+            md5sum = line.split(' ', 1)[1].strip()
         elif line.startswith('Description-'):
             lang = line.split(':')[0].split('-')[1]
             description = [line.split(' ', 1)[1]]
@@ -123,8 +120,6 @@ def export_translation(store, stream):
     for unit in store:
         name, md5sum = unit.automatic_comments
         translation = unit.trans[0][1]
-        if translation == 0:
-            import pdb; pdb.set_trace()
         if translation:
             args = dict(name=name, md5=md5sum, lang=store.key,
                         description=translation.encode('utf-8'))
