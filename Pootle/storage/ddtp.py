@@ -17,6 +17,8 @@ import sys
 import md5
 
 
+charset = 'latin1' # The DDTP files seem to be in latin1.
+
 def parse_template(f):
     """Parse package descriptions from a file.
 
@@ -37,14 +39,16 @@ def parse_template(f):
             if line.startswith(' '):
                 description.append(line) # Another line of the description.
             else:
-                md5sum = md5.md5(''.join(description)).hexdigest()
-                packages.append((name, md5sum, ''.join(description)))
+                description = ''.join(description)
+                md5sum = md5.md5(description).hexdigest()
+                packages.append((name, md5sum, description.decode(charset)))
                 name = None
                 description = None
 
     if description:
-        md5sum = md5.md5(''.join(description)).hexdigest()
-        packages.append((name, md5sum, ''.join(description)))
+        description = ''.join(description)
+        md5sum = md5.md5(description).hexdigest()
+        packages.append((name, md5sum, description.decode(charset)))
 
     return packages
 
@@ -72,12 +76,13 @@ def parse_translation(f):
             if line.startswith(' '):
                 description.append(line) # Another line of the description.
             else:
-                # XXX Decode to unicode before importing?
-                packages.append((name, md5sum, ''.join(description)))
+                description = ''.join(description)
+                packages.append((name, md5sum, description.decode(charset)))
                 name = None
                 description = None
     if description:
-        packages.append((name, md5sum, ''.join(description)))
+        description = ''.join(description)
+        packages.append((name, md5sum, description.decode(charset)))
     return lang, packages
 
 
@@ -115,7 +120,12 @@ def import_descriptions(module, template, translations):
             lookup[name, md5sum] = description
 
         # Populate module.
-        translation_store = module.add(lang)
+        try:
+            translation_store = module.add(lang)
+        except KeyError: # Store already exists.
+            translation_store = module[lang]
+            translation_store.clear() # XXX Merge instead of clearing old data!
+
         for (name, md5sum, description) in parsed_template:
             trans = [(description, lookup.get((name, md5sum)))]
             unit = translation_store.makeunit(trans)
@@ -123,7 +133,7 @@ def import_descriptions(module, template, translations):
             units.append(unit)
         translation_store.fill(units)
         translation_store.save()
-        break
+        break # XXX Process only one language; temporary.
 
 
 ddtp_entry = """Package: %(name)s
@@ -159,8 +169,7 @@ ddtp.py export <pootle_db_dir> <path/to/translations>
 
 
 sys.path.append('../../')
-from Pootle.storage.memory import Database
-from Pootle.storage.standard import Database as PootleDatabase
+from Pootle.storage.standard import Database as Database
 
 
 def do_import(template_path, translations_dir, pootle_db_dir):
@@ -184,7 +193,7 @@ def do_import(template_path, translations_dir, pootle_db_dir):
         translation_file = file(os.path.join(translations_dir, translation_fn))
         translation_files.append(translation_file)
 
-    db = PootleDatabase(pootle_db_dir)
+    db = Database(pootle_db_dir)
     try:
         folder = db.subfolders['ddtp']
     except KeyError: # Need to create folder.
@@ -205,7 +214,7 @@ def do_export(pootle_dir, translations_dir):
     `translations_dir` is the path to the directory where to
     put Translation-?? files.
     """
-    db = PootleDatabase(pootle_dir)
+    db = Database(pootle_dir)
     folder = db.subfolders['ddtp']
     module = folder.modules['ddtp']
     export_translations(module, translations_dir)
