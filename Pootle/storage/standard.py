@@ -72,7 +72,7 @@ class FolderContainer(AbstractMapping):
         if key in self.keys():
             raise KeyError(key)
         folder_path = os.path.join(self.root_path, key)
-        os.mkdir(path)
+        os.mkdir(folder_path)
         return self[key]
 
 
@@ -129,7 +129,7 @@ class ModuleContainer(AbstractMapping):
             module = Module(self.path, key, self.folder)
             template = module.add(None)
             template.save() # Create an empty template
-            return template
+            return module
 
 
 class Module(HaveStatistics, AbstractMapping):
