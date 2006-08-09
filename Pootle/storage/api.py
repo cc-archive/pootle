@@ -90,6 +90,10 @@ class IMapping(Interface):
         """Return list of object values."""
         return [object]
 
+    def itervalues(self):
+        """Return iterator over values."""
+        return iter
+
     def items(self):
         """Return list of tuples (key, value)."""
         return [(String, object)]

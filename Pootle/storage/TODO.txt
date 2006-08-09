@@ -11,7 +11,7 @@ Small tasks:
 - Put unit comments into container.
 - Abstract fuzzy status.
 - Implement Module.add(x, copy_template=True)
-- 
++ Add itervalues() to IMapping.
 - Deal with obsolete .po entries (#~)
 - Fix containment mess (make constructor and adding separate)?
 - Flesh out ITranslationUnit
@@ -37,6 +37,7 @@ Long term:
 - Import language info from Pootle config.
 - Go through TODOs and XXXes.
 - Language information DB storage
+- Caching for storage.standard.
 
 Debian-specific:
 - Add a script to import debconf translations

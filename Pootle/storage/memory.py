@@ -7,11 +7,11 @@ from Pootle.storage.api import IStatistics, IDatabase, ITranslationUnit
 from Pootle.storage.api import ILanguageInfo, IModule, IMapping, IFolder
 from Pootle.storage.api import ITranslationStore, ISuggestion, IHaveStatistics
 from Pootle.storage.api import IHeader
+from Pootle.storage.abstract import AbstractMapping
 
 
-class MappingMixin(object):
+class MappingMixin(AbstractMapping):
     _interface = IMapping
-    # TODO: just subclass dict?
 
     def __init__(self):
         self._items = {}
