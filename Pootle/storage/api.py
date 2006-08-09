@@ -110,7 +110,10 @@ class IMapping(Interface):
         return Integer
 
     def add(self, key):
-        """Create a new object, add it to this container and return it."""
+        """Create a new object, add it to this container and return it.
+
+        If an object with this name already exists, should raise KeyError.
+        """
         return object
 
 
@@ -215,6 +218,8 @@ class IModule(IHaveStatistics, IMapping):
 
     def add(self, key, copy_template=False):
         """Create a new empty TranslationStore bound to this module.
+
+        If a template with the given key already exists, raise KeyError.
 
         `lang_key` is a language identifier, e.g., 'pt_BR' or 'lt'.
         If `lang_key` is None, the resulting template will be put into

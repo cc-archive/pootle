@@ -1,5 +1,16 @@
 #!/usr/bin/python
-"""DDTP support."""
+"""DDTP support.
+
+Use cases:
+  1) import DDTP strings to Pootle (or merge with existing ones)
+  2) export strings from Pootle to DDTP files
+
+TODO:
+- merging!
+- unwrap and divide text into paragraphs for easier translation
+- divide module into several modules to make .po files smaller
+
+"""
 
 import os
 import sys
@@ -80,7 +91,9 @@ def import_descriptions(module, template, translations):
     translations is a list of file-like objects which contain the
     translations (e.g., Translation-de).
     """
-    template_store = module.add(None)
+    template_store = module.template
+    if template_store is None:
+        template_store = module.add(None)
 
     units = []
     parsed_template = parse_template(template)
@@ -90,6 +103,7 @@ def import_descriptions(module, template, translations):
         unit.automatic_comments = [name, md5sum]
         units.append(unit)
     template_store.fill(units)
+    template_store.save()
 
     for translation in translations:
         units = []
@@ -108,6 +122,8 @@ def import_descriptions(module, template, translations):
             unit.automatic_comments = [name, md5sum]
             units.append(unit)
         translation_store.fill(units)
+        translation_store.save()
+        break
 
 
 ddtp_entry = """Package: %(name)s
@@ -137,24 +153,23 @@ def export_translations(module, translations_dir):
 
 usage = """Usage:
 
-ddtp.py import <path/to/Packages> <path/to/translations> <project_dir>
-ddtp.py export <project_dir> <path/to/translations>
+ddtp.py import <path/to/Packages> <path/to/translations> <pootle_db_dir>
+ddtp.py export <pootle_db_dir> <path/to/translations>
 """
 
 
 sys.path.append('../../')
 from Pootle.storage.memory import Database
 from Pootle.storage.standard import Database as PootleDatabase
-from Pootle.storage.po import export_module_to_pootle, import_module_from_pootle
 
 
-def do_import(template_path, translations_dir, project_dir):
+def do_import(template_path, translations_dir, pootle_db_dir):
     """Import DDTP templates and translations into Pootle.
 
     `template_path` is a path to the Packages index.
     `translations_dir` is the path of the directory where Translation-?? files
     reside.
-    `project_dir` is the path of the corresponding Pootle project.
+    `pootle_db_dir` is the path to the Pootle .po store.
 
     XXX: perform merging!
     """
@@ -169,16 +184,23 @@ def do_import(template_path, translations_dir, project_dir):
         translation_file = file(os.path.join(translations_dir, translation_fn))
         translation_files.append(translation_file)
 
-    db = Database()
-    module = db.modules.add('ddtp')
+    db = PootleDatabase(pootle_db_dir)
+    try:
+        folder = db.subfolders['ddtp']
+    except KeyError: # Need to create folder.
+        folder = db.subfolders.add('ddtp')
+    try:
+        module = folder.modules['ddtp']
+    except KeyError: # Need to create folder.
+        module = folder.modules.add('ddtp')
+
     import_descriptions(module, template, translation_files)
-    export_module_to_pootle(module, project_dir)
 
 
 def do_export(pootle_dir, translations_dir):
     """Export DDTP translations from Pootle.
 
-    `pootle_dir` is the path to the corresponding Pootle store.
+    `pootle_dir` is the path to the Pootle .po store.
     Currently the project 'ddtp' is picked from there.
     `translations_dir` is the path to the directory where to
     put Translation-?? files.

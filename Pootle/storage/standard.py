@@ -7,7 +7,7 @@ Only read-only access is provided at the moment and there is no caching.
 
 import os
 
-from Pootle.storage.po import read_po
+from Pootle.storage.po import read_po, write_po
 from Pootle.storage.abstract import AbstractMapping
 from Pootle.storage.api import IDatabase, IFolder, IModule, ITranslationStore
 from Pootle.storage.api import IMapping
@@ -68,7 +68,12 @@ class FolderContainer(AbstractMapping):
         raise NotImplementedError() # TODO
 
     def add(self, key):
-        raise NotImplementedError() # TODO
+        # TODO: Register project in Pootle configuration file.
+        if key in self.keys():
+            raise KeyError(key)
+        folder_path = os.path.join(self.root_path, key)
+        os.mkdir(path)
+        return self[key]
 
 
 class Folder(HaveStatistics, AbstractMapping):
@@ -93,16 +98,19 @@ class ModuleContainer(AbstractMapping):
     _interface = IMapping
 
     def __init__(self, path, folder):
-        self.path = path
+        self.path = path # path to folder
         self.folder = folder
 
     def keys(self):
+        # Return modules for which there are templates or translations.
         modulenames = []
         for lang in os.listdir(self.path):
             langdir = os.path.join(self.path, lang)
             for fn in os.listdir(langdir):
                 if fn.endswith('.po'):
                     modulenames.append(fn[:-len('.po')])
+                elif fn.endswith('.pot'):
+                    modulenames.append(fn[:-len('.pot')])
         return modulenames
 
     def __getitem__(self, key):
@@ -112,10 +120,16 @@ class ModuleContainer(AbstractMapping):
             raise KeyError(key)
 
     def __delitem__(self, key):
-        pass
+        raise NotImplementedError()
 
     def add(self, key):
-        raise NotImplementedError()
+        if key in self.keys():
+            raise KeyError(key)
+        else:
+            module = Module(self.path, key, self.folder)
+            template = module.add(None)
+            template.save() # Create an empty template
+            return template
 
 
 class Module(HaveStatistics, AbstractMapping):
@@ -135,10 +149,12 @@ class Module(HaveStatistics, AbstractMapping):
 
     @property
     def template(self):
-        pot_path = os.path.join(self.path, 'templates', self.key + '.po')
+        pot_path = os.path.join(self.path, 'templates', self.key + '.pot')
+        if not os.path.exists(pot_path):
+            return None
         pot_text = file(pot_path).read()
-        store = TranslationStore(self.key, None, None)
-        read_po(potext, store)
+        store = TranslationStore(self, None, pot_path)
+        read_po(pot_text, store)
         return store
 
     def keys(self):
@@ -163,7 +179,7 @@ class Module(HaveStatistics, AbstractMapping):
             po_path = os.path.join(self.path, lang_key, self.key + '.po')
             potext = file(po_path).read()
             langinfo = self._langinfo(lang_key)
-            store = TranslationStore(self, langinfo)
+            store = TranslationStore(self, langinfo, po_path)
             read_po(potext, store)
             return store
         else:
@@ -179,9 +195,35 @@ class Module(HaveStatistics, AbstractMapping):
     def items(self):
         return [(key, self[key]) for key in self.keys()]
 
-    def add(self):
-        raise NotImplementedError('TODO')
+    def add(self, lang_key):
+        if lang_key is None: # template
+            if self.template is not None:
+                raise KeyError(None)
+            lang_dir = os.path.join(self.path, 'templates')
+            if not os.path.exists(lang_dir):
+                os.mkdir(lang_dir)
+            pot_path = os.path.join(self.path, 'templates', self.key + '.pot')
+            return TranslationStore(self, None, pot_path)
+        else:
+            if lang_key in self.keys():
+                raise KeyError(lang_key)
+            lang_dir = os.path.join(self.path, lang_key)
+            if not os.path.exists(lang_dir):
+                os.mkdir(lang_dir)
+            po_path = os.path.join(self.path, lang_key, self.key + '.po')
+            return TranslationStore(self, lang_key, po_path)
 
 
 class TranslationStore(MemTranslationStore):
-    pass
+
+    def __init__(self, module, lang_key, po_path):
+        langinfo = None # XXX TODO: dig out of DB, register in pootle.prefs.
+        MemTranslationStore.__init__(self, module, langinfo)
+        self.po_path = po_path
+
+    def save(self):
+        # TODO: Locking?
+        pofile = file(self.po_path, 'w')
+        data = write_po(self)
+        pofile.write(data)
+        pofile.close()

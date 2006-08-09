@@ -56,6 +56,8 @@ class ModuleContainer(MappingMixin):
         self.folder = folder
 
     def add(self, key):
+        if key in self._items:
+            raise KeyError(key)
         module = self._items[key] = Module(key, self.folder)
         return module
 
@@ -186,6 +188,8 @@ class Module(MappingMixin, AccumStatsMixin):
         # TODO: handle copy_template.
         # TODO: refactor
         if lang_key is not None:
+            if lang_key in self._items:
+                raise KeyError(lang_key)
             # TODO: put this into a function
             obj = self
             while obj.folder is not None:
@@ -200,6 +204,8 @@ class Module(MappingMixin, AccumStatsMixin):
             store = TranslationStore(self, langinfo)
             self._items[lang_key] = store
         else:
+            if self.template is not None:
+                raise KeyError(lang_key)
             store = TranslationStore(self, None)
             self.template = store # TODO: document this
 
@@ -230,7 +236,8 @@ class Header(MappingMixin):
         del self._order[key]
 
     def add(self, key, value):
-        assert key not in self._order
+        if key in self._order:
+            raise KeyError(key)
         self._order.append(key)
         self._items[key] = value
 
