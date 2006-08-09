@@ -199,6 +199,7 @@ class IModule(IHaveStatistics, IMapping):
     description = Unicode # project description (unwrapped)
     checker = [String] # A list of string identifiers for checkers
     template = Interface # ITranslationStore without the actual translations
+    # TODO: template == store[None] ?
     # TODO: Have a link to the project's ViewVC page so that we can produce
     #       direct hyperlinks to unit context in the source code.
 

@@ -6,9 +6,12 @@ Only read-only access is provided at the moment and there is no caching.
 """
 
 import os
-from Pootle.storage.memory import TranslationStore
+
 from Pootle.storage.po import read_po
 from Pootle.storage.api import IDatabase, IFolder, IModule, ITranslationStore
+from Pootle.storage.memory import TranslationStore as MemTranslationStore
+from Pootle.storage.memory import LanguageInfoContainer \
+        as MemLanguageInfoContainer
 
 
 class HaveStatistics(object):
@@ -27,7 +30,8 @@ class Database(HaveStatistics):
     subfolders = None
 
     def __init__(self, root_path):
-        self.subfolders = FolderContainer(root_path)
+        self.subfolders = FolderContainer(root_path, self)
+        self.languages = MemLanguageInfoContainer(self)
 
     def startTransaction(self):
         pass
@@ -39,8 +43,9 @@ class Database(HaveStatistics):
 
 class FolderContainer(object):
 
-    def __init__(self, root_path):
+    def __init__(self, root_path, db):
         self.root_path = root_path
+        self.db = db
 
     def keys(self):
         return os.listdir(self.root_path)
@@ -48,7 +53,7 @@ class FolderContainer(object):
     def __getitem__(self, key):
         if key in self.keys():
             path = os.path.join(self.root_path, key)
-            return Folder(path, key)
+            return Folder(path, key, self.db)
         else:
             raise KeyError(key)
 
@@ -62,15 +67,16 @@ class Folder(HaveStatistics):
     key = None
 
     def __init__(self, path, key, db):
-        self.modules = ModuleContainer(path)
+        self.modules = ModuleContainer(path, self)
         self.key = key
         self.folder = db
 
 
 class ModuleContainer(object):
 
-    def __init__(self, path):
+    def __init__(self, path, folder):
         self.path = path
+        self.folder = folder
 
     def keys(self):
         modulenames = []
@@ -83,7 +89,7 @@ class ModuleContainer(object):
 
     def __getitem__(self, key):
         if key in self.keys():
-            return Module(self.path, key, self)
+            return Module(self.path, key, self.folder)
         else:
             raise KeyError(key)
 
@@ -116,29 +122,28 @@ class Module(HaveStatistics):
         for lang in os.listdir(self.path):
             modpath = os.path.join(self.path, lang, self.key + '.po')
             if os.path.exists(modpath):
-                if '_' in lang:
-                    langcode, countrycode = lang.split('_')
-                else:
-                    langcode, countrycode = lang, None
-                langkeys.append((langcode, countrycode))
+                langkeys.append(lang)
         return langkeys
 
-    def _langdir(self, lang, country):
-        if country:
-            return '%s_%s' % (lang, country)
-        else:
-            return lang
+    def _langinfo(self, lang_key):
+        db = self.folder.folder
+        langs = db.languages
+        try:
+            langinfo = langs[lang_key]
+        except KeyError:
+            langinfo = db.languages.add(lang_key) # TODO: stop-gap measure.
+        return langinfo
 
-    def __getitem__(self, (lang, country)):
-        if (lang, country) in self.keys():
-            langdir = self._langdir(lang, country)
-            po_path = os.path.join(self.path, langdir, self.key + '.po')
+    def __getitem__(self, lang_key):
+        if lang_key in self.keys():
+            po_path = os.path.join(self.path, lang_key, self.key + '.po')
             potext = file(po_path).read()
-            store = TranslationStore(self.key, None, None)
+            langinfo = self._langinfo(lang_key)
+            store = TranslationStore(self, langinfo)
             read_po(potext, store)
             return store
         else:
-            raise KeyError((lang, country))
+            raise KeyError(lang_key)
 
     def values(self):
         # TODO: A generator would be nicer here.
@@ -149,3 +154,7 @@ class Module(HaveStatistics):
 
     def add(self):
         raise NotImplementedError('TODO')
+
+
+class TranslationStore(MemTranslationStore):
+    pass

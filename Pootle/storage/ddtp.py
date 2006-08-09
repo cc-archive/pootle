@@ -120,7 +120,9 @@ def export_translation(store, stream):
         name, md5sum = unit.automatic_comments
         translation = unit.trans[0][1]
         if translation:
-            args = dict(name=name, md5=md5sum, lang=store.key,
+            args = dict(name=name.encode('utf-8'),
+                        md5=str(md5sum),
+                        lang=store.key,
                         description=translation.encode('utf-8'))
             stream.write(ddtp_entry % args)
 
@@ -142,6 +144,7 @@ ddtp.py export <project_dir> <path/to/translations>
 
 sys.path.append('../../')
 from Pootle.storage.memory import Database
+from Pootle.storage.standard import Database as PootleDatabase
 from Pootle.storage.po import export_module_to_pootle, import_module_from_pootle
 
 
@@ -172,16 +175,17 @@ def do_import(template_path, translations_dir, project_dir):
     export_module_to_pootle(module, project_dir)
 
 
-def do_export(project_dir, translations_dir):
+def do_export(pootle_dir, translations_dir):
     """Export DDTP translations from Pootle.
 
-    `project_dir` is the path of the corresponding Pootle project.
-    `translations_dir` is the path of the directory where to
+    `pootle_dir` is the path to the corresponding Pootle store.
+    Currently the project 'ddtp' is picked from there.
+    `translations_dir` is the path to the directory where to
     put Translation-?? files.
     """
-    db = Database()
-    module = db.modules.add('ddtp')
-    import_module_from_pootle(project_dir, module)
+    db = PootleDatabase(pootle_dir)
+    folder = db.subfolders['ddtp']
+    module = folder.modules['ddtp']
     export_translations(module, translations_dir)
 
 
