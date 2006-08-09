@@ -80,7 +80,7 @@ def import_descriptions(module, template, translations):
     translations is a list of file-like objects which contain the
     translations (e.g., Translation-de).
     """
-    template_store = module.makestore(None)
+    template_store = module.add(None)
 
     units = []
     parsed_template = parse_template(template)
@@ -90,7 +90,6 @@ def import_descriptions(module, template, translations):
         unit.automatic_comments = [name, md5sum]
         units.append(unit)
     template_store.fill(units)
-    module.template = template_store
 
     for translation in translations:
         units = []

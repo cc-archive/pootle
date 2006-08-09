@@ -7,6 +7,8 @@ d) translation repository
 
 Small tasks:
 + Separate .po header
++ fix makestore() and clonestore() mess.
+- Implement Module.add(x, copy_template=True)
 - Deal with obsolete .po entries (#~)
 - Fix containment mess (make constructor and adding separate)?
 - Flesh out ITranslationUnit
@@ -22,7 +24,7 @@ Important:
 - complete .po parser
 - .po serializer
 + ask around about DDTP access
-- ask around about debconf template access
++ ask around about debconf template access
 
 Long term:
 - consider use of SQLObject or SQLAlchemy for RDB storage

@@ -202,20 +202,16 @@ class IModule(IHaveStatistics, IMapping):
     # TODO: Have a link to the project's ViewVC page so that we can produce
     #       direct hyperlinks to unit context in the source code.
 
-    def makestore(self, lang_key):
+    def add(self, key, copy_template=False):
         """Create a new empty TranslationStore bound to this module.
 
         `lang_key` is a language identifier, e.g., 'pt_BR' or 'lt'.
-        TODO: what happens if a corresponding langinfo object doesn't exist?
-        If creating a template, `lang_key` should be None.
+        If `lang_key` is None, the resulting template will be put into
+        the `template` attribute.
+        If `copy_template` is True, the template will be copied on the
+        new translation store.
         """
         return None # ITranslationStore
-
-    def clonestore(self, lang_key):
-        """Create a new TranslationStore by copying from the template.
-
-        TODO: fix makestore() vs. clonestore().
-        """
 
 
 class IHeader(IMapping):

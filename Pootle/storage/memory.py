@@ -182,11 +182,13 @@ class Module(MappingMixin, AccumStatsMixin):
     def __repr__(self):
         return '<Module %s>' % self.key
 
-    def makestore(self, lang_key):
+    def add(self, lang_key, copy_template=False):
+        # TODO: handle copy_template.
+        # TODO: refactor
         if lang_key is not None:
             # TODO: put this into a function
             obj = self
-            while not isinstance(obj, Database):
+            while obj.folder is not None:
                 obj = obj.folder
             db = obj
 
@@ -195,21 +197,12 @@ class Module(MappingMixin, AccumStatsMixin):
                 langinfo = langs[lang_key]
             except KeyError:
                 langinfo = db.languages.add(lang_key) # TODO: stop-gap measure.
-        else:
-            langinfo = None
-        return TranslationStore(self, langinfo)
-
-    def clonestore(self, lang_key):
-        store = self.makestore(lang_key)
-        # TODO: clone; do we really need this?
-        return store
-
-    def add(self, lang_key):
-        store = self.makestore(lang_key)
-        if lang_key is None:
-            self.template = store # TODO: document this
-        else:
+            store = TranslationStore(self, langinfo)
             self._items[lang_key] = store
+        else:
+            store = TranslationStore(self, None)
+            self.template = store # TODO: document this
+
         return store
 
 

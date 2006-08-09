@@ -149,9 +149,3 @@ class Module(HaveStatistics):
 
     def add(self):
         raise NotImplementedError('TODO')
-
-    def makestore(self):
-        raise NotImplementedError('TODO')
-
-    def clonestore(self):
-        raise NotImplementedError('TODO')
