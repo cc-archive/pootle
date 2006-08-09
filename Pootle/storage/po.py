@@ -33,11 +33,7 @@ def read_po(potext, store):
     for oldunit in po.units:
         if oldunit.isheader():
             continue
-        try:
-            trans = [(unicode(oldunit.source), unicode(oldunit.target))]
-        except UnicodeDecodeError: # XXX
-            trans = [(u'b0rk', u'')]
-            print oldunit.msgid
+        trans = [(unicode(oldunit.source), unicode(oldunit.target))]
         if oldunit.hasplural():
             plural_msgid = unicode(oldunit.source.strings[1])
             for s in oldunit.target.strings[1:]:
