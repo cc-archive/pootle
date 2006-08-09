@@ -367,18 +367,21 @@ class ImplementationError(Exception):
     pass
 
 
+blacklist = ['__dict__', '__doc__', '__module__', '__weakref__']
+
 def iface_attrs(iface):
     attrs = iface.__dict__.items()
     for base in iface.__bases__:
         attrs.extend(iface_attrs(base))
+    for attr in blacklist:
+        if attr in attrs:
+            attrs.remove(attr)
     return attrs
 
 
 def validateClass(cls, iface):
     """Validate a given class against an interface."""
     for attrname, attr in iface_attrs(iface):
-        if attrname.startswith('__'):
-            continue # ignore internal attributes
 
         # Check for existence of the attribute
         try:

@@ -8,7 +8,9 @@ Only read-only access is provided at the moment and there is no caching.
 import os
 
 from Pootle.storage.po import read_po
+from Pootle.storage.abstract import AbstractMapping
 from Pootle.storage.api import IDatabase, IFolder, IModule, ITranslationStore
+from Pootle.storage.api import IMapping
 from Pootle.storage.memory import TranslationStore as MemTranslationStore
 from Pootle.storage.memory import LanguageInfoContainer \
         as MemLanguageInfoContainer
@@ -19,7 +21,7 @@ class HaveStatistics(object):
         raise NotImplementedError('TODO')
 
 
-class Database(HaveStatistics):
+class Database(HaveStatistics, AbstractMapping):
     _interface = IDatabase
 
     key = None
@@ -30,8 +32,12 @@ class Database(HaveStatistics):
     subfolders = None
 
     def __init__(self, root_path):
+        self.modules = {}
         self.subfolders = FolderContainer(root_path, self)
         self.languages = MemLanguageInfoContainer(self)
+
+    def __getitem__(self, key):
+        return self.subfolders[key]
 
     def startTransaction(self):
         pass
@@ -41,7 +47,8 @@ class Database(HaveStatistics):
         pass
 
 
-class FolderContainer(object):
+class FolderContainer(AbstractMapping):
+    _interface = IMapping
 
     def __init__(self, root_path, db):
         self.root_path = root_path
@@ -57,8 +64,14 @@ class FolderContainer(object):
         else:
             raise KeyError(key)
 
+    def __delitem__(self, key):
+        raise NotImplementedError() # TODO
 
-class Folder(HaveStatistics):
+    def add(self, key):
+        raise NotImplementedError() # TODO
+
+
+class Folder(HaveStatistics, AbstractMapping):
     _interface = IFolder
 
     folder = None
@@ -68,11 +81,16 @@ class Folder(HaveStatistics):
 
     def __init__(self, path, key, db):
         self.modules = ModuleContainer(path, self)
+        self.subfolders = {}
         self.key = key
         self.folder = db
 
+    def __getitem__(self, key):
+        return self.modules[key]
 
-class ModuleContainer(object):
+
+class ModuleContainer(AbstractMapping):
+    _interface = IMapping
 
     def __init__(self, path, folder):
         self.path = path
@@ -93,8 +111,14 @@ class ModuleContainer(object):
         else:
             raise KeyError(key)
 
+    def __delitem__(self, key):
+        pass
 
-class Module(HaveStatistics):
+    def add(self, key):
+        raise NotImplementedError()
+
+
+class Module(HaveStatistics, AbstractMapping):
     _interface = IModule
 
     key = None
@@ -144,6 +168,9 @@ class Module(HaveStatistics):
             return store
         else:
             raise KeyError(lang_key)
+
+    def __delitem__(self, key):
+        raise NotImplementedError() # TODO
 
     def values(self):
         # TODO: A generator would be nicer here.
