@@ -8,10 +8,14 @@ d) translation repository
 Small tasks:
 + Separate .po header
 + fix makestore() and clonestore() mess.
+- Put unit comments into container.
+- Abstract fuzzy status.
 - Implement Module.add(x, copy_template=True)
+- 
 - Deal with obsolete .po entries (#~)
 - Fix containment mess (make constructor and adding separate)?
 - Flesh out ITranslationUnit
+- store.template == store[None]?
 
 Important:
 + preliminary .po parser
@@ -37,6 +41,10 @@ Long term:
 Debian-specific:
 - Add a script to import debconf translations
 - Hook up DDTP
+
+Misc:
+- Produce direct hyperlinks to unit context in the source code by storing
+  a link to ViewVC.
 
 Other subsystems to consider:
 - Security model (important!)

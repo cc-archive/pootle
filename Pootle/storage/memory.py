@@ -92,9 +92,9 @@ class Folder(AccumStatsMixin):
 
     def __getitem__(self, key):
         try:
-            return 'module', self.modules[key]
+            return self.subfolders[key]
         except KeyError:
-            return 'folder', self.subfolders[key]
+            return self.modules[key]
 
     def __len__(self):
         return len(self.modules) + len(self.subfolders)
@@ -270,7 +270,7 @@ class TranslationStore(object):
             self._units.append(unit) # TODO: link new units?
 
     def save(self):
-        raise NotImplementedError()
+        pass
 
     def makeunit(self, trans):
         """See TranslationUnit.__init__."""

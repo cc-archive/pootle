@@ -34,17 +34,21 @@ unserialized objects.
 
 # === Helper objects ===
 
-class Interface(object): pass
+class Interface(object):
+    """An interface."""
 
 # Fields
-class String(Interface): pass
-class Unicode(Interface): pass
+class Field(Interface):
+    """An attribute that stores a particular type of data."""
+
+class String(Field): pass
+class Unicode(Field): pass
 class Username(Unicode): pass
 class Id(Unicode): pass
-class Integer(Interface): pass
-class Boolean(Interface): pass
-class Date(Interface): pass
-class Class(Interface): pass
+class Integer(Field): pass
+class Boolean(Field): pass
+class Date(Field): pass
+class Class(Field): pass
 
 
 # === API interfaces ===
@@ -53,8 +57,10 @@ class IHaveStatistics(Interface):
     """An object that can provide translation statistics."""
 
     def statistics(self):
-        """Return statistics for this object."""
-        return IStatistics
+        """Return statistics for this object.
+
+        Returns an IStatistics object.
+        """
 
 
 class IStatistics(Interface):
@@ -107,7 +113,6 @@ class IMapping(Interface):
 class IFolder(IHaveStatistics):
     """A folder is a collection of modules and possibly other folders."""
 
-    # TODO: specify traversal precedence
     key = String
     folder = None # =IFolder -- containing folder (not the subcontainer)
 
@@ -117,7 +122,10 @@ class IFolder(IHaveStatistics):
     def __getitem__(self, key):
         """Return a module or a subfolder.
 
-        Returns a tuple ('module', module_obj) or a tuple ('folder', folder).
+        A subfolder is preferred to a module if they have the same name.
+
+        This is a convenience method; it is usually better to use
+        folder.modules[] or subfolder.modules[] directly.
         """
 
     def __len__(self):
@@ -172,7 +180,7 @@ class ILanguageInfo(Interface):
     country = String # optional - ISO3166 two-letter country code (uppercase)
     key = String # Should be a property.  E.g., 'en', 'pt_BR', etc.
     name = Unicode # complete language name (native)
-    name_eng = Unicode # complete language name in English; optional TODO needed?
+    name_eng = Unicode # complete language name in English; optional
     specialchars = [Unicode] # list of special chars
     nplurals = Integer
     pluralequation = String # optional
@@ -200,8 +208,6 @@ class IModule(IHaveStatistics, IMapping):
     checker = [String] # A list of string identifiers for checkers
     template = Interface # ITranslationStore without the actual translations
     # TODO: template == store[None] ?
-    # TODO: Have a link to the project's ViewVC page so that we can produce
-    #       direct hyperlinks to unit context in the source code.
 
     def add(self, key, copy_template=False):
         """Create a new empty TranslationStore bound to this module.
@@ -212,7 +218,7 @@ class IModule(IHaveStatistics, IMapping):
         If `copy_template` is True, the template will be copied on the
         new translation store.
         """
-        return None # ITranslationStore
+        return ITranslationStore
 
 
 class IHeader(IMapping):
@@ -273,9 +279,10 @@ class ITranslationStore(IHaveStatistics):
         """Construct a new translation unit.
 
         Only put units constructed by this method inside this store, or
-        update their store attribute.
+        set their store attribute.
 
-        trans is a list of tuples (source, target).
+        trans is a list of tuples (source, target).  `source` and `target`
+        should be unicode values.  Target may be None.
         """
 
     def translate(self, source, plural=0):
@@ -330,10 +337,9 @@ class ITranslationUnit(Interface):
     # For singular, just use a single tuple in the list.
     trans = [(Unicode,  # plural msgid (source)
               Unicode)] # plural translation (target)
-    # TODO Is it really a good idea to have this instead of the .po model:
-    #      msgid=Unicode, msgid_plural=Unicode, msgstr=[Unicode]
 
     # TODO: it would be nice to have a "dirty" attribute
+
 
 # === Merging ===
 
@@ -354,8 +360,8 @@ class IMerger(object):
 # === Validation helpers ===
 
 # TODO: I'm reinventing the wheel here, poorly.  I would like to grab a
-# real interface package such as zope.interface, but that would be an
-# additional dependency.
+# real interface package such as zope.interface or pyprotocols, but that
+# would be an additional dependency.
 
 class ImplementationError(Exception):
     pass
@@ -386,9 +392,6 @@ def validateClass(cls, iface):
             if not callable(real_attr):
                 raise ImplementationError('%r of %r is not callable'
                                           % (attrname, cls))
-            # TODO check signature of callable?
-#        else:
-#            raise AssertionError("shouldn't happen")
 
 
 def validateModule(module, complete=False):

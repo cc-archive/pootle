@@ -81,9 +81,9 @@ def test_folder():
         ([<Module newmodule>], [<Folder newfolder>])
 
         >>> folder['newmodule']
-        ('module', <Module newmodule>)
+        <Module newmodule>
         >>> folder['newfolder']
-        ('folder', <Folder newfolder>)
+        <Folder newfolder>
 
     """
 
@@ -96,6 +96,7 @@ def test_LanguageInfo():
         >>> langinfo.db
         'db'
     """
+
 
 def test_LanguageInfoContainer():
     """
