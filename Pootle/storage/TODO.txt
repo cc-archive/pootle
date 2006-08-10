@@ -29,6 +29,7 @@ Important:
 - .po serializer
 + ask around about DDTP access
 + ask around about debconf template access
+- Think about store.save() and store.load()
 
 Long term:
 - consider use of SQLObject or SQLAlchemy for RDB storage
@@ -44,8 +45,10 @@ Debian-specific:
 - Hook up DDTP
 
 Misc:
+- Write a small server for quick typo fix webapp.
 - Produce direct hyperlinks to unit context in the source code by storing
   a link to ViewVC.
+- Maybe sometimes IMapping.keys() should be sorted?
 
 Other subsystems to consider:
 - Security model (important!)

@@ -16,11 +16,11 @@ import os
 import sys
 import md5
 
+# Note: it appears that Debian's Packages is encoded in Latin-1, while
+# files from DDTP are encoded in UTF-8.
 
-charset = 'latin1' # The DDTP files seem to be in latin1.
-
-def parse_template(f):
-    """Parse package descriptions from a file.
+def parse_template(f, charset='latin1'):
+    """Parse package descriptions from a Packages file.
 
     Returns a list [(name, md5sum, description)].
 
@@ -53,13 +53,14 @@ def parse_template(f):
     return packages
 
 
-def parse_translation(f):
+def parse_translation(f, charset='utf-8'):
     """Parse a DDTP translation from a file.
 
     Returns (lang, [(name, md5sum, description)]).
 
     `md5sum` is the MD5 checksum of the description in English.
     """
+    charset = 'utf-8' # The DDTP files seem to be in UTF-8.
     packages = []
 
     name = None
@@ -86,77 +87,186 @@ def parse_translation(f):
     return lang, packages
 
 
-def import_descriptions(module, template, translations):
-    """Imports DDTP description translations into IModule.
+class DDTPModule(object):
+    """A wrapper for a folder that stores DDTP translations.
 
-    Overwrites old translations.
-    TODO: do proper merging.
+    Internally the strings are distributed among several modules in order
+    to reduce the size of translation stores.
 
-    template is a file-like object containing the descriptions (Packages).
-    translations is a list of file-like objects which contain the
-    translations (e.g., Translation-de).
+    This class has methods to read/write data into either DDTP translation
+    format or the Pootle database storage.
     """
-    template_store = module.template
-    if template_store is None:
-        template_store = module.add(None)
 
-    units = []
-    parsed_template = parse_template(template)
-    for (name, md5sum, description) in parsed_template:
-        trans = [(description, None)]
-        unit = template_store.makeunit(trans)
-        unit.automatic_comments = [name, md5sum]
-        units.append(unit)
-    template_store.fill(units)
-    template_store.save()
+    parsed_template = None # set in import_template
 
-    for translation in translations:
-        units = []
-        lang, parsed_translation = parse_translation(translation)
+    def __init__(self, folder):
+        self.folder = folder
 
+    # --- Import ---
+
+    def import_template(self, template):
+        """Import DDTP description translations into Pootle."""
+        template_store = DDTPStore(self, None)
+
+        self.parsed_template = parse_template(template)
+        for (name, md5sum, description) in self.parsed_template:
+            template_store.add_package(name, md5sum, description, None)
+        template_store.save()
+
+    def import_translations(self, translations):
+        """Import DDTP description translations into Pootle.
+
+        Overwrites old translations.
+        TODO: do proper merging.
+
+        import_template() has to be invoked before calling this method.
+
+        template is a file-like object containing the descriptions (Packages).
+        translations is a list of file-like objects which contain the
+        translations (e.g., Translation-de).
+        """
+        for translation in translations:
+            units = []
+            lang_key, parsed_translation = parse_translation(translation)
+            self.import_translation(lang_key, parsed_translation)
+            break # XXX Process only one language; makes testing faster.
+
+    def import_translation(self, lang_key, parsed_translation):
+        """Import a single translation into Pootle."""
         # Build a lookup dict.
         lookup = {}
         for (name, md5sum, description) in parsed_translation:
             lookup[name, md5sum] = description
 
-        # Populate module.
-        try:
-            translation_store = module.add(lang)
-        except KeyError: # Store already exists.
-            translation_store = module[lang]
-            translation_store.clear() # XXX Merge instead of clearing old data!
-
-        for (name, md5sum, description) in parsed_template:
-            trans = [(description, lookup.get((name, md5sum)))]
-            unit = translation_store.makeunit(trans)
-            unit.automatic_comments = [name, md5sum]
-            units.append(unit)
-        translation_store.fill(units)
+        translation_store = DDTPStore(self, lang_key)
+        for (name, md5sum, description) in self.parsed_template:
+            trans = [(description, )]
+            translation_store.add_package(name, md5sum, description,
+                                         lookup.get((name, md5sum)))
+            # TODO: mark fuzzy if lookup fails
         translation_store.save()
-        break # XXX Process only one language; temporary.
 
+    # --- Export ---
 
-ddtp_entry = """Package: %(name)s
+    def export_to_ddtp(self, translations_dir):
+        """Export data from Pootle to DDTP.
+
+        `translations_dir` is the directory where to put Translation-?? files.
+        If non-existent, it is created.
+        """
+        if not os.path.exists(translations_dir):
+            os.mkdir(translations_dir)
+
+        for lang_key in self.list_languages():
+            ddtpstore = DDTPStore(self, lang_key)
+            ddtpstore.load()
+
+            fn = 'Translation-%s' % lang_key
+            path = os.path.join(translations_dir, fn)
+            self.export_store(ddtpstore, file(path, 'w'))
+
+    def list_languages(self):
+        """List all available languages."""
+        modules = self.folder.modules
+        modname = modules.keys()[0] # Pick first package.
+        module = modules[modname]
+        return module.keys()
+
+    ddtp_entry = """Package: %(name)s
 Description-md5: %(md5)s
 Description-%(lang)s: %(description)s
 """
 
-def export_translation(store, stream):
-    for unit in store:
-        name, md5sum = unit.automatic_comments
-        translation = unit.trans[0][1]
-        if translation:
-            args = dict(name=name.encode('utf-8'),
-                        md5=str(md5sum),
-                        lang=store.key,
-                        description=translation.encode('utf-8'))
-            stream.write(ddtp_entry % args)
+    def export_store(self, ddtpstore, stream, charset='utf-8'):
+        """Export a DDTPStore to DDTP format."""
+        for package_info in ddtpstore.list_packages():
+            name, md5sum, description, translation = package_info
+            if translation:
+                args = dict(name=str(name),
+                            md5=str(md5sum),
+                            lang=str(ddtpstore.key),
+                            description=translation.encode(charset))
+                stream.write(self.ddtp_entry % args)
 
 
-def export_translations(module, translations_dir):
-    for store in module.values():
-        filename = os.path.join(translations_dir, 'Translation-%s' % store.key)
-        export_translation(store, file(filename, 'w'))
+class DDTPStore(object):
+    """A DDTP translation store wrapper."""
+
+    def __init__(self, ddtpmodule, key):
+        self.ddtpmodule = ddtpmodule
+        self.key = key
+        self._modules = {}
+
+    def moduleName(self, package_name):
+        """Pick the name of the module where the package will end up."""
+        if not package_name.startswith('lib'):
+            # Use the first letter of the package name.
+            return package_name[0]
+        else:
+            # A lot of packages are libraries and therefore have the prefix
+            # 'lib'.  In this case we will include the first letter of the
+            # library name.
+            return package_name[:4]
+
+    def add_package(self, name, md5sum, description, translation):
+        """Register a package in the store."""
+        info = (name, md5sum, description, translation)
+        modname = self.moduleName(name)
+        self._modules.setdefault(modname, []).append(info)
+
+    def list_packages(self):
+        """List all packages in the store.
+
+        Returns a list of tuples (name, md5sum, description, translation),
+        sorted by name.
+        """
+        packages = []
+        for modname in sorted(self._modules.keys()):
+            packages.extend(self._modules[modname])
+        return packages
+
+    def load(self):
+        """Load store state from Pootle database."""
+        self._modules.clear()
+        modules = self.ddtpmodule.folder.modules
+        modnames = sorted(modules.keys())
+        for modname in modnames:
+            self._modules[modname] = packages = []
+            module = modules[modname]
+            store = module[self.key]
+            for unit in store:
+                description, translation = unit.trans[0]
+                name, md5sum = unit.automatic_comments
+                packages.append((name, md5sum, description, translation))
+
+    def save(self):
+        """Save current state of the store to Pootle database."""
+        for modname, packages in self._modules.items():
+            try:
+                module = self.ddtpmodule.folder.modules[modname]
+            except KeyError:
+                module = self.ddtpmodule.folder.modules.add(modname)
+
+            if self.key is None:
+                store = module.template
+                if store is None:
+                    store = module.add(None)
+            else:
+                try:
+                    store = module[self.key]
+                except KeyError:
+                    store = module.add(self.key)
+
+            units = []
+            for (name, md5sum, description, translation) in packages:
+                trans = [(description, translation)]
+                unit = store.makeunit(trans)
+                unit.automatic_comments = [name, md5sum]
+                units.append(unit)
+            store.fill(units)
+            store.save()
+
+
 
 
 # --- executable part ---
@@ -172,6 +282,18 @@ sys.path.append('../../')
 from Pootle.storage.standard import Database as Database
 
 
+def gather_translation_files(translations_dir):
+    translation_fns = os.listdir(translations_dir)
+    translation_files = []
+    for translation_fn in translation_fns:
+        if '.' in translation_fn: # the file is probably an archive, skip it
+            continue
+        if not translation_fn.startswith('Translation-'):
+            continue
+        translation_file = file(os.path.join(translations_dir, translation_fn))
+        translation_files.append(translation_file)
+    return translation_files
+
 def do_import(template_path, translations_dir, pootle_db_dir):
     """Import DDTP templates and translations into Pootle.
 
@@ -182,42 +304,36 @@ def do_import(template_path, translations_dir, pootle_db_dir):
 
     XXX: perform merging!
     """
-    template = file(template_path)
-    translation_fns = os.listdir(translations_dir)
-    translation_files = []
-    for translation_fn in translation_fns:
-        if '.' in translation_fn: # the file is probably an archive, skip it
-            continue
-        if not translation_fn.startswith('Translation-'):
-            continue
-        translation_file = file(os.path.join(translations_dir, translation_fn))
-        translation_files.append(translation_file)
 
     db = Database(pootle_db_dir)
     try:
         folder = db.subfolders['ddtp']
     except KeyError: # Need to create folder.
         folder = db.subfolders.add('ddtp')
-    try:
-        module = folder.modules['ddtp']
-    except KeyError: # Need to create folder.
-        module = folder.modules.add('ddtp')
 
-    import_descriptions(module, template, translation_files)
+    module = DDTPModule(folder)
+    template = file(template_path)
+    module.import_template(template)
+    translation_files = gather_translation_files(translations_dir)
+    module.import_translations(translation_files)
 
 
-def do_export(pootle_dir, translations_dir):
+def do_export(pootle_db_dir, translations_dir):
     """Export DDTP translations from Pootle.
 
-    `pootle_dir` is the path to the Pootle .po store.
+    `pootle_db_dir` is the path to the Pootle .po store.
     Currently the project 'ddtp' is picked from there.
     `translations_dir` is the path to the directory where to
     put Translation-?? files.
     """
-    db = Database(pootle_dir)
-    folder = db.subfolders['ddtp']
-    module = folder.modules['ddtp']
-    export_translations(module, translations_dir)
+    db = Database(pootle_db_dir)
+    try:
+        folder = db.subfolders['ddtp']
+    except KeyError: # Need to create folder.
+        folder = db.subfolders.add('ddtp')
+
+    module = DDTPModule(folder)
+    module.export_to_ddtp(translations_dir)
 
 
 def main(argv=[]):

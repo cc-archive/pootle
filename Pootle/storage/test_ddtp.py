@@ -106,7 +106,7 @@ def test_parse_translation():
 
     >>> for (name, md5sum, description) in result:
     ...     print '%s (MD5: %s)' % (name, md5sum)
-    ...     print description
+    ...     print description.encode('utf-8')
     sample (MD5: f00f00f00f00f00f00f00f00f00f00f0)
     Beispiel
      Eines kleines Beispiel.
@@ -122,52 +122,52 @@ def test_parse_translation():
     """
 
 
-def test_import_descriptions():
-    """
-
-    >>> from Pootle.storage.ddtp import import_descriptions
-    >>> template = StringIO(sample_template)
-    >>> trans = StringIO(sample_translation)
-
-Some setup:
-
-    >>> from Pootle.storage.memory import Module, Database
-    >>> db = Database()
-    >>> db.languages._items['de'] = object() # XXX breaks abstraction.
-    >>> module = Module('ddtp', db)
-
-Do the import:
-
-    >>> import_descriptions(module, template, [trans])
-
-Let's examine the template:
-
-    >>> for unit in module.template:
-    ...     msgid, translation = unit.trans[0]
-    ...     name, md5sum = unit.automatic_comments
-    ...     print '%s (MD5: %s)' % (name, md5sum)
-    ...     print msgid[:20], '... -', translation and translation[:20]
-    abook (MD5: b3df98dd5a16801ef603bb31eff45bf6)
-    text-based ncurses a ... - None
-    aap (MD5: 709f30bc0912c0a4fd248e9ba50e6c78)
-    make-like "expert sy ... - None
-
-Now let's look at the translation:
-
-    >>> module.keys()
-    ['de']
-
-    >>> for unit in module['de']:
-    ...     msgid, translation = unit.trans[0]
-    ...     name, md5sum = unit.automatic_comments
-    ...     print '%s (MD5: %s)' % (name, md5sum)
-    ...     print msgid[:20], '... -', translation and translation[:20]
-    abook (MD5: b3df98dd5a16801ef603bb31eff45bf6)
-    text-based ncurses a ... - Ein textbasiertes Ad
-    aap (MD5: 709f30bc0912c0a4fd248e9ba50e6c78)
-    make-like "expert sy ... - None
-
-    """
+#def test_import_descriptions():
+#    """
+#
+#        >>> from Pootle.storage.ddtp import import_descriptions
+#        >>> template = StringIO(sample_template)
+#        >>> trans = StringIO(sample_translation)
+#
+#    Some setup:
+#
+#        >>> from Pootle.storage.memory import Module, Database
+#        >>> db = Database()
+#        >>> db.languages._items['de'] = object() # XXX breaks abstraction.
+#        >>> module = Module('ddtp', db)
+#
+#    Do the import:
+#
+#        >>> import_descriptions(module, template, [trans])
+#
+#    Let's examine the template:
+#
+#        >>> for unit in module.template:
+#        ...     msgid, translation = unit.trans[0]
+#        ...     name, md5sum = unit.automatic_comments
+#        ...     print '%s (MD5: %s)' % (name, md5sum)
+#        ...     print msgid[:20], '... -', translation and translation[:20]
+#        abook (MD5: b3df98dd5a16801ef603bb31eff45bf6)
+#        text-based ncurses a ... - None
+#        aap (MD5: 709f30bc0912c0a4fd248e9ba50e6c78)
+#        make-like "expert sy ... - None
+#
+#    Now let's look at the translation:
+#
+#        >>> module.keys()
+#        ['de']
+#
+#        >>> for unit in module['de']:
+#        ...     msgid, translation = unit.trans[0]
+#        ...     name, md5sum = unit.automatic_comments
+#        ...     print '%s (MD5: %s)' % (name, md5sum)
+#        ...     print msgid[:20], '... -', translation and translation[:20]
+#        abook (MD5: b3df98dd5a16801ef603bb31eff45bf6)
+#        text-based ncurses a ... - Ein textbasiertes Ad
+#        aap (MD5: 709f30bc0912c0a4fd248e9ba50e6c78)
+#        make-like "expert sy ... - None
+#
+#    """
 
 
 if __name__ == '__main__':
