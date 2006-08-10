@@ -5,6 +5,12 @@ class AbstractMapping(object):
     def __len__(self):
         return len(self.keys())
 
+    def get(self, key, default=None):
+        try:
+            return self[key]
+        except KeyError:
+            return default
+
     def items(self):
         return [(key, self[key]) for key in self.keys()]
 

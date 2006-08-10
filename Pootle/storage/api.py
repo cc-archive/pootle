@@ -98,6 +98,9 @@ class IMapping(Interface):
         """Return list of tuples (key, value)."""
         return [(String, object)]
 
+    def get(self, key, default=None):
+        """Get object by key, return None if not found."""
+
     def __getitem__(self, key):
         """Get object by key."""
         return object
