@@ -55,7 +55,8 @@ class FolderContainer(AbstractMapping):
         self.db = db
 
     def keys(self):
-        return os.listdir(self.root_path)
+        return [folder for folder in os.listdir(self.root_path)
+                if os.path.isdir(os.path.join(self.root_path, folder))]
 
     def __getitem__(self, key):
         if key in self.keys():

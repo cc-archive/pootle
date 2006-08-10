@@ -2,89 +2,167 @@
 """DDTP support.
 
 Use cases:
-  1) import DDTP strings to Pootle (or merge with existing ones)
-  2) export strings from Pootle to DDTP files
+  1) import DDTP strings to Pootle
+  2) import new templates from Packages
+  3) export strings from Pootle to DDTP files
 
 TODO:
-- merging!
-- unwrap and divide text into paragraphs for easier translation
-- divide module into several modules to make .po files smaller
+- Differentiate merging templates and merging translations.
+- Merge new templates with old translations.
 
 """
 
 import os
 import sys
 import md5
+import textwrap
 
-# Note: it appears that Debian's Packages is encoded in Latin-1, while
-# files from DDTP are encoded in UTF-8.
 
-def parse_template(f, charset='latin1'):
-    """Parse package descriptions from a Packages file.
+class DDTPPackage(object):
 
-    Returns a list [(name, md5sum, description)].
+    def __init__(self, name, md5sum, paras=None):
+        """Create a DDTP package.
 
-    `md5sum` is the MD5 checksum of the description.
-    """
-    packages = []
+        You may pass in `paras`, which should be a list of tuples:
+        [(description_paragraph, translated_paragraph)].
+        `translated_paragraph` may be None.
+        """
+        self.name = name
+        self.md5sum = md5sum
+        self.paras = paras
 
-    name = None
-    description = None
-    for line in f:
-        if line.startswith('Package: '):
-            name = line.split(' ', 1)[1].strip()
-        elif line.startswith('Description: '):
-            description = [line.split(' ', 1)[1]]
-        elif description:
-            if line.startswith(' '):
-                description.append(line) # Another line of the description.
+    def import_description(self, description, translation):
+        """Import RFC822-style description and translation."""
+        description_paras = self._split(description)
+        if translation:
+            translation_paras = self._split(translation)
+            assert len(description_paras) == len(translation_paras), \
+                   translation_paras
+        else:
+            translation_paras = [None] * len(description_paras)
+        self.paras = zip(description_paras, translation_paras)
+
+    def istranslated(self):
+        return bool(self.paras[0][1])
+
+    ddtp_entry_template = textwrap.dedent("""\
+    Package: %(name)s
+    Description-md5: %(md5)s
+    Description-%(lang)s: %(short)s
+    %(description)s
+    """)
+
+# Description format documentation can be found here:
+# http://www.debian.org/doc/debian-policy/ch-controlfields.html#s-f-Description
+
+    def export(self, lang_key, charset='utf-8'):
+        """Export to RFC822-style description."""
+        assert self.istranslated()
+        short = self.paras[0][1]
+        description = self._export_description(
+            [trans for desc, trans in self.paras[1:]])
+        args = dict(name=str(self.name),
+                    md5=str(self.md5sum),
+                    lang=str(lang_key),
+                    short=str(short),
+                    description=description.encode(charset))
+        return self.ddtp_entry_template % args
+
+    def _export_description(self, paras):
+        rows = []
+        wrapper = textwrap.TextWrapper(width=76, initial_indent=' ',
+                                       subsequent_indent=' ',
+                                       replace_whitespace=False)
+        wrapped_paras = []
+        for para in paras:
+            wrapped_lines = []
+            for line in para.splitlines():
+                if not line.startswith(' '): # Wrapping is allowed.
+                    line = wrapper.fill(line)
+                else:
+                    # Normally the leading space is added by the wrapper.
+                    line = ' ' + line
+                wrapped_lines.append(line)
+            wrapped_paras.append('\n'.join(wrapped_lines))
+        return '\n .\n'.join(wrapped_paras)
+
+    def _split(self, description):
+        lines = description.splitlines()
+        short_desc = lines[0]
+
+        paras = [] # list of paragraphs
+        para = '' # current paragraph
+        for line in lines[1:] + [' .']:
+            assert line[0] == ' '
+            line = line[1:] # Remove the leading space.
+            if line == '.':
+                paras.append(para)
+                para = ''
+            elif line[0].isspace():
+                para += '\n' + line
             else:
-                description = ''.join(description)
-                md5sum = md5.md5(description).hexdigest()
-                packages.append((name, md5sum, description.decode(charset)))
-                name = None
-                description = None
+                if para:
+                    para += ' ' + line
+                else:
+                    para = line
+        return [short_desc] + paras
 
-    if description:
-        description = ''.join(description)
-        md5sum = md5.md5(description).hexdigest()
-        packages.append((name, md5sum, description.decode(charset)))
+    def make_units(self, makeunit):
+        """Make a list of translation units for a package description.
 
-    return packages
+        `makeunit` is a callable that creates a translation
+        (typically SomeTranslationStore.makeunit).
+        """
+        units = []
+        for i, para in enumerate(self.paras):
+            unit = makeunit([para])
+            comment = '%s (%d/%d)  MD5: %s' % (self.name, i+1,
+                                                 len(self.paras), self.md5sum)
+            unit.automatic_comments = [comment]
+            units.append(unit)
+        return units
 
+    @staticmethod
+    def _parseComment(comment):
+        name, mid, note, md5sum = comment.split()
+        i, total = mid[1:-1].split('/')
+        return name, int(i), int(total), md5sum
 
-def parse_translation(f, charset='utf-8'):
-    """Parse a DDTP translation from a file.
+    @staticmethod
+    def parse_units(units):
+        """Parse an iterable of translation units into DDTPPackage objects.
 
-    Returns (lang, [(name, md5sum, description)]).
+        Note that you can just pass in a TranslationStore.
 
-    `md5sum` is the MD5 checksum of the description in English.
-    """
-    charset = 'utf-8' # The DDTP files seem to be in UTF-8.
-    packages = []
+        Returns a list of DDTPPackages.
+        """
+        packages = []
+        paras = []
+        for unit in units:
+            description, translation = unit.trans[0]
+            [comment] = unit.automatic_comments
+            name, i, total, md5sum = DDTPPackage._parseComment(comment)
+            paras.append(unit.trans[0])
 
-    name = None
-    description = None
-    for line in f:
-        if line.startswith('Package: '):
-            name = line.split(' ', 1)[1].strip()
-        elif line.startswith('Description-md5: '):
-            md5sum = line.split(' ', 1)[1].strip()
-        elif line.startswith('Description-'):
-            lang = line.split(':')[0].split('-')[1]
-            description = [line.split(' ', 1)[1]]
-        elif description:
-            if line.startswith(' '):
-                description.append(line) # Another line of the description.
+            # The following 'if' is purely for checking validity:
+            # check that the sequence of paragraphs has consistent metadata.
+            if i == 1: # first paragraph
+                p_name = name
+                p_i = 1
+                p_total = total
+                p_md5sum = md5sum
             else:
-                description = ''.join(description)
-                packages.append((name, md5sum, description.decode(charset)))
-                name = None
-                description = None
-    if description:
-        description = ''.join(description)
-        packages.append((name, md5sum, description.decode(charset)))
-    return lang, packages
+                p_i += 1
+                assert p_name == name, name
+                assert p_i == i, i
+                assert p_total == total, total
+                assert p_md5sum == md5sum, md5sum
+
+            if i == total: # Last paragraph, create a package.
+                package = DDTPPackage(name, md5sum, paras)
+                packages.append(package)
+                paras = []
+        return packages
 
 
 class DDTPModule(object):
@@ -108,9 +186,12 @@ class DDTPModule(object):
         """Import DDTP description translations into Pootle."""
         template_store = DDTPStore(self, None)
 
-        self.parsed_template = parse_template(template)
+        self.parsed_template = self.parse_template(template)
+        # TODO: This deserves to be inside DDTPStore.
         for (name, md5sum, description) in self.parsed_template:
-            template_store.add_package(name, md5sum, description, None)
+            package = DDTPPackage(name, md5sum)
+            package.import_description(description, None)
+            template_store.add_package(package)
         template_store.save()
 
     def import_translations(self, translations):
@@ -126,25 +207,81 @@ class DDTPModule(object):
         translations (e.g., Translation-de).
         """
         for translation in translations:
-            units = []
-            lang_key, parsed_translation = parse_translation(translation)
-            self.import_translation(lang_key, parsed_translation)
+            lang_key, parsed_translation = self.parse_translation(translation)
+            translation_store = DDTPStore(self, lang_key)
+            translation_store.import_store(self.parsed_template,
+                                           parsed_translation)
+            translation_store.save()
             break # XXX Process only one language; makes testing faster.
 
-    def import_translation(self, lang_key, parsed_translation):
-        """Import a single translation into Pootle."""
-        # Build a lookup dict.
-        lookup = {}
-        for (name, md5sum, description) in parsed_translation:
-            lookup[name, md5sum] = description
+    # Note: it appears that Debian's Packages is encoded in Latin-1, while
+    # files from DDTP are encoded in UTF-8.
 
-        translation_store = DDTPStore(self, lang_key)
-        for (name, md5sum, description) in self.parsed_template:
-            trans = [(description, )]
-            translation_store.add_package(name, md5sum, description,
-                                         lookup.get((name, md5sum)))
-            # TODO: mark fuzzy if lookup fails
-        translation_store.save()
+    def parse_template(self, f, charset='latin1'):
+        """Parse package descriptions from a Packages file.
+
+        Returns a list [(name, md5sum, description)].
+
+        `md5sum` is the MD5 checksum of the description.
+        """
+        packages = []
+
+        name = None
+        description = None
+        for line in f:
+            if line.startswith('Package: '):
+                name = line.split(' ', 1)[1].strip()
+            elif line.startswith('Description: '):
+                description = [line.split(' ', 1)[1]]
+            elif description:
+                if line.startswith(' '):
+                    description.append(line) # Another line of the description.
+                else:
+                    description = ''.join(description)
+                    md5sum = md5.md5(description).hexdigest()
+                    packages.append((name, md5sum, description.decode(charset)))
+                    name = None
+                    description = None
+
+        if description:
+            description = ''.join(description)
+            md5sum = md5.md5(description).hexdigest()
+            packages.append((name, md5sum, description.decode(charset)))
+
+        return packages
+
+
+    def parse_translation(self, f, charset='utf-8'):
+        """Parse a DDTP translation from a file.
+
+        Returns (lang, [(name, md5sum, description)]).
+
+        `md5sum` is the MD5 checksum of the description in English.
+        """
+        packages = []
+
+        name = None
+        description = None
+        for line in f:
+            if line.startswith('Package: '):
+                name = line.split(' ', 1)[1].strip()
+            elif line.startswith('Description-md5: '):
+                md5sum = line.split(' ', 1)[1].strip()
+            elif line.startswith('Description-'):
+                lang = line.split(':')[0].split('-')[1]
+                description = [line.split(' ', 1)[1]]
+            elif description:
+                if line.startswith(' '):
+                    description.append(line) # Another line of the description.
+                else:
+                    description = ''.join(description)
+                    packages.append((name, md5sum, description.decode(charset)))
+                    name = None
+                    description = None
+        if description:
+            description = ''.join(description)
+            packages.append((name, md5sum, description.decode(charset)))
+        return lang, packages
 
     # --- Export ---
 
@@ -163,7 +300,7 @@ class DDTPModule(object):
 
             fn = 'Translation-%s' % lang_key
             path = os.path.join(translations_dir, fn)
-            self.export_store(ddtpstore, file(path, 'w'))
+            ddtpstore.export_store(file(path, 'w'))
 
     def list_languages(self):
         """List all available languages."""
@@ -172,25 +309,13 @@ class DDTPModule(object):
         module = modules[modname]
         return module.keys()
 
-    ddtp_entry = """Package: %(name)s
-Description-md5: %(md5)s
-Description-%(lang)s: %(description)s
-"""
-
-    def export_store(self, ddtpstore, stream, charset='utf-8'):
-        """Export a DDTPStore to DDTP format."""
-        for package_info in ddtpstore.list_packages():
-            name, md5sum, description, translation = package_info
-            if translation:
-                args = dict(name=str(name),
-                            md5=str(md5sum),
-                            lang=str(ddtpstore.key),
-                            description=translation.encode(charset))
-                stream.write(self.ddtp_entry % args)
-
 
 class DDTPStore(object):
-    """A DDTP translation store wrapper."""
+    """A DDTP translation store wrapper.
+
+    Stores DDTP translations.  Provides methods to write the translations
+    to Pootle storage or to DDTP files.
+    """
 
     def __init__(self, ddtpmodule, key):
         self.ddtpmodule = ddtpmodule
@@ -208,17 +333,15 @@ class DDTPStore(object):
             # library name.
             return package_name[:4]
 
-    def add_package(self, name, md5sum, description, translation):
+    def add_package(self, package):
         """Register a package in the store."""
-        info = (name, md5sum, description, translation)
-        modname = self.moduleName(name)
-        self._modules.setdefault(modname, []).append(info)
+        modname = self.moduleName(package.name)
+        self._modules.setdefault(modname, []).append(package)
 
     def list_packages(self):
         """List all packages in the store.
 
-        Returns a list of tuples (name, md5sum, description, translation),
-        sorted by name.
+        Returns a list of DDTPPackages sorted by name.
         """
         packages = []
         for modname in sorted(self._modules.keys()):
@@ -231,13 +354,10 @@ class DDTPStore(object):
         modules = self.ddtpmodule.folder.modules
         modnames = sorted(modules.keys())
         for modname in modnames:
-            self._modules[modname] = packages = []
             module = modules[modname]
             store = module[self.key]
-            for unit in store:
-                description, translation = unit.trans[0]
-                name, md5sum = unit.automatic_comments
-                packages.append((name, md5sum, description, translation))
+            for package in DDTPPackage.parse_units(store):
+                self.add_package(package)
 
     def save(self):
         """Save current state of the store to Pootle database."""
@@ -249,24 +369,41 @@ class DDTPStore(object):
 
             if self.key is None:
                 store = module.template
-                if store is None:
-                    store = module.add(None)
             else:
-                try:
-                    store = module[self.key]
-                except KeyError:
-                    store = module.add(self.key)
+                store = module.get(self.key)
+            if store is None:
+                store = module.add(self.key)
 
             units = []
-            for (name, md5sum, description, translation) in packages:
-                trans = [(description, translation)]
-                unit = store.makeunit(trans)
-                unit.automatic_comments = [name, md5sum]
-                units.append(unit)
+            for package in packages:
+                units.extend(package.make_units(store.makeunit))
             store.fill(units)
             store.save()
 
+    def export_store(self, stream):
+        """Export a DDTPStore to DDTP format."""
+        for package in self.list_packages():
+            stream.write(package.export(self.key))
 
+    def import_store(self, parsed_template, parsed_translation):
+        """Import a DDTP-format translation into Pootle.
+
+        Overwrites current contents of the store.
+        TODO: merging
+
+        parsed_translation is a list of tuples (name, md5sum, description).
+        """
+        # Build a lookup dict.
+        lookup = {}
+        for (name, md5sum, description) in parsed_translation:
+            lookup[name, md5sum] = description
+
+        for (name, md5sum, description) in parsed_template:
+            package = DDTPPackage(name, md5sum)
+            translation = lookup.get((name, md5sum))
+            package.import_description(description, translation)
+            self.add_package(package)
+            # TODO: mark fuzzy by name if lookup fails.
 
 
 # --- executable part ---

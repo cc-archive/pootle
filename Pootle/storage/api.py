@@ -331,10 +331,10 @@ class ITranslationUnit(Interface):
     context = Unicode # context information
 
     # Comments; taken straight off translate.storage.po.pounit
-    # Maybe these should be put into a subobject?
+    # TODO: Maybe these should be put into a subobject?
     other_comments = [Unicode]     #  # this is another comment
     automatic_comments = [Unicode] #  #. comment extracted from the source code
-    source_comments = [Unicode]    #  #: sourcefile.xxx:35
+    source_comments = [Unicode]    #  #: sourcefile.c:35
     type_comments = [Unicode]      #  #, fuzzy
     visible_comments = [Unicode]   #  #_ note to translator  (this is nonsense)
     obsolete_messages = [Unicode]  #  #~ msgid ""
