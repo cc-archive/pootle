@@ -1,3 +1,80 @@
+2006-08-11 17:39  friedelwolff
+
+	* __version__.py: Version 0.9.2
+
+2006-08-11 16:48  friedelwolff
+
+	* pootle.prefs: Document the 'supportaddress' configuration option
+
+2006-08-11 14:56  friedelwolff
+
+	* po/pootle/: bn/jToolkit.po, bn/pootle.po, st/jToolkit.po,
+	  st/pootle.po, zh_CN/jToolkit.po, zh_CN/pootle.po,
+	  zh_HK/jToolkit.po, zh_HK/pootle.po: Add new translations for
+	  Bengali (bn), Sotho (st), Simplified Chinese (zh_CN), and
+	  Traditional Chinese (zh_HK)
+
+2006-08-11 14:38  friedelwolff
+
+	* po/pootle/: fi/jToolkit.po, fi/pootle.po, gl/jToolkit.po,
+	  gl/pootle.po, nb/pootle.po, nl/jToolkit.po, nl/pootle.po,
+	  ru/pootle.po, sl/jToolkit.po, sl/pootle.po, sw/jToolkit.po,
+	  ve/pootle.po, xh/pootle.po: Translation updates to existing
+	  languages from pootle.wordforge.org
+
+2006-08-11 13:15  dwaynebailey
+
+	* pootle.prefs, po/pootle/en_ZA/pootle.po: Add South African Enlish
+	  to the prefs file and add localisation of pootle.po
+
+2006-08-04 23:35  friedelwolff
+
+	* po/pootle/de/pootle.po: Commit from Pootle 0.10rc1 by user admin.
+	  240 of 240 messages translated (0 fuzzy).
+
+2006-08-04 23:27  friedelwolff
+
+	* po/pootle/ar/pootle.po: Commit from Pootle 0.10rc1 by user admin.
+	  240 of 240 messages translated
+
+2006-08-02 17:34  friedelwolff
+
+	* README: Add more information about external packages and debian
+	  (Cecilia Saltori)
+
+2006-07-28 09:05  friedelwolff
+
+	* templates/home.html: [backport]Don't loop twice through languages
+
+2006-07-27 16:42  friedelwolff
+
+	* pootlefile.py: [backport] Fix the case where there are no plurals
+	  or not enough plurals in msgstr
+
+2006-07-19 18:02  friedelwolff
+
+	* pootle.prefs: Small typo: Pootles -> Pootle
+
+2006-07-19 17:27  friedelwolff
+
+	* pootle.py, users.py, templates/login.html: Support introtext on
+	  login page, use for failed login, show introtext for register
+	  page
+
+2006-07-17 14:04  dwaynebailey
+
+	* README: Make it clearer how you can run outside of the default
+	  install using --prefsfile
+
+2006-07-17 11:32  dwaynebailey
+
+	* pootle.prefs: Avoid confusion of having two languages called
+	  'Chinese'
+
+2006-07-17 09:35  friedelwolff
+
+	* ChangeLog: Update ChangeLog before 0.9.1 release
+
 2006-07-17 08:57  friedelwolff
 
 	* projects.py: Don't print search to console to avoid encoding
