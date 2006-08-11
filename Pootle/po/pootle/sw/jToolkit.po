@@ -1,10 +1,11 @@
+#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: Wed Dec  1 15:59:55 2004\n"
-"PO-Revision-Date: 2005-12-15 02:21-0600\n"
-"Last-Translator: Atanas Cosmas Nkelame <atanas.c.nkelame@gmail.com>\n"
+"POT-Creation-Date: 2005-06-13 14:54-0500\n"
+"PO-Revision-Date: 2006-07-19 14:46+0200\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -143,4 +144,3 @@ msgstr ""
 #: web/session.py:314
 msgid "need to define the users or userprefs entry on the server config"
 msgstr ""
-

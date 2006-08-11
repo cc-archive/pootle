@@ -1,437 +1,498 @@
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: translate-pootle@lists.sourceforge.net\n"
 "POT-Creation-Date: 2006-06-14 10:14+0200\n"
-"PO-Revision-Date: 2006-06-14 14:24+0200\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"PO-Revision-Date: 2006-08-10 17:27+0200\n"
+"Last-Translator: Jussi Aalto <jta_lnx@dnainternet.net>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
-"X-Generator: Translate Toolkit 0.9rc1\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Pootle 0.10rc1\n"
 
-#: translatepage.py:56 translatepage.py:73
+#: translatepage.py:56
+#: translatepage.py:73
 #, python-format
 msgid "Pootle: translating %s into %s: %s"
-msgstr ""
+msgstr "Pootle: käännetään %s kielelle %s: %s"
 
 #: translatepage.py:62
 #, python-format
 msgid ""
 "%d/%d translated\n"
 "(%d blank, %d fuzzy)"
-msgstr ""
+msgstr "%d/%d käännetty\n"
+"(%d tyhjää, %d sumeata)"
 
-#: translatepage.py:74 adminpages.py:17 adminpages.py:53 adminpages.py:107
-#: adminpages.py:167 adminpages.py:250 adminpages.py:309 indexpage.py:35
-#: indexpage.py:54 indexpage.py:88 indexpage.py:145 indexpage.py:200
-#: indexpage.py:275 pagelayout.py:34 users.py:20 users.py:50 users.py:83
+#: translatepage.py:74
+#: adminpages.py:17
+#: adminpages.py:53
+#: adminpages.py:107
+#: adminpages.py:167
+#: adminpages.py:250
+#: adminpages.py:309
+#: indexpage.py:35
+#: indexpage.py:54
+#: indexpage.py:88
+#: indexpage.py:145
+#: indexpage.py:200
+#: indexpage.py:275
+#: pagelayout.py:34
+#: users.py:20
+#: users.py:50
+#: users.py:83
 #: users.py:104
 msgid "Pootle Demo"
-msgstr ""
+msgstr "Pootlen kokeiluversio"
 
 #: translatepage.py:87
 msgid "Original"
-msgstr ""
+msgstr "Alkuperäinen"
 
 #: translatepage.py:88
 msgid "Translation"
-msgstr ""
+msgstr "Käännös"
 
 #: translatepage.py:91
 msgid "Accept"
-msgstr ""
+msgstr "Hyväksy"
 
 #: translatepage.py:92
 msgid "Reject"
-msgstr ""
+msgstr "Hylkää"
 
-#: translatepage.py:95 indexpage.py:282
+#: translatepage.py:95
+#: indexpage.py:282
 msgid "Search"
-msgstr ""
+msgstr "Haku"
 
 #: translatepage.py:108
 msgid "End of batch"
-msgstr ""
+msgstr "Eräajon loppu"
 
 #: translatepage.py:110
 msgid "Click here to return to the index"
-msgstr ""
+msgstr "Napsauttamalla tästä pääset aloitussivulle"
 
-#: translatepage.py:122 translatepage.py:124
+#: translatepage.py:122
+#: translatepage.py:124
 msgid "Start"
-msgstr ""
+msgstr "Alkuun"
 
-#: translatepage.py:127 translatepage.py:129
+#: translatepage.py:127
+#: translatepage.py:129
 #, python-format
 msgid "Previous %d"
-msgstr ""
+msgstr "Edelliset %d"
 
 #: translatepage.py:130
 #, python-format
 msgid "Items %d to %d of %d"
-msgstr ""
+msgstr "Osat %d - %d / %d"
 
-#: translatepage.py:134 translatepage.py:136
+#: translatepage.py:134
+#: translatepage.py:136
 #, python-format
 msgid "Next %d"
-msgstr ""
+msgstr "Seuraavat %d"
 
-#: translatepage.py:138 translatepage.py:140
+#: translatepage.py:138
+#: translatepage.py:140
 msgid "End"
-msgstr ""
+msgstr "Loppuun"
 
 #: translatepage.py:155
 #, python-format
 msgid "checking %s"
-msgstr ""
+msgstr "tarkistetaan %s"
 
-#: translatepage.py:162 translatepage.py:165 indexpage.py:429 indexpage.py:432
+#: translatepage.py:162
+#: translatepage.py:165
+#: indexpage.py:429
+#: indexpage.py:432
 msgid "Assign Strings"
 msgstr ""
 
-#: translatepage.py:163 indexpage.py:431
+#: translatepage.py:163
+#: indexpage.py:431
 msgid "Assign to User"
 msgstr ""
 
-#: translatepage.py:164 indexpage.py:430
+#: translatepage.py:164
+#: indexpage.py:430
 msgid "Assign Action"
 msgstr ""
 
 #: translatepage.py:292
 #, python-format
 msgid "There are no items matching that search ('%s')"
-msgstr ""
+msgstr "Hakua vastaavia kohteita ei löydy ('%s')"
 
 #: translatepage.py:294
 msgid "You have finished going through the items you selected"
-msgstr ""
+msgstr "Olet käynyt läpi valitsemasi kohdat"
 
 #: translatepage.py:429
 msgid "Singular"
-msgstr ""
+msgstr "Yksikkö"
 
 #: translatepage.py:430
 msgid "Plural"
-msgstr ""
+msgstr "Monikko"
 
 #: translatepage.py:443
 msgid "Edit"
-msgstr ""
+msgstr "Muokkaa"
 
 #: translatepage.py:459
 msgid "Copy"
-msgstr ""
+msgstr "Kopioi"
 
-#: translatepage.py:460 translatepage.py:617
+#: translatepage.py:460
+#: translatepage.py:617
 msgid "Skip"
-msgstr ""
+msgstr "Ohita"
 
-#: translatepage.py:461 projects.py:111
+#: translatepage.py:461
+#: projects.py:111
 msgid "Suggest"
-msgstr ""
+msgstr "Ehdota"
 
 #: translatepage.py:462
 msgid "Submit"
-msgstr ""
+msgstr "Lähetä"
 
 #: translatepage.py:466
 msgid "Grow"
-msgstr ""
+msgstr "Korota"
 
 #: translatepage.py:467
 msgid "Shrink"
-msgstr ""
+msgstr "Madalla"
 
 #: translatepage.py:468
 msgid "Broaden"
-msgstr ""
+msgstr "Levennä"
 
 #: translatepage.py:469
 msgid "Narrow"
-msgstr ""
+msgstr "Kavenna"
 
 #: translatepage.py:470
 msgid "Reset"
-msgstr ""
+msgstr "Nollaa"
 
-#: translatepage.py:488 translatepage.py:574 translatepage.py:608
+#: translatepage.py:488
+#: translatepage.py:574
+#: translatepage.py:608
 #: translatepage.py:636
 #, python-format
 msgid "Plural Form %d"
-msgstr ""
+msgstr "Monikon muoto %d"
 
 #: translatepage.py:578
 msgid "Current Translation:"
-msgstr ""
+msgstr "Nykyinen käännös:"
 
 #: translatepage.py:589
 #, python-format
 msgid "Suggestion %d by %s:"
-msgstr ""
+msgstr "Ehdotuksen %d tehnyt %s:"
 
 #: translatepage.py:591
 #, python-format
 msgid "Suggestion %d:"
-msgstr ""
+msgstr "Ehdotus %d:"
 
 #: translatepage.py:594
 #, python-format
 msgid "Suggestion by %s:"
-msgstr ""
+msgstr "Ehdottanut %s:"
 
 #: translatepage.py:596
 msgid "Suggestion:"
-msgstr ""
+msgstr "Ehdotus:"
 
-#: adminpages.py:25 adminpages.py:61 adminpages.py:115 adminpages.py:175
+#: adminpages.py:25
+#: adminpages.py:61
+#: adminpages.py:115
+#: adminpages.py:175
 #: pagelayout.py:18
 msgid "Home"
-msgstr ""
+msgstr "Etusivu"
 
-#: adminpages.py:26 adminpages.py:177
+#: adminpages.py:26
+#: adminpages.py:177
 msgid "Users"
-msgstr ""
+msgstr "Käyttäjät"
 
-#: adminpages.py:27 adminpages.py:63 indexpage.py:52
+#: adminpages.py:27
+#: adminpages.py:63
+#: indexpage.py:52
 msgid "Languages"
-msgstr ""
+msgstr "Kielet"
 
-#: adminpages.py:28 adminpages.py:117 indexpage.py:53
+#: adminpages.py:28
+#: adminpages.py:117
+#: indexpage.py:53
 msgid "Projects"
-msgstr ""
+msgstr "Projektit"
 
 #: adminpages.py:29
 msgid "General options"
-msgstr ""
+msgstr "Yleiset asetukset"
 
-#: adminpages.py:30 users.py:108
+#: adminpages.py:30
+#: users.py:108
 msgid "Option"
-msgstr ""
+msgstr "Valinta"
 
-#: adminpages.py:31 users.py:109
+#: adminpages.py:31
+#: users.py:109
 msgid "Current value"
-msgstr ""
+msgstr "Nykyinen arvo"
 
-#: adminpages.py:32 adminpages.py:64 adminpages.py:118 adminpages.py:178
+#: adminpages.py:32
+#: adminpages.py:64
+#: adminpages.py:118
+#: adminpages.py:178
 #: users.py:121
 msgid "Save changes"
-msgstr ""
+msgstr "Tallenna muutokset"
 
 #: adminpages.py:36
 msgid "Title"
-msgstr ""
+msgstr "Otsikko"
 
 #: adminpages.py:36
 msgid "Description"
-msgstr ""
+msgstr "Kuvaus"
 
 #: adminpages.py:36
 msgid "Base URL"
-msgstr ""
+msgstr "Perus-URL"
 
 #: adminpages.py:36
 msgid "Home Page"
-msgstr ""
+msgstr "Kotisivu"
 
-#: adminpages.py:62 adminpages.py:116 adminpages.py:176
+#: adminpages.py:62
+#: adminpages.py:116
+#: adminpages.py:176
 msgid "Main admin page"
-msgstr ""
+msgstr "Hallinnan pääsivu"
 
 #: adminpages.py:68
 msgid "ISO Code"
-msgstr ""
+msgstr "ISO-koodi"
 
-#: adminpages.py:69 adminpages.py:123 adminpages.py:183 users.py:59
+#: adminpages.py:69
+#: adminpages.py:123
+#: adminpages.py:183
+#: users.py:59
 msgid "Full Name"
-msgstr ""
+msgstr "Koko nimi"
 
 #: adminpages.py:69
 msgid "(add language here)"
-msgstr ""
+msgstr "(lisää kieli tähän)"
 
 #: adminpages.py:70
 msgid "Special Chars"
-msgstr ""
+msgstr "Erikoismerkit"
 
 #: adminpages.py:70
 msgid "(special characters)"
-msgstr ""
+msgstr "(erikoismerkit)"
 
-#: adminpages.py:71 indexpage.py:161
+#: adminpages.py:71
+#: indexpage.py:161
 msgid "Number of Plurals"
-msgstr ""
+msgstr "Monikoiden määrä"
 
 #: adminpages.py:71
 msgid "(number of plurals)"
-msgstr ""
+msgstr "(monikoiden määrä)"
 
-#: adminpages.py:72 indexpage.py:162
+#: adminpages.py:72
+#: indexpage.py:162
 msgid "Plural Equation"
-msgstr ""
+msgstr "Monikon kaava"
 
 #: adminpages.py:72
 msgid "(plural equation)"
-msgstr ""
+msgstr "(monikon kaava)"
 
 #: adminpages.py:73
 msgid "Remove Language"
-msgstr ""
+msgstr "Poista kieli"
 
-#: adminpages.py:87 adminpages.py:148 adminpages.py:208 adminpages.py:367
+#: adminpages.py:87
+#: adminpages.py:148
+#: adminpages.py:208
+#: adminpages.py:367
 #, python-format
 msgid "Remove %s"
-msgstr ""
+msgstr "Poista %s"
 
 #: adminpages.py:105
 msgid "Standard"
-msgstr ""
+msgstr "Normaali"
 
 #: adminpages.py:122
 msgid "Project Code"
-msgstr ""
+msgstr "Projektin koodi"
 
 #: adminpages.py:123
 msgid "(add project here)"
-msgstr ""
+msgstr "(lisää projekti tähän)"
 
 #: adminpages.py:124
 msgid "Project Description"
-msgstr ""
+msgstr "Projektin kuvaus"
 
 #: adminpages.py:124
 msgid "(project description)"
-msgstr ""
+msgstr "(projektin kuvaus)"
 
 #: adminpages.py:125
 msgid "Checker Style"
-msgstr ""
+msgstr "Tarkistustyyli"
 
 #: adminpages.py:126
 msgid "Create MO Files"
-msgstr ""
+msgstr "Luo MO-tiedostot"
 
 #: adminpages.py:127
 msgid "Remove Project"
-msgstr ""
+msgstr "Poista projekti"
 
-#: adminpages.py:182 users.py:28
+#: adminpages.py:182
+#: users.py:28
 msgid "Login"
-msgstr ""
+msgstr "Tunnus"
 
-#: adminpages.py:183 users.py:253
+#: adminpages.py:183
+#: users.py:253
 msgid "(add full name here)"
-msgstr ""
+msgstr "(lisää koko nimi tähän)"
 
-#: adminpages.py:184 users.py:56
+#: adminpages.py:184
+#: users.py:56
 msgid "Email Address"
-msgstr ""
+msgstr "Sähköpostiosoite"
 
-#: adminpages.py:184 users.py:256
+#: adminpages.py:184
+#: users.py:256
 msgid "(add email here)"
-msgstr ""
+msgstr "(lisää sähköpostiosoite tähän)"
 
-#: adminpages.py:185 users.py:62
+#: adminpages.py:185
+#: users.py:62
 msgid "Password"
-msgstr ""
+msgstr "Salasana"
 
-#: adminpages.py:185 users.py:250
+#: adminpages.py:185
+#: users.py:250
 msgid "(add password here)"
-msgstr ""
+msgstr "(lisää salasana tähän)"
 
 #: adminpages.py:186
 msgid "Activated"
-msgstr ""
+msgstr "Aktivoitu"
 
 #: adminpages.py:186
 msgid "Activate New User"
-msgstr ""
+msgstr "Aktivoi uusi käyttäjä"
 
 #: adminpages.py:187
 msgid "Remove User"
-msgstr ""
+msgstr "Poista käyttäjä"
 
 #: adminpages.py:240
 msgid "Back to main page"
-msgstr ""
+msgstr "Takaisin pääsivulle"
 
 #: adminpages.py:241
 msgid "Existing languages"
-msgstr ""
+msgstr "Nykyiset kielet"
 
 #: adminpages.py:244
 msgid "Update Languages"
-msgstr ""
+msgstr "Päivitä kielet"
 
 #: adminpages.py:245
 #, python-format
 msgid "Pootle Admin: %s"
-msgstr ""
+msgstr "Pootle-hallinta: %s"
 
-#: adminpages.py:246 adminpages.py:306
+#: adminpages.py:246
+#: adminpages.py:306
 msgid "You do not have the rights to administer this project."
-msgstr ""
+msgstr "Sinulla ei ole tämän projektin ylläpito-oikeuksia."
 
 #: adminpages.py:247
 msgid "Update from templates"
-msgstr ""
+msgstr "Päivitä mallitiedostoista"
 
 #: adminpages.py:255
 msgid "Add Language"
-msgstr ""
+msgstr "Lisää kieli"
 
 #: adminpages.py:286
 #, python-format
 msgid "Pootle Admin: %s %s"
-msgstr ""
+msgstr "Pootle-hallinta: %s %s"
 
 #: adminpages.py:287
 msgid "Project home page"
-msgstr ""
+msgstr "Projektin kotisivu"
 
 #: adminpages.py:305
 #, python-format
 msgid "Cannot set rights for username %s - user does not exist"
-msgstr ""
+msgstr "Käyttäjän %s oikeuksia ei voida asettaa - käyttäjää ei ole olemassa"
 
 #: adminpages.py:322
 msgid "This is a GNU-style project (one directory, files named per language)."
-msgstr ""
+msgstr "Tämä on GNU-tyylinen projekti (yksi hakemisto, tiedostonimet kielen mukaan)."
 
 #: adminpages.py:324
 msgid "This is a standard style project (one directory per language)."
-msgstr ""
+msgstr "Tämä on normaalityylinen projekti (yksi hakemisto per kieli)."
 
 #: adminpages.py:325
 msgid "User Permissions"
-msgstr ""
+msgstr "Käyttöoikeudet"
 
-#: adminpages.py:326 users.py:53 users.py:86
+#: adminpages.py:326
+#: users.py:53
+#: users.py:86
 msgid "Username"
-msgstr ""
+msgstr "Käyttäjätunnus"
 
 #: adminpages.py:327
 msgid "(select to add user)"
-msgstr ""
+msgstr "(valitse lisätäksesi käyttäjän)"
 
 #: adminpages.py:328
 msgid "Rights"
-msgstr ""
+msgstr "Oikeudet"
 
-#: adminpages.py:329 indexpage.py:864
+#: adminpages.py:329
+#: indexpage.py:864
 msgid "Remove"
-msgstr ""
+msgstr "Poista"
 
 #: adminpages.py:349
 msgid "Update Rights"
-msgstr ""
+msgstr "Päivitä oikeudet"
 
 #: indexpage.py:28
 msgid "About Pootle"
-msgstr ""
+msgstr "Tietoja Pootlesta"
 
 #: indexpage.py:29
 msgid ""
@@ -440,147 +501,155 @@ msgid ""
 "you can download it and run your own copy if you like. You can also help "
 "participate in the development in many ways (you don't have to be able to "
 "program)."
-msgstr ""
+msgstr "<strong>Pootle</strong> on yksinkertainen www-portaali jonka avulla voit <strong>suomentaa</strong>! Koska Pootle on <strong>vapaata ohjelmistoa</strong>, voit ladata sen verkosta ja käyttää omaa kopiotasi niin kuin haluat. Voit myös osallistua kehitystyöhön monella eri tavalla (ohjelmointitaidot eivät ole välttämättömiä)."
 
 #: indexpage.py:30
 msgid ""
 "The Pootle project itself is hosted at <a href=\"http://translate."
 "sourceforge.net/\">translate.sourceforge.net</a> where you can find the "
 "details about source code, mailing lists etc."
-msgstr ""
+msgstr "Itse Pootle-projektia isännöidään osoitteessa <a href=\"http://translate.sourceforge.net/\">translate.sourceforge.net</a>, mistä löytyy lisätietoa lähdekoodista, postituslistoista jne."
 
 #: indexpage.py:31
 msgid ""
 "The name stands for <b>PO</b>-based <b>O</b>nline <b>T</b>ranslation / <b>L</"
 "b>ocalization <b>E</b>ngine, but you may need to read <a href=\"http://www."
 "thechestnut.com/flumps.htm\">this</a>."
-msgstr ""
+msgstr "Nimi Pootle tulee sanoista <b>PO</b>-based <b>O</b>nline <b>T</b>ranslation / <b>L</b>ocalization <b>E</b>ngine, mutta kannattanee lukea <a href=\"http://www.thechestnut.com/flumps.htm\">tämä</a>."
 
 #: indexpage.py:32
 msgid "Versions"
-msgstr ""
+msgstr "Versiot"
 
 #: indexpage.py:33
 #, python-format
 msgid ""
 "This site is running:<br />Pootle %s<br />Translate Toolkit %s<br />jToolkit "
 "%s<br />Python %s (on %s/%s)"
-msgstr ""
+msgstr "Tällä sivustolla on käytössä:<br />Pootle %s<br />Translate Toolkit %s<br />jToolkit %s<br />Python %s (alustana %s/%s)"
 
 #: indexpage.py:49
 msgid "Pootle"
-msgstr ""
+msgstr "Pootle"
 
 #: indexpage.py:51
 msgid "About this Pootle server"
-msgstr ""
+msgstr "Tietoja tästä Pootle-palvelimesta"
 
 #: indexpage.py:83
 #, python-format
 msgid "User Page for: %s"
-msgstr ""
+msgstr "Käyttäjän sivut: %s"
 
 #: indexpage.py:85
 msgid "Change options"
-msgstr ""
+msgstr "Vaihda asetuksia"
 
 #: indexpage.py:86
 msgid "Admin page"
-msgstr ""
+msgstr "Hallintasivu"
 
 #: indexpage.py:87
 msgid "Quick Links"
-msgstr ""
+msgstr "Pikalinkit"
 
-#: indexpage.py:91 indexpage.py:202
+#: indexpage.py:91
+#: indexpage.py:202
 msgid "Please click on 'Change options' and select some languages and projects"
-msgstr ""
+msgstr "Napsauta \"Vaihda asetuksia\" ja valitse haluamasi kielet ja projektit"
 
 #: indexpage.py:109
 #, python-format
 msgid "%s %s"
-msgstr ""
+msgstr "%s %s"
 
 #: indexpage.py:140
 #, python-format
 msgid "%d project, average %d%% translated"
 msgid_plural "%d projects, average %d%% translated"
-msgstr[0] ""
-msgstr[1] ""
+msgstr "%d projekti, keskimäärin %d%% käännetty"
 
-#: indexpage.py:142 indexpage.py:197
+#: indexpage.py:142
+#: indexpage.py:197
 #, python-format
 msgid "Pootle: %s"
-msgstr ""
+msgstr "Pootle: %s"
 
-#: indexpage.py:144 indexpage.py:199 pagelayout.py:22 pagelayout.py:107
+#: indexpage.py:144
+#: indexpage.py:199
+#: pagelayout.py:22
+#: pagelayout.py:107
 msgid "Admin"
-msgstr ""
+msgstr "Hallinta"
 
 #: indexpage.py:158
 msgid "Language Code"
-msgstr ""
+msgstr "Kielikoodi"
 
 #: indexpage.py:159
 msgid "Language Name"
-msgstr ""
+msgstr "Kielen nimi"
 
 #: indexpage.py:195
 #, python-format
 msgid "%d language, average %d%% translated"
 msgid_plural "%d languages, average %d%% translated"
-msgstr[0] ""
-msgstr[1] ""
+msgstr "%d kieli, keskimäärin %d%% käännetty"
 
-#: indexpage.py:228 pagelayout.py:169
+#: indexpage.py:228
+#: pagelayout.py:169
 #, python-format
 msgid "%d file"
 msgid_plural "%d files"
-msgstr[0] ""
-msgstr[1] ""
+msgstr "%d tiedosto"
 
-#: indexpage.py:229 indexpage.py:861 pagelayout.py:170
+#: indexpage.py:229
+#: indexpage.py:861
+#: pagelayout.py:170
 #, python-format
 msgid "%d/%d words (%d%%) translated"
-msgstr ""
+msgstr "%d/%d sanaa (%d%%) käännetty"
 
-#: indexpage.py:230 indexpage.py:860 indexpage.py:862
+#: indexpage.py:230
+#: indexpage.py:860
+#: indexpage.py:862
 #, python-format
 msgid "[%d/%d strings]"
-msgstr ""
+msgstr "[%d/%d merkkijonoa]"
 
 #: indexpage.py:273
 #, python-format
 msgid "Pootle: Project %s, Language %s"
-msgstr ""
+msgstr "Pootle: Projekti %s, kieli %s"
 
 #: indexpage.py:325
 msgid "Cannot upload file, no file attached"
-msgstr ""
+msgstr "Tiedoston lähetys ei onnistu, liitetiedosto puuttuu"
 
 #: indexpage.py:331
 msgid "Can only upload PO files and zips of PO files"
-msgstr ""
+msgstr "Vain PO-tiedostoja ja zip-pakattuja PO-tiedostoja voi lähettää"
 
 #: indexpage.py:437
 msgid "goals"
-msgstr ""
+msgstr "tavoitteet"
 
 #: indexpage.py:437
 msgid "Enter goal name"
-msgstr ""
+msgstr "Anna tavoitteen nimi"
 
 #: indexpage.py:437
 msgid "Add Goal"
-msgstr ""
+msgstr "Lisää tavoite"
 
-#: indexpage.py:441 indexpage.py:443
+#: indexpage.py:441
+#: indexpage.py:443
 msgid "Upload File"
-msgstr ""
+msgstr "Lähetä tiedosto"
 
 #: indexpage.py:442
 msgid "Select file to upload"
-msgstr ""
+msgstr "Valitse lähetettävä tiedosto"
 
 #: indexpage.py:545
 msgid "Not in a goal"
@@ -588,39 +657,39 @@ msgstr ""
 
 #: indexpage.py:566
 msgid "Add User"
-msgstr ""
+msgstr "Lisää käyttäjä"
 
 #: indexpage.py:601
 msgid "PO file"
-msgstr ""
+msgstr "PO-tiedosto"
 
 #: indexpage.py:605
 msgid "XLIFF file"
-msgstr ""
+msgstr "XLIFF-tiedosto"
 
 #: indexpage.py:609
 msgid "Qt .ts file"
-msgstr ""
+msgstr "Qt .ts -tiedosto"
 
 #: indexpage.py:613
 msgid "CSV file"
-msgstr ""
+msgstr "CSV-tiedosto"
 
 #: indexpage.py:618
 msgid "MO file"
-msgstr ""
+msgstr "MO-tiedosto"
 
 #: indexpage.py:622
 msgid "Update"
-msgstr ""
+msgstr "Päivitä"
 
 #: indexpage.py:658
 msgid "All Strings"
-msgstr ""
+msgstr "Kaikki merkkijonot"
 
 #: indexpage.py:658
 msgid "Untranslated"
-msgstr ""
+msgstr "Kääntämättömät"
 
 #: indexpage.py:658
 msgid "Unassigned"
@@ -632,7 +701,7 @@ msgstr ""
 
 #: indexpage.py:665
 msgid "Set Goal"
-msgstr ""
+msgstr "Aseta tavoite"
 
 #: indexpage.py:670
 msgid "Assign To"
@@ -640,195 +709,195 @@ msgstr ""
 
 #: indexpage.py:699
 msgid "Show Tracks"
-msgstr ""
+msgstr "Näytä seuranta"
 
 #: indexpage.py:699
 msgid "Hide Tracks"
-msgstr ""
+msgstr "Piilota seuranta"
 
 #: indexpage.py:700
 msgid "Show Checks"
-msgstr ""
+msgstr "Näytä tarkistukset"
 
 #: indexpage.py:700
 msgid "Hide Checks"
-msgstr ""
+msgstr "Piilota tarkistukset"
 
 #: indexpage.py:701
 msgid "Show Goals"
-msgstr ""
+msgstr "Näytä tavoitteet"
 
 #: indexpage.py:701
 msgid "Hide Goals"
-msgstr ""
+msgstr "Piilota tavoitteet"
 
 #: indexpage.py:702
 msgid "Show Assigns"
-msgstr ""
+msgstr "Näytä tehtäväosoitukset"
 
 #: indexpage.py:702
 msgid "Hide Assigns"
-msgstr ""
+msgstr "Piilota tehtäväosoitukset"
 
 #: indexpage.py:711
 #, python-format
 msgid "All Goals: %s"
-msgstr ""
+msgstr "Kaikki tavoitteet: %s"
 
 #: indexpage.py:717
 msgid "Translate My Strings"
-msgstr ""
+msgstr "Käännä omia merkkijonoja"
 
 #: indexpage.py:719
 msgid "View My Strings"
-msgstr ""
+msgstr "Näytä omat merkkijonot"
 
 #: indexpage.py:724
 msgid "No strings assigned to you"
-msgstr ""
+msgstr "Ei osoitettuja merkkijonoja"
 
 #: indexpage.py:728
 msgid "Quick Translate My Strings"
-msgstr ""
+msgstr "Omien merkkijonojen pikakäännös"
 
 #: indexpage.py:732
 msgid "No untranslated strings assigned to you"
-msgstr ""
+msgstr "Ei osoitettuja kääntämättömiä merkkijonoja"
 
 #: indexpage.py:736
 msgid "Review Suggestions"
-msgstr ""
+msgstr "Tarkasta ehdotuksia"
 
 #: indexpage.py:738
 msgid "View Suggestions"
-msgstr ""
+msgstr "Katsele ehdotuksia"
 
 #: indexpage.py:743
 msgid "Quick Translate"
-msgstr ""
+msgstr "Pikakäännös"
 
 #: indexpage.py:745
 msgid "View Untranslated"
-msgstr ""
+msgstr "Näytä kääntämättömät"
 
 #: indexpage.py:749
 msgid "No untranslated items"
-msgstr ""
+msgstr "Ei kääntämättömiä kohtia"
 
 #: indexpage.py:752
 msgid "Translate All"
-msgstr ""
+msgstr "Käännä kaikki"
 
 #: indexpage.py:767
 msgid "ZIP of goal"
-msgstr ""
+msgstr "Tavoite ZIP-tiedostona"
 
 #: indexpage.py:769
 msgid "ZIP of folder"
-msgstr ""
+msgstr "Kansio ZIP-tiedostona"
 
 #: indexpage.py:776
 msgid "Generate SDF"
-msgstr ""
+msgstr "Luo SDF"
 
 #: indexpage.py:829
 #, python-format
 msgid "%d string (%d%%) failed"
 msgid_plural "%d strings (%d%%) failed"
-msgstr[0] ""
-msgstr[1] ""
+msgstr "%d merkkijono (%d%%) epäonnistunut"
 
 #: indexpage.py:859
 #, python-format
 msgid "%d/%d words (%d%%) assigned"
-msgstr ""
+msgstr "%d/%d sanaa (%d%%) osoitettuna"
 
 #: pagelayout.py:19
 msgid "All projects"
-msgstr ""
+msgstr "Kaikki projektit"
 
 #: pagelayout.py:20
 msgid "All languages"
-msgstr ""
+msgstr "Kaikki kielet"
 
 #: pagelayout.py:21
 msgid "My account"
-msgstr ""
+msgstr "Oma käyttäjätili"
 
 #: pagelayout.py:23
 msgid "Docs & help"
-msgstr ""
+msgstr "Dokumentit & ohjeet"
 
 #: pagelayout.py:24
 msgid "Log out"
-msgstr ""
+msgstr "Kirjaudu ulos"
 
 #: pagelayout.py:25
 msgid "Log in"
-msgstr ""
+msgstr "Kirjaudu sisään"
 
 #. l10n: Verb, as in "to register"
 #: pagelayout.py:27
 msgid "Register"
-msgstr ""
+msgstr "Rekisteröidy"
 
 #: pagelayout.py:28
 msgid "Activate"
-msgstr ""
+msgstr "Aktivoi"
 
 #: pagelayout.py:96
 msgid "All goals"
-msgstr ""
+msgstr "Kaikki tavoitteet"
 
 #: pagelayout.py:167
 #, python-format
 msgid "%d/%d files"
-msgstr ""
+msgstr "%d/%d tiedostoa"
 
 #: pagelayout.py:171
 #, python-format
 msgid "%d/%d strings"
-msgstr ""
+msgstr "%d/%d merkkijonoa"
 
-#: pootle.py:228 pootle.py:254
+#: pootle.py:228
+#: pootle.py:254
 msgid "Redirecting to login..."
-msgstr ""
+msgstr "Uudelleenohjataan kirjautumissivulle..."
 
 #: pootle.py:231
 msgid "Need to log in to access home page"
-msgstr ""
+msgstr "Kotisivulle pääsee vain sisäänkirjautuneena"
 
 #: pootle.py:257
 msgid "Need to log in to access admin page"
-msgstr ""
+msgstr "Hallintasivulle pääsee vain sisäänkirjautuneena"
 
 #: pootle.py:264
 msgid "Redirecting to home..."
-msgstr ""
+msgstr "Uudelleenohjataan kotisivulle..."
 
 #: pootle.py:267
 msgid "You do not have the rights to administer pootle."
-msgstr ""
+msgstr "Sinulla ei ole Pootlen hallintaoikeuksia."
 
 #: projects.py:110
 msgid "View"
-msgstr ""
+msgstr "Katselu"
 
 #: projects.py:112
 msgid "Translate"
-msgstr ""
+msgstr "Käännös"
 
 #: projects.py:113
 msgid "Review"
-msgstr ""
+msgstr "Tarkastus"
 
 #: projects.py:114
 msgid "Archive"
-msgstr ""
+msgstr "Arkistointi"
 
 #: projects.py:115
 msgid "Compile PO files"
-msgstr ""
+msgstr "PO-tiedostojen kääntö"
 
 #: projects.py:116
 msgid "Assign"
@@ -836,201 +905,205 @@ msgstr ""
 
 #: projects.py:117
 msgid "Administrate"
-msgstr ""
+msgstr "Hallinta"
 
 #: projects.py:173
 msgid "You cannot remove the \"nobody\" or \"default\" user"
-msgstr ""
+msgstr "Käyttäjää \"nobody\" tai \"default\" ei voi poistaa"
 
-#: projects.py:310 projects.py:370
+#: projects.py:310
+#: projects.py:370
 msgid "You do not have rights to alter goals here"
-msgstr ""
+msgstr "Käyttäjäoikeuksillasi ei voi muuttaa näitä tavoitteita"
 
 #: projects.py:422
 msgid "You do not have rights to upload files here"
-msgstr ""
+msgstr "Käyttäjäoikeuksillasi ei voi lähettää tiedostoja tänne"
 
 #: projects.py:425
 msgid "You do not have rights to upload new files here"
-msgstr ""
+msgstr "Käyttäjäoikeuksillasi ei voi lähettää uusia tiedostoja tänne"
 
 #: projects.py:434
 msgid "You do not have rights to update files here"
-msgstr ""
+msgstr "Käyttäjäoikeuksillasi ei voi päivittää näitä tiedostoja"
 
-#: projects.py:822 projects.py:863
+#: projects.py:822
+#: projects.py:863
 msgid "You do not have rights to alter assignments here"
-msgstr ""
+msgstr "Käyttäjäoikeuksillasi ei voi muuttaa näitä tavoitteita"
 
 #: projects.py:1047
 msgid "You do not have rights to change translations here"
-msgstr ""
+msgstr "Käyttäjäoikeuksillasi ei voi muuttaa käännöksiä täällä"
 
 #: projects.py:1057
 msgid "You do not have rights to suggest changes here"
-msgstr ""
+msgstr "Käyttäjäoikeuksillasi ei voi ehdottaa muutoksia täällä"
 
-#: projects.py:1073 projects.py:1096
+#: projects.py:1073
+#: projects.py:1096
 msgid "You do not have rights to review suggestions here"
-msgstr ""
+msgstr "Käyttäjäoikeuksillasi ei voi tarkastaa ehdotuksia täällä"
 
 #: users.py:18
 msgid "Login to Pootle"
-msgstr ""
+msgstr "Kirjaudu Pootleen"
 
 #: users.py:23
 msgid "Username:"
-msgstr ""
+msgstr "Käyttäjätunnus:"
 
 #: users.py:25
 msgid "Password:"
-msgstr ""
+msgstr "Salasana:"
 
 #: users.py:26
 msgid "Language:"
-msgstr ""
+msgstr "Kieli:"
 
 #: users.py:35
 msgid "Default"
-msgstr ""
+msgstr "Oletus"
 
 #: users.py:46
 msgid "Please enter your registration details"
-msgstr ""
+msgstr "Syötä rekisteröintitietosi"
 
 #: users.py:47
 msgid "Pootle Registration"
-msgstr ""
+msgstr "Pootle-rekisteröinti"
 
-#: users.py:54 users.py:87
+#: users.py:54
+#: users.py:87
 msgid "Your requested username"
-msgstr ""
+msgstr "Haluamasi käyttäjätunnus"
 
 #: users.py:57
 msgid "Must be a valid email address"
-msgstr ""
+msgstr "Sähköpostiosoitteen pitää olla oikea"
 
 #: users.py:60
 msgid "Your full name"
-msgstr ""
+msgstr "Koko nimesi"
 
 #: users.py:63
 msgid "Your desired password"
-msgstr ""
+msgstr "Toivomasi salasana"
 
 #: users.py:65
 msgid "Register Account"
-msgstr ""
+msgstr "Rekisteröi käyttäjätili"
 
 #: users.py:74
 msgid "Please enter your activation details"
-msgstr ""
+msgstr "Syötä aktivointitietosi"
 
 #: users.py:79
 msgid "Pootle Account Activation"
-msgstr ""
+msgstr "Pootle-käyttäjätilin aktivointi"
 
 #: users.py:89
 msgid "Activation Code"
-msgstr ""
+msgstr "Aktivointikoodi"
 
 #: users.py:90
 msgid "The activation code you received"
-msgstr ""
+msgstr "Saamasi aktivointikoodi"
 
 #: users.py:92
 msgid "Activate Account"
-msgstr ""
+msgstr "Aktivoi käyttäjätili"
 
 #: users.py:102
 #, python-format
 msgid "Options for: %s"
-msgstr ""
+msgstr "Asetukset käyttäjälle: %s"
 
 #: users.py:107
 msgid "Personal Details"
-msgstr ""
+msgstr "Omat tiedot"
 
 #: users.py:110
 msgid "Name"
-msgstr ""
+msgstr "Nimi"
 
 #: users.py:112
 msgid "Email"
-msgstr ""
+msgstr "Sähköposti"
 
 #: users.py:114
 msgid "Translation Interface Configuration"
-msgstr ""
+msgstr "Käännösliittymän asetukset"
 
 #: users.py:115
 msgid "User Interface language"
-msgstr ""
+msgstr "Käyttöliittymän kieli"
 
 #: users.py:116
 msgid "My Projects"
-msgstr ""
+msgstr "Omat projektit"
 
 #: users.py:118
 msgid "My Languages"
-msgstr ""
+msgstr "Omat kielet"
 
 #: users.py:120
 msgid "Home page"
-msgstr ""
+msgstr "Kotisivu"
 
 #: users.py:154
 msgid "Input Height (in lines)"
-msgstr ""
+msgstr "Syöttötilan korkeus (rivejä)"
 
 #: users.py:154
 msgid "Input Width (in characters)"
-msgstr ""
+msgstr "Syöttötilan leveys (merkkejä)"
 
 #: users.py:155
 msgid "Number of rows in view mode"
-msgstr ""
+msgstr "Katselutilan rivimäärä"
 
 #: users.py:156
 msgid "Number of rows in translate mode"
-msgstr ""
+msgstr "Käännöstilan rivimäärä"
 
 #: users.py:209
 msgid "You need to be siteadmin to change users"
-msgstr ""
+msgstr "Käyttäjähallintaan tarvitaan ylläpitäjän oikeudet"
 
 #: users.py:348
 msgid "Redirecting to Registration Page..."
-msgstr ""
+msgstr "Uudelleenohjataan rekisteröintisivulle..."
 
 #: users.py:372
 msgid "Redirecting to login Page..."
-msgstr ""
+msgstr "Uudelleenohjataan kirjautumissivulle..."
 
 #: users.py:375
 msgid "Your account has been activated! Redirecting to login..."
-msgstr ""
+msgstr "Käyttäjätilisi on aktivoitu! Uudelleenohjataan kirjautumissivulle..."
 
 #: users.py:379
 msgid "The activation link you have entered was not valid"
-msgstr ""
+msgstr "Antamasi aktivointilinkki ei kelpaa"
 
 #: users.py:380
 msgid "Activation Failed"
-msgstr ""
+msgstr "Aktivointi epäonnistui"
 
 #: users.py:474
 msgid "Input height must be numeric"
-msgstr ""
+msgstr "Syöttötilan korkeuden pitää olla numeroarvo"
 
 #: users.py:475
 msgid "Input width must be numeric"
-msgstr ""
+msgstr "Syöttötilan leveyden pitää olla numeroarvo"
 
 #: users.py:476
 msgid "The number of rows displayed in view mode must be numeric"
-msgstr ""
+msgstr "Katselutilan rivimäärän pitää olla numeroarvo"
 
 #: users.py:477
 msgid "The number of rows displayed in translate mode must be numeric"
-msgstr ""
+msgstr "Käännöstilan rivimäärän pitää olla numeroarvo"

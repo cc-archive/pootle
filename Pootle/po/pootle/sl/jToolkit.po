@@ -1,18 +1,17 @@
-#, fuzzy
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2006-06-14 14:29+0200\n"
+"PO-Revision-Date: 2006-07-18 13:30+0200\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+"Plural-Forms: nplurals=4; plural=(n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 or n%100==4 ? 2 : 3);\n"
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "Generated-By: pygettext.py 1.5\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Last-Translator: Gasper Zejn <zejn@kiberpipa.org>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "POT-Creation-Date: 2005-06-13 14:54-0500\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "MIME-Version: 1.0\n"
-"X-Generator: Translate Toolkit 0.9rc1\n"
+"X-Generator: Pootle 0.9\n"
 
 #: attachments.py:70
 msgid "attachment is too large"
@@ -36,7 +35,7 @@ msgstr "povrni"
 
 #: attachments.py:351
 msgid "this attachment has been removed. click here to restore it"
-msgstr "ta priponka je bila odstranjena. Kliknite tukaj, da jo povrnete"
+msgstr "ta priponka je bila odstranjena. kliknite tu, da jo povrnete"
 
 #: attachments.py:362
 msgid "attach a file"

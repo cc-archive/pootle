@@ -3,14 +3,14 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: translate-pootle@lists.sourceforge.net\n"
 "POT-Creation-Date: 2006-06-14 10:14+0200\n"
-"PO-Revision-Date: 2006-06-22 20:42+0200\n"
+"PO-Revision-Date: 2006-08-01 10:47+0200\n"
 "Last-Translator: Felipe Gil Castiñeira <xil@det.uvigo.es>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Pootle 0.9\n"
+"X-Generator: Pootle 0.9.1\n"
 
 #: translatepage.py:56 translatepage.py:73
 #, python-format
@@ -23,7 +23,7 @@ msgid ""
 "%d/%d translated\n"
 "(%d blank, %d fuzzy)"
 msgstr ""
-"%d%d traducidas\n"
+"%d/%d traducidas\n"
 "(%d en branco, %d dubidosas)"
 
 #: translatepage.py:74 adminpages.py:17 adminpages.py:53 adminpages.py:107
@@ -92,15 +92,15 @@ msgstr "comprobando %s"
 
 #: translatepage.py:162 translatepage.py:165 indexpage.py:429 indexpage.py:432
 msgid "Assign Strings"
-msgstr "Asignar cadeas"
+msgstr "Asignar Cadeas"
 
 #: translatepage.py:163 indexpage.py:431
 msgid "Assign to User"
-msgstr "Asignar ao usuario"
+msgstr "Asignar ao Usuario"
 
 #: translatepage.py:164 indexpage.py:430
 msgid "Assign Action"
-msgstr "Asignar acción"
+msgstr "Asignar Acción"
 
 #: translatepage.py:292
 #, python-format
@@ -297,7 +297,7 @@ msgstr "Código do Proxecto"
 
 #: adminpages.py:123
 msgid "(add project here)"
-msgstr "(engadir proxecto eiquí)"
+msgstr "(engadir proxecto aquí)"
 
 #: adminpages.py:124
 msgid "Project Description"
@@ -325,15 +325,15 @@ msgstr "Conectar"
 
 #: adminpages.py:183 users.py:253
 msgid "(add full name here)"
-msgstr "(engadir o nome completo eiquí)"
+msgstr "(engadir aquí o nome completo)"
 
 #: adminpages.py:184 users.py:56
 msgid "Email Address"
-msgstr "Dirección de correo electrónico"
+msgstr "Enderezo de correo electrónico"
 
 #: adminpages.py:184 users.py:256
 msgid "(add email here)"
-msgstr "(engadir conta de correo aquí)"
+msgstr "(engada aquí a conta de correo)"
 
 #: adminpages.py:185 users.py:62
 msgid "Password"
@@ -357,15 +357,15 @@ msgstr "Eliminar usuario"
 
 #: adminpages.py:240
 msgid "Back to main page"
-msgstr "Voltar a páxina principal"
+msgstr "Voltar á páxina principal"
 
 #: adminpages.py:241
 msgid "Existing languages"
-msgstr "Lenguaxes existentes"
+msgstr "Linguas existentes"
 
 #: adminpages.py:244
 msgid "Update Languages"
-msgstr "Actualizar Lenguaxes"
+msgstr "Actualizar Linguas"
 
 #: adminpages.py:245
 #, , python-format
@@ -379,11 +379,11 @@ msgstr "Vostede non ten os permisos necesarios para administrar este proxecto."
 
 #: adminpages.py:247
 msgid "Update from templates"
-msgstr "Actualizar dende plantillas"
+msgstr "Actualizar a partir dos modelos"
 
 #: adminpages.py:255
 msgid "Add Language"
-msgstr "Engadir idioma"
+msgstr "Engadir Lingua"
 
 #: adminpages.py:286
 #, python-format
@@ -397,8 +397,7 @@ msgstr "Páxina principal do proxecto"
 #: adminpages.py:305
 #, python-format
 msgid "Cannot set rights for username %s - user does not exist"
-msgstr ""
-"Non se poder asignar privilexios para o usuario %s - o usuario non existe"
+msgstr "Non se poden asignar privilexios para o usuario %s - o usuario non existe"
 
 #: adminpages.py:322
 msgid "This is a GNU-style project (one directory, files named per language)."
@@ -406,7 +405,7 @@ msgstr "Este e un proxecto con formato GNU (un directorio, ficheiros nomeados po
 
 #: adminpages.py:324
 msgid "This is a standard style project (one directory per language)."
-msgstr "Este é un proxecto de formato estandar (un directorio idioma)."
+msgstr "Este é un proxecto de formato estandar (un directorio por idioma)."
 
 #: adminpages.py:325
 msgid "User Permissions"
@@ -443,14 +442,14 @@ msgid ""
 "you can download it and run your own copy if you like. You can also help "
 "participate in the development in many ways (you don't have to be able to "
 "program)."
-msgstr "¡<strong>Pootle</strong> é un portal web que lle permitirá <strong>traducir</strong>! Como Pootle é <strong>Software Libre</strong>, se o desexa pode descargar e executar a súa propia copia. Tamén pode axudar participando no desenvolvemento de moitos xeitos (non precisa ser capaz de programar)."
+msgstr "¡<strong>Pootle</strong> é un portal web que lle permitirá <strong>traducir</strong>! Xa que Pootle é <strong>Software Libre</strong>, se o desexa pode obter e executar a súa propia copia. Tamén pode participar no desenvolvimento de moitos xeitos (non precisa ser un programador)."
 
 #: indexpage.py:30
 msgid ""
 "The Pootle project itself is hosted at <a href=\"http://translate."
 "sourceforge.net/\">translate.sourceforge.net</a> where you can find the "
 "details about source code, mailing lists etc."
-msgstr "O Proxecto Pootle está hospedado en <a href=\"http://translate.sourceforge.net/\"> translate.sourceforge.net</a>, onde pode atopar os detalles sobre o código fonte, listas de distribución, etc."
+msgstr "O Proxecto Pootle está hospedado en <a href=\"http://translate.sourceforge.net/\"> translate.sourceforge.net</a>, onde pode atopar o código fonte, listas de correo, etc."
 
 #: indexpage.py:31
 msgid ""
@@ -468,7 +467,7 @@ msgstr "Versións"
 msgid ""
 "This site is running:<br />Pootle %s<br />Translate Toolkit %s<br />jToolkit "
 "%s<br />Python %s (on %s/%s)"
-msgstr "Este sitio está executando:<br />Pootle %s<br />Translate Toolkit %s<br />jToolkit %s<br />Python %s (en %s/%s)"
+msgstr "Este sitio está a executar:<br />Pootle %s<br />Translate Toolkit %s<br />jToolkit %s<br />Python %s (en %s/%s)"
 
 #: indexpage.py:49
 msgid "Pootle"
@@ -476,7 +475,7 @@ msgstr "Pootle"
 
 #: indexpage.py:51
 msgid "About this Pootle server"
-msgstr "Sobre este servidor Pootle"
+msgstr "Acerca deste servidor Pootle"
 
 #: indexpage.py:83
 #, python-format
@@ -497,7 +496,7 @@ msgstr "Enlaces rápidos"
 
 #: indexpage.py:91 indexpage.py:202
 msgid "Please click on 'Change options' and select some languages and projects"
-msgstr "Por favor, seleccione 'Cambiar opcións' e escolla algúns idiomas e proxectos"
+msgstr "Por favor, prema en 'Cambiar opcións' e escolla algúns idiomas e proxectos"
 
 #: indexpage.py:109
 #, python-format
@@ -508,8 +507,8 @@ msgstr "%s %s"
 #, python-format
 msgid "%d project, average %d%% translated"
 msgid_plural "%d projects, average %d%% translated"
-msgstr[0] "%d proxecto, traducido ao %d%% en media"
-msgstr[1] "%d proxectos, traducidos ao %d%% en media"
+msgstr[0] "%d proxecto, traducido nun %d%% de media"
+msgstr[1] "%d proxectos, traducidos nun %d%% de media"
 
 #: indexpage.py:142 indexpage.py:197
 #, python-format
@@ -532,8 +531,8 @@ msgstr "Nome do idioma"
 #, python-format
 msgid "%d language, average %d%% translated"
 msgid_plural "%d languages, average %d%% translated"
-msgstr[0] "%d idioma, traducido ao %d%% en media"
-msgstr[1] "%d idiomas, traducidos ao %d%% en media"
+msgstr[0] "%d idioma, traducido nun %d%% de media"
+msgstr[1] "%d idiomas, traducidos nun %d%% de media"
 
 #: indexpage.py:228 pagelayout.py:169
 #, python-format
@@ -603,7 +602,7 @@ msgstr "Ficheiro XLIFF"
 
 #: indexpage.py:609
 msgid "Qt .ts file"
-msgstr "Ficheiro Qt .ts"
+msgstr "Ficheiro .ts de Qt"
 
 #: indexpage.py:613
 msgid "CSV file"
@@ -619,7 +618,7 @@ msgstr "Actualizar"
 
 #: indexpage.py:658
 msgid "All Strings"
-msgstr "Tódalas cadeas"
+msgstr "Todas as cadeas"
 
 #: indexpage.py:658
 msgid "Untranslated"
@@ -647,7 +646,7 @@ msgstr "Mostrar rastros"
 
 #: indexpage.py:699
 msgid "Hide Tracks"
-msgstr "Agachar rastros"
+msgstr "Agochar rastros"
 
 #: indexpage.py:700
 msgid "Show Checks"
@@ -655,7 +654,7 @@ msgstr "Mostrar controis"
 
 #: indexpage.py:700
 msgid "Hide Checks"
-msgstr "Agachar controis"
+msgstr "Agochar controis"
 
 #: indexpage.py:701
 msgid "Show Goals"
@@ -663,7 +662,7 @@ msgstr "Mostrar obxectivos"
 
 #: indexpage.py:701
 msgid "Hide Goals"
-msgstr "Agachar obxectivos"
+msgstr "Agochar obxectivos"
 
 #: indexpage.py:702
 msgid "Show Assigns"
@@ -671,12 +670,12 @@ msgstr "Mostrar asignacións"
 
 #: indexpage.py:702
 msgid "Hide Assigns"
-msgstr "Agachar asignacións"
+msgstr "Agochar asignacións"
 
 #: indexpage.py:711
 #, python-format
 msgid "All Goals: %s"
-msgstr "Tódolos obxectivos: %s"
+msgstr "Todos os obxectivos: %s"
 
 #: indexpage.py:717
 msgid "Translate My Strings"
@@ -764,7 +763,7 @@ msgstr "Documentos e axuda"
 
 #: pagelayout.py:24
 msgid "Log out"
-msgstr "Desconexión"
+msgstr "Desconectar"
 
 #: pagelayout.py:25
 msgid "Log in"

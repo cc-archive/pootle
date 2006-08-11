@@ -1,18 +1,17 @@
-#, fuzzy
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2006-06-14 14:24+0200\n"
+"PO-Revision-Date: 2006-08-07 09:56+0200\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "Generated-By: pygettext.py 1.5\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Last-Translator: Jussi Aalto <jta_lnx@dnainternet.net>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "POT-Creation-Date: 2005-06-13 14:54-0500\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "MIME-Version: 1.0\n"
-"X-Generator: Translate Toolkit 0.9rc1\n"
+"X-Generator: Pootle 0.10rc1\n"
 
 #: attachments.py:70
 msgid "attachment is too large"
@@ -85,7 +84,7 @@ msgstr "Kieli:"
 
 #: web/server.py:551 web/server.py:642
 msgid "Select Application"
-msgstr "Valitse Sovellus:"
+msgstr "Valitse Sovellus"
 
 #: web/server.py:637
 msgid "Logout"

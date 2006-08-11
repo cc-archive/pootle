@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2006-06-21 12:50+0200\n"
+"PO-Revision-Date: 2006-07-17 14:51+0200\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "Project-Id-Version: PACKAGE VERSION\n"
@@ -31,7 +31,7 @@ msgstr "Sair da aplicación"
 
 #: web/server.py:98
 msgid "Exit this application and return to the parent application"
-msgstr "Pechar esta aplicación e voltar a aplicación pai"
+msgstr "Pechar esta aplicación e voltar á aplicación pai"
 
 #: web/server.py:105
 msgid ", please confirm login"
@@ -55,8 +55,7 @@ msgstr "Idioma:"
 
 #: web/server.py:551 web/server.py:642
 msgid "Select Application"
-msgstr "Elixa aplicación"
-""
+msgstr "Escolla aplicación"
 
 #: web/server.py:637
 msgid "Logout"
@@ -134,7 +133,7 @@ msgstr "restaurar"
 
 #: attachments.py:351
 msgid "this attachment has been removed. click here to restore it"
-msgstr "o adxunto foi eliminado. pulse aquí para restauralo"
+msgstr "o adxunto foi eliminado. Prema aquí para restauralo"
 
 #: attachments.py:362
 msgid "attach a file"

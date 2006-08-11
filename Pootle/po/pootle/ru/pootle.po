@@ -3,15 +3,15 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: translate-pootle@lists.sourceforge.net\n"
 "POT-Creation-Date: 2006-06-14 10:14+0200\n"
-"PO-Revision-Date: 2006-06-21 19:28+0200\n"
-"Last-Translator: Evgeniy Dushistov <dushistov@mail.ru>\n"
+"PO-Revision-Date: 2006-08-02 21:46+0200\n"
+"Last-Translator: Vadim Kutchin <kutchin@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10< =4 && (n%100<10 or n%100>=20) ? 1 : 2);\n"
 "Generated-By: pygettext.py 1.1\n"
-"X-Generator: Pootle 0.9\n"
+"X-Generator: Pootle 0.9.1\n"
 
 #: translatepage.py:56 translatepage.py:73
 #, python-format
@@ -61,7 +61,7 @@ msgstr "Конец пачки"
 
 #: translatepage.py:110
 msgid "Click here to return to the index"
-msgstr "Нажмите сюда для возвращению к индексу"
+msgstr "Нажмите сюда для возвращения к списку файлов"
 
 #: translatepage.py:122 translatepage.py:124
 msgid "Start"
@@ -80,7 +80,7 @@ msgstr "Элементов %d в %d из %d"
 #: translatepage.py:134 translatepage.py:136
 #, python-format
 msgid "Next %d"
-msgstr "Следующие"
+msgstr "Следующие %d"
 
 #: translatepage.py:138 translatepage.py:140
 msgid "End"
@@ -114,54 +114,51 @@ msgstr "Вы прошли через все элементы, которые в�
 
 #: translatepage.py:429
 msgid "Singular"
-msgstr ""
+msgstr "Singular"
 
 #: translatepage.py:430
 msgid "Plural"
-msgstr ""
+msgstr "Plural"
 
 #: translatepage.py:443
 msgid "Edit"
 msgstr "Изменить"
 
 #: translatepage.py:459
-#, fuzzy
 msgid "Copy"
 msgstr "Копировать"
 
 #: translatepage.py:460 translatepage.py:617
-#, fuzzy
 msgid "Skip"
 msgstr "Пропустить"
 
 #: translatepage.py:461 projects.py:111
 msgid "Suggest"
-msgstr ""
+msgstr "Предложить"
 
 #: translatepage.py:462
-#, fuzzy
 msgid "Submit"
 msgstr "Зафиксировать"
 
 #: translatepage.py:466
 msgid "Grow"
-msgstr ""
+msgstr "Растянуть"
 
 #: translatepage.py:467
 msgid "Shrink"
-msgstr ""
+msgstr "Уменьшить"
 
 #: translatepage.py:468
 msgid "Broaden"
-msgstr ""
+msgstr "Шире"
 
 #: translatepage.py:469
 msgid "Narrow"
-msgstr ""
+msgstr "Уже"
 
 #: translatepage.py:470
 msgid "Reset"
-msgstr ""
+msgstr "Восстановить"
 
 #: translatepage.py:488 translatepage.py:574 translatepage.py:608
 #: translatepage.py:636
@@ -170,9 +167,8 @@ msgid "Plural Form %d"
 msgstr ""
 
 #: translatepage.py:578
-#, fuzzy
 msgid "Current Translation:"
-msgstr "<b>Текущий Перевод:</b>"
+msgstr "Текущий Перевод:"
 
 #: translatepage.py:589
 #, python-format
@@ -187,7 +183,7 @@ msgstr "Предложение %d:"
 #: translatepage.py:594
 #, python-format
 msgid "Suggestion by %s:"
-msgstr "Предложение %s:"
+msgstr "Предложено %s:"
 
 #: translatepage.py:596
 msgid "Suggestion:"
@@ -212,60 +208,60 @@ msgstr "Проекты"
 
 #: adminpages.py:29
 msgid "General options"
-msgstr ""
+msgstr "Общие настройки"
 
 #: adminpages.py:30 users.py:108
 msgid "Option"
-msgstr ""
+msgstr "Настройка"
 
 #: adminpages.py:31 users.py:109
 msgid "Current value"
-msgstr ""
+msgstr "Текущее значение"
 
 #: adminpages.py:32 adminpages.py:64 adminpages.py:118 adminpages.py:178
 #: users.py:121
 msgid "Save changes"
-msgstr ""
+msgstr "Сохранить изменения"
 
 #: adminpages.py:36
 msgid "Title"
-msgstr ""
+msgstr "Название"
 
 #: adminpages.py:36
 msgid "Description"
-msgstr ""
+msgstr "Описание"
 
 #: adminpages.py:36
 msgid "Base URL"
-msgstr ""
+msgstr "Базовый URL"
 
 #: adminpages.py:36
 msgid "Home Page"
-msgstr ""
+msgstr "Домашняя страница"
 
 #: adminpages.py:62 adminpages.py:116 adminpages.py:176
 msgid "Main admin page"
-msgstr ""
+msgstr "Главная страница администратора"
 
 #: adminpages.py:68
 msgid "ISO Code"
-msgstr ""
+msgstr "Код ISO"
 
 #: adminpages.py:69 adminpages.py:123 adminpages.py:183 users.py:59
 msgid "Full Name"
-msgstr ""
+msgstr "ФИО"
 
 #: adminpages.py:69
 msgid "(add language here)"
-msgstr ""
+msgstr "(сюда добавьте языки)"
 
 #: adminpages.py:70
 msgid "Special Chars"
-msgstr ""
+msgstr "Специальные символы"
 
 #: adminpages.py:70
 msgid "(special characters)"
-msgstr ""
+msgstr "(специальные символы)"
 
 #: adminpages.py:71 indexpage.py:161
 msgid "Number of Plurals"
@@ -284,14 +280,13 @@ msgid "(plural equation)"
 msgstr ""
 
 #: adminpages.py:73
-#, fuzzy
 msgid "Remove Language"
-msgstr "Языки"
+msgstr "Удалить язык"
 
 #: adminpages.py:87 adminpages.py:148 adminpages.py:208 adminpages.py:367
 #, python-format
 msgid "Remove %s"
-msgstr ""
+msgstr "Удалить %s"
 
 #: adminpages.py:105
 msgid "Standard"
@@ -299,19 +294,19 @@ msgstr ""
 
 #: adminpages.py:122
 msgid "Project Code"
-msgstr ""
+msgstr "Код проекта"
 
 #: adminpages.py:123
 msgid "(add project here)"
-msgstr ""
+msgstr "(сюда добавьте проект)"
 
 #: adminpages.py:124
 msgid "Project Description"
-msgstr ""
+msgstr "Описание проекта"
 
 #: adminpages.py:124
 msgid "(project description)"
-msgstr ""
+msgstr "(описание проекта)"
 
 #: adminpages.py:125
 msgid "Checker Style"
@@ -319,12 +314,11 @@ msgstr ""
 
 #: adminpages.py:126
 msgid "Create MO Files"
-msgstr ""
+msgstr "Создать файлы MO"
 
 #: adminpages.py:127
-#, fuzzy
 msgid "Remove Project"
-msgstr "Проекты"
+msgstr "Удалить проект"
 
 #: adminpages.py:182 users.py:28
 msgid "Login"
@@ -332,15 +326,15 @@ msgstr ""
 
 #: adminpages.py:183 users.py:253
 msgid "(add full name here)"
-msgstr ""
+msgstr "(сюда добавьте ФИО)"
 
 #: adminpages.py:184 users.py:56
 msgid "Email Address"
-msgstr "Адрес электронной почты(E-Mail)"
+msgstr "Адрес электронной почты"
 
 #: adminpages.py:184 users.py:256
 msgid "(add email here)"
-msgstr ""
+msgstr "(сюда добавьте адрес электронной почты)"
 
 #: adminpages.py:185 users.py:62
 msgid "Password"
@@ -348,11 +342,11 @@ msgstr "Пароль"
 
 #: adminpages.py:185 users.py:250
 msgid "(add password here)"
-msgstr ""
+msgstr "(сюда добавьте пароль)"
 
 #: adminpages.py:186
 msgid "Activated"
-msgstr ""
+msgstr "Активировано"
 
 #: adminpages.py:186
 msgid "Activate New User"
@@ -360,62 +354,62 @@ msgstr ""
 
 #: adminpages.py:187
 msgid "Remove User"
-msgstr ""
+msgstr "Удалить пользователя"
 
 #: adminpages.py:240
 msgid "Back to main page"
-msgstr ""
+msgstr "Вернуться на главную страницу"
 
 #: adminpages.py:241
 msgid "Existing languages"
-msgstr ""
+msgstr "Существующие языки"
 
 #: adminpages.py:244
 msgid "Update Languages"
-msgstr ""
+msgstr "Обновленные языки"
 
 #: adminpages.py:245
 #, python-format
 msgid "Pootle Admin: %s"
-msgstr ""
+msgstr "Администратор Pootle: %s"
 
 #: adminpages.py:246 adminpages.py:306
 msgid "You do not have the rights to administer this project."
-msgstr ""
+msgstr "У вас нет прав для администрирования этого проекта."
 
 #: adminpages.py:247
 msgid "Update from templates"
-msgstr ""
+msgstr "Обновить из шаблонов"
 
 #: adminpages.py:255
 msgid "Add Language"
-msgstr ""
+msgstr "Добавить язык"
 
 #: adminpages.py:286
 #, python-format
 msgid "Pootle Admin: %s %s"
-msgstr ""
+msgstr "Администратор Pootle: %s %s"
 
 #: adminpages.py:287
 msgid "Project home page"
-msgstr ""
+msgstr "Домашняя страница проекта"
 
 #: adminpages.py:305
 #, python-format
 msgid "Cannot set rights for username %s - user does not exist"
-msgstr ""
+msgstr "Невозможно установить права для пользователя %s - нет такого пользователя"
 
 #: adminpages.py:322
 msgid "This is a GNU-style project (one directory, files named per language)."
-msgstr ""
+msgstr "Это проект в стиле GNU (один каталог, файлы названы по языкам)."
 
 #: adminpages.py:324
 msgid "This is a standard style project (one directory per language)."
-msgstr ""
+msgstr "Это стандартный проект (по каталогу на каждый язык)."
 
 #: adminpages.py:325
 msgid "User Permissions"
-msgstr ""
+msgstr "Права пользователя"
 
 #: adminpages.py:326 users.py:53 users.py:86
 msgid "Username"
@@ -423,23 +417,23 @@ msgstr "Имя пользователя"
 
 #: adminpages.py:327
 msgid "(select to add user)"
-msgstr ""
+msgstr "(выберите для добавления пользователя)"
 
 #: adminpages.py:328
 msgid "Rights"
-msgstr ""
+msgstr "Права"
 
 #: adminpages.py:329 indexpage.py:864
 msgid "Remove"
-msgstr ""
+msgstr "Удалить"
 
 #: adminpages.py:349
 msgid "Update Rights"
-msgstr ""
+msgstr "Обновить права"
 
 #: indexpage.py:28
 msgid "About Pootle"
-msgstr ""
+msgstr "О Pootle"
 
 #: indexpage.py:29
 msgid ""
@@ -448,36 +442,32 @@ msgid ""
 "you can download it and run your own copy if you like. You can also help "
 "participate in the development in many ways (you don't have to be able to "
 "program)."
-msgstr ""
+msgstr "<strong>Pootle</strong> - это простой веб-портал, который позволяет вам <strong>переводить</strong>! Так как Pootle является <strong>Свободным ПО</strong>, вы можете скачать и использовать его. Вы также можете различными способами поучаствовать в его разработке (и для этого вам не обязательно уметь программировать)."
 
 #: indexpage.py:30
 msgid ""
 "The Pootle project itself is hosted at <a href=\"http://translate."
 "sourceforge.net/\">translate.sourceforge.net</a> where you can find the "
 "details about source code, mailing lists etc."
-msgstr ""
+msgstr "Проект Pootle размещается на <a href=\"http://translate.sourceforge.net/\">translate.sourceforge.net</a>, где вы можете посмотреть исходные тексты, информацию о списках рассылки и т.д."
 
 #: indexpage.py:31
 msgid ""
 "The name stands for <b>PO</b>-based <b>O</b>nline <b>T</b>ranslation / <b>L</"
 "b>ocalization <b>E</b>ngine, but you may need to read <a href=\"http://www."
 "thechestnut.com/flumps.htm\">this</a>."
-msgstr ""
-"Имя расшифровывается как <b>PO</b>-Расширения <b>O</b>н-Лайн <b>T</"
-"b>ranslation-Перевод / <b>L</b>ocalization-Локализации</b> <b>E</b>ngine-"
-"Движок, возможно у вас появится желание узнать подробности, тогда милости "
-"просим <a href=\"http://www.thechestnut.com/flumps.htm\">  сюда</a>."
+msgstr "Название расшифровывается как <b>PO</b>-based <b>O</b>nline <b>T</b>ranslation / <b>L</b>ocalization</b> <b>E</b>ngine (Основанный на PO движок по переводу и локализации). Возможно у вас появится желание узнать подробности, тогда милости просим на <a href=\"http://www.thechestnut.com/flumps.htm\">  сюда</a>."
 
 #: indexpage.py:32
 msgid "Versions"
-msgstr ""
+msgstr "Версии"
 
 #: indexpage.py:33
 #, python-format
 msgid ""
 "This site is running:<br />Pootle %s<br />Translate Toolkit %s<br />jToolkit "
 "%s<br />Python %s (on %s/%s)"
-msgstr ""
+msgstr "Этот сайт использует:<br />Pootle %s<br />Translate Toolkit %s<br />jToolkit %s<br />Python %s (on %s/%s)"
 
 #: indexpage.py:49
 msgid "Pootle"
@@ -485,33 +475,33 @@ msgstr "Pootle"
 
 #: indexpage.py:51
 msgid "About this Pootle server"
-msgstr ""
+msgstr "Об этом сервере Pootle"
 
 #: indexpage.py:83
 #, python-format
 msgid "User Page for: %s"
-msgstr ""
+msgstr "Страница пользователя для: %s"
 
 #: indexpage.py:85
 msgid "Change options"
-msgstr ""
+msgstr "Изменить настройки"
 
 #: indexpage.py:86
 msgid "Admin page"
-msgstr ""
+msgstr "Страница администратора"
 
 #: indexpage.py:87
 msgid "Quick Links"
-msgstr ""
+msgstr "Быстрый переход"
 
 #: indexpage.py:91 indexpage.py:202
 msgid "Please click on 'Change options' and select some languages and projects"
-msgstr ""
+msgstr "Пожалуйста, нажмите 'Изменить настройки' и выберите какие-либо языки и проекты."
 
 #: indexpage.py:109
 #, python-format
 msgid "%s %s"
-msgstr ""
+msgstr "%s %s"
 
 #: indexpage.py:140
 #, python-format
@@ -523,21 +513,19 @@ msgstr[1] ""
 #: indexpage.py:142 indexpage.py:197
 #, python-format
 msgid "Pootle: %s"
-msgstr ""
+msgstr "Pootle: %s"
 
 #: indexpage.py:144 indexpage.py:199 pagelayout.py:22 pagelayout.py:107
 msgid "Admin"
-msgstr ""
+msgstr "Администратор"
 
 #: indexpage.py:158
-#, fuzzy
 msgid "Language Code"
-msgstr "Языки"
+msgstr "Код языка"
 
 #: indexpage.py:159
-#, fuzzy
 msgid "Language Name"
-msgstr "Языки"
+msgstr "Название языка"
 
 #: indexpage.py:195
 #, python-format
@@ -556,53 +544,53 @@ msgstr[1] ""
 #: indexpage.py:229 indexpage.py:861 pagelayout.py:170
 #, python-format
 msgid "%d/%d words (%d%%) translated"
-msgstr ""
+msgstr "%d/%d слов (%d%%) переведено"
 
 #: indexpage.py:230 indexpage.py:860 indexpage.py:862
 #, python-format
 msgid "[%d/%d strings]"
-msgstr ""
+msgstr "[%d/%d строк]"
 
 #: indexpage.py:273
 #, python-format
 msgid "Pootle: Project %s, Language %s"
-msgstr ""
+msgstr "Pootle: Проект %s, Язык %s"
 
 #: indexpage.py:325
 msgid "Cannot upload file, no file attached"
-msgstr ""
+msgstr "Не могу закачать файл, нет прикрепленного файла"
 
 #: indexpage.py:331
 msgid "Can only upload PO files and zips of PO files"
-msgstr ""
+msgstr "Можно закачать только PO файлы или их zip-архивы"
 
 #: indexpage.py:437
 msgid "goals"
-msgstr ""
+msgstr "задачи"
 
 #: indexpage.py:437
 msgid "Enter goal name"
-msgstr ""
+msgstr "Введите название задачи"
 
 #: indexpage.py:437
 msgid "Add Goal"
-msgstr ""
+msgstr "Добавить задачу"
 
 #: indexpage.py:441 indexpage.py:443
 msgid "Upload File"
-msgstr ""
+msgstr "Закачать файл"
 
 #: indexpage.py:442
 msgid "Select file to upload"
-msgstr ""
+msgstr "Выберите файл для закачки"
 
 #: indexpage.py:545
 msgid "Not in a goal"
-msgstr ""
+msgstr "Не в задаче"
 
 #: indexpage.py:566
 msgid "Add User"
-msgstr ""
+msgstr "Добавить пользователя"
 
 #: indexpage.py:601
 msgid "PO file"
@@ -610,140 +598,140 @@ msgstr "файл РО"
 
 #: indexpage.py:605
 msgid "XLIFF file"
-msgstr ""
+msgstr "файл XLIFF"
 
 #: indexpage.py:609
 msgid "Qt .ts file"
-msgstr ""
+msgstr "файл .ts для Qt"
 
 #: indexpage.py:613
 msgid "CSV file"
-msgstr "CSV файл"
+msgstr "файл CSV"
 
 #: indexpage.py:618
 msgid "MO file"
-msgstr ""
+msgstr "файл MO"
 
 #: indexpage.py:622
 msgid "Update"
-msgstr ""
+msgstr "Обновить"
 
 #: indexpage.py:658
 msgid "All Strings"
-msgstr ""
+msgstr "Все строки"
 
 #: indexpage.py:658
 msgid "Untranslated"
-msgstr ""
+msgstr "Непереведено"
 
 #: indexpage.py:658
 msgid "Unassigned"
-msgstr ""
+msgstr "Неназначено"
 
 #: indexpage.py:658
 msgid "Unassigned and Untranslated"
-msgstr ""
+msgstr "Неназначено и непереведено"
 
 #: indexpage.py:665
 msgid "Set Goal"
-msgstr ""
+msgstr "Установить задачу"
 
 #: indexpage.py:670
 msgid "Assign To"
-msgstr ""
+msgstr "Назначить"
 
 #: indexpage.py:699
 msgid "Show Tracks"
-msgstr ""
+msgstr "Показать Tracks"
 
 #: indexpage.py:699
 msgid "Hide Tracks"
-msgstr ""
+msgstr "Скрыть Tracks"
 
 #: indexpage.py:700
 msgid "Show Checks"
-msgstr "Показать Проверки"
+msgstr "Показать проверки"
 
 #: indexpage.py:700
 msgid "Hide Checks"
-msgstr "Скрыть Проверки"
+msgstr "Скрыть проверки"
 
 #: indexpage.py:701
 msgid "Show Goals"
-msgstr ""
+msgstr "Показать задачи"
 
 #: indexpage.py:701
 msgid "Hide Goals"
-msgstr ""
+msgstr "Скрыть задачи"
 
 #: indexpage.py:702
 msgid "Show Assigns"
-msgstr ""
+msgstr "Показать назначения"
 
 #: indexpage.py:702
 msgid "Hide Assigns"
-msgstr ""
+msgstr "Скрыть назначения"
 
 #: indexpage.py:711
 #, python-format
 msgid "All Goals: %s"
-msgstr ""
+msgstr "Все задачи: %s"
 
 #: indexpage.py:717
 msgid "Translate My Strings"
-msgstr ""
+msgstr "Перевести мои строки"
 
 #: indexpage.py:719
 msgid "View My Strings"
-msgstr ""
+msgstr "Посмотреть мои строки"
 
 #: indexpage.py:724
 msgid "No strings assigned to you"
-msgstr ""
+msgstr "У вас нет назначенных строк"
 
 #: indexpage.py:728
 msgid "Quick Translate My Strings"
-msgstr ""
+msgstr "Быстро перевести мои строки"
 
 #: indexpage.py:732
 msgid "No untranslated strings assigned to you"
-msgstr ""
+msgstr "У вас нет непереведенных строк"
 
 #: indexpage.py:736
 msgid "Review Suggestions"
-msgstr "Посмотреть Предложения"
+msgstr "Рассмотреть предложения"
 
 #: indexpage.py:738
 msgid "View Suggestions"
-msgstr "Показать Предложения"
+msgstr "Показать предложения"
 
 #: indexpage.py:743
 msgid "Quick Translate"
-msgstr "Быстрый Перевод"
+msgstr "Быстрый перевод"
 
 #: indexpage.py:745
 msgid "View Untranslated"
-msgstr "Показать Непереведенное"
+msgstr "Показать непереведенное"
 
 #: indexpage.py:749
 msgid "No untranslated items"
-msgstr ""
+msgstr "Нет непереведённых пунктов"
 
 #: indexpage.py:752
 msgid "Translate All"
-msgstr "Перевести Все"
+msgstr "Перевести всё"
 
 #: indexpage.py:767
 msgid "ZIP of goal"
-msgstr ""
+msgstr "ZIP задачи"
 
 #: indexpage.py:769
 msgid "ZIP of folder"
-msgstr ""
+msgstr "ZIP этой папки"
 
 #: indexpage.py:776
 msgid "Generate SDF"
-msgstr ""
+msgstr "Создать SDF"
 
 #: indexpage.py:829
 #, python-format
@@ -755,7 +743,7 @@ msgstr[1] ""
 #: indexpage.py:859
 #, python-format
 msgid "%d/%d words (%d%%) assigned"
-msgstr ""
+msgstr "%d/%d слов (%d%%) назначено"
 
 #: pagelayout.py:19
 #, fuzzy
@@ -769,11 +757,11 @@ msgstr "Все языки"
 
 #: pagelayout.py:21
 msgid "My account"
-msgstr ""
+msgstr "Моя учётная запись"
 
 #: pagelayout.py:23
 msgid "Docs & help"
-msgstr ""
+msgstr "Помощь и документация"
 
 #: pagelayout.py:24
 #, fuzzy
@@ -796,45 +784,45 @@ msgstr "Активировать"
 
 #: pagelayout.py:96
 msgid "All goals"
-msgstr ""
+msgstr "Все задачи"
 
 #: pagelayout.py:167
 #, python-format
 msgid "%d/%d files"
-msgstr ""
+msgstr "%d/%d файлов"
 
 #: pagelayout.py:171
 #, python-format
 msgid "%d/%d strings"
-msgstr ""
+msgstr "%d/%d строк"
 
 #: pootle.py:228 pootle.py:254
 msgid "Redirecting to login..."
-msgstr ""
+msgstr "Перенаправление на страницу входа в систему..."
 
 #: pootle.py:231
 msgid "Need to log in to access home page"
-msgstr ""
+msgstr "Необходимо войти в систему для доступа к домашней странице"
 
 #: pootle.py:257
 msgid "Need to log in to access admin page"
-msgstr ""
+msgstr "Необходимо войти в систему для доступа к странице администратора"
 
 #: pootle.py:264
 msgid "Redirecting to home..."
-msgstr ""
+msgstr "Перенаправление домой..."
 
 #: pootle.py:267
 msgid "You do not have the rights to administer pootle."
-msgstr ""
+msgstr "У вас нет прав для администрирования Pootle."
 
 #: projects.py:110
 msgid "View"
-msgstr ""
+msgstr "Вид"
 
 #: projects.py:112
 msgid "Translate"
-msgstr ""
+msgstr "Перевести"
 
 #: projects.py:113
 msgid "Review"
@@ -846,78 +834,75 @@ msgstr ""
 
 #: projects.py:115
 msgid "Compile PO files"
-msgstr ""
+msgstr "Компилировать файлы PO"
 
 #: projects.py:116
 msgid "Assign"
-msgstr ""
+msgstr "Назначить"
 
 #: projects.py:117
 msgid "Administrate"
-msgstr ""
+msgstr "Администрировать"
 
 #: projects.py:173
 msgid "You cannot remove the \"nobody\" or \"default\" user"
-msgstr ""
+msgstr "Нельзя удалить пользователей \"nobody\" или \"default\""
 
 #: projects.py:310 projects.py:370
 msgid "You do not have rights to alter goals here"
-msgstr ""
+msgstr "У вас нет прав для изменения задач"
 
 #: projects.py:422
 msgid "You do not have rights to upload files here"
-msgstr ""
+msgstr "У вас нет прав для закачки файлов"
 
 #: projects.py:425
 msgid "You do not have rights to upload new files here"
-msgstr ""
+msgstr "У вас нет прав для закачки новых файлов"
 
 #: projects.py:434
 msgid "You do not have rights to update files here"
-msgstr ""
+msgstr "У вас нет прав для обновления файлов"
 
 #: projects.py:822 projects.py:863
 msgid "You do not have rights to alter assignments here"
-msgstr ""
+msgstr "У вас нет прав для изменения назначений"
 
 #: projects.py:1047
 msgid "You do not have rights to change translations here"
-msgstr ""
+msgstr "У вас нет прав для изменения переводов"
 
 #: projects.py:1057
 msgid "You do not have rights to suggest changes here"
-msgstr ""
+msgstr "У вас нет прав для предложения изменений"
 
 #: projects.py:1073 projects.py:1096
 msgid "You do not have rights to review suggestions here"
-msgstr ""
+msgstr "У вас нет прав для рассмотрения предложений"
 
 #: users.py:18
 msgid "Login to Pootle"
 msgstr "Войти в Pootle"
 
 #: users.py:23
-#, fuzzy
 msgid "Username:"
-msgstr "Имя пользователя"
+msgstr "Имя пользователя:"
 
 #: users.py:25
-#, fuzzy
 msgid "Password:"
-msgstr "Пароль"
+msgstr "Пароль:"
 
 #: users.py:26
-#, fuzzy
 msgid "Language:"
-msgstr "Языки"
+msgstr "Язык:"
 
 #: users.py:35
 msgid "Default"
-msgstr ""
+msgstr "По умолчанию"
 
 #: users.py:46
 msgid "Please enter your registration details"
-msgstr "Пожалуйста введите ваши регистрационные подробности"
+msgstr "Пожалуйста, введите ваши регистрационные данные"
 
 #: users.py:47
 msgid "Pootle Registration"
@@ -929,24 +914,23 @@ msgstr "Вы запросили имя пользователя"
 
 #: users.py:57
 msgid "Must be a valid email address"
-msgstr "Необходим действующий адрес электронной почты(E-Mail)"
+msgstr "Необходим действующий адрес электронной почты"
 
 #: users.py:60
 msgid "Your full name"
-msgstr ""
+msgstr "Ваше ФИО"
 
 #: users.py:63
 msgid "Your desired password"
 msgstr "Желаемый пароль"
 
 #: users.py:65
-#, fuzzy
 msgid "Register Account"
-msgstr "Активировать Учетную Запись"
+msgstr "Активировать учетную запись"
 
 #: users.py:74
 msgid "Please enter your activation details"
-msgstr "Пожалуйста введите ваши подробности указанные во время активации"
+msgstr "Пожалуйста, введите ваши данные, указанные во время активации"
 
 #: users.py:79
 msgid "Pootle Account Activation"
@@ -958,44 +942,44 @@ msgstr "Код Активации"
 
 #: users.py:90
 msgid "The activation code you received"
-msgstr "Код активации который вы получили"
+msgstr "Код активации, который вы получили"
 
 #: users.py:92
 msgid "Activate Account"
-msgstr "Активировать Учетную Запись"
+msgstr "Активировать учетную запись"
 
 #: users.py:102
 #, python-format
 msgid "Options for: %s"
-msgstr ""
+msgstr "Настройки для: %s"
 
 #: users.py:107
 msgid "Personal Details"
-msgstr ""
+msgstr "Личные данные"
 
 #: users.py:110
 msgid "Name"
-msgstr ""
+msgstr "Имя"
 
 #: users.py:112
 msgid "Email"
-msgstr ""
+msgstr "Адрес электронной почты"
 
 #: users.py:114
 msgid "Translation Interface Configuration"
-msgstr ""
+msgstr "Конфигурация интерфейса перевода"
 
 #: users.py:115
 msgid "User Interface language"
-msgstr ""
+msgstr "Язык интерфейса пользователя"
 
 #: users.py:116
 msgid "My Projects"
-msgstr ""
+msgstr "Мои проекты"
 
 #: users.py:118
 msgid "My Languages"
-msgstr ""
+msgstr "Мои языки"
 
 #: users.py:120
 msgid "Home page"
@@ -1003,60 +987,59 @@ msgstr "Домашняя страница"
 
 #: users.py:154
 msgid "Input Height (in lines)"
-msgstr ""
+msgstr "Высота поля ввода (в строках)"
 
 #: users.py:154
 msgid "Input Width (in characters)"
-msgstr ""
+msgstr "Ширина поля ввода (в символах)"
 
 #: users.py:155
 msgid "Number of rows in view mode"
-msgstr ""
+msgstr "Количество строк в режиме просмотра"
 
 #: users.py:156
 msgid "Number of rows in translate mode"
-msgstr ""
+msgstr "Количество строк в режиме перевода"
 
 #: users.py:209
 msgid "You need to be siteadmin to change users"
-msgstr ""
+msgstr "Вы должны быть администратором для изменения пользователей"
 
 #: users.py:348
 msgid "Redirecting to Registration Page..."
-msgstr ""
+msgstr "Перенаправление на страницу регистрации..."
 
 #: users.py:372
 msgid "Redirecting to login Page..."
-msgstr ""
+msgstr "Перенаправление на страницу входа в систему..."
 
 #: users.py:375
 msgid "Your account has been activated! Redirecting to login..."
-msgstr ""
+msgstr "Ваша учетная запись была активирована! Перенаправление на страницу входа в систему..."
 
 #: users.py:379
 msgid "The activation link you have entered was not valid"
-msgstr ""
+msgstr "Неправильная строка активации"
 
 #: users.py:380
-#, fuzzy
 msgid "Activation Failed"
-msgstr "Код Активации"
+msgstr "Активация не удалась"
 
 #: users.py:474
 msgid "Input height must be numeric"
-msgstr ""
+msgstr "Высота поля ввода должна быть цифрой"
 
 #: users.py:475
 msgid "Input width must be numeric"
-msgstr ""
+msgstr "Ширина поля ввода должна быть цифрой"
 
 #: users.py:476
 msgid "The number of rows displayed in view mode must be numeric"
-msgstr ""
+msgstr "Число строк, отображаемых при просмотре, должно быть цифрой"
 
 #: users.py:477
 msgid "The number of rows displayed in translate mode must be numeric"
-msgstr ""
+msgstr "Число строк, отображаемых при переводе, должно быть цифрой"
 
 #~ msgid ""
 #~ "<strong>Pootle</strong> is a simple web portal that should allow you to "
