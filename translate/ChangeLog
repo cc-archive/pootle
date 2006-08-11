@@ -1,3 +1,46 @@
+2006-08-11 17:39  friedelwolff
+
+	* __version__.py: Version 0.9.2
+
+2006-08-11 17:02  friedelwolff
+
+	* convert/po2html.py: Deal slightly better with encoding issues.
+	  Sort of fixes bug 175 for the case without a template.
+
+2006-08-11 16:05  friedelwolff
+
+	* convert/po2html.py: Deal slightly better with encoding issues.
+	  Sort of fixes bug 175
+
+2006-08-04 11:14  friedelwolff
+
+	* storage/po.py: [backport] Deal with plural equations without the
+	  final semicolon
+
+2006-08-04 11:12  friedelwolff
+
+	* storage/test_po.py: [backport] Test that we can deal with plural
+	  equations without the final semicolon
+
+2006-07-26 11:58  friedelwolff
+
+	* storage/po.py: [backport] Fix for bug 171 (encoding error when
+	  removing duplicates)
+
+2006-07-26 11:58  friedelwolff
+
+	* convert/test_oo2po.py: [backport] Test for bug 171 (encoding
+	  error when removing duplicates)
+
+2006-07-21 17:34  friedelwolff
+
+	* storage/po.py: [backport] Always get encoding if parsing header.
+	  Fix for bug 163
+
+2006-07-17 09:40  friedelwolff
+
+	* ChangeLog: Update ChangeLog before 0.9.1 release
+
 2006-07-13 13:36  friedelwolff
 
 	* convert/dtd2po.py: [Backport] Fix problem with accelerators if
