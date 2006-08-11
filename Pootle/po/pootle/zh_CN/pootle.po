@@ -1,0 +1,1033 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: translate-pootle@lists.sourceforge.net\n"
+"POT-Creation-Date: 2006-06-14 10:14+0200\n"
+"PO-Revision-Date: 2006-07-26 12:18+0200\n"
+"Last-Translator: Zhang Le <robert.zhangle@gmail.com>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Pootle 0.9.1\n"
+
+#: translatepage.py:56 translatepage.py:73
+#, python-format
+msgid "Pootle: translating %s into %s: %s"
+msgstr "Pootle：将%s翻译为%s：%s"
+
+#: translatepage.py:62
+#, python-format
+msgid ""
+"%d/%d translated\n"
+"(%d blank, %d fuzzy)"
+msgstr ""
+"%d/%d已经翻译\n"
+"(%d条未译，%d条fuzzy)"
+
+#: translatepage.py:74 adminpages.py:17 adminpages.py:53 adminpages.py:107
+#: adminpages.py:167 adminpages.py:250 adminpages.py:309 indexpage.py:35
+#: indexpage.py:54 indexpage.py:88 indexpage.py:145 indexpage.py:200
+#: indexpage.py:275 pagelayout.py:34 users.py:20 users.py:50 users.py:83
+#: users.py:104
+msgid "Pootle Demo"
+msgstr "Pootle演示"
+
+#: translatepage.py:87
+msgid "Original"
+msgstr "原文"
+
+#: translatepage.py:88
+msgid "Translation"
+msgstr "译文"
+
+#: translatepage.py:91
+msgid "Accept"
+msgstr "接受"
+
+#: translatepage.py:92
+msgid "Reject"
+msgstr "拒绝"
+
+#: translatepage.py:95 indexpage.py:282
+msgid "Search"
+msgstr "查找"
+
+#: translatepage.py:108
+msgid "End of batch"
+msgstr "批处理结束"
+
+#: translatepage.py:110
+msgid "Click here to return to the index"
+msgstr "点击这里返回索引页"
+
+#: translatepage.py:122 translatepage.py:124
+msgid "Start"
+msgstr "开始"
+
+#: translatepage.py:127 translatepage.py:129
+#, python-format
+msgid "Previous %d"
+msgstr "前%d条"
+
+#: translatepage.py:130
+#, python-format
+msgid "Items %d to %d of %d"
+msgstr "第%d至%d条 共%d条"
+
+#: translatepage.py:134 translatepage.py:136
+#, python-format
+msgid "Next %d"
+msgstr "后%d条"
+
+#: translatepage.py:138 translatepage.py:140
+msgid "End"
+msgstr "结束"
+
+#: translatepage.py:155
+#, python-format
+msgid "checking %s"
+msgstr "正在检查 %s"
+
+#: translatepage.py:162 translatepage.py:165 indexpage.py:429 indexpage.py:432
+msgid "Assign Strings"
+msgstr "分配字符串"
+
+#: translatepage.py:163 indexpage.py:431
+msgid "Assign to User"
+msgstr "分配给用户"
+
+#: translatepage.py:164 indexpage.py:430
+msgid "Assign Action"
+msgstr "分配动作"
+
+#: translatepage.py:292
+#, python-format
+msgid "There are no items matching that search ('%s')"
+msgstr "没有匹配'%s'的条目"
+
+#: translatepage.py:294
+msgid "You have finished going through the items you selected"
+msgstr "您所选定的条目已经翻译完毕了"
+
+#: translatepage.py:429
+msgid "Singular"
+msgstr "单数"
+
+#: translatepage.py:430
+msgid "Plural"
+msgstr "复数"
+
+#: translatepage.py:443
+msgid "Edit"
+msgstr "编辑"
+
+#: translatepage.py:459
+msgid "Copy"
+msgstr "复制"
+
+#: translatepage.py:460 translatepage.py:617
+msgid "Skip"
+msgstr "跳过"
+
+#: translatepage.py:461 projects.py:111
+msgid "Suggest"
+msgstr "建议"
+
+#: translatepage.py:462
+msgid "Submit"
+msgstr "提交"
+
+#: translatepage.py:466
+msgid "Grow"
+msgstr "拉长"
+
+#: translatepage.py:467
+msgid "Shrink"
+msgstr "缩短"
+
+#: translatepage.py:468
+msgid "Broaden"
+msgstr "加宽"
+
+#: translatepage.py:469
+msgid "Narrow"
+msgstr "缩窄"
+
+#: translatepage.py:470
+msgid "Reset"
+msgstr "重设"
+
+#: translatepage.py:488 translatepage.py:574 translatepage.py:608
+#: translatepage.py:636
+#, python-format
+msgid "Plural Form %d"
+msgstr "复数形式%d"
+
+#: translatepage.py:578
+msgid "Current Translation:"
+msgstr "当前翻译："
+
+#: translatepage.py:589
+#, python-format
+msgid "Suggestion %d by %s:"
+msgstr "建议%d，来自%s："
+
+#: translatepage.py:591
+#, python-format
+msgid "Suggestion %d:"
+msgstr "建议%d："
+
+#: translatepage.py:594
+#, python-format
+msgid "Suggestion by %s:"
+msgstr "%s的建议："
+
+#: translatepage.py:596
+msgid "Suggestion:"
+msgstr "建议："
+
+#: adminpages.py:25 adminpages.py:61 adminpages.py:115 adminpages.py:175
+#: pagelayout.py:18
+msgid "Home"
+msgstr "首页"
+
+#: adminpages.py:26 adminpages.py:177
+msgid "Users"
+msgstr "用户"
+
+#: adminpages.py:27 adminpages.py:63 indexpage.py:52
+msgid "Languages"
+msgstr "语言"
+
+#: adminpages.py:28 adminpages.py:117 indexpage.py:53
+msgid "Projects"
+msgstr "项目"
+
+#: adminpages.py:29
+msgid "General options"
+msgstr "一般选项"
+
+#: adminpages.py:30 users.py:108
+msgid "Option"
+msgstr "选项"
+
+#: adminpages.py:31 users.py:109
+msgid "Current value"
+msgstr "当前值"
+
+#: adminpages.py:32 adminpages.py:64 adminpages.py:118 adminpages.py:178
+#: users.py:121
+msgid "Save changes"
+msgstr "保存更改"
+
+#: adminpages.py:36
+msgid "Title"
+msgstr "标题"
+
+#: adminpages.py:36
+msgid "Description"
+msgstr "描述"
+
+#: adminpages.py:36
+msgid "Base URL"
+msgstr "基URL"
+
+#: adminpages.py:36
+msgid "Home Page"
+msgstr "主页"
+
+#: adminpages.py:62 adminpages.py:116 adminpages.py:176
+msgid "Main admin page"
+msgstr "主管理页面"
+
+#: adminpages.py:68
+msgid "ISO Code"
+msgstr "ISO编码"
+
+#: adminpages.py:69 adminpages.py:123 adminpages.py:183 users.py:59
+msgid "Full Name"
+msgstr "完整名称"
+
+#: adminpages.py:69
+msgid "(add language here)"
+msgstr "(在此添加语言)"
+
+#: adminpages.py:70
+msgid "Special Chars"
+msgstr "特殊字符"
+
+#: adminpages.py:70
+msgid "(special characters)"
+msgstr "(特殊字符)"
+
+#: adminpages.py:71 indexpage.py:161
+msgid "Number of Plurals"
+msgstr "复数的个数"
+
+#: adminpages.py:71
+msgid "(number of plurals)"
+msgstr "(复数的个数)"
+
+#: adminpages.py:72 indexpage.py:162
+msgid "Plural Equation"
+msgstr "复数方程"
+
+#: adminpages.py:72
+msgid "(plural equation)"
+msgstr "(复数方程)"
+
+#: adminpages.py:73
+msgid "Remove Language"
+msgstr "移除语言"
+
+#: adminpages.py:87 adminpages.py:148 adminpages.py:208 adminpages.py:367
+#, python-format
+msgid "Remove %s"
+msgstr "移除%s"
+
+#: adminpages.py:105
+msgid "Standard"
+msgstr "标准"
+
+#: adminpages.py:122
+msgid "Project Code"
+msgstr "项目代码"
+
+#: adminpages.py:123
+msgid "(add project here)"
+msgstr "(在此添加项目)"
+
+#: adminpages.py:124
+msgid "Project Description"
+msgstr "项目描述"
+
+#: adminpages.py:124
+msgid "(project description)"
+msgstr "(项目描述)"
+
+#: adminpages.py:125
+msgid "Checker Style"
+msgstr "检验器样式"
+
+#: adminpages.py:126
+msgid "Create MO Files"
+msgstr "创建MO文件"
+
+#: adminpages.py:127
+msgid "Remove Project"
+msgstr "移除项目"
+
+#: adminpages.py:182 users.py:28
+msgid "Login"
+msgstr "登录"
+
+#: adminpages.py:183 users.py:253
+msgid "(add full name here)"
+msgstr "(在此添加全名)"
+
+#: adminpages.py:184 users.py:56
+msgid "Email Address"
+msgstr "Email地址"
+
+#: adminpages.py:184 users.py:256
+msgid "(add email here)"
+msgstr "(在此添加email)"
+
+#: adminpages.py:185 users.py:62
+msgid "Password"
+msgstr "密码"
+
+#: adminpages.py:185 users.py:250
+msgid "(add password here)"
+msgstr "(在此添加密码)"
+
+#: adminpages.py:186
+msgid "Activated"
+msgstr "已经激活"
+
+#: adminpages.py:186
+msgid "Activate New User"
+msgstr "激活新用户"
+
+#: adminpages.py:187
+msgid "Remove User"
+msgstr "移除用户"
+
+#: adminpages.py:240
+msgid "Back to main page"
+msgstr "回到主页"
+
+#: adminpages.py:241
+msgid "Existing languages"
+msgstr "已有语言"
+
+#: adminpages.py:244
+msgid "Update Languages"
+msgstr "更新语言"
+
+#: adminpages.py:245
+#, python-format
+msgid "Pootle Admin: %s"
+msgstr "Pootle管理员：%s"
+
+#: adminpages.py:246 adminpages.py:306
+msgid "You do not have the rights to administer this project."
+msgstr "你还没有管理本项目的权限"
+
+#: adminpages.py:247
+msgid "Update from templates"
+msgstr "从模板更新"
+
+#: adminpages.py:255
+msgid "Add Language"
+msgstr "添加语言"
+
+#: adminpages.py:286
+#, python-format
+msgid "Pootle Admin: %s %s"
+msgstr "Pootle管理员：%s %s"
+
+#: adminpages.py:287
+msgid "Project home page"
+msgstr "项目主页"
+
+#: adminpages.py:305
+#, python-format
+msgid "Cannot set rights for username %s - user does not exist"
+msgstr "不能为用户%s设置权限——该用户不存在"
+
+#: adminpages.py:322
+msgid "This is a GNU-style project (one directory, files named per language)."
+msgstr "这是一个GNU风格的项目(一个目录，每个语言对应一个文件)"
+
+#: adminpages.py:324
+msgid "This is a standard style project (one directory per language)."
+msgstr "这是一个标准风格的项目(每个语言对应一个目录)"
+
+#: adminpages.py:325
+msgid "User Permissions"
+msgstr "用户权限"
+
+#: adminpages.py:326 users.py:53 users.py:86
+msgid "Username"
+msgstr "用户名"
+
+#: adminpages.py:327
+msgid "(select to add user)"
+msgstr "(选择以添加用户)"
+
+#: adminpages.py:328
+msgid "Rights"
+msgstr "权限"
+
+#: adminpages.py:329 indexpage.py:864
+msgid "Remove"
+msgstr "移除"
+
+#: adminpages.py:349
+msgid "Update Rights"
+msgstr "更新权限"
+
+#: indexpage.py:28
+msgid "About Pootle"
+msgstr "关于Pootle"
+
+#: indexpage.py:29
+msgid ""
+"<strong>Pootle</strong> is a simple web portal that should allow you to "
+"<strong>translate</strong>! Since Pootle is <strong>Free Software</strong>, "
+"you can download it and run your own copy if you like. You can also help "
+"participate in the development in many ways (you don't have to be able to "
+"program)."
+msgstr "<strong>Pootle</strong>是一个简单的web portal，它可以帮助你<strong>翻译</strong>！因为Pootle是<strong>自由软件</strong>，所以如果你愿意，你可以下载它并运行你自己的副本。你也可以以多种方式帮忙参与开发(你不需要会编程)。"
+
+#: indexpage.py:30
+msgid ""
+"The Pootle project itself is hosted at <a href=\"http://translate."
+"sourceforge.net/\">translate.sourceforge.net</a> where you can find the "
+"details about source code, mailing lists etc."
+msgstr "Pootle项目本身位于<a href=\"http://translate.sourceforge.net/\">translate.sourceforge.net</a>，你可以在那里找到有关源代码，邮件列表等的详细信息。"
+
+#: indexpage.py:31
+msgid ""
+"The name stands for <b>PO</b>-based <b>O</b>nline <b>T</b>ranslation / <b>L</"
+"b>ocalization <b>E</b>ngine, but you may need to read <a href=\"http://www."
+"thechestnut.com/flumps.htm\">this</a>."
+msgstr "项目的名字代表的是<b>PO</b>-based <b>O</b>nline <b>T</b>ranslation / <b>L</b>ocalization <b>E</b>ngine，但是你或许需要读一读<a href=\"http://www.thechestnut.com/flumps.htm\">这个</a>。"
+
+#: indexpage.py:32
+msgid "Versions"
+msgstr "版本"
+
+#: indexpage.py:33
+#, python-format
+msgid ""
+"This site is running:<br />Pootle %s<br />Translate Toolkit %s<br />jToolkit "
+"%s<br />Python %s (on %s/%s)"
+msgstr "这个网站运行着的是：<br />Pootle %s<br />Translate Toolkit %s<br />jToolkit %s<br />Python %s (on %s/%s)"
+
+#: indexpage.py:49
+msgid "Pootle"
+msgstr "Pootle"
+
+#: indexpage.py:51
+msgid "About this Pootle server"
+msgstr "关于本Pootle服务器"
+
+#: indexpage.py:83
+#, python-format
+msgid "User Page for: %s"
+msgstr "%s的用户页："
+
+#: indexpage.py:85
+msgid "Change options"
+msgstr "更改选项"
+
+#: indexpage.py:86
+msgid "Admin page"
+msgstr "管理页面"
+
+#: indexpage.py:87
+msgid "Quick Links"
+msgstr "快速连接"
+
+#: indexpage.py:91 indexpage.py:202
+msgid "Please click on 'Change options' and select some languages and projects"
+msgstr "请点击“更改选项”并选择一些语言和项目"
+
+#: indexpage.py:109
+#, python-format
+msgid "%s %s"
+msgstr "%s %s"
+
+#: indexpage.py:140
+#, python-format
+msgid "%d project, average %d%% translated"
+msgid_plural "%d projects, average %d%% translated"
+msgstr "%d个项目，平均%d%%已经翻译"
+
+#: indexpage.py:142 indexpage.py:197
+#, python-format
+msgid "Pootle: %s"
+msgstr "Pootle: %s"
+
+#: indexpage.py:144 indexpage.py:199 pagelayout.py:22 pagelayout.py:107
+msgid "Admin"
+msgstr "管理"
+
+#: indexpage.py:158
+msgid "Language Code"
+msgstr "语言代码"
+
+#: indexpage.py:159
+msgid "Language Name"
+msgstr "语言名称"
+
+#: indexpage.py:195
+#, python-format
+msgid "%d language, average %d%% translated"
+msgid_plural "%d languages, average %d%% translated"
+msgstr "%d种语言，平均%d%%已经翻译"
+
+#: indexpage.py:228 pagelayout.py:169
+#, python-format
+msgid "%d file"
+msgid_plural "%d files"
+msgstr "%d个文件"
+
+#: indexpage.py:229 indexpage.py:861 pagelayout.py:170
+#, python-format
+msgid "%d/%d words (%d%%) translated"
+msgstr "%d/%d个单词(%d%%)已经翻译"
+
+#: indexpage.py:230 indexpage.py:860 indexpage.py:862
+#, python-format
+msgid "[%d/%d strings]"
+msgstr "[%d/%d条字符串]"
+
+#: indexpage.py:273
+#, python-format
+msgid "Pootle: Project %s, Language %s"
+msgstr "Pootle：项目%s，语言%s"
+
+#: indexpage.py:325
+msgid "Cannot upload file, no file attached"
+msgstr "不能上载文件，没有附件"
+
+#: indexpage.py:331
+msgid "Can only upload PO files and zips of PO files"
+msgstr "只能上载PO文件和PO文件的zip包"
+
+#: indexpage.py:437
+msgid "goals"
+msgstr "目标"
+
+#: indexpage.py:437
+msgid "Enter goal name"
+msgstr "输入目标名称"
+
+#: indexpage.py:437
+msgid "Add Goal"
+msgstr "添加目标"
+
+#: indexpage.py:441 indexpage.py:443
+msgid "Upload File"
+msgstr "上载文件"
+
+#: indexpage.py:442
+msgid "Select file to upload"
+msgstr "选择要上载的文件"
+
+#: indexpage.py:545
+msgid "Not in a goal"
+msgstr "不在目标里"
+
+#: indexpage.py:566
+msgid "Add User"
+msgstr "添加用户"
+
+#: indexpage.py:601
+msgid "PO file"
+msgstr "PO文件"
+
+#: indexpage.py:605
+msgid "XLIFF file"
+msgstr "XLIFF文件"
+
+#: indexpage.py:609
+msgid "Qt .ts file"
+msgstr "Qt .ts文件"
+
+#: indexpage.py:613
+msgid "CSV file"
+msgstr "CSV文件"
+
+#: indexpage.py:618
+msgid "MO file"
+msgstr "MO文件"
+
+#: indexpage.py:622
+msgid "Update"
+msgstr "更新"
+
+#: indexpage.py:658
+msgid "All Strings"
+msgstr "所有字符串"
+
+#: indexpage.py:658
+msgid "Untranslated"
+msgstr "未翻译的"
+
+#: indexpage.py:658
+msgid "Unassigned"
+msgstr "未分配的"
+
+#: indexpage.py:658
+msgid "Unassigned and Untranslated"
+msgstr "未分配的和未翻译的"
+
+#: indexpage.py:665
+msgid "Set Goal"
+msgstr "设置目标"
+
+#: indexpage.py:670
+msgid "Assign To"
+msgstr "分配给"
+
+#: indexpage.py:699
+msgid "Show Tracks"
+msgstr "显示跟踪"
+
+#: indexpage.py:699
+msgid "Hide Tracks"
+msgstr "隐藏跟踪"
+
+#: indexpage.py:700
+msgid "Show Checks"
+msgstr "显示检查"
+
+#: indexpage.py:700
+msgid "Hide Checks"
+msgstr "隐藏检查"
+
+#: indexpage.py:701
+msgid "Show Goals"
+msgstr "显示目标"
+
+#: indexpage.py:701
+msgid "Hide Goals"
+msgstr "隐藏目标"
+
+#: indexpage.py:702
+msgid "Show Assigns"
+msgstr "显示分配"
+
+#: indexpage.py:702
+msgid "Hide Assigns"
+msgstr "隐藏分配"
+
+#: indexpage.py:711
+#, python-format
+msgid "All Goals: %s"
+msgstr "所有目标：%s"
+
+#: indexpage.py:717
+msgid "Translate My Strings"
+msgstr "翻译我的字符串"
+
+#: indexpage.py:719
+msgid "View My Strings"
+msgstr "查看我的字符串"
+
+#: indexpage.py:724
+msgid "No strings assigned to you"
+msgstr "没有分配给你的字符串"
+
+#: indexpage.py:728
+msgid "Quick Translate My Strings"
+msgstr "快速翻译我的字符串"
+
+#: indexpage.py:732
+msgid "No untranslated strings assigned to you"
+msgstr "未翻译的分配给你的字符串"
+
+#: indexpage.py:736
+msgid "Review Suggestions"
+msgstr "回顾建议"
+
+#: indexpage.py:738
+msgid "View Suggestions"
+msgstr "查看建议"
+
+#: indexpage.py:743
+msgid "Quick Translate"
+msgstr "快速翻译"
+
+#: indexpage.py:745
+msgid "View Untranslated"
+msgstr "查看未翻译的"
+
+#: indexpage.py:749
+msgid "No untranslated items"
+msgstr "没有未翻译的条目"
+
+#: indexpage.py:752
+msgid "Translate All"
+msgstr "翻译全部"
+
+#: indexpage.py:767
+msgid "ZIP of goal"
+msgstr "目标的zip包"
+
+#: indexpage.py:769
+msgid "ZIP of folder"
+msgstr "文件夹的zip包"
+
+#: indexpage.py:776
+msgid "Generate SDF"
+msgstr "生成SDF"
+
+#: indexpage.py:829
+#, python-format
+msgid "%d string (%d%%) failed"
+msgid_plural "%d strings (%d%%) failed"
+msgstr "%d字符串(%d%%)失败"
+
+#: indexpage.py:859
+#, python-format
+msgid "%d/%d words (%d%%) assigned"
+msgstr "%d/%d单词(%d%%)已分配"
+
+#: pagelayout.py:19
+msgid "All projects"
+msgstr "所有的项目"
+
+#: pagelayout.py:20
+msgid "All languages"
+msgstr "所有的语言"
+
+#: pagelayout.py:21
+msgid "My account"
+msgstr "我的帐户"
+
+#: pagelayout.py:23
+msgid "Docs & help"
+msgstr "文档和帮助"
+
+#: pagelayout.py:24
+msgid "Log out"
+msgstr "注销"
+
+#: pagelayout.py:25
+msgid "Log in"
+msgstr "登录"
+
+#. l10n: Verb, as in "to register"
+#: pagelayout.py:27
+msgid "Register"
+msgstr "注册"
+
+#: pagelayout.py:28
+msgid "Activate"
+msgstr "激活"
+
+#: pagelayout.py:96
+msgid "All goals"
+msgstr "所有目标"
+
+#: pagelayout.py:167
+#, python-format
+msgid "%d/%d files"
+msgstr "%d/%d个文件"
+
+#: pagelayout.py:171
+#, python-format
+msgid "%d/%d strings"
+msgstr "%d/%d个字符串"
+
+#: pootle.py:228 pootle.py:254
+msgid "Redirecting to login..."
+msgstr "重定向至登录……"
+
+#: pootle.py:231
+msgid "Need to log in to access home page"
+msgstr "访问主页需要登录"
+
+#: pootle.py:257
+msgid "Need to log in to access admin page"
+msgstr "访问管理页需要登录"
+
+#: pootle.py:264
+msgid "Redirecting to home..."
+msgstr "重定向至主页……"
+
+#: pootle.py:267
+msgid "You do not have the rights to administer pootle."
+msgstr "你还没有管理pootle的权限"
+
+#: projects.py:110
+msgid "View"
+msgstr "查看"
+
+#: projects.py:112
+msgid "Translate"
+msgstr "翻译"
+
+#: projects.py:113
+msgid "Review"
+msgstr "检查"
+
+#: projects.py:114
+msgid "Archive"
+msgstr "档案"
+
+#: projects.py:115
+msgid "Compile PO files"
+msgstr "已编译的PO文件"
+
+#: projects.py:116
+msgid "Assign"
+msgstr "分配"
+
+#: projects.py:117
+msgid "Administrate"
+msgstr "管理"
+
+#: projects.py:173
+msgid "You cannot remove the \"nobody\" or \"default\" user"
+msgstr "你不能删除\"nobody\"或\"default\"用户"
+
+#: projects.py:310 projects.py:370
+msgid "You do not have rights to alter goals here"
+msgstr "你没有改变此处目标的权限"
+
+#: projects.py:422
+msgid "You do not have rights to upload files here"
+msgstr "你没有在此上载文件的权限"
+
+#: projects.py:425
+msgid "You do not have rights to upload new files here"
+msgstr "你没有在此上载新文件的权限"
+
+#: projects.py:434
+msgid "You do not have rights to update files here"
+msgstr "你没有在此更新文件的权限"
+
+#: projects.py:822 projects.py:863
+msgid "You do not have rights to alter assignments here"
+msgstr "你没有在此改变任务分配的权限"
+
+#: projects.py:1047
+msgid "You do not have rights to change translations here"
+msgstr "你没有在此改变翻译的权限"
+
+#: projects.py:1057
+msgid "You do not have rights to suggest changes here"
+msgstr "你没有在此发表建议的权限"
+
+#: projects.py:1073 projects.py:1096
+msgid "You do not have rights to review suggestions here"
+msgstr "你没有在此查看建议的权限"
+
+#: users.py:18
+msgid "Login to Pootle"
+msgstr "登录到Pootle"
+
+#: users.py:23
+msgid "Username:"
+msgstr "用户名："
+
+#: users.py:25
+msgid "Password:"
+msgstr "密码："
+
+#: users.py:26
+msgid "Language:"
+msgstr "语言："
+
+#: users.py:35
+msgid "Default"
+msgstr "默认"
+
+#: users.py:46
+msgid "Please enter your registration details"
+msgstr "请输入你注册的详细信息"
+
+#: users.py:47
+msgid "Pootle Registration"
+msgstr "Pootle注册"
+
+#: users.py:54 users.py:87
+msgid "Your requested username"
+msgstr "你想要的用户名"
+
+#: users.py:57
+msgid "Must be a valid email address"
+msgstr "必须是一个合法的email地址"
+
+#: users.py:60
+msgid "Your full name"
+msgstr "你的全名"
+
+#: users.py:63
+msgid "Your desired password"
+msgstr "你想要设置的密码"
+
+#: users.py:65
+msgid "Register Account"
+msgstr "注册帐户"
+
+#: users.py:74
+msgid "Please enter your activation details"
+msgstr "请输入你的激活信息"
+
+#: users.py:79
+msgid "Pootle Account Activation"
+msgstr "Pootle帐户激活"
+
+#: users.py:89
+msgid "Activation Code"
+msgstr "激活代码"
+
+#: users.py:90
+msgid "The activation code you received"
+msgstr "你所收到的激活代码"
+
+#: users.py:92
+msgid "Activate Account"
+msgstr "激活帐户"
+
+#: users.py:102
+#, python-format
+msgid "Options for: %s"
+msgstr "%s的选项："
+
+#: users.py:107
+msgid "Personal Details"
+msgstr "个人详细资料"
+
+#: users.py:110
+msgid "Name"
+msgstr "姓名"
+
+#: users.py:112
+msgid "Email"
+msgstr "Email"
+
+#: users.py:114
+msgid "Translation Interface Configuration"
+msgstr "翻译界面配置"
+
+#: users.py:115
+msgid "User Interface language"
+msgstr "用户界面语言"
+
+#: users.py:116
+msgid "My Projects"
+msgstr "我的项目"
+
+#: users.py:118
+msgid "My Languages"
+msgstr "我的语言"
+
+#: users.py:120
+msgid "Home page"
+msgstr "主页"
+
+#: users.py:154
+msgid "Input Height (in lines)"
+msgstr "输入高度(以行为单位)"
+
+#: users.py:154
+msgid "Input Width (in characters)"
+msgstr "输入宽度(以字符为单位)"
+
+#: users.py:155
+msgid "Number of rows in view mode"
+msgstr "查看模式下的行数"
+
+#: users.py:156
+msgid "Number of rows in translate mode"
+msgstr "翻译模式下的行数"
+
+#: users.py:209
+msgid "You need to be siteadmin to change users"
+msgstr "你需要成为网站管理员才能改变用户"
+
+#: users.py:348
+msgid "Redirecting to Registration Page..."
+msgstr "重定向至注册页……"
+
+#: users.py:372
+msgid "Redirecting to login Page..."
+msgstr "重定向至登录页……"
+
+#: users.py:375
+msgid "Your account has been activated! Redirecting to login..."
+msgstr "你的帐户已经被激活！重定向至登录……"
+
+#: users.py:379
+msgid "The activation link you have entered was not valid"
+msgstr "你刚输入的激活连接不正确"
+
+#: users.py:380
+msgid "Activation Failed"
+msgstr "激活失败"
+
+#: users.py:474
+msgid "Input height must be numeric"
+msgstr "输入高度必须是数字"
+
+#: users.py:475
+msgid "Input width must be numeric"
+msgstr "输入跨度必须是数字"
+
+#: users.py:476
+msgid "The number of rows displayed in view mode must be numeric"
+msgstr "查看模式下的行数必须是数字"
+
+#: users.py:477
+msgid "The number of rows displayed in translate mode must be numeric"
+msgstr "翻译模式下的行数必须是数字"
