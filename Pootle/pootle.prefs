@@ -181,9 +181,9 @@ Pootle:
 #    en.pluralequation ='(n != 1)'
 
 # English (South African)
-    en_ZA.fullname = 'English (South African)'
-    en_ZA.nplurals = '2'
-    en_ZA.pluralequation ='(n != 1)'
+#    en_ZA.fullname = 'English (South African)'
+#    en_ZA.nplurals = '2'
+#    en_ZA.pluralequation ='(n != 1)'
 
 # Esperanto
 #    eo.fullname = 'Esperanto'
@@ -211,9 +211,9 @@ Pootle:
 #    fa.pluralequation ='0'
 
 # Finnish
-#    fi.fullname = 'Finnish'
-#    fi.nplurals = '2'
-#    fi.pluralequation ='(n != 1)'
+    fi.fullname = 'Finnish'
+    fi.nplurals = '2'
+    fi.pluralequation ='(n != 1)'
 
 # Faroese
 #    fo.fullname = 'Faroese'
@@ -266,9 +266,9 @@ Pootle:
     hr.pluralequation ='(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 or n%100>=20) ? 1 : 2)'
 
 # Hungarian
-#    hu.fullname = 'Hungarian'
-#    hu.nplurals = '1'
-#    hu.pluralequation ='0'
+    hu.fullname = 'Hungarian'
+    hu.nplurals = '1'
+    hu.pluralequation ='0'
 
 # Indonesian
 #    id.fullname = 'Indonesian'
@@ -306,9 +306,9 @@ Pootle:
 #    lb.pluralequation ='(n != 1)'
 
 # Lithuanian
-#    lt.fullname = 'Lithuanian'
-#    lt.nplurals = '3'
-#    lt.pluralequation ='(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 or n%100>=20) ? 1 : 2)'
+    lt.fullname = 'Lithuanian'
+    lt.nplurals = '3'
+    lt.pluralequation ='(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 or n%100>=20) ? 1 : 2)'
 
 # Latvian
 #    lv.fullname = 'Latvian'
@@ -336,9 +336,9 @@ Pootle:
 #    nb.pluralequation ='(n != 1)'
 
 # Dutch
-#    nl.fullname = 'Dutch'
-#    nl.nplurals = '2'
-#    nl.pluralequation ='(n != 1)'
+    nl.fullname = 'Dutch'
+    nl.nplurals = '2'
+    nl.pluralequation ='(n != 1)'
 
 # Norwegian Nynorsk
 #    nn.fullname = 'Nynorsk'
@@ -381,9 +381,9 @@ Pootle:
 #    ro.pluralequation ='(n==1 ? 0 : (n==0 or (n%100 > 0 && n%100 < 20)) ? 1 : 2);'
 
 # Russian
-#    ru.fullname = 'Russian'
-#    ru.nplurals = '3'
-#    ru.pluralequation ='(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 or n%100>=20) ? 1 : 2)'
+    ru.fullname = 'Russian'
+    ru.nplurals = '3'
+    ru.pluralequation ='(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 or n%100>=20) ? 1 : 2)'
 
 # Slovak
 #    sk.fullname = 'Slovak'
@@ -441,9 +441,9 @@ Pootle:
 #    wa.pluralequation ='(n > 1)'
 
 # Simplified Chinese (China mainland used below, but also used Singapore and Malaysia)
-#    zh_CN.fullname = 'Chinese (simplified)'
-#    zh_CN.nplurals = '1'
-#    zh_CN.pluralequation ='0'
+    zh_CN.fullname = 'Chinese (simplified)'
+    zh_CN.nplurals = '1'
+    zh_CN.pluralequation ='0'
 
 # Traditional Chinese (Taiwan used below, but also used in Hong Kong and Macau)
 #    zh_TW.fullname = 'Chinese (traditional)'
