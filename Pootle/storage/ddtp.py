@@ -101,7 +101,7 @@ class DDTPPackage(object):
             elif line[0].isspace():
                 para += '\n' + line
             else:
-                if para:
+                if para: # Connect two lines by space.
                     para += ' ' + line
                 else:
                     para = line

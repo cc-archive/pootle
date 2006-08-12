@@ -284,6 +284,8 @@ def test_DDTPPackage_import_descriptions():
         ['short', 'As for this:\n leave\n  it\n  be, but unwrap this too.']
 
     TODO: Do we really want to connect "be," with "but unwrap" here?
+    Docs would seem to indicate otherwise, but, e.g., the description of
+    gnome-terminal would use this behaviour.
 
     """
 
