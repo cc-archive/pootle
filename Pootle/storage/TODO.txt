@@ -34,6 +34,7 @@ Important:
 Long term:
 - consider use of SQLObject or SQLAlchemy for RDB storage
 - Implement a merger using external 'msgmerge'.
+- Write a guide.
 - Wrap pootle's internal pounit.merge.
 - Import language info from Pootle config.
 - Go through TODOs and XXXes.
@@ -41,20 +42,20 @@ Long term:
 - Caching for storage.standard.
 
 Debian-specific:
++ Hook up DDTP
 - Add a script to import debconf translations
-- Hook up DDTP
 
 Misc:
 - Write a small server for quick typo fix webapp.
 - Produce direct hyperlinks to unit context in the source code by storing
   a link to ViewVC.
-- Maybe sometimes IMapping.keys() should be sorted?
+- Maybe for some objects IMapping.keys() should be sorted?
 
 Other subsystems to consider:
 - Security model (important!)
 - Translation review (important!)
 - "Changesets" (related with review)
-- Checkers
+- Pootle checkers
 + Merging mechanism
 - Pootle-like "goals"
 - Versioning, "dirty" state

@@ -79,6 +79,7 @@ class Folder(AccumStatsMixin):
 
     key = None
     folder = None
+    annotations = None
 
     modules = None
     subfolders = None
@@ -88,6 +89,7 @@ class Folder(AccumStatsMixin):
         self.folder = folder
         self.modules = ModuleContainer(self)
         self.subfolders = FolderContainer(self)
+        self.annotations = {}
 
     def __repr__(self):
         return '<Folder %s>' % self.key
@@ -104,6 +106,26 @@ class Folder(AccumStatsMixin):
     def values(self):
         # This is for internal use in AccumStatsMixin.
         return self.modules.values() + self.subfolders.values()
+
+    def find(self, substring):
+        # TODO: This is very slow.
+        units = []
+        for module in self.values():
+            units.extend(module.find(substring))
+        for folder in self.subfolders:
+            units.extend(folder.find(substring))
+        return units
+
+    def find_containers(self, substring):
+        fs, ms = [], [] # folders, modules
+        for module_name in self.keys():
+            if substring in module_name:
+                ms.append(self[module_name])
+        for folder in self.subfolders:
+            f, m = folder.find_containers(substring)
+            fs.extend(f)
+            ms.extend(m)
+        return fs, ms
 
 
 class LanguageInfoContainer(MappingMixin):
@@ -169,6 +191,7 @@ class Module(MappingMixin, AccumStatsMixin):
 
     key = None
     folder = None
+    annotations = None
 
     name = None
     description = None
@@ -180,6 +203,7 @@ class Module(MappingMixin, AccumStatsMixin):
         self.key = key
         self.folder = folder
         self.name = key # until something else is set
+        self.annotations = {}
 
     def __repr__(self):
         return '<Module %s>' % self.key
@@ -210,6 +234,13 @@ class Module(MappingMixin, AccumStatsMixin):
             self.template = store # TODO: document this
 
         return store
+
+    def find(self, substring):
+        # TODO: This is very slow.
+        units = []
+        for store in self.values():
+            units.extend(store.find(substring))
+        return units
 
 
 class Header(MappingMixin):
@@ -248,6 +279,7 @@ class TranslationStore(object):
     module = None
     header = None
     langinfo = None
+    annotations = None
 
     @property
     def key(self):
@@ -258,6 +290,7 @@ class TranslationStore(object):
         self.langinfo = langinfo
         self._units = []
         self.header = {}
+        annotations = {}
 
     def __iter__(self):
         return iter(self._units)
@@ -277,7 +310,7 @@ class TranslationStore(object):
             self._units.append(unit) # TODO: link new units?
 
     def save(self):
-        pass
+        pass # We're in memory already.
 
     def makeunit(self, trans):
         """See TranslationUnit.__init__."""
@@ -304,6 +337,15 @@ class TranslationStore(object):
                     stats.translated_strings += 1
         return stats
 
+    def find(self, substring):
+        # TODO: This is very slow.
+        units = []
+        for unit in self:
+            for source, target in unit.trans:
+                if substring in source or substring in target:
+                    units.append(unit)
+        return units
+
 
 class Suggestion(object):
 
@@ -323,6 +365,8 @@ class TranslationUnit(object):
     _interface = ITranslationUnit
 
     store = None
+    index = None
+    annotations = None
     suggestions = None
     context = None
 
@@ -344,6 +388,8 @@ class TranslationUnit(object):
         self.store = store
         self.trans = trans
         # TODO: assert len(trans) == language.nplurals?
+        # TODO: self.index = ?
+        self.annotations = {}
 
         self.other_comments = []
         self.automatic_comments = []

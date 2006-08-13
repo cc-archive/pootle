@@ -53,6 +53,48 @@ class Class(Field): pass
 
 # === API interfaces ===
 
+
+class IAnnotatable(Interface):
+    """An object that can have annotations.
+
+    Annotations are arbitrary pieces of data that are stored as strings.
+    Each of these must have a key, a 7-bit string; the value must be an
+    ordinary string or a unicode string.
+
+    Intended use of annotations is to store metadata, e.g., last modification
+    date, last author, translation owner, permissions, etc.
+
+    Note that you can store arbitrary objects by simply pickling them
+    before writing and then unpickling after read.  However, transparent,
+    human-readable strings are preferred. It may also be not a very good idea
+    to use annotations for large blobs.
+
+    TODO: How about timing, when to serialize annotations?
+    """
+
+    annotations = None # IMapping # String -> String/Unicode
+
+
+class ISearchable(Interface):
+    """An object that can be searched."""
+
+    def find(self, substring):
+        """Search for a substring in all translation units.
+
+        Returns a list of translation units where `substring` is
+        in one of the msgids or in one of the translations.
+
+        TODO: search options: exact match, case insensitive,
+        search just source text or just translation text, etc.
+
+        TODO: return small objects that only reference the real ones?
+        Otherwise this could cause trouble with persistence or efficiency.
+
+        If invoked on a container (a folder or a module), performs a
+        recursive search.
+        """
+
+
 class IHaveStatistics(Interface):
     """An object that can provide translation statistics."""
 
@@ -120,7 +162,9 @@ class IMapping(Interface):
         return object
 
 
-class IFolder(IHaveStatistics):
+# ---
+
+class IFolder(IHaveStatistics, IAnnotatable, ISearchable):
     """A folder is a collection of modules and possibly other folders."""
 
     key = String
@@ -141,6 +185,14 @@ class IFolder(IHaveStatistics):
     def __len__(self):
         return Integer
 
+    def find_containers(self, substring):
+        """Find containers with a given substring in their name.
+
+        Performs a recursive search.
+
+        Returns a tuple ([folder, ...], [module, ...]).
+        """
+
 
 class IDatabase(IFolder):
     """A database.
@@ -153,18 +205,10 @@ class IDatabase(IFolder):
 
     languages = IMapping # 'la_CO' -> ILanguageInfo
 
-    def startTransaction(self):
-        """Start a transaction.
-
-        Does nothing if transactions are not supported.
-        May enable exclusive file locks in case of a file-based backend.
-        """
-
     def commitTransaction(self):
         """Commit a transaction.
 
         Does nothing if transactions are not supported.
-        May disable exclusive file locks in case of a file-based backend.
         """
 
     def rollbackTransaction(self):
@@ -196,7 +240,7 @@ class ILanguageInfo(Interface):
     pluralequation = String # optional
 
 
-class IModule(IHaveStatistics, IMapping):
+class IModule(IHaveStatistics, IMapping, IAnnotatable, ISearchable):
     """An object corresponding to a project.
 
     This loosely corresponds to a .pot file and a set of its translations.
@@ -244,7 +288,7 @@ class IHeader(IMapping):
     store = None # Parent ITranslationStore
 
 
-class ITranslationStore(IHaveStatistics):
+class ITranslationStore(IHaveStatistics, IAnnotatable, ISearchable):
     """A collection of translation units
 
     This loosely corresponds to a .po file.
@@ -320,13 +364,14 @@ class ISuggestion(Interface):
     author = Username # author's user name -- optional
 
 
-class ITranslationUnit(Interface):
+class ITranslationUnit(IAnnotatable):
     """A translatable string.
 
     Plurals and metadata are also stored here.
     """
 
     store = ITranslationStore
+    index = Integer # index of this unit in the containing store
     suggestions = [ISuggestion]
     context = Unicode # context information
 
