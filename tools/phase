@@ -420,7 +420,7 @@ function reviewpo {
 	copy_po_to_temp_dir $language $tempdir $files
 	review_dir=$language-$phase-review
         rm -rf $review_dir
-	pofilter -t isreview $otheroptions $tempdir $review_dir
+	pofilter -t isreview -t untranslated -t blank -t isfuzzy $otheroptions $tempdir $review_dir
 	po2csv $review_dir $review_dir
 	# Transform "#, review" to # REVIEW
 	sed -i "/#, review/s/#, review/# REVIEW/" $(find $review_dir -name "*.po")
