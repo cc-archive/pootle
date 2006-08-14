@@ -118,7 +118,7 @@ Pootle:
 # Belarusian
 #    be.fullname = 'Belarusian'
 #    be.nplurals = '3'
-#    be.pluralequation ='(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 or n%100>=20) ? 1 : 2)'
+#    be.pluralequation ='(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)'
 
 # Bulgarian
 #    bg.fullname = 'Bulgarian'
@@ -138,7 +138,7 @@ Pootle:
 # Bosnian
 #    bs.fullname = 'Bosnian'
 #    bs.nplurals = '3'
-#    bs.pluralequation ='(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 or n%100>=20) ? 1 : 2)'
+#    bs.pluralequation ='(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)'
 
 # Catalan
     ca.fullname = 'Catalan'
@@ -263,7 +263,7 @@ Pootle:
 # Croatian
     hr.fullname = 'Croatian'
     hr.nplurals = '3'
-    hr.pluralequation ='(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 or n%100>=20) ? 1 : 2)'
+    hr.pluralequation ='(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)'
 
 # Hungarian
     hu.fullname = 'Hungarian'
@@ -308,7 +308,7 @@ Pootle:
 # Lithuanian
     lt.fullname = 'Lithuanian'
     lt.nplurals = '3'
-    lt.pluralequation ='(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 or n%100>=20) ? 1 : 2)'
+    lt.pluralequation ='(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2)'
 
 # Latvian
 #    lv.fullname = 'Latvian'
@@ -323,7 +323,7 @@ Pootle:
 # Maltese
     mt.fullname = 'Maltese'
     mt.nplurals = '4'
-    mt.pluralequation ='(n==1 ? 0 : n==0 or ( n%100>1 && n%100<11) ? 1 : n%100>10 && n%100<20 ) ? 2 : 3)'
+    mt.pluralequation ='(n==1 ? 0 : n==0 || ( n%100>1 && n%100<11) ? 1 : n%100>10 && n%100<20 ) ? 2 : 3)'
 
 # Nahuatl
 #    nah.fullname = 'Nahuatl'
@@ -363,7 +363,7 @@ Pootle:
 # Polish
     pl.fullname = 'Polish'
     pl.nplurals = '3'
-    pl.pluralequation ='(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 or n%100>=20) ? 1 : 2)'
+    pl.pluralequation ='(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)'
 
 # Portuguese
     pt.fullname = 'Portuguese'
@@ -378,12 +378,12 @@ Pootle:
 # Romanian
 #    ro.fullname = 'Romanian'
 #    ro.nplurals = '3'
-#    ro.pluralequation ='(n==1 ? 0 : (n==0 or (n%100 > 0 && n%100 < 20)) ? 1 : 2);'
+#    ro.pluralequation ='(n==1 ? 0 : (n==0 || (n%100 > 0 && n%100 < 20)) ? 1 : 2);'
 
 # Russian
     ru.fullname = 'Russian'
     ru.nplurals = '3'
-    ru.pluralequation ='(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 or n%100>=20) ? 1 : 2)'
+    ru.pluralequation ='(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)'
 
 # Slovak
 #    sk.fullname = 'Slovak'
@@ -393,7 +393,7 @@ Pootle:
 # Slovenian
     sl.fullname = 'Slovenian'
     sl.nplurals = '4'
-    sl.pluralequation ='(n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 or n%100==4 ? 2 : 3)'
+    sl.pluralequation ='(n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n%100==4 ? 2 : 3)'
 
 # Albanian
 #    sq.fullname = 'Albanian'
@@ -403,7 +403,7 @@ Pootle:
 # Serbian
     sr.fullname = 'Serbian'
     sr.nplurals = '3'
-    sr.pluralequation ='(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 or n%100>=20) ? 1 : 2)'
+    sr.pluralequation ='(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)'
 
 # Swedish
     sv.fullname = 'Swedish'
@@ -428,7 +428,7 @@ Pootle:
 # Ukrainian
 #    uk.fullname = 'Ukrainian'
 #    uk.nplurals = '3'
-#    uk.pluralequation ='(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 or n%100>=20) ? 1 : 2)'
+#    uk.pluralequation ='(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)'
 
 # Vietnamese
     vi.fullname = 'Vietnamese'
