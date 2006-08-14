@@ -176,7 +176,8 @@ class IFolder(IHaveStatistics, IAnnotatable, ISearchable):
     def __getitem__(self, key):
         """Return a module or a subfolder.
 
-        A subfolder is preferred to a module if they have the same name.
+        If both a subfolder and a module happen to have the key, the
+        subfolder is returned.
 
         This is a convenience method; it is usually better to use
         folder.modules[] or subfolder.modules[] directly.
