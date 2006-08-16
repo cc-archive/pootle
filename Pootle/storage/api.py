@@ -260,7 +260,7 @@ class IModule(IHaveStatistics, IMapping, IAnnotatable, ISearchable):
     folder = IFolder # containing folder
     name = Unicode # module name
     description = Unicode # project description (unwrapped)
-    checker = [String] # A list of string identifiers for checkers
+    #checker = [String] # A list of string identifiers for checkers
     template = Interface # ITranslationStore without the actual translations
     # TODO: template == store[None] ?
 
