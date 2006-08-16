@@ -6,6 +6,7 @@ Only read-only access is provided at the moment and there is no caching.
 """
 
 import os
+import pickle
 
 from Pootle.storage.po import read_po, write_po
 from Pootle.storage.abstract import AbstractMapping
@@ -14,6 +15,8 @@ from Pootle.storage.api import IMapping
 from Pootle.storage.memory import TranslationStore as MemTranslationStore
 from Pootle.storage.memory import LanguageInfoContainer \
         as MemLanguageInfoContainer
+from Pootle.storage.abstract import AbstractMapping, SearchableModule
+from Pootle.storage.abstract import SearchableFolder, SearchableTranslationStore
 
 
 class HaveStatistics(object):
@@ -46,6 +49,11 @@ class Database(HaveStatistics, AbstractMapping):
     def rollbackTransaction(self):
         pass
 
+    # XXX These will go away when the database is no longer a folder.
+    def find_containers(self): pass
+    annotations = None
+    def find(self): pass
+
 
 class FolderContainer(AbstractMapping):
     _interface = IMapping
@@ -77,13 +85,48 @@ class FolderContainer(AbstractMapping):
         return self[key]
 
 
-class Folder(HaveStatistics, AbstractMapping):
+class AnnotationFileContainer(AbstractMapping):
+    """A catalog of annotations stored in a file.
+
+    TODO: Currently the annotation dictionary is pickled into the file.
+    A more transparent format would be better.
+    """
+
+    _interface = IMapping
+
+    def __init__(self, path):
+        self.path = path
+        if os.path.exists(path):
+            self._items = pickle.load(file(path))
+        else:
+            self._items = {}
+
+    def keys(self):
+        return self._items.keys()
+
+    def __getitem__(self, key):
+        return self._items[key]
+
+    def __delitem__(self, key):
+        del self._items[key]
+        self._save()
+
+    def add(self, key, content):
+        self._items[key] = content
+        self._save()
+
+    def _save(self):
+        pickle.save(self._items, file(self.path, 'w'))
+
+
+class Folder(HaveStatistics, SearchableFolder):
     _interface = IFolder
 
     folder = None
     modules = None
     subfolders = None
     key = None
+    annotations = None
 
     def __init__(self, path, key, db):
         self.modules = ModuleContainer(path, self)
@@ -91,8 +134,14 @@ class Folder(HaveStatistics, AbstractMapping):
         self.key = key
         self.folder = db
 
+        annotation_path = os.path.join(path, 'annotations.db')
+        self.annotations = AnnotationFileContainer(path)
+
     def __getitem__(self, key):
         return self.modules[key]
+
+    def __len__(self):
+        return len(self.modules) + len(self.folders)
 
 
 class ModuleContainer(AbstractMapping):
@@ -133,7 +182,7 @@ class ModuleContainer(AbstractMapping):
             return module
 
 
-class Module(HaveStatistics, AbstractMapping):
+class Module(HaveStatistics, AbstractMapping, SearchableModule):
     _interface = IModule
 
     key = None
@@ -141,12 +190,16 @@ class Module(HaveStatistics, AbstractMapping):
     description = None
     name = None
     checker = None
+    annotations = None
 
     def __init__(self, path, key, folder):
         self.path = path
         self.key = key
         self.name = key
         self.folder = folder
+
+        annotation_path = os.path.join(path, 'annotations.db')
+        self.annotations = AnnotationFileContainer(annotation_path)
 
     @property
     def template(self):
@@ -218,7 +271,7 @@ class Module(HaveStatistics, AbstractMapping):
 class TranslationStore(MemTranslationStore):
 
     def __init__(self, module, lang_key, po_path):
-        langinfo = None # XXX TODO: dig out of DB, register in pootle.prefs.
+        langinfo = None # TODO: dig out of DB, register in pootle.prefs.
         MemTranslationStore.__init__(self, module, langinfo)
         self.po_path = po_path
 

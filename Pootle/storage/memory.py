@@ -7,7 +7,8 @@ from Pootle.storage.api import IStatistics, IDatabase, ITranslationUnit
 from Pootle.storage.api import ILanguageInfo, IModule, IMapping, IFolder
 from Pootle.storage.api import ITranslationStore, ISuggestion, IHaveStatistics
 from Pootle.storage.api import IHeader
-from Pootle.storage.abstract import AbstractMapping
+from Pootle.storage.abstract import AbstractMapping, SearchableModule
+from Pootle.storage.abstract import SearchableFolder, SearchableTranslationStore
 
 
 class MappingMixin(AbstractMapping):
@@ -74,7 +75,7 @@ class FolderContainer(MappingMixin):
         return newfolder
 
 
-class Folder(AccumStatsMixin):
+class Folder(AccumStatsMixin, SearchableFolder):
     _interface = IFolder
 
     key = None
@@ -106,26 +107,6 @@ class Folder(AccumStatsMixin):
     def values(self):
         # This is for internal use in AccumStatsMixin.
         return self.modules.values() + self.subfolders.values()
-
-    def find(self, substring):
-        # TODO: This is very slow.
-        units = []
-        for module in self.values():
-            units.extend(module.find(substring))
-        for folder in self.subfolders:
-            units.extend(folder.find(substring))
-        return units
-
-    def find_containers(self, substring):
-        fs, ms = [], [] # folders, modules
-        for module_name in self.keys():
-            if substring in module_name:
-                ms.append(self[module_name])
-        for folder in self.subfolders:
-            f, m = folder.find_containers(substring)
-            fs.extend(f)
-            ms.extend(m)
-        return fs, ms
 
 
 class LanguageInfoContainer(MappingMixin):
@@ -186,7 +167,7 @@ class LanguageInfo(object):
         self.db = db
 
 
-class Module(MappingMixin, AccumStatsMixin):
+class Module(MappingMixin, AccumStatsMixin, SearchableModule):
     _interface = IModule
 
     key = None
@@ -232,15 +213,7 @@ class Module(MappingMixin, AccumStatsMixin):
                 raise KeyError(lang_key)
             store = TranslationStore(self, None)
             self.template = store # TODO: document this
-
         return store
-
-    def find(self, substring):
-        # TODO: This is very slow.
-        units = []
-        for store in self.values():
-            units.extend(store.find(substring))
-        return units
 
 
 class Header(MappingMixin):
@@ -273,7 +246,7 @@ class Header(MappingMixin):
         self._items[key] = value
 
 
-class TranslationStore(object):
+class TranslationStore(SearchableTranslationStore):
     _interface = ITranslationStore
 
     module = None
@@ -336,15 +309,6 @@ class TranslationStore(object):
                 else:
                     stats.translated_strings += 1
         return stats
-
-    def find(self, substring):
-        # TODO: This is very slow.
-        units = []
-        for unit in self:
-            for source, target in unit.trans:
-                if substring in source or substring in target:
-                    units.append(unit)
-        return units
 
 
 class Suggestion(object):

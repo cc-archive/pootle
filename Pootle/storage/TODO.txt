@@ -8,14 +8,18 @@ d) translation repository
 Small tasks:
 + Separate .po header
 + fix makestore() and clonestore() mess.
-- Put unit comments into container.
 - Abstract fuzzy status.
 - Implement Module.add(x, copy_template=True)
 + Add itervalues() to IMapping.
 - Deal with obsolete .po entries (#~)
 - Fix containment mess (make constructor and adding separate)?
 - Flesh out ITranslationUnit
+
+Transitions:
 - store.template == store[None]?
+- Make Database.root the root folder rather than inherit.
+- Put unit comments into container.
+- Support for metadata in 
 
 Important:
 + preliminary .po parser
