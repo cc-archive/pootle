@@ -78,6 +78,7 @@ class FolderContainer(MappingMixin):
 class Folder(AccumStatsMixin, SearchableFolder):
     _interface = IFolder
 
+    db = None
     key = None
     folder = None
     annotations = None
@@ -85,9 +86,13 @@ class Folder(AccumStatsMixin, SearchableFolder):
     modules = None
     subfolders = None
 
-    def __init__(self, key, folder):
+    def __init__(self, key, folder, db=None):
         self.key = key
         self.folder = folder
+        if db is not None:
+            self.db = db
+        else:
+            self.db = folder.db
         self.modules = ModuleContainer(self)
         self.subfolders = FolderContainer(self)
         self.annotations = {}
@@ -125,12 +130,14 @@ class LanguageInfoContainer(MappingMixin):
         return lang
 
 
-class Database(Folder):
+class Database(object):
     _interface = IDatabase
+
+    root = None
     languages = None
 
     def __init__(self):
-        Folder.__init__(self, None, None)
+        self.root = Folder(None, None, db=self)
         self.languages = LanguageInfoContainer(self)
 
     def startTransaction(self):
@@ -170,6 +177,7 @@ class LanguageInfo(object):
 class Module(MappingMixin, AccumStatsMixin, SearchableModule):
     _interface = IModule
 
+    db = None
     key = None
     folder = None
     annotations = None
@@ -181,6 +189,7 @@ class Module(MappingMixin, AccumStatsMixin, SearchableModule):
 
     def __init__(self, key, folder):
         MappingMixin.__init__(self)
+        self.db = folder.db
         self.key = key
         self.folder = folder
         self.name = key # until something else is set
@@ -195,17 +204,11 @@ class Module(MappingMixin, AccumStatsMixin, SearchableModule):
         if lang_key is not None:
             if lang_key in self._items:
                 raise KeyError(lang_key)
-            # TODO: put this into a function
-            obj = self
-            while obj.folder is not None:
-                obj = obj.folder
-            db = obj
-
-            langs = db.languages
+            langs = self.db.languages
             try:
                 langinfo = langs[lang_key]
             except KeyError:
-                langinfo = db.languages.add(lang_key) # TODO: stop-gap measure.
+                langinfo = self.db.languages.add(lang_key) # TODO: stop-gap measure.
             store = TranslationStore(self, langinfo)
             self._items[lang_key] = store
         else:

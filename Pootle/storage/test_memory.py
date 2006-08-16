@@ -56,19 +56,19 @@ def test_db():
 
         >>> from Pootle.storage.memory import Database
         >>> db = Database()
-        >>> db.key, db.folder
+        >>> db.root.key, db.root.folder
         (None, None)
 
     """
 
 
-def test_folder():
+def test_Folder():
     """
 
     Let's create a folder:
 
         >>> from Pootle.storage.memory import Folder
-        >>> folder = Folder('key', 'some folder')
+        >>> folder = Folder('key', 'some folder', db='db')
 
     Let's add some things:
 
@@ -126,7 +126,7 @@ def test_Module():
 
         >>> from Pootle.storage.memory import Module, Database
         >>> db = Database()
-        >>> module = Module('some', db)
+        >>> module = Module('some', db.root)
         >>> module.name
         'some'
 
@@ -177,8 +177,10 @@ def test_TranslationStore():
 def test_TranslationStore_translate():
     """Tests for TranslationStore.translate.
 
-        >>> from Pootle.storage.memory import TranslationStore
-        >>> coll = TranslationStore('web_ui', object())
+        >>> from Pootle.storage.memory import Database, TranslationStore
+        >>> db = Database()
+        >>> module = db.root.modules.add('module')
+        >>> coll = TranslationStore(module, object())
 
         >>> coll.langinfo = None
 

@@ -75,6 +75,12 @@ class IAnnotatable(Interface):
     annotations = None # IMapping # String -> String/Unicode
 
 
+class IRefersToDB(Interface):
+    """An object stored in a database that has a reference to the database."""
+
+    db = None # IDatabase
+
+
 class ISearchable(Interface):
     """An object that can be searched."""
 
@@ -164,7 +170,7 @@ class IMapping(Interface):
 
 # ---
 
-class IFolder(IHaveStatistics, IAnnotatable, ISearchable):
+class IFolder(IHaveStatistics, IAnnotatable, ISearchable, IRefersToDB):
     """A folder is a collection of modules and possibly other folders."""
 
     key = String
@@ -195,7 +201,7 @@ class IFolder(IHaveStatistics, IAnnotatable, ISearchable):
         """
 
 
-class IDatabase(IFolder):
+class IDatabase(Interface):
     """A database.
 
     This acts as the root of the content object hierarchy.
@@ -205,6 +211,13 @@ class IDatabase(IFolder):
     """
 
     languages = IMapping # 'la_CO' -> ILanguageInfo
+    root = IFolder # root folder
+
+    def startTransaction(self):
+        """Start a transaction.
+
+        Does nothing if transactions are not supported.
+        """
 
     def commitTransaction(self):
         """Commit a transaction.
@@ -219,15 +232,13 @@ class IDatabase(IFolder):
         """
 
 
-class ILanguageInfo(Interface):
+class ILanguageInfo(IRefersToDB):
     """Basic information about a language.
 
     One ILanguageInfo object exists for each language, stored in
     IDatabase.languages.  Copies of translation stores for the same
     language should reference the same language info instance.
     """
-
-    db = IDatabase # XXX Why not ILanguageContainer?
 
     # TODO: inheritance? e.g., pt_BR from pt.  Could be tricky.
 
@@ -241,7 +252,8 @@ class ILanguageInfo(Interface):
     pluralequation = String # optional
 
 
-class IModule(IHaveStatistics, IMapping, IAnnotatable, ISearchable):
+class IModule(IHaveStatistics, IMapping, IAnnotatable, ISearchable,
+              IRefersToDB):
     """An object corresponding to a project.
 
     This loosely corresponds to a .pot file and a set of its translations.

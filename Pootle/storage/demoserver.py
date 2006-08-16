@@ -29,7 +29,7 @@ def translate(project, lang, country, module, msgid):
     db = Database(STORAGE_ROOT)
     if not country: # avoid trouble with passing None as an argument
         country is None
-    store = db[project][module][lang, country]
+    store = db.root[project][module][lang, country]
     return store.translate(msgid)
 
 

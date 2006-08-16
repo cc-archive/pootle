@@ -131,7 +131,7 @@ def test_DDTPStore_load():
 
         >>> from Pootle.storage.ddtp import DDTPModule, DDTPStore
         >>> from Pootle.storage.memory import Database
-        >>> folder = Database().subfolders.add('ddtp')
+        >>> folder = Database().root.subfolders.add('ddtp')
 
     We will need to plant some information in the folder:
 
@@ -181,7 +181,7 @@ def test_DDTP_import_template():
 
         >>> from Pootle.storage.memory import Database
         >>> db = Database()
-        >>> folder = db.subfolders.add('ddtp')
+        >>> folder = db.root.subfolders.add('ddtp')
         >>> ddtpmodule = DDTPModule(folder)
 
     Do the import:

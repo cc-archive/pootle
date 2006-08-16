@@ -444,9 +444,9 @@ def do_import(template_path, translations_dir, pootle_db_dir):
 
     db = Database(pootle_db_dir)
     try:
-        folder = db.subfolders['ddtp']
+        folder = db.root.subfolders['ddtp']
     except KeyError: # Need to create folder.
-        folder = db.subfolders.add('ddtp')
+        folder = db.root.subfolders.add('ddtp')
 
     module = DDTPModule(folder)
     template = file(template_path)
@@ -465,9 +465,9 @@ def do_export(pootle_db_dir, translations_dir):
     """
     db = Database(pootle_db_dir)
     try:
-        folder = db.subfolders['ddtp']
+        folder = db.root.subfolders['ddtp']
     except KeyError: # Need to create folder.
-        folder = db.subfolders.add('ddtp')
+        folder = db.root.subfolders.add('ddtp')
 
     module = DDTPModule(folder)
     module.export_to_ddtp(translations_dir)

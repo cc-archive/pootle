@@ -24,19 +24,14 @@ class HaveStatistics(object):
         raise NotImplementedError('TODO')
 
 
-class Database(HaveStatistics, AbstractMapping):
+class Database(HaveStatistics):
     _interface = IDatabase
 
-    key = None
-    folder = None
-
+    root = None
     languages = None
-    modules = None
-    subfolders = None
 
     def __init__(self, root_path):
-        self.modules = {}
-        self.subfolders = FolderContainer(root_path, self)
+        self.root = RootContainer(self, root_path)
         self.languages = MemLanguageInfoContainer(self)
 
     def __getitem__(self, key):
@@ -49,18 +44,41 @@ class Database(HaveStatistics, AbstractMapping):
     def rollbackTransaction(self):
         pass
 
-    # XXX These will go away when the database is no longer a folder.
-    def find_containers(self): pass
+
+class RootContainer(AbstractMapping, HaveStatistics, SearchableFolder):
+    _interface = IFolder
+
+    db = None
+    key = None
+    folder = None
+
+    modules = None
+    subfolders = None
     annotations = None
-    def find(self): pass
+
+    def __init__(self, db, root_path):
+        self.db = db
+        self.modules = {}
+        self.subfolders = FolderContainer(root_path, self)
+        annotation_path = os.path.join(root_path, 'annotations.db')
+        self.annotations = AnnotationFileContainer(annotation_path)
+
+    def __getitem__(self, key):
+        try:
+            return self.subfolders[key]
+        except KeyError:
+            return self.modules[key]
+
+    def __len__(self):
+        return len(self.modules) + len(self.subfolders)
 
 
 class FolderContainer(AbstractMapping):
     _interface = IMapping
 
-    def __init__(self, root_path, db):
+    def __init__(self, root_path, root):
         self.root_path = root_path
-        self.db = db
+        self.root = root
 
     def keys(self):
         return [folder for folder in os.listdir(self.root_path)
@@ -69,7 +87,7 @@ class FolderContainer(AbstractMapping):
     def __getitem__(self, key):
         if key in self.keys():
             path = os.path.join(self.root_path, key)
-            return Folder(path, key, self.db)
+            return Folder(path, key, self.root)
         else:
             raise KeyError(key)
 
@@ -122,6 +140,7 @@ class AnnotationFileContainer(AbstractMapping):
 class Folder(HaveStatistics, SearchableFolder):
     _interface = IFolder
 
+    db = None
     folder = None
     modules = None
     subfolders = None
@@ -132,7 +151,8 @@ class Folder(HaveStatistics, SearchableFolder):
         self.modules = ModuleContainer(path, self)
         self.subfolders = {}
         self.key = key
-        self.folder = db
+        self.folder = folder
+        self.db = folder.db
 
         annotation_path = os.path.join(path, 'annotations.db')
         self.annotations = AnnotationFileContainer(path)
@@ -185,6 +205,7 @@ class ModuleContainer(AbstractMapping):
 class Module(HaveStatistics, AbstractMapping, SearchableModule):
     _interface = IModule
 
+    db = None
     key = None
     folder = None
     description = None
@@ -197,6 +218,7 @@ class Module(HaveStatistics, AbstractMapping, SearchableModule):
         self.key = key
         self.name = key
         self.folder = folder
+        self.db = folder.db
 
         annotation_path = os.path.join(path, 'annotations.db')
         self.annotations = AnnotationFileContainer(annotation_path)
