@@ -9,9 +9,9 @@ Small tasks:
 + Separate .po header
 + fix makestore() and clonestore() mess.
 - Abstract fuzzy status.
+- Deal with obsolete .po entries (#~)
 - Implement Module.add(x, copy_template=True)
 + Add itervalues() to IMapping.
-- Deal with obsolete .po entries (#~)
 - Fix containment mess (make constructor and adding separate)?
 - Flesh out ITranslationUnit
 - Clean up ILanguageInfo interface
@@ -40,6 +40,7 @@ Important:
 
 Long term:
 + consider use of SQLObject or SQLAlchemy for RDB storage
+- Write some annotation wrappers: ownership, review, etc.
 - Implement a merger using external 'msgmerge'.
 - Write a guide.
 - Wrap pootle's internal pounit.merge.
@@ -63,7 +64,6 @@ Other subsystems to consider:
 + Merging mechanism
 + Language information DB (language name, plural equations, etc.)
 - Translation compendium
-- 
 | Security model (important!)
 | Translation review (important!)
 | Pootle checkers
