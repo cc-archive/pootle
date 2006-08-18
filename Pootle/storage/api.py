@@ -311,7 +311,6 @@ class ITranslationStore(IHaveStatistics, IAnnotatable, ISearchable):
 
     For efficiency reasons modifications are not recorded immediately.
     Call save() explicitly when you are done modifying the data.
-    TODO: is this really needed?
     """
 
     module = IModule
