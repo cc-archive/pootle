@@ -1,0 +1,72 @@
+Write down use cases:
+a) developer runs Pootle for software translation
+b) coordinator runs Pootle for project translation
+c) commit small fixes
+d) translation repository
+...
+
+Small tasks:
++ Separate .po header
++ fix makestore() and clonestore() mess.
+- Abstract fuzzy status.
+- Deal with obsolete .po entries (#~)
+- Implement Module.add(x, copy_template=True)
++ Add itervalues() to IMapping.
+- Fix containment mess (make constructor and adding separate)?
+- Flesh out ITranslationUnit
+- Clean up ILanguageInfo interface
+- Implement TranslationUnit indices properly
+- Transactions in RDB backend.
+
+Transitions:
+- store.template == store[None]?
++ Make Database.root the root folder rather than inherit.
++ Add annotations to objects.
+- Put unit comments into container.
+- Get rid of suggestions.
+- Store annotations in comments for read/write_po.
+
+Important:
++ preliminary .po parser
++ preliminary readonly layer over Pootle's storage
++ demo XML-RPC server
++ substring search in API
+- thorough definition of TranslationUnit + parser
++ read/write layer over Pootle's storage
+- Pootle's metadata (special files) support in storage layer
+- complete .po parser
+- .po serializer
++ ask around about DDTP access
++ ask around about debconf template access
+- Think about store.save() and store.load()
+
+Long term:
++ consider use of SQLObject or SQLAlchemy for RDB storage
+- Write some annotation wrappers: ownership, review, etc.
+- Implement a merger using external 'msgmerge'.
+- Write a guide.
+- Wrap pootle's internal pounit.merge.
+- Import language info from Pootle config.
+- Go through TODOs and XXXes.
+- Language information DB storage
+- Caching for storage.standard.
+
+Debian-specific:
++ Hook up DDTP
+- Add a script to import debconf translations
+
+Misc:
+- Write a small server for quick typo fix webapp.
+- Produce direct hyperlinks to unit context in the source code by storing
+  a link to ViewVC.
+- Maybe for some objects IMapping.keys() should be sorted?
+
+Other subsystems to consider:
+- Versioning / changesets (related with review)
++ Merging mechanism
++ Language information DB (language name, plural equations, etc.)
+- Translation compendium
+| Security model (important!)
+| Translation review (important!)
+| Pootle checkers
+| Pootle-like "goals"
