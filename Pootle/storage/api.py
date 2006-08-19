@@ -14,9 +14,9 @@ Here is a rough sketch of the class containment hierarchy:
   IDatabase
     IFolder
       ...
-        IModule (maps to a .pot file)
+        IModule (maps to a set of translations for a .pot file)
           ITranslationStore (one for each language)
-            ITranslationUnit (maps to a msgid)
+            ITranslationUnit (maps to an msgid+msgstr)
 
 
 Object lifecycle semantics
@@ -341,13 +341,11 @@ class ITranslationStore(IHaveStatistics, IAnnotatable, ISearchable):
 
     def save(self):
         """Save the current state of this store to persistent storage."""
-        # TODO: is this really needed if we have 'fill'?
 
     def makeunit(self, trans):
         """Construct a new translation unit.
 
-        Only put units constructed by this method inside this store, or
-        set their store attribute.
+        Only put units constructed by this method inside this store.
 
         trans is a list of tuples (source, target).  `source` and `target`
         should be unicode values.  Target may be None.
@@ -383,7 +381,7 @@ class ITranslationUnit(IAnnotatable):
     """
 
     store = ITranslationStore
-    index = Integer # index of this unit in the containing store
+    index = Integer # index of this unit in the containing store (0-based)
     suggestions = [ISuggestion]
     context = Unicode # context information
 
@@ -396,7 +394,7 @@ class ITranslationUnit(IAnnotatable):
     visible_comments = [Unicode]   #  #_ note to translator  (this is nonsense)
     obsolete_messages = [Unicode]  #  #~ msgid ""
     msgid_comments = [Unicode]     #  _: within msgid
-    # TODO: type comments are special. Abstract them.
+    # TODO: type comments & fuzzy status are special. Abstract them.
 
     # Use the XLIFF model here: plural sources are stored together with targets
     # The list of tuples is ordered.  If a plural is not translated, the target
@@ -406,8 +404,6 @@ class ITranslationUnit(IAnnotatable):
     # For singular, just use a single tuple in the list.
     trans = [(Unicode,  # plural msgid (source)
               Unicode)] # plural translation (target)
-
-    # TODO: it would be nice to have a "dirty" attribute
 
 
 # === Merging ===

@@ -15,6 +15,8 @@ Small tasks:
 - Fix containment mess (make constructor and adding separate)?
 - Flesh out ITranslationUnit
 - Clean up ILanguageInfo interface
+- Implement TranslationUnit indices properly
+- Transactions in RDB backend.
 
 Transitions:
 - store.template == store[None]?

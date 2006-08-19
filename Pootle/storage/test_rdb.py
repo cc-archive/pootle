@@ -53,9 +53,8 @@ def test_Folder():
         >>> db.rootfolder.module_list == [module]
         True
 
-# XXX: FIXME
-#       >>> module.folder is db.rootfolder
-#       True
+        >>> module.folder is db.rootfolder
+        True
 
     OK, that worked!  Now let's add a few subfolders one inside another.
     We'll examine attributes to make sure that all links have been set up
@@ -88,9 +87,8 @@ def test_Folder():
         >>> db.session.query(Module).select(Module.c.key=='mod3') == [mod3]
         True
 
-# XXX: FIXME
-#       >>> mod3.folder == sub2
-#       True
+        >>> mod3.folder == sub2
+        True
 
     """
 
@@ -104,16 +102,42 @@ def test_TranslationStore():
         >>> db = Database('sqlite://')
         >>> mod = Module('mod')
 
-#        >>> store = mod.add('store')
-#
-#    Check links:
-#
-#        >>> store.key
-#        'store'
-#        >>> store.module is mod
-#        True
-#        >>> mod.store_list == [store]
-#        True
+        >>> store = mod.add('store')
+
+    Check links:
+
+        >>> store.key
+        'store'
+        >>> store.module is mod
+        True
+        >>> mod.store_list == [store]
+        True
+
+    """
+
+
+def test_TranslationUnit():
+    """
+
+        >>> from Pootle.storage.rdb import Database, Module, TranslationStore
+        >>> db = Database('sqlite://')
+
+        >>> store = TranslationStore('store')
+        >>> unit1 = store.makeunit([('unit one', 'unit eins')])
+        >>> unit2 = store.makeunit([('unit two', 'unit zwei'),
+        ...                         ('unit two a', 'unit zwei a')])
+        >>> store.fill([unit1, unit2])
+        >>> store.save()
+
+        >>> for unit in store:
+        ...     print 'TranslationUnit %d:' % unit.idx
+        ...     for source, target in unit.trans:
+        ...         print source, ' - ', target
+        TranslationUnit 0:
+        unit one  -  unit eins
+        TranslationUnit 1:
+        unit two  -  unit zwei
+        unit two a  -  unit zwei a
 
     """
 
