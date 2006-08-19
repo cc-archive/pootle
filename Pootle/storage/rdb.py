@@ -75,11 +75,8 @@ class RefersToDB(object):
     and store that globally.
     """
 
-    db_global = None
-
-    @property
-    def db(self):
-        return RefersToDB.db_global
+    # Static variable storing the active database.
+    db = None
 
 
 # -------------------
@@ -222,7 +219,7 @@ class Database(object):
         TODO: Currently LanguageInfoContainer is volatile.
 
         """
-        RefersToDB.db_global = self # Mark itself as the active database.
+        RefersToDB.db = self # Mark itself as the active database.
         # TODO: connection pooling
         self.engine = create_engine(engine_url, echo=DEBUG_ECHO, logger=sys.stderr)
         self.create_tables() # TODO Don't recreate tables every time.
