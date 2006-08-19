@@ -14,7 +14,7 @@ Issues:
 import sys
 from Pootle.storage.api import IDatabase
 from Pootle.storage.memory import LanguageInfoContainer
-from sqlalchemy import * # safe to use
+from sqlalchemy import *
 
 DEBUG_ECHO = False # set to True to echo SQL statements
 

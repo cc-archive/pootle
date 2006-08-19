@@ -115,7 +115,7 @@ def test_write_po():
         "Content-Type: text/plain; charset=CHARSET\n"
         "Content-Transfer-Encoding: ENCODING\n"
         "Plural-Forms: nplurals=1; plural=0;\n"
-        "X-Generator: Translate Toolkit 0.99a1\n"
+        "X-Generator: Translate Toolkit ...\n"
         <BLANKLINE>
         msgid "simple"
         msgstr "einfach"
