@@ -33,41 +33,41 @@ def test_Folder():
 
     Let's find the root folder
 
-        >>> rootfolder = db.session.query(Folder).select(Folder.c.key=='')[0]
-        >>> rootfolder is db.rootfolder
+        >>> root = db.session.query(Folder).select_by(key='')[0]
+        >>> root is db.root
         True
 
     The root folder has no parent folder:
 
-        >>> rootfolder.folder is None
+        >>> root.folder is None
         True
 
     Let's add a module:
 
-        >>> module = db.rootfolder.modules.add('new1')
-        >>> db.session.query(Module).select(Module.c.key=='new1') == [module]
+        >>> module = db.root.modules.add('new1')
+        >>> db.session.query(Module).select_by(key='new1') == [module]
         True
 
     Let's test the links:
 
-        >>> db.rootfolder.module_list == [module]
+        >>> db.root.module_list == [module]
         True
 
-        >>> module.folder is db.rootfolder
+        >>> module.folder is db.root
         True
 
     OK, that worked!  Now let's add a few subfolders one inside another.
     We'll examine attributes to make sure that all links have been set up
     properly.
 
-        >>> rf = db.rootfolder
+        >>> rf = db.root
         >>> sub1 = rf.subfolders.add('sub1')
-        >>> db.rootfolder.subfolder_list == [sub1]
+        >>> db.root.subfolder_list == [sub1]
         True
-        >>> db.session.query(Folder).select(Folder.c.key=='sub1') == [sub1]
+        >>> db.session.query(Folder).select_by(key='sub1') == [sub1]
         True
 
-        >>> sub1.folder is db.rootfolder
+        >>> sub1.folder is db.root
         True
 
     And add another subfolder:
@@ -75,7 +75,7 @@ def test_Folder():
         >>> sub2 = sub1.subfolders.add('sub2')
         >>> sub1.subfolder_list == [sub2]
         True
-        >>> db.session.query(Folder).select(Folder.c.key=='sub2') == [sub2]
+        >>> db.session.query(Folder).select_by(key='sub2') == [sub2]
         True
 
         >>> sub2.folder == sub1
@@ -84,7 +84,7 @@ def test_Folder():
     And finally a module inside:
 
         >>> mod3 = sub2.modules.add('mod3')
-        >>> db.session.query(Module).select(Module.c.key=='mod3') == [mod3]
+        >>> db.session.query(Module).select_by(key='mod3') == [mod3]
         True
 
         >>> mod3.folder == sub2
@@ -156,6 +156,40 @@ def test_TranslationUnit():
         >>> for unit in units:
         ...     print (unit.parent_id, ) + unit.trans[0]
         (1, 'unit three', 'unit drei')
+
+    """
+
+
+def test_transactions():
+    """Test transaction support.
+
+        >>> from Pootle.storage.rdb import Database, Module
+        >>> db = Database('sqlite://')
+
+        >>> module = db.root.modules.add('some_module')
+
+    Let's start the transaction:
+
+        >>> db.startTransaction()
+        >>> module = db.session.query(Module).select()[0]
+        >>> module.key
+        'some_module'
+
+    Now we change the module's key:
+
+        >>> module.key = 'foo'
+
+    And roll back the change:
+
+        >>> db.rollbackTransaction()
+
+    The module's key should not have changed.
+
+    TODO: Work around the explicit expiration mark.
+
+        >>> db.session.expire(module)
+        >>> module.key
+        u'some_module'
 
     """
 

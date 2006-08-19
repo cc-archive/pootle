@@ -147,7 +147,7 @@ class Database(object):
         pass
 
     def rollbackTransaction(self):
-        pass
+        raise NotImplementedError("rollback not supported")
 
 
 class LanguageInfo(object):

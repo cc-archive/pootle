@@ -1,10 +1,19 @@
 """A backend that stores all data in a relational database.
 
 Requires sqlalchemy to be installed.
+
+Supports sqlite, MySQL, PostgreSQL and other engines (see rdb.Database).
+
+Issues:
+- rollback in transactions works by not committing the changes to the
+  database, however, objects already in memory are not reverted to their
+  previous state -- to do that you need to use db.session.refresh()/expire()
+  which is not even in the interface.
 """
 
 import sys
 from Pootle.storage.api import IDatabase
+from Pootle.storage.memory import LanguageInfoContainer
 from sqlalchemy import * # safe to use
 
 DEBUG_ECHO = False # set to True to echo SQL statements
@@ -131,7 +140,6 @@ class Module(RefersToDB):
 
     def add(self, key):
         store = TranslationStore(key)
-#        store.module = self
         self.store_list.append(store)
         self.db.save_object(self)
         return store
@@ -158,7 +166,6 @@ class TranslationStore(RefersToDB):
     def fill(self, units):
         for unit in list(self.unit_list):
             self.unit_list.remove(unit)
-            self.db.session.delete(unit)
         for i, unit in enumerate(units):
             unit.idx = i
             self.unit_list.append(unit)
@@ -196,7 +203,11 @@ class TranslationPair(object):
 
 class Database(object):
     """An SQL database connection."""
-#    _interface = IDatabase
+    _interface = IDatabase
+
+    root = None
+    languages = None
+    _transaction = None
 
     def __init__(self, engine_url):
         """Create a new connection.
@@ -207,14 +218,18 @@ class Database(object):
             'sqlite:///relative/path/to/database.txt'
             'postgres://scott:tiger@localhost:5432/mydatabase'
             'mysql://localhost/foo'
+
+        TODO: Currently LanguageInfoContainer is volatile.
+
         """
         RefersToDB.db_global = self # Mark itself as the active database.
         # TODO: connection pooling
         self.engine = create_engine(engine_url, echo=DEBUG_ECHO, logger=sys.stderr)
         self.create_tables() # TODO Don't recreate tables every time.
         self.session = create_session(bind_to=self.engine)
-        self.rootfolder = Folder('')
-        self.save_object(self.rootfolder)
+        self.root = Folder('')
+        self.languages = LanguageInfoContainer(self)
+        self.save_object(self.root)
 
     def create_tables(self):
         global metadata
@@ -223,6 +238,20 @@ class Database(object):
     def save_object(self, obj):
         self.session.save(obj)
         self.session.flush()
+
+    def startTransaction(self):
+        self._transaction = self.session.create_transaction()
+        assert self._transaction
+
+    def rollbackTransaction(self):
+        assert self._transaction, 'no active transaction'
+        self._transaction.rollback()
+        self._transaction = None
+
+    def commitTransaction(self):
+        assert self._transaction, 'no active transaction'
+        self._transaction.commit()
+        self._transaction = None
 
 
 # =======

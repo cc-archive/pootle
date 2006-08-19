@@ -228,7 +228,7 @@ class IDatabase(Interface):
     def rollbackTransaction(self):
         """Commit a transaction.
 
-        Does nothing if transactions are not supported.
+        Raises NotImplementedError if transactions are not supported.
         """
 
 

@@ -42,7 +42,7 @@ class Database(HaveStatistics):
     def commitTransaction(self):
         pass
     def rollbackTransaction(self):
-        pass
+        raise NotImplementedError("rollback not supported")
 
 
 class RootContainer(AbstractMapping, HaveStatistics, SearchableFolder):
