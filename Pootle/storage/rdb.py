@@ -156,7 +156,9 @@ class TranslationStore(RefersToDB):
         return TranslationUnit(trans)
 
     def fill(self, units):
-        del self.unit_list[:]
+        for unit in list(self.unit_list):
+            self.unit_list.remove(unit)
+            self.db.session.delete(unit)
         for i, unit in enumerate(units):
             unit.idx = i
             self.unit_list.append(unit)
@@ -257,8 +259,7 @@ mapper(TranslationStore, stores_table,
 
 mapper(TranslationUnit, units_table,
     properties={
-        'trans_list': relation(TranslationPair, private=True,
-                               eager=True,
+        'trans_list': relation(TranslationPair, private=True, lazy=False,
                                order_by=trans_table.c.plural_idx)
     })
 

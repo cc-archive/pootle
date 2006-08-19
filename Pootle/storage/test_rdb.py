@@ -119,8 +119,11 @@ def test_TranslationStore():
 def test_TranslationUnit():
     """
 
-        >>> from Pootle.storage.rdb import Database, Module, TranslationStore
+        >>> from Pootle.storage.rdb import Database, TranslationStore
+        >>> from Pootle.storage.rdb import TranslationUnit
         >>> db = Database('sqlite://')
+
+    Let's create a store and put a few translations inside:
 
         >>> store = TranslationStore('store')
         >>> unit1 = store.makeunit([('unit one', 'unit eins')])
@@ -138,6 +141,21 @@ def test_TranslationUnit():
         TranslationUnit 1:
         unit two  -  unit zwei
         unit two a  -  unit zwei a
+
+    Now we will make sure that old translations are deleted when fill()
+    is invoked.
+
+        >>> unit3 = store.makeunit([('unit three', 'unit drei')])
+        >>> store.fill([unit3])
+        >>> store.save()
+
+        >>> len(store.unit_list)
+        1
+
+        >>> units = store.db.session.query(TranslationUnit).select()
+        >>> for unit in units:
+        ...     print (unit.parent_id, ) + unit.trans[0]
+        (1, 'unit three', 'unit drei')
 
     """
 
