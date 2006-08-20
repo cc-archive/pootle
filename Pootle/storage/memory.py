@@ -284,9 +284,10 @@ class TranslationStore(SearchableTranslationStore):
         return self._units[start:end]
 
     def fill(self, units):
-        self._units = [] # TODO: unlink the previous units?
-        for unit in units:
-            self._units.append(unit) # TODO: link new units?
+        self._units = []
+        for i, unit in enumerate(units):
+            unit.index = i
+            self._units.append(unit)
 
     def save(self):
         pass # We're in memory already.

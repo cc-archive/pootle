@@ -160,6 +160,8 @@ def test_TranslationStore():
         True
         >>> coll[0] == tr1
         True
+        >>> tr2.index
+        1
 
     Let's check statistics:
 
