@@ -5,7 +5,7 @@ If needed, the database can be trivially serialized by use of pickle.
 
 from Pootle.storage.api import IStatistics, IDatabase, ITranslationUnit
 from Pootle.storage.api import ILanguageInfo, IModule, IMapping, IFolder
-from Pootle.storage.api import ITranslationStore, ISuggestion, IHaveStatistics
+from Pootle.storage.api import ITranslationStore, IHaveStatistics
 from Pootle.storage.api import IHeader
 from Pootle.storage.abstract import AbstractMapping, SearchableModule
 from Pootle.storage.abstract import SearchableFolder, SearchableTranslationStore
@@ -317,27 +317,12 @@ class TranslationStore(SearchableTranslationStore):
         return stats
 
 
-class Suggestion(object):
-
-    _interface = ISuggestion
-
-    unit = None
-    date = None
-    author = None
-
-    def __init__(self, unit, date, author):
-        self.unit = unit
-        self.date = date
-        self.author = author
-
-
 class TranslationUnit(object):
     _interface = ITranslationUnit
 
     store = None
     index = None
     annotations = None
-    suggestions = None
     context = None
 
     other_comments = None

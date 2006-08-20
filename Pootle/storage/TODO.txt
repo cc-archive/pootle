@@ -23,7 +23,7 @@ Transitions:
 + Make Database.root the root folder rather than inherit.
 + Add annotations to objects.
 - Put unit comments into container.
-- Get rid of suggestions.
++ Get rid of suggestions.
 - Store annotations in comments for read/write_po.
 
 Important:

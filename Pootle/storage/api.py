@@ -368,20 +368,6 @@ class ITranslationStore(IHaveStatistics, IAnnotatable, ISearchable):
         """
 
 
-class ISuggestion(Interface):
-    """A suggestion for a particular message.
-
-    The intention of this class is to store an unapproved string, possibly
-    submitted by an irregular or even unregistered translator.  The user
-    interface should offer a convenient way of "upgrading" suggestions to
-    translations.
-    """
-
-    unit = None # =ITranslationUnit
-    date = Date # submission date
-    author = Username # author's user name -- optional
-
-
 class ITranslationUnit(IAnnotatable):
     """A translatable string.
 
@@ -390,7 +376,6 @@ class ITranslationUnit(IAnnotatable):
 
     store = ITranslationStore
     index = Integer # index of this unit in the containing store (0-based)
-    suggestions = [ISuggestion]
     context = Unicode # context information
 
     # Comments; taken straight off translate.storage.po.pounit
