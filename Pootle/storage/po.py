@@ -7,17 +7,13 @@ import os
 from translate.storage.po import pofile
 
 
-comment_types = dict(other_comments='#',
-                     automatic_comments='#.',
-                     source_comments='#:',
-                     type_comments='#,',
-                     visible_comments='#_',
-                     obsolete_messages='#~',
-                     msgid_comments='')
-
-comment_attrs = ['other_comments', 'automatic_comments', 'source_comments',
-                 'type_comments', 'visible_comments', 'obsolete_messages',
-                 'msgid_comments']
+comment_types = dict(other='#',
+                     automatic='#.',
+                     source='#:',
+                     type='#,',
+                     visible='#_',
+                     obsolete='#~',
+                     msgid='')
 
 
 def read_po(potext, store):
@@ -39,13 +35,13 @@ def read_po(potext, store):
             for s in oldunit.target.strings[1:]:
                 trans.append((plural_msgid, unicode(s)))
         unit = store.makeunit(trans)
-        for attr in comment_attrs:
-            values = getattr(oldunit, attr.replace('_', ''), [])
+        for attr in comment_types.keys():
+            values = getattr(oldunit, attr + 'comments', [])
             for value in values:
                 start = len(comment_types[attr])
                 value = value[start+1:-1] # chomp leading #? and trailing \n
                 value = unicode(value)
-                getattr(unit, attr).append(value)
+                unit.comments.add(attr, value)
         units.append(unit)
     store.fill(units)
 
@@ -61,11 +57,11 @@ def write_po(store):
             pounit.target = unit.trans[0][1]
         else:
             pounit.target = [trans[1] for trans in unit.trans]
-        for attr in comment_attrs:
-            values = getattr(unit, attr, [])
+        for attr in comment_types.keys():
+            values = unit.comments.get(attr, [])
             for value in values:
                 comment = '%s %s\n' % (comment_types[attr], value)
-                getattr(pounit, attr.replace('_', '')).append(comment)
+                getattr(pounit, attr + 'comments').append(comment)
         po.units.append(pounit)
 
     return po.getoutput()

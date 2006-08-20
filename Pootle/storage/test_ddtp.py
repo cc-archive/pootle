@@ -142,7 +142,7 @@ def test_DDTPStore_load():
         >>> def addunit(package, desc, trans, i, total, md5):
         ...     unit = store.makeunit([(desc, trans)])
         ...     comment = '%s (%s/%s)  MD5: %s' % (package, i, total, md5)
-        ...     unit.automatic_comments = [comment]
+        ...     unit.comments.add('automatic', comment)
         ...     units.append(unit)
 
         >>> addunit('kitchen', 'stool', 'der Stuhl', 1, 3, 'f00f00')
@@ -193,7 +193,7 @@ def test_DDTP_import_template():
 
         >>> for unit in module.template:
         ...     msgid, translation = unit.trans[0]
-        ...     print unit.automatic_comments
+        ...     print unit.comments['automatic']
         ...     print msgid[:20], '... -', translation and translation[:20]
         ...     # doctest: +REPORT_UDIFF
         ['abook (1/2)  MD5: b3df98dd5a16801ef603bb31eff45bf6']
@@ -217,7 +217,7 @@ def test_DDTP_import_template():
 
         >>> for unit in module['de']:
         ...     msgid, translation = unit.trans[0]
-        ...     print unit.automatic_comments
+        ...     print unit.comments['automatic']
         ...     print msgid[:20], '... -', translation and translation[:20]
         ['abook (1/2)  MD5: b3df98dd5a16801ef603bb31eff45bf6']
         text-based ncurses a ... - Ein textbasiertes Ad

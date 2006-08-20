@@ -165,7 +165,7 @@ def test_TranslationStore():
 
     Let's check statistics:
 
-        >>> tr1.type_comments.append('fuzzy')
+        >>> tr1.comments.add('type', u'fuzzy')
 
         >>> stats = coll.statistics()
         >>> stats.total_strings, stats.translated_strings, stats.fuzzy_strings

@@ -63,6 +63,12 @@ trans_table = Table('trans', metadata,
     Column('source', Unicode, nullable=False),
     Column('destination', Unicode, nullable=True))
 
+comments_table = Table('comments', metadata,
+    Column('comment_id', Integer, primary_key=True),
+    Column('type', String(100)),
+    Column('unit_id', Integer, ForeignKey('units.unit_id'),
+           nullable=True))
+
 
 # -------
 # Helpers
@@ -255,6 +261,10 @@ class TranslationUnit(RefersToDB):
     _table = units_table
 
     @property
+    def comments(self):
+        return CommentContainer(self)
+
+    @property
     def trans(self):
         return [(trans.source, trans.target)
                 for trans in self.trans_list]
@@ -272,6 +282,32 @@ class TranslationPair(object):
         self.plural_idx = plural_idx
         self.source = source
         self.target = target
+
+
+class CommentContainer(object):
+    """A helper for accessing comments."""
+
+    def __init__(self, unit):
+        self.unit = unit
+
+    def add(self, type, comment):
+        comment = Comment(type, comment)
+        self.unit.comment_list.append(comment)
+
+    def __getitem__(self, type):
+        result = []
+        for comment in self.unit.comment_list:
+            if comment.type == type:
+                result.append(comment.comment)
+        return result
+
+
+class Comment(object):
+    _table = comments_table
+
+    def __init__(self, type, comment):
+        self.type = type
+        self.comment = comment
 
 
 # The database object
@@ -370,8 +406,11 @@ mapper(TranslationStore, stores_table,
 mapper(TranslationUnit, units_table,
     properties={
         'trans_list': relation(TranslationPair, private=True, lazy=False,
-                               order_by=trans_table.c.plural_idx)
+                               order_by=trans_table.c.plural_idx),
+        'comment_list': relation(Comment, private=True, lazy=False)
     })
 
 
 mapper(TranslationPair, trans_table)
+
+mapper(Comment, comments_table)

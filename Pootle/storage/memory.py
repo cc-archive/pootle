@@ -307,7 +307,7 @@ class TranslationStore(SearchableTranslationStore):
         stats = Statistics()
         stats.total_strings = len(self)
         for unit in self:
-            if 'fuzzy' in unit.type_comments:
+            if 'fuzzy' in unit.comments.get('type', []):
                 stats.fuzzy_strings += 1
             else:
                 for source, target in unit.trans:
@@ -318,6 +318,14 @@ class TranslationStore(SearchableTranslationStore):
         return stats
 
 
+class CommentContainer(MappingMixin):
+    _interface = IMapping
+
+    def add(self, comment_type, comment):
+        lst = self._items.setdefault(comment_type, [])
+        lst.append(comment)
+
+
 class TranslationUnit(object):
     _interface = ITranslationUnit
 
@@ -326,13 +334,7 @@ class TranslationUnit(object):
     annotations = None
     context = None
 
-    other_comments = None
-    automatic_comments = None
-    source_comments = None
-    type_comments = None
-    visible_comments = None
-    obsolete_messages = None
-    msgid_comments = None
+    comments = None
 
     trans = None
 
@@ -344,16 +346,8 @@ class TranslationUnit(object):
         self.store = store
         self.trans = trans
         # TODO: assert len(trans) == language.nplurals?
-        # TODO: self.index = ?
         self.annotations = {}
-
-        self.other_comments = []
-        self.automatic_comments = []
-        self.source_comments = []
-        self.type_comments = []
-        self.visible_comments = []
-        self.obsolete_messages = []
-        self.msgid_comments = []
+        self.comments = CommentContainer()
 
 
 class Statistics(object):

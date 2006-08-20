@@ -42,9 +42,9 @@ def test_read_po():
         ...     print unit.trans
         [(u'Hello', u'Labas')]
 
-        >>> store[0].automatic_comments
+        >>> store[0].comments['automatic']
         [u'Something', u'Anything else.']
-        >>> store[0].source_comments
+        >>> store[0].comments['source']
         [u'../hello.c:5']
 
     """
@@ -70,7 +70,7 @@ def test_read_po_plurals():
         >>> for unit in store:
         ...     print unit.trans
         [(u'One', u'Vienas'), (u'Many', u'Keli'), (u'Many', u'Daug')]
-        >>> print store[0].automatic_comments
+        >>> print store[0].comments['automatic']
         [u'Plural test']
 
     """
@@ -91,8 +91,8 @@ def test_write_po():
 
         >>> t2 = store.makeunit([('spirit', 'der Geist'),
         ...                      ('spirits', 'die Geiste')])
-        >>> t2.type_comments = ['fuzzy']
-        >>> t2.automatic_comments = ['roboto']
+        >>> t2.comments.add('type', 'fuzzy')
+        >>> t2.comments.add('automatic', 'roboto')
 
         >>> store.fill([t1, t2])
 

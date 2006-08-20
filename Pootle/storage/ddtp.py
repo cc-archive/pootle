@@ -118,7 +118,7 @@ class DDTPPackage(object):
             unit = makeunit([para])
             comment = '%s (%d/%d)  MD5: %s' % (self.name, i+1,
                                                  len(self.paras), self.md5sum)
-            unit.automatic_comments = [comment]
+            unit.comments.add('automatic', comment)
             units.append(unit)
         return units
 
@@ -140,7 +140,7 @@ class DDTPPackage(object):
         paras = []
         for unit in units:
             description, translation = unit.trans[0]
-            [comment] = unit.automatic_comments
+            [comment] = unit.comments['automatic']
             name, i, total, md5sum = DDTPPackage._parseComment(comment)
             paras.append(unit.trans[0])
 

@@ -9,7 +9,7 @@ examples.
 .. contents::
 
 Getting started
----------------
+===============
 
 To get started, you need to instantiate a database, by invoking
 open_database(uri).  The argument `uri` identifies the type of backend
@@ -45,10 +45,10 @@ For the purposes of this example we will use a transient SQLite database.
 
 
 Data organization
------------------
+=================
 
 Folders
-~~~~~~~
+-------
 
 For convenience, translations can be grouped in folders.  The database
 contains a reference to the root folder:
@@ -57,8 +57,8 @@ contains a reference to the root folder:
     <Pootle.storage.rdb.Folder object at ...>
 
 A folder can contain other folders (the ``subfolders`` attribute).  The
-``subfolders`` object acts much like standard dictionaries, but instead of
-``__setitem__()`` you should use ``add(key)``, which creates the
+``subfolders`` object acts much like standard dictionaries, but instead
+of ``__setitem__()`` you should use ``add(key)``, which creates the
 folder, attaches it to the parent folder and returns the new object.  This
 way all Folder objects are always attached to a hierarchy.
 
@@ -87,7 +87,7 @@ We can add subfolders into a folder:
     >>> demo_subfolder = debian_folder.subfolders.add('demo')
 
 Modules
-~~~~~~~
+-------
 
 Modules define groups of translation strings.  They loosely correspond to
 a gettext ``.pot`` file together with all its translations.  Modules are manipulated
@@ -122,7 +122,7 @@ can be appended like this: ``de_DE``, ``pt_BR``, etc.
     <Pootle.storage.rdb.TranslationStore object at ...>
 
 Translation units
-~~~~~~~~~~~~~~~~~
+-----------------
 
 Translation stores contain translation units. A translation unit is a single
 unit to be translated.  It maps loosely to a single msgid/msgstr pair in
@@ -148,7 +148,13 @@ Now an example with some plurals:
     ...                         (u'%d users', u'%d naudotojai'),
     ...                         (u'%d users', u'%d naudotoj\u0173')])
 
-TODO: comments
+To add comments, use the ``comments`` attribute.  Specify the comment
+type (`automatic`, `source`, `type`, ...) to ``add()``.  On lookup
+a list of comments will be returned.
+
+    >>> unit2.comments.add('source', u'source.c:123')
+    >>> unit2.comments['source']
+    [u'source.c:123']
 
 After you create some translation units, they can be inserted into the
 store all at once by using ``fill()``:
@@ -170,3 +176,17 @@ After performing changes to a database, do not forget to invoke ``save()`` to
 write the changes to permanent storage:
 
     >>> store.save()
+
+Language information
+--------------------
+
+TODO
+
+Transactions
+------------
+
+
+Adding additional capabilities
+==============================
+
+TODO
