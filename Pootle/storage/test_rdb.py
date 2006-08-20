@@ -64,6 +64,8 @@ def test_Folder():
         >>> sub1 = rf.subfolders.add('sub1')
         >>> db.root.subfolder_list == [sub1]
         True
+        >>> db.root['sub1'] is sub1
+        True
         >>> db.session.query(Folder).select_by(key='sub1') == [sub1]
         True
 

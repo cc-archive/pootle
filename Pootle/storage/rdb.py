@@ -12,7 +12,8 @@ Issues:
 """
 
 import sys
-from Pootle.storage.api import IDatabase
+from Pootle.storage.abstract import AbstractMapping
+from Pootle.storage.api import IDatabase, IFolder, IMapping, IModule
 from Pootle.storage.memory import LanguageInfoContainer
 from sqlalchemy import *
 
@@ -85,8 +86,12 @@ class RefersToDB(object):
 
 
 class Folder(RefersToDB):
-#    _interface = IFolder
+    _interface = IFolder
     _table = folders_table
+    annotations = None # XXX TODO
+
+    def statistics(self):
+        pass # XXX TODO
 
     def __init__(self, key):
         self.key = key
@@ -100,9 +105,24 @@ class Folder(RefersToDB):
     def modules(self):
         return ModuleContainer(self)
 
+    def __getitem__(self, key):
+        try:
+            return self.subfolders[key]
+        except KeyError:
+            return self.modules[key]
 
-class FolderContainer(RefersToDB):
-    # _interface = IMapping
+    def __len__(self):
+        return len(self.modules) + len(self.subfolders)
+
+    def find_containers(self):
+        raise NotImplementedError('FIXME')
+
+    def find(self, substring):
+        raise NotImplementedError('FIXME')
+
+
+class FolderContainer(RefersToDB, AbstractMapping):
+    _interface = IMapping
 
     def __init__(self, folder):
         self.folder = folder
@@ -113,9 +133,23 @@ class FolderContainer(RefersToDB):
         self.db.save_object(self.folder)
         return folder
 
+    def __getitem__(self, key):
+        query = self.db.session.query(Folder)
+        results = query.select_by(parent_id=self.folder.folder_id, key=key)
+        if len(results) == 1:
+            return results[0]
+        else:
+            raise KeyError(key)
 
-class ModuleContainer(RefersToDB):
-    # _interface = IMapping
+    def keys(self):
+        return [folder.key for folder in self.folder_list]
+
+    def __delitem__(self, key):
+        raise NotImplementedError('FIXME')
+
+
+class ModuleContainer(RefersToDB, AbstractMapping):
+    _interface = IMapping
 
     def __init__(self, folder):
         self.folder = folder
@@ -126,10 +160,29 @@ class ModuleContainer(RefersToDB):
         self.db.save_object(self.folder)
         return module
 
+    def __getitem__(self, key):
+        query = self.db.session.query(Module)
+        results = query.select_by(parent_id=self.folder.folder_id, key=key)
+        if len(results) == 1:
+            return results[0]
+        else:
+            raise KeyError(key)
 
-class Module(RefersToDB):
-#    _interface = IModule
+    def keys(self):
+        return [module.key for module in self.module_list]
+
+    def __delitem__(self, key):
+        raise NotImplementedError('FIXME')
+
+
+class Module(RefersToDB, AbstractMapping):
+    _interface = IModule
     _table = modules_table
+    annotations = None # XXX TODO
+
+    @property
+    def template(self):
+        return self[None] # XXX
 
     def __init__(self, key):
         self.key = key
@@ -140,6 +193,26 @@ class Module(RefersToDB):
         self.store_list.append(store)
         self.db.save_object(self)
         return store
+
+    def statistics(self):
+        pass # XXX TODO
+
+    def keys(self):
+        return [store.key for store in self.store_list]
+
+    def __getitem__(self, key):
+        query = self.db.session.query(TranslationStore)
+        results = query.select_by(parent_id=self.module_id, key=key)
+        if len(results) == 1:
+            return results[0]
+        else:
+            raise KeyError(key)
+
+    def __delitem__(self, key):
+        raise NotImplementedError('FIXME')
+
+    def find(self, substring):
+        raise NotImplementedError('FIXME')
 
 
 # Translation store
@@ -216,7 +289,8 @@ class Database(object):
             'postgres://scott:tiger@localhost:5432/mydatabase'
             'mysql://localhost/foo'
 
-        TODO: Currently LanguageInfoContainer is volatile.
+        TODO: Currently LanguageInfoContainer is volatile, i.e., it is not
+        stored inside the database.
 
         """
         RefersToDB.db = self # Mark itself as the active database.

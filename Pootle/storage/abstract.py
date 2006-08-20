@@ -4,7 +4,7 @@ class AbstractMapping(object):
     """An abstract mapping.
 
     You still need to provide keys(), __getitem__(), __setitem__() and
-    __delitem().
+    __delitem__().
     """
 
     def __len__(self):
