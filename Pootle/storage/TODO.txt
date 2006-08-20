@@ -42,14 +42,16 @@ Important:
 
 Long term:
 + consider use of SQLObject or SQLAlchemy for RDB storage
-- Write some annotation wrappers: ownership, review, etc.
++ Write a guide.
+! Write some annotation wrappers: ownership, review, etc.
+- Object renames.
 - Implement a merger using external 'msgmerge'.
-- Write a guide.
 - Wrap pootle's internal pounit.merge.
 - Import language info from Pootle config.
 - Go through TODOs and XXXes.
 - Language information DB storage
 - Caching for storage.standard.
+- Use tags instead of hierarchical folders for organization.
 
 Debian-specific:
 + Hook up DDTP
