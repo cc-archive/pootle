@@ -1,7 +1,5 @@
 #!/usr/bin/python
 
-import sys
-sys.path.append('../..') # in case this module is run directly
 import doctest
 from StringIO import StringIO
 

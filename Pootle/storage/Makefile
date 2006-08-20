@@ -1,5 +1,5 @@
 test:
-	for f in test_*.py; do python $$f; done
+	python tests.py
 
 doc:
 	epydoc .
