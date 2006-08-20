@@ -301,6 +301,7 @@ class Database(object):
         self.root = Folder('')
         self.languages = LanguageInfoContainer(self)
         self.save_object(self.root)
+        self.flush()
 
     def create_tables(self):
         global metadata
@@ -308,6 +309,9 @@ class Database(object):
 
     def save_object(self, obj):
         self.session.save(obj)
+        self.flush()
+
+    def flush(self):
         self.session.flush()
 
     def startTransaction(self):

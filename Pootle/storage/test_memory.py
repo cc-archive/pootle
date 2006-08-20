@@ -6,7 +6,7 @@ import doctest
 
 
 def test_MappingMixin():
-    """
+    """Tests for MappingMixin.
 
         >>> from Pootle.storage.memory import MappingMixin
         >>> mm = MappingMixin()
@@ -31,7 +31,7 @@ def test_MappingMixin():
 
 
 def test_AccumStatsMixin():
-    """
+    """Tests for AccumStatsMixin.
 
         >>> from Pootle.storage.memory import AccumStatsMixin, Statistics
         >>> accum = AccumStatsMixin()
@@ -50,7 +50,7 @@ def test_AccumStatsMixin():
 
 
 def test_db():
-    """
+    """Tests for Database.
 
     Let's create a database:
 
@@ -63,7 +63,7 @@ def test_db():
 
 
 def test_Folder():
-    """
+    """Tests for Folder.
 
     Let's create a folder:
 
@@ -89,7 +89,7 @@ def test_Folder():
 
 
 def test_LanguageInfo():
-    """
+    """Tests for LanguageInfo.
 
         >>> from Pootle.storage.memory import LanguageInfo
         >>> langinfo = LanguageInfo('db')
@@ -99,7 +99,7 @@ def test_LanguageInfo():
 
 
 def test_LanguageInfoContainer():
-    """
+    """Tests for LanguageInfoContainer.
 
         >>> from Pootle.storage.memory import LanguageInfoContainer
         >>> langs = LanguageInfoContainer('db')
@@ -122,7 +122,7 @@ def test_LanguageInfoContainer():
 
 
 def test_Module():
-    """
+    """Tests for Module.
 
         >>> from Pootle.storage.memory import Module, Database
         >>> db = Database()

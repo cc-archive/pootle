@@ -149,6 +149,9 @@ class Database(object):
     def rollbackTransaction(self):
         raise NotImplementedError("rollback not supported")
 
+    def flush(self):
+        pass # not needed
+
 
 class LanguageInfo(object):
     _interface = ILanguageInfo

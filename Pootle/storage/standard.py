@@ -37,6 +37,9 @@ class Database(HaveStatistics):
     def __getitem__(self, key):
         return self.subfolders[key]
 
+    def flush(self):
+        pass # TODO: This will serialize folder/module metadata.
+
     def startTransaction(self):
         pass
     def commitTransaction(self):

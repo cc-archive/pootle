@@ -213,6 +213,14 @@ class IDatabase(Interface):
     languages = IMapping # 'la_CO' -> ILanguageInfo
     root = IFolder # root folder
 
+    def flush(self):
+        """Flush modified data to the database.
+
+        To be used when some attributes have been changed on an object.
+        Not needed for TranslationUnits and TranslationStores, which
+        have their own save() method.
+        """
+
     def startTransaction(self):
         """Start a transaction.
 
