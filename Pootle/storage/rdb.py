@@ -142,7 +142,7 @@ class FolderContainer(RefersToDB, AbstractMapping):
             raise KeyError(key)
 
     def keys(self):
-        return [folder.key for folder in self.folder_list]
+        return [folder.key for folder in self.folder.subfolder_list]
 
     def __delitem__(self, key):
         raise NotImplementedError('FIXME')
@@ -169,7 +169,7 @@ class ModuleContainer(RefersToDB, AbstractMapping):
             raise KeyError(key)
 
     def keys(self):
-        return [module.key for module in self.module_list]
+        return [module.key for module in self.folder.module_list]
 
     def __delitem__(self, key):
         raise NotImplementedError('FIXME')
@@ -229,6 +229,12 @@ class TranslationStore(RefersToDB):
 
     def __iter__(self):
         return iter(self.unit_list)
+
+    def __len__(self):
+        return len(self.unit_list)
+
+    def __getitem__(self, idx):
+        return self.unit_list[idx]
 
     def makeunit(self, trans):
         return TranslationUnit(trans)
