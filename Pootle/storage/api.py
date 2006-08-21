@@ -396,6 +396,7 @@ class ITranslationUnit(IAnnotatable):
     # template, this list may have to be enlarged if the target language
     # has more than 2 plurals.
     # For singular, just use a single tuple in the list.
+    # You should not modify the list in place.
     trans = [(Unicode,  # plural msgid (source)
               Unicode)] # plural translation (target)
 

@@ -259,15 +259,19 @@ class TranslationUnit(RefersToDB):
     def comments(self):
         return CommentContainer(self)
 
-    @property
-    def trans(self):
+    def _get_trans(self):
         return [(trans.source, trans.target)
                 for trans in self.trans_list]
-
-    def __init__(self, trans):
+    def _set_trans(self, trans):
+        for old_pair in list(self.trans_list):
+            self.trans_list.remove(old_pair)
         for i, (source, target) in enumerate(trans):
             pair = TranslationPair(i, source, target)
             self.trans_list.append(pair)
+    trans = property(_get_trans, _set_trans)
+
+    def __init__(self, trans):
+        self.trans = trans
 
 
 class TranslationPair(object):
@@ -279,7 +283,7 @@ class TranslationPair(object):
         self.target = target
 
 
-class CommentContainer(object):
+class CommentContainer(AbstractMapping):
     """A helper for accessing comments."""
 
     def __init__(self, unit):
@@ -295,6 +299,10 @@ class CommentContainer(object):
             if comment.type == type:
                 result.append(comment.comment)
         return result
+
+    def keys(self):
+        keys = set(comment.type for comment in self.unit.comment_list)
+        return list(keys)
 
 
 class Comment(object):

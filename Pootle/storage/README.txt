@@ -124,7 +124,7 @@ can be appended like this: ``de_DE``, ``pt_BR``, etc.
     <Pootle.storage.rdb.TranslationStore object at ...>
 
 Translation units
------------------
+~~~~~~~~~~~~~~~~~
 
 Translation stores contain translation units. A *translation unit* is a single
 unit to be translated.  It maps loosely to a single msgid/msgstr pair in
@@ -178,6 +178,12 @@ After performing changes to a database, do not forget to invoke ``save()`` to
 write the changes to permanent storage:
 
     >>> store.save()
+
+
+Header
+~~~~~~
+
+TODO
 
 
 Language information
@@ -266,8 +272,57 @@ commits.
 Gettext support
 ===============
 
+The primary data format PO/POT files (gettext).  Functions for importing &
+exporting gettext files are provided in ``Pootle.storage.po``:
 
-Adding additional capabilities
-==============================
+    >>> from Pootle.storage.po import read_po, write_po
 
-TODO
+To import a PO file, provide ``read_po()`` with PO source and an existing
+translation store:
+
+    >>> potext = r"""# Some translation
+    ... msgid ""
+    ... msgstr ""
+    ... "Project-Id-Version: labas\n"
+    ...
+    ... #: ../hello.c:5
+    ... msgid "Hello"
+    ... msgstr "Labas"
+    ... """
+
+    >>> read_po(potext, store)
+    >>> store[0].trans
+    [(u'Hello', u'Labas')]
+    >>> store[0].comments['source']
+    [u'../hello.c:5']
+
+It is trivial to import .po files directly from the web or from version
+control systems with appropriate libraries.
+
+To export a PO file, call write_po with the store as an argument.  It will
+return the serialized .po as a string (with the header as necessary).
+
+    >>> print write_po(store)
+    msgid ""
+    msgstr ""
+    "Project-Id-Version: labas\n"
+    "Report-Msgid-Bugs-To: \n"
+    "POT-Creation-Date: ...\n"
+    "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+    "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+    "Language-Team: LANGUAGE <LL@li.org>\n"
+    "MIME-Version: 1.0\n"
+    "Content-Type: text/plain; charset=CHARSET\n"
+    "Content-Transfer-Encoding: ENCODING\n"
+    "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+    "X-Generator: Translate Toolkit ...\n"
+    <BLANKLINE>
+    #: ../hello.c:5
+    msgid "Hello"
+    msgstr "Labas"
+    <BLANKLINE>
+
+
+Extensions
+==========
+
