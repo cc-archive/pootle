@@ -11,8 +11,8 @@ examples.
 Getting started
 ===============
 
-To get started, you need to instantiate a database, by invoking
-open_database(uri).  The argument `uri` identifies the type of backend
+To get started, you need to instantiate a *database*, by invoking
+``open_database(uri)``.  The argument ``uri`` identifies the type of backend
 to be used.  There are several choices:
 
   ``mem://``
@@ -47,11 +47,12 @@ For the purposes of this example we will use a transient SQLite database.
 Data organization
 =================
 
+
 Folders
 -------
 
-For convenience, translations can be grouped in folders.  The database
-contains a reference to the root folder:
+For convenience, translations can be grouped in *folders*.  The database
+contains a reference to the *root folder*:
 
     >>> db.root
     <Pootle.storage.rdb.Folder object at ...>
@@ -64,9 +65,9 @@ way all Folder objects are always attached to a hierarchy.
 
 Let's add a subfolder:
 
-    >>> debian_folder = db.root.subfolders.add('debian')
+    >>> debian_folder = db.root.subfolders.add(u'debian')
     >>> db.root.subfolders.keys()
-    ['debian']
+    [u'debian']
 
 Subfolder objects can be retrieved using ``__getitem__()`` or ``get``:
 
@@ -74,7 +75,7 @@ Subfolder objects can be retrieved using ``__getitem__()`` or ``get``:
     True
     >>> db.root.subfolders.get('debian') is debian_folder
     True
-    >>> db.root.subfolders.get('bedouin', 'nonexistent')
+    >>> db.root.subfolders.get(u'bedouin', 'nonexistent')
     'nonexistent'
 
 For convenience, you can retrieve subfolders directly from the folder:
@@ -86,12 +87,13 @@ We can add subfolders into a folder:
 
     >>> demo_subfolder = debian_folder.subfolders.add('demo')
 
+
 Modules
 -------
 
-Modules define groups of translation strings.  They loosely correspond to
-a gettext ``.pot`` file together with all its translations.  Modules are manipulated
-pretty much the same way as subfolders:
+*Modules* define groups of translation strings.  They loosely correspond to a
+gettext ``.pot`` file together with all its translations.  Modules are
+manipulated pretty much the same way as subfolders:
 
     >>> hello_module = demo_subfolder.modules.add('hello')
 
@@ -109,9 +111,9 @@ For convenience you can also query the folder directly:
 Translation stores
 ------------------
 
-Translation stores correspond to a single gettext ``.pot`` template or a translation
-of this template into a particular language.  Modules act as containers for
-translation stores.
+*Translation stores* correspond to a single gettext ``.pot`` template or a
+translation of this template into a particular language.  Modules act as
+containers for translation stores.
 
 A translation store's key is the standard ISO639 code of the translation
 language, e.g. ``de``, ``lt``, ``fr``.  If necessary, a country's ISO3166
@@ -124,7 +126,7 @@ can be appended like this: ``de_DE``, ``pt_BR``, etc.
 Translation units
 -----------------
 
-Translation stores contain translation units. A translation unit is a single
+Translation stores contain translation units. A *translation unit* is a single
 unit to be translated.  It maps loosely to a single msgid/msgstr pair in
 gettext files.  Comments and metadata are also stored on this object.
 
@@ -177,13 +179,92 @@ write the changes to permanent storage:
 
     >>> store.save()
 
+
 Language information
 --------------------
 
-TODO
+The database also contains an object that stores information about languages:
+
+    >>> db.languages
+    <Pootle.storage.memory.LanguageInfoContainer object at ...>
+    >>> pt_info = db.languages.add('pt_BR')
+
+The language description objects should contain information such as language
+code, name, special characters, a plural form equation, etc. (see
+``Pootle.storage.api.ILanguageInfo``)
+
+    >>> pt_info
+    <Pootle.storage.memory.LanguageInfo object at ...>
+    >>> pt_info.code
+    'pt'
+    >>> pt_info.country
+    'BR'
+    >>> pt_info.name = 'Portuguese (Brazil)'
+
+Note that this container is stored in memory, not persisted in the database,
+because this is essentially static data.  Information about most languages
+should be included in the distribution in the future.
+
+
+Usage notes
+===========
+
+
+Persistence
+-----------
+
+Relational backends do not serialize every change immediately, so you will need
+to *flush* your changes after making them.  Flushing is implicitly performed
+when adding new modules, folders or translation stores, and when you invoke
+``TranslationStore.save()``.  In other cases, e.g., when you change a value
+of an attribute, you will need to invoke ``db.flush()`` manually:
+
+    >>> hello_module.decription = u'Hello'
+    >>> db.flush()
+
+Note that you do not always need to pass around a reference to the database
+object, because it is stored in most objects.
+
+    >>> db is hello_module.db is demo_subfolder.db is store.db
+    True
+
 
 Transactions
 ------------
+
+SQL-based backends provide support for *transactions*, which means that
+several related changes can be committed atomically.  A transaction is
+started using ``db.startTransaction()``:
+
+    >>> db.startTransaction()
+    >>> debian_folder.key
+    u'debian'
+
+Let's change the module's key, and flush the change:
+
+    >>> debian_folder.key = u'doobie'
+    >>> db.flush()
+
+Now, let's roll back the change.
+
+    >>> db.rollbackTransaction()
+
+Note that after rolling back a transaction, objects already in memory
+will *not* be reverted to their previous state.  You need to explicitly call
+``db.refresh()`` on them:
+
+    >>> debian_folder.key
+    u'doobie'
+    >>> db.refresh(debian_folder)
+    >>> debian_folder.key
+    u'debian'
+
+In most cases you will want to use a try/finally clause to ensure atomic
+commits.
+
+
+Gettext support
+===============
 
 
 Adding additional capabilities

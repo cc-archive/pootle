@@ -152,6 +152,9 @@ class Database(object):
     def flush(self):
         pass # not needed
 
+    def refresh(self, obj):
+        raise NotImplementedError('not supported')
+
 
 class LanguageInfo(object):
     _interface = ILanguageInfo
@@ -269,7 +272,7 @@ class TranslationStore(SearchableTranslationStore):
         self.langinfo = langinfo
         self._units = []
         self.header = {}
-        annotations = {}
+        self.annotations = {}
 
     def __iter__(self):
         return iter(self._units)

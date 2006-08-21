@@ -221,6 +221,13 @@ class IDatabase(Interface):
         have their own save() method.
         """
 
+    def refresh(self, obj):
+        """Mark an object as expired.
+
+        Reloads the object from database.  Call this on modified objects after
+        performing a transaction rollback.
+        """
+
     def startTransaction(self):
         """Start a transaction.
 

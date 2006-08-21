@@ -47,6 +47,9 @@ class Database(HaveStatistics):
     def rollbackTransaction(self):
         raise NotImplementedError("rollback not supported")
 
+    def refresh(self, obj):
+        raise NotImplementedError('not supported')
+
 
 class RootContainer(AbstractMapping, HaveStatistics, SearchableFolder):
     _interface = IFolder

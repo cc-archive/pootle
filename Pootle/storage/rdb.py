@@ -3,12 +3,6 @@
 Requires sqlalchemy to be installed.
 
 Supports sqlite, MySQL, PostgreSQL and other engines (see rdb.Database).
-
-Issues:
-- rollback in transactions works by not committing the changes to the
-  database, however, objects already in memory are not reverted to their
-  previous state -- to do that you need to use db.session.refresh()/expire()
-  which is not even in the interface.
 """
 
 import sys
@@ -37,7 +31,7 @@ modules_table = Table('modules', metadata,
     Column('module_id', Integer, primary_key=True),
     Column('key', String(100)),
     Column('name', Unicode(100)),
-    Column('description', Unicode(100)),
+    Column('description', Unicode(100), nullable=True),
     Column('parent_id', Integer, ForeignKey('folders.folder_id'),
            nullable=True)
     )
@@ -136,7 +130,7 @@ class FolderContainer(RefersToDB, AbstractMapping):
     def add(self, key):
         folder = Folder(key)
         self.folder.subfolder_list.append(folder)
-        self.db.save_object(self.folder)
+        self.db.flush()
         return folder
 
     def __getitem__(self, key):
@@ -163,7 +157,7 @@ class ModuleContainer(RefersToDB, AbstractMapping):
     def add(self, key):
         module = Module(key)
         self.folder.module_list.append(module)
-        self.db.save_object(self.folder)
+        self.db.flush()
         return module
 
     def __getitem__(self, key):
@@ -193,11 +187,12 @@ class Module(RefersToDB, AbstractMapping):
     def __init__(self, key):
         self.key = key
         self.folder = None
+        self.description = None
 
     def add(self, key):
         store = TranslationStore(key)
         self.store_list.append(store)
-        self.db.save_object(self)
+        self.db.flush()
         return store
 
     def statistics(self):
@@ -253,7 +248,7 @@ class TranslationStore(RefersToDB):
             self.unit_list.append(unit)
 
     def save(self):
-        self.db.save_object(self)
+        self.db.flush()
 
 
 class TranslationUnit(RefersToDB):
@@ -342,19 +337,18 @@ class Database(object):
         self.session = create_session(bind_to=self.engine)
         self.root = Folder('')
         self.languages = LanguageInfoContainer(self)
-        self.save_object(self.root)
+        self.session.save(self.root)
         self.flush()
 
     def create_tables(self):
         global metadata
         metadata.create_all(engine=self.engine)
 
-    def save_object(self, obj):
-        self.session.save(obj)
-        self.flush()
-
     def flush(self):
         self.session.flush()
+
+    def refresh(self, obj):
+        self.session.refresh(obj)
 
     def startTransaction(self):
         self._transaction = self.session.create_transaction()

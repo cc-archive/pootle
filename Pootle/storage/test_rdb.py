@@ -126,6 +126,7 @@ def test_TranslationUnit():
     Let's create a store and put a few translations inside:
 
         >>> store = TranslationStore('store')
+        >>> db.session.save(store)
         >>> unit1 = store.makeunit([('unit one', 'unit eins')])
         >>> unit2 = store.makeunit([('unit two', 'unit zwei'),
         ...                         ('unit two a', 'unit zwei a')])
@@ -156,40 +157,6 @@ def test_TranslationUnit():
         >>> for unit in units:
         ...     print (unit.parent_id, ) + unit.trans[0]
         (1, 'unit three', 'unit drei')
-
-    """
-
-
-def test_transactions():
-    """Test transaction support.
-
-        >>> from Pootle.storage.rdb import Database, Module
-        >>> db = Database('sqlite://')
-
-        >>> module = db.root.modules.add('some_module')
-
-    Let's start the transaction:
-
-        >>> db.startTransaction()
-        >>> module = db.session.query(Module).select()[0]
-        >>> module.key
-        'some_module'
-
-    Now we change the module's key:
-
-        >>> module.key = 'foo'
-
-    And roll back the change:
-
-        >>> db.rollbackTransaction()
-
-    The module's key should not have changed.
-
-    TODO: Work around the explicit expiration mark.
-
-        >>> db.session.expire(module)
-        >>> module.key
-        u'some_module'
 
     """
 
