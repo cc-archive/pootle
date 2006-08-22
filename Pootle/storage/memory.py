@@ -254,6 +254,8 @@ class Header(MappingMixin):
         self._order.append(key)
         self._items[key] = value
 
+    __setitem__ = add
+
 
 class TranslationStore(SearchableTranslationStore):
     _interface = ITranslationStore
@@ -271,7 +273,7 @@ class TranslationStore(SearchableTranslationStore):
         self.module = module
         self.langinfo = langinfo
         self._units = []
-        self.header = {}
+        self.header = Header(self)
         self.annotations = {}
 
     def __iter__(self):

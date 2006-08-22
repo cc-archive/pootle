@@ -8,6 +8,7 @@ Supports sqlite, MySQL, PostgreSQL and other engines (see rdb.Database).
 import sys
 from Pootle.storage.abstract import AbstractMapping
 from Pootle.storage.api import IDatabase, IFolder, IMapping, IModule
+from Pootle.storage.api import ITranslationStore, ITranslationUnit
 from Pootle.storage.memory import LanguageInfoContainer
 from sqlalchemy import *
 
@@ -43,11 +44,35 @@ stores_table = Table('stores', metadata,
     Column('key', String(100)),
     )
 
+headers_table = Table('headers', metadata,
+    Column('header_id', Integer, primary_key=True),
+    Column('parent_id', Integer, ForeignKey('stores.store_id'),
+           nullable=True),
+    Column('key', String(100)),
+    Column('value', Unicode(100))
+    )
+
 units_table = Table('units', metadata,
     Column('unit_id', Integer, primary_key=True),
     Column('idx', Integer),
     Column('parent_id', Integer, ForeignKey('stores.store_id'),
            nullable=True))
+
+store_annotations_table = Table('store_annotations', metadata,
+    Column('annotation_id', Integer, primary_key=True),
+    Column('parent_id', Integer, ForeignKey('stores.store_id'),
+           nullable=True),
+    Column('key', String(100)),
+    Column('value', String(1000)) # TODO: should not be limited
+    )
+
+unit_annotations_table = Table('unit_annotations', metadata,
+    Column('annotation_id', Integer, primary_key=True),
+    Column('parent_id', Integer, ForeignKey('units.unit_id'),
+           nullable=True),
+    Column('key', String(100)),
+    Column('value', String(1000)) # TODO: should not be limited
+    )
 
 trans_table = Table('trans', metadata,
     Column('trans_id', Integer, primary_key=True),
@@ -221,8 +246,16 @@ class Module(RefersToDB, AbstractMapping):
 
 
 class TranslationStore(RefersToDB):
-    # _interface = ITranslationStore
+#    _interface = ITranslationStore
     _table = stores_table
+
+    @property
+    def header(self):
+        return HeaderContainer(self)
+
+    @property
+    def annotations(self):
+        return StoreAnnotationContainer(self)
 
     def __init__(self, key):
         self.key = key
@@ -236,6 +269,9 @@ class TranslationStore(RefersToDB):
 
     def __getitem__(self, idx):
         return self.unit_list[idx]
+
+    def __getslice__(self, start, end):
+        return self.unit_list[start:end]
 
     def makeunit(self, trans):
         return TranslationUnit(trans)
@@ -252,12 +288,19 @@ class TranslationStore(RefersToDB):
 
 
 class TranslationUnit(RefersToDB):
-    # _interface = ITranslationUnit
+    _interface = ITranslationUnit
     _table = units_table
+
+    context = None # TODO
+    annotations = None # TODO
 
     @property
     def comments(self):
         return CommentContainer(self)
+
+    @property
+    def annotations(self):
+        return UnitAnnotationContainer(self)
 
     def _get_trans(self):
         return [(trans.source, trans.target)
@@ -311,6 +354,98 @@ class Comment(object):
     def __init__(self, type, comment):
         self.type = type
         self.comment = comment
+
+
+class HeaderContainer(AbstractMapping):
+    """A helper for storing headers."""
+
+    def __init__(self, store):
+        self.store = store
+
+    def add(self, key, value):
+        header = Header(key, value)
+        self.store.header_list.append(header)
+
+    def __delitem__(self, key):
+        for header in self.store.header_list:
+            if header.key == key:
+                self.store.header_list.remove(header)
+                return
+
+    def __getitem__(self, key):
+        for header in self.store.header_list:
+            if header.key == key:
+                return header.value
+        else:
+            raise KeyError(key)
+
+    def keys(self):
+        return [header.key for header in self.store.header_list]
+
+
+class Header(object):
+    _table = headers_table
+
+    def __init__(self, key, value):
+        self.key = key
+        self.value = value
+
+
+class Annotation(object):
+
+    def __init__(self, key, value):
+        self.key = key
+        self.value = value
+
+
+class AnnotationContainer(AbstractMapping):
+    # TODO: refactor similarity to HeaderContainer.
+    _interface = IMapping
+
+    annotationfactory = None # override this
+
+    def __init__(self, parent):
+        self.parent = parent
+
+    def add(self, key, value):
+        annotation = self.annotationfactory(key, value)
+        self.parent.annotation_list.append(annotation)
+
+    def __setitem__(self, key, value):
+        try:
+            del self[key]
+        except KeyError:
+            pass
+        self.add(key, value)
+
+    def __delitem__(self, key):
+        for annotation in self.parent.annotation_list:
+            if annotation.key == key:
+                self.parent.annotation_list.remove(annotation)
+        else:
+            raise KeyError(key)
+
+    def __getitem__(self, key):
+        for annotation in self.parent.annotation_list:
+            if annotation.key == key:
+                return annotation.value
+        else:
+            raise KeyError(key)
+
+    def keys(self):
+        return [annotation.key for annotation in self.parent.annotation_list]
+
+
+class StoreAnnotation(Annotation):
+    _table = store_annotations_table
+class StoreAnnotationContainer(AnnotationContainer):
+    annotationfactory = StoreAnnotation
+
+
+class UnitAnnotation(Annotation):
+    _table = unit_annotations_table
+class UnitAnnotationContainer(AnnotationContainer):
+    annotationfactory = UnitAnnotation
 
 
 # The database object
@@ -395,23 +530,29 @@ mapper(Module, modules_table,
                      backref=backref("module"))
     })
 
-
 mapper(TranslationStore, stores_table,
     properties={
         'unit_list':
             relation(TranslationUnit, private=True,
                      order_by=units_table.c.idx,
-                     backref=backref("store"))
+                     backref=backref("store")),
+        'header_list': relation(Header, private=True),
+        'annotation_list': relation(StoreAnnotation, private=True),
     })
 
+mapper(Header, headers_table)
+mapper(StoreAnnotation, store_annotations_table)
 
 mapper(TranslationUnit, units_table,
     properties={
+        'index': units_table.c.idx,
         'trans_list': relation(TranslationPair, private=True, lazy=False,
                                order_by=trans_table.c.plural_idx),
-        'comment_list': relation(Comment, private=True, lazy=False)
+        'comment_list': relation(Comment, private=True, lazy=False),
+        'annotation_list': relation(UnitAnnotation, private=True),
     })
 
+mapper(UnitAnnotation, unit_annotations_table)
 
 mapper(TranslationPair, trans_table)
 

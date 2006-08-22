@@ -72,7 +72,7 @@ class IAnnotatable(Interface):
     TODO: How about timing, when to serialize annotations?
     """
 
-    annotations = None # IMapping # String -> String/Unicode
+    annotations = None # IMapping # String -> String; implements __setitem__.
 
 
 class IRefersToDB(Interface):
@@ -330,7 +330,7 @@ class ITranslationStore(IHaveStatistics, IAnnotatable, ISearchable):
 
     module = IModule
     header = IHeader # maps to a .po header
-    langinfo = ILanguageInfo
+    langinfo = ILanguageInfo # TODO: remove this
     key = String # e.g., 'pt_BR'
 
     def __iter__(self):

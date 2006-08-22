@@ -24,7 +24,10 @@ def read_po(potext, store):
     Imports the header separately.  Deals with plurals.
     """
     po = pofile(potext)
-    store.header = po.parseheader() # uses ordereddict from jToolkit
+    for key in store.header.keys():
+        del store.header[key] # clear the header
+    for name, value in po.parseheader().items():
+        store.header.add(name, value)
     units = []
     for oldunit in po.units:
         if oldunit.isheader():
@@ -49,7 +52,7 @@ def read_po(potext, store):
 def write_po(store):
     """Serialize translation store to .po format."""
     po = pofile()
-    po.updateheader(add=True, **store.header)
+    po.updateheader(add=True, **dict(store.header.items()))
     for unit in store:
         msgid = [trans[0] for trans in unit.trans]
         pounit = po.UnitClass(msgid)

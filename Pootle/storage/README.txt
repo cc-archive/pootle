@@ -183,7 +183,17 @@ write the changes to permanent storage:
 Header
 ~~~~~~
 
-TODO
+Some basic metadata about a translation store can be stored in its header,
+which is again a simple container object:
+
+    >>> store.header
+    <Pootle.storage.rdb.HeaderContainer object at ...>
+    >>> store.header.add('Project-Id-Version', "Test")
+    >>> store.header.add('PO-Revision-Date', "2006-08-20 02:03+0300")
+    >>> store.header.keys()
+    ['Project-Id-Version', 'PO-Revision-Date']
+
+The standard use case is to put gettext PO headers here.
 
 
 Language information
@@ -302,13 +312,13 @@ control systems with appropriate libraries.
 To export a PO file, call write_po with the store as an argument.  It will
 return the serialized .po as a string (with the header as necessary).
 
-    >>> print write_po(store)
+    >>> print write_po(store) # doctest: +REPORT_UDIFF
     msgid ""
     msgstr ""
     "Project-Id-Version: labas\n"
     "Report-Msgid-Bugs-To: \n"
     "POT-Creation-Date: ...\n"
-    "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+    "PO-Revision-Date: ...\n"
     "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
     "Language-Team: LANGUAGE <LL@li.org>\n"
     "MIME-Version: 1.0\n"
@@ -326,3 +336,109 @@ return the serialized .po as a string (with the header as necessary).
 Extensions
 ==========
 
+Annotations
+-----------
+
+The basic data storage model is quite limited.  However, it can be extended
+by utilizing *annotations*.  Annotations are simple mappings of keys to string
+values.  Most objects (folders, modules, translation stores, translation units)
+are annotatable.
+
+Limiting ourselves to a simple model plus annotations allows easy serialization
+to more ordinary formats such as gettext (where the annotations can be encoded
+into comments in order to preserve data during import/export), while any
+extra information available in richer data formats (e.g., XLIFF) can be
+preserved.
+
+Note that annotations store plain 8-bit strings, but they can be used to
+store arbitrary Python objects by use of ``pickle``.
+
+Let's look at a translation store's annotations:
+
+    >>> store.annotations
+    <Pootle.storage.rdb.StoreAnnotationContainer object at ...>
+    >>> print store.annotations.get('version')
+    None
+    >>> store.annotations['version'] = '0.1'
+    >>> store.annotations['version']
+    '0.1'
+
+
+Adapters
+--------
+
+Annotations might look handy at first glance to store random metadata.  For
+more complex use cases you may want an adapter that exposes a simple interface
+and encapsulates all low-level access to annotations.  Here is a very simple
+example:
+
+    >>> class VersionedAdapter(object):
+    ...     def __init__(self, obj):
+    ...         self.obj = store
+    ...     def _get_version(self):
+    ...         return self.obj.annotations.get('version')
+    ...     def _set_version(self, value):
+    ...         self.obj.annotations['version'] = value
+    ...     version = property(_get_version, _set_version)
+
+Sample usage:
+
+    >>> versioned = VersionedAdapter(store)
+    >>> versioned.version = '0.2'
+    >>> versioned.version
+    '0.2'
+
+
+Proxies
+-------
+
+In some cases you may want to use adapters that implement the original
+interface as well (proxies).  Here is an example that resets an 'approved'
+flag whenever new changes are saved.  This proxy could be used, for example, to
+mark find new translations to be reviewed and imported.
+
+    >>> class TranslationStoreProxy(object):
+    ...     def __init__(self, store):
+    ...         self.store = store
+    ...     def __getattr_(self, attr):
+    ...         return getattr(self.store, attr)
+    ...     def __getitem__(self, item):
+    ...         return self.store[item]
+    ...     def save(self):
+    ...         self.store.annotations['approved'] = 'n'
+    ...         self.store.save()
+    ...     def approved(self):
+    ...         return self.store.annotations.get('approved', 'n') == 'y'
+    ...     def approve(self):
+    ...         self.store.annotations['approved'] = 'y'
+    ...         self.store.save()
+
+Some sample usage:
+
+    >>> wrapped_store = TranslationStoreProxy(store)
+    >>> wrapped_store.approved()
+    False
+    >>> wrapped_store.approve()
+    >>> wrapped_store.approved()
+    True
+
+    >>> wrapped_store[0].trans = [('Unreviewed', 'bogus')]
+    >>> wrapped_store.save()
+
+    >>> wrapped_store.approved()
+    False
+
+For even more advanced use cases you may want to also wrap translation units
+returned by ``makeunit``, ``__getitem__`` and other methods (and unwrap units
+passed to ``fill``).  Per-unit version control, access control, etc. can be
+implemented this way.
+
+If you know that your adapter/proxy will only be used for the relational
+backend, you can gain much efficiency by constructing native SQLAlchemy queries
+to access annotations without using the object-relational mapper.  This holds
+especially if you need to work with many per-unit annotations because they
+can all be selected efficiently with a single query.
+
+The largest disadvantage of proxies is that they do not hook in transparently:
+you have to invoke the proxies explicitly.  The storage backend only makes
+sure that the data used by proxies persists.
