@@ -17,6 +17,8 @@ import sys
 import md5
 import textwrap
 
+DEBUG = False # process only the first language.
+
 
 class DDTPPackage(object):
 
@@ -36,8 +38,9 @@ class DDTPPackage(object):
         description_paras = self._split(description)
         if translation:
             translation_paras = self._split(translation)
-            assert len(description_paras) == len(translation_paras), \
-                   translation_paras
+#           XXX: Some current translations violate this.
+#            assert len(description_paras) == len(translation_paras), \
+#                   translation_paras
         else:
             translation_paras = [None] * len(description_paras)
         self.paras = zip(description_paras, translation_paras)
@@ -98,6 +101,9 @@ class DDTPPackage(object):
             if line == '.':
                 paras.append(para)
                 para = ''
+            elif not line:
+                # XXX Workaround for format bug in current DDTP files.
+                continue
             elif line[0].isspace():
                 para += '\n' + line
             else:
@@ -212,7 +218,8 @@ class DDTPModule(object):
             translation_store.import_store(self.parsed_template,
                                            parsed_translation)
             translation_store.save()
-            break # XXX Process only one language; makes testing faster.
+            if DEBUG:
+                break # Process only one language; makes testing faster.
 
     # Note: it appears that Debian's Packages is encoded in Latin-1, while
     # files from DDTP are encoded in UTF-8.
