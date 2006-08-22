@@ -32,6 +32,8 @@ function usage() {
 	echo "                           - use an external compendium during the migration"
         echo "   --no-wrap               - do not wrap long lines"
         echo "   --locale=lang           - set locale for newly born files"
+        echo "   -q|--quiet              - supress most output"
+        echo "   -p|--pot2po             - use pot2po instead of msgmerge to migrate (you cannot use compendia)"
 	exit 1
 }
 
@@ -51,6 +53,7 @@ do
 			;;
 		-C=*|--use-compendium=*)
 			option_use_own_compendium="$option_use_own_compendium --compendium=`echo $1 | sed 's/\-C=\|--use-compendium=//'`"
+			option_pot2po_use_own_compendium="$option_use_own_compendium --tm=`echo $1 | sed 's/\-C=\|--tm=//'`"
 			shift
 			;;
 		--no-wrap)
@@ -72,6 +75,10 @@ do
 		-q|--quiet)
 			option_verbose=""
 			option_verbose_msgmerge="--quiet"
+			shift
+			;;
+		-p|--pot2po)
+			option_pot2po="pot2po"
 			shift
 			;;
 		-*|--*)
@@ -119,17 +126,27 @@ done
 
 if [ "$option_use_compendium" != "" ]; then
 	echo "** Creating compendium from old files... **"
-	compendium=`mktemp`
-	msgcat -o $compendium `find $old -name "*.po"`
+	compendium=`mktemp`.po
+	`dirname $0`/pocompendium --correct $compendium -d $old
 	option_use_compendium=" --compendium=$compendium "
+	option_pot2po_use_compendium=" --tm=$compendium "
 fi
 
-echo "** Updating files against templates (optionally with compendium)... **"
-for po in `cd $new ; find . -name "*.po" | sort`
-do
-	[ $option_verbose ] && echo -n $new/$po
-	msgmerge $option_verbose_msgmerge $option_no_fuzzy_matching $option_no_wrap $option_use_compendium $option_use_own_compendium --backup=off --update $new/$po $templates/${po}t
-done
+echo -n "** Updating files against templates"
+[ $option_use_compendium ] && echo -n " using a compendium"
+echo " **"
+if [ ! $option_pot2po ]; then
+	for po in `cd $new ; find . -name "*.po" | sort`
+	do
+		[ $option_verbose ] && echo -n $new/$po
+		msgmerge $option_verbose_msgmerge $option_no_fuzzy_matching $option_no_wrap $option_use_compendium $option_use_own_compendium --backup=off --update $new/$po $templates/${po}t
+	done
+else
+	temp_new=`mktemp -d`
+	cp -rp $new/* $temp_new
+	pot2po --errorlevel=traceback $option_pot2po_use_compendium $option_pot2po_use_own_compendium -t $temp_new $templates $new
+	rm -rf $temp_new
+fi
 
 if [ "$option_use_compendium" != "" ]; then
 	rm $compendium
