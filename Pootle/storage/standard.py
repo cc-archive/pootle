@@ -121,7 +121,7 @@ class AnnotationFileContainer(AbstractMapping):
     def __init__(self, path):
         self.path = path
         if os.path.exists(path):
-            self._items = pickle.load(file(path))
+            self._items = pickle.load(file(path).read())
         else:
             self._items = {}
 
@@ -157,11 +157,10 @@ class Folder(HaveStatistics, SearchableFolder):
         self.modules = ModuleContainer(path, self)
         self.subfolders = {}
         self.key = key
-        self.folder = folder
-        self.db = folder.db
+        self.db = db
 
         annotation_path = os.path.join(path, 'annotations.db')
-        self.annotations = AnnotationFileContainer(path)
+        self.annotations = AnnotationFileContainer(annotation_path)
 
     def __getitem__(self, key):
         return self.modules[key]
