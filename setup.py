@@ -20,8 +20,6 @@ join = os.path.join
 
 translateversion = __version__.ver
 
-includebeta = False
-
 packagesdir = distutils.sysconfig.get_python_lib()
 sitepackages = packagesdir.replace(sys.prefix + os.sep, '')
 
@@ -56,8 +54,6 @@ translatescripts = [apply(join, ('translate', ) + script) for script in
                   ('tools', 'porestructure'),
                   ('services', 'lookupclient.py'),
                   ('services', 'lookupservice')]
-if includebeta:
-  translatescripts.append(join('translate', 'convert', 'po2tmx'))
 
 def addsubpackages(subpackages):
   for subpackage in subpackages:
