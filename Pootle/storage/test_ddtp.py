@@ -250,13 +250,15 @@ def test_DDTPPackage_import_descriptions():
         >>> package.paras
         [(u'pack', None), (u'some package', None)]
 
-    Check validation:
+# XXX This assertion is disabled because some entries in the current database
+# don't satisfy it.
+#   Check validation:
 
-        >>> package.import_description(u'pack\n some package\n',
-        ...                            u'pak\n too\n many\n .\n pakag\n')
-        Traceback (most recent call last):
-            ...
-        AssertionError: [u'pak', u'too many', u'pakag']
+#       >>> package.import_description(u'pack\n some package\n',
+#       ...                            u'pak\n too\n many\n .\n pakag\n')
+#       Traceback (most recent call last):
+#           ...
+#       AssertionError: [u'pak', u'too many', u'pakag']
 
     Let's test the _split() method more carefully:
 
