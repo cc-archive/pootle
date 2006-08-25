@@ -100,7 +100,7 @@ def test_TranslationStore():
 
         >>> from Pootle.storage.rdb import Database, Module, TranslationStore
         >>> db = Database('sqlite://')
-        >>> mod = Module('mod')
+        >>> mod = db.root.modules.add('mod')
 
         >>> store = mod.add('store')
 
@@ -111,6 +111,28 @@ def test_TranslationStore():
         >>> store.module is mod
         True
         >>> mod.store_list == [store]
+        True
+
+    You can perform searches on a translation store:
+
+        >>> unit1 = store.makeunit([('abc', 'def')])
+        >>> unit2 = store.makeunit([('foo', 'bar')])
+        >>> store.fill([unit1, unit2])
+        >>> store.save()
+
+        >>> matches = store.find('foo')
+        >>> matches
+        [<Pootle.storage.rdb.TranslationUnit object at ...>]
+        >>> list(matches) == [unit2]
+        True
+
+        >>> store.find('bar') == [unit2]
+        True
+        >>> store.find('ba*') == [unit2]
+        True
+        >>> store.find('*b*') == [unit1, unit2]
+        True
+        >>> store.find('quux') == []
         True
 
     """

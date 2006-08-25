@@ -80,7 +80,7 @@ trans_table = Table('trans', metadata,
     Column('parent_id', Integer, ForeignKey('units.unit_id'),
            nullable=True),
     Column('source', Unicode, nullable=False),
-    Column('destination', Unicode, nullable=True))
+    Column('target', Unicode, nullable=True))
 
 comments_table = Table('comments', metadata,
     Column('comment_id', Integer, primary_key=True),
@@ -246,12 +246,31 @@ class Module(RefersToDB, AbstractMapping):
 
 
 class TranslationStore(RefersToDB):
-#    _interface = ITranslationStore
+    _interface = ITranslationStore
     _table = stores_table
 
     @property
     def header(self):
         return HeaderContainer(self)
+
+    def translate(self, source, plural=0):
+        raise NotImplementedError('FIXME')
+
+    def statistics(self):
+        raise NotImplementedError('FIXME')
+
+    def find(self, substring):
+        substring = substring.replace('*', '%')
+        s = self.db.session.query(TranslationUnit).select(
+                   or_(trans_table.c.source.like(substring),
+                       trans_table.c.target.like(substring))
+                   & (trans_table.c.parent_id == units_table.c.unit_id))
+        return s
+
+# TODO: Use a result proxy, something like this:
+#        q = units_table.select(trans_table.c.source.like(substring)
+#                   & (trans_table.c.parent_id == units_table.c.unit_id))
+#        return q.execute_using(self.db.engine).fetchall()
 
     @property
     def annotations(self):

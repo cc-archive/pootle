@@ -84,7 +84,7 @@ class IRefersToDB(Interface):
 class ISearchable(Interface):
     """An object that can be searched."""
 
-    def find(self, substring):
+    def find(self, substring, search_source=True, search_target=True):
         """Search for a substring in all translation units.
 
         Returns a list of translation units where `substring` is
@@ -330,7 +330,6 @@ class ITranslationStore(IHaveStatistics, IAnnotatable, ISearchable):
 
     module = IModule
     header = IHeader # maps to a .po header
-    langinfo = ILanguageInfo # TODO: remove this
     key = String # e.g., 'pt_BR'
 
     def __iter__(self):
