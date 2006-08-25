@@ -195,6 +195,18 @@ which is again a simple container object:
 
 The standard use case is to put gettext PO headers here.
 
+Searching
+~~~~~~~~~
+
+Translation stores can be efficiently searched.   Use the asterisk as
+a wildcard.  Here's an example:
+
+    >>> result = store.find('Naudot*')
+    >>> result
+    [<Pootle.storage.rdb.TranslationUnit object at ...>]
+    >>> result == [unit1]
+    True
+
 
 Language information
 --------------------
