@@ -31,20 +31,19 @@ class SearchableFolder(object):
     """A mixin that provides naive brute-force search for folders."""
 
     def find(self, substring):
-        # TODO: This is very slow.
         units = []
-        for module in self.values():
+        for module in self.modules.values():
             units.extend(module.find(substring))
-        for folder in self.subfolders:
+        for folder in self.subfolders.values():
             units.extend(folder.find(substring))
         return units
 
     def find_containers(self, substring):
         fs, ms = [], [] # folders, modules
-        for module_name in self.keys():
+        for module_name in self.modules.keys():
             if substring in module_name:
                 ms.append(self[module_name])
-        for folder in self.subfolders:
+        for folder in self.subfolders.values():
             f, m = folder.find_containers(substring)
             fs.extend(f)
             ms.extend(m)
@@ -54,7 +53,6 @@ class SearchableFolder(object):
 class SearchableModule(object):
 
     def find(self, substring):
-        # TODO: This is very slow.
         units = []
         for store in self.values():
             units.extend(store.find(substring))
@@ -62,9 +60,10 @@ class SearchableModule(object):
 
 
 class SearchableTranslationStore(object):
+    """Naive implementation of search in a translation store."""
 
     def find(self, substring):
-        # TODO: This is very slow.
+        # Note: this is slow.
         units = []
         for unit in self:
             for source, target in unit.trans:

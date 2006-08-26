@@ -6,7 +6,8 @@ Supports sqlite, MySQL, PostgreSQL and other engines (see rdb.Database).
 """
 
 import sys
-from Pootle.storage.abstract import AbstractMapping
+from Pootle.storage.abstract import (
+    AbstractMapping, SearchableFolder, SearchableModule)
 from Pootle.storage.api import IDatabase, IFolder, IMapping, IModule
 from Pootle.storage.api import ITranslationStore, ITranslationUnit
 from Pootle.storage.memory import LanguageInfoContainer
@@ -110,7 +111,7 @@ class RefersToDB(object):
 # -------------------
 
 
-class Folder(RefersToDB):
+class Folder(RefersToDB, SearchableFolder):
     _interface = IFolder
     _table = folders_table
     annotations = None # XXX TODO
@@ -138,12 +139,6 @@ class Folder(RefersToDB):
 
     def __len__(self):
         return len(self.modules) + len(self.subfolders)
-
-    def find_containers(self):
-        raise NotImplementedError('FIXME')
-
-    def find(self, substring):
-        raise NotImplementedError('FIXME')
 
 
 class FolderContainer(RefersToDB, AbstractMapping):
@@ -200,7 +195,7 @@ class ModuleContainer(RefersToDB, AbstractMapping):
         raise NotImplementedError('FIXME')
 
 
-class Module(RefersToDB, AbstractMapping):
+class Module(RefersToDB, AbstractMapping, SearchableModule):
     _interface = IModule
     _table = modules_table
     annotations = None # XXX TODO
@@ -235,9 +230,6 @@ class Module(RefersToDB, AbstractMapping):
             raise KeyError(key)
 
     def __delitem__(self, key):
-        raise NotImplementedError('FIXME')
-
-    def find(self, substring):
         raise NotImplementedError('FIXME')
 
 
