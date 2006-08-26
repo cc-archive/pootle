@@ -135,6 +135,18 @@ def test_TranslationStore():
         >>> store.find('quux') == []
         True
 
+    Only the specified store will be searched:
+
+        >>> store2 = mod.add('store2')
+        >>> unit3 = store2.makeunit([('foo', 'baz')])
+        >>> store2.fill([unit3])
+        >>> store2.save()
+
+        >>> store.find('ba*') == [unit2]
+        True
+        >>> store2.find('ba*') == [unit3]
+        True
+
     """
 
 

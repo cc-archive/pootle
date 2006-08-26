@@ -262,9 +262,10 @@ class TranslationStore(RefersToDB):
     def find(self, substring):
         substring = substring.replace('*', '%')
         s = self.db.session.query(TranslationUnit).select(
-                   or_(trans_table.c.source.like(substring),
-                       trans_table.c.target.like(substring))
-                   & (trans_table.c.parent_id == units_table.c.unit_id))
+            and_(or_(trans_table.c.source.like(substring),
+                     trans_table.c.target.like(substring)),
+                 trans_table.c.parent_id == units_table.c.unit_id,
+                 units_table.c.parent_id == self.store_id))
         # TODO: plurals, search limit, window, etc.
         return s
 
