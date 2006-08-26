@@ -103,33 +103,6 @@ class ISearchable(Interface):
         """
 
 
-class IHaveStatistics(Interface):
-    """An object that can provide translation statistics."""
-
-    def statistics(self):
-        """Return statistics for this object.
-
-        Returns an IStatistics object.
-        """
-
-
-class IStatistics(Interface):
-    """Statistics.
-
-    Several plurals are counted as a single string.
-
-    Fuzzy strings are not counted as translated.
-    """
-
-    total_strings = Integer
-    translated_strings = Integer
-    fuzzy_strings = Integer
-    # TODO: untranslated, but suggested? word counts? other?
-
-    def accum(self, otherstats):
-        """Add up statistics from another IStatistics object."""
-
-
 class IMapping(Interface):
 
     def keys(self):
@@ -172,7 +145,7 @@ class IMapping(Interface):
 
 # ---
 
-class IFolder(IHaveStatistics, IAnnotatable, ISearchable, IRefersToDB):
+class IFolder(IAnnotatable, ISearchable, IRefersToDB):
     """A folder is a collection of modules and possibly other folders."""
 
     key = String
@@ -269,8 +242,7 @@ class ILanguageInfo(IRefersToDB):
     pluralequation = String # optional
 
 
-class IModule(IHaveStatistics, IMapping, IAnnotatable, ISearchable,
-              IRefersToDB):
+class IModule(IMapping, IAnnotatable, ISearchable, IRefersToDB):
     """An object corresponding to a project.
 
     This loosely corresponds to a .pot file and a set of its translations.
@@ -318,7 +290,7 @@ class IHeader(IMapping):
     store = None # Parent ITranslationStore
 
 
-class ITranslationStore(IHaveStatistics, IAnnotatable, ISearchable):
+class ITranslationStore(IAnnotatable, ISearchable):
     """A collection of translation units
 
     This loosely corresponds to a .po file.

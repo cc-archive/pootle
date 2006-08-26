@@ -116,9 +116,6 @@ class Folder(RefersToDB, SearchableFolder):
     _table = folders_table
     annotations = None # XXX TODO
 
-    def statistics(self):
-        pass # XXX TODO
-
     def __init__(self, key):
         self.key = key
         self.folder = None
@@ -215,9 +212,6 @@ class Module(RefersToDB, AbstractMapping, SearchableModule):
         self.db.flush()
         return store
 
-    def statistics(self):
-        pass # XXX TODO
-
     def keys(self):
         return [store.key for store in self.store_list]
 
@@ -255,9 +249,6 @@ class TranslationStore(RefersToDB):
             raise ValueError(source)
         assert len(s) == 1
         return s[0].target
-
-    def statistics(self):
-        raise NotImplementedError('FIXME')
 
     def find(self, substring):
         substring = substring.replace('*', '%')

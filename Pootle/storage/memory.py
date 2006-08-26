@@ -3,9 +3,9 @@
 If needed, the database can be trivially serialized by use of pickle.
 """
 
-from Pootle.storage.api import IStatistics, IDatabase, ITranslationUnit
+from Pootle.storage.api import IDatabase, ITranslationUnit
 from Pootle.storage.api import ILanguageInfo, IModule, IMapping, IFolder
-from Pootle.storage.api import ITranslationStore, IHaveStatistics
+from Pootle.storage.api import ITranslationStore
 from Pootle.storage.api import IHeader
 from Pootle.storage.abstract import AbstractMapping, SearchableModule
 from Pootle.storage.abstract import SearchableFolder, SearchableTranslationStore
@@ -39,17 +39,6 @@ class MappingMixin(AbstractMapping):
         raise NotImplementedError("override this")
 
 
-class AccumStatsMixin(object):
-    _interface = IHaveStatistics
-
-    def statistics(self):
-        stats = Statistics()
-        for item in self.values():
-            itemstats = item.statistics()
-            stats.accum(itemstats)
-        return stats
-
-
 class ModuleContainer(MappingMixin):
 
     def __init__(self, folder):
@@ -75,7 +64,7 @@ class FolderContainer(MappingMixin):
         return newfolder
 
 
-class Folder(AccumStatsMixin, SearchableFolder):
+class Folder(SearchableFolder):
     _interface = IFolder
 
     db = None
@@ -108,10 +97,6 @@ class Folder(AccumStatsMixin, SearchableFolder):
 
     def __len__(self):
         return len(self.modules) + len(self.subfolders)
-
-    def values(self):
-        # This is for internal use in AccumStatsMixin.
-        return self.modules.values() + self.subfolders.values()
 
 
 class LanguageInfoContainer(MappingMixin):
@@ -180,7 +165,7 @@ class LanguageInfo(object):
         self.db = db
 
 
-class Module(MappingMixin, AccumStatsMixin, SearchableModule):
+class Module(MappingMixin, SearchableModule):
     _interface = IModule
 
     db = None
@@ -308,20 +293,6 @@ class TranslationStore(SearchableTranslationStore):
         else:
             raise ValueError('no translation found for %r' % source)
 
-    def statistics(self):
-        stats = Statistics()
-        stats.total_strings = len(self)
-        for unit in self:
-            if 'fuzzy' in unit.comments.get('type', []):
-                stats.fuzzy_strings += 1
-            else:
-                for source, target in unit.trans:
-                    if not target:
-                        break
-                else:
-                    stats.translated_strings += 1
-        return stats
-
 
 class CommentContainer(MappingMixin):
     _interface = IMapping
@@ -353,21 +324,3 @@ class TranslationUnit(object):
         # TODO: assert len(trans) == language.nplurals?
         self.annotations = {}
         self.comments = CommentContainer()
-
-
-class Statistics(object):
-    _interface = IStatistics
-
-    total_strings = None
-    translated_strings = None
-    fuzzy_strings = None
-
-    def __init__(self, total_strings=0, translated_strings=0, fuzzy_strings=0):
-        self.total_strings = total_strings
-        self.translated_strings = translated_strings
-        self.fuzzy_strings = fuzzy_strings
-
-    def accum(self, otherstats):
-        self.total_strings += otherstats.total_strings
-        self.translated_strings += otherstats.translated_strings
-        self.fuzzy_strings += otherstats.fuzzy_strings

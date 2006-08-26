@@ -28,25 +28,6 @@ def test_MappingMixin():
     """
 
 
-def test_AccumStatsMixin():
-    """Tests for AccumStatsMixin.
-
-        >>> from Pootle.storage.memory import AccumStatsMixin, Statistics
-        >>> accum = AccumStatsMixin()
-        >>> class StatStub:
-        ...     def __init__(self, *args):
-        ...         self.args = args
-        ...     def statistics(self):
-        ...         return Statistics(*self.args)
-        >>> accum.values = lambda: [StatStub(3, 2, 1), StatStub(8, 6, 4)]
-        >>> stats = accum.statistics()
-
-        >>> stats.total_strings, stats.translated_strings, stats.fuzzy_strings
-        (11, 8, 5)
-
-    """
-
-
 def test_db():
     """Tests for Database.
 
@@ -162,14 +143,6 @@ def test_TranslationStore():
         True
         >>> tr2.index
         1
-
-    Let's check statistics:
-
-        >>> tr1.comments.add('type', u'fuzzy')
-
-        >>> stats = coll.statistics()
-        >>> stats.total_strings, stats.translated_strings, stats.fuzzy_strings
-        (2, 1, 1)
 
     """
 

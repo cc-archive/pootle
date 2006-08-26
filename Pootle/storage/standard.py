@@ -19,12 +19,7 @@ from Pootle.storage.abstract import AbstractMapping, SearchableModule
 from Pootle.storage.abstract import SearchableFolder, SearchableTranslationStore
 
 
-class HaveStatistics(object):
-    def statistics(self):
-        raise NotImplementedError('TODO')
-
-
-class Database(HaveStatistics):
+class Database(object):
     _interface = IDatabase
 
     root = None
@@ -51,7 +46,7 @@ class Database(HaveStatistics):
         raise NotImplementedError('not supported')
 
 
-class RootContainer(AbstractMapping, HaveStatistics, SearchableFolder):
+class RootContainer(AbstractMapping, SearchableFolder):
     _interface = IFolder
 
     db = None
@@ -143,7 +138,7 @@ class AnnotationFileContainer(AbstractMapping):
         pickle.save(self._items, file(self.path, 'w'))
 
 
-class Folder(HaveStatistics, SearchableFolder):
+class Folder(SearchableFolder):
     _interface = IFolder
 
     db = None
@@ -207,7 +202,7 @@ class ModuleContainer(AbstractMapping):
             return module
 
 
-class Module(HaveStatistics, AbstractMapping, SearchableModule):
+class Module(AbstractMapping, SearchableModule):
     _interface = IModule
 
     db = None
