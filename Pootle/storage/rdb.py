@@ -25,14 +25,14 @@ folders_table = Table('folders', metadata,
     Column('folder_id', Integer, primary_key=True),
     Column('parent_id', Integer, ForeignKey('folders.folder_id'),
            nullable=True),
-    Column('key', String(100)),
+    Column('key', String),
     )
 
 modules_table = Table('modules', metadata,
     Column('module_id', Integer, primary_key=True),
-    Column('key', String(100)),
-    Column('name', Unicode(100)),
-    Column('description', Unicode(100), nullable=True),
+    Column('key', String),
+    Column('name', Unicode),
+    Column('description', Unicode, nullable=True),
     Column('parent_id', Integer, ForeignKey('folders.folder_id'),
            nullable=True)
     )
@@ -41,15 +41,15 @@ stores_table = Table('stores', metadata,
     Column('store_id', Integer, primary_key=True),
     Column('parent_id', Integer, ForeignKey('modules.module_id'),
            nullable=True),
-    Column('key', String(100)),
+    Column('key', String),
     )
 
 headers_table = Table('headers', metadata,
     Column('header_id', Integer, primary_key=True),
     Column('parent_id', Integer, ForeignKey('stores.store_id'),
            nullable=True),
-    Column('key', String(100)),
-    Column('value', Unicode(100))
+    Column('key', String),
+    Column('value', Unicode)
     )
 
 units_table = Table('units', metadata,
@@ -62,16 +62,16 @@ store_annotations_table = Table('store_annotations', metadata,
     Column('annotation_id', Integer, primary_key=True),
     Column('parent_id', Integer, ForeignKey('stores.store_id'),
            nullable=True),
-    Column('key', String(100)),
-    Column('value', String(1000)) # TODO: should not be limited
+    Column('key', String),
+    Column('value', String)
     )
 
 unit_annotations_table = Table('unit_annotations', metadata,
     Column('annotation_id', Integer, primary_key=True),
     Column('parent_id', Integer, ForeignKey('units.unit_id'),
            nullable=True),
-    Column('key', String(100)),
-    Column('value', String(1000)) # TODO: should not be limited
+    Column('key', String),
+    Column('value', String)
     )
 
 trans_table = Table('trans', metadata,
@@ -84,7 +84,7 @@ trans_table = Table('trans', metadata,
 
 comments_table = Table('comments', metadata,
     Column('comment_id', Integer, primary_key=True),
-    Column('type', String(100)),
+    Column('type', String),
     Column('unit_id', Integer, ForeignKey('units.unit_id'),
            nullable=True))
 
@@ -265,6 +265,7 @@ class TranslationStore(RefersToDB):
                    or_(trans_table.c.source.like(substring),
                        trans_table.c.target.like(substring))
                    & (trans_table.c.parent_id == units_table.c.unit_id))
+        # TODO: plurals, search limit, window, etc.
         return s
 
 # TODO: Use a result proxy, something like this:

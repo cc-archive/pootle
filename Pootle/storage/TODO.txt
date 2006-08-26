@@ -12,11 +12,10 @@ Small tasks:
 - Deal with obsolete .po entries (#~)
 - Implement Module.add(x, copy_template=True)
 + Add itervalues() to IMapping.
-- Fix containment mess (make constructor and adding separate)?
-- Flesh out ITranslationUnit
++ Flesh out ITranslationUnit
 - Clean up ILanguageInfo interface
-- Implement TranslationUnit indices properly
-- Transactions in RDB backend.
+- RDB indexing
++ Transactions in RDB backend.
 
 Transitions:
 - store.template == store[None]?
@@ -27,25 +26,24 @@ Transitions:
 - Store annotations in comments for read/write_po.
 
 Important:
+- Object renames.
 + preliminary .po parser
 + preliminary readonly layer over Pootle's storage
 + demo XML-RPC server
 + substring search in API
 - Move statistics to a separate module.
-- thorough definition of TranslationUnit + parser
++ thorough definition of TranslationUnit + parser
 + read/write layer over Pootle's storage
-- Pootle's metadata (special files) support in storage layer
+? Pootle's metadata (special files) support in storage layer
 - complete .po parser
 - .po serializer
 + ask around about DDTP access
 + ask around about debconf template access
-- Think about store.save() and store.load()
 
 Long term:
 + consider use of SQLObject or SQLAlchemy for RDB storage
 + Write a guide.
 ! Write some annotation wrappers: ownership, review, etc.
-- Object renames.
 - Implement a merger using external 'msgmerge'.
 - Wrap pootle's internal pounit.merge.
 - Import language info from Pootle config.
