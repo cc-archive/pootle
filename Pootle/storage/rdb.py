@@ -246,7 +246,15 @@ class TranslationStore(RefersToDB):
         return HeaderContainer(self)
 
     def translate(self, source, plural=0):
-        raise NotImplementedError('FIXME')
+        s = self.db.session.query(TranslationPair).select(
+            and_(trans_table.c.source == source,
+                 trans_table.c.plural_idx == plural,
+                 trans_table.c.parent_id == units_table.c.unit_id,
+                 units_table.c.parent_id == self.store_id))
+        if len(s) == 0:
+            raise ValueError(source)
+        assert len(s) == 1
+        return s[0].target
 
     def statistics(self):
         raise NotImplementedError('FIXME')

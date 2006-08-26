@@ -90,14 +90,16 @@ class ISearchable(Interface):
         Returns a list of translation units where `substring` is
         in one of the msgids or in one of the translations.
 
+        If invoked on a container (a folder or a module), performs a
+        recursive search.
+
+        Use * as the wildcard.
+
         TODO: search options: exact match, case insensitive,
         search just source text or just translation text, etc.
 
         TODO: return small objects that only reference the real ones?
         Otherwise this could cause trouble with persistence or efficiency.
-
-        If invoked on a container (a folder or a module), performs a
-        recursive search.
         """
 
 

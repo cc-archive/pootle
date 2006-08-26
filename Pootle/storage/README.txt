@@ -179,6 +179,34 @@ write the changes to permanent storage:
 
     >>> store.save()
 
+Translation
+~~~~~~~~~~~
+
+If you know the msgid exactly, you can retrieve the translation using
+``translate()``:
+
+    >>> store.translate(u'%d user')
+    u'%d naudotojas'
+
+If the translation is not known, you will get a ValueError:
+
+    >>> store.translate(u'what is this?')
+    Traceback (most recent call last):
+        ...
+    ValueError: what is this?
+
+To retrieve plurals, use the keyword argument ``plural`` to indicate the
+index of the plural you want:
+
+    >>> store.translate(u'%d users', plural=1)
+    u'%d naudotojai'
+    >>> store.translate(u'%d users', plural=2)
+    u'%d naudotoj\u0173'
+    >>> store.translate(u'%d users', plural=42)
+    Traceback (most recent call last):
+        ...
+    ValueError: %d users
+
 
 Header
 ~~~~~~
