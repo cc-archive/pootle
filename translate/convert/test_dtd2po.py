@@ -257,7 +257,7 @@ class TestDTD2PO:
         assert pofile.units[4].source == "M"
         assert pofile.units[4].target == "ﺩ"
 
-    def test_accelerator_keys_not_in_sentence(self):
+    def xtest_accelerator_keys_not_in_sentence(self):
         """tests to ensure that we can manage accelerator keys that are not part of the transated sentence eg in Chinese"""
         dtdtemplate = '''<!ENTITY useAutoScroll.label             "Use autoscrolling">
 <!ENTITY useAutoScroll.accesskey         "a">'''
