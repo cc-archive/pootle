@@ -298,6 +298,12 @@ class pounit(base.TranslationUnit):
     else:
       return len(unquotefrompo(self.msgstr).strip())
 
+  def differentmsgidcomments(self, othercomments):
+    """merges #. automatic comments only if necessary"""
+    mycomment = unquotefrompo(self.msgidcomments)[2:]
+    othercomment = unquotefrompo(othercomments)[2:]
+    return mycomment != othercomment
+
   def merge(self, otherpo, overwrite=False, comments=True):
     """merges the otherpo (with the same msgid) into this one
     overwrite non-blank self.msgstr only if overwrite is True
@@ -353,7 +359,10 @@ class pounit(base.TranslationUnit):
       mergelists(self.sourcecomments, otherpo.sourcecomments, split=True)
       mergelists(self.typecomments, otherpo.typecomments)
       mergelists(self.visiblecomments, otherpo.visiblecomments)
-      mergelists(self.msgidcomments, otherpo.msgidcomments)
+      if self.differentmsgidcomments(otherpo.msgidcomments):
+        mergelists(self.msgidcomments, otherpo.msgidcomments)
+      else:
+        self.msgidcomments = otherpo.msgidcomments
     if self.isblankmsgstr() or overwrite:
       self.target = otherpo.target
       if self.source != otherpo.source:
