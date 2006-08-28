@@ -1,3 +1,8 @@
+2006-08-28 11:43  friedelwolff
+
+	* pootlesetup.py: Also package
+	  subpackages (currently only tools)
+
 2006-08-28 10:54  friedelwolff
 
 	* __version__.py:
@@ -52,6 +57,11 @@
 2006-08-24 09:33  friedelwolff
 
 	* projects.py: Remove TODO that is already done
+
+2006-08-23 13:02  friedelwolff
+
+	* pootlesetup.py: add tools/updatetm as a script to be
+	  installed
 
 2006-08-23 11:06  friedelwolff
 
@@ -439,6 +449,12 @@
 	  po/pootle/zu/pootle.po: Add all the
 	  translations and templates for pootle and jToolkit from
 	  pootle.wordforge.org
+
+2006-08-19 13:47  friedelwolff
+
+	* pootlesetup.py: [forwardport] merge from
+	  wordforge-0-9-branch -r2816:3281. Include po/ and po/pootle/ for
+	  approved languages
 
 2006-08-19 08:17  friedelwolff
 
