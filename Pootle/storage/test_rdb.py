@@ -168,7 +168,7 @@ def test_TranslationUnit():
         >>> store.save()
 
         >>> for unit in store:
-        ...     print 'TranslationUnit %d:' % unit.idx
+        ...     print 'TranslationUnit %d:' % unit.index
         ...     for source, target in unit.trans:
         ...         print source, ' - ', target
         TranslationUnit 0:

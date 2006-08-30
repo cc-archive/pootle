@@ -292,7 +292,7 @@ class TranslationStore(RefersToDB):
         for unit in list(self.unit_list):
             self.unit_list.remove(unit)
         for i, unit in enumerate(units):
-            unit.idx = i
+            unit.index = i
             self.unit_list.append(unit)
 
     def save(self):
@@ -488,16 +488,17 @@ class Database(object):
         RefersToDB.db = self # Mark itself as the active database.
         # TODO: connection pooling
         self.engine = create_engine(engine_url, echo=DEBUG_ECHO, logger=sys.stderr)
-        self.create_tables() # TODO Don't recreate tables every time.
         self.session = create_session(bind_to=self.engine)
-        self.root = Folder('')
-        self.languages = LanguageInfoContainer(self)
-        self.session.save(self.root)
-        self.flush()
 
-    def create_tables(self):
-        global metadata
-        metadata.create_all(engine=self.engine)
+        # Check if database needs to be initialized.
+        if not self.engine.has_table('folders'):
+            metadata.create_all(engine=self.engine) # Create tables.
+            self.root = Folder('')
+            self.session.save(self.root)
+            self.flush()
+        else:
+            self.root = self.session.query(Folder).select_by(key=u'')[0]
+        self.languages = LanguageInfoContainer(self) # TODO: move this away
 
     def flush(self):
         self.session.flush()
