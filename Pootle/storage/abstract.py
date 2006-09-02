@@ -1,5 +1,6 @@
 """Abstract classes for use as base classes."""
 
+
 class AbstractMapping(object):
     """An abstract mapping.
 
@@ -30,12 +31,12 @@ class AbstractMapping(object):
 class SearchableFolder(object):
     """A mixin that provides naive brute-force search for folders."""
 
-    def find(self, substring):
+    def find(self, *args, **kwargs):
         units = []
         for module in self.modules.values():
-            units.extend(module.find(substring))
+            units.extend(module.find(*args, **kwargs))
         for folder in self.subfolders.values():
-            units.extend(folder.find(substring))
+            units.extend(folder.find(*args, **kwargs))
         return units
 
     def find_containers(self, substring):
@@ -52,21 +53,30 @@ class SearchableFolder(object):
 
 class SearchableModule(object):
 
-    def find(self, substring):
+    def find(self, *args, **kwargs):
         units = []
         for store in self.values():
-            units.extend(store.find(substring))
+            units.extend(store.find(*args, **kwargs))
         return units
 
 
 class SearchableTranslationStore(object):
     """Naive implementation of search in a translation store."""
 
-    def find(self, substring):
-        # Note: this is slow.
+    def find(self, substring, search_source=True, search_target=True,
+             limit=None, offset=None, exact=False):
+        # This is pretty slow.
+        assert not exact and '*' not in substring, 'not implemented yet'
         units = []
         for unit in self:
             for source, target in unit.trans:
-                if substring in source or substring in target:
+                if ((search_source and substring in source) or
+                    (search_target and substring in target)):
                     units.append(unit)
-        return units
+        end = None
+        if limit is not None:
+            if offset is not None:
+                end = limit + offset
+            else:
+                end = limit
+        return units[offset:end]

@@ -207,7 +207,6 @@ index of the plural you want:
         ...
     ValueError: %d users
 
-
 Header
 ~~~~~~
 
@@ -229,11 +228,16 @@ Searching
 Translation stores can be efficiently searched.   Use the asterisk as
 a wildcard.  Here's an example:
 
-    >>> result = store.find('Naudot*')
+    >>> result = store.find('nau*tojai')
+    >>> len(result)
+    1
     >>> result
     [<Pootle.storage.rdb.TranslationUnit object at ...>]
-    >>> result == [unit1]
+    >>> result == [unit2]
     True
+
+Some advanced search features are provided too, see documentation of
+ITranslationStore.find() for details.
 
 
 Language information

@@ -250,14 +250,31 @@ class TranslationStore(RefersToDB):
         assert len(s) == 1
         return s[0].target
 
-    def find(self, substring):
-        substring = substring.replace('*', '%')
+    def find(self, substring, search_source=True, search_target=True,
+             limit=None, offset=None, exact=False):
+        substring = '%s' % substring.replace('*', '%')
+        if not exact:
+            substring = '%' + substring + '%'
+
+        assert search_source or search_target
+        source_clause = trans_table.c.source.like(substring)
+        target_clause = trans_table.c.target.like(substring)
+
+        if search_source and search_target:
+            clause = or_(source_clause, target_clause)
+        elif search_source:
+            clause = source_clause
+        elif search_target:
+            clause = target_clause
+        else:
+            raise ValueError('search_source == search_target == False')
+
         s = self.db.session.query(TranslationUnit).select(
-            and_(or_(trans_table.c.source.like(substring),
-                     trans_table.c.target.like(substring)),
-                 trans_table.c.parent_id == units_table.c.unit_id,
-                 units_table.c.parent_id == self.store_id))
-        # TODO: plurals, search limit, window, etc.
+                and_(clause,
+                     trans_table.c.parent_id == units_table.c.unit_id,
+                     units_table.c.parent_id == self.store_id),
+                limit=limit, offset=offset)
+        # TODO: plurals, etc.
         return s
 
 # TODO: Use a result proxy, something like this:

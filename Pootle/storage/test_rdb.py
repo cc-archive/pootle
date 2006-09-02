@@ -113,11 +113,26 @@ def test_TranslationStore():
         >>> mod.store_list == [store]
         True
 
+    """
+
+
+def test_TranslationStore_find():
+    """
+
+        >>> from Pootle.storage.rdb import Database, Module, TranslationStore
+        >>> db = Database('sqlite://')
+        >>> mod = db.root.modules.add('mod')
+
+        >>> store = mod.add('store')
+
     You can perform searches on a translation store:
 
         >>> unit1 = store.makeunit([('abc', 'def')])
-        >>> unit2 = store.makeunit([('foo', 'bar')])
-        >>> store.fill([unit1, unit2])
+        >>> unit2 = store.makeunit([('foo', 'barren')])
+        >>> unit3 = store.makeunit([('a unit 3', 'u3')])
+        >>> unit4 = store.makeunit([('a unit 4', 'u4')])
+        >>> unit5 = store.makeunit([('a unit 5', 'u5')])
+        >>> store.fill([unit1, unit2, unit3, unit4, unit5])
         >>> store.save()
 
         >>> matches = store.find('foo')
@@ -126,25 +141,51 @@ def test_TranslationStore():
         >>> list(matches) == [unit2]
         True
 
-        >>> store.find('bar') == [unit2]
-        True
-        >>> store.find('ba*') == [unit2]
-        True
-        >>> store.find('*b*') == [unit1, unit2]
+        >>> for search_string in ['barren', 'bar', 'ren', 'arre',
+        ...                       'bar*', '*ren', '*arre*', '*a*e*', 'a*e']:
+        ...     assert store.find(search_string) == [unit2], search_string
+
+        >>> store.find('b') == [unit1, unit2]
         True
         >>> store.find('quux') == []
         True
 
+    Searches are not case-sensitive:
+
+        >>> store.find('bAr') == [unit2]
+        True
+
+    You can make searches more precise:
+
+        >>> store.find('arre', exact=True)
+        []
+        >>> store.find('barren', exact=True) == [unit2]
+        True
+
+    However, wildcards still work with exact=True:
+
+        >>> store.find('bar*', exact=True) == [unit2]
+        True
+
+    You can set limits on matches:
+
+        >>> store.find('a') == [unit1, unit2, unit3, unit4, unit5]
+        True
+        >>> store.find('a', limit=3) == [unit1, unit2, unit3]
+        True
+        >>> store.find('a', limit=2, offset=2) == [unit3, unit4]
+        True
+
     Only the specified store will be searched:
 
-        >>> store2 = mod.add('store2')
-        >>> unit3 = store2.makeunit([('foo', 'baz')])
-        >>> store2.fill([unit3])
-        >>> store2.save()
+        >>> store_b = mod.add('store_b')
+        >>> unit_b = store_b.makeunit([('foo', 'baz')])
+        >>> store_b.fill([unit_b])
+        >>> store_b.save()
 
         >>> store.find('ba*') == [unit2]
         True
-        >>> store2.find('ba*') == [unit3]
+        >>> store_b.find('ba*') == [unit_b]
         True
 
     """

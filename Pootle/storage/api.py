@@ -84,19 +84,31 @@ class IRefersToDB(Interface):
 class ISearchable(Interface):
     """An object that can be searched."""
 
-    def find(self, substring, search_source=True, search_target=True):
+    def find(self, substring, search_source=True, search_target=True,
+             limit=None, offset=None, exact=False):
         """Search for a substring in all translation units.
 
         Returns a list of translation units where `substring` is
-        in one of the msgids or in one of the translations.
+        a substring of one of the msgids or of one of the translations.
+        You can disable searching in source/target by setting the
+        appropriate keywords to False.
+
+        Use * as the wildcard standing for zero or more characters.  By
+        default, a substring search will be performed, i.e., a query for 'ooba'
+        will actually look for '*ooba*' and hence find 'foobar'.  If `exact` is
+        set to True, that will not be the case: you can use this feature to
+        find exact matches, or strings starting with a prefix, e.g., 'foob*'.
+
+        Searches are not case-sensitive.
+
+        You can specify `limit` the maximum number of search results
+        to be retrieved. By specifying `offset` you can "move" the query
+        window.
 
         If invoked on a container (a folder or a module), performs a
         recursive search.
 
-        Use * as the wildcard.
-
-        TODO: search options: exact match, case insensitive,
-        search just source text or just translation text, etc.
+        TODO: search options: exact match, case insensitive, ...?
 
         TODO: return small objects that only reference the real ones?
         Otherwise this could cause trouble with persistence or efficiency.
@@ -362,6 +374,7 @@ class ITranslationUnit(IAnnotatable):
     # Some possible comment types:
     # other, automatic, source, type, visible, msgid
     # TODO: type, fuzzy status - type comments are special. Abstract them.
+#    fuzzy = Boolean
 
     # Use the XLIFF model here: plural sources are stored together with targets
     # The list of tuples is ordered.  If a plural is not translated, the target
