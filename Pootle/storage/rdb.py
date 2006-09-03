@@ -269,18 +269,29 @@ class TranslationStore(RefersToDB):
         else:
             raise ValueError('search_source == search_target == False')
 
-        s = self.db.session.query(TranslationUnit).select(
-                and_(units_table.c.parent_id == self.store_id,
-                     trans_table.c.parent_id == units_table.c.unit_id,
+        # XXX Evil optimization!  Assumes that all translation pairs have
+        # sequential oids.  Here's the reliable, but slow version:
+        # return self.db.session.query(TranslationUnit).select(
+        #           and_(units_table.c.parent_id == self.store_id,
+        #                trans_table.c.parent_id == units_table.c.unit_id,
+        #                search_clause),
+        #                limit=limit, offset=offset)
+
+        first_trans_id = self[0].trans_list[0].trans_id
+        last_unit_index = select([func.max(units_table.c.idx)],
+              units_table.c.parent_id == self.store_id).execute().fetchone()[0]
+        last_trans_id = self[last_unit_index].trans_list[-1].trans_id
+
+        s = trans_table.select(
+                and_(trans_table.c.trans_id >= first_trans_id,
+                     trans_table.c.trans_id <= last_trans_id,
                      search_clause),
                 limit=limit, offset=offset)
-        # TODO: plurals, etc.
-        return s
-
-# TODO: Use a result proxy, something like this:
-#        q = units_table.select(trans_table.c.source.like(substring)
-#                   & (trans_table.c.parent_id == units_table.c.unit_id))
-#        return q.execute_using(self.db.engine).fetchall()
+        rows = s.execute().fetchall()
+        unit_ids = set(row['parent_id'] for row in rows)
+        units = self.db.session.query(TranslationUnit).select(
+                    units_table.c.unit_id.in_(*unit_ids))
+        return units
 
     # XXX Anything using result_list directly is inefficient.
 
@@ -299,6 +310,7 @@ class TranslationStore(RefersToDB):
         return len(self.unit_list)
 
     def __getitem__(self, idx):
+        # XXX Does not support negative indices
         query = self.db.session.query(TranslationUnit)
         return query.select_by(index=idx, parent_id=self.store_id)[0]
 
