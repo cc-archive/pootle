@@ -16,6 +16,9 @@ Small tasks:
 - Clean up ILanguageInfo interface
 - RDB indexing
 + Transactions in RDB backend.
+- implicit save() in fill()
+- ICopyable
+- db.expire()
 
 Transitions:
 - store.template == store[None]?
@@ -31,6 +34,7 @@ Important:
 + preliminary readonly layer over Pootle's storage
 + demo XML-RPC server
 + substring search in API
+- search results proxy?
 + Move statistics to a separate extension.
 + thorough definition of TranslationUnit + parser
 + read/write layer over Pootle's storage
