@@ -282,6 +282,8 @@ class TranslationStore(RefersToDB):
 #                   & (trans_table.c.parent_id == units_table.c.unit_id))
 #        return q.execute_using(self.db.engine).fetchall()
 
+    # XXX Anything using result_list directly is inefficient.
+
     @property
     def annotations(self):
         return StoreAnnotationContainer(self)
@@ -297,7 +299,8 @@ class TranslationStore(RefersToDB):
         return len(self.unit_list)
 
     def __getitem__(self, idx):
-        return self.unit_list[idx]
+        query = self.db.session.query(TranslationUnit)
+        return query.select_by(index=idx, parent_id=self.store_id)[0]
 
     def __getslice__(self, start, end):
         return self.unit_list[start:end]

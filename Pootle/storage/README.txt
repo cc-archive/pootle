@@ -165,6 +165,11 @@ store all at once by using ``fill()``:
 
 ``fill()`` will clear the store prior to adding new translation units.
 
+After performing changes to a database, do not forget to invoke ``save()`` to
+write the changes to permanent storage:
+
+    >>> store.save()
+
 You can now retrieve translation units by index:
 
     >>> len(store)
@@ -173,11 +178,6 @@ You can now retrieve translation units by index:
     [(u'%d user', u'%d naudotojas'),
      (u'%d users', u'%d naudotojai'),
      (u'%d users', u'%d naudotoj\u0173')]
-
-After performing changes to a database, do not forget to invoke ``save()`` to
-write the changes to permanent storage:
-
-    >>> store.save()
 
 Translation
 ~~~~~~~~~~~
@@ -345,6 +345,7 @@ translation store:
     ... """
 
     >>> read_po(potext, store)
+    >>> store.save()
     >>> store[0].trans
     [(u'Hello', u'Labas')]
     >>> store[0].comments['source']
