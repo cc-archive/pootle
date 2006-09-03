@@ -279,14 +279,16 @@ class TranslationStore(RefersToDB):
 
         first_trans_id = self[0].trans_list[0].trans_id
         last_unit_index = select([func.max(units_table.c.idx)],
-              units_table.c.parent_id == self.store_id).execute().fetchone()[0]
+              units_table.c.parent_id == self.store_id,
+              engine=self.db.engine).execute().fetchone()[0]
         last_trans_id = self[last_unit_index].trans_list[-1].trans_id
 
         s = trans_table.select(
                 and_(trans_table.c.trans_id >= first_trans_id,
                      trans_table.c.trans_id <= last_trans_id,
                      search_clause),
-                limit=limit, offset=offset)
+                limit=limit, offset=offset,
+                engine=self.db.engine)
         rows = s.execute().fetchall()
         unit_ids = set(row['parent_id'] for row in rows)
         units = self.db.session.query(TranslationUnit).select(
@@ -519,7 +521,8 @@ class Database(object):
         """
         RefersToDB.db = self # Mark itself as the active database.
         # TODO: connection pooling
-        self.engine = create_engine(engine_url, echo=DEBUG_ECHO, logger=sys.stderr)
+        self.engine = create_engine(engine_url, echo=DEBUG_ECHO,
+                                    logger=sys.stderr)
         metadata.connect(self.engine)
         self.session = create_session(bind_to=self.engine)
 
