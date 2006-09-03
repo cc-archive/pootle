@@ -20,7 +20,7 @@ DEBUG_ECHO = False # set to True to echo SQL statements
 # Table descriptions
 # ==================
 
-metadata = MetaData()
+metadata = DynamicMetaData()
 
 folders_table = Table('folders', metadata,
     Column('folder_id', Integer, primary_key=True),
@@ -508,11 +508,12 @@ class Database(object):
         RefersToDB.db = self # Mark itself as the active database.
         # TODO: connection pooling
         self.engine = create_engine(engine_url, echo=DEBUG_ECHO, logger=sys.stderr)
+        metadata.connect(self.engine)
         self.session = create_session(bind_to=self.engine)
 
         # Check if database needs to be initialized.
         if not self.engine.has_table('folders'):
-            metadata.create_all(engine=self.engine) # Create tables.
+            metadata.create_all() # Create tables.
             self.root = Folder('')
             self.session.save(self.root)
             self.flush()
