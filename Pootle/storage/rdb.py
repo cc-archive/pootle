@@ -261,18 +261,18 @@ class TranslationStore(RefersToDB):
         target_clause = trans_table.c.target.like(substring)
 
         if search_source and search_target:
-            clause = or_(source_clause, target_clause)
+            search_clause = or_(source_clause, target_clause)
         elif search_source:
-            clause = source_clause
+            search_clause = source_clause
         elif search_target:
-            clause = target_clause
+            search_clause = target_clause
         else:
             raise ValueError('search_source == search_target == False')
 
         s = self.db.session.query(TranslationUnit).select(
-                and_(clause,
+                and_(units_table.c.parent_id == self.store_id,
                      trans_table.c.parent_id == units_table.c.unit_id,
-                     units_table.c.parent_id == self.store_id),
+                     search_clause),
                 limit=limit, offset=offset)
         # TODO: plurals, etc.
         return s
