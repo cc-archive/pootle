@@ -43,6 +43,7 @@ Important:
 - .po serializer
 + ask around about DDTP access
 + ask around about debconf template access
+- XLIFF backend
 
 Long term:
 + consider use of SQLObject or SQLAlchemy for RDB storage
