@@ -29,12 +29,14 @@ Transitions:
 - Store annotations in comments for read/write_po.
 
 Important:
+- Get rid of units_table.
 - Object renames.
 + preliminary .po parser
 + preliminary readonly layer over Pootle's storage
 + demo XML-RPC server
 + substring search in API
 - search results proxy?
+- fast and reliable search
 + Move statistics to a separate extension.
 + thorough definition of TranslationUnit + parser
 + read/write layer over Pootle's storage
