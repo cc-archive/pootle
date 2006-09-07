@@ -45,6 +45,7 @@ def read_po(potext, store):
                 value = value[start+1:-1] # chomp leading #? and trailing \n
                 value = unicode(value) # TODO: specify charset?
                 unit.comments.add(attr, value)
+        # TODO: import annotations
         units.append(unit)
     store.fill(units)
 
@@ -65,6 +66,10 @@ def write_po(store):
             for value in values:
                 comment = '%s %s\n' % (comment_types[attr], value)
                 getattr(pounit, attr + 'comments').append(comment)
+            annotation_comments = pounit.othercomments
+        for key, value in unit.annotations.items():
+            annotation_comments.append('# Annotation: %r = %r\n'
+                                       % (key, value))
         po.units.append(pounit)
 
     return po.getoutput()

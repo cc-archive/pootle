@@ -125,6 +125,19 @@ def test_write_po():
         msgstr[1] "die Geiste"
         <BLANKLINE>
 
+    Annotations are also serialized as comments:
+
+        >>> t2.annotations['foo'] = 'bar'
+        >>> print write_po(store) # doctest: +REPORT_UDIFF, +ELLIPSIS
+        msgid ""
+        ...
+        <BLANKLINE>
+        # Annotation: 'foo' = 'bar'
+        #. roboto
+        #, fuzzy
+        msgid "spirit"
+        ...
+
     """
 
 
