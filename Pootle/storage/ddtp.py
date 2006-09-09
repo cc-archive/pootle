@@ -374,10 +374,7 @@ class DDTPStore(object):
             except KeyError:
                 module = self.ddtpmodule.folder.modules.add(modname)
 
-            if self.key is None:
-                store = module.template
-            else:
-                store = module.get(self.key)
+            store = module.get(self.key)
             if store is None:
                 store = module.add(self.key)
 

@@ -107,7 +107,9 @@ class LanguageInfoContainer(MappingMixin):
 
     def add(self, key):
         lang = self._items[key] = LanguageInfo(self.db)
-        if '_' in key:
+        if key is None:
+            lang.code, lang.country = None, None
+        elif '_' in key:
             lang.code, lang.country = key.split('_')
         else:
             lang.code = key
@@ -176,7 +178,6 @@ class Module(MappingMixin, SearchableModule):
     name = None
     description = None
     checker = None
-    template = None
 
     def __init__(self, key, folder):
         MappingMixin.__init__(self)
@@ -192,21 +193,15 @@ class Module(MappingMixin, SearchableModule):
     def add(self, lang_key, copy_template=False):
         # TODO: handle copy_template.
         # TODO: refactor
-        if lang_key is not None:
-            if lang_key in self._items:
-                raise KeyError(lang_key)
-            langs = self.db.languages
-            try:
-                langinfo = langs[lang_key]
-            except KeyError:
-                langinfo = self.db.languages.add(lang_key) # TODO: stop-gap measure.
-            store = TranslationStore(self, langinfo)
-            self._items[lang_key] = store
-        else:
-            if self.template is not None:
-                raise KeyError(lang_key)
-            store = TranslationStore(self, None)
-            self.template = store # TODO: document this
+        if lang_key in self._items:
+            raise KeyError(lang_key)
+        langs = self.db.languages
+        try:
+            langinfo = langs[lang_key]
+        except KeyError:
+            langinfo = self.db.languages.add(lang_key) # TODO: stop-gap measure.
+        store = TranslationStore(self, langinfo)
+        self._items[lang_key] = store
         return store
 
 

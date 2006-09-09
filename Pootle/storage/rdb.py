@@ -197,10 +197,6 @@ class Module(RefersToDB, AbstractMapping, SearchableModule):
     _table = modules_table
     annotations = None # XXX TODO
 
-    @property
-    def template(self):
-        return self[None] # XXX
-
     def __init__(self, key):
         self.key = key
         self.folder = None

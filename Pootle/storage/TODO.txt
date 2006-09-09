@@ -21,7 +21,7 @@ Small tasks:
 - db.expire()
 
 Transitions:
-- store.template == store[None]?
++ store.template == store[None]?
 + Make Database.root the root folder rather than inherit.
 + Add annotations to objects.
 + Put unit comments into container.

@@ -191,7 +191,7 @@ def test_DDTP_import_template():
         >>> modulename = folder.modules.keys()[0]
         >>> module = folder.modules[modulename]
 
-        >>> for unit in module.template:
+        >>> for unit in module[None]:
         ...     msgid, translation = unit.trans[0]
         ...     print unit.comments['automatic']
         ...     print msgid[:20], '... -', translation and translation[:20]
@@ -213,7 +213,7 @@ def test_DDTP_import_template():
     Now let's look at the translation:
 
         >>> module.keys()
-        ['de']
+        [None, 'de']
 
         >>> for unit in module['de']:
         ...     msgid, translation = unit.trans[0]

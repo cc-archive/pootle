@@ -261,8 +261,9 @@ class IModule(IMapping, IAnnotatable, ISearchable, IRefersToDB):
 
     Maps 'la_CO' identifiers to TranslationStores.
 
-    A module contains a 'template' translation store (no translations) and
-    a set of translation stores with translated data.
+    A module contains a set of translation stores with translated data
+    and a 'template' translation store (no translations).  The template
+    can also be accessed as module[None].
 
     Note that the different translations can differ structurally from the
     normal template.  The differences can be resolved using merging as an
@@ -273,9 +274,6 @@ class IModule(IMapping, IAnnotatable, ISearchable, IRefersToDB):
     folder = IFolder # containing folder
     name = Unicode # module name
     description = Unicode # project description (unwrapped)
-    #checker = [String] # A list of string identifiers for checkers
-    template = Interface # ITranslationStore without the actual translations
-    # TODO: template == store[None] ?
 
     def add(self, key, copy_template=False):
         """Create a new empty TranslationStore bound to this module.
@@ -283,10 +281,10 @@ class IModule(IMapping, IAnnotatable, ISearchable, IRefersToDB):
         If a template with the given key already exists, raise KeyError.
 
         `lang_key` is a language identifier, e.g., 'pt_BR' or 'lt'.
-        If `lang_key` is None, the resulting template will be put into
-        the `template` attribute.
-        If `copy_template` is True, the template will be copied on the
-        new translation store.
+        If `lang_key` is None, the resulting store will be set as the template.
+
+        If `copy_template` is True, the template (store with the key None) will
+        be copied on the new translation store.
         """
         return ITranslationStore
 

@@ -223,18 +223,8 @@ class Module(AbstractMapping, SearchableModule):
         annotation_path = os.path.join(path, 'annotations.db')
         self.annotations = AnnotationFileContainer(annotation_path)
 
-    @property
-    def template(self):
-        pot_path = os.path.join(self.path, 'templates', self.key + '.pot')
-        if not os.path.exists(pot_path):
-            return None
-        pot_text = file(pot_path).read()
-        store = TranslationStore(self, None, pot_path)
-        read_po(pot_text, store)
-        return store
-
     def keys(self):
-        langkeys = []
+        langkeys = [None] # XXX Assume that a template exists
         for lang in os.listdir(self.path):
             modpath = os.path.join(self.path, lang, self.key + '.po')
             if os.path.exists(modpath):
@@ -250,7 +240,18 @@ class Module(AbstractMapping, SearchableModule):
             langinfo = db.languages.add(lang_key) # TODO: stop-gap measure.
         return langinfo
 
+    def _template(self):
+        pot_path = os.path.join(self.path, 'templates', self.key + '.pot')
+        if not os.path.exists(pot_path):
+            return None
+        pot_text = file(pot_path).read()
+        store = TranslationStore(self, None, pot_path)
+        read_po(pot_text, store)
+        return store
+
     def __getitem__(self, lang_key):
+        if lang_key is None:
+            return self._template()
         if lang_key in self.keys():
             po_path = os.path.join(self.path, lang_key, self.key + '.po')
             potext = file(po_path).read()
@@ -273,7 +274,7 @@ class Module(AbstractMapping, SearchableModule):
 
     def add(self, lang_key):
         if lang_key is None: # template
-            if self.template is not None:
+            if self._template() is not None:
                 raise KeyError(None)
             lang_dir = os.path.join(self.path, 'templates')
             if not os.path.exists(lang_dir):

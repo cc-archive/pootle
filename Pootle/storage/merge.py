@@ -5,6 +5,8 @@ class SimpleMerger(object):
     """A naive merger.
 
     Simply takes the template and adds translations available in `translation`.
+
+    The `translation` store is replaced.
     """
     _interface = IMerger
 
