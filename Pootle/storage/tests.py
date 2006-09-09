@@ -4,7 +4,7 @@ import sys
 import unittest
 import doctest
 
-modules = ['ddtp', 'memory', 'merge', 'po', 'rdb', 'standard']
+modules = ['ddtp', 'memory', 'merge', 'po', 'rdb', 'standard', 'exts']
 flags = (doctest.ELLIPSIS | doctest.NORMALIZE_WHITESPACE)
 
 
