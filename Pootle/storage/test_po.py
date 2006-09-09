@@ -51,6 +51,7 @@ def test_read_po():
 
 
 sample_po_plurals = r"""# translation of foo
+# Annotation: 'owner \xc4\x85' = 'no-one \xc4\x99'
 #. Plural test
 msgid "One"
 msgid_plural "Many"
@@ -72,6 +73,9 @@ def test_read_po_plurals():
         [(u'One', u'Vienas'), (u'Many', u'Keli'), (u'Many', u'Daug')]
         >>> print store[0].comments['automatic']
         [u'Plural test']
+
+        >>> store[0].annotations['owner \xc4\x85']
+        'no-one \xc4\x99'
 
     """
 
@@ -127,12 +131,12 @@ def test_write_po():
 
     Annotations are also serialized as comments:
 
-        >>> t2.annotations['foo'] = 'bar'
+        >>> t2.annotations['foo \xc4\x85'] = 'bar \xc4\x99'
         >>> print write_po(store) # doctest: +REPORT_UDIFF, +ELLIPSIS
         msgid ""
         ...
         <BLANKLINE>
-        # Annotation: 'foo' = 'bar'
+        # Annotation: 'foo \xc4\x85' = 'bar \xc4\x99'
         #. roboto
         #, fuzzy
         msgid "spirit"

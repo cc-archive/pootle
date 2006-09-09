@@ -41,11 +41,18 @@ def read_po(potext, store):
         for attr in comment_types.keys():
             values = getattr(oldunit, attr + 'comments', [])
             for value in values:
-                start = len(comment_types[attr])
-                value = value[start+1:-1] # chomp leading #? and trailing \n
-                value = unicode(value) # TODO: specify charset?
-                unit.comments.add(attr, value)
-        # TODO: import annotations
+                if value.startswith('# Annotation: '):
+                    # XXX The split is not reliable -- " = " could occur
+                    # inside the annotation.
+                    key, val = value[len('# Annotation: '):].split(' = ')
+                    key = eval(key) # XXX Handle escapes -- security hole!
+                    val = eval(val) # XXX Handle escapes -- evil!
+                    unit.annotations[key] = val
+                else:
+                    start = len(comment_types[attr])
+                    value = value[start+1:-1] # chomp leading #? and trailing \n
+                    value = unicode(value) # TODO: specify charset?
+                    unit.comments.add(attr, value)
         units.append(unit)
     store.fill(units)
 
