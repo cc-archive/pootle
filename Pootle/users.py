@@ -157,7 +157,7 @@ class UserOptions(pagelayout.PootlePage):
         "email_title": self.localize("Email"),
         "email": self.session.prefs.email,
         "password_title": self.localize("Password"),
-        "passwordconfirm_title": self.localize("Confirm Password"),
+        "passwordconfirm_title": self.localize("Confirm password"),
         "interface_title": self.localize("Translation Interface Configuration"),
         "uilanguage_heading": self.localize("User Interface language"),
         "projects_title": self.localize("My Projects"),
@@ -353,7 +353,7 @@ class OptionalLoginAppServer(server.LoginAppServer):
     supportaddress = getattr(self.instance.registration, 'supportaddress', "")
     username = argdict.get("username", "")
     if not username or not username.isalnum() or not username[0].isalpha():
-      raise RegistrationError(session.localize("Username must be alphanumeric, and must start with an alphabetic character"))
+      raise RegistrationError(session.localize("Username must be alphanumeric, and must start with an alphabetic character."))
     fullname = argdict.get("name", "")
     email = argdict.get("email", "")
     password = argdict.get("password", "")
