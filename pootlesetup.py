@@ -42,7 +42,7 @@ def addsubpackages(subpackages):
     packages.append("Pootle.%s" % subpackage)
 
 #Enter the codes for all languages that must be packaged here
-approvedlanguages = ['af', 'ar', 'eu', 'ca', 'zh_CN', 'zh_HK', 'da', 'nl', 'fi', 'fr', 'gl', 'de', 'hu', 'it', 'ja', 'mt',  'pt', 'sl', 'es', 'sv', 'vi']
+#approvedlanguages = ['af', 'ar', 'eu', 'pt_BR', 'ca', 'zh_CN', 'zh_HK', 'da', 'nl', 'fi', 'fr', 'fur' 'gl', 'ka', 'de', 'hu', 'is', 'it', 'ja', 'mt',  'pt', 'sl', 'es', 'sv', 'vi', 'templates']
 
 class build_exe_map(build_exe):
     """distutils py2exe-based class that builds the exe file(s) but allows mapping data files"""
@@ -194,7 +194,6 @@ def map_data_file (data_file):
   return data_file
 
 def getdatafiles():
-  # TODO: add pootle.prefs, Pootle/html
   datafiles = initfiles + infofiles
   def listfiles(srcdir):
     return join(sitepackages, srcdir), [join(srcdir, f) for f in os.listdir(srcdir) if os.path.isfile(join(srcdir, f))]
@@ -204,7 +203,8 @@ def getdatafiles():
   pootlefiles.append(listfiles(join('Pootle', 'html', 'js')))
   pootlefiles.append(listfiles(join('Pootle', 'html', 'doc')))
   pootlefiles.append(listfiles(join('Pootle', 'templates')))
-  for dir in approvedlanguages :
+  basedir, pootlelangs, files = os.walk(join('Pootle', 'po', 'pootle'))[0]
+  for dir in pootlelangs:
     pootlefiles.append(listfiles(join('Pootle', 'po', 'pootle', dir)))
   datafiles += pootlefiles
   return datafiles
