@@ -245,9 +245,9 @@ Pootle:
     fr.pluralequation ='(n > 1)'
 
 # Friulian
-#    fur.fullname = u'Furlan'
-#    fur.nplurals = '2'
-#    fur.pluralequation ='(n != 1)'
+    fur.fullname = u'Furlan'
+    fur.nplurals = '2'
+    fur.pluralequation ='(n != 1)'
 
 # Frisian
 #    fy.fullname = u'Frysk'
@@ -310,9 +310,9 @@ Pootle:
     ja.pluralequation ='0'
 
 # Georgian
-#    ka.fullname = u'ქართული'
-#    ka.nplurals = '1'
-#    ka.pluralequation ='0'
+    ka.fullname = u'ქართული'
+    ka.nplurals = '1'
+    ka.pluralequation ='0'
 
 # Khmer
 #    km.fullname = u'Khmer'
@@ -416,9 +416,9 @@ Pootle:
     pt.pluralequation ='(n != 1)'
 
 # Brazilian Portuguese
-#    pt_BR.fullname = u'Português do Brasil'
-#    pt_BR.nplurals = '2'
-#    pt_BR.pluralequation ='(n > 1)'
+    pt_BR.fullname = u'Português do Brasil'
+    pt_BR.nplurals = '2'
+    pt_BR.pluralequation ='(n > 1)'
 
 # Romanian
 #    ro.fullname = u'Română'
