@@ -203,7 +203,7 @@ def getdatafiles():
   pootlefiles.append(listfiles(join('Pootle', 'html', 'js')))
   pootlefiles.append(listfiles(join('Pootle', 'html', 'doc')))
   pootlefiles.append(listfiles(join('Pootle', 'templates')))
-  basedir, pootlelangs, files = os.walk(join('Pootle', 'po', 'pootle'))[0]
+  basedir, pootlelangs, files = os.walk(join('Pootle', 'po', 'pootle')).next()
   for dir in pootlelangs:
     pootlefiles.append(listfiles(join('Pootle', 'po', 'pootle', dir)))
   datafiles += pootlefiles
