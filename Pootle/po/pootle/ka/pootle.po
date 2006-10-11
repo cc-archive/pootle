@@ -1,1075 +1,102 @@
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: translate-pootle@lists.sourceforge.net\n"
-"POT-Creation-Date: 2006-08-07 12:36+0200\n"
-"PO-Revision-Date: 2006-06-14 14:25+0200\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2006-09-16 01:51+0200\n"
+"PO-Revision-Date: 2006-10-11 01:55+0200\n"
+"Last-Translator: Gia Shervashidze <giasher@telenet.ge>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
-"X-Generator: Translate Toolkit 0.9rc1\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Pootle 0.10.1rc1\n"
 
-#: adminpages.py:35 adminpages.py:71 adminpages.py:126 adminpages.py:187
-#: adminpages.py:273 adminpages.py:333 indexpage.py:58 indexpage.py:77
-#: indexpage.py:112 indexpage.py:166 indexpage.py:226 indexpage.py:312
-#: pagelayout.py:59 users.py:38 users.py:71 users.py:104 users.py:125
-#: translatepage.py:91
-msgid "Pootle Demo"
-msgstr ""
-
-#: adminpages.py:43 adminpages.py:79 adminpages.py:134 adminpages.py:195
-#: pagelayout.py:36
-msgid "Home"
-msgstr ""
-
-#: adminpages.py:44 adminpages.py:197
-msgid "Users"
-msgstr "მომხმარებლები"
-
-#: adminpages.py:45 adminpages.py:81 indexpage.py:75
-msgid "Languages"
-msgstr "ენები"
-
-#: adminpages.py:46 adminpages.py:136 indexpage.py:76
-msgid "Projects"
-msgstr "პროექტები"
-
-#: adminpages.py:47
-msgid "General options"
-msgstr ""
-
-#: adminpages.py:48 users.py:129
-msgid "Option"
-msgstr ""
-
-#: adminpages.py:49 users.py:130
-msgid "Current value"
-msgstr ""
-
-#: adminpages.py:50 adminpages.py:82 adminpages.py:137 adminpages.py:198
-#: users.py:142
-msgid "Save changes"
-msgstr ""
-
-#: adminpages.py:54
-msgid "Title"
-msgstr "სათაური"
-
-#: adminpages.py:54
-msgid "Description"
-msgstr "აღწერილობა"
-
-#: adminpages.py:54
-msgid "Base URL"
-msgstr "ძირითადი მისამართი (URL)"
-
-#: adminpages.py:54
-msgid "Home Page"
-msgstr ""
-
-#: adminpages.py:80 adminpages.py:135 adminpages.py:196
-msgid "Main admin page"
-msgstr ""
-
-#: adminpages.py:86
-msgid "ISO Code"
-msgstr ""
-
-#: adminpages.py:87 adminpages.py:142 adminpages.py:203 users.py:80
-msgid "Full Name"
-msgstr ""
-
-#: adminpages.py:87
-msgid "(add language here)"
-msgstr ""
-
-#: adminpages.py:88
-msgid "Special Chars"
-msgstr ""
-
-#: adminpages.py:88
-msgid "(special characters)"
-msgstr ""
-
-#: adminpages.py:89 indexpage.py:189
-msgid "Number of Plurals"
-msgstr ""
-
-#: adminpages.py:89
-msgid "(number of plurals)"
-msgstr ""
-
-#: adminpages.py:90 indexpage.py:190
-msgid "Plural Equation"
-msgstr ""
-
-#: adminpages.py:90
-msgid "(plural equation)"
-msgstr ""
-
-#: adminpages.py:91
-#, fuzzy
-msgid "Remove Language"
-msgstr "ენები"
-
-#. l10n: The parameter is a languagecode, projectcode or username
-#: adminpages.py:106 adminpages.py:168 adminpages.py:229 adminpages.py:392
-#, python-format
-msgid "Remove %s"
-msgstr ""
-
-#: adminpages.py:124
-msgid "Standard"
-msgstr ""
-
-#: adminpages.py:141
-msgid "Project Code"
-msgstr ""
-
-#: adminpages.py:142
-msgid "(add project here)"
-msgstr ""
-
-#: adminpages.py:143
-msgid "Project Description"
-msgstr ""
-
-#: adminpages.py:143
-msgid "(project description)"
-msgstr ""
-
-#: adminpages.py:144
-msgid "Checker Style"
-msgstr ""
-
-#: adminpages.py:145
-msgid "Create MO Files"
-msgstr ""
-
-#: adminpages.py:146
-#, fuzzy
-msgid "Remove Project"
-msgstr "პროექტები"
-
-#: adminpages.py:202 users.py:46
-msgid "Login"
-msgstr ""
-
-#: adminpages.py:203 users.py:274
-msgid "(add full name here)"
-msgstr ""
-
-#: adminpages.py:204 users.py:77
-msgid "Email Address"
-msgstr ""
-
-#: adminpages.py:204 users.py:277
-msgid "(add email here)"
-msgstr ""
-
-#: adminpages.py:205 users.py:83
-msgid "Password"
-msgstr ""
-
-#: adminpages.py:205 users.py:271
-msgid "(add password here)"
-msgstr ""
-
-#: adminpages.py:206
-msgid "Activated"
-msgstr ""
-
-#: adminpages.py:206
-msgid "Activate New User"
-msgstr ""
-
-#: adminpages.py:207
-msgid "Remove User"
-msgstr ""
-
-#: adminpages.py:261
-msgid "Back to main page"
-msgstr ""
-
-#: adminpages.py:262
-msgid "Existing languages"
-msgstr ""
-
-#. l10n: This refers to updating the translation files from the templates like with .pot files
-#: adminpages.py:266
-msgid "Update Languages"
-msgstr ""
-
-#: adminpages.py:267
-#, python-format
-msgid "Pootle Admin: %s"
-msgstr "Pootle-ს ადმინისტრირების გვერდი"
-
-#: adminpages.py:268 adminpages.py:330
-msgid "You do not have the rights to administer this project."
-msgstr ""
-
-#. l10n: This refers to updating the translation files from the templates like with .pot files
-#: adminpages.py:270
-msgid "Update from templates"
-msgstr ""
-
-#: adminpages.py:278
-msgid "Add Language"
-msgstr ""
-
-#. l10n: This is the page title. The first parameter is the language name, the second parameter is the project name
-#: adminpages.py:310
-#, python-format
-msgid "Pootle Admin: %s %s"
-msgstr ""
-
-#: adminpages.py:311
-msgid "Project home page"
-msgstr ""
-
-#: adminpages.py:329
-#, python-format
-msgid "Cannot set rights for username %s - user does not exist"
-msgstr ""
-
-#: adminpages.py:346
-msgid "This is a GNU-style project (one directory, files named per language)."
-msgstr ""
-
-#: adminpages.py:348
-msgid "This is a standard style project (one directory per language)."
-msgstr ""
-
-#: adminpages.py:349
-msgid "User Permissions"
-msgstr ""
-
-#: adminpages.py:350 users.py:74 users.py:107
-msgid "Username"
-msgstr ""
-
-#: adminpages.py:351
-msgid "(select to add user)"
-msgstr ""
-
-#: adminpages.py:352
-msgid "Rights"
-msgstr ""
-
-#: adminpages.py:353 indexpage.py:929
-msgid "Remove"
-msgstr ""
-
-#: adminpages.py:373
-msgid "Update Rights"
-msgstr ""
-
-#: indexpage.py:49
-msgid "About Pootle"
-msgstr ""
-
-#: indexpage.py:50
-msgid ""
-"<strong>Pootle</strong> is a simple web portal that should allow you to "
-"<strong>translate</strong>! Since Pootle is <strong>Free Software</strong>, "
-"you can download it and run your own copy if you like. You can also help "
-"participate in the development in many ways (you don't have to be able to "
-"program)."
-msgstr ""
-
-#: indexpage.py:51
-msgid ""
-"The Pootle project itself is hosted at <a href=\"http://translate."
-"sourceforge.net/\">translate.sourceforge.net</a> where you can find the "
-"details about source code, mailing lists etc."
-msgstr ""
-
-#. l10n: If your language uses right-to-left layout and you leave the English untranslated, consider enclosing the necessary text with <span dir="ltr">.......</span> to help browsers to display it correctly
-#: indexpage.py:53
-msgid ""
-"The name stands for <b>PO</b>-based <b>O</b>nline <b>T</b>ranslation / <b>L</"
-"b>ocalization <b>E</b>ngine, but you may need to read <a href=\"http://www."
-"thechestnut.com/flumps.htm\">this</a>."
-msgstr ""
-
-#: indexpage.py:54
-msgid "Versions"
-msgstr ""
-
-#. l10n: If your language uses right-to-left layout and you leave the English untranslated, consider enclosing the necessary text with <span dir="ltr">.......</span> to help browsers to display it correctly
-#: indexpage.py:56
-#, python-format
-msgid ""
-"This site is running:<br />Pootle %s<br />Translate Toolkit %s<br />jToolkit "
-"%s<br />Kid %s<br />ElementTree %s<br />Python %s (on %s/%s)"
-msgstr ""
-
-#: indexpage.py:74
-msgid "About this Pootle server"
-msgstr ""
-
-#: indexpage.py:107
-#, python-format
-msgid "User Page for: %s"
-msgstr ""
-
-#: indexpage.py:109
-msgid "Change options"
-msgstr ""
-
-#: indexpage.py:110
-msgid "Admin page"
-msgstr ""
-
-#: indexpage.py:111
-msgid "Quick Links"
-msgstr ""
-
-#: indexpage.py:115
-msgid "Please click on 'Change options' and select some languages and projects"
-msgstr ""
-
-#: indexpage.py:164
-#, python-format
-msgid "%d project, average %d%% translated"
-msgid_plural "%d projects, average %d%% translated"
-msgstr[0] ""
-msgstr[1] ""
-
-#. l10n: The first parameter is the name of the installation
-#. l10n: The second parameter is the name of the project/language
-#. l10n: This is used as a page title. Most languages won't need to change this
-#: indexpage.py:170 indexpage.py:230
-#, python-format
-msgid "%s: %s"
-msgstr ""
-
-#: indexpage.py:172 indexpage.py:232 pagelayout.py:40 pagelayout.py:140
-msgid "Admin"
-msgstr ""
-
-#: indexpage.py:186
-#, fuzzy
-msgid "Language Code"
-msgstr "ენები"
-
-#: indexpage.py:187
-#, fuzzy
-msgid "Language Name"
-msgstr "ენები"
-
-#: indexpage.py:224
-#, python-format
-msgid "%d language, average %d%% translated"
-msgid_plural "%d languages, average %d%% translated"
-msgstr[0] ""
-msgstr[1] ""
-
-#: indexpage.py:235
-#, fuzzy
-msgid "Language"
-msgstr "ენები"
-
-#. l10n: The first parameter is the name of the installation (like "Pootle")
-#: indexpage.py:314
-#, python-format
-msgid "%s: Project %s, Language %s"
-msgstr ""
-
-#. l10n: text next to search field
-#: indexpage.py:322 translatepage.py:121
-msgid "Search"
-msgstr ""
-
-#: indexpage.py:369
-msgid "Cannot upload file, no file attached"
-msgstr ""
-
-#: indexpage.py:375
-msgid "Can only upload PO files and zips of PO files"
-msgstr ""
-
-#: indexpage.py:483 indexpage.py:486 translatepage.py:199 translatepage.py:202
-msgid "Assign Strings"
-msgstr ""
-
-#: indexpage.py:484 translatepage.py:201
-msgid "Assign Action"
-msgstr ""
-
-#: indexpage.py:485 translatepage.py:200
-msgid "Assign to User"
-msgstr ""
-
-#: indexpage.py:491
-msgid "goals"
-msgstr ""
-
-#: indexpage.py:491
-msgid "Enter goal name"
-msgstr ""
-
-#: indexpage.py:491
-msgid "Add Goal"
-msgstr ""
-
-#: indexpage.py:495 indexpage.py:497
-msgid "Upload File"
-msgstr ""
-
-#: indexpage.py:496
-msgid "Select file to upload"
-msgstr ""
-
-#: indexpage.py:599
-msgid "Not in a goal"
-msgstr ""
-
-#: indexpage.py:620
-msgid "Add User"
-msgstr ""
-
-#: indexpage.py:658
-msgid "PO file"
-msgstr ""
-
-#: indexpage.py:662
-msgid "XLIFF file"
-msgstr ""
-
-#: indexpage.py:666
-msgid "Qt .ts file"
-msgstr ""
-
-#: indexpage.py:670
-msgid "CSV file"
-msgstr ""
-
-#: indexpage.py:675
-msgid "MO file"
-msgstr ""
-
-#: indexpage.py:679
-msgid "Update"
-msgstr ""
-
-#: indexpage.py:683 projects.py:141
-msgid "Commit"
-msgstr ""
-
-#: indexpage.py:720
-msgid "All Strings"
-msgstr ""
-
-#: indexpage.py:720 pagelayout.py:218
-msgid "Untranslated"
-msgstr ""
-
-#: indexpage.py:720
-msgid "Unassigned"
-msgstr ""
-
-#: indexpage.py:720
-msgid "Unassigned and Untranslated"
-msgstr ""
-
-#: indexpage.py:727
-msgid "Set Goal"
-msgstr ""
-
-#: indexpage.py:731
-msgid "Select Multiple"
-msgstr ""
-
-#: indexpage.py:733
-msgid "Assign To"
-msgstr ""
-
-#: indexpage.py:762
-msgid "Show Editing Functions"
-msgstr ""
-
-#: indexpage.py:762
-msgid "Show Statistics"
-msgstr ""
-
-#: indexpage.py:763
-msgid "Show Tracks"
-msgstr ""
-
-#: indexpage.py:763
-msgid "Hide Tracks"
-msgstr ""
-
-#. l10n: "Checks" are quality checks that Pootle performs on translations to test for common mistakes
-#: indexpage.py:765
-msgid "Show Checks"
-msgstr ""
-
-#: indexpage.py:765
-msgid "Hide Checks"
-msgstr ""
-
-#: indexpage.py:766
-msgid "Show Goals"
-msgstr ""
-
-#: indexpage.py:766
-msgid "Hide Goals"
-msgstr ""
-
-#: indexpage.py:767
-msgid "Show Assigns"
-msgstr ""
-
-#: indexpage.py:767
-msgid "Hide Assigns"
-msgstr ""
-
-#: indexpage.py:776
-#, python-format
-msgid "All Goals: %s"
-msgstr ""
-
-#: indexpage.py:782
-msgid "Translate My Strings"
-msgstr ""
-
-#: indexpage.py:784
-msgid "View My Strings"
-msgstr ""
-
-#: indexpage.py:789
-msgid "No strings assigned to you"
-msgstr ""
-
-#: indexpage.py:793
-msgid "Quick Translate My Strings"
-msgstr ""
-
-#: indexpage.py:797
-msgid "No untranslated strings assigned to you"
-msgstr ""
-
-#: indexpage.py:801
-msgid "Review Suggestions"
-msgstr ""
-
-#: indexpage.py:803
-msgid "View Suggestions"
-msgstr ""
-
-#: indexpage.py:808
-msgid "Quick Translate"
-msgstr ""
-
-#: indexpage.py:810
-msgid "View Untranslated"
-msgstr ""
-
-#: indexpage.py:814
-msgid "No untranslated items"
-msgstr ""
-
-#: indexpage.py:817
-msgid "Translate All"
-msgstr ""
-
-#: indexpage.py:832
-msgid "ZIP of goal"
-msgstr ""
-
-#: indexpage.py:834
-msgid "ZIP of folder"
-msgstr ""
-
-#: indexpage.py:841
-msgid "Generate SDF"
-msgstr ""
-
-#: indexpage.py:894
-#, python-format
-msgid "%d string (%d%%) failed"
-msgid_plural "%d strings (%d%%) failed"
-msgstr[0] ""
-msgstr[1] ""
-
-#: indexpage.py:924
-#, python-format
-msgid "%d/%d words (%d%%) assigned"
-msgstr ""
-
-#: indexpage.py:925 indexpage.py:927
-#, python-format
-msgid "[%d/%d strings]"
-msgstr ""
-
-#: indexpage.py:926 pagelayout.py:204
-#, python-format
-msgid "%d/%d words (%d%%) translated"
-msgstr ""
-
-#: pagelayout.py:37
-#, fuzzy
-msgid "All projects"
-msgstr "პროექტები"
-
-#: pagelayout.py:38
-#, fuzzy
-msgid "All languages"
-msgstr "ენები"
-
-#: pagelayout.py:39
-msgid "My account"
-msgstr ""
-
-#: pagelayout.py:41
-msgid "Docs & help"
-msgstr ""
-
-#: pagelayout.py:42
-msgid "Log out"
-msgstr ""
-
-#: pagelayout.py:43
-msgid "Log in"
-msgstr ""
-
-#. l10n: Verb, as in "to register"
-#: pagelayout.py:45
-msgid "Register"
-msgstr ""
-
-#: pagelayout.py:46
-msgid "Activate"
-msgstr ""
-
-#: pagelayout.py:63
-msgid "Pootle Logo"
-msgstr ""
-
-#: pagelayout.py:64
-msgid "WordForge Translation Project"
-msgstr ""
-
-#: pagelayout.py:129
-msgid "All goals"
-msgstr ""
-
-#: pagelayout.py:200
-#, python-format
-msgid "%d/%d files"
-msgstr ""
-
-#: pagelayout.py:203
-#, python-format
-msgid "%d file"
-msgid_plural "%d files"
-msgstr[0] ""
-msgstr[1] ""
-
-#: pagelayout.py:205
-#, python-format
-msgid "%d/%d strings"
-msgstr ""
-
-#: pagelayout.py:211 users.py:131
-msgid "Name"
-msgstr ""
-
-#: pagelayout.py:212
-msgid "Translated"
-msgstr ""
-
-#: pagelayout.py:213
-msgid "Translated percentage"
-msgstr ""
-
-#: pagelayout.py:214
-msgid "Translated words"
-msgstr ""
-
-#: pagelayout.py:215
-msgid "Fuzzy"
-msgstr ""
-
-#: pagelayout.py:216
-msgid "Fuzzy percentage"
-msgstr ""
-
-#: pagelayout.py:217
-msgid "Fuzzy words"
-msgstr ""
-
-#: pagelayout.py:219
-msgid "Untranslated percentage"
-msgstr ""
-
-#: pagelayout.py:220
-msgid "Untranslated words"
-msgstr ""
-
-#: pagelayout.py:221
-#, fuzzy
-msgid "Total"
-msgstr "სათაური"
-
-#: pagelayout.py:222
-msgid "Total words"
-msgstr ""
-
-#: pagelayout.py:223
-msgid "Graph"
-msgstr ""
-
-#: pootle.py:226
-msgid "Login failed"
-msgstr ""
-
-#: pootle.py:270 pootle.py:296
-msgid "Redirecting to login..."
-msgstr ""
-
-#: pootle.py:273
-msgid "Need to log in to access home page"
-msgstr ""
-
-#: pootle.py:299
-msgid "Need to log in to access admin page"
-msgstr ""
-
-#: pootle.py:306
-msgid "Redirecting to home..."
-msgstr ""
-
-#: pootle.py:309
-msgid "You do not have the rights to administer pootle."
-msgstr "თქვენ არ გაგაჩნიათ pootle-ს ადმინისტრირების უფლება."
-
-#: projects.py:133
-msgid "View"
-msgstr ""
-
-#: projects.py:134 translatepage.py:570
-msgid "Suggest"
-msgstr ""
-
+#. l10n: Verb
 #: projects.py:135
-msgid "Translate"
-msgstr ""
+msgid "View"
+msgstr "ჩვენება"
 
 #: projects.py:136
-msgid "Review"
-msgstr ""
+#: translatepage.py:571
+msgid "Suggest"
+msgstr "შემოთავაზება"
 
 #: projects.py:137
-msgid "Archive"
-msgstr ""
+msgid "Translate"
+msgstr "თარგმნა"
 
-#: projects.py:138
-msgid "Compile PO files"
-msgstr ""
-
+#. l10n: Verb
 #: projects.py:139
+msgid "Review"
+msgstr "გადახედვა"
+
+#. l10n: Verb
+#: projects.py:141
+msgid "Archive"
+msgstr "არქივი"
+
+#: projects.py:142
+msgid "Compile PO files"
+msgstr "PO ფაილების კომპილირება"
+
+#: projects.py:143
 msgid "Assign"
-msgstr ""
+msgstr "მინიჭება"
 
-#: projects.py:140
+#: projects.py:144
 msgid "Administrate"
-msgstr ""
+msgstr "ადმინისტრირება"
 
-#: projects.py:197
+#. l10n: Commit to version control (like CVS or Subversion)
+#: projects.py:145
+#: indexpage.py:713
+msgid "Commit"
+msgstr "გაგზავნა"
+
+#. l10n: Don't translate "nobody" or "default"
+#: projects.py:203
 msgid "You cannot remove the \"nobody\" or \"default\" user"
-msgstr ""
+msgstr "თქვენ არა გაქვთ უფლება ამოიღოთ \"nobody\" ან \"default\" მომხმარებელი"
 
-#: projects.py:334 projects.py:394
+#: projects.py:356
+#: projects.py:418
 msgid "You do not have rights to alter goals here"
-msgstr ""
+msgstr "მიზნების შეცვლის უფლება აქ არ გაქვთ"
 
-#: projects.py:454
+#: projects.py:478
 msgid "You do not have rights to upload files here"
-msgstr ""
+msgstr "ფაილების ატვირთვის უფლება აქ არ გაქვთ"
 
-#: projects.py:457
+#: projects.py:481
 msgid "You do not have rights to upload new files here"
-msgstr ""
+msgstr "ახალი ფაილების ატვირთვის უფლება აქ არ გაქვთ"
 
-#: projects.py:466
+#: projects.py:490
 msgid "You do not have rights to update files here"
-msgstr ""
+msgstr "ფაილების განახლების უფლება აქ არ გაქვთ"
 
-#: projects.py:536
-#, fuzzy
+#: projects.py:560
 msgid "You do not have rights to commit files here"
-msgstr "თქვენ არ გაგაჩნიათ pootle-ს ადმინისტრირების უფლება."
+msgstr "ფაილების გაგზავნის უფლება აქ არ გაქვთ"
 
-#: projects.py:864 projects.py:905
+#: projects.py:893
+#: projects.py:934
 msgid "You do not have rights to alter assignments here"
-msgstr ""
+msgstr "მინიჭების შეცვლის უფლება აქ არ გაქვთ"
 
-#: projects.py:1109
+#: projects.py:1138
 msgid "You do not have rights to change translations here"
-msgstr ""
+msgstr "თარგმანის შეცვლის უფლება აქ არ გაქვთ"
 
-#: projects.py:1119
+#: projects.py:1148
 msgid "You do not have rights to suggest changes here"
-msgstr ""
+msgstr "თარგმანის შემოთავაზების უფლება აქ არ გაქვთ"
 
-#: projects.py:1135 projects.py:1158
+#: projects.py:1164
+#: projects.py:1187
 msgid "You do not have rights to review suggestions here"
-msgstr ""
-
-#: users.py:36
-msgid "Login to Pootle"
-msgstr ""
-
-#: users.py:41
-msgid "Username:"
-msgstr ""
-
-#: users.py:43
-msgid "Password:"
-msgstr ""
-
-#: users.py:44
-#, fuzzy
-msgid "Language:"
-msgstr "ენები"
-
-#: users.py:53
-msgid "Default"
-msgstr ""
-
-#: users.py:65
-msgid "Please enter your registration details"
-msgstr ""
-
-#: users.py:68
-msgid "Pootle Registration"
-msgstr ""
-
-#: users.py:75 users.py:108
-msgid "Your requested username"
-msgstr ""
-
-#: users.py:78
-msgid "Must be a valid email address"
-msgstr ""
-
-#: users.py:81
-msgid "Your full name"
-msgstr ""
-
-#: users.py:84
-msgid "Your desired password"
-msgstr ""
-
-#: users.py:86
-msgid "Register Account"
-msgstr ""
-
-#: users.py:95
-msgid "Please enter your activation details"
-msgstr ""
-
-#: users.py:100
-msgid "Pootle Account Activation"
-msgstr ""
-
-#: users.py:110
-msgid "Activation Code"
-msgstr ""
-
-#: users.py:111
-msgid "The activation code you received"
-msgstr ""
-
-#: users.py:113
-msgid "Activate Account"
-msgstr ""
-
-#: users.py:123
-#, python-format
-msgid "Options for: %s"
-msgstr ""
-
-#: users.py:128
-msgid "Personal Details"
-msgstr ""
-
-#: users.py:133
-msgid "Email"
-msgstr ""
-
-#: users.py:135
-msgid "Translation Interface Configuration"
-msgstr ""
-
-#: users.py:136
-msgid "User Interface language"
-msgstr ""
-
-#: users.py:137
-msgid "My Projects"
-msgstr ""
-
-#: users.py:139
-msgid "My Languages"
-msgstr ""
-
-#: users.py:141
-msgid "Home page"
-msgstr "საწყისი გვერდი"
-
-#: users.py:175
-msgid "Input Height (in lines)"
-msgstr ""
-
-#: users.py:175
-msgid "Input Width (in characters)"
-msgstr ""
-
-#: users.py:176
-msgid "Number of rows in view mode"
-msgstr ""
-
-#: users.py:177
-msgid "Number of rows in translate mode"
-msgstr ""
-
-#: users.py:230
-msgid "You need to be siteadmin to change users"
-msgstr ""
-
-#: users.py:307
-msgid ""
-"You (or someone else) attempted to register an account with your username.\n"
-msgstr ""
-
-#: users.py:308
-msgid "We don't store your actual password but only a hash of it.\n"
-msgstr ""
-
-#: users.py:310
-#, python-format
-msgid "If you have a problem with registration, please contact %s.\n"
-msgstr ""
-
-#: users.py:312
-msgid ""
-"If you have a problem with registration, please contact the site "
-"administrator.\n"
-msgstr ""
-
-#: users.py:313
-msgid ""
-"That username already exists. An email will be sent to the registered email "
-"address.\n"
-msgstr ""
-
-#: users.py:315
-#, python-format
-msgid "Proceeding to <a href='%s'>login</a>\n"
-msgstr ""
-
-#: users.py:319
-#, python-format
-msgid "You must supply a valid password of at least %d characters."
-msgstr ""
-
-#: users.py:323
-msgid "A Pootle account has been created for you using this email address.\n"
-msgstr ""
-
-#: users.py:325
-msgid "To activate your account, follow this link:\n"
-msgstr ""
-
-#: users.py:331
-#, python-format
-msgid ""
-"Your activation code is:\n"
-"%s\n"
-msgstr ""
-
-#: users.py:333
-msgid ""
-"If you are unable to follow the link, please enter the above code at the "
-"activation page.\n"
-msgstr ""
-
-#: users.py:334
-msgid ""
-"This message is sent to verify that the email address is in fact correct. If "
-"you did not want to register an account, you may simply ignore the message.\n"
-msgstr ""
-
-#: users.py:336
-#, python-format
-msgid ""
-"Account created. You will be emailed login details and an activation code. "
-"Please enter your activation code on the <a href='%s'>activation page</a>."
-msgstr ""
-
-#: users.py:338
-msgid "(Or simply click on the activation link in the email)"
-msgstr ""
-
-#: users.py:340
-#, python-format
-msgid "Your user name is: %s\n"
-msgstr ""
-
-#: users.py:342
-#, python-format
-msgid "Your password is: %s\n"
-msgstr ""
-
-#: users.py:343
-#, python-format
-msgid "Your registered email address is: %s\n"
-msgstr ""
-
-#: users.py:367
-msgid "Redirecting to Registration Page..."
-msgstr ""
-
-#: users.py:391
-msgid "Redirecting to login Page..."
-msgstr ""
-
-#: users.py:394
-msgid "Your account has been activated! Redirecting to login..."
-msgstr ""
-
-#: users.py:398
-msgid "The activation information was not valid."
-msgstr ""
-
-#: users.py:399
-msgid "Activation Failed"
-msgstr ""
-
-#: users.py:493
-msgid "Input height must be numeric"
-msgstr ""
-
-#: users.py:494
-msgid "Input width must be numeric"
-msgstr ""
-
-#: users.py:495
-msgid "The number of rows displayed in view mode must be numeric"
-msgstr ""
-
-#: users.py:496
-msgid "The number of rows displayed in translate mode must be numeric"
-msgstr ""
+msgstr "შემოთავაზებების გადახედვის უფლება აქ არ გაქვთ"
 
 #: translatepage.py:80
 #, python-format
@@ -1077,176 +104,1260 @@ msgid ""
 "%d/%d translated\n"
 "(%d blank, %d fuzzy)"
 msgstr ""
+"%d/%d ნათარგმნი\n"
+"(%d ცარიელი, %d საეჭვო)"
+
+#: translatepage.py:92
+#: adminpages.py:35
+#: adminpages.py:74
+#: adminpages.py:130
+#: adminpages.py:192
+#: adminpages.py:279
+#: adminpages.py:339
+#: pagelayout.py:63
+#: users.py:58
+#: users.py:91
+#: users.py:127
+#: users.py:149
+#: indexpage.py:73
+#: indexpage.py:97
+#: indexpage.py:137
+#: indexpage.py:191
+#: indexpage.py:253
+#: indexpage.py:339
+msgid "Pootle Demo"
+msgstr "Pootle დემო"
 
 #. l10n: first parameter: name of the installation (like "Pootle")
 #. l10n: second parameter: project name
 #. l10n: third parameter: target language
 #. l10n: fourth parameter: file name
-#: translatepage.py:96
+#: translatepage.py:97
 #, python-format
 msgid "%s: translating %s into %s: %s"
-msgstr ""
-
-#: translatepage.py:110
-msgid "Original"
-msgstr ""
+msgstr "%s: თარგმნა %s - %s: %s"
 
 #: translatepage.py:111
-msgid "Translation"
-msgstr ""
+msgid "Original"
+msgstr "დედანი"
 
-#: translatepage.py:114
-msgid "Accept"
-msgstr ""
+#: translatepage.py:112
+msgid "Translation"
+msgstr "თარგმანი"
 
 #: translatepage.py:115
+msgid "Accept"
+msgstr "მიღება"
+
+#: translatepage.py:116
 msgid "Reject"
-msgstr ""
+msgstr "უარყოფა"
 
 #. l10n: This heading refers to related translations and terminology
-#: translatepage.py:117
+#: translatepage.py:118
 msgid "Related"
-msgstr ""
+msgstr "მიმართებები"
+
+#. l10n: text next to search field
+#: translatepage.py:122
+#: indexpage.py:349
+msgid "Search"
+msgstr "ძიება"
 
 #. l10n: "batch" refers to the set of translations that were reviewed
-#: translatepage.py:135
+#: translatepage.py:136
 msgid "End of batch"
-msgstr ""
+msgstr "პაკეტის ბოლო"
 
-#: translatepage.py:137
+#: translatepage.py:138
 msgid "Click here to return to the index"
-msgstr ""
+msgstr "დაწკაპეთ ინდექსზე დასაბრუნებლად"
 
 #. l10n: noun (the start)
-#: translatepage.py:150 translatepage.py:153
+#: translatepage.py:151
+#: translatepage.py:154
 msgid "Start"
-msgstr ""
+msgstr "დაწყება"
 
 #. l10n: the parameter refers to the number of messages
-#: translatepage.py:157 translatepage.py:160
+#: translatepage.py:158
+#: translatepage.py:161
 #, python-format
 msgid "Previous %d"
-msgstr ""
+msgstr "წინა %d"
 
 #. l10n: the third parameter refers to the total number of messages in the file
-#: translatepage.py:162
+#: translatepage.py:163
 #, python-format
 msgid "Items %d to %d of %d"
-msgstr ""
+msgstr "ელემენტები %d - %d, სულ %d"
 
 #. l10n: the parameter refers to the number of messages
-#: translatepage.py:167 translatepage.py:170
+#: translatepage.py:168
+#: translatepage.py:171
 #, python-format
 msgid "Next %d"
-msgstr ""
+msgstr "შემდეგი %d"
 
 #. l10n: noun (the end)
-#: translatepage.py:173 translatepage.py:176
+#: translatepage.py:174
+#: translatepage.py:177
 msgid "End"
-msgstr ""
+msgstr "ბოლო"
 
 #. l10n: the parameter is the name of one of the quality checks, like "fuzzy"
-#: translatepage.py:192
+#: translatepage.py:194
 #, python-format
 msgid "checking %s"
-msgstr ""
+msgstr "შემოწმება %s"
 
-#: translatepage.py:334
-#, python-format
-msgid "There are no items matching that search ('%s')"
-msgstr ""
+#: translatepage.py:201
+#: translatepage.py:204
+#: indexpage.py:510
+#: indexpage.py:513
+msgid "Assign Strings"
+msgstr "სტრიქონების განპირობება"
+
+#: translatepage.py:202
+#: indexpage.py:512
+msgid "Assign to User"
+msgstr "მონაწილეზე განპირობება"
+
+#: translatepage.py:203
+#: indexpage.py:511
+msgid "Assign Action"
+msgstr "ქმედების განპირობება"
 
 #: translatepage.py:336
+#, python-format
+msgid "There are no items matching that search ('%s')"
+msgstr "საძიებო კონტექსტის შესაბამისი ელემენტები ვერ მოიძებნა ('%s')"
+
+#: translatepage.py:338
 msgid "You have finished going through the items you selected"
-msgstr ""
+msgstr "თქვენ ჩაიარეთ ყველა შერჩეული ელემენტი"
 
-#: translatepage.py:534
+#: translatepage.py:536
 msgid "Singular"
-msgstr ""
+msgstr "მხოლობითი"
 
-#: translatepage.py:535
+#: translatepage.py:537
 msgid "Plural"
-msgstr ""
+msgstr "მრავლობითი"
 
 #. l10n: verb
-#: translatepage.py:549
+#: translatepage.py:551
 msgid "Edit"
-msgstr ""
+msgstr "რედაქტირება"
 
 #. l10n: verb
-#: translatepage.py:566
+#: translatepage.py:567
 msgid "Copy"
-msgstr ""
+msgstr "ასლი"
 
-#: translatepage.py:567 translatepage.py:741
+#: translatepage.py:568
+#: translatepage.py:747
 msgid "Skip"
-msgstr ""
+msgstr "გამოტოვება"
 
 #. l10n: verb
-#: translatepage.py:569 translatepage.py:740
+#: translatepage.py:570
+#: translatepage.py:746
+#: users.py:245
 msgid "Back"
-msgstr ""
+msgstr "უკან"
 
-#: translatepage.py:571
+#: translatepage.py:572
 msgid "Submit"
-msgstr ""
+msgstr "გაგზავნა"
 
 #. l10n: action that increases the height of the textarea
-#: translatepage.py:576
+#: translatepage.py:575
 msgid "Grow"
-msgstr ""
+msgstr "გაზრდა"
 
 #. l10n: action that decreases the height of the textarea
-#: translatepage.py:578
+#: translatepage.py:577
 msgid "Shrink"
-msgstr ""
+msgstr "შეკუმშვა"
 
 #. l10n: action that increases the width of the textarea
-#: translatepage.py:580
+#: translatepage.py:579
 msgid "Broaden"
-msgstr ""
+msgstr "ფართო"
 
 #. l10n: action that decreases the width of the textarea
-#: translatepage.py:582
+#: translatepage.py:581
 msgid "Narrow"
-msgstr ""
+msgstr "ვიწრო"
 
 #. l10n: action that resets the size of the textarea
-#: translatepage.py:584
+#: translatepage.py:583
 msgid "Reset"
-msgstr ""
+msgstr "აღდგენა"
 
-#: translatepage.py:602 translatepage.py:695 translatepage.py:729
-#: translatepage.py:762
+#: translatepage.py:604
+#: translatepage.py:698
+#: translatepage.py:735
+#: translatepage.py:768
 #, python-format
 msgid "Plural Form %d"
-msgstr ""
+msgstr "მრავლობითი ფორმა %d"
 
-#: translatepage.py:617
+#. l10n: This is an error message that will display if the relevant problem occurs
+#: translatepage.py:620
 msgid ""
 "Translation not possible because plural information for your language is not "
 "available. Please contact the site administrator."
-msgstr ""
+msgstr "თარგმნა შეუძლებელია, რადგან ინფორმაცია მრავლობითის შესახებ თქვენი ენისთვის არ გაგვაჩნია. გთხოვთ დაუკავშირდეთ საიტის ადმინისტრატორს."
 
-#: translatepage.py:699
+#: translatepage.py:702
 msgid "Current Translation:"
-msgstr ""
+msgstr "მიმდინარე თარგმანი:"
 
-#: translatepage.py:710
-#, python-format
-msgid "Suggestion %d by %s:"
-msgstr ""
-
-#: translatepage.py:712
-#, python-format
-msgid "Suggestion %d:"
-msgstr ""
-
+#. l10n: First parameter: number
+#. l10n: Second parameter: name of translator
 #: translatepage.py:715
 #, python-format
-msgid "Suggestion by %s:"
-msgstr ""
+msgid "Suggestion %d by %s:"
+msgstr "შემოთავაზებ %d - %s:"
 
 #: translatepage.py:717
+#, python-format
+msgid "Suggestion %d:"
+msgstr "შემოთავაზება %d:"
+
+#. l10n: parameter: name of translator
+#: translatepage.py:721
+#, python-format
+msgid "Suggestion by %s:"
+msgstr "ავტორი %s:"
+
+#: translatepage.py:723
 msgid "Suggestion:"
-msgstr ""
+msgstr "შემოთავაზება:"
+
+#: adminpages.py:43
+#: adminpages.py:82
+#: adminpages.py:138
+#: adminpages.py:200
+#: pagelayout.py:36
+msgid "Home"
+msgstr "თავფურცელი"
+
+#: adminpages.py:44
+#: adminpages.py:202
+msgid "Users"
+msgstr "მონაწილეები"
+
+#: adminpages.py:45
+#: adminpages.py:84
+#: indexpage.py:95
+msgid "Languages"
+msgstr "ენები"
+
+#: adminpages.py:46
+#: adminpages.py:140
+#: indexpage.py:96
+msgid "Projects"
+msgstr "პროექტები"
+
+#: adminpages.py:47
+msgid "General options"
+msgstr "ძირითადი პარამეტრები"
+
+#: adminpages.py:48
+#: users.py:153
+msgid "Option"
+msgstr "პარამეტრები"
+
+#: adminpages.py:49
+#: users.py:154
+msgid "Current value"
+msgstr "მიმდინარე მნიშვნელობა"
+
+#: adminpages.py:50
+#: adminpages.py:85
+#: adminpages.py:141
+#: adminpages.py:203
+#: users.py:168
+msgid "Save changes"
+msgstr "ცვლილებათა შენახვა"
+
+#: adminpages.py:54
+msgid "Title"
+msgstr "სათაური"
+
+#: adminpages.py:55
+msgid "Description"
+msgstr "აღწერილობა"
+
+#: adminpages.py:56
+msgid "Base URL"
+msgstr "ძირითადი მისამართი (URL)"
+
+#: adminpages.py:57
+msgid "Home Page"
+msgstr "სათაო გვერდი"
+
+#: adminpages.py:83
+#: adminpages.py:139
+#: adminpages.py:201
+msgid "Main admin page"
+msgstr "ადმინისტრატორის გვერდი"
+
+#: adminpages.py:89
+msgid "ISO Code"
+msgstr "ISO კოდი"
+
+#: adminpages.py:90
+#: adminpages.py:146
+#: adminpages.py:208
+#: users.py:100
+msgid "Full Name"
+msgstr "სრული სახელი"
+
+#: adminpages.py:91
+msgid "(add language here)"
+msgstr "(დაამატეთ აქ ენა)"
+
+#: adminpages.py:92
+msgid "Special Chars"
+msgstr "სპეცსიმბოლოები"
+
+#: adminpages.py:92
+msgid "(special characters)"
+msgstr "(სპეციალური სიმბოლოები)"
+
+#: adminpages.py:93
+#: indexpage.py:214
+msgid "Number of Plurals"
+msgstr "მრავლობითები"
+
+#: adminpages.py:93
+msgid "(number of plurals)"
+msgstr "(მრავლობითების რაოდენობა)"
+
+#: adminpages.py:94
+#: indexpage.py:215
+msgid "Plural Equation"
+msgstr "მრავლობითი განტოლება"
+
+#: adminpages.py:94
+msgid "(plural equation)"
+msgstr "(მრავლობითი განტოლება)"
+
+#: adminpages.py:95
+msgid "Remove Language"
+msgstr "ენის წაშლა"
+
+#. l10n: The parameter is a languagecode, projectcode or username
+#: adminpages.py:110
+#: adminpages.py:173
+#: adminpages.py:235
+#: adminpages.py:398
+#, python-format
+msgid "Remove %s"
+msgstr "%s-ს წაშლა"
+
+#: adminpages.py:128
+msgid "Standard"
+msgstr "სტანდარტული"
+
+#: adminpages.py:145
+msgid "Project Code"
+msgstr "პროექტის კოდი"
+
+#: adminpages.py:147
+msgid "(add project here)"
+msgstr "( დაამატეთ აქ პროექტი )"
+
+#: adminpages.py:148
+msgid "Project Description"
+msgstr "პროექტის აღწერილობა"
+
+#: adminpages.py:148
+msgid "(project description)"
+msgstr "( პროექტის აღწერილობა )"
+
+#: adminpages.py:149
+msgid "Checker Style"
+msgstr "შემოწმების სტილი"
+
+#: adminpages.py:150
+msgid "Create MO Files"
+msgstr "MO ფაილების შექმნა"
+
+#: adminpages.py:151
+msgid "Remove Project"
+msgstr "პროექტის წაშლა"
+
+#: adminpages.py:207
+#: users.py:66
+msgid "Login"
+msgstr "შესვლა"
+
+#: adminpages.py:209
+#: users.py:336
+msgid "(add full name here)"
+msgstr "( დაამატეთ აქ სრული სახელი )"
+
+#: adminpages.py:210
+#: users.py:97
+msgid "Email Address"
+msgstr "ელფოსტის მისამართი"
+
+#: adminpages.py:210
+#: users.py:339
+msgid "(add email here)"
+msgstr "( დაამატეთ აქ ელფოსტა )"
+
+#: adminpages.py:211
+#: users.py:103
+#: users.py:159
+msgid "Password"
+msgstr "პაროლი"
+
+#: adminpages.py:211
+#: users.py:333
+msgid "(add password here)"
+msgstr "(დაამატეთ აქ პაროლი)"
+
+#: adminpages.py:212
+msgid "Activated"
+msgstr "გააქტივებული"
+
+#: adminpages.py:212
+msgid "Activate New User"
+msgstr "ახალი მონაწილის გააქტივება"
+
+#: adminpages.py:213
+msgid "Remove User"
+msgstr "მონაწილის ამოღება"
+
+#: adminpages.py:267
+msgid "Back to main page"
+msgstr "დაბრუნება მთავარ გვერდზე"
+
+#: adminpages.py:268
+msgid "Existing languages"
+msgstr "არსებული ენები"
+
+#. l10n: This refers to updating the translation files from the templates like with .pot files
+#: adminpages.py:272
+msgid "Update Languages"
+msgstr "ენების განახლება"
+
+#: adminpages.py:273
+#, python-format
+msgid "Pootle Admin: %s"
+msgstr "Pootle-ს ადმინისტრირების გვერდი"
+
+#: adminpages.py:274
+#: adminpages.py:336
+msgid "You do not have the rights to administer this project."
+msgstr "არ გაქვთ ამ პროექტის ადმინისტრირების უფლება."
+
+#. l10n: This refers to updating the translation files from the templates like with .pot files
+#: adminpages.py:276
+msgid "Update from templates"
+msgstr "განახლება თარგებიდან"
+
+#: adminpages.py:284
+msgid "Add Language"
+msgstr "ენის დამატება"
+
+#. l10n: This is the page title. The first parameter is the language name, the second parameter is the project name
+#: adminpages.py:316
+#, python-format
+msgid "Pootle Admin: %s %s"
+msgstr "Pootle ადმინი: %s %s"
+
+#: adminpages.py:317
+msgid "Project home page"
+msgstr "პროექტის სათაო გვერდი"
+
+#: adminpages.py:335
+#, python-format
+msgid "Cannot set rights for username %s - user does not exist"
+msgstr "ვერ ხერხდება უფლებების მითითება მონაწილისთვის %s - მონაწილე არ არსებობს"
+
+#: adminpages.py:352
+msgid "This is a GNU-style project (one directory, files named per language)."
+msgstr "ეს GNU სტილის პროექტია (ერთი დასტა, ფაილები თითოეული ენისთვის)."
+
+#: adminpages.py:354
+msgid "This is a standard style project (one directory per language)."
+msgstr "ეს სტანდარტული სტილის პროექტია (ერთი დასტა ერთი ენისთვის)."
+
+#: adminpages.py:355
+msgid "User Permissions"
+msgstr "მონაწილის უფლებები"
+
+#: adminpages.py:356
+#: users.py:94
+#: users.py:130
+msgid "Username"
+msgstr "მონაწილე"
+
+#: adminpages.py:357
+msgid "(select to add user)"
+msgstr "(აირჩიეთ მონაწილე დასამატებლად)"
+
+#: adminpages.py:358
+msgid "Rights"
+msgstr "უფლებები"
+
+#: adminpages.py:359
+#: indexpage.py:963
+msgid "Remove"
+msgstr "ამოღება"
+
+#: adminpages.py:379
+msgid "Update Rights"
+msgstr "უფლებების განახლება"
+
+#: pagelayout.py:37
+msgid "All projects"
+msgstr "ყველა პროექტი"
+
+#: pagelayout.py:38
+msgid "All languages"
+msgstr "ყველა ენა"
+
+#: pagelayout.py:39
+msgid "My account"
+msgstr "ჩემი ანგარიში"
+
+#: pagelayout.py:40
+#: pagelayout.py:144
+#: indexpage.py:197
+#: indexpage.py:259
+msgid "Admin"
+msgstr "ადმინი"
+
+#: pagelayout.py:41
+msgid "Docs & help"
+msgstr "დოკუმენტაცია და დახმარება"
+
+#: pagelayout.py:42
+msgid "Log out"
+msgstr "გასვლა"
+
+#: pagelayout.py:43
+msgid "Log in"
+msgstr "შესვლა"
+
+#. l10n: Verb, as in "to register"
+#: pagelayout.py:45
+msgid "Register"
+msgstr "რეგისტრაცია"
+
+#: pagelayout.py:46
+msgid "Activate"
+msgstr "გააქტივება"
+
+#: pagelayout.py:67
+msgid "Pootle Logo"
+msgstr "Pootle ლოგო"
+
+#: pagelayout.py:68
+msgid "WordForge Translation Project"
+msgstr "WordForge თრაგმნის პროექტი"
+
+#: pagelayout.py:133
+msgid "All goals"
+msgstr "ყველა მიზანი"
+
+#: pagelayout.py:204
+#, python-format
+msgid "%d/%d files"
+msgstr "%d/%d ფაილი"
+
+#: pagelayout.py:207
+#, python-format
+msgid "%d file"
+msgid_plural "%d files"
+msgstr "%d ფაილი"
+
+#: pagelayout.py:208
+#: indexpage.py:960
+#, python-format
+msgid "%d/%d words (%d%%) translated"
+msgstr "%d/%d სიტყვა, (%d%%) ნათარგმნი"
+
+#: pagelayout.py:209
+#, python-format
+msgid "%d/%d strings"
+msgstr "%d/%d სტრიქონი"
+
+#: pagelayout.py:215
+#: users.py:155
+msgid "Name"
+msgstr "სახელი"
+
+#: pagelayout.py:216
+msgid "Translated"
+msgstr "ნათარგმნი"
+
+#: pagelayout.py:217
+msgid "Translated percentage"
+msgstr "ნათარგმნის პროცენტი"
+
+#: pagelayout.py:218
+msgid "Translated words"
+msgstr "ნათარგმნი სიტყვები"
+
+#: pagelayout.py:219
+msgid "Fuzzy"
+msgstr "საეჭვო"
+
+#: pagelayout.py:220
+msgid "Fuzzy percentage"
+msgstr "საეჭვოს პროცენტი"
+
+#: pagelayout.py:221
+msgid "Fuzzy words"
+msgstr "საეჭვო სიტყვები"
+
+#: pagelayout.py:222
+#: indexpage.py:751
+msgid "Untranslated"
+msgstr "სათარგმნი"
+
+#: pagelayout.py:223
+msgid "Untranslated percentage"
+msgstr "სათარგმნის პროცენტი"
+
+#: pagelayout.py:224
+msgid "Untranslated words"
+msgstr "სათარგმნი სიტყვები"
+
+#: pagelayout.py:225
+msgid "Total"
+msgstr "სულ"
+
+#: pagelayout.py:226
+msgid "Total words"
+msgstr "სიტყვები სულ"
+
+#. l10n: noun. The graphical representation of translation status
+#: pagelayout.py:228
+msgid "Graph"
+msgstr "დიაგრამა"
+
+#: users.py:39
+#, python-format
+msgid "You must supply a valid password of at least %d characters."
+msgstr "უნდა მიუთითოთ მართებული პაროლი არანაკლებ %d სიმბოლოთი."
+
+#: users.py:41
+msgid "The password is not the same as the confirmation."
+msgstr "პაროლი დასტურს არ ემთხვევა."
+
+#: users.py:55
+msgid "Login to Pootle"
+msgstr "შესვლა Pootle-ში"
+
+#: users.py:61
+msgid "Username:"
+msgstr "მონაწილე:"
+
+#: users.py:63
+msgid "Password:"
+msgstr "პაროლი:"
+
+#: users.py:64
+msgid "Language:"
+msgstr "ენა:"
+
+#: users.py:73
+msgid "Default"
+msgstr "ნაგულისხმები"
+
+#: users.py:85
+msgid "Please enter your registration details"
+msgstr "გთხოვთ მიუთითოთ რეგისტრაციის მონაცემები"
+
+#: users.py:88
+#: users.py:408
+msgid "Pootle Registration"
+msgstr "Pootle რეგისტრაცია"
+
+#: users.py:95
+#: users.py:131
+msgid "Your requested username"
+msgstr "თქვენი მოთხოვნილი მონაწილის სახელი"
+
+#: users.py:98
+msgid "Must be a valid email address"
+msgstr "ელფოსტის მისამართი მართებული უნდა იყოს"
+
+#: users.py:101
+msgid "Your full name"
+msgstr "თქვენი სრული სახელი"
+
+#: users.py:104
+msgid "Your desired password"
+msgstr "თქვენი სასურველი პაროლი"
+
+#: users.py:106
+#: users.py:160
+msgid "Confirm password"
+msgstr "პაროლის დასტური"
+
+#: users.py:107
+msgid "Type your password again to ensure it is entered correctly"
+msgstr "მიუთითეთ პაროლი კვლავ მისი მართებულობის გადასამოწმებლად"
+
+#: users.py:109
+msgid "Register Account"
+msgstr "ანგარიშის რეგისტრაცია"
+
+#: users.py:118
+msgid "Please enter your activation details"
+msgstr "გთხოვთ მიუთითოთ თქვენი გააქტივების კოდი"
+
+#: users.py:123
+msgid "Pootle Account Activation"
+msgstr "Pootle-ს ანგარიშის გააქტივება"
+
+#: users.py:133
+msgid "Activation Code"
+msgstr "გააქტივების კოდი"
+
+#: users.py:134
+msgid "The activation code you received"
+msgstr "თქვენს მიერ მიღებული გააქტივების კოდი"
+
+#: users.py:136
+msgid "Activate Account"
+msgstr "ანგარიშის გააქტივება"
+
+#: users.py:147
+#, python-format
+msgid "Options for: %s"
+msgstr "პარამეტრები: %s"
+
+#: users.py:152
+msgid "Personal Details"
+msgstr "პირადი მონაცემები"
+
+#: users.py:157
+msgid "Email"
+msgstr "ელფოსტა"
+
+#: users.py:161
+msgid "Translation Interface Configuration"
+msgstr "თარგმნის გარემოს გამართვა"
+
+#: users.py:162
+msgid "User Interface language"
+msgstr "მონაწილის სამომხმარებლო გარსის ენა"
+
+#: users.py:163
+msgid "My Projects"
+msgstr "ჩემი პროექტები"
+
+#: users.py:165
+msgid "My Languages"
+msgstr "ჩემი ენები"
+
+#: users.py:167
+msgid "Home page"
+msgstr "საწყისი გვერდი"
+
+#: users.py:201
+msgid "Input Height (in lines)"
+msgstr "შეტანის სიმაღლე (სტრიქონები)"
+
+#: users.py:201
+msgid "Input Width (in characters)"
+msgstr "შეტანის სიგანე (სიმბოლოები)"
+
+#: users.py:202
+msgid "Number of rows in view mode"
+msgstr "სტრიქონების რაოდენობა ჩვენების რეჟიმში"
+
+#: users.py:203
+msgid "Number of rows in translate mode"
+msgstr "სტრიქონების რაოდენობა თარგმნის რეჟიმში"
+
+#: users.py:240
+msgid "Error"
+msgstr "შეცდომა"
+
+#: users.py:292
+msgid "You need to be siteadmin to change users"
+msgstr "მონაწილეთა სესაცვლელად საიტის ადმინი უნდა იყოთ"
+
+#: users.py:356
+msgid ""
+"Username must be alphanumeric, and must start with an alphabetic character."
+msgstr "მონაწილის სახელი ასონიშნებისგან უნდა შედგებოდეს და ასოთი იწყებოდეს."
+
+#: users.py:362
+msgid "You must supply a valid email address"
+msgstr "უნდა მიუთითოთ მართებული ელფოსტა"
+
+#: users.py:371
+msgid ""
+"You (or someone else) attempted to register an account with your username.\n"
+msgstr "თქვენ (ან ვინმე სხვა) ცდილობდა რეგისტრაციას მონაწილის თქვენი სახელით.\n"
+
+#: users.py:372
+msgid "We don't store your actual password but only a hash of it.\n"
+msgstr "ჩვენ არ ვინახავთ არა პაროლს არამედ მის ნაკუწებს.\n"
+
+#: users.py:374
+#, python-format
+msgid "If you have a problem with registration, please contact %s.\n"
+msgstr "რეგისტრაციის პრობლემების შემთხვევაში, გთხოვთ დაგვიკავშირდეთ - %s.\n"
+
+#: users.py:376
+msgid ""
+"If you have a problem with registration, please contact the site "
+"administrator.\n"
+msgstr "რეგისტრაციის პრობლემების შემთხვევაში, გთხოვთ დაუკავშირდეთ საიტის ადმინისტრატორს - %s.\n"
+
+#: users.py:377
+msgid ""
+"That username already exists. An email will be sent to the registered email "
+"address.\n"
+msgstr "მონაწილის სახელი უკვე არსებობს. ელფოსტა გამოიგზავნება რეგისტრაციის ელფოსტის მისამართზე.\n"
+
+#: users.py:379
+#, python-format
+msgid "Proceeding to <a href='%s'>login</a>\n"
+msgstr "გადასვლა გვერდზე <a href='%s'>შესვლა</a>\n"
+
+#: users.py:385
+msgid "A Pootle account has been created for you using this email address.\n"
+msgstr "Pootle-ს ანგარიში შეიქმნა თქვენთვის ელფოსტის ამ მისამართის გამოყენებით.\n"
+
+#: users.py:387
+msgid "To activate your account, follow this link:\n"
+msgstr "თქვენი ანგარიშის გასააქტივებლად მიჰყევით ამ ბმას:\n"
+
+#: users.py:393
+#, python-format
+msgid ""
+"Your activation code is:\n"
+"%s\n"
+msgstr "თქვენი გააქტივების კოდია:\n"
+"%s\n"
+
+#: users.py:395
+msgid ""
+"If you are unable to follow the link, please enter the above code at the "
+"activation page.\n"
+msgstr "თუ ამ ბმაზე გადასვლას ვერ ახერხებთ, გთხოვთ მიუთითოთ ზედა კოდი გააქტივების გვერდზე.\n"
+
+#: users.py:396
+msgid ""
+"This message is sent to verify that the email address is in fact correct. If "
+"you did not want to register an account, you may simply ignore the message.\n"
+msgstr "გამოგეგზავნათ წერილი თქვენი ელფოსტის მისამართის გადასამოწმებლად. თუ ანგარიშის რეგისტრაცია არ გსურთ უბრალოდ ნუ უპასუხებთ წერილს.\n"
+
+#: users.py:398
+#, python-format
+msgid ""
+"Account created. You will be emailed login details and an activation code. "
+"Please enter your activation code on the <a href='%s'>activation page</a>."
+msgstr "ანგარიში შეიქმნა. გამოგეგზავნებათ შესვლისთვის საჭირო მონაცემები და გააქტივების კოდი. გთხოვთ გააქტივების კოდი მიუთითოთ <a href='%s'>გააქტივების გვერდზე</a>."
+
+#: users.py:400
+msgid "(Or simply click on the activation link in the email)"
+msgstr "(ან უბრალოდ დაწკაპეთ გააქტივების ბმა წერილში)"
+
+#: users.py:402
+#, python-format
+msgid "Your user name is: %s\n"
+msgstr "თქვენი მონაწილის სახელია: %s\n"
+
+#: users.py:404
+#, python-format
+msgid "Your password is: %s\n"
+msgstr "თქვენი პაროლია: %s\n"
+
+#: users.py:405
+#, python-format
+msgid "Your registered email address is: %s\n"
+msgstr "თქვენი რეგისტრაციის ელფოსტის მისამართია: %s\n"
+
+#: users.py:429
+msgid "Redirecting to Registration Page..."
+msgstr "გადამისამართება რეგისტრაციის გვერდზე..."
+
+#: users.py:453
+msgid "Redirecting to login Page..."
+msgstr "გადამისამართება შესვლის გვერდზე..."
+
+#: users.py:456
+msgid "Your account has been activated! Redirecting to login..."
+msgstr "თქვენი ანგარიში გააქტივდა! გადამისამართება შესვლაზე..."
+
+#: users.py:460
+msgid "The activation information was not valid."
+msgstr "თქვენი გააქტივების მონაცემებიმცდარია."
+
+#: users.py:461
+msgid "Activation Failed"
+msgstr "გააქტივება არ შედგა"
+
+#: users.py:563
+msgid "Input height must be numeric"
+msgstr "შეტანის სიმაღლე რიცხვი უნდა იყოს"
+
+#: users.py:564
+msgid "Input width must be numeric"
+msgstr "შეტანის სიმაღლე რიცხვი უნდა იყოს"
+
+#: users.py:565
+msgid "The number of rows displayed in view mode must be numeric"
+msgstr "სტრიქონების რაოდენობა ჩვენების რეჟიმში რიცხვი უნდა იყოს"
+
+#: users.py:566
+msgid "The number of rows displayed in translate mode must be numeric"
+msgstr "სტრიქონების რაოდენობა თარგმნის რეჟიმში რიცხვი უნდა იყოს"
+
+#: pootle.py:273
+msgid "Login failed"
+msgstr "შესვლა არ შედგა"
+
+#: pootle.py:317
+#: pootle.py:348
+msgid "Redirecting to login..."
+msgstr "გადამისამართება შესვლაზე..."
+
+#: pootle.py:320
+msgid "Need to log in to access home page"
+msgstr "თავფურცელზე გადასასვლელად შესვლაა საჭირო"
+
+#: pootle.py:333
+msgid "Personal details updated"
+msgstr "პირადი დეტალები განახლდა"
+
+#: pootle.py:351
+msgid "Need to log in to access admin page"
+msgstr "ადმინის გვერდზე გადასასვლელად შესვლაა საჭირო"
+
+#: pootle.py:358
+msgid "Redirecting to home..."
+msgstr "გადამისამართება თავფურცელზე..."
+
+#: pootle.py:361
+msgid "You do not have the rights to administer pootle."
+msgstr "თქვენ არ გაგაჩნიათ pootle-ს ადმინისტრირების უფლება."
+
+#: indexpage.py:61
+msgid "About Pootle"
+msgstr "Pootle-ს შესახებ"
+
+#. l10n: Take care to use HTML tags correctly. A markup error could cause a display error.
+#: indexpage.py:63
+msgid ""
+"<strong>Pootle</strong> is a simple web portal that should allow you to "
+"<strong>translate</strong>! Since Pootle is <strong>Free Software</strong>, "
+"you can download it and run your own copy if you like. You can also help "
+"participate in the development in many ways (you don't have to be able to "
+"program)."
+msgstr "<strong>Pootle</strong> მარტივი ვებ პორტალია, რომელიც <strong>თარგმნის</strong> საშუალებას გაძლევთ! ვინაიდან Pootle <strong>თავისუფალი პროგრამაა</strong>, შეგიძლიათ მისი ჩამოტვირთვა და საკუთრივ მოხმარება. ასევე, ბევრგვარად შეგიძლიათ წვლილი შეიტანოთ მის განვითარებაში (არაა აუცილებელი პროგრამისტი იყოთ)."
+
+#: indexpage.py:64
+msgid ""
+"The Pootle project itself is hosted at <a href=\"http://translate."
+"sourceforge.net/\">translate.sourceforge.net</a> where you can find the "
+"details about source code, mailing lists etc."
+msgstr "Pootle პროექტს მასპინძლობს <a href=\"http://translate.sourceforge.net/\">translate.sourceforge.net</a> სადაც შეგიძლიათ ინფორმაციის მიღება პირველწყარო კოდები, საფოსტო ჯგუფების და ა.შ. შესახებ."
+
+#. l10n: If your language uses right-to-left layout and you leave the English untranslated, consider enclosing the necessary text with <span dir="ltr">.......</span> to help browsers to display it correctly.
+#. l10n: Take care to use HTML tags correctly. A markup error could cause a display error.
+#: indexpage.py:67
+msgid ""
+"The name stands for <b>PO</b>-based <b>O</b>nline <b>T</b>ranslation / <b>L</"
+"b>ocalization <b>E</b>ngine, but you may need to read <a href=\"http://www."
+"thechestnut.com/flumps.htm\">this</a>."
+msgstr "სახელის წარმოშობა ასეთია - <b>PO</b> <b>O</b>nline <b>T</b>ranslation / <b>L</b>ocalization <b>E</b>ngine, თუმცა შესაძლოა დაგჭირდეთ გაეცნოთ <a href=\"http://www.thechestnut.com/flumps.htm\">ამ გვერდსაც</a>."
+
+#: indexpage.py:68
+msgid "Versions"
+msgstr "ვერსიები"
+
+#. l10n: If your language uses right-to-left layout and you leave the English untranslated, consider enclosing the necessary text with <span dir="ltr">.......</span> to help browsers to display it correctly.
+#. l10n: Take care to use HTML tags correctly. A markup error could cause a display error.
+#: indexpage.py:71
+#, python-format
+msgid ""
+"This site is running:<br />Pootle %s<br />Translate Toolkit %s<br />jToolkit "
+"%s<br />Kid %s<br />ElementTree %s<br />Python %s (on %s/%s)"
+msgstr "საიტზე გამოიყენება:<br />Pootle %s<br />Translate Toolkit %s<br />jToolkit %s<br />Kid %s<br />ElementTree %s<br />Python %s (on %s/%s)"
+
+#: indexpage.py:94
+msgid "About this Pootle server"
+msgstr "Pootle-ს ამ სერვერის შესახებ"
+
+#: indexpage.py:132
+#, python-format
+msgid "User Page for: %s"
+msgstr "მონაწილის გვერდი: %s"
+
+#: indexpage.py:134
+msgid "Change options"
+msgstr "პარამეტრების შეცვლა"
+
+#: indexpage.py:135
+msgid "Admin page"
+msgstr "ადმინის გვერდი"
+
+#: indexpage.py:136
+msgid "Quick Links"
+msgstr "სწრაფი ბმები"
+
+#: indexpage.py:140
+msgid "Please click on 'Change options' and select some languages and projects"
+msgstr "გთხოვთ დაწკაპოთ 'პარამეტრების შეცვლა' და აირჩიოთ რამდენიმე ენა და პროექტი"
+
+#: indexpage.py:189
+#, python-format
+msgid "%d project, average %d%% translated"
+msgid_plural "%d projects, average %d%% translated"
+msgstr "%d პროექტი, საშუალოდ თარგმნილია %d%%"
+
+#. l10n: The first parameter is the name of the installation
+#. l10n: The second parameter is the name of the project/language
+#. l10n: This is used as a page title. Most languages won't need to change this
+#: indexpage.py:195
+#: indexpage.py:257
+#, python-format
+msgid "%s: %s"
+msgstr "%s: %s"
+
+#: indexpage.py:211
+msgid "Language Code"
+msgstr "ენის კოდი"
+
+#: indexpage.py:212
+msgid "Language Name"
+msgstr "ენის დასახელება"
+
+#: indexpage.py:249
+#, python-format
+msgid "%d language, average %d%% translated"
+msgid_plural "%d languages, average %d%% translated"
+msgstr "%d ენა, საშუალოდ თარგმნილია %d%%"
+
+#: indexpage.py:262
+msgid "Language"
+msgstr "ენა"
+
+#. l10n: The first parameter is the name of the installation (like "Pootle")
+#: indexpage.py:341
+#, python-format
+msgid "%s: Project %s, Language %s"
+msgstr "%s: პროექტი - %s, ენა - %s"
+
+#: indexpage.py:396
+msgid "Cannot upload file, no file attached"
+msgstr "ფაილი ვერ აიტვირთება, ფაილი არ მიმაგრებულა"
+
+#: indexpage.py:402
+msgid "Can only upload PO files and zips of PO files"
+msgstr "შესაძლოა მხოლოდ PO ფაილების ან მათი zip არქივის ატვირთვა"
+
+#: indexpage.py:518
+msgid "goals"
+msgstr "მიზნები"
+
+#: indexpage.py:519
+msgid "Enter goal name"
+msgstr "მიზნის სახელის მითითება"
+
+#: indexpage.py:520
+msgid "Add Goal"
+msgstr "მიზნის დამატება"
+
+#: indexpage.py:524
+#: indexpage.py:526
+msgid "Upload File"
+msgstr "ფაილის ატვირთვა"
+
+#: indexpage.py:525
+msgid "Select file to upload"
+msgstr "ასატვირთი ფაილის არჩევა"
+
+#: indexpage.py:627
+msgid "Not in a goal"
+msgstr "არაა მიზანში"
+
+#: indexpage.py:648
+msgid "Add User"
+msgstr "მონაწილის დამატება"
+
+#: indexpage.py:686
+msgid "PO file"
+msgstr "PO ფაილი"
+
+#: indexpage.py:690
+msgid "XLIFF file"
+msgstr "XLIFF ფაილი"
+
+#: indexpage.py:694
+msgid "Qt .ts file"
+msgstr "Qt .ts ფაილი"
+
+#: indexpage.py:698
+msgid "CSV file"
+msgstr "CSV ფაილი"
+
+#: indexpage.py:703
+msgid "MO file"
+msgstr "MO ფაილი"
+
+#. l10n: Update from version control (like CVS or Subversion)
+#: indexpage.py:708
+msgid "Update"
+msgstr "განახლება"
+
+#: indexpage.py:750
+msgid "All Strings"
+msgstr "ყველა სტრიქონი"
+
+#: indexpage.py:752
+msgid "Unassigned"
+msgstr "გაუპიროვნებელი"
+
+#: indexpage.py:753
+msgid "Unassigned and Untranslated"
+msgstr "გაუპიროვნებელი და სათარგმნი"
+
+#: indexpage.py:760
+msgid "Set Goal"
+msgstr "მიზნის დასახვა"
+
+#: indexpage.py:764
+msgid "Select Multiple"
+msgstr "მრავლობითი მონიშვნა"
+
+#: indexpage.py:766
+msgid "Assign To"
+msgstr "გაპიროვნება -"
+
+#: indexpage.py:795
+msgid "Show Editing Functions"
+msgstr "რედაქტირების ფუნქციების ჩვენება"
+
+#: indexpage.py:796
+msgid "Show Statistics"
+msgstr "სტატისტიკის ჩვენება"
+
+#: indexpage.py:797
+msgid "Show Tracks"
+msgstr "კვალის ჩვენება"
+
+#: indexpage.py:797
+msgid "Hide Tracks"
+msgstr "კვალის დამალვა"
+
+#. l10n: "Checks" are quality checks that Pootle performs on translations to test for common mistakes
+#: indexpage.py:799
+msgid "Show Checks"
+msgstr "შემოწმების ჩვენება"
+
+#: indexpage.py:799
+msgid "Hide Checks"
+msgstr "შემოწმების დამალვა"
+
+#: indexpage.py:800
+msgid "Show Goals"
+msgstr "მიზნების ჩვენება"
+
+#: indexpage.py:800
+msgid "Hide Goals"
+msgstr "მიზნების დამალვა"
+
+#: indexpage.py:801
+msgid "Show Assigns"
+msgstr "განპირობების ჩვენება"
+
+#: indexpage.py:801
+msgid "Hide Assigns"
+msgstr "განპირობების დამალვა"
+
+#: indexpage.py:810
+#, python-format
+msgid "All Goals: %s"
+msgstr "ყველა მიზანი: %s"
+
+#: indexpage.py:816
+msgid "Translate My Strings"
+msgstr "ჩემი სტრიქონების თარგმნა"
+
+#: indexpage.py:818
+msgid "View My Strings"
+msgstr "ჩემი სტრიქონების ჩვენება"
+
+#: indexpage.py:823
+msgid "No strings assigned to you"
+msgstr "თქვნზე სათარგმნი არ განპირობებულა"
+
+#: indexpage.py:827
+msgid "Quick Translate My Strings"
+msgstr "ჩემი სტრიქონების სწრაფი თარგმნა"
+
+#: indexpage.py:831
+msgid "No untranslated strings assigned to you"
+msgstr "სათრაგმნი სტრიქონები თქვენზე არ განპირობებულა"
+
+#: indexpage.py:835
+msgid "Review Suggestions"
+msgstr "შემოთავაზებების დათვალიერება"
+
+#: indexpage.py:837
+msgid "View Suggestions"
+msgstr "შემოთავაზებების ჩვენება"
+
+#: indexpage.py:842
+msgid "Quick Translate"
+msgstr "სწრაფი თარგმნა"
+
+#: indexpage.py:844
+msgid "View Untranslated"
+msgstr "სათარგმნის ჩვენება"
+
+#: indexpage.py:848
+msgid "No untranslated items"
+msgstr "სათარგმნი ელემენტები არაა"
+
+#: indexpage.py:851
+msgid "Translate All"
+msgstr "ყველას თარგმნა"
+
+#: indexpage.py:866
+msgid "ZIP of goal"
+msgstr "მიზნის ZIP ფაილი"
+
+#: indexpage.py:868
+msgid "ZIP of folder"
+msgstr "დასტის ZIP ფაილი"
+
+#: indexpage.py:875
+msgid "Generate SDF"
+msgstr "SDF-ის შექმნა"
+
+#: indexpage.py:928
+#, python-format
+msgid "%d string (%d%%) failed"
+msgid_plural "%d strings (%d%%) failed"
+msgstr "%d სტრიქონი, (%d%%) წარუმატებელი"
+
+#: indexpage.py:958
+#, python-format
+msgid "%d/%d words (%d%%) assigned"
+msgstr "%d/%d სიტყვა, (%d%%) განპირობებული"
+
+#: indexpage.py:959
+#: indexpage.py:961
+#, python-format
+msgid "[%d/%d strings]"
+msgstr "[%d/%d სტრიქონი]"
