@@ -68,7 +68,7 @@ Pootle:
   projects:
     pootle:
       fullname = "Pootle"
-      description = "Web translation software"
+      description = "The translation project for the Pootle interface. Please contribute translations at the <a href='http://pootle.wordforge.org/'>official Pootle server</a>."
       checkstyle = "standard"
 
     terminology:
