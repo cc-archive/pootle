@@ -1,3 +1,49 @@
+2006-10-13 12:03  friedelwolff
+
+	* convert/pot2po.py: Always use Project-Id-Version from the POT
+
+2006-10-12 20:33  friedelwolff
+
+	* __version__.py: Version 0.10.1
+
+2006-10-11 15:45  friedelwolff
+
+	* __version__.py: Version 0.10.1rc2
+
+2006-10-06 08:30  friedelwolff
+
+	* convert/po2txt.py: [backported from trunk 3995:3996] Encode
+	  output before writing to file [Reported and contributed by Maxim
+	  V. Dziumanenko]
+
+2006-10-06 08:29  friedelwolff
+
+	* convert/test_po2txt.py: [backport from trunk 3994:3995] Test for
+	  basic conversion and nonascii text
+
+2006-10-05 12:13  friedelwolff
+
+	* convert/pot2po.py: fix uninitialised variable
+
+2006-09-26 07:34  friedelwolff
+
+	* convert/pot2po.py: Use correct variable and catch more specific
+	  exceptions
+
+2006-09-26 07:33  friedelwolff
+
+	* search/match.py, search/terminology.py, storage/factory.py:
+	  Small fixes to improve Pootle's use of terminology matching
+
+2006-09-01 06:51  friedelwolff
+
+	* search/terminology.py, search/test_terminology.py: [Backport
+	  3861:3863 from trunk] Improve matching in some cases. +Tests
+
+2006-08-29 10:01  friedelwolff
+
+	* ChangeLog: Update ChangeLog before 0.10 release
+
 2006-08-29 08:32  friedelwolff
 
 	* storage/ts.py: Only
