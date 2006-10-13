@@ -1,3 +1,342 @@
+2006-10-13 15:53  friedelwolff
+
+	* test_client.py: [backport from trunk 4046 and 4067] Adapt
+	  expected hyperlink to account for lang attribute that is now
+	  inserted
+
+2006-10-13 15:26  friedelwolff
+
+	* adminpages.py: Make sure that we have the information of all
+	  relevant users, even if they don't have the language selected
+	  yet or anymore
+
+2006-10-12 23:24  friedelwolff
+
+	* adminpages.py, indexpage.py, projects.py,
+	  templates/fileindex.html, templates/projectlangadmin.html:
+	  Display more friendly usernames for selection, displaying the
+	  full name where available. Only list users that registered for
+	  the specific project/language combination.
+
+2006-10-12 21:30  friedelwolff
+
+	* potree.py: Use new localelanguage() function when entering
+	  languages
+
+2006-10-12 21:23  friedelwolff
+
+	* indexpage.py, templates/home.html: Show administrate link on
+	  home page next to language if the user is a project admin
+
+2006-10-12 20:34  friedelwolff
+
+	* __version__.py: Version 0.10.1
+
+2006-10-12 15:36  friedelwolff
+
+	* pootle.py: Convert the browser's Accept-Lang when looking for
+	  the preferred translation
+
+2006-10-12 15:24  friedelwolff
+
+	* pagelayout.py: Add function localelanguage() to reformat a web
+	  style (pt-br) language code to a locale style (pt_BR) style code
+
+2006-10-12 15:22  friedelwolff
+
+	* pootle.py: Don't complain if no English translation is found
+
+2006-10-12 07:32  friedelwolff
+
+	* templates/pootlepage.html: Add dir and lang attributes to the
+	  about div in the footer
+
+2006-10-11 16:28  friedelwolff
+
+	* pootle.prefs: Make the default project description for Pootle
+	  more descriptive
+
+2006-10-11 16:26  friedelwolff
+
+	* html/pootle.css: Several display updates for specific languages,
+	  remove most places where line-height is altered, don't use
+	  percentage increases for fonts, etc.
+
+2006-10-11 16:25  friedelwolff
+
+	* templates/translatepage.html: Insert space between clickable
+	  special characters
+
+2006-10-11 16:23  friedelwolff
+
+	* templates/navbar.html: Display filenames as normal links (not
+	  H3) and style as lang=en dir=ltr
+
+2006-10-11 16:19  friedelwolff
+
+	* templates/adminlanguages.html, templates/adminprojects.html,
+	  templates/adminusers.html: [backport from trunk 3889:3890] Use
+	  new fullwidth classes for some pages. Remove temporary hack
+
+2006-10-11 16:01  friedelwolff
+
+	* pootlesetup.py: Use os.walk generator correctly
+
+2006-10-11 15:54  friedelwolff
+
+	* pootlesetup.py: Remove another deprecated use of
+	  approvedlanguages
+
+2006-10-11 15:50  friedelwolff
+
+	* pootlesetup.py: Package all languages, and enable the mostly
+	  translated ones in the default preferences (as before)
+
+
+2006-10-11 15:42  friedelwolff
+
+	* __version__.py: Version 0.10.1rc2
+
+2006-10-11 15:40  friedelwolff
+
+	* po/pootle/kg/pootle.po: Update Kongo (now kg) to the new POT file
+
+2006-10-11 15:32  friedelwolff
+
+	* po/pootle/cs, po/pootle/cs/jToolkit.po, po/pootle/cs/pootle.po,
+	  po/pootle/hy, po/pootle/hy/jToolkit.po, po/pootle/hy/pootle.po,
+	  po/pootle/nn, po/pootle/nn/jToolkit.po, po/pootle/nn/pootle.po,
+	  po/pootle/pt_BR, po/pootle/pt_BR/jToolkit.po,
+	  po/pootle/pt_BR/pootle.po, po/pootle/zh_TW,
+	  po/pootle/zh_TW/jToolkit.po, po/pootle/zh_TW/pootle.po: Add new
+	  translations for pt_BR, nn, hy, zh_TW and cs
+
+2006-10-11 15:24  friedelwolff
+
+	* po/pootle/no: Remove incorrect general Norwegian (no) files
+	  (mostly empty anyway)
+
+2006-10-11 15:21  friedelwolff
+
+	* po/pootle/kg, po/pootle/kon: Move Kongo from kon to kg
+
+2006-10-11 14:53  friedelwolff
+
+	* po/pootle/af/pootle.po, po/pootle/am/pootle.po,
+	  po/pootle/ar/pootle.po, po/pootle/bn/pootle.po,
+	  po/pootle/ca/pootle.po, po/pootle/da/pootle.po,
+	  po/pootle/de/pootle.po, po/pootle/el/pootle.po,
+	  po/pootle/en/pootle.po, po/pootle/en_ZA/pootle.po,
+	  po/pootle/es/pootle.po, po/pootle/et/pootle.po,
+	  po/pootle/eu/pootle.po, po/pootle/fa/pootle.po,
+	  po/pootle/fi/pootle.po, po/pootle/fr/pootle.po,
+	  po/pootle/fur/pootle.po, po/pootle/gl/pootle.po,
+	  po/pootle/he/pootle.po, po/pootle/hi/pootle.po,
+	  po/pootle/hr/pootle.po, po/pootle/hu/pootle.po,
+	  po/pootle/is/pootle.po, po/pootle/it/pootle.po,
+	  po/pootle/ja/pootle.po, po/pootle/ka/jToolkit.po,
+	  po/pootle/ka/pootle.po, po/pootle/ko/jToolkit.po,
+	  po/pootle/ko/pootle.po, po/pootle/ku/pootle.po,
+	  po/pootle/lt/pootle.po, po/pootle/lv/pootle.po,
+	  po/pootle/mr/pootle.po, po/pootle/ms/pootle.po,
+	  po/pootle/mt/pootle.po, po/pootle/nb/pootle.po,
+	  po/pootle/ne/pootle.po, po/pootle/nl/pootle.po,
+	  po/pootle/pa/pootle.po, po/pootle/pl/pootle.po,
+	  po/pootle/pt/pootle.po, po/pootle/ru/pootle.po,
+	  po/pootle/sl/pootle.po, po/pootle/sr/pootle.po,
+	  po/pootle/st/pootle.po, po/pootle/sv/pootle.po,
+	  po/pootle/templates/pootle.pot, po/pootle/tr/pootle.po,
+	  po/pootle/uk/pootle.po, po/pootle/ve/pootle.po,
+	  po/pootle/vi/pootle.po, po/pootle/xh/pootle.po,
+	  po/pootle/zh_CN/pootle.po, po/pootle/zh_HK/jToolkit.po,
+	  po/pootle/zh_HK/pootle.po, po/pootle/zu/pootle.po: Update
+	  translations from pootle.wordforge.org
+
+2006-10-11 12:50  friedelwolff
+
+	* pootle.prefs: Enable more languages according to translation
+	  status
+
+2006-10-11 12:45  friedelwolff
+
+	* pootle.prefs: Add configurations for some missing languages
+
+2006-10-11 10:43  friedelwolff
+
+	* users.py: Properly deal with interface language set at login
+	  and/or preferences
+
+2006-10-10 10:04  friedelwolff
+
+	* translatepage.py: Always provide pofilename so that navigation
+	  works even when using project search or translate functions
+
+2006-09-22 07:36  friedelwolff
+
+	* html/pootle.css, indexpage.py, pagelayout.py,
+	  templates/activate.html, templates/adminindex.html,
+	  templates/adminlanguages.html, templates/adminprojects.html,
+	  templates/adminusers.html, templates/error.html,
+	  templates/fileindex.html, templates/home.html,
+	  templates/index.html, templates/language.html,
+	  templates/languages.html, templates/login.html,
+	  templates/options.html, templates/pootlepage.html,
+	  templates/project.html, templates/projectadmin.html,
+	  templates/projectlangadmin.html, templates/projects.html,
+	  templates/redirect.html, templates/register.html,
+	  templates/translatepage.html: [backport from trunk -r3958:3959]
+	  Move 'About this Pootle server' link to the footer on each
+	  page'. Contributed by Gasper Zejn.
+
+2006-09-22 07:35  friedelwolff
+
+	* CREDITS: Credit Gasper Zeijn
+
+2006-09-22 06:57  friedelwolff
+
+	* users.py: Only set the UI language from preference if it is not
+	  yet set from the login
+
+2006-09-20 15:22  friedelwolff
+
+	* potree.py: Fix encoding issue with special character
+	  administration
+
+2006-09-19 11:57  friedelwolff
+
+	* __version__.py: Version 0.10.1rc1
+
+2006-09-18 09:32  friedelwolff
+
+	* users.py: Handle language preference better across server
+	  restarts. Allow changing interface language immediately at user
+	  options
+
+2006-09-18 07:08  friedelwolff
+
+	* html/js/autoexpand.js, templates/translatepage.html: [Backport
+	  from head 3939:3941] Make special characters clickable
+	  [Contributed by Djihed Afifi]
+
+2006-09-18 06:32  friedelwolff
+
+	* html/js/autoexpand.js, templates/translatepage.html,
+	  translatepage.py: [Backport from head 3911:3912] Enable copying
+	  text for plural messages too. Contributed by Djihed Afifi
+
+2006-09-15 23:52  friedelwolff
+
+	* users.py: Minor improvements to new translatable messages
+
+2006-09-15 22:44  friedelwolff
+
+	* pootle.py, users.py: Allow users to change their password.
+	  Factor out some error handling and display error messages
+	  [Contributed by Charl van Niekerk]
+
+2006-09-15 22:42  friedelwolff
+
+	* templates/options.html: Support messages in user's option page
+
+2006-09-14 15:30  friedelwolff
+
+	* pagelayout.py, translatepage.py: Convert lang directives from
+	  locale style (pt_BR) to web style (pt-BR) when passing to
+	  templates
+
+2006-09-14 12:22  friedelwolff
+
+	* templates/options.html, users.py: [backport from trunk
+	  3921:3822] Enable functionality for users to change their
+	  passwords [Contributed by Charl van Niekerk]
+
+2006-09-12 10:56  friedelwolff
+
+	* conflict2suggest.py: Split strings on newline not literal '\n'
+
+2006-09-08 11:28  friedelwolff
+
+	* pootle.prefs, tools/updatetm, tools/updatetm.py, users.prefs:
+	  Import minor fixes (mainly typo's) from debian pootle package
+	  (Nicolas François)
+
+2006-09-05 06:19  friedelwolff
+
+	* templates/register.html, users.py: [Backport 3883:3884 from
+	  trunk] [Contributed by Charl van Niekerk] Implement password
+	  confirmation on registration page
+
+2006-09-04 10:00  friedelwolff
+
+	* pootle.prefs: [Backport 3878:3879 from trunk] Improve
+	  configuration documentation, with examples and explanations of
+	  how descriptions can now contain markup
+
+2006-09-04 09:58  friedelwolff
+
+	* indexpage.py, templates/about.html, templates/index.html,
+	  templates/language.html, templates/project.html: [Backport
+	  3865:3878 from trunk] +server description on front page,
+	  +project description on project page, and allow markup for all
+	  descriptions. Also display shortened versions in some tooltips.
+
+2006-09-04 09:05  friedelwolff
+
+	* html/pootle.css: Also overflow display of comments and locations
+	  that are too long
+
+2006-08-31 13:20  friedelwolff
+
+	* pootlefile.py, projects.py: [backport -r3859:3860 from trunk]
+	  Use unicode goalnames and encode as necessary. Fixes problem
+	  with assigns and non-ascii goalnames
+
+2006-08-30 10:03  friedelwolff
+
+	* translatepage.py: [backport from head 3854:3855] Use the correct
+	  icon (file/edit) on the translate page
+
+2006-08-30 09:52  friedelwolff
+
+	* translatepage.py: [backport from head 3854:3855] Display
+	  navigation links in edit mode too
+
+2006-08-30 08:14  friedelwolff
+
+	* adminpages.py, indexpage.py, pagelayout.py, projects.py,
+	  translatepage.py: [backport -r3852:3853 from trunk] Improve
+	  localize calls to have one on a line in most cases. Add more
+	  l10n comments
+
+2006-08-30 07:44  friedelwolff
+
+	* tools/updatetm.py: Fix bug with format change in notes
+
+2006-08-29 08:12  friedelwolff
+
+	* html/images/up.png: Remove invalid svn properties and add
+	  mime-type. fixes unusable images in Pootle
+
+2006-08-29 08:00  friedelwolff
+
+	* html/images/down.png, html/images/none.png: Commit images from
+	  CVS where the svn properties got mixed up
+
+2006-08-29 07:25  friedelwolff
+
+	* html/images/down.png, html/images/none.png,
+	  html/images/pootle.svg: Remove invalid svn properties and add
+	  mime-type. (hopefully) fixes unusable images in Pootle
+
+2006-08-28 12:26  friedelwolff
+
+	* ChangeLog: Include some selected changelog entries to
+	  pootlesetup.py in Pootle ChangeLog (not included by svn2cl)
+
+2006-08-28 12:20  friedelwolff
+
+	* ChangeLog: Update ChangeLog before 0.10 release
+
 2006-08-28 11:43  friedelwolff
 
 	* pootlesetup.py: Also package
