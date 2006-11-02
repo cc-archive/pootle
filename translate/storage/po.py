@@ -781,7 +781,7 @@ class pofile(base.TranslationStore):
         if key in fixedargs:
           headerargs[key] = fixedargs.pop(key)
       for key in fixedargs:
-        headerargs[key] = kwargs[key]
+        headerargs[key] = fixedargs[key]
       for key, value in headerargs.iteritems():
         if headeritems.has_key(key) or add:
           headeritems[key] = value
