@@ -33,6 +33,7 @@ from translate.convert import po2oo
 from translate.tools import pocompile
 from translate.tools import pogrep
 from translate.search import match
+from Pootle import statistics
 from Pootle import pootlefile
 from Pootle import versioncontrol
 from jToolkit import timecache
@@ -770,7 +771,7 @@ class TranslationProject(object):
     needsupdate = True
     pofile = self.pofiles[pofilename]
     # check if the pomtime in the index == the latest pomtime
-    pomtime = pootlefile.getmodtime(pofile.filename)
+    pomtime = statistics.getmodtime(pofile.filename)
     pofilenamequery = self.searcher.makeQuery([("pofilename", pofilename)], True)
     pomtimequery = self.searcher.makeQuery([("pomtime", str(pomtime))], True)
     if items is not None:
@@ -1064,8 +1065,8 @@ class TranslationProject(object):
     wordcount = 0
     for pofilename, item in stats:
       pofile = self.pofiles[pofilename]
-      if 0 <= item < len(pofile.statistics.msgidwordcounts):
-        wordcount += sum(pofile.statistics.msgidwordcounts[item])
+      if 0 <= item < len(pofile.statistics.sourcewordcounts):
+        wordcount += sum(pofile.statistics.sourcewordcounts[item])
     return wordcount
 
   def getpomtime(self):
@@ -1136,14 +1137,14 @@ class TranslationProject(object):
     units = pofile.transunits[max(itemstart,0):itemstop]
     return units
 
-  def updatetranslation(self, pofilename, item, trans, session, fuzzy=False):
+  def updatetranslation(self, pofilename, item, newvalues, session):
     """updates a translation with a new value..."""
     if "translate" not in self.getrights(session):
       raise RightsError(session.localize("You do not have rights to change translations here"))
     pofile = self.pofiles[pofilename]
     pofile.track(item, "edited by %s" % session.username)
     languageprefs = getattr(session.instance.languages, self.languagecode, None)
-    pofile.setmsgstr(item, trans, session.prefs, languageprefs, fuzzy)
+    pofile.updateunit(item, newvalues, session.prefs, languageprefs)
     self.updateindex(pofilename, [item])
 
   def suggesttranslation(self, pofilename, item, trans, session):
@@ -1271,8 +1272,8 @@ class TranslationProject(object):
     destfilename = pofilename[:-len(self.fileext)] + destformat
     pofile = self.getpofile(pofilename, freshen=False)
     destfilename = pofile.filename[:-len(self.fileext)] + destformat
-    destmtime = pootlefile.getmodtime(destfilename)
-    pomtime = pootlefile.getmodtime(pofile.filename)
+    destmtime = statistics.getmodtime(destfilename)
+    pomtime = statistics.getmodtime(pofile.filename)
     if pomtime and destmtime == pomtime:
       try:
         return pomtime, destfilename
@@ -1300,7 +1301,7 @@ class TranslationProject(object):
   def gettext(self, message):
     """uses the project as a live translator for the given message"""
     for pofilename, pofile in self.pofiles.iteritems():
-      if pofile.pomtime != pootlefile.getmodtime(pofile.filename):
+      if pofile.pomtime != statistics.getmodtime(pofile.filename):
         pofile.readpofile()
         pofile.makeindex()
       elif not hasattr(pofile, "sourceindex"):
@@ -1317,7 +1318,7 @@ class TranslationProject(object):
     """gets the translation of the message by searching through all the pofiles (unicode version)"""
     for pofilename, pofile in self.pofiles.iteritems():
       try:
-        if pofile.pomtime != pootlefile.getmodtime(pofile.filename):
+        if pofile.pomtime != statistics.getmodtime(pofile.filename):
           pofile.readpofile()
           pofile.makeindex()
         elif not hasattr(pofile, "sourceindex"):
@@ -1339,7 +1340,7 @@ class TranslationProject(object):
     """gets the plural translation of the message by searching through all the pofiles (unicode version)"""
     for pofilename, pofile in self.pofiles.iteritems():
       try:
-        if pofile.pomtime != pootlefile.getmodtime(pofile.filename):
+        if pofile.pomtime != statistics.getmodtime(pofile.filename):
           pofile.readpofile()
           pofile.makeindex()
         elif not hasattr(pofile, "sourceindex"):
