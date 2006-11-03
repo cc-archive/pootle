@@ -29,6 +29,8 @@ from Pootle.storage_client import getquicklinks as new_getquicklinks
 from Pootle.storage_client import getlanguageinfo as new_getlanguageinfo
 from Pootle.storage_client import getprojects_languageindex as new_getprojects_languageindex
 from Pootle.storage_client import getprojectitem as new_getprojectitem
+from Pootle.storage_client import getlanguages as new_getlanguages
+from Pootle.storage_client import getlanguageitem as new_getlanguageitem
 # Versioning information
 from Pootle import __version__ as pootleversion
 from translate import __version__ as toolkitversion
@@ -205,7 +207,7 @@ class ProjectLanguageIndex(pagelayout.PootleNavPage):
     self.initpagestats()
     languages = self.getlanguages()
     average = self.getpagestats()
-    projectstats = self.nlocalize("%d language, average %d%% translated", "%d languages, average %d%% translated", self.languagecount, self.languagecount, average)
+    projectstats = self.nlocalize("%d language, average %d%% translated", "%d languages, average %d%% translated", len(languages), len(languages), average)
     projectname = self.potree.getprojectname(self.projectcode)
     description = self.potree.getprojectdescription(projectcode)
     meta_description = shortdescription(description)
@@ -228,21 +230,10 @@ class ProjectLanguageIndex(pagelayout.PootleNavPage):
     pagelayout.PootleNavPage.__init__(self, templatename, templatevars, session, bannerheight=81)
 
   def getlanguages(self):
-    """gets the stats etc of the languages"""
-    languages = self.potree.getlanguages(self.projectcode)
-    self.languagecount = len(languages)
-    languageitems = [self.getlanguageitem(languagecode, languagename) for languagecode, languagename in languages]
-    for n, item in enumerate(languageitems):
-      item["parity"] = ["even", "odd"][n % 2]
-    return languageitems
+    return new_getlanguages(self.projectcode)
 
   def getlanguageitem(self, languagecode, languagename):
-    language = self.potree.getproject(languagecode, self.projectcode)
-    href = "../../%s/%s/" % (languagecode, self.projectcode)
-    quickstats = language.getquickstats()
-    data = self.getstats(language, quickstats, len(language.pofilenames))
-    self.updatepagestats(data["translatedwords"], data["totalwords"])
-    return {"code": languagecode, "icon": "language", "href": href, "title": languagename, "data": data}
+    return new_getlanguageitem(languagecode, languagename, self.projectcode)
 
 class ProjectIndex(pagelayout.PootleNavPage):
   """The main page of a project in a specific language"""

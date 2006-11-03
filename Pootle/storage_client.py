@@ -175,3 +175,12 @@ def getprojectitem(projectcode, languagecode):
         'isproject': True,
         }
 
+def getlanguageitem(languagecode, languagename, projectcode):
+    language = potree().getproject(languagecode, projectcode)
+    href = "../../%s/%s/" % (languagecode, projectcode)
+    quickstats = language.getquickstats()
+    data = getstats(language, quickstats, len(language.pofilenames))
+    # boo
+    #updatepagestats(data["translatedwords"], data["totalwords"])
+    return {"code": languagecode, "icon": "language", "href": href, "title": languagename, "data": data}
+
