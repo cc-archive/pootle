@@ -102,3 +102,76 @@ def getprojects():
 def getprojectnames():
     return [potree().getprojectname(projectcode) for projectcode in potree().getprojectcodes()]
 
+def getquicklinks(session):
+    """gets a set of quick links to user's project-languages"""
+    quicklinks = []
+    for languagecode in session.getlanguages():
+      if not potree().haslanguage(languagecode):
+        continue
+      languagename = potree().getlanguagename(languagecode)
+      langlinks = []
+      for projectcode in instance().session.getprojects():
+        if potree().hasproject(languagecode, projectcode):
+          projectname = potree().getprojectname(projectcode)
+          projecttitle = projectname
+          langlinks.append({"code": projectcode, "name": projecttitle, "sep": "<br />"})
+      if langlinks:
+        langlinks[-1]["sep"] = ""
+      quicklinks.append({"code": languagecode, "name": languagename, "projects": langlinks})
+    return quicklinks
+
+def getprojects_languageindex(languagecode):
+    """gets the info on the projects"""
+    projectcodes = potree().getprojectcodes(languagecode)
+    projectcount = len(projectcodes)
+    projectitems = [getprojectitem(projectcode, languagecode) for projectcode in projectcodes]
+    for n, item in enumerate(projectitems):
+      item["parity"] = ["even", "odd"][n % 2]
+    return projectitems
+
+def getprojectcount(languagecode):
+    return len(potree().getprojectcodes(languagecode))
+
+def getlanguages(projectcode):
+    """gets the stats etc of the languages"""
+    languages = potree().getlanguages(projectcode)
+    languagecount = len(languages)
+    languageitems = [getlanguageitem(languagecode, languagename, projectcode) for languagecode, languagename in languages]
+    for n, item in enumerate(languageitems):
+      item["parity"] = ["even", "odd"][n % 2]
+    return languageitems
+
+def getlanguageinfo(languagecode):
+    try:
+        nplurals = potree().getlanguagenplurals(languagecode)
+    except AttributeError:
+        return ''
+    pluralequation = potree().getlanguagepluralequation(languagecode)
+    infoparts = [(_("Language Code"), languagecode),
+                 (_("Language Name"), potree().getlanguagename(languagecode)),
+                 # (_("Special Characters"), specialchars),
+                 (_("Number of Plurals"), str(nplurals)),
+                 (_("Plural Equation"), pluralequation),
+                ]
+    return [{"title": title, "value": value} for title, value in infoparts]
+
+def getprojectitem(projectcode, languagecode):
+
+    href = '%s/' % projectcode
+    projectname = potree().getprojectname(projectcode)
+    projectdescription = shortdescription(potree().getprojectdescription(projectcode))
+    project = potree().getproject(languagecode, projectcode)
+    pofilenames = project.browsefiles()
+    projectstats = project.getquickstats()
+    projectdata = getstats(project, projectstats, len(pofilenames))
+    # updatepagestats(projectdata["translatedwords"], projectdata["totalwords"])
+    return {
+        'code': projectcode,
+        'href': href,
+        'icon': 'folder',
+        'title': projectname,
+        'description': projectdescription,
+        'data': projectdata,
+        'isproject': True,
+        }
+

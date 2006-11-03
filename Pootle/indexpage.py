@@ -25,6 +25,10 @@ from Pootle import pootlefile
 from Pootle import versioncontrol
 from Pootle.storage_client import getprojects as new_getprojects
 from Pootle.storage_client import getprojectnames as new_getprojectnames
+from Pootle.storage_client import getquicklinks as new_getquicklinks
+from Pootle.storage_client import getlanguageinfo as new_getlanguageinfo
+from Pootle.storage_client import getprojects_languageindex as new_getprojects_languageindex
+from Pootle.storage_client import getprojectitem as new_getprojectitem
 # Versioning information
 from Pootle import __version__ as pootleversion
 from translate import __version__ as toolkitversion
@@ -139,25 +143,7 @@ class UserIndex(pagelayout.PootlePage):
     pagelayout.PootlePage.__init__(self, templatename, templatevars, session)
 
   def getquicklinks(self):
-    """gets a set of quick links to user's project-languages"""
-    quicklinks = []
-    for languagecode in self.session.getlanguages():
-      if not self.potree.haslanguage(languagecode):
-        continue
-      languagename = self.potree.getlanguagename(languagecode)
-      langlinks = []
-      for projectcode in self.session.getprojects():
-        if self.potree.hasproject(languagecode, projectcode):
-          projecttitle = self.potree.getprojectname(projectcode)
-          project = self.potree.getproject(languagecode, projectcode)
-          isprojectadmin = "admin" in project.getrights(session=self.session) \
-                            or self.session.issiteadmin()
-          langlinks.append({"code": projectcode, "name": projecttitle, 
-                            "isprojectadmin": isprojectadmin, "sep": "<br />"})
-      if langlinks:
-        langlinks[-1]["sep"] = ""
-      quicklinks.append({"code": languagecode, "name": languagename, "projects": langlinks})
-    return quicklinks
+    return new_getquicklinks(self.session)
 
 class ProjectsIndex(PootleIndex):
   """the list of languages"""
@@ -201,37 +187,13 @@ class LanguageIndex(pagelayout.PootleNavPage):
     pagelayout.PootleNavPage.__init__(self, templatename, templatevars, session, bannerheight=81)
 
   def getlanguageinfo(self):
-    """returns information defined for the language"""
-    # specialchars = self.potree.getlanguagespecialchars(self.languagecode)
-    nplurals = self.potree.getlanguagenplurals(self.languagecode)
-    pluralequation = self.potree.getlanguagepluralequation(self.languagecode)
-    infoparts = [(self.localize("Language Code"), self.languagecode),
-                 (self.localize("Language Name"), self.languagename),
-                 # (self.localize("Special Characters"), specialchars),
-                 (self.localize("Number of Plurals"), str(nplurals)),
-                 (self.localize("Plural Equation"), pluralequation),
-                ]
-    return [{"title": title, "value": value} for title, value in infoparts]
+    return new_getlanguageinfo(self.languagecode)
 
   def getprojects(self):
-    """gets the info on the projects"""
-    projectcodes = self.potree.getprojectcodes(self.languagecode)
-    self.projectcount = len(projectcodes)
-    projectitems = [self.getprojectitem(projectcode) for projectcode in projectcodes]
-    for n, item in enumerate(projectitems):
-      item["parity"] = ["even", "odd"][n % 2]
-    return projectitems
+    return new_getprojects_languageindex(self.languagecode)
 
   def getprojectitem(self, projectcode):
-    href = '%s/' % projectcode
-    projectname = self.potree.getprojectname(projectcode)
-    projectdescription = shortdescription(self.potree.getprojectdescription(projectcode))
-    project = self.potree.getproject(self.languagecode, projectcode)
-    pofilenames = project.browsefiles()
-    projectstats = project.getquickstats()
-    projectdata = self.getstats(project, projectstats, len(pofilenames))
-    self.updatepagestats(projectdata["translatedwords"], projectdata["totalwords"])
-    return {"code": projectcode, "href": href, "icon": "folder", "title": projectname, "description": projectdescription, "data": projectdata, "isproject": True}
+    return new_getprojectitem(projectcode, self.languagecode)
 
 class ProjectLanguageIndex(pagelayout.PootleNavPage):
   """The main page for a project, listing all the languages belonging to it"""
