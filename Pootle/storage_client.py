@@ -35,3 +35,15 @@ def getstats(project, projectstats, numfiles):
 
     return gotten
 
+## users.py
+def getlanguageselector(languagenames, session):
+    """returns the language selector..."""
+    # TODO: work out how we handle localization of language names...
+    languageoptions = [('', session.localize("Default"))]
+    if isinstance(languagenames, dict):
+        languageoptions += languagenames.items()
+    else:
+        languageoptions += languagenames
+    return [{"code": key, "name": value, "selected": key==session.language or None} for key, value in languageoptions]
+
+

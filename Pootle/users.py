@@ -24,6 +24,7 @@ from jToolkit.web import session
 from jToolkit import mailer
 from jToolkit import prefs
 from Pootle import pagelayout
+from Pootle.storage_client import getlanguageselector as new_getlanguageselector
 
 class RegistrationError(ValueError):
   def __init__(self, message):
@@ -69,13 +70,7 @@ class LoginPage(pagelayout.PootlePage):
 
   def getlanguageoptions(self, session):
     """returns the language selector..."""
-    # TODO: work out how we handle localization of language names...
-    languageoptions = [('', session.localize("Default"))]
-    if isinstance(self.languagenames, dict):
-      languageoptions += self.languagenames.items()
-    else:
-      languageoptions += self.languagenames
-    return [{"code": key, "name": value, "selected": key==session.language or None} for key, value in languageoptions]
+    return new_getlanguageselector(self.languagenames, session)
 
 class RegisterPage(pagelayout.PootlePage):
   """page for new registrations"""
