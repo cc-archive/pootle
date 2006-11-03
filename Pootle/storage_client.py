@@ -46,4 +46,44 @@ def getlanguageselector(languagenames, session):
         languageoptions += languagenames
     return [{"code": key, "name": value, "selected": key==session.language or None} for key, value in languageoptions]
 
+def getprojectoptions(session):
+    """gets the options box to change the user's projects"""
+    projectoptions = []
+    userprojects = session.getprojects()
+    for projectcode in potree().getprojectcodes():
+      projectname = potree().getprojectname(projectcode)
+      projectoptions.append({"code": projectcode, "name": projectname, "selected": projectcode
+ in userprojects or None})
+    return projectoptions
+
+def getlanguageoptions(session):
+    """returns options for languages"""
+    userlanguages = session.getlanguages()
+    languageoptions = potree().getlanguages()
+    languages = []
+    for language, name in languageoptions:
+      languages.append({"code": language, "name": name, "selected": language in userlanguages
+or None})
+    return languages
+
+def getotheroptions(session):
+    uilanguage = getattr(session.prefs, "uilanguage", "")
+    if not uilanguage:
+      userlanguages = session.getlanguages()
+      if userlanguages:
+        uilanguage = userlanguages[0]
+    languageoptions = [{"code": '', "name": ''}]
+    for code, name in potree().getlanguages():
+      languageoptions.append({"code": code, "name": name, "selected": uilanguage == code or None})
+    options = {
+        "inputheight": _("Input Height (in lines)"),
+        "inputwidth": _("Input Width (in characters)"),
+        "viewrows": _("Number of rows in view mode"),
+        "translaterows": _("Number of rows in translate mode")}
+    optionlist = []
+    for option, description in options.items():
+      optionvalue = getattr(session.prefs, option, "")
+      optionlist.append({"code": option, "description": description, "value": optionvalue})
+    return {"uilanguage": uilanguage, "uilanguage_options": languageoptions, "other_options": optionlist}
+
 
