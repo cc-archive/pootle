@@ -36,6 +36,7 @@ from Pootle import projects
 from Pootle import potree
 from Pootle import users
 from Pootle import filelocations
+from Pootle.conf import set_instance
 # Versioning information
 from Pootle import __version__ as pootleversion
 from translate import __version__ as toolkitversion
@@ -55,6 +56,8 @@ class PootleServer(users.OptionalLoginAppServer, templateserver.TemplateServer):
     if sessioncache is None:
       sessioncache = session.SessionCache(sessionclass=users.PootleSession)
     self.potree = potree.POTree(instance)
+    # set Pootle-wide settings
+    set_instance(instance, self.potree)
     super(PootleServer, self).__init__(instance, webserver, sessioncache, errorhandler, loginpageclass)
     self.templatedir = filelocations.templatedir
     self.setdefaultoptions()
