@@ -19,6 +19,8 @@
 # along with translate; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
+from Pootle.storage_client import getstats as new_getstats
+
 def layout_banner(maxheight):
   """calculates dimensions, image name for banner"""
   logo_width, logo_height = min((98*maxheight/130, maxheight), (98, 130))
@@ -239,32 +241,5 @@ class PootleNavPage(PootlePage):
   def getstats(self, project, projectstats, numfiles):
     """returns a list with the data items to fill a statistics table
     Remember to update getstatsheadings() above as needed"""
-    wanted = ["translated", "fuzzy", "untranslated", "total"]
-    gotten = {}
-    for key in wanted:
-      gotten[key] = projectstats.get(key, [])
-      wordkey = key + "words"
-      if wordkey in projectstats:
-        gotten[wordkey] = projectstats[wordkey]
-      else:
-        count = projectstats.get(key, [])
-        gotten[wordkey] = project.countwords(count)
-      if isinstance(gotten[key], list):
-        #TODO: consider carefully:
-        gotten[key] = len(gotten[key])
-
-    gotten["untranslated"] = gotten["total"] - gotten["translated"] - gotten["fuzzy"]
-    gotten["untranslatedwords"] = gotten["totalwords"] - gotten["translatedwords"] - gotten["fuzzywords"]
-
-    for key in wanted[:-1]:
-      percentkey = key + "percentage"
-      wordkey = key + "words"
-      gotten[percentkey] = gotten[wordkey]*100/max(gotten["totalwords"], 1)
-
-    for key in gotten:
-      if key.find("check-") == 0:
-        value = gotten.pop(key)
-        gotten[key[len("check-"):]] = value
-
-    return gotten
+    return new_getstats(project, projectstats, numfiles)
 
