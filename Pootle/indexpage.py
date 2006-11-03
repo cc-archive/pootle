@@ -23,6 +23,8 @@ from Pootle import pagelayout
 from Pootle import projects
 from Pootle import pootlefile
 from Pootle import versioncontrol
+from Pootle.storage_client import getprojects as new_getprojects
+from Pootle.storage_client import getprojectnames as new_getprojectnames
 # Versioning information
 from Pootle import __version__ as pootleversion
 from translate import __version__ as toolkitversion
@@ -107,18 +109,10 @@ class PootleIndex(pagelayout.PootlePage):
     pagelayout.PootlePage.__init__(self, templatename, templatevars, session)
 
   def getprojects(self):
-    """gets the options for the projects"""
-    projects = []
-    for projectcode in self.potree.getprojectcodes():
-      projectname = self.potree.getprojectname(projectcode)
-      description = shortdescription(self.potree.getprojectdescription(projectcode))
-      projects.append({"code": projectcode, "name": projectname, "description": description, "sep": ", "})
-    if projects:
-      projects[-1]["sep"] = ""
-    return projects
+    return new_getprojects()
 
   def getprojectnames(self):
-    return [self.potree.getprojectname(projectcode) for projectcode in self.potree.getprojectcodes()]
+    return new_getprojectnames()
 
 class UserIndex(pagelayout.PootlePage):
   """home page for a given user"""

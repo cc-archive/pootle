@@ -2,6 +2,7 @@
 # at least the web portal part of it.
 
 from Pootle.conf import instance, potree
+from Pootle.utils import shortdescription
 from gettext import gettext as _
 
 def getstats(project, projectstats, numfiles):
@@ -86,4 +87,18 @@ def getotheroptions(session):
       optionlist.append({"code": option, "description": description, "value": optionvalue})
     return {"uilanguage": uilanguage, "uilanguage_options": languageoptions, "other_options": optionlist}
 
+# indexpage.py
+def getprojects():
+    """gets the options for the projects"""
+    projects = []
+    for projectcode in potree().getprojectcodes():
+      projectname = potree().getprojectname(projectcode)
+      description = shortdescription(potree().getprojectdescription(projectcode))
+      projects.append({"code": projectcode, "name": projectname, "description": description, "sep": ", "})
+    if projects:
+      projects[-1]["sep"] = ""
+    return projects
+
+def getprojectnames():
+    return [potree().getprojectname(projectcode) for projectcode in potree().getprojectcodes()]
 
