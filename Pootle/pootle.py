@@ -215,7 +215,7 @@ class PootleServer(users.OptionalLoginAppServer, templateserver.TemplateServer):
       newargdict[key] = value
     argdict = newargdict
     # TODO: strip off the initial path properly
-    while pathwords and pathwords[0] == "pootle":
+    while pathwords and pathwords[0] in ("pootle", "static"):
       pathwords = pathwords[1:]
     if pathwords:
       top = pathwords[0]

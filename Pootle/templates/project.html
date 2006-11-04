@@ -7,11 +7,11 @@
   <title py:content="pagetitle">Pootle: ${project.name}</title>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
   <meta name="description" content="${meta_description}" />
-  <link rel="stylesheet" type="text/css" href="/pootle.css" />
+  <link rel="stylesheet" type="text/css" href="/static/pootle.css" />
   <link rel="shortcut icon" href="/favicon.ico" />
-  <script type="text/javascript" src="/js/sorttable.js"></script>
+  <script type="text/javascript" src="/static/js/sorttable.js"></script>
   <!--[if lt IE 7.]>
-    <script defer type="text/javascript" src="/js/correctpng.js"></script>
+    <script defer type="text/javascript" src="/static/js/correctpng.js"></script>
   <![endif]-->
 </head>
 
@@ -21,7 +21,7 @@
 
   <div id="content" dir="$uidir" lang="$uilanguage">
     <div class="navbar">
-      <img src="/images/folder.png" class="icon" alt="" dir="$uidir" lang="$uilanguage" />
+      <img src="/static/images/folder.png" class="icon" alt="" dir="$uidir" lang="$uilanguage" />
 
       <h3 class="title">[ <a href="/projects/${project.code}/" py:content="project.name">Project</a> ]</h3>
 

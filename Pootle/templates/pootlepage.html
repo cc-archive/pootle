@@ -4,10 +4,10 @@
 <head>
   <title>Pootle Page</title>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  <link rel="stylesheet" type="text/css" href="/pootle.css" />
+  <link rel="stylesheet" type="text/css" href="/static/pootle.css" />
   <link rel="shortcut icon" href="/favicon.ico" />
   <!--[if lt IE 7.]>
-    <script defer type="text/javascript" src="/js/correctpng.js"></script>
+    <script defer type="text/javascript" src="/static/js/correctpng.js"></script>
   <![endif]-->
 </head>
 <body>
@@ -15,18 +15,18 @@
     <table cellpadding="0" width="100%" border="0" cellspacing="0">
       <tr>
         <td rowspan="1" colspan="1" align="left" width="${logo_width}" valign="top">
-          <img src="/images/${logo_image}" height="${logo_height}" width="${logo_width}" alt="${logo_alttext}" style="padding-top:5px;" />
+          <img src="/static/images/${logo_image}" height="${logo_height}" width="${logo_width}" alt="${logo_alttext}" style="padding-top:5px;" />
         </td>
 
         <td colspan="1" rowspan="1" width="5">
-          <img src="/images/gap.png" height="5" width="5" alt="" />
+          <img src="/static/images/gap.png" height="5" width="5" alt="" />
         </td>
 
         <td colspan="1" rowspan="1" width="100%">
           <table cellspacing="0" style="height: ${banner_height}px" width="100%" cellpadding="0" border="0" class="header">
             <tr>
               <td colspan="1" align="center" rowspan="1" valign="middle">
-                 <img src="/images/WordForge-white.png" height="${banner_height}" width="${banner_width}" alt="${banner_alttext}" style="padding-top:5px;"/>
+                 <img src="/static/images/WordForge-white.png" height="${banner_height}" width="${banner_width}" alt="${banner_alttext}" style="padding-top:5px;"/>
               </td>
             </tr>
 
@@ -43,7 +43,7 @@
     <!-- Account information -->
     <div class="account">
     <div class="side">
-      <img src="/images/person.png" class="icon" alt="" dir="$uidir" lang="$uilanguage" />
+      <img src="/static/images/person.png" class="icon" alt="" dir="$uidir" lang="$uilanguage" />
     </div>
     <div class="side" py:if="session.isopen">
       <span py:content="XML(session.status)">logged in as <b>somebody</b></span> |
