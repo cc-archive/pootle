@@ -1,6 +1,6 @@
 # Django settings for Pootle project.
+from localsettings import *
 
-DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
@@ -8,13 +8,6 @@ ADMINS = (
 )
 
 MANAGERS = ADMINS
-
-DATABASE_ENGINE = ''           # 'postgresql', 'mysql', 'sqlite3' or 'ado_mssql'.
-DATABASE_NAME = ''             # Or path to database file if using sqlite3.
-DATABASE_USER = ''             # Not used with sqlite3.
-DATABASE_PASSWORD = ''         # Not used with sqlite3.
-DATABASE_HOST = ''             # Set to empty string for localhost. Not used with sqlite3.
-DATABASE_PORT = ''             # Set to empty string for default. Not used with sqlite3.
 
 # Local time zone for this installation. All choices can be found here:
 # http://www.postgresql.org/docs/current/static/datetime-keywords.html#DATETIME-TIMEZONE-SET-TABLE
@@ -31,21 +24,13 @@ SITE_ID = 1
 # to load the internationalization machinery.
 USE_I18N = True
 
-# Absolute path to the directory that holds media.
-# Example: "/home/media/media.lawrence.com/"
-MEDIA_ROOT = ''
-
-# URL that handles the media served from MEDIA_ROOT.
-# Example: "http://media.lawrence.com"
-MEDIA_URL = ''
-
 # URL prefix for admin media -- CSS, JavaScript and images. Make sure to use a
 # trailing slash.
 # Examples: "http://foo.com/media/", "/media/".
 ADMIN_MEDIA_PREFIX = '/media/'
 
 # Make this unique, and don't share it with anybody.
-SECRET_KEY = 'wkwnhfd+m%#rfal3jewd%-wr)0b0qjf62bz6n=t!g4ih%!yt4w'
+SECRET_KEY = '3*o6pmcfgjhx#7+9e59dj7yo#y2f!gfx-zko0rad=rk#n))@@x'
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
@@ -63,15 +48,14 @@ MIDDLEWARE_CLASSES = (
 
 ROOT_URLCONF = 'Pootle.urls'
 
-TEMPLATE_DIRS = (
-    # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
-    # Always use forward slashes, even on Windows.
-    # Don't forget to use absolute paths, not relative paths.
-)
-
 INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.sites',
 )
+
+# This sets pootle.prefs file path to be in same dir as these settings.py
+from Pootle.utils import next_to_this_file
+POOTLE_PREFS = next_to_this_file(__file__,'pootle.prefs')
+
