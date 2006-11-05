@@ -184,3 +184,10 @@ def getlanguageitem(languagecode, languagename, projectcode):
     #updatepagestats(data["translatedwords"], data["totalwords"])
     return {"code": languagecode, "icon": "language", "href": href, "title": languagename, "data": data}
 
+def generaterobotsfile(excludedfiles=[]):
+    """generates the robots.txt file"""
+    content = ["User-agent: *\n"]
+    content.extend([ "Disallow: /%s\n" % ef for ef in excludedfiles])
+    content.extend([ "Disallow: /%s/\n" % lc for lc in potree().getlanguagecodes() ])
+    return ''.join(content)
+

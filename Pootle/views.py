@@ -5,6 +5,7 @@ from django.contrib.auth import REDIRECT_FIELD_NAME
 
 from Pootle import indexpage, adminpages, users, translatepage
 from Pootle.conf import instance, potree
+from Pootle.storage_client import generaterobotsfile
 from django.utils.translation import gettext_lazy as _
 from django.utils.translation import ngettext
 
@@ -119,6 +120,9 @@ def css(req):
     return HttpResponse(content=css, mimetype='text/css')
 
 ### end backwards compatibility
+
+def robots(req):
+    return HttpResponse(content=generaterobotsfile(["login.html", "register.html", "activate.html"]), mimetype="text/plain")
 
 # indexpage.py
 def index(req):

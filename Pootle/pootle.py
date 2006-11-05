@@ -37,6 +37,7 @@ from Pootle import potree
 from Pootle import users
 from Pootle import filelocations
 from Pootle.conf import set_instance
+from Pootle.storage_client import generaterobotsfile
 # Versioning information
 from Pootle import __version__ as pootleversion
 from translate import __version__ as toolkitversion
@@ -191,17 +192,6 @@ class PootleServer(users.OptionalLoginAppServer, templateserver.TemplateServer):
     """generates a unique activation code"""
     return "".join(["%02x" % int(random.random()*0x100) for i in range(16)])
 
-  def generaterobotsfile(self):
-    """generates the robots.txt file"""
-    langcodes = self.potree.getlanguagecodes()
-    excludedfiles = ["login.html", "register.html", "activate.html"]
-    content = "User-agent: *\n"
-    for excludedfile in excludedfiles:
-      content += "Disallow: /%s\n" % excludedfile
-    for langcode in langcodes:
-      content += "Disallow: /%s/\n" % langcode
-    return content
-
   def getpage(self, pathwords, session, argdict):
     """return a page that will be sent to the user"""
     #Ensure we get unicode from argdict
@@ -267,7 +257,7 @@ class PootleServer(users.OptionalLoginAppServer, templateserver.TemplateServer):
       picture.allowcaching = True
       return picture
     elif top == "robots.txt":
-      robotspage = widgets.PlainContents(self.generaterobotsfile())
+      robotspage = widgets.PlainContents(generaterobotsfile(["login.html", "register.html", "activate.html"]))
       robotspage.content_type = 'text/plain'
       robotspage.allowcaching = True
       return robotspage
