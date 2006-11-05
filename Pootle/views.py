@@ -168,23 +168,27 @@ def options(req):
 
 def login(req):
     message = None
-    if req.POST:
-        # do login here
-        redirect_to = req.REQUEST.get(REDIRECT_FIELD_NAME, '')
-        manipulator = AuthenticationForm(req)
-        errors = manipulator.get_validation_errors(req.POST)
-        if not errors:
-            if not redirect_to or '://' in redirect_to or ' ' in redirect_to:
-                redirect_to = '/home/'
-            from django.contrib.auth import login
-            login(req, manipulator.get_user())
-            req.session.delete_test_cookie()
-            req.session.isopen = True
-            return HttpResponseRedirect(redirect_to) 
+    redirect_to = req.REQUEST.get(REDIRECT_FIELD_NAME, '')
+    if not redirect_to or '://' in redirect_to or ' ' in redirect_to:
+        redirect_to = '/home/'
+
+    if req.user.is_authenticated():
+        return HttpResponseRedirect(redirect_to)
     else:
-        errors = {}
-    req.session.set_test_cookie()
-    return render_to_pootleresponse(users.LoginPage(pootlesession(req), languagenames=potree().getlanguages(), message=message))
+        if req.POST:
+            # do login here
+            manipulator = AuthenticationForm(req)
+            errors = manipulator.get_validation_errors(req.POST)
+            if not errors:
+                from django.contrib.auth import login
+                login(req, manipulator.get_user())
+                req.session.delete_test_cookie()
+                req.session.isopen = True
+                return HttpResponseRedirect(redirect_to) 
+        else:
+            errors = {}
+        req.session.set_test_cookie()
+        return render_to_pootleresponse(users.LoginPage(pootlesession(req), languagenames=potree().getlanguages(), message=message))
 
 # users.py: registration, activation
 
