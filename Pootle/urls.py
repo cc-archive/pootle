@@ -6,7 +6,7 @@ urlpatterns = patterns('',
     (r'^static/(?P<path>.*)$', 'django.views.static.serve', { 'document_root': settings.MEDIA_ROOT} ),
 )
 
-urlpatterns += patterns('Pootle.views',
+urlpatterns += patterns('Pootle.web.views',
     (r'^$', 'index'),
     (r'^login.html$', 'login'),
     (r'^register.html$', 'register'),

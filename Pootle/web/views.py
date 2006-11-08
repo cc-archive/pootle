@@ -3,14 +3,13 @@ from django.conf import settings
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import REDIRECT_FIELD_NAME
 
+from Pootle.web.forms import RegistrationManipulator
 from Pootle import indexpage, adminpages, users, translatepage
 from Pootle.conf import instance, potree
+from Pootle.conf import users as pootleusers
 from Pootle.storage_client import generaterobotsfile
 from django.utils.translation import gettext_lazy as _
 from django.utils.translation import ngettext
-
-#from instance import instance
-from instance import users as pootleusers
 
 ### backwards compatiblity 
 import kid
@@ -119,6 +118,15 @@ def css(req):
     css = open('/home/hruske/Desktop/pootle/trunk/Pootle/html/pootle.css','r').read()
     return HttpResponse(content=css, mimetype='text/css')
 
+def errorlist_from_errors(errors):
+    # FIXME a rather ugly hack just to keep things jtoolkit-friendly
+    error_list = []
+    for e in errors:
+        error_list.extend([ str(a) for a in errors[e]])
+    return " ".join(error_list)
+
+    
+
 ### end backwards compatibility
 
 def robots(req):
@@ -194,6 +202,16 @@ def login(req):
 
 def register(req):
     message = None
+    manipulator = RegistrationManipulator() 
+    if req.POST:
+        new_data = req.POST.copy()
+        errors = manipulator.get_validation_errors(new_data)
+        if errors:
+            message = errorlist_from_errors(errors)
+        else:
+            manipulator.do_html2python(new_data)
+            new_user = manipulator.save(new_data)
+            # FIXME return page with "sent mail & please activate"
     argdict = req.POST.copy()
     return render_to_pootleresponse(users.RegisterPage(pootlesession(req), argdict, message))
 
@@ -211,7 +229,7 @@ def admin(req):
     return render_to_pootleresponse(adminpages.AdminPage(potree(), pootlesession(req), instance))
 
 def adminusers(req):
-    return render_to_pootleresponse(adminpages.UsersAdminPage(None, pootleusers, pootlesession(req), instance))
+    return render_to_pootleresponse(adminpages.UsersAdminPage(None, pootleusers(), pootlesession(req), instance))
 
 def adminlanguages(req):
     return render_to_pootleresponse(adminpages.LanguagesAdminPage(potree(), pootlesession(req), instance))

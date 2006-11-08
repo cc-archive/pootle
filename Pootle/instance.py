@@ -1,3 +1,14 @@
+"""
+This file is a bridge to enable some features, that were previously enabled by 
+jToolkit provided server. These include:
+ - instance, a python code representation of 'pootle.prefs' file 
+ - potree, the global object through which translations are accessed
+ - users, the python representation of 'users.prefs' user database
+
+Since these objects were previously instantiated in a way specific to 
+jToolkit server, this code acts as a bridge between these differences.
+"""
+
 from django.conf import settings
 from Pootle import potree
 from Pootle.conf import set_instance
@@ -19,9 +30,8 @@ except AttributeError:
     raise AttributeError(errormessage)
 
 
-# set instance and potree globally
-set_instance(instance, potree.POTree(instance))
-
-
 users = prefs.PrefsParser()
 users.parsefile(os.path.join(os.path.dirname(settings.POOTLE_PREFS), instance.userprefs))
+
+# set instance and potree globally
+set_instance(instance, potree.POTree(instance), users)

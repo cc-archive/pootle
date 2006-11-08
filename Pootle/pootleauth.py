@@ -3,7 +3,14 @@ file, just like with Pootle."""
 
 
 import md5
+import os
+from django.conf import settings
 from Pootle.instance import users
+from jToolkit import prefs
+from Pootle.conf import instance, users
+
+
+class UsersNotInitialized(Exception): pass
 
 def md5hexdigest(text):
   if isinstance(text, unicode): text = text.encode('utf8')
@@ -42,3 +49,42 @@ class PootleAuth:
         if users.__hasattr__(username):
             return UserWrapper(users.__getattr__(username), username)
         return None
+
+
+def check_password(usernode, password):
+    return usernode.passwdhash == md5hexdigest(password)
+
+def set_password(usernode, password):
+    usernode.passwdhash = md5hexdigest(password)
+
+def get_user(username):
+    """
+    Returns jToolkit user object if user found, 
+    else returns None
+    """
+
+    print "get_user: getting user", username
+    if not users():
+        raise UsersNotInitialized
+    try:
+        return users().__getattr__(username)
+    except AttributeError:
+        return None
+
+def create_user(username, email):
+    """
+    Creates a new user out of a username and email
+    """
+    print "creating user", username 
+    usernode = prefs.PrefNode(users(), username)
+    users().__setattr__(username, usernode)
+    usernode.name = ""
+    usernode.email = email
+    usernode.passwdhash = ""
+    save_users()
+    return usernode
+
+def save_users():
+    prefsfile = users().__root__.__dict__["_setvalue"].im_self
+    prefsfile.savefile()
+
