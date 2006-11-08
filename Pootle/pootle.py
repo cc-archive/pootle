@@ -58,7 +58,7 @@ class PootleServer(users.OptionalLoginAppServer, templateserver.TemplateServer):
       sessioncache = session.SessionCache(sessionclass=users.PootleSession)
     self.potree = potree.POTree(instance)
     # set Pootle-wide settings
-    set_instance(instance, self.potree)
+    set_instance(instance, self.potree, None)
     super(PootleServer, self).__init__(instance, webserver, sessioncache, errorhandler, loginpageclass)
     self.templatedir = filelocations.templatedir
     self.setdefaultoptions()
