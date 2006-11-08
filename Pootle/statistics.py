@@ -30,14 +30,14 @@ class StatsFile:
     sfile.write(statsstring)
     sfile.close()
 
-  def remove(self):
-    """delete a stats file if it is no longer needed and return True if it was removed"""
-    removed = False
-    if not os.path.exists(self.basefile.filename):
+  def hasparent(self):
+    """check if the stats file has a parent data file, if not delete it"""
+    if os.path.exists(self.basefile.filename):
+      return True
+    else:
       if os.path.exists(self.filename):
         os.remove(self.filename)
-      removed = True
-    return removed
+      return False
 
 class pootlestatistics:
   """this represents the statistics known about a file"""
@@ -78,7 +78,7 @@ class pootlestatistics:
     if statsmtime == getattr(self, "statsmtime", None):
       return
     stats = self.sfile.read()
-    mtimes, postatsstring = stats.split("\n", 1)
+    mtimes, statsstring = stats.split("\n", 1)
     mtimes = mtimes.strip().split()
     if len(mtimes) == 1:
       frompomtime = int(mtimes[0])
@@ -86,10 +86,10 @@ class pootlestatistics:
     elif len(mtimes) == 2:
       frompomtime = int(mtimes[0])
       frompendingmtime = int(mtimes[1])
-    postats = {}
+    stats = {}
     sourcewordcounts = []
     targetwordcounts = []
-    for line in postatsstring.split("\n"):
+    for line in statsstring.split("\n"):
       if not line.strip():
         continue
       if not ":" in line:
@@ -102,11 +102,11 @@ class pootlestatistics:
         targetwordcounts = [[int(subitem.strip()) for subitem in item.strip().split("/")] for item in items.strip().split(",") if item]
       else:
         items = [int(item.strip()) for item in items.strip().split(",") if item]
-        postats[name.strip()] = items
+        stats[name.strip()] = items
     # save all the read times, data simultaneously
-    self.statspomtime, self.statspendingmtime, self.statsmtime, self.stats, self.sourcewordcounts, self.targetwordcounts = frompomtime, frompendingmtime, statsmtime, postats, sourcewordcounts, targetwordcounts
+    self.statspomtime, self.statspendingmtime, self.statsmtime, self.stats, self.sourcewordcounts, self.targetwordcounts = frompomtime, frompendingmtime, statsmtime, stats, sourcewordcounts, targetwordcounts
     # if in old-style format (counts instead of items), recalculate
-    totalitems = postats.get("total", [])
+    totalitems = stats.get("total", [])
     if len(totalitems) == 1 and totalitems[0] != 0:
       self.calcstats()
       self.savestats()
@@ -117,14 +117,14 @@ class pootlestatistics:
 
   def savestats(self):
     """saves the current statistics to file"""
-    if self.sfile.remove():
+    if not self.sfile.hasparent():
       return
     # assumes self.stats is up to date
     try:
-      postatsstring = "\n".join(["%s:%s" % (name, ",".join(map(str,items))) for name, items in self.stats.iteritems()])
+      statsstring = "\n".join(["%s:%s" % (name, ",".join(map(str,items))) for name, items in self.stats.iteritems()])
       wordcountsstring = "sourcewordcounts:" + ",".join(["/".join(map(str,subitems)) for subitems in self.sourcewordcounts])
       wordcountsstring += "\ntargetwordcounts:" + ",".join(["/".join(map(str,subitems)) for subitems in self.targetwordcounts])
-      self.sfile.save(postatsstring + "\n" + wordcountsstring)
+      self.sfile.save(statsstring + "\n" + wordcountsstring)
     except IOError:
       # TODO: log a warning somewhere. we don't want an error as this is an optimization
       pass
@@ -164,9 +164,9 @@ class pootlestatistics:
     target = unit.target
     if isinstance(source, str) and isinstance(target, unicode):
       source = source.decode(getattr(unit, "encoding", "utf-8"))
-    filterresult = self.basefile.checker.run_filters(unit, source, target)
-    for filtername, filtermessage in filterresult:
-      classes.append("check-" + filtername)
+    checkresult = self.basefile.checker.run_filters(unit, source, target)
+    for checkname, checkmessage in checkresult:
+      classes.append("check-" + checkname)
     return classes
 
   def classifyunits(self):
@@ -179,8 +179,8 @@ class pootlestatistics:
     self.classify["total"] = []
     for checkname in self.basefile.checker.getfilters().keys():
       self.classify["check-" + checkname] = []
-    for item, poel in enumerate(self.basefile.transunits):
-      classes = self.classifyunit(poel)
+    for item, unit in enumerate(self.basefile.transunits):
+      classes = self.classifyunit(unit)
       if self.basefile.getsuggestions(item):
         classes.append("has-suggestion")
       for classname in classes:
@@ -194,16 +194,16 @@ class pootlestatistics:
     """counts the words in each of the units"""
     self.sourcewordcounts = []
     self.targetwordcounts = []
-    for poel in self.basefile.transunits:
-      self.sourcewordcounts.append([pocount.wordcount(text) for text in poel.source.strings])
-      self.targetwordcounts.append([pocount.wordcount(text) for text in poel.target.strings])
+    for unit in self.basefile.transunits:
+      self.sourcewordcounts.append([pocount.wordcount(text) for text in unit.source.strings])
+      self.targetwordcounts.append([pocount.wordcount(text) for text in unit.target.strings])
 
   def reclassifyunit(self, item):
-    """updates the classification of poel in self.classify"""
-    poel = self.basefile.transunits[item]
-    self.sourcewordcounts[item] = [pocount.wordcount(text) for text in poel.source.strings]
-    self.targetwordcounts[item] = [pocount.wordcount(text) for text in poel.target.strings]
-    classes = self.classifyunit(poel)
+    """updates the classification of a unit in self.classify"""
+    unit = self.basefile.transunits[item]
+    self.sourcewordcounts[item] = [pocount.wordcount(text) for text in unit.source.strings]
+    self.targetwordcounts[item] = [pocount.wordcount(text) for text in unit.target.strings]
+    classes = self.classifyunit(unit)
     if self.basefile.getsuggestions(item):
       classes.append("has-suggestion")
     for classname, matchingitems in self.classify.items():
