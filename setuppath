@@ -9,6 +9,7 @@ pythonpathstr = ['"$PYTHONPATH"']
 pathstr = ['"$PATH"']
 for translatesubdir in ("convert", "tools", "filters"):
   pathstr.append('"%s"' % os.path.join(translatedir, "translate", translatesubdir))
+pathstr.append('"%s"' % os.path.join(translatedir, "tools"))
 pythonpathstr.append('"%s"' % translatedir)
 
 setpathfile = open(os.path.join(translatedir, "setpath"), "w")
