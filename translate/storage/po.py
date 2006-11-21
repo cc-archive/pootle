@@ -229,8 +229,16 @@ class pounit(base.TranslationUnit):
     """Sets the msgstr to the given (unescaped) value"""
     if target == self.target:
       return
-    if isinstance(target, multistring) and len(target.strings) > 1:
-      target = target.strings
+    if self.hasplural():
+      if isinstance(target, multistring):
+        target = target.strings
+      elif isinstance(target, basestring):
+        target = [target]
+    elif isinstance(target,(dict, list)):
+      if len(target) == 1:
+        target = target[0]
+      else:
+        raise ValueError("po msgid element has no plural but msgstr has %d elements (%s)" % (len(target), target))
     templates = self.msgstr
     if isinstance(templates, list):
       templates = {0: templates}
