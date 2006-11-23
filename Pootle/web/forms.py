@@ -3,7 +3,7 @@ from django import forms
 from django.utils.translation import gettext_lazy as _
 from django.core import validators
 from django.core.validators import ValidationError
-from Pootle.pootleauth import get_user, set_password, create_user, save_users
+from Pootle.compat.pootleauth import get_user, set_password, create_user, save_users
 
 class CallableWrapper:
     """

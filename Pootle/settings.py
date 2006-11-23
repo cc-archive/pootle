@@ -59,4 +59,4 @@ INSTALLED_APPS = (
 from Pootle.utils import next_to_this_file
 POOTLE_PREFS = next_to_this_file(__file__,'pootle.prefs')
 
-AUTHENTICATION_BACKENDS = ('Pootle.pootleauth.PootleAuth', )
+AUTHENTICATION_BACKENDS = ('Pootle.compat.pootleauth.PootleAuth', )
