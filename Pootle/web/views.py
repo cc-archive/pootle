@@ -3,7 +3,7 @@ from django.conf import settings
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import REDIRECT_FIELD_NAME
 
-from Pootle.web.forms import RegistrationManipulator
+from Pootle.compat.authforms import RegistrationManipulator
 from Pootle import indexpage, adminpages, users, translatepage
 from Pootle.conf import instance, potree
 from Pootle.conf import users as pootleusers
