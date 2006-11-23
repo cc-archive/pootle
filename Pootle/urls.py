@@ -1,3 +1,6 @@
+# this is here to make sure Django Pootle sets up global variables
+import Pootle.instance
+
 from django.conf.urls.defaults import *
 from django.conf import settings
 

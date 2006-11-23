@@ -5,7 +5,6 @@ file, just like with Pootle."""
 import md5
 import os
 from django.conf import settings
-from Pootle.instance import users
 from jToolkit import prefs
 from Pootle.conf import instance, users
 
@@ -39,15 +38,15 @@ class UserWrapper:
 class PootleAuth:
     "Authenticate against Pootle's users.prefs file"
     def authenticate(self, username=None, password=None):
-        if users.__hasattr__(username):
-            user = users.__getattr__(username)
+        if users().__hasattr__(username):
+            user = users().__getattr__(username)
             if md5hexdigest(password) == user.passwdhash:
                 return UserWrapper(user, username)
         return None
 
     def get_user(self, username):
-        if users.__hasattr__(username):
-            return UserWrapper(users.__getattr__(username), username)
+        if users().__hasattr__(username):
+            return UserWrapper(users().__getattr__(username), username)
         return None
 
 
