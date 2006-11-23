@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from translate.storage import po
+from translate.storage import xliff
 from translate.tools import pogrep
 from translate.misc import wStringIO
 
@@ -17,7 +18,7 @@ class TestPOGrep:
         if cmdlineoptions is None:
             cmdlineoptions = []
         options, args = pogrep.cmdlineparser().parse_args(["xxx.po"] + cmdlineoptions)
-        grepfilter = pogrep.pogrepfilter(searchstring, options.searchparts, options.ignorecase, options.useregexp, options.invertmatch, options.accelchar)
+        grepfilter = pogrep.GrepFilter(searchstring, options.searchparts, options.ignorecase, options.useregexp, options.invertmatch, options.accelchar)
         tofile = grepfilter.filterfile(self.poparse(posource))
         print str(tofile)
         return str(tofile)
@@ -38,12 +39,12 @@ class TestPOGrep:
         poresult = self.pogrep(posource, "test", ["--search=msgstr"])
         assert poresult == ""
 
-    def test_simplegrep_source(self):
-        """grep for a string in the source"""
+    def test_simplegrep_locations(self):
+        """grep for a string in the location comments"""
         posource = '#: test.c\nmsgid "test"\nmsgstr "rest"\n'
-        poresult = self.pogrep(posource, "test.c", ["--search=source"])
+        poresult = self.pogrep(posource, "test.c", ["--search=locations"])
         assert poresult == posource
-        poresult = self.pogrep(posource, "rest.c", ["--search=source"])
+        poresult = self.pogrep(posource, "rest.c", ["--search=locations"])
         assert poresult == ""
 
     def test_simplegrep_comments(self):
@@ -81,3 +82,46 @@ class TestPOGrep:
           print "Source:\n%s\nSearch: %s\n" % (source, search)
           poresult = self.pogrep(source, search, ["--regexp"])
           assert poresult == expected
+
+class TestXLiffGrep:
+    xliff_skeleton = '''<?xml version="1.0" ?>
+<xliff version="1.1" xmlns="urn:oasis:names:tc:xliff:document:1.1">
+  <file original="filename.po" source-language="en-US" datatype="po">
+    <body>
+        %s
+    </body>
+  </file>
+</xliff>'''
+
+    xliff_text = xliff_skeleton % '''<trans-unit>
+  <source>red</source>
+  <target>rooi</target>
+</trans-unit>'''
+
+    def xliff_parse(self, xliff_text):
+        """helper that parses po source without requiring files"""
+        dummyfile = wStringIO.StringIO(xliff_text)
+        xliff_file = xliff.xlifffile(dummyfile)
+        return xliff_file
+
+    def xliff_grep(self, xliff_text, searchstring, cmdlineoptions=None):
+        """helper that parses xliff text and passes it through a filter"""
+        if cmdlineoptions is None:
+            cmdlineoptions = []
+        options, args = pogrep.cmdlineparser().parse_args(["xxx.xliff"] + cmdlineoptions)
+        grepfilter = pogrep.GrepFilter(searchstring, options.searchparts, options.ignorecase, options.useregexp, options.invertmatch, options.accelchar)
+        tofile = grepfilter.filterfile(self.xliff_parse(xliff_text))
+        return str(tofile)
+
+    def test_simplegrep(self):
+        """grep for a simple string."""
+        xliff_text = self.xliff_text
+        xliff_file = self.xliff_parse(xliff_text)
+        xliff_result = self.xliff_parse(self.xliff_grep(xliff_text, "red"))
+        assert xliff_result.units[0].getsource() == u"red"
+        assert xliff_result.units[0].gettarget() == u"rooi"
+
+        xliff_result = self.xliff_parse(self.xliff_grep(xliff_text, "unavailable string"))
+        assert xliff_result.isempty()
+
+

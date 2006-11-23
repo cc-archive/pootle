@@ -68,11 +68,12 @@ class PoXliffUnit(xliff.xliffunit):
                 if not self.units[i+1] == other.units[i+1]:
                     return False
             return True
-        if len(self.units) == 1:
+        if len(self.units) <= 1:
             if isinstance(other, lisa.LISAunit):
                 return super(PoXliffUnit, self).__eq__(other)
             else:
                 return self.source == other.source and self.target == other.target
+        return False
 
     def setsource(self, source, sourcelang="en"):
 #        TODO: consider changing from plural to singular, etc.
@@ -320,6 +321,10 @@ class PoXliffFile(xliff.xlifffile):
             header.target = po.poheader.update(headeritems, add, **kwargs)
             header.markfuzzy(False)
         return header
+
+    def getheaderplural(self):
+        """returns the nplural and plural values from the po header"""
+        return poheader.getheaderplural(self.parseheader())
 
     def addplural(self, source, target, filename, createifmissing=False):
         """This method should now be unnecessary, but is left for reference"""

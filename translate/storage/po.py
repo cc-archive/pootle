@@ -125,7 +125,7 @@ def quoteforpofromtemplate(text, template):
     polines = ['""'] + polines
   elif polines and polines[0] == '""':
       polines = polines[1:]
-    
+
   return polines
 
 def extractpoline(line):
@@ -242,9 +242,12 @@ class pounit(base.TranslationUnit):
     """Sets the msgstr to the given (unescaped) value"""
     if target == self.target:
       return
-    if isinstance(target, multistring) and len(target.strings) > 1:
-      target = target.strings
-    if not self.hasplural() and isinstance(target,(dict, list)):
+    if self.hasplural():
+      if isinstance(target, multistring):
+        target = target.strings
+      elif isinstance(target, basestring):
+        target = [target]
+    elif isinstance(target,(dict, list)):
       if len(target) == 1:
         target = target[0]
       else:
@@ -276,6 +279,9 @@ class pounit(base.TranslationUnit):
 
   def addnote(self, text, origin=None):
     """This is modeled on the XLIFF method. See xliff.py::xliffunit.addnote"""
+    # We don't want to put in an empty '#' without a real comment:
+    if not text:
+      return
     commentlist = self.othercomments
     linestart = "# "
     if origin in ["programmer", "developer", "source code"]:
@@ -391,6 +397,8 @@ class pounit(base.TranslationUnit):
       self.target = otherpo.target
       if self.source != otherpo.source:
         self.markfuzzy()
+      else:
+        self.markfuzzy(otherpo.isfuzzy())
     elif otherpo.isblankmsgstr():
       if self.source != otherpo.source:
         self.markfuzzy()
@@ -402,12 +410,14 @@ class pounit(base.TranslationUnit):
     return (self.msgidlen() == 0) and (self.msgstrlen() > 0) and (len(self.msgidcomments) == 0)
 
   def isblank(self):
-    if self.isheader():
+    if self.isheader() or len(self.msgidcomments):
       return False
     if (self.msgidlen() == 0) and (self.msgstrlen() == 0):
       return True
-    unquotedid = [quote.extractwithoutquotes(line,'"','"','\\',includeescapes=0)[0] for line in self.msgid]
-    return len("".join(unquotedid).strip()) == 0
+    return False
+    # TODO: remove:
+    # Before, the equivalent of the following was the final return statement:
+    # return len(self.source.strip()) == 0
 
   def isblankmsgstr(self):
     """checks whether the msgstr is blank"""
@@ -748,6 +758,23 @@ class poheader:
     return header
   update = classmethod(update)
 
+  def getheaderplural(cls, header):
+    """returns the nplural and plural values from the header"""
+    pluralformvalue = header.get('Plural-Forms', None)
+    if pluralformvalue is None:
+      return None, None
+    nplural = sre.findall("nplurals=(.+?);", pluralformvalue)
+    plural = sre.findall("plural=(.+?);?$", pluralformvalue)
+    if not nplural or nplural[0] == "INTEGER":
+      nplural = None
+    else:
+      nplural = nplural[0]
+    if not plural or plural[0] == "EXPRESSION":
+      plural = None
+    else:
+      plural = plural[0]
+    return nplural, plural
+  getheaderplural= classmethod(getheaderplural)
 
 class pofile(base.TranslationStore):
   """this represents a .po file containing various units"""
@@ -863,20 +890,7 @@ class pofile(base.TranslationStore):
 
   def getheaderplural(self):
     """returns the nplural and plural values from the header"""
-    pluralformvalue = self.parseheader().get('Plural-Forms', None)
-    if pluralformvalue is None:
-      return None, None
-    nplural = sre.findall("nplurals=(.+?);", pluralformvalue)
-    plural = sre.findall("plural=(.+?);?$", pluralformvalue)
-    if not nplural or nplural[0] == "INTEGER":
-      nplural = None
-    else:
-      nplural = nplural[0]
-    if not plural or plural[0] == "EXPRESSION":
-      plural = None
-    else:
-      plural = plural[0]
-    return nplural, plural
+    return poheader.getheaderplural(self.parseheader())
 
   def changeencoding(self, newencoding):
     """changes the encoding on the file"""
@@ -907,20 +921,6 @@ class pofile(base.TranslationStore):
         newcharsetline = charsetline.replace("charset=%s" % charset, "charset=%s" % self.encoding, 1)
       headerstr = headerstr.replace(charsetline, newcharsetline, 1)
     header.msgstr = quoteforpo(headerstr)
-
-  def isempty(self):
-    """returns whether the po file doesn't contain any definitions..."""
-    if len(self.units) == 0:
-      return 1
-    # first we check the header...
-    header = self.units[0]
-    if not (header.isheader() or header.isblank()):
-      return 0
-    # if there are any other units, this is only empty if they are blank
-    for thepo in self.units[1:]:
-      if not thepo.isblank():
-        return 0
-    return 1
 
   def parsestring(cls, storestring):
     """Parses the po file contents in the storestring and returns a new pofile object (classmethod, constructor)"""

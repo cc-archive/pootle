@@ -50,10 +50,11 @@ def test_accelerators():
     assert checks.fails(gnomechecker.accelerators, "File", "_Fayile") 
     mozillachecker = checks.MozillaChecker()
     assert checks.passes(mozillachecker.accelerators, "&File", "&Fayile") 
-    assert checks.fails(mozillachecker.accelerators, "&File", "Fayile") 
-    assert checks.fails(mozillachecker.accelerators, "File", "&Fayile") 
+    assert checks.fails_serious(mozillachecker.accelerators, "&File", "Fayile") 
+    assert checks.fails_serious(mozillachecker.accelerators, "File", "&Fayile") 
     assert checks.passes(mozillachecker.accelerators, "Mail &amp; News", "Pos en Nuus") 
-    assert checks.fails(mozillachecker.accelerators, "Mail &amp; News", "Pos en &Nuus") 
+    assert checks.fails_serious(mozillachecker.accelerators, "Mail &amp; News", "Pos en &Nuus") 
+    assert checks.fails_serious(mozillachecker.accelerators, "&File", "Fayile") 
     ooochecker = checks.OpenOfficeChecker()
     assert checks.passes(ooochecker.accelerators, "~File", "~Fayile") 
     assert checks.fails(ooochecker.accelerators, "~File", "Fayile") 
@@ -164,16 +165,16 @@ def test_escapes():
     assert checks.passes(stdchecker.escapes, r"""_: KDE comment\n
 A sentence""", "I'm correct.")
     assert checks.passes(stdchecker.escapes, "A file\n", "'n Leer\n")
-    assert checks.fails(stdchecker.escapes, r"blah. A file", r"bleah.\n'n leer")
+    assert checks.fails_serious(stdchecker.escapes, r"blah. A file", r"bleah.\n'n leer")
     assert checks.passes(stdchecker.escapes, r"A tab\t", r"'n Tab\t")
-    assert checks.fails(stdchecker.escapes, r"A tab\t", r"'n Tab")
+    assert checks.fails_serious(stdchecker.escapes, r"A tab\t", r"'n Tab")
     assert checks.passes(stdchecker.escapes, r"An escape escape \\", r"Escape escape \\")
-    assert checks.fails(stdchecker.escapes, r"An escape escape \\", "Escape escape")
+    assert checks.fails_serious(stdchecker.escapes, r"An escape escape \\", "Escape escape")
     assert checks.passes(stdchecker.escapes, r"A double quote \"", r"Double quote \"")
-    assert checks.fails(stdchecker.escapes, r"A double quote \"", "Double quote")
+    assert checks.fails_serious(stdchecker.escapes, r"A double quote \"", "Double quote")
     # Escaped escapes
     assert checks.passes(stdchecker.escapes, "An escaped newline \\n", "Escaped newline \\n")
-    assert checks.fails(stdchecker.escapes, "An escaped newline \\n", "Escaped newline \n")
+    assert checks.fails_serious(stdchecker.escapes, "An escaped newline \\n", "Escaped newline \n")
     # Real example
     ooochecker = checks.OpenOfficeChecker()
     assert checks.passes(ooochecker.escapes, ",\t44\t;\t59\t:\t58\t{Tab}\t9\t{space}\t32", ",\t44\t;\t59\t:\t58\t{Tab}\t9\t{space}\t32")
@@ -202,8 +203,8 @@ def test_tabs():
     assert checks.passes(stdchecker.tabs, "Nothing to see", "Niks te sien")
     assert checks.passes(stdchecker.tabs, "Correct\t", "Korrek\t")
     assert checks.passes(stdchecker.tabs, "Correct\tAA", "Korrek\tAA")
-    assert checks.fails(stdchecker.tabs, "A file\t", "'n Leer")
-    assert checks.fails(stdchecker.tabs, "A file", "'n Leer\t")
+    assert checks.fails_serious(stdchecker.tabs, "A file\t", "'n Leer")
+    assert checks.fails_serious(stdchecker.tabs, "A file", "'n Leer\t")
     ooochecker = checks.OpenOfficeChecker()
     assert checks.passes(ooochecker.tabs, ",\t44\t;\t59\t:\t58\t{Tab}\t9\t{space}\t32", ",\t44\t;\t59\t:\t58\t{Tab}\t9\t{space}\t32")
 
@@ -221,6 +222,7 @@ A string to translate""", "'n String om te vertaal")
     assert checks.fails(stdchecker.kdecomments, r"""_: I am a comment\n
 A string to translate""", r"""_: Ek is 'n commment\n
 'n String om te vertaal""")
+    assert checks.fails(stdchecker.kdecomments, """_: I am a comment\\n\n""", """_: I am a comment\\n\n""")
 
 def test_long():
     """tests long messages"""
@@ -340,6 +342,7 @@ def test_purepunc():
     """tests messages containing only punctuation"""
     stdchecker = checks.StandardChecker()
     assert checks.passes(stdchecker.purepunc, ".", ".")
+    assert checks.passes(stdchecker.purepunc, "", "")
     assert checks.fails(stdchecker.purepunc, ".", " ")
 
 def test_sentencecount():
@@ -348,6 +351,7 @@ def test_sentencecount():
     assert checks.passes(stdchecker.sentencecount, "One. Two. Three.", "Een. Twee. Drie.")
     assert checks.fails(stdchecker.sentencecount, "One two three", "Een twee drie.")
     assert checks.fails(stdchecker.sentencecount, "One. Two. Three.", "Een Twee. Drie.")
+    assert checks.passes(stdchecker.sentencecount, "Sentence with i.e. in it.", "Sin met d.w.s. in dit.") # bug 178, description item 8
 
 def test_short():
     """tests short messages"""
@@ -471,15 +475,22 @@ def test_unchanged():
     assert checks.fails(stdchecker.unchanged, "&Unchanged", "Un&changed") 
     assert checks.passes(stdchecker.unchanged, "Unchanged", "Changed") 
     assert checks.passes(stdchecker.unchanged, "1234", "1234") 
+    assert checks.passes(stdchecker.unchanged, "2×2", "2×2") # bug 178, description item 14
     assert checks.passes(stdchecker.unchanged, "I", "I") 
+    assert checks.passes(stdchecker.unchanged, "   ", "   ")  # bug 178, description item 5
+    assert checks.passes(stdchecker.unchanged, "???", "???")  # bug 178, description item 15
+    assert checks.passes(stdchecker.unchanged, "&ACRONYM", "&ACRONYM") # bug 178, description item 7
+    assert checks.passes(stdchecker.unchanged, "F1", "F1") # bug 178, description item 20
     assert checks.fails(stdchecker.unchanged, r"""_: KDE comment\n
 Unchanged""", r"Unchanged") 
-    # Variable only messages should be ignored
+    # Variable only and variable plus punctuation messages should be ignored
     mozillachecker = checks.MozillaChecker()
     assert checks.passes(mozillachecker.unchanged, "$ProgramName$", "$ProgramName$") 
+    assert checks.passes(mozillachecker.unchanged, "$file$ : $dir$", "$file$ : $dir$") # bug 178, description item 13
+    assert checks.fails(mozillachecker.unchanged, "$file$ in $dir$", "$file$ in $dir$") 
     # Don't translate words should be ignored
     stdchecker = checks.StandardChecker(checks.CheckerConfig(notranslatewords=["Mozilla"]))
-    assert checks.passes(stdchecker.unchanged, "Mozilla", "Mozilla") 
+    assert checks.passes(stdchecker.unchanged, "Mozilla", "Mozilla") # bug 178, description item 10
 
 def test_untranslated():
     """tests untranslated entries"""
@@ -505,84 +516,88 @@ def test_variables_kde():
     # GNOME variables
     kdechecker = checks.KdeChecker()
     assert checks.passes(kdechecker.variables, "%d files of type %s saved.", "%d leers van %s tipe gestoor.")
-    assert checks.fails(kdechecker.variables, "%d files of type %s saved.", "%s leers van %s tipe gestoor.")
+    assert checks.fails_serious(kdechecker.variables, "%d files of type %s saved.", "%s leers van %s tipe gestoor.")
 
 def test_variables_gnome():
     """tests variables in GNOME translations"""
     # GNOME variables
     gnomechecker = checks.GnomeChecker()
     assert checks.passes(gnomechecker.variables, "%d files of type %s saved.", "%d leers van %s tipe gestoor.")
-    assert checks.fails(gnomechecker.variables, "%d files of type %s saved.", "%s leers van %s tipe gestoor.")
+    assert checks.fails_serious(gnomechecker.variables, "%d files of type %s saved.", "%s leers van %s tipe gestoor.")
     assert checks.passes(gnomechecker.variables, "Save $(file)", "Stoor $(file)")
-    assert checks.fails(gnomechecker.variables, "Save $(file)", "Stoor $(leer)")
+    assert checks.fails_serious(gnomechecker.variables, "Save $(file)", "Stoor $(leer)")
 
 def test_variables_mozilla():
     """tests variables in Mozilla translations"""
     # Mozilla variables
     mozillachecker = checks.MozillaChecker()
     assert checks.passes(mozillachecker.variables, "Use the &brandShortname; instance.", "Gebruik die &brandShortname; weergawe.")
-    assert checks.fails(mozillachecker.variables, "Use the &brandShortname; instance.", "Gebruik die &brandKortnaam; weergawe.")
+    assert checks.fails_serious(mozillachecker.variables, "Use the &brandShortname; instance.", "Gebruik die &brandKortnaam; weergawe.")
     assert checks.passes(mozillachecker.variables, "Save %file%", "Stoor %file%")
-    assert checks.fails(mozillachecker.variables, "Save %file%", "Stoor %leer%")
+    assert checks.fails_serious(mozillachecker.variables, "Save %file%", "Stoor %leer%")
     assert checks.passes(mozillachecker.variables, "Save $file$", "Stoor $file$")
-    assert checks.fails(mozillachecker.variables, "Save $file$", "Stoor $leer$")
+    assert checks.fails_serious(mozillachecker.variables, "Save $file$", "Stoor $leer$")
     assert checks.passes(mozillachecker.variables, "%d files of type %s saved.", "%d leers van %s tipe gestoor.")
-    assert checks.fails(mozillachecker.variables, "%d files of type %s saved.", "%s leers van %s tipe gestoor.")
+    assert checks.fails_serious(mozillachecker.variables, "%d files of type %s saved.", "%s leers van %s tipe gestoor.")
     assert checks.passes(mozillachecker.variables, "Save $file", "Stoor $file")
-    assert checks.fails(mozillachecker.variables, "Save $file", "Stoor $leer")
+    assert checks.fails_serious(mozillachecker.variables, "Save $file", "Stoor $leer")
     assert checks.passes(mozillachecker.variables, "About $ProgramName$", "Oor $ProgramName$")
-    assert checks.fails(mozillachecker.variables, "About $ProgramName$", "Oor $NaamVanProgam$")
+    assert checks.fails_serious(mozillachecker.variables, "About $ProgramName$", "Oor $NaamVanProgam$")
+    assert checks.passes(mozillachecker.variables, "About $_CLICK", "Oor $_CLICK")
+    assert checks.fails_serious(mozillachecker.variables, "About $_CLICK", "Oor $_KLIK")
+    assert checks.passes(mozillachecker.variables, "About $(^NameDA)", "Oor $(^NameDA)")
+    assert checks.fails_serious(mozillachecker.variables, "About $(^NameDA)", "Oor $(^NaamDA)")
     # Double variable problem
-    assert checks.fails(mozillachecker.variables, "Create In &lt;&lt;", "Etsa ka Ho &lt;lt;")
+    assert checks.fails_serious(mozillachecker.variables, "Create In &lt;&lt;", "Etsa ka Ho &lt;lt;")
     # Variables at the end of a sentence
-    assert checks.fails(mozillachecker.variables, "...time you start &brandShortName;.", "...lekgetlo le latelang ha o qala &LebitsoKgutshwane la kgwebo;.")
+    assert checks.fails_serious(mozillachecker.variables, "...time you start &brandShortName;.", "...lekgetlo le latelang ha o qala &LebitsoKgutshwane la kgwebo;.")
     # Ensure that we can detect two variables of the same name with one faulty
-    assert checks.fails(mozillachecker.variables, "&brandShortName; successfully downloaded and installed updates. You will have to restart &brandShortName; to complete the update.", "&brandShortName; ḽo dzhenisa na u longela khwinifhadzo zwavhuḓi. Ni ḓo tea u thoma hafhu &DzinaḼipfufhi ḽa pfungavhuṇe; u itela u fhedzisa khwinifha dzo.")
+    assert checks.fails_serious(mozillachecker.variables, "&brandShortName; successfully downloaded and installed updates. You will have to restart &brandShortName; to complete the update.", "&brandShortName; ḽo dzhenisa na u longela khwinifhadzo zwavhuḓi. Ni ḓo tea u thoma hafhu &DzinaḼipfufhi ḽa pfungavhuṇe; u itela u fhedzisa khwinifha dzo.")
     # We must detect entities in their fullform, ie with fullstop in the middle.
-    assert checks.fails(mozillachecker.variables, "Welcome to the &pluginWizard.title;", "Wamkelekile kwi&Sihloko Soncedo lwe-plugin;")
+    assert checks.fails_serious(mozillachecker.variables, "Welcome to the &pluginWizard.title;", "Wamkelekile kwi&Sihloko Soncedo lwe-plugin;")
     # Variables that are missing in quotes should be detected
-    assert checks.fails(mozillachecker.variables, "\"%S\" is an executable file.... Are you sure you want to launch \"%S\"?", ".... Uyaqiniseka ukuthi ufuna ukuqalisa I\"%S\"?")
+    assert checks.fails_serious(mozillachecker.variables, "\"%S\" is an executable file.... Are you sure you want to launch \"%S\"?", ".... Uyaqiniseka ukuthi ufuna ukuqalisa I\"%S\"?")
     # False positive $ style variables
     assert checks.passes(mozillachecker.variables, "for reporting $ProductShortName$ crash information", "okokubika ukwaziswa kokumosheka kwe-$ProductShortName$")
     # We shouldn't mask variables within variables.  This should highlight &brandShortName as missing and &amp as extra
-    assert checks.fails(mozillachecker.variables, "&brandShortName;", "&amp;brandShortName;")
+    assert checks.fails_serious(mozillachecker.variables, "&brandShortName;", "&amp;brandShortName;")
 
 def test_variables_openoffice():
     """tests variables in OpenOffice translations"""
     # OpenOffice.org variables
     ooochecker = checks.OpenOfficeChecker()
     assert checks.passes(ooochecker.variables, "Use the &brandShortname; instance.", "Gebruik die &brandShortname; weergawe.")
-    assert checks.fails(ooochecker.variables, "Use the &brandShortname; instance.", "Gebruik die &brandKortnaam; weergawe.")
+    assert checks.fails_serious(ooochecker.variables, "Use the &brandShortname; instance.", "Gebruik die &brandKortnaam; weergawe.")
     assert checks.passes(ooochecker.variables, "Save %file%", "Stoor %file%")
-    assert checks.fails(ooochecker.variables, "Save %file%", "Stoor %leer%")
+    assert checks.fails_serious(ooochecker.variables, "Save %file%", "Stoor %leer%")
     assert checks.passes(ooochecker.variables, "Save %file", "Stoor %file")
-    assert checks.fails(ooochecker.variables, "Save %file", "Stoor %leer")
+    assert checks.fails_serious(ooochecker.variables, "Save %file", "Stoor %leer")
     assert checks.passes(ooochecker.variables, "Save %1", "Stoor %1")
-    assert checks.fails(ooochecker.variables, "Save %1", "Stoor %2")
+    assert checks.fails_serious(ooochecker.variables, "Save %1", "Stoor %2")
     assert checks.passes(ooochecker.variables, "Save %", "Stoor %")
-    assert checks.fails(ooochecker.variables, "Save %", "Stoor")
+    assert checks.fails_serious(ooochecker.variables, "Save %", "Stoor")
     assert checks.passes(ooochecker.variables, "Save $(file)", "Stoor $(file)")
-    assert checks.fails(ooochecker.variables, "Save $(file)", "Stoor $(leer)")
+    assert checks.fails_serious(ooochecker.variables, "Save $(file)", "Stoor $(leer)")
     assert checks.passes(ooochecker.variables, "Save $file$", "Stoor $file$")
-    assert checks.fails(ooochecker.variables, "Save $file$", "Stoor $leer$")
+    assert checks.fails_serious(ooochecker.variables, "Save $file$", "Stoor $leer$")
     assert checks.passes(ooochecker.variables, "Save ${file}", "Stoor ${file}")
-    assert checks.fails(ooochecker.variables, "Save ${file}", "Stoor ${leer}")
+    assert checks.fails_serious(ooochecker.variables, "Save ${file}", "Stoor ${leer}")
     assert checks.passes(ooochecker.variables, "Save #file#", "Stoor #file#")
-    assert checks.fails(ooochecker.variables, "Save #file#", "Stoor #leer#")
+    assert checks.fails_serious(ooochecker.variables, "Save #file#", "Stoor #leer#")
     assert checks.passes(ooochecker.variables, "Save #1", "Stoor #1")
-    assert checks.fails(ooochecker.variables, "Save #1", "Stoor #2")
+    assert checks.fails_serious(ooochecker.variables, "Save #1", "Stoor #2")
     assert checks.passes(ooochecker.variables, "Save #", "Stoor #")
-    assert checks.fails(ooochecker.variables, "Save #", "Stoor")
+    assert checks.fails_serious(ooochecker.variables, "Save #", "Stoor")
     assert checks.passes(ooochecker.variables, "Save ($file)", "Stoor ($file)")
-    assert checks.fails(ooochecker.variables, "Save ($file)", "Stoor ($leer)")
+    assert checks.fails_serious(ooochecker.variables, "Save ($file)", "Stoor ($leer)")
     assert checks.passes(ooochecker.variables, "Save $[file]", "Stoor $[file]")
-    assert checks.fails(ooochecker.variables, "Save $[file]", "Stoor $[leer]")
+    assert checks.fails_serious(ooochecker.variables, "Save $[file]", "Stoor $[leer]")
     assert checks.passes(ooochecker.variables, "Save [file]", "Stoor [file]")
-    assert checks.fails(ooochecker.variables, "Save [file]", "Stoor [leer]")
+    assert checks.fails_serious(ooochecker.variables, "Save [file]", "Stoor [leer]")
     assert checks.passes(ooochecker.variables, "Save $file", "Stoor $file")
-    assert checks.fails(ooochecker.variables, "Save $file", "Stoor $leer")
+    assert checks.fails_serious(ooochecker.variables, "Save $file", "Stoor $leer")
     # Same variable name twice
-    assert checks.fails(ooochecker.variables, r"""Start %PROGRAMNAME% as %PROGRAMNAME%""", "Begin %PROGRAMNAME%")
+    assert checks.fails_serious(ooochecker.variables, r"""Start %PROGRAMNAME% as %PROGRAMNAME%""", "Begin %PROGRAMNAME%")
     # Variables hidden in KDE comments
     assert checks.passes(ooochecker.variables, r"""_: Do not translate %PROGRAMNAME% in the text\n
 Start %PRODUCTNAME%""", "Begin %PRODUCTNAME%")
@@ -633,6 +648,8 @@ def test_functions():
     assert checks.passes(stdchecker.functions, "rgb() in percentage", "rgb() kha phesenthe")
     assert checks.fails(stdchecker.functions, "blah string.rgb() blah", "blee bleeb.rgb() blee")
     assert checks.passes(stdchecker.functions, "blah string.rgb() blah", "blee string.rgb() blee")
+    assert checks.passes(stdchecker.functions, "or domain().", "domain() verwag.")
+    assert checks.passes(stdchecker.functions, "Expected url(), url-prefix(), or domain().", "url(), url-prefix() of domain() verwag.")
 
 def test_emails():
     """tests to see that email addresses are not translated"""
@@ -649,5 +666,6 @@ def test_urls():
 def test_simpleplurals():
     """test that we can find English style plural(s)"""
     stdchecker = checks.StandardChecker()
+    assert checks.passes(stdchecker.simpleplurals, "computer(s)", "rekenaar(s)")
     assert checks.fails(stdchecker.simpleplurals, "plural(s)", "meervoud(e)")
     assert checks.fails(stdchecker.simpleplurals, "Ungroup Metafile(s)...", "Kuvhanganyululani Metafaela(dzi)...")

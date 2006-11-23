@@ -41,19 +41,19 @@ class po2txt:
       return message
     return "\n".join([textwrap.fill(line, self.wrap, replace_whitespace=False) for line in message.split("\n")])
 
-  def convertfile(self, inputpo):
+  def convertfile(self, inputpo, includefuzzy):
     """converts a file to .po format"""
     txtresult = ""
     for thepo in inputpo.units:
       if thepo.isheader():
         continue
-      if thepo.isfuzzy() or thepo.isblank():
+      if thepo.isblankmsgstr() or (not includefuzzy and thepo.isfuzzy()):
         txtresult += self.wrapmessage(thepo.source) + "\n" + "\n"
       else:
         txtresult += self.wrapmessage(thepo.target) + "\n" + "\n"
-    return txtresult
+    return txtresult.rstrip()
  
-  def mergefile(self, inputpo, templatetext):
+  def mergefile(self, inputpo, templatetext, includefuzzy):
     """converts a file to .po format"""
     txtresult = templatetext
     # TODO: make a list of blocks of text and translate them individually
@@ -61,20 +61,22 @@ class po2txt:
     for thepo in inputpo.units:
       if thepo.isheader():
         continue
-      msgid = thepo.source
-      msgstr = self.wrapmessage(thepo.target)
-      txtresult = txtresult.replace(msgid, msgstr)
+      if not thepo.isfuzzy() or includefuzzy:
+        msgid = thepo.source
+        msgstr = self.wrapmessage(thepo.target)
+        if not thepo.isblankmsgstr():
+          txtresult = txtresult.replace(msgid, msgstr)
     return txtresult
 
-def converttxt(inputfile, outputfile, templatefile, wrap=None):
+def converttxt(inputfile, outputfile, templatefile, wrap=None, includefuzzy=False):
   """reads in stdin using fromfileclass, converts using convertorclass, writes to stdout"""
   inputpo = po.pofile(inputfile)
   convertor = po2txt(wrap=wrap)
   if templatefile is None:
-    outputtxt = convertor.convertfile(inputpo)
+    outputtxt = convertor.convertfile(inputpo, includefuzzy)
   else:
     templatetext = templatefile.read()
-    outputtxt = convertor.mergefile(inputpo, templatetext)
+    outputtxt = convertor.mergefile(inputpo, templatetext, includefuzzy)
   outputfilepos = outputfile.tell()
   outputfile.write(outputtxt.encode('utf-8'))
   return 1
@@ -90,5 +92,6 @@ def main(argv=None):
     parser.add_option("-w", "--wrap", dest="wrap", default=None, type="int",
                       help="set number of columns to wrap text at", metavar="WRAP")
     parser.passthrough.append("wrap")
+  parser.add_fuzzy_option()
   parser.run(argv)
 

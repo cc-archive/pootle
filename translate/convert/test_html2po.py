@@ -64,6 +64,13 @@ class TestHTML2PO:
         pofile = self.html2po(markup)
         self.compareunit(pofile, 1, "First line.<br>Second line.")
 
+    def test_tag_div(self):
+        """test that we can extract the <div> tag"""
+        self.check_single("<html><head></head><body><div>A paragraph.</div></body></html>", "A paragraph.")
+        markup = "<div>First line.<br>Second line.</div>"
+        pofile = self.html2po(markup)
+        self.compareunit(pofile, 1, "First line.<br>Second line.")
+
     def test_tag_a(self):
         """test that we can extract the <a> tag"""
         self.check_single("<html><head></head><body><p>A paragraph with <a>hyperlink</a>.</p></body></html>", "A paragraph with <a>hyperlink</a>.")
@@ -157,6 +164,14 @@ class TestHTML2PO:
         """check that we reflow multiline content to make it more readable for translators"""
         self.check_single('''<td valign="middle" width="96%"><font class="headingwhite">South
                   Africa</font></td>''', '''<font class="headingwhite">South Africa</font>''')
+
+    def wtest_nested_tags(self):
+        """check that we can extract items within nested tags"""
+        markup = "<div><p>Extract this</p>And this</div>"
+        pofile = self.html2po(markup)
+        self.countunits(pofile, 2)
+        self.compareunit(pofile, 1, "Extract this")
+        self.compareunit(pofile, 2, "And this")
 
 class TestHTML2POCommand(test_convert.TestConvertCommand, TestHTML2PO):
     """Tests running actual html2po commands on files"""

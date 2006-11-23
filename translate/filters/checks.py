@@ -115,10 +115,20 @@ def passes(filterfunction, str1, str2):
   return filterresult
 
 def fails(filterfunction, str1, str2):
-  """returns whether the given strings fail on the given test, handling FilterFailures"""
+  """returns whether the given strings fail on the given test, handling only FilterFailures"""
   try:
     filterresult = filterfunction(str1, str2)
+  except SeriousFilterFailure, e:
+    filterresult = True
   except FilterFailure, e:
+    filterresult = False
+  return not filterresult
+
+def fails_serious(filterfunction, str1, str2):
+  """returns whether the given strings fail on the given test, handling only SeriousFilterFailures"""
+  try:
+    filterresult = filterfunction(str1, str2)
+  except SeriousFilterFailure, e:
     filterresult = False
   return not filterresult
 
@@ -140,7 +150,7 @@ common_canchangetags = [("img", "alt", None)]
 
 class CheckerConfig(object):
   """object representing the configuration of a checker"""
-  def __init__(self, targetlanguage=None, accelmarkers=None, varmatches=None, notranslatewords=None, musttranslatewords=None, validchars=None, punctuation=None, endpunctuation=None, ignoretags=None, canchangetags=None):
+  def __init__(self, targetlanguage=None, accelmarkers=None, varmatches=None, notranslatewords=None, musttranslatewords=None, validchars=None, punctuation=None, endpunctuation=None, ignoretags=None, canchangetags=None, criticaltests=None):
     # make sure that we initialise empty lists properly (default arguments get reused!)
     if accelmarkers is None:
       accelmarkers = []
@@ -178,8 +188,10 @@ class CheckerConfig(object):
       self.canchangetags = common_canchangetags
     else:
       self.canchangetags = canchangetags
-    
-    
+    if criticaltests is None:
+      criticaltests = []
+    self.criticaltests = criticaltests
+
   def update(self, otherconfig):
     """combines the info in otherconfig into this config object"""
     self.targetlanguage = otherconfig.targetlanguage or self.targetlanguage
@@ -193,6 +205,8 @@ class CheckerConfig(object):
     #TODO: consider also updating in the following cases:
     self.ignoretags = otherconfig.ignoretags
     self.canchangetags = otherconfig.canchangetags
+    self.criticaltests.extend(otherconfig.criticaltests)
+
   def updatevalidchars(self, validchars):
     """updates the map that eliminates valid characters"""
     if validchars is None:
@@ -341,13 +355,17 @@ class StandardChecker(TranslationChecker):
     """checks whether a translation is basically identical to the original string"""
     str1 = self.filteraccelerators(prefilters.removekdecomments(str1))
     str2 = self.filteraccelerators(str2)
+    if len(str1.strip()) == 0:
+      return True
+    if str1.isupper() and str1 == str2:
+      return True
     if self.config.notranslatewords:
       words1 = str1.split()
       if len(words1) == 1 and [word for word in words1 if word in self.config.notranslatewords]:
         return True
     str1 = self.removevariables(str1)
     str2 = self.removevariables(str2)
-    if not (str1.isdigit() or len(str1) < 2) and (str1.strip().lower() == str2.strip().lower()):
+    if not (str1.strip().isdigit() or len(str1) < 2 or decoration.ispurepunctuation(str1.strip())) and (str1.strip().lower() == str2.strip().lower()):
       raise FilterFailure("please translate")
     return True
 
@@ -479,7 +497,10 @@ class StandardChecker(TranslationChecker):
       else:
         messages.append("accelerator %s occurs %d time(s) in original and %d time(s) in translation" % (accelmarker, count1, count2))
     if messages:
-      raise FilterFailure(messages)
+      if "accelerators" in self.config.criticaltests:
+        raise SeriousFilterFailure(messages)
+      else:
+        raise FilterFailure(messages)
     return True
 
 #  def acceleratedvariables(self, str1, str2):
@@ -538,7 +559,7 @@ class StandardChecker(TranslationChecker):
 
   def functions(self, str1, str2):
     """checks to see that function names are not translated"""
-    return helpers.funcmatch(str1, str2, decoration.getfunctions)
+    return helpers.funcmatch(str1, str2, decoration.getfunctions, self.config.punctuation)
 
   def emails(self, str1, str2):
     """checks to see that emails are not translated"""
@@ -607,7 +628,10 @@ class StandardChecker(TranslationChecker):
 
   def sentencecount(self, str1, str2):
     """checks that the number of sentences in both strings match"""
-    return helpers.countsmatch(prefilters.removekdecomments(str1), str2, ".")
+    str1 = prefilters.removekdecomments(str1)
+    str1 = sre.sub("\s((?:\w\.)+)\s", " ", str1) 
+    str2 = sre.sub("\s((?:\w\.)+)\s", " ", str2) 
+    return helpers.countsmatch(str1, str2, ".")
 
   def startcaps(self, str1, str2):
     """checks that the message starts with the correct capitalisation"""
@@ -774,7 +798,17 @@ class StandardChecker(TranslationChecker):
 
   def simpleplurals(self, str1, str2):
     """checks for English style plural(s) for you to review"""
-    return str1.find("(s)") == -1
+    def numberofpatterns(string, patterns):
+      number = 0
+      for pattern in patterns:
+        number += len(sre.findall(pattern, string))
+      return number
+
+    sourcepatterns = ["\(s\)"]
+    targetpatterns = ["\(s\)"]
+    sourcecount = numberofpatterns(str1, sourcepatterns)
+    targetcount = numberofpatterns(str2, targetpatterns)
+    return sourcecount == targetcount
 
   def spellcheck(self, str1, str2):
     """checks words that don't pass a spell check"""
@@ -809,7 +843,8 @@ class StandardChecker(TranslationChecker):
                                     "filepaths", "purepunc", "doublespacing",
                                     "sentencecount", "numbers", "isfuzzy",
                                     "isreview", "notranslatewords", "musttranslatewords",
-                                    "emails", "simpleplurals", "urls", "printf"),
+                                    "emails", "simpleplurals", "urls", "printf",
+                                    "tabs", "newlines"),
                    "unchanged": ("doublewords",), 
                    "compendiumconflicts": ("accelerators", "brackets", "escapes", 
                                     "numbers", "startpunc", "long", "variables", 
@@ -839,7 +874,8 @@ class OpenOfficeChecker(StandardChecker):
 
 mozillaconfig = CheckerConfig(
   accelmarkers = ["&"],
-  varmatches = [("&", ";"), ("%", "%"), ("%", 1), ("$", "$"), ("$", None), ("#", 1), ("${", "}"), ("$(^", ")")]
+  varmatches = [("&", ";"), ("%", "%"), ("%", 1), ("$", "$"), ("$", None), ("#", 1), ("${", "}"), ("$(^", ")")],
+  criticaltests = ["accelerators"]
   )
 
 class MozillaChecker(StandardChecker):

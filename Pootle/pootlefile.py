@@ -301,6 +301,29 @@ class pootlefile(Wrapper):
     return cls.parsestring(storestring)
   parsefile = classmethod(parsefile)
 
+  def getheaderplural(self):
+    """returns values for nplural and plural values.  It tries to see if the 
+    file has it specified (in a po header or similar)."""
+    method = getattr(self.__innerobj__, "getheaderplural", None)
+    if method and callable(method):
+      return self.__innerobj__.getheaderplural()
+    else:
+      return None, None
+
+  def updateheaderplural(self, *args, **kwargs):
+    """updates the file header. If there is an updateheader function in the 
+    underlying store it will be delegated there."""
+    method = getattr(self.__innerobj__, "updateheaderplural", None)
+    if method and callable(method):
+      self.__innerobj__.updateheaderplural(*args, **kwargs)
+
+  def updateheader(self, **kwargs):
+    """updates the file header. If there is an updateheader function in the 
+    underlying store it will be delegated there."""
+    method = getattr(self.__innerobj__, "updateheader", None)
+    if method and callable(method):
+      self.__innerobj__.updateheader(**kwargs)
+
   def readpendingfile(self):
     """reads and parses the pending file corresponding to this file"""
     if os.path.exists(self.pendingfilename):
@@ -439,6 +462,10 @@ class pootlefile(Wrapper):
       thepo.target = newvalues["target"]
     if newvalues.has_key("fuzzy"):
       thepo.markfuzzy(newvalues["fuzzy"])
+    if newvalues.has_key("translator_comments"):
+      thepo.removenotes()
+      if newvalues["translator_comments"]:
+        thepo.addnote(newvalues["translator_comments"])
       
     po_revision_date = time.strftime("%F %H:%M%z")
     headerupdates = {"PO_Revision_Date": po_revision_date, "X_Generator": self.x_generator}
