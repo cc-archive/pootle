@@ -141,7 +141,7 @@ def robots(req):
     return HttpResponse(content=generaterobotsfile(["login.html", "register.html", "activate.html"]), mimetype="text/plain")
 
 # indexpage.py
-def index(req, what):
+def index(req, what=None):
     if req.GET:
         if 'islogout' in req.GET:
             next_page = req.GET.get('next_page','/')
