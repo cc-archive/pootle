@@ -141,7 +141,7 @@ def robots(req):
     return HttpResponse(content=generaterobotsfile(["login.html", "register.html", "activate.html"]), mimetype="text/plain")
 
 # indexpage.py
-def index(req):
+def index(req, what):
     if req.GET:
         if 'islogout' in req.GET:
             next_page = req.GET.get('next_page','/')
@@ -150,10 +150,19 @@ def index(req):
             req.session.isopen = False
             return HttpResponseRedirect(next_page)
 
-    context = {
-        'languages': [{"code": code, "name": name } for code, name in potree().getlanguages()],
-        'projects': getprojects(),
-        }
+    if what == 'languages':
+        context = {
+            'languages': [{"code": code, "name": name } for code, name in potree().getlanguages()],
+            }
+    elif what == 'projects':
+        context = {
+            'projects': getprojects(),
+            }
+    else:
+        context = {
+            'languages': [{"code": code, "name": name } for code, name in potree().getlanguages()],
+            'projects': getprojects(),
+            }
     return render_to_response("index.html", RequestContext(req, context))
     
 def about(req):
@@ -164,17 +173,11 @@ def home(req):
     return render_to_pootleresponse(indexpage.UserIndex(potree(), pootlesession(req)))
 home = login_required(home)
 
-def languagesindex(req):
-    return render_to_pootleresponse(indexpage.LanguagesIndex(potree(), pootlesession(req)))
-
 def projectlanguageindex(req, project):
     return render_to_pootleresponse(indexpage.ProjectLanguageIndex(potree(), project, pootlesession(req)))
 
 def languageindex(req, language):
     return render_to_pootleresponse(indexpage.LanguageIndex(potree(), language, pootlesession(req)))
-    
-def projectsindex(req):
-    return render_to_pootleresponse(indexpage.ProjectsIndex(potree(), pootlesession(req)))
     
 def projectindex(req, language, project):
     # important, handles 4 urls

@@ -9,6 +9,7 @@
         {{ description }}
       </div>
 
+{% if languages %}
       <h3 class="title"><a href="languages/">{% trans "Languages" %}</a></h3>
 
       <div class="item-description">
@@ -17,7 +18,9 @@
         {% endfor %}
       </div>
     </div>
+{% endif %}
 
+{% if projects %}
     <div class="contents">
       <h3 class="title"><a href="projects/">{% trans "Projects" %}</a></h3>
 
@@ -27,4 +30,5 @@
         {% endfor %}
       </div>
     </div>
+{% endif %}
 {% endblock %}
