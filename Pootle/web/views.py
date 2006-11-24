@@ -1,7 +1,9 @@
 from django.http import HttpResponse, HttpResponseRedirect
 from django.conf import settings
 from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth import REDIRECT_FIELD_NAME
+from django.shortcuts import render_to_response
 
 from Pootle.compat.authforms import RegistrationManipulator
 from Pootle import indexpage, adminpages, users, translatepage
@@ -135,19 +137,23 @@ def robots(req):
 # indexpage.py
 def index(req):
     if req.GET:
-        next_page = req.GET.get('next_page','/')
-        from django.contrib.auth import logout as djangologout
-        djangologout(req)
-        req.session.isopen = False
-        return HttpResponseRedirect(next_page)
+        if 'islogout' in req.GET:
+            next_page = req.GET.get('next_page','/')
+            from django.contrib.auth import logout as djangologout
+            djangologout(req)
+            req.session.isopen = False
+            return HttpResponseRedirect(next_page)
 
-    return render_to_pootleresponse(indexpage.PootleIndex(potree(), pootlesession(req)))
+    pootlepage = indexpage.PootleIndex(potree(), pootlesession(req))
+    context = pootlepage.templatevars
+    return render_to_response("index.html", context)
     
 def about(req):
     return render_to_pootleresponse(indexpage.AboutPage(pootlesession(req)))
 
 def home(req):
     return render_to_pootleresponse(indexpage.UserIndex(potree(), pootlesession(req)))
+home = login_required(home)
 
 def languagesindex(req):
     return render_to_pootleresponse(indexpage.LanguagesIndex(potree(), pootlesession(req)))
@@ -171,7 +177,18 @@ def projectindex(req, language, project):
 # users.py
 
 def options(req):
+    # use manipulator here
     message = None
+    if req.POST:
+        try:
+            if "changeoptions" in req.POST:
+                pass
+            elif "changepersonal" in req.POST:
+                pass
+            elif "changeinterface" in req.POST:
+                pass
+        except users.RegistrationError, errormessage:
+            message = errormessage
     return render_to_pootleresponse(users.UserOptions(potree(), pootlesession(req), message))
 
 def login(req):

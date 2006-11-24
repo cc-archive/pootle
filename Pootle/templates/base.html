@@ -1,3 +1,4 @@
+{% load i18n %}
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html  PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <head>
@@ -17,6 +18,7 @@
   <div id="banner" over:include="pootlepage#banner"/>
 
   <div id="content" dir="{{ uidir }}" lang="{{ uilanguage }}">
+{% block content %}
     <div class="contents">
       <h3 class="title">{{ pagetitle }}</h3>
 
@@ -42,6 +44,7 @@
         {% endfor %}
       </div>
     </div>
+{% endblock %}
   </div>
 
   </div>
