@@ -9,4 +9,5 @@ def global_template_vars(request):
         'meta_description' : shortdescription(description),
         'pagetitle' : 'Pootle',
         'keywords' : ["Pootle", "WordForge", "translate", "translation", "localisation", "localization", "l10n", "traduction", "traduire"],
+        'instancetitle': getattr(instance(),'title'),
         }

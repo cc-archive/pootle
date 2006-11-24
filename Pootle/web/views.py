@@ -14,6 +14,11 @@ from Pootle.storage_client import generaterobotsfile
 from django.utils.translation import gettext_lazy as _
 from django.utils.translation import ngettext
 
+from Pootle.storage_client import getprojects
+
+from Pootle import __version__ as pootleversion
+from translate import __version__ as toolkitversion
+
 ### backwards compatiblity 
 import kid
 import os
@@ -145,12 +150,15 @@ def index(req):
             req.session.isopen = False
             return HttpResponseRedirect(next_page)
 
-    pootlepage = indexpage.PootleIndex(potree(), pootlesession(req))
-    context = pootlepage.templatevars
-    return render_to_response("index.html", context, context_instance=RequestContext(req))
+    context = {
+        'languages': [{"code": code, "name": name } for code, name in potree().getlanguages()],
+        'projects': getprojects(),
+        }
+    return render_to_response("index.html", RequestContext(req, context))
     
 def about(req):
-    return render_to_pootleresponse(indexpage.AboutPage(pootlesession(req)))
+    context = { 'pootleversion':pootleversion.ver, 'toolkitversion':toolkitversion.ver }
+    return render_to_response("about.html", RequestContext(req, context ))
 
 def home(req):
     return render_to_pootleresponse(indexpage.UserIndex(potree(), pootlesession(req)))
