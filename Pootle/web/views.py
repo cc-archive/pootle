@@ -1,4 +1,5 @@
 from django.http import HttpResponse, HttpResponseRedirect
+from django.template import RequestContext
 from django.conf import settings
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
@@ -146,7 +147,7 @@ def index(req):
 
     pootlepage = indexpage.PootleIndex(potree(), pootlesession(req))
     context = pootlepage.templatevars
-    return render_to_response("index.html", context)
+    return render_to_response("index.html", context, context_instance=RequestContext(req))
     
 def about(req):
     return render_to_pootleresponse(indexpage.AboutPage(pootlesession(req)))

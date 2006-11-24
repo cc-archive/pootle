@@ -21,19 +21,34 @@ class UserWrapper:
     def __init__(self, user, username):
         def istrue():
             return True
-        self.user = user
+        def get_and_delete_messages():
+            return []
+        self._user = user
+        self._username = username
         self.mapping = {
             'is_active': user.activated,
             'is_authenticated': istrue,
             'is_anonymous': False,
             'id': username,
-            'is_superuser': user.rights.siteadmin
+            'username': username,
+            'is_superuser': user.rights.siteadmin,
+            'get_and_delete_messages': get_and_delete_messages,
             }
+
+    def __repr__(self):
+        return "<PootleUser: %s>" % self._username
+
+    def __str__(self):
+        return str(self._username)
+
     def __getattr__(self, key):
         if key in self.mapping:
             return self.mapping[key]
         else:
-            return self.user.__getattr__(key)
+            try:
+                return self.__getattr__(key)
+            except:
+                return self._user.__getattr__(key)
 
 class PootleAuth:
     "Authenticate against Pootle's users.prefs file"

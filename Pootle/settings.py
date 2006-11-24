@@ -46,6 +46,13 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.doc.XViewMiddleware',
 )
 
+TEMPLATE_CONTEXT_PROCESSORS = (
+    "django.core.context_processors.auth",
+    "django.core.context_processors.debug",
+    "django.core.context_processors.i18n",
+    "Pootle.web.context_processors.global_template_vars",
+    )
+
 ROOT_URLCONF = 'Pootle.urls'
 
 INSTALLED_APPS = (
@@ -53,6 +60,7 @@ INSTALLED_APPS = (
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.sites',
+    'Pootle.web',
 )
 
 # This sets pootle.prefs file path to be in same dir as these settings.py
