@@ -1,11 +1,12 @@
 from django.http import HttpResponse, HttpResponseRedirect
-from django.template import RequestContext
+from django.template import Context, RequestContext, loader
 from django.conf import settings
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import REDIRECT_FIELD_NAME
 from django.shortcuts import render_to_response
 from django import forms
+from django.core.mail import send_mail
 
 from Pootle.compat.authforms import RegistrationManipulator
 from Pootle import indexpage, adminpages, users, translatepage
@@ -14,6 +15,7 @@ from Pootle.conf import users as pootleusers
 from Pootle.storage_client import generaterobotsfile
 from django.utils.translation import gettext_lazy as _
 from django.utils.translation import ngettext
+import random
 
 from Pootle.storage_client import getprojects, getlanguageselector
 
@@ -251,7 +253,22 @@ def register(req):
             message = errorlist_from_errors(errors)
         else:
             manipulator.do_html2python(new_data)
+            activation_code = "".join(["%02x" % int(random.random()*0x100) for i in range(16)])
+            new_data['activationcode'] = activation_code
             new_user = manipulator.save(new_data)
+            
+            # and email the activation details
+            email_contents = loader.get_template("email_register.txt")
+            context = Context({
+                'activationlink': '',
+                'activationcode': activation_code,
+                'username': new_data['username'],
+                'password': new_data['password'],
+                'email': new_data['email'],
+                })
+            send_mail("Pootle registration", email_contents.render(context), settings.DEFAULT_FROM_EMAIL, [new_data['email']],
+                fail_silently=False)
+
             return render_to_response("register_sent.html", RequestContext(req))
     else:
         new_data = {}

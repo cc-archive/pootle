@@ -77,7 +77,6 @@ def get_user(username):
     else returns None
     """
 
-    print "get_user: getting user", username
     if not users():
         raise UsersNotInitialized
     try:
@@ -89,7 +88,6 @@ def create_user(username, email):
     """
     Creates a new user out of a username and email
     """
-    print "creating user", username 
     usernode = prefs.PrefNode(users(), username)
     users().__setattr__(username, usernode)
     usernode.name = ""

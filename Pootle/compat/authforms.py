@@ -43,6 +43,9 @@ class RegistrationManipulator(forms.Manipulator):
             usernode = create_user(new_data['username'], new_data['email'])
             usernode.name = u"%s %s" % (new_data['first_name'], new_data['last_name'])
             set_password(usernode, new_data['password'])
+        if 'activationcode' in new_data:
+            usernode.activationcode = new_data['activationcode']
+            usernode.activated = 0
         save_users()
         return usernode
     
