@@ -180,7 +180,6 @@ home = login_required(home)
 
 def projectlanguageindex(req, project):
     languages = getlanguages(project)
-    print languages
     context = {
         'projectcode': project,
         'projectname': potree().getprojectname(project),
