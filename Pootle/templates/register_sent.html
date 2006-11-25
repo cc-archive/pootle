@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}Pootle - Registered{% endblock %}
+
+{% block content %}
+    <div class="intro">
+      {% blocktrans %}An email with activation details has been sent to email you have provided. Please follow the instructions in email and activate at the <a href="/activate.html">activation page</a>.{% endblocktrans %}
+    </div>
+
+{% endblock %}

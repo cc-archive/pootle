@@ -208,6 +208,7 @@ def login(req):
     message = None
     redirect_to = req.REQUEST.get(REDIRECT_FIELD_NAME, '')
     manipulator = AuthenticationForm(req)
+    new_data = {}
     if not redirect_to or '://' in redirect_to or ' ' in redirect_to:
         redirect_to = '/home/'
 
@@ -223,13 +224,13 @@ def login(req):
                 req.session.delete_test_cookie()
                 req.session.isopen = True
                 return HttpResponseRedirect(redirect_to) 
+            new_data = req.POST.copy()
+            del(new_data['password'])
         else:
             errors = {}
         req.session.set_test_cookie()
         
         # we don't want password
-        new_data = req.POST.copy()
-        del(new_data['password'])
         
         form = forms.FormWrapper(manipulator, new_data, errors)
         context = { 
@@ -241,7 +242,7 @@ def login(req):
 # users.py: registration, activation
 
 def register(req):
-    message = None
+    message = _("Please enter your registration details")
     manipulator = RegistrationManipulator() 
     if req.POST:
         new_data = req.POST.copy()
@@ -251,9 +252,17 @@ def register(req):
         else:
             manipulator.do_html2python(new_data)
             new_user = manipulator.save(new_data)
-            # FIXME return page with "sent mail & please activate"
-    argdict = req.POST.copy()
-    return render_to_pootleresponse(users.RegisterPage(pootlesession(req), argdict, message))
+            return render_to_response("register_sent.html", RequestContext(req))
+    else:
+        new_data = {}
+        errors = {}
+    
+    form = forms.FormWrapper(manipulator, new_data, errors)
+    context = {
+        'register_message' : message, 
+        'form' : form,
+        }
+    return render_to_response("register.html", RequestContext(req, context)) 
 
 def activate(req):
     argdict = req.POST.copy()
