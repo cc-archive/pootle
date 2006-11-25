@@ -13,7 +13,7 @@
 
       <div class="item-description">
         {% for l in languages %}
-        <a href="{{ l.code }}/">{{ l.name }}</a>
+        <a href="/{{ l.code }}/">{{ l.name }}</a>
         {% endfor %}
       </div>
       <br />
@@ -23,7 +23,7 @@
 
       <div class="item-description">
         {% for p in projects %}
-          <a href="projects/{{ p.code }}/" title="{{ p.description }}">{{ p.name }}</a>
+          <a href="/projects/{{ p.code }}/" title="{{ p.description }}">{{ p.name }}</a>
         {% endfor %}
       </div>
     </div>
