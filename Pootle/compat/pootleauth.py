@@ -19,19 +19,13 @@ class UserWrapper:
     """A class to wrap user object in just to map different naming 
     between jToolkit and Django"""
     def __init__(self, user, username):
-        def istrue():
-            return True
         def get_and_delete_messages():
             return []
         self._user = user
         self._username = username
         self.mapping = {
-            'is_active': user.activated,
-            'is_authenticated': istrue,
-            'is_anonymous': False,
             'id': username,
             'username': username,
-            'is_superuser': user.rights.siteadmin,
             'get_and_delete_messages': get_and_delete_messages,
             }
 
@@ -40,6 +34,24 @@ class UserWrapper:
 
     def __str__(self):
         return str(self._username)
+    
+    def is_authenticated(self):
+        return True
+
+    def is_anonymous(self):
+        return False
+        
+    def is_superuser(self):
+        try:
+            return self._user.rights.siteadmin
+        except AttributeError:
+            return False
+
+    def is_active(self):
+        try:
+            return self._user.activated
+        except AttributeError:
+            return False
 
     def __getattr__(self, key):
         if key in self.mapping:

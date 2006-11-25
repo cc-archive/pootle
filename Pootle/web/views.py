@@ -8,7 +8,7 @@ from django.shortcuts import render_to_response
 from django import forms
 from django.core.mail import send_mail
 
-from Pootle.compat.authforms import RegistrationManipulator
+from Pootle.compat.authforms import RegistrationManipulator, ActivationManipulator
 from Pootle import indexpage, adminpages, users, translatepage
 from Pootle.conf import instance, potree
 from Pootle.conf import users as pootleusers
@@ -282,8 +282,24 @@ def register(req):
     return render_to_response("register.html", RequestContext(req, context)) 
 
 def activate(req):
-    argdict = req.POST.copy()
-    return render_to_pootleresponse(users.ActivatePage(pootlesession(req), argdict, title=None, message=None))
+    manipulator = ActivationManipulator()
+    context = {}
+    if 'activationcode' in req.REQUEST and 'username' in req.REQUEST:
+        # FIXME: validation
+        errors = manipulator.get_validation_errors(req.REQUEST)
+        if not errors:
+            if manipulator.save(req.REQUEST):
+                context = { 'activationmessage': _("Your account has been activated!"), }
+
+    if 'username' in req.REQUEST:
+        new_data = {'username': req.REQUEST['username']} 
+    else:
+        new_data = {}
+    errors = {}
+    
+    form = forms.FormWrapper(manipulator, new_data, errors)
+    context['form'] = form
+    return render_to_response("activate.html", RequestContext(req, context))
 
 # adminpages.py
 

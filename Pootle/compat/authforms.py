@@ -49,3 +49,26 @@ class RegistrationManipulator(forms.Manipulator):
         save_users()
         return usernode
     
+
+class ActivationManipulator(forms.Manipulator):
+    def __init__(self):
+        self.fields = (
+            forms.TextField(field_name="username", length=16),
+            forms.TextField(field_name="activationcode", length=16),
+            )
+    
+    def save(self, data):
+        usernode = get_user(data['username'])
+        if usernode:
+            try:
+                if data['activationcode'] == usernode.activationcode:
+                    usernode.activated = 1
+                    usernode.__delattr__('activationcode')
+                    save_users()
+                return usernode.activated
+            except AttributeError:
+                return 0
+        else:
+            return 0
+
+
