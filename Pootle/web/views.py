@@ -17,7 +17,7 @@ from django.utils.translation import gettext_lazy as _
 from django.utils.translation import ngettext
 import random
 
-from Pootle.storage_client import getprojects, getlanguageselector
+from Pootle.storage_client import getprojects, getlanguageselector, getquicklinks
 
 from Pootle import __version__ as pootleversion
 from translate import __version__ as toolkitversion
@@ -173,7 +173,9 @@ def about(req):
     return render_to_response("about.html", RequestContext(req, context ))
 
 def home(req):
-    return render_to_pootleresponse(indexpage.UserIndex(potree(), pootlesession(req)))
+    context = {
+        'quicklinks': getquicklinks(pootlesession(req)), }
+    return render_to_response("home.html", RequestContext(req, context))
 home = login_required(home)
 
 def projectlanguageindex(req, project):
@@ -231,8 +233,6 @@ def login(req):
         else:
             errors = {}
         req.session.set_test_cookie()
-        
-        # we don't want password
         
         form = forms.FormWrapper(manipulator, new_data, errors)
         context = { 
