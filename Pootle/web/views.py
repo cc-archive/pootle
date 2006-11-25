@@ -5,6 +5,7 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import REDIRECT_FIELD_NAME
 from django.shortcuts import render_to_response
+from django import forms
 
 from Pootle.compat.authforms import RegistrationManipulator
 from Pootle import indexpage, adminpages, users, translatepage
@@ -14,7 +15,7 @@ from Pootle.storage_client import generaterobotsfile
 from django.utils.translation import gettext_lazy as _
 from django.utils.translation import ngettext
 
-from Pootle.storage_client import getprojects
+from Pootle.storage_client import getprojects, getlanguageselector
 
 from Pootle import __version__ as pootleversion
 from translate import __version__ as toolkitversion
@@ -206,6 +207,7 @@ def options(req):
 def login(req):
     message = None
     redirect_to = req.REQUEST.get(REDIRECT_FIELD_NAME, '')
+    manipulator = AuthenticationForm(req)
     if not redirect_to or '://' in redirect_to or ' ' in redirect_to:
         redirect_to = '/home/'
 
@@ -214,7 +216,6 @@ def login(req):
     else:
         if req.POST:
             # do login here
-            manipulator = AuthenticationForm(req)
             errors = manipulator.get_validation_errors(req.POST)
             if not errors:
                 from django.contrib.auth import login
@@ -225,7 +226,17 @@ def login(req):
         else:
             errors = {}
         req.session.set_test_cookie()
-        return render_to_pootleresponse(users.LoginPage(pootlesession(req), languagenames=potree().getlanguages(), message=message))
+        
+        # we don't want password
+        new_data = req.POST.copy()
+        del(new_data['password'])
+        
+        form = forms.FormWrapper(manipulator, new_data, errors)
+        context = { 
+            'languages': getlanguageselector(potree().getlanguages(), pootlesession(req)), # FIXME
+            'form': form,
+            }
+        return render_to_response("login.html", RequestContext(req, context))
 
 # users.py: registration, activation
 
