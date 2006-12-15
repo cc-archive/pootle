@@ -11,6 +11,8 @@ for translatesubdir in ("convert", "tools", "filters"):
   pathstr.append('"%s"' % os.path.join(translatedir, "translate", translatesubdir))
 pathstr.append('"%s"' % os.path.join(translatedir, "tools"))
 pythonpathstr.append('"%s"' % translatedir)
+pythonpathstr.append('"%s/editor"' % translatedir)
+pythonpathstr.append('"%s/editor/ui"' % translatedir)
 
 setpathfile = open(os.path.join(translatedir, "setpath"), "w")
 setpathfile.write("#!/bin/bash\n")
