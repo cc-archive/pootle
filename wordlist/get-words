@@ -96,7 +96,7 @@ _filetype=$2
 
 
 case ${_filetype} in
-	pdf)	pdftotext ${_file} - | 
+	pdf)	pdftotext "${_file}" - | 
 		split_on_space |
 		trim_whitespace | 
 		remove_email_addresses |
@@ -105,7 +105,7 @@ case ${_filetype} in
 		remove_words_starting_with_numbers |
 		trim_punc | 
 		sort_uniq_list;;
-	html|htm|php) lynx -dump -nolist ${_file} | 
+	html|htm|php) lynx -dump -nolist "${_file}" | 
 		split_on_space |
 		remove_punctuation_only_words |
 		remove_urls | 
@@ -116,11 +116,11 @@ case ${_filetype} in
 	po|mo)
 		if [ ${_filetype} == "mo" ]; then
 			tmp=`mktemp`
-			msgunfmt ${_file} > $tmp
+			msgunfmt "${_file}" > $tmp
 			_file=$tmp
 		fi
 		# Ensure all strings a terminated with \n
-		msgexec -i ${_file} sed "s/$/\\n/g" | 
+		msgexec -i "${_file}" sed "s/$/\\n/g" | 
 		# Split on <a> tags before we split on spaces
 		spliti "<\/\{0,1\}a[^>]*>" |
 		# Split on HTML markers
@@ -151,10 +151,10 @@ case ${_filetype} in
 		# Squash accelerator key indicators (_|&)
 		trim "[_&~]" |
 		sort_uniq_list
-		rm -f $tmp
+		rm -f "$tmp"
 		;;
 	dat)
-		cat ${_file} |
+		cat "${_file}" |
 		remove "^THE_URL" |
 		trim "^THE_TITLE:" |
 		trim_whitespace | 
@@ -187,12 +187,12 @@ fi
 # Single file word extraction
 if [ $# -eq 1 ]; then
 	file=$1
-	filetype=`basename $file | sed "s/.*\.//g"`
+	filetype=`basename "$file" | sed "s/.*\.//g"`
 	if [ ! -n $filetype ]; then
 		echo "Error: Unable to determine file type"
 		exit 1
 	fi
-	extract_words $file $filetype
+	extract_words "$file" "$filetype"
 fi
 
 # Directory recursive extraction
@@ -209,7 +209,7 @@ if [ $# -eq 2 ]; then
 	fi
 	for file in `find $dir -name "$search"`
 	do
-		extract_words $file $filetype
+		extract_words "$file" "$filetype"
 	done | sort_uniq_and_add
 fi
 
