@@ -207,7 +207,7 @@ if [ $# -eq 2 ]; then
 	if [ $filetype == "dat" ]; then
 		search="lnk*.$filetype"
 	fi
-	for file in `find $dir -name "$search"`
+	find $dir -name "$search" | while read file
 	do
 		extract_words "$file" "$filetype"
 	done | sort_uniq_and_add
