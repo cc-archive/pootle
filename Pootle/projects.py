@@ -476,10 +476,10 @@ class TranslationProject(object):
         os.mkdir(dircheck)
     return os.path.join(self.podir, dirname, pofilename)
 
-  def uploadfile(self, session, dirname, filename, contents):
+  def uploadfile(self, session, dirname, filename, contents, overwrite=False):
     """uploads an individual file"""
     pathname = self.getuploadpath(dirname, filename)
-    for extention in ["xliff", "xlf"]:
+    for extention in ["xliff", "xlf", "xlff"]:
       if filename.endswith(extention):
         pofilename = filename[:-len(os.extsep+extention)] + os.extsep + "po"
         popathname = self.getuploadpath(dirname, pofilename)
@@ -487,7 +487,7 @@ class TranslationProject(object):
     else:
       pofilename = filename
       popathname = pathname
-    if os.path.exists(popathname):
+    if os.path.exists(popathname) and not overwrite:
       origpofile = self.getpofile(os.path.join(dirname, pofilename))
       newfileclass = factory.getclass(pathname)
       infile = cStringIO.StringIO(contents)
