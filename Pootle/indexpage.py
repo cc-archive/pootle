@@ -395,7 +395,7 @@ class ProjectIndex(pagelayout.PootleNavPage):
       del self.argdict["removeassigns"]
     if "doupload" in self.argdict:
       extensiontypes = ("xlf", "xlff", "xliff", "po")
-      if "Yes" in self.argdict.pop("dooverwrite", None):
+      if "Yes" in self.argdict.pop("dooverwrite", []):
         overwrite = True
       else:
         overwrite = False
@@ -533,13 +533,23 @@ class ProjectIndex(pagelayout.PootleNavPage):
 
   def getuploadbox(self):
     """adds a box that lets the user assign strings"""
-    return {"title": self.localize("Upload File"),
+    uploadbox = {
+            "title": self.localize("Upload File"),
             "file_title": self.localize("Select file to upload"),
-            "overwrite_title": self.localize("Overwrite File?"),
-            "overwrite_true": self.localize("Yes"),
-            "overwrite_false": self.localize("No"),
-            "overwrite_buttontype": "radio",
-            "upload_button": self.localize("Upload File")}
+            "upload_button": self.localize("Upload File")
+            }
+    if "admin" in self.rights or "overwrite" in self.rights:
+      uploadbox.update({
+            #l10n: radio button text
+            "overwrite": self.localize("Overwrite"),
+            #l10n: tooltip
+            "overwrite_title": self.localize("Overwrite the current file if it exists"),
+            #l10n: radio button text
+            "merge": self.localize("Merge"),
+            #l10n: tooltip
+            "merge_title": self.localize("Merge the file with the current file and turn conflicts into suggestions"),
+            })
+    return uploadbox
 
   def getchilditems(self, dirfilter):
     """get all the items for directories and files viewable at this level"""
