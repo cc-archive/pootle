@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: translate-pootle@lists.sourceforge.net\n"
 "POT-Creation-Date: 2006-09-16 01:51+0200\n"
-"PO-Revision-Date: 2006-09-20 00:09+0200\n"
+"PO-Revision-Date: 2006-10-15 14:36+0200\n"
 "Last-Translator: Kenshi Muto <kmuto@debian.org>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -11,7 +11,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 "Generated-By: pygettext.py 1.1\n"
-"X-Generator: Pootle 0.10.1rc1\n"
+"X-Generator: Pootle 0.10.1\n"
 
 #. l10n: Verb
 #: projects.py:135
@@ -870,7 +870,7 @@ msgstr ""
 msgid ""
 "Your activation code is:\n"
 "%s\n"
-msgstr "有効化コード"
+msgstr "あなたの有効化コード:%s"
 
 #: users.py:395
 msgid ""

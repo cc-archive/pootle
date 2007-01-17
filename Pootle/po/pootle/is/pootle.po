@@ -3,15 +3,15 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: translate-pootle@lists.sourceforge.net\n"
 "POT-Creation-Date: 2006-09-16 01:51+0200\n"
-"PO-Revision-Date: 2006-09-25 21:21+0200\n"
-"Last-Translator: Nonni Johnsson <th3d3vil@hotmail.com>\n"
+"PO-Revision-Date: 2007-01-01 21:26+0100\n"
+"Last-Translator: Holla Bolla <holakalla@hotmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "Generated-By: pygettext.py 1.5\n"
-"X-Generator: Pootle 0.10.1rc1\n"
+"X-Generator: Pootle 0.10.1\n"
 
 #. l10n: Verb
 #: projects.py:135
@@ -538,7 +538,7 @@ msgstr "Notandi"
 
 #: adminpages.py:357
 msgid "(select to add user)"
-msgstr ""
+msgstr "(veldu til að bæta við notenda)"
 
 #: adminpages.py:358
 msgid "Rights"
@@ -888,23 +888,25 @@ msgid ""
 "If you are unable to follow the link, please enter the above code at the "
 "activation page.\n"
 msgstr ""
+"Ef þú getur ekki fylgt hlekknum, vinsamlegast sláðu inn kóðann hér að ofan á virkjunarsíðunni.\n"
 
 #: users.py:396
 msgid ""
 "This message is sent to verify that the email address is in fact correct. If "
 "you did not want to register an account, you may simply ignore the message.\n"
 msgstr ""
+"Þessi skilaboð eru send til að staðfesta að póstfang þitt sé rétt. Ef þú vildir ekki skrá aðgang, getur þú hunsað þessi skilaboð.\n"
 
 #: users.py:398
 #, python-format
 msgid ""
 "Account created. You will be emailed login details and an activation code. "
 "Please enter your activation code on the <a href='%s'>activation page</a>."
-msgstr ""
+msgstr "Aðgangur hefur verið búinn til. Þú færð innskráningarupplýsingar ásamt virkjunarkóða sendar í pósti. Vinsamlegast sláðu virkjanakóðann á <a href='%s'>virjunarsíðunni</a>."
 
 #: users.py:400
 msgid "(Or simply click on the activation link in the email)"
-msgstr ""
+msgstr "(Eða einfaldlega smelltu á virkjunarhlekkinn í póstinum)"
 
 #: users.py:402
 #, fuzzy, python-format
@@ -920,27 +922,27 @@ msgstr "Lykilorðið sem þú óskar"
 #, python-format
 msgid "Your registered email address is: %s\n"
 msgstr ""
+"Skráð póstfang er: %s\n"
 
 #: users.py:429
 msgid "Redirecting to Registration Page..."
-msgstr ""
+msgstr "Áframsendi að skráningarsíðu..."
 
 #: users.py:453
 msgid "Redirecting to login Page..."
-msgstr ""
+msgstr "Áframsendi að innskráningarsíðu..."
 
 #: users.py:456
 msgid "Your account has been activated! Redirecting to login..."
-msgstr ""
+msgstr "Reikningur þinn hefur verið virkjaður! Áframsendi að innskráningarsíðu..."
 
 #: users.py:460
 msgid "The activation information was not valid."
-msgstr ""
+msgstr "Upplýsingarnar til að virkja eru ekki gildar."
 
 #: users.py:461
-#, fuzzy
 msgid "Activation Failed"
-msgstr "Virkjunarkóði"
+msgstr "Virkjun mistókst"
 
 #: users.py:563
 msgid "Input height must be numeric"
@@ -960,15 +962,15 @@ msgstr "Fjöldi lína birtar í þýðingarham verður að vera tölugildi"
 
 #: pootle.py:273
 msgid "Login failed"
-msgstr ""
+msgstr "Innskráning mistókst"
 
 #: pootle.py:317 pootle.py:348
 msgid "Redirecting to login..."
-msgstr ""
+msgstr "Áframsendi að innskráningu..."
 
 #: pootle.py:320
 msgid "Need to log in to access home page"
-msgstr ""
+msgstr "Þarft að skrá þig inn til að fá aðgang að heimasíðu"
 
 #: pootle.py:333
 #, fuzzy
@@ -977,11 +979,11 @@ msgstr "Persónulegar upplýsingar"
 
 #: pootle.py:351
 msgid "Need to log in to access admin page"
-msgstr ""
+msgstr "Þarft að skrá þig inn til að fá aðgang að stjórnendasíðu"
 
 #: pootle.py:358
 msgid "Redirecting to home..."
-msgstr ""
+msgstr "Áframsendi heim..."
 
 #: pootle.py:361
 msgid "You do not have the rights to administer pootle."
@@ -1178,7 +1180,7 @@ msgstr "XLIFF skrá"
 
 #: indexpage.py:694
 msgid "Qt .ts file"
-msgstr ""
+msgstr "Qt .ts skrá"
 
 #: indexpage.py:698
 msgid "CSV file"
@@ -1219,7 +1221,7 @@ msgstr "Skráð á"
 
 #: indexpage.py:795
 msgid "Show Editing Functions"
-msgstr ""
+msgstr "Sýna breytingaraðgerðir"
 
 #: indexpage.py:796
 #, fuzzy
@@ -1318,7 +1320,7 @@ msgstr "ZIP skrá af möppu"
 
 #: indexpage.py:875
 msgid "Generate SDF"
-msgstr ""
+msgstr "Búa til SDF"
 
 #: indexpage.py:928
 #, python-format

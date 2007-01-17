@@ -1,18 +1,17 @@
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: translate-pootle@lists.sourceforge.net\n"
 "POT-Creation-Date: 2006-09-16 01:51+0200\n"
-"PO-Revision-Date: 2006-06-14 14:29+0200\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"PO-Revision-Date: 2006-12-25 10:57+0100\n"
+"Last-Translator: Hasan Karaboğa <hasan@teknoseyir.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 "Generated-By: pygettext.py 1.1\n"
-"X-Generator: Translate Toolkit 0.9rc1\n"
+"X-Generator: Pootle 0.10.1\n"
 
 #. l10n: Verb
 #: projects.py:135
@@ -47,7 +46,7 @@ msgstr "Ata"
 
 #: projects.py:144
 msgid "Administrate"
-msgstr "Yönetme"
+msgstr "Yönet"
 
 #. l10n: Commit to version control (like CVS or Subversion)
 #: projects.py:145 indexpage.py:713
@@ -128,24 +127,21 @@ msgid "Original"
 msgstr "Asıl"
 
 #: translatepage.py:112
-#, fuzzy
 msgid "Translation"
-msgstr "çeviri"
+msgstr "Çeviri"
 
 #: translatepage.py:115
-#, fuzzy
 msgid "Accept"
-msgstr "kabul et"
+msgstr "Kabul et"
 
 #: translatepage.py:116
-#, fuzzy
 msgid "Reject"
-msgstr "reddet"
+msgstr "Reddet"
 
 #. l10n: This heading refers to related translations and terminology
 #: translatepage.py:118
 msgid "Related"
-msgstr ""
+msgstr "Benzer"
 
 #. l10n: text next to search field
 #: translatepage.py:122 indexpage.py:349
@@ -231,19 +227,17 @@ msgstr "Düzenle"
 
 #. l10n: verb
 #: translatepage.py:567
-#, fuzzy
 msgid "Copy"
-msgstr "Asıl metni Kopyala"
+msgstr "Kopyala"
 
 #: translatepage.py:568 translatepage.py:747
-#, fuzzy
 msgid "Skip"
-msgstr "Es geç"
+msgstr "Atla"
 
 #. l10n: verb
 #: translatepage.py:570 translatepage.py:746 users.py:245
 msgid "Back"
-msgstr ""
+msgstr "Geri"
 
 #: translatepage.py:572
 #, fuzzy
@@ -289,9 +283,8 @@ msgid ""
 msgstr ""
 
 #: translatepage.py:702
-#, fuzzy
 msgid "Current Translation:"
-msgstr "<b>Güncel Çeviri:</b>"
+msgstr "Güncel Çeviri:"
 
 #. l10n: First parameter: number
 #. l10n: Second parameter: name of translator
@@ -333,9 +326,8 @@ msgid "Projects"
 msgstr "Projeler"
 
 #: adminpages.py:47
-#, fuzzy
 msgid "General options"
-msgstr "Genel Seçenekler"
+msgstr "Genel seçenekler"
 
 #: adminpages.py:48 users.py:153
 msgid "Option"
@@ -367,9 +359,8 @@ msgid "Home Page"
 msgstr "Ana Sayfa"
 
 #: adminpages.py:83 adminpages.py:139 adminpages.py:201
-#, fuzzy
 msgid "Main admin page"
-msgstr "Ana Yönetici sayfası"
+msgstr "Ana yönetim sayfası"
 
 #: adminpages.py:89
 msgid "ISO Code"
@@ -381,7 +372,7 @@ msgstr "Tam İsim"
 
 #: adminpages.py:91
 msgid "(add language here)"
-msgstr "(buraya dil ekleyin)"
+msgstr "(dili buraya ekleyin)"
 
 #: adminpages.py:92
 msgid "Special Chars"
@@ -484,9 +475,8 @@ msgid "Activate New User"
 msgstr "Yeni Kullanıcıyı Etkinleştir"
 
 #: adminpages.py:213
-#, fuzzy
 msgid "Remove User"
-msgstr "Sil: %s"
+msgstr "Kullanıcıyı Sil"
 
 #: adminpages.py:267
 msgid "Back to main page"
@@ -580,26 +570,23 @@ msgstr "Tüm Diller"
 
 #: pagelayout.py:39
 msgid "My account"
-msgstr ""
+msgstr "Hesabım"
 
 #: pagelayout.py:40 pagelayout.py:144 indexpage.py:197 indexpage.py:259
 msgid "Admin"
 msgstr "Yönetim"
 
 #: pagelayout.py:41
-#, fuzzy
 msgid "Docs & help"
-msgstr "Belgeler & Yardım"
+msgstr "Belgeler & yardım"
 
 #: pagelayout.py:42
-#, fuzzy
 msgid "Log out"
-msgstr "Oturumdan çık"
+msgstr "Çıkış"
 
 #: pagelayout.py:43
-#, fuzzy
 msgid "Log in"
-msgstr "Oturum Aç"
+msgstr "Giriş"
 
 #. l10n: Verb, as in "to register"
 #: pagelayout.py:45
@@ -611,14 +598,12 @@ msgid "Activate"
 msgstr "Etkinleştir"
 
 #: pagelayout.py:67
-#, fuzzy
 msgid "Pootle Logo"
-msgstr "Pootle Demo"
+msgstr "Pootle Logosu"
 
 #: pagelayout.py:68
-#, fuzzy
 msgid "WordForge Translation Project"
-msgstr "<b>Güncel Çeviri:</b>"
+msgstr "WordForge Çeviri Projesi"
 
 #: pagelayout.py:133
 msgid "All goals"
@@ -651,59 +636,53 @@ msgid "Name"
 msgstr "İsim"
 
 #: pagelayout.py:216
-#, fuzzy
 msgid "Translated"
-msgstr "Çevir"
+msgstr "Çevrilmiş"
 
 #: pagelayout.py:217
-#, fuzzy
 msgid "Translated percentage"
-msgstr "Benim Dizgilerim'i Çevir"
+msgstr "Çevrilmiş yüzde"
 
 #: pagelayout.py:218
-#, fuzzy
 msgid "Translated words"
-msgstr "Çevir"
+msgstr "Çevrilmiş kelimeler"
 
 #: pagelayout.py:219
 msgid "Fuzzy"
-msgstr ""
+msgstr "Bulanık"
 
 #: pagelayout.py:220
 msgid "Fuzzy percentage"
-msgstr ""
+msgstr "Bulanık çeviri yüzdesi"
 
 #: pagelayout.py:221
 msgid "Fuzzy words"
-msgstr ""
+msgstr "Bulanık kelimeler"
 
 #: pagelayout.py:222 indexpage.py:751
 msgid "Untranslated"
 msgstr "Çevrilmemiş"
 
 #: pagelayout.py:223
-#, fuzzy
 msgid "Untranslated percentage"
-msgstr "Çevrilmemiş"
+msgstr "Çevrilmemiş yüzdesi"
 
 #: pagelayout.py:224
-#, fuzzy
 msgid "Untranslated words"
-msgstr "Çevrilmemiş"
+msgstr "Çevrilmemiş kelimeler"
 
 #: pagelayout.py:225
-#, fuzzy
 msgid "Total"
-msgstr "Hedefler"
+msgstr "Toplam"
 
 #: pagelayout.py:226
 msgid "Total words"
-msgstr ""
+msgstr "Toplam kelimeler"
 
 #. l10n: noun. The graphical representation of translation status
 #: pagelayout.py:228
 msgid "Graph"
-msgstr ""
+msgstr "Grafik"
 
 #: users.py:39
 #, python-format
@@ -716,30 +695,27 @@ msgstr ""
 
 #: users.py:55
 msgid "Login to Pootle"
-msgstr "Pootle'a gir"
+msgstr "Pootle'a giriş yap"
 
 #: users.py:61
-#, fuzzy
 msgid "Username:"
-msgstr "Kullanıcı adı"
+msgstr "Kullanıcı adı:"
 
 #: users.py:63
-#, fuzzy
 msgid "Password:"
-msgstr "Parola"
+msgstr "Parola:"
 
 #: users.py:64
-#, fuzzy
 msgid "Language:"
-msgstr "Diller"
+msgstr "Dil:"
 
 #: users.py:73
 msgid "Default"
-msgstr ""
+msgstr "Varsayılan"
 
 #: users.py:85
 msgid "Please enter your registration details"
-msgstr "Lütfen kaydolma ayrıntılarını girin"
+msgstr "Lütfen kayıt ayrıntılarınızı girin"
 
 #: users.py:88 users.py:408
 msgid "Pootle Registration"
@@ -747,7 +723,7 @@ msgstr "Pootle Kayıt"
 
 #: users.py:95 users.py:131
 msgid "Your requested username"
-msgstr "Dilediğiniz kullanıcı-adı"
+msgstr "İstediğiniz kullanıcı adı"
 
 #: users.py:98
 msgid "Must be a valid email address"
@@ -762,22 +738,20 @@ msgid "Your desired password"
 msgstr "Tercih ettiğiniz parola"
 
 #: users.py:106 users.py:160
-#, fuzzy
 msgid "Confirm password"
-msgstr "Tercih ettiğiniz parola"
+msgstr "Parola onayı"
 
 #: users.py:107
 msgid "Type your password again to ensure it is entered correctly"
 msgstr ""
 
 #: users.py:109
-#, fuzzy
 msgid "Register Account"
-msgstr "Hesabı Etkinleştir"
+msgstr "Hesap Aç"
 
 #: users.py:118
 msgid "Please enter your activation details"
-msgstr "Lütfen etkinleştime ayrıntılarını girin"
+msgstr "Lütfen etkinleştime ayrıntılarınızı girin"
 
 #: users.py:123
 msgid "Pootle Account Activation"
@@ -806,7 +780,7 @@ msgstr "Kişisel Ayrıntılar"
 
 #: users.py:157
 msgid "Email"
-msgstr "ePosta"
+msgstr "E-posta"
 
 #: users.py:161
 msgid "Translation Interface Configuration"
@@ -814,15 +788,15 @@ msgstr "Çeviri Arabirim Yapılandırması"
 
 #: users.py:162
 msgid "User Interface language"
-msgstr ""
+msgstr "Kullanıcı Arayüzü dili"
 
 #: users.py:163
 msgid "My Projects"
-msgstr "Benim Projelerim"
+msgstr "Projelerim"
 
 #: users.py:165
 msgid "My Languages"
-msgstr "Benim Dillerim"
+msgstr "Dillerim"
 
 #: users.py:167
 msgid "Home page"
@@ -847,7 +821,7 @@ msgstr "Çeviri kipinde satır sayısı"
 
 #: users.py:240
 msgid "Error"
-msgstr ""
+msgstr "Hata"
 
 #: users.py:292
 msgid "You need to be siteadmin to change users"
@@ -903,11 +877,13 @@ msgid "To activate your account, follow this link:\n"
 msgstr ""
 
 #: users.py:393
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "Your activation code is:\n"
 "%s\n"
-msgstr "Etkinleştirme Kodu"
+msgstr ""
+"Etkinleştirme Kodunuz:\n"
+"%s\n"
 
 #: users.py:395
 msgid ""
@@ -933,40 +909,42 @@ msgid "(Or simply click on the activation link in the email)"
 msgstr ""
 
 #: users.py:402
-#, fuzzy, python-format
+#, python-format
 msgid "Your user name is: %s\n"
-msgstr "Tam adınız"
+msgstr ""
+"Kullanıcı adınız: %s\n"
 
 #: users.py:404
-#, fuzzy, python-format
+#, python-format
 msgid "Your password is: %s\n"
-msgstr "Tercih ettiğiniz parola"
+msgstr ""
+"Parolanız: %s\n"
 
 #: users.py:405
 #, python-format
 msgid "Your registered email address is: %s\n"
 msgstr ""
+"Kayıtlı e-posta adresiniz: %s\n"
 
 #: users.py:429
 msgid "Redirecting to Registration Page..."
-msgstr ""
+msgstr "Kayıt sayfasına yönlendiriliyorsunuz..."
 
 #: users.py:453
 msgid "Redirecting to login Page..."
-msgstr ""
+msgstr "Giriş sayfasına yönlendiriliyorsunuz..."
 
 #: users.py:456
 msgid "Your account has been activated! Redirecting to login..."
-msgstr ""
+msgstr "Hesabınız etkinleştirildi! Giriş için yönlendiriliyorsunuz..."
 
 #: users.py:460
 msgid "The activation information was not valid."
-msgstr ""
+msgstr "Etkinleştirme bilgisi geçerli değil."
 
 #: users.py:461
-#, fuzzy
 msgid "Activation Failed"
-msgstr "Etkinleştirme Kodu"
+msgstr "Etkinleştirme Başarısız"
 
 #: users.py:563
 msgid "Input height must be numeric"
@@ -986,20 +964,19 @@ msgstr "Çeviri kipinde gösterilecek satır sayısı girdisi rakam olmalı"
 
 #: pootle.py:273
 msgid "Login failed"
-msgstr ""
+msgstr "Giriş Başarısız"
 
 #: pootle.py:317 pootle.py:348
 msgid "Redirecting to login..."
-msgstr ""
+msgstr "Girişe yönlendiriliyorsunuz..."
 
 #: pootle.py:320
 msgid "Need to log in to access home page"
 msgstr ""
 
 #: pootle.py:333
-#, fuzzy
 msgid "Personal details updated"
-msgstr "Kişisel Ayrıntılar"
+msgstr "Kişisel ayrıntılar güncellendi"
 
 #: pootle.py:351
 msgid "Need to log in to access admin page"
@@ -1107,19 +1084,17 @@ msgstr[1] "%d projeleri, ortalama %%d% çevrildi"
 #. l10n: The second parameter is the name of the project/language
 #. l10n: This is used as a page title. Most languages won't need to change this
 #: indexpage.py:195 indexpage.py:257
-#, fuzzy, python-format
+#, python-format
 msgid "%s: %s"
-msgstr "%s %s"
+msgstr "%s: %s"
 
 #: indexpage.py:211
-#, fuzzy
 msgid "Language Code"
-msgstr "Diller"
+msgstr "Dil Kodu"
 
 #: indexpage.py:212
-#, fuzzy
 msgid "Language Name"
-msgstr "Diller"
+msgstr "Dil İsmi"
 
 #: indexpage.py:249
 #, python-format
@@ -1129,15 +1104,14 @@ msgstr[0] "%d dili, ortalama %%d% çevrildi"
 msgstr[1] "%d dilleri, ortalama %%d% çevrildi"
 
 #: indexpage.py:262
-#, fuzzy
 msgid "Language"
-msgstr "Diller"
+msgstr "Dil"
 
 #. l10n: The first parameter is the name of the installation (like "Pootle")
 #: indexpage.py:341
-#, fuzzy, python-format
+#, python-format
 msgid "%s: Project %s, Language %s"
-msgstr "Pootle: Proje %s, Dil %s"
+msgstr "%s: Proje %s, Dil %s"
 
 #: indexpage.py:396
 msgid "Cannot upload file, no file attached"
@@ -1150,9 +1124,8 @@ msgstr ""
 "yükleyebilirsiniz"
 
 #: indexpage.py:518
-#, fuzzy
 msgid "goals"
-msgstr "Hedefler"
+msgstr "hedefler"
 
 #: indexpage.py:519
 msgid "Enter goal name"
@@ -1189,7 +1162,7 @@ msgstr "XLIFF dosyası"
 
 #: indexpage.py:694
 msgid "Qt .ts file"
-msgstr ""
+msgstr "Qt .ts dosyası"
 
 #: indexpage.py:698
 msgid "CSV file"
@@ -1230,12 +1203,11 @@ msgstr "Atanacak:"
 
 #: indexpage.py:795
 msgid "Show Editing Functions"
-msgstr ""
+msgstr "Düzenleme Fonksiyonlarını Göster"
 
 #: indexpage.py:796
-#, fuzzy
 msgid "Show Statistics"
-msgstr "İz'leri Göster"
+msgstr "İstatistikleri Göster"
 
 #: indexpage.py:797
 msgid "Show Tracks"
@@ -1277,11 +1249,11 @@ msgstr "Tüm Hedefler: %s"
 
 #: indexpage.py:816
 msgid "Translate My Strings"
-msgstr "Benim Dizgilerim'i Çevir"
+msgstr "Dizgilerimi Çevir"
 
 #: indexpage.py:818
 msgid "View My Strings"
-msgstr "Benim Dizgilerim'i Göster"
+msgstr "Dizgilerimi Göster"
 
 #: indexpage.py:823
 msgid "No strings assigned to you"
@@ -1289,7 +1261,7 @@ msgstr "Size atanmış dizgi yok"
 
 #: indexpage.py:827
 msgid "Quick Translate My Strings"
-msgstr "Benim Dizgilerim'i Hızlı Çevir"
+msgstr "Dizgilerimi Hızlı Çevir"
 
 #: indexpage.py:831
 msgid "No untranslated strings assigned to you"

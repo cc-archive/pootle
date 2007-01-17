@@ -3,49 +3,49 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: translate-pootle@lists.sourceforge.net\n"
 "POT-Creation-Date: 2006-09-16 01:51+0200\n"
-"PO-Revision-Date: 2006-09-08 11:28+0200\n"
-"Last-Translator: Tomas Kratochvila <kratochvila@gmail.com>\n"
+"PO-Revision-Date: 2007-01-05 13:00+0100\n"
+"Last-Translator: Michal Čihař <michal@cihar.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n< =4) ? 1 : 2;\n"
-"X-Generator: Pootle 0.10rc4\n"
+"X-Generator: Pootle 0.10.1\n"
 
 #. l10n: Verb
 #: projects.py:135
 msgid "View"
-msgstr ""
+msgstr "Zobrazit"
 
 #: projects.py:136 translatepage.py:571
 msgid "Suggest"
-msgstr ""
+msgstr "Navrhnout"
 
 #: projects.py:137
 msgid "Translate"
-msgstr ""
+msgstr "Přeložit"
 
 #. l10n: Verb
 #: projects.py:139
 msgid "Review"
-msgstr ""
+msgstr "Zkontrolovat"
 
 #. l10n: Verb
 #: projects.py:141
 msgid "Archive"
-msgstr ""
+msgstr "Archivovat"
 
 #: projects.py:142
 msgid "Compile PO files"
-msgstr ""
+msgstr "Kompilovat PO sobory"
 
 #: projects.py:143
 msgid "Assign"
-msgstr ""
+msgstr "Přiřadit"
 
 #: projects.py:144
 msgid "Administrate"
-msgstr ""
+msgstr "Spravovat"
 
 #. l10n: Commit to version control (like CVS or Subversion)
 #: projects.py:145 indexpage.py:713
@@ -55,50 +55,50 @@ msgstr "Provést"
 #. l10n: Don't translate "nobody" or "default"
 #: projects.py:203
 msgid "You cannot remove the \"nobody\" or \"default\" user"
-msgstr ""
+msgstr "Nemůžete odstranit uživatele \"nobody\" nebo \"default\""
 
 #: projects.py:356 projects.py:418
 msgid "You do not have rights to alter goals here"
-msgstr ""
+msgstr "Nemáte oprávnění pro změnu cílů"
 
 #: projects.py:478
 msgid "You do not have rights to upload files here"
-msgstr ""
+msgstr "Nemáte oprávnění pro nahrání souboru"
 
 #: projects.py:481
 msgid "You do not have rights to upload new files here"
-msgstr ""
+msgstr "Nemáte oprávnění pro nahrání nového souboru"
 
 #: projects.py:490
 msgid "You do not have rights to update files here"
-msgstr ""
+msgstr "Nemáte oprávnění pro aktualizaci souboru"
 
 #: projects.py:560
 msgid "You do not have rights to commit files here"
-msgstr ""
+msgstr "Nemáte oprávnění pro commit souboru"
 
 #: projects.py:893 projects.py:934
 msgid "You do not have rights to alter assignments here"
-msgstr ""
+msgstr "Nemáte oprávnění pro změnu přiřazení"
 
 #: projects.py:1138
 msgid "You do not have rights to change translations here"
-msgstr ""
+msgstr "Nemáte oprávnění pro změnu překladu"
 
 #: projects.py:1148
 msgid "You do not have rights to suggest changes here"
-msgstr ""
+msgstr "Nemáte oprávnění pro navrhování překladu"
 
 #: projects.py:1164 projects.py:1187
 msgid "You do not have rights to review suggestions here"
-msgstr ""
+msgstr "Nemáte oprávnění pro schvalování překladu"
 
 #: translatepage.py:80
 #, python-format
 msgid ""
 "%d/%d translated\n"
 "(%d blank, %d fuzzy)"
-msgstr ""
+msgstr "%d/%d přeloženo(%d prázdných, %d nejasných)"
 
 #: translatepage.py:92 adminpages.py:35 adminpages.py:74 adminpages.py:130
 #: adminpages.py:192 adminpages.py:279 adminpages.py:339 pagelayout.py:63
@@ -106,7 +106,7 @@ msgstr ""
 #: indexpage.py:97 indexpage.py:137 indexpage.py:191 indexpage.py:253
 #: indexpage.py:339
 msgid "Pootle Demo"
-msgstr "Pootle Demo"
+msgstr "Ukázka Pootle"
 
 #. l10n: first parameter: name of the installation (like "Pootle")
 #. l10n: second parameter: project name
@@ -115,28 +115,28 @@ msgstr "Pootle Demo"
 #: translatepage.py:97
 #, python-format
 msgid "%s: translating %s into %s: %s"
-msgstr ""
+msgstr "%s: překládám %s do %s: %s"
 
 #: translatepage.py:111
 msgid "Original"
-msgstr ""
+msgstr "Původní"
 
 #: translatepage.py:112
 msgid "Translation"
-msgstr ""
+msgstr "Překlad"
 
 #: translatepage.py:115
 msgid "Accept"
-msgstr ""
+msgstr "Přijmout"
 
 #: translatepage.py:116
 msgid "Reject"
-msgstr ""
+msgstr "Odmítnout"
 
 #. l10n: This heading refers to related translations and terminology
 #: translatepage.py:118
 msgid "Related"
-msgstr ""
+msgstr "Související"
 
 #. l10n: text next to search field
 #: translatepage.py:122 indexpage.py:349
@@ -146,45 +146,45 @@ msgstr "Vyhledat"
 #. l10n: "batch" refers to the set of translations that were reviewed
 #: translatepage.py:136
 msgid "End of batch"
-msgstr ""
+msgstr "Konec textů"
 
 #: translatepage.py:138
 msgid "Click here to return to the index"
-msgstr ""
+msgstr "Klikněte zde pro návrat na seznam"
 
 #. l10n: noun (the start)
 #: translatepage.py:151 translatepage.py:154
 msgid "Start"
-msgstr ""
+msgstr "Začátek"
 
 #. l10n: the parameter refers to the number of messages
 #: translatepage.py:158 translatepage.py:161
 #, python-format
 msgid "Previous %d"
-msgstr ""
+msgstr "Předchozích %d"
 
 #. l10n: the third parameter refers to the total number of messages in the file
 #: translatepage.py:163
 #, python-format
 msgid "Items %d to %d of %d"
-msgstr ""
+msgstr "Položky %d až %d z %d"
 
 #. l10n: the parameter refers to the number of messages
 #: translatepage.py:168 translatepage.py:171
 #, python-format
 msgid "Next %d"
-msgstr ""
+msgstr "Následujících %d"
 
 #. l10n: noun (the end)
 #: translatepage.py:174 translatepage.py:177
 msgid "End"
-msgstr ""
+msgstr "Konec"
 
 #. l10n: the parameter is the name of one of the quality checks, like "fuzzy"
 #: translatepage.py:194
 #, python-format
 msgid "checking %s"
-msgstr ""
+msgstr "kontroluji %s"
 
 #: translatepage.py:201 translatepage.py:204 indexpage.py:510 indexpage.py:513
 msgid "Assign Strings"
@@ -201,106 +201,106 @@ msgstr "Přiřadit akci"
 #: translatepage.py:336
 #, python-format
 msgid "There are no items matching that search ('%s')"
-msgstr ""
+msgstr "Žádné položky neodpovídají vyhledávanému textu ('%s')"
 
 #: translatepage.py:338
 msgid "You have finished going through the items you selected"
-msgstr ""
+msgstr "Ukončili jste procházení zvolených položek"
 
 #: translatepage.py:536
 msgid "Singular"
-msgstr ""
+msgstr "Jednotné číslo"
 
 #: translatepage.py:537
 msgid "Plural"
-msgstr ""
+msgstr "Množné číslo"
 
 #. l10n: verb
 #: translatepage.py:551
 msgid "Edit"
-msgstr ""
+msgstr "Upravit"
 
 #. l10n: verb
 #: translatepage.py:567
 msgid "Copy"
-msgstr ""
+msgstr "Kopírovat"
 
 #: translatepage.py:568 translatepage.py:747
 msgid "Skip"
-msgstr ""
+msgstr "Přeskočit"
 
 #. l10n: verb
 #: translatepage.py:570 translatepage.py:746 users.py:245
 msgid "Back"
-msgstr ""
+msgstr "Zpět"
 
 #: translatepage.py:572
 msgid "Submit"
-msgstr ""
+msgstr "Odeslat"
 
 #. l10n: action that increases the height of the textarea
 #: translatepage.py:575
 msgid "Grow"
-msgstr ""
+msgstr "Zvýšit"
 
 #. l10n: action that decreases the height of the textarea
 #: translatepage.py:577
 msgid "Shrink"
-msgstr ""
+msgstr "Snížit"
 
 #. l10n: action that increases the width of the textarea
 #: translatepage.py:579
 msgid "Broaden"
-msgstr ""
+msgstr "Rozšířit"
 
 #. l10n: action that decreases the width of the textarea
 #: translatepage.py:581
 msgid "Narrow"
-msgstr ""
+msgstr "Zůžit"
 
 #. l10n: action that resets the size of the textarea
 #: translatepage.py:583
 msgid "Reset"
-msgstr ""
+msgstr "Původní"
 
 #: translatepage.py:604 translatepage.py:698 translatepage.py:735
 #: translatepage.py:768
 #, python-format
 msgid "Plural Form %d"
-msgstr ""
+msgstr "Množný tvar %d"
 
 #. l10n: This is an error message that will display if the relevant problem occurs
 #: translatepage.py:620
 msgid ""
 "Translation not possible because plural information for your language is not "
 "available. Please contact the site administrator."
-msgstr ""
+msgstr "Překlad není možným, protože pro váš jazyk nejsou definovány množné tvary. Prosím kontaktujte administrátora."
 
 #: translatepage.py:702
 msgid "Current Translation:"
-msgstr ""
+msgstr "Aktuální překlad:"
 
 #. l10n: First parameter: number
 #. l10n: Second parameter: name of translator
 #: translatepage.py:715
 #, python-format
 msgid "Suggestion %d by %s:"
-msgstr ""
+msgstr "Návrh %d od %s:"
 
 #: translatepage.py:717
 #, python-format
 msgid "Suggestion %d:"
-msgstr ""
+msgstr "Návrh %d:"
 
 #. l10n: parameter: name of translator
 #: translatepage.py:721
 #, python-format
 msgid "Suggestion by %s:"
-msgstr ""
+msgstr "Návrh od %s:"
 
 #: translatepage.py:723
 msgid "Suggestion:"
-msgstr ""
+msgstr "Návrh:"
 
 #: adminpages.py:43 adminpages.py:82 adminpages.py:138 adminpages.py:200
 #: pagelayout.py:36
@@ -354,7 +354,7 @@ msgstr "Domovská stránka"
 
 #: adminpages.py:83 adminpages.py:139 adminpages.py:201
 msgid "Main admin page"
-msgstr ""
+msgstr "Hlavní administrátorská stránka"
 
 #: adminpages.py:89
 msgid "ISO Code"
@@ -366,7 +366,7 @@ msgstr "Celé jméno"
 
 #: adminpages.py:91
 msgid "(add language here)"
-msgstr ""
+msgstr "(přidejte zde jazyk)"
 
 #: adminpages.py:92
 msgid "Special Chars"
@@ -378,19 +378,19 @@ msgstr "(speciální znaky)"
 
 #: adminpages.py:93 indexpage.py:214
 msgid "Number of Plurals"
-msgstr ""
+msgstr "Počet množných tvarů"
 
 #: adminpages.py:93
 msgid "(number of plurals)"
-msgstr ""
+msgstr "(počet množných tvarů)"
 
 #: adminpages.py:94 indexpage.py:215
 msgid "Plural Equation"
-msgstr ""
+msgstr "Rovnice množných tvarů"
 
 #: adminpages.py:94
 msgid "(plural equation)"
-msgstr ""
+msgstr "(rovnice množných tvarů)"
 
 #: adminpages.py:95
 msgid "Remove Language"
@@ -404,7 +404,7 @@ msgstr "Odebrat %s"
 
 #: adminpages.py:128
 msgid "Standard"
-msgstr ""
+msgstr "Standard"
 
 #: adminpages.py:145
 msgid "Project Code"
@@ -412,7 +412,7 @@ msgstr "Kód projektu"
 
 #: adminpages.py:147
 msgid "(add project here)"
-msgstr ""
+msgstr "(přidejte zde projekt)"
 
 #: adminpages.py:148
 msgid "Project Description"
@@ -518,13 +518,11 @@ msgstr "Nelze nastavit práva pro uživatele %s - takový uživatel neexistuje"
 
 #: adminpages.py:352
 msgid "This is a GNU-style project (one directory, files named per language)."
-msgstr ""
-"Toto je projekt ve stylu GNU (jeden adresář, pro každý jazyk soubor po něm "
-"pojmenovaný)"
+msgstr "Toto je projekt ve stylu GNU (jeden adresář, pro každý jazyk soubor po něm pojmenovaný)."
 
 #: adminpages.py:354
 msgid "This is a standard style project (one directory per language)."
-msgstr "Toto je standartní projekt (jeden adresář pro každý jazyk)"
+msgstr "Toto je standartní projekt (jeden adresář pro každý jazyk)."
 
 #: adminpages.py:355
 msgid "User Permissions"
@@ -552,15 +550,15 @@ msgstr "Aktualizovat práva"
 
 #: pagelayout.py:37
 msgid "All projects"
-msgstr ""
+msgstr "Všechny projekty"
 
 #: pagelayout.py:38
 msgid "All languages"
-msgstr ""
+msgstr "Všechny jazyky"
 
 #: pagelayout.py:39
 msgid "My account"
-msgstr ""
+msgstr "Můj účet"
 
 #: pagelayout.py:40 pagelayout.py:144 indexpage.py:197 indexpage.py:259
 msgid "Admin"
@@ -568,86 +566,87 @@ msgstr "Správce"
 
 #: pagelayout.py:41
 msgid "Docs & help"
-msgstr ""
+msgstr "Dokumentace a nápověda"
 
 #: pagelayout.py:42
 msgid "Log out"
-msgstr ""
+msgstr "Odhlásit"
 
 #: pagelayout.py:43
 msgid "Log in"
-msgstr ""
+msgstr "Přihlásit"
 
 #. l10n: Verb, as in "to register"
 #: pagelayout.py:45
 msgid "Register"
-msgstr ""
+msgstr "Registrovat"
 
 #: pagelayout.py:46
 msgid "Activate"
-msgstr ""
+msgstr "Aktivovat"
 
 #: pagelayout.py:67
 msgid "Pootle Logo"
-msgstr ""
+msgstr "Logo Pootle"
 
 #: pagelayout.py:68
 msgid "WordForge Translation Project"
-msgstr ""
+msgstr "WordForge, projekt pro překlady"
 
 #: pagelayout.py:133
 msgid "All goals"
-msgstr ""
+msgstr "Všechny cíle"
 
 #: pagelayout.py:204
 #, python-format
 msgid "%d/%d files"
-msgstr ""
+msgstr "%d/%d souborů"
 
 #: pagelayout.py:207
 #, python-format
 msgid "%d file"
 msgid_plural "%d files"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d soubor"
+msgstr[1] "%d soubory"
+msgstr[2] "%d souborů"
 
 #: pagelayout.py:208 indexpage.py:960
 #, python-format
 msgid "%d/%d words (%d%%) translated"
-msgstr ""
+msgstr "%d/%d slov (%d%%) přeloženo"
 
 #: pagelayout.py:209
 #, python-format
 msgid "%d/%d strings"
-msgstr ""
+msgstr "%d/%d textů"
 
 #: pagelayout.py:215 users.py:155
 msgid "Name"
-msgstr ""
+msgstr "Jméno"
 
 #: pagelayout.py:216
 msgid "Translated"
-msgstr ""
+msgstr "Přeloženo"
 
 #: pagelayout.py:217
 msgid "Translated percentage"
-msgstr ""
+msgstr "Přeloženo procent"
 
 #: pagelayout.py:218
 msgid "Translated words"
-msgstr ""
+msgstr "Přeloženo slov"
 
 #: pagelayout.py:219
 msgid "Fuzzy"
-msgstr ""
+msgstr "Nejasných"
 
 #: pagelayout.py:220
 msgid "Fuzzy percentage"
-msgstr ""
+msgstr "Nejasných procent"
 
 #: pagelayout.py:221
 msgid "Fuzzy words"
-msgstr ""
+msgstr "Nejasných slov"
 
 #: pagelayout.py:222 indexpage.py:751
 msgid "Untranslated"
@@ -655,180 +654,181 @@ msgstr "Nepřeloženo"
 
 #: pagelayout.py:223
 msgid "Untranslated percentage"
-msgstr ""
+msgstr "Nepřeloženo procent"
 
 #: pagelayout.py:224
 msgid "Untranslated words"
-msgstr ""
+msgstr "Nepřeloženo slov"
 
 #: pagelayout.py:225
 msgid "Total"
-msgstr ""
+msgstr "Celkem"
 
 #: pagelayout.py:226
 msgid "Total words"
-msgstr ""
+msgstr "Celkem slov"
 
 #. l10n: noun. The graphical representation of translation status
 #: pagelayout.py:228
 msgid "Graph"
-msgstr ""
+msgstr "Graf"
 
 #: users.py:39
 #, python-format
 msgid "You must supply a valid password of at least %d characters."
-msgstr ""
+msgstr "Musíte zadat platné heslo o délce nejméně %d znaků."
 
 #: users.py:41
 msgid "The password is not the same as the confirmation."
-msgstr ""
+msgstr "Heslo není stejné jako jeho potvrzení."
 
 #: users.py:55
 msgid "Login to Pootle"
-msgstr ""
+msgstr "Přihlásit se do Pootle"
 
 #: users.py:61
 msgid "Username:"
-msgstr ""
+msgstr "Jméno:"
 
 #: users.py:63
 msgid "Password:"
-msgstr ""
+msgstr "Heslo:"
 
 #: users.py:64
 msgid "Language:"
-msgstr ""
+msgstr "Jazyk:"
 
 #: users.py:73
 msgid "Default"
-msgstr ""
+msgstr "Výchozí"
 
 #: users.py:85
 msgid "Please enter your registration details"
-msgstr ""
+msgstr "Prosím vyplňte detaily registrace"
 
 #: users.py:88 users.py:408
 msgid "Pootle Registration"
-msgstr ""
+msgstr "Registrace do Pootle"
 
 #: users.py:95 users.py:131
 msgid "Your requested username"
-msgstr ""
+msgstr "Požadované uživatelské jméno"
 
 #: users.py:98
 msgid "Must be a valid email address"
-msgstr ""
+msgstr "Musí být zadána platná emailová adresa"
 
 #: users.py:101
 msgid "Your full name"
-msgstr ""
+msgstr "Vaše celé jméno"
 
 #: users.py:104
 msgid "Your desired password"
-msgstr ""
+msgstr "Požadované heslo"
 
 #: users.py:106 users.py:160
 msgid "Confirm password"
-msgstr ""
+msgstr "Potvrďte heslo"
 
 #: users.py:107
 msgid "Type your password again to ensure it is entered correctly"
-msgstr ""
+msgstr "Zadejte heslo znovu, aby se předešlo překlepům"
 
 #: users.py:109
 msgid "Register Account"
-msgstr ""
+msgstr "Vytvořit účet"
 
 #: users.py:118
 msgid "Please enter your activation details"
-msgstr ""
+msgstr "Prosím zadejte detaily pro aktivaci"
 
 #: users.py:123
 msgid "Pootle Account Activation"
-msgstr ""
+msgstr "Aktivace účtu Pootle"
 
 #: users.py:133
 msgid "Activation Code"
-msgstr ""
+msgstr "Aktivační kód"
 
 #: users.py:134
 msgid "The activation code you received"
-msgstr ""
+msgstr "Aktivační kód, který vám přišel"
 
 #: users.py:136
 msgid "Activate Account"
-msgstr ""
+msgstr "Aktivovat účet"
 
 #: users.py:147
 #, python-format
 msgid "Options for: %s"
-msgstr ""
+msgstr "Možnosti pro: %s"
 
 #: users.py:152
 msgid "Personal Details"
-msgstr ""
+msgstr "Osobní detaily"
 
 #: users.py:157
 msgid "Email"
-msgstr ""
+msgstr "Email"
 
 #: users.py:161
 msgid "Translation Interface Configuration"
-msgstr ""
+msgstr "Nastavení rozhraní překladu"
 
 #: users.py:162
 msgid "User Interface language"
-msgstr ""
+msgstr "Jazyk rozhraní"
 
 #: users.py:163
 msgid "My Projects"
-msgstr ""
+msgstr "Moje projekty"
 
 #: users.py:165
 msgid "My Languages"
-msgstr ""
+msgstr "Moje jazyky"
 
 #: users.py:167
 msgid "Home page"
-msgstr ""
+msgstr "Domovská stránka"
 
 #: users.py:201
 msgid "Input Height (in lines)"
-msgstr ""
+msgstr "Výška vstupu (v řádcích)"
 
 #: users.py:201
 msgid "Input Width (in characters)"
-msgstr ""
+msgstr "Šířka vstupu (ve znacích)"
 
 #: users.py:202
 msgid "Number of rows in view mode"
-msgstr ""
+msgstr "Počet řádků při prohlížení"
 
 #: users.py:203
 msgid "Number of rows in translate mode"
-msgstr ""
+msgstr "Počet řádků při překládání"
 
 #: users.py:240
 msgid "Error"
-msgstr ""
+msgstr "Chyba"
 
 #: users.py:292
 msgid "You need to be siteadmin to change users"
-msgstr ""
+msgstr "Musíte být administrátor, aby bylo možno měnit uživatele"
 
 #: users.py:356
 msgid ""
 "Username must be alphanumeric, and must start with an alphabetic character."
-msgstr ""
+msgstr "Jméno se musí skládat z číslic a písmen a musí začínat písmenem."
 
 #: users.py:362
 msgid "You must supply a valid email address"
-msgstr ""
+msgstr "Musíte zadat platnou emailovou adresu"
 
 #: users.py:371
 msgid ""
 "You (or someone else) attempted to register an account with your username.\n"
 msgstr ""
+"Vy (nebo někdo jiný) se pokusil zaregistrovat účet s vaším jménem.\n"
 
 #: users.py:372
 msgid "We don't store your actual password but only a hash of it.\n"
@@ -963,19 +963,19 @@ msgstr ""
 
 #: pootle.py:351
 msgid "Need to log in to access admin page"
-msgstr ""
+msgstr "Pro přístup k administraci se musíte přihlásit"
 
 #: pootle.py:358
 msgid "Redirecting to home..."
-msgstr ""
+msgstr "Přesměrovávám na domov..."
 
 #: pootle.py:361
 msgid "You do not have the rights to administer pootle."
-msgstr ""
+msgstr "Nemáte oprávnění pro administraci pootle."
 
 #: indexpage.py:61
 msgid "About Pootle"
-msgstr "O program Pootle"
+msgstr "O programu Pootle"
 
 #. l10n: Take care to use HTML tags correctly. A markup error could cause a display error.
 #: indexpage.py:63
@@ -985,18 +985,14 @@ msgid ""
 "you can download it and run your own copy if you like. You can also help "
 "participate in the development in many ways (you don't have to be able to "
 "program)."
-msgstr ""
-"<strong>Pootle</strong> je jednoduchý webový portál, který Ti umožní "
-"<strong>překládat</strong>! Díky tomu, že Pootle je <strong>zdarma</strong>, "
-"můžeš jej stáhnout a spustit si vlastní kopii. Můžeš také mnoha cestami "
-"přispět k vývoji (a nemusíš umět programovat)."
+msgstr "<strong>Pootle</strong> je jednoduchý webový portál, který umožní <strong>překládat</strong>! Díky tomu, že Pootle je <strong>zdarma</strong>, můžete jej stáhnout a spustit si vlastní kopii. Můžete také mnoha cestami přispět k vývoji (a nemusíte umět programovat)."
 
 #: indexpage.py:64
 msgid ""
 "The Pootle project itself is hosted at <a href=\"http://translate."
 "sourceforge.net/\">translate.sourceforge.net</a> where you can find the "
 "details about source code, mailing lists etc."
-msgstr ""
+msgstr "Projekt Pootle je hostovaný na <a href=\"http://translate.sourceforge.net/\">translate.sourceforge.net</a>, kde naleznete podrobnosti o zdrojovém kódu, mailing listech, atd."
 
 #. l10n: If your language uses right-to-left layout and you leave the English untranslated, consider enclosing the necessary text with <span dir="ltr">.......</span> to help browsers to display it correctly.
 #. l10n: Take care to use HTML tags correctly. A markup error could cause a display error.
@@ -1005,7 +1001,7 @@ msgid ""
 "The name stands for <b>PO</b>-based <b>O</b>nline <b>T</b>ranslation / <b>L</"
 "b>ocalization <b>E</b>ngine, but you may need to read <a href=\"http://www."
 "thechestnut.com/flumps.htm\">this</a>."
-msgstr ""
+msgstr "Jméno je zkratka z anglického <b>PO</b>-based <b>O</b>nline <b>T</b>ranslation / <b>L</b>ocalization <b>E</b>ngine, ale možná si budete chtít přečíst <a href=\"http://www.thechestnut.com/flumps.htm\">toto</a>."
 
 #: indexpage.py:68
 msgid "Versions"
@@ -1018,7 +1014,7 @@ msgstr "Verze"
 msgid ""
 "This site is running:<br />Pootle %s<br />Translate Toolkit %s<br />jToolkit "
 "%s<br />Kid %s<br />ElementTree %s<br />Python %s (on %s/%s)"
-msgstr ""
+msgstr "Tyto stránky používají:<br />Pootle %s<br />Translate Toolkit %s<br />jToolkit %s<br />Kid %s<br />ElementTree %s<br />Python %s (na %s/%s)"
 
 #: indexpage.py:94
 msgid "About this Pootle server"
@@ -1059,7 +1055,7 @@ msgstr[2] ""
 #: indexpage.py:195 indexpage.py:257
 #, python-format
 msgid "%s: %s"
-msgstr ""
+msgstr "%s: %s"
 
 #: indexpage.py:211
 msgid "Language Code"
@@ -1138,7 +1134,7 @@ msgstr "Qt .ts soubor"
 
 #: indexpage.py:698
 msgid "CSV file"
-msgstr "CVS soubor"
+msgstr "CSV soubor"
 
 #: indexpage.py:703
 msgid "MO file"
@@ -1192,11 +1188,11 @@ msgstr ""
 #. l10n: "Checks" are quality checks that Pootle performs on translations to test for common mistakes
 #: indexpage.py:799
 msgid "Show Checks"
-msgstr ""
+msgstr "Ukázat kontroly"
 
 #: indexpage.py:799
 msgid "Hide Checks"
-msgstr ""
+msgstr "Skrýt kontroly"
 
 #: indexpage.py:800
 msgid "Show Goals"
@@ -1229,7 +1225,7 @@ msgstr "Zobrazit mé řetězce"
 
 #: indexpage.py:823
 msgid "No strings assigned to you"
-msgstr "Žádné řetězce Vám nebyly přiřazeny"
+msgstr "Nebyly vám přiřazeny žádné řetězce"
 
 #: indexpage.py:827
 msgid "Quick Translate My Strings"
@@ -1237,7 +1233,7 @@ msgstr "Rychle přeložit mé řetězce"
 
 #: indexpage.py:831
 msgid "No untranslated strings assigned to you"
-msgstr "Žádné nepřeložené řetězce Vám nebyly přiřazeny"
+msgstr "Nebyly vám přiřazeny žádné nepřeložené řetězce"
 
 #: indexpage.py:835
 msgid "Review Suggestions"

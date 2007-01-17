@@ -3,15 +3,15 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: translate-pootle@lists.sourceforge.net\n"
 "POT-Creation-Date: 2006-09-16 01:51+0200\n"
-"PO-Revision-Date: 2006-08-22 15:53+0200\n"
-"Last-Translator: test test <werbemails@nurfuerspam.de>\n"
+"PO-Revision-Date: 2006-10-17 09:20+0200\n"
+"Last-Translator: Sharon Bahagi <tamino73@gmx.net>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "Generated-By: pygettext.py 1.1\n"
-"X-Generator: Pootle 0.10rc3\n"
+"X-Generator: Pootle 0.10.1\n"
 
 #. l10n: Verb
 #: projects.py:135
@@ -690,7 +690,7 @@ msgstr "Bitte geben Sie ein gültiges Passwort mit min. %d Zeichen an."
 
 #: users.py:41
 msgid "The password is not the same as the confirmation."
-msgstr ""
+msgstr "Das Passwort stimmt nicht mit der Bestätigung überein."
 
 #: users.py:55
 msgid "Login to Pootle"
@@ -737,13 +737,12 @@ msgid "Your desired password"
 msgstr "Ihr gewünschtes Passwort"
 
 #: users.py:106 users.py:160
-#, fuzzy
 msgid "Confirm password"
-msgstr "Ihr gewünschtes Passwort"
+msgstr "Passwort bestätigen"
 
 #: users.py:107
 msgid "Type your password again to ensure it is entered correctly"
-msgstr ""
+msgstr "Geben Sie Ihr Passwort erneut ein damit die Schreibweise korrekt ist"
 
 #: users.py:109
 msgid "Register Account"
@@ -820,7 +819,7 @@ msgstr "Zeilenanzahl im Übersetzungs-Modus"
 
 #: users.py:240
 msgid "Error"
-msgstr ""
+msgstr "Fehler"
 
 #: users.py:292
 msgid "You need to be siteadmin to change users"
@@ -829,12 +828,11 @@ msgstr "Sie müssen Administrator dieser Seite sein um Benutzer zu ändern"
 #: users.py:356
 msgid ""
 "Username must be alphanumeric, and must start with an alphabetic character."
-msgstr ""
+msgstr "Der Benutzername muss alfanumerisch sein und mit einem Buchstaben anfangen."
 
 #: users.py:362
-#, fuzzy
 msgid "You must supply a valid email address"
-msgstr "Es muss eine gültige Email-Adresse sein"
+msgstr "Geben Sie eine gültige Email-Adresse ein"
 
 #: users.py:371
 msgid ""
@@ -984,9 +982,8 @@ msgid "Need to log in to access home page"
 msgstr "Sie müssen sich erst einloggen auf die Seite zuzugreifen"
 
 #: pootle.py:333
-#, fuzzy
 msgid "Personal details updated"
-msgstr "Persönliche Daten"
+msgstr "Persönliche Daten aktualisiert"
 
 #: pootle.py:351
 msgid "Need to log in to access admin page"
@@ -1132,8 +1129,7 @@ msgstr "Kann die Datei nicht hochladen, keine Datei angehängt"
 
 #: indexpage.py:402
 msgid "Can only upload PO files and zips of PO files"
-msgstr ""
-"Es können nur PO-Dateien und ZIP-Dateien von PO-Dateien hochgeladen werden."
+msgstr "Es können nur PO-Dateien und ZIP-Dateien von PO-Dateien hochgeladen werden"
 
 #: indexpage.py:518
 msgid "goals"

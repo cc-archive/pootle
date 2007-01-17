@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: translate-pootle@lists.sourceforge.net\n"
 "POT-Creation-Date: 2006-09-16 01:51+0200\n"
-"PO-Revision-Date: 2006-09-16 14:12+0200\n"
+"PO-Revision-Date: 2006-11-06 08:51+0100\n"
 "Last-Translator: Clytie Siddall <clytie@riverland.net.au>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 "Generated-By: pygettext.py 1.1\n"
-"X-Generator: Pootle 0.10\n"
+"X-Generator: Pootle 0.10.1\n"
 
 #. l10n: Verb
 #: projects.py:135
@@ -448,7 +448,7 @@ msgstr "Gỡ bỏ dự án"
 
 #: adminpages.py:207 users.py:66
 msgid "Login"
-msgstr "Đang nhập"
+msgstr "Đăng nhập"
 
 #: adminpages.py:209 users.py:336
 msgid "(add full name here)"

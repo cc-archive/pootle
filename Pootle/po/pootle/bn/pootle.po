@@ -3,54 +3,54 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: translate-pootle@lists.sourceforge.net\n"
 "POT-Creation-Date: 2006-09-16 01:51+0200\n"
-"PO-Revision-Date: 2006-09-08 11:22+0200\n"
+"PO-Revision-Date: 2006-11-09 13:12+0100\n"
 "Last-Translator: Jamil Ahmed <itsjamil@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Pootle 0.10rc4\n"
+"X-Generator: Pootle 0.10.1\n"
 
 #. l10n: Verb
 #: projects.py:135
 msgid "View"
-msgstr ""
+msgstr "প্রদর্শন"
 
 #: projects.py:136 translatepage.py:571
 msgid "Suggest"
-msgstr ""
+msgstr "প্রস্তাব"
 
 #: projects.py:137
 msgid "Translate"
-msgstr ""
+msgstr "অনুবাদ"
 
 #. l10n: Verb
 #: projects.py:139
 msgid "Review"
-msgstr ""
+msgstr "পর্যালোচনা"
 
 #. l10n: Verb
 #: projects.py:141
 msgid "Archive"
-msgstr ""
+msgstr "আর্কাইভ"
 
 #: projects.py:142
 msgid "Compile PO files"
-msgstr ""
+msgstr "PO ফাইল কম্পাইল করো"
 
 #: projects.py:143
 msgid "Assign"
-msgstr ""
+msgstr "বরাদ্দ করো"
 
 #: projects.py:144
 msgid "Administrate"
-msgstr ""
+msgstr "অ্যাডমিনিস্ট্রেট"
 
 #. l10n: Commit to version control (like CVS or Subversion)
 #: projects.py:145 indexpage.py:713
 msgid "Commit"
-msgstr ""
+msgstr "কমিট করো"
 
 #. l10n: Don't translate "nobody" or "default"
 #: projects.py:203

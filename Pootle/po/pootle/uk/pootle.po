@@ -1,18 +1,17 @@
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: translate-pootle@lists.sourceforge.net\n"
 "POT-Creation-Date: 2006-09-16 01:51+0200\n"
-"PO-Revision-Date: 2006-06-14 14:29+0200\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"PO-Revision-Date: 2006-11-03 13:39+0100\n"
+"Last-Translator: Paul Colomiets <pc@gafol.net>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10< =4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "Generated-By: pygettext.py 1.1\n"
-"X-Generator: Translate Toolkit 0.9rc1\n"
+"X-Generator: Pootle 0.10.1\n"
 
 #. l10n: Verb
 #: projects.py:135
@@ -25,21 +24,21 @@ msgstr ""
 
 #: projects.py:137
 msgid "Translate"
-msgstr ""
+msgstr "Перекласти"
 
 #. l10n: Verb
 #: projects.py:139
 msgid "Review"
-msgstr ""
+msgstr "Переглянути"
 
 #. l10n: Verb
 #: projects.py:141
 msgid "Archive"
-msgstr ""
+msgstr "Архівувати"
 
 #: projects.py:142
 msgid "Compile PO files"
-msgstr ""
+msgstr "Підготувати PO файли"
 
 #: projects.py:143
 msgid "Assign"
@@ -57,7 +56,7 @@ msgstr ""
 #. l10n: Don't translate "nobody" or "default"
 #: projects.py:203
 msgid "You cannot remove the \"nobody\" or \"default\" user"
-msgstr ""
+msgstr "Ви не можете видалити користувачів \"nobody\" та \"default"
 
 #: projects.py:356 projects.py:418
 msgid "You do not have rights to alter goals here"
@@ -65,11 +64,11 @@ msgstr ""
 
 #: projects.py:478
 msgid "You do not have rights to upload files here"
-msgstr ""
+msgstr "У вас немає прав щоб розмістити файли"
 
 #: projects.py:481
 msgid "You do not have rights to upload new files here"
-msgstr ""
+msgstr "У вас немає прав щоб додати файли"
 
 #: projects.py:490
 msgid "You do not have rights to update files here"

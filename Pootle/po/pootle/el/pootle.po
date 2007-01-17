@@ -3,15 +3,15 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: translate-pootle@lists.sourceforge.net\n"
 "POT-Creation-Date: 2006-09-16 01:51+0200\n"
-"PO-Revision-Date: 2006-06-28 05:20+0200\n"
-"Last-Translator: Zoiks El Presidente <zoiks01@yahoo.com>\n"
+"PO-Revision-Date: 2006-12-29 16:09+0100\n"
+"Last-Translator: Θεοχάρης Λεδάκης <killer.instict@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "Generated-By: pygettext.py 1.1\n"
-"X-Generator: Pootle 0.9\n"
+"X-Generator: Pootle 0.10.1\n"
 
 #. l10n: Verb
 #: projects.py:135
@@ -64,15 +64,15 @@ msgstr ""
 
 #: projects.py:478
 msgid "You do not have rights to upload files here"
-msgstr ""
+msgstr "Δεν έχετε δικαιώματα για να ανεβάσετε αρχεία εδώ"
 
 #: projects.py:481
 msgid "You do not have rights to upload new files here"
-msgstr ""
+msgstr "Δεν έχετε δικαιώματα για να ανεβάσετε νέα αρχεία εδώ"
 
 #: projects.py:490
 msgid "You do not have rights to update files here"
-msgstr ""
+msgstr "Δεν έχετε δικαιώματα για να ανανεώσετε αρχεία εδώ"
 
 #: projects.py:560
 msgid "You do not have rights to commit files here"
@@ -84,11 +84,11 @@ msgstr ""
 
 #: projects.py:1138
 msgid "You do not have rights to change translations here"
-msgstr ""
+msgstr "Δεν έχετε δικαιώματα για να αλλάξετε μεταφράσεις εδώ"
 
 #: projects.py:1148
 msgid "You do not have rights to suggest changes here"
-msgstr ""
+msgstr "Δεν έχετε δικαιώματα για να προτείνετε αλλαγές εδώ"
 
 #: projects.py:1164 projects.py:1187
 msgid "You do not have rights to review suggestions here"
@@ -100,8 +100,8 @@ msgid ""
 "%d/%d translated\n"
 "(%d blank, %d fuzzy)"
 msgstr ""
-"<br>%d/%d μεταφρασμένα\n"
-"<br>(%d κενά, %d ασαφή)"
+"%d/%d μεταφρασμένα\n"
+"(%d κενά, %d ασαφή)"
 
 #: translatepage.py:92 adminpages.py:35 adminpages.py:74 adminpages.py:130
 #: adminpages.py:192 adminpages.py:279 adminpages.py:339 pagelayout.py:63

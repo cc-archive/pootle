@@ -3,14 +3,14 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: translate-pootle@lists.sourceforge.net\n"
 "POT-Creation-Date: 2006-09-16 01:51+0200\n"
-"PO-Revision-Date: 2006-09-01 05:39+0200\n"
+"PO-Revision-Date: 2006-11-05 08:55+0100\n"
 "Last-Translator: Zhang Le <robert.zhangle@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Pootle 0.10rc4\n"
+"X-Generator: Pootle 0.10.1\n"
 
 #. l10n: Verb
 #: projects.py:135
@@ -680,7 +680,7 @@ msgstr "你必须提供一个至少包含%d个字符的合法密码。"
 
 #: users.py:41
 msgid "The password is not the same as the confirmation."
-msgstr ""
+msgstr "密码不一致"
 
 #: users.py:55
 msgid "Login to Pootle"
@@ -727,13 +727,12 @@ msgid "Your desired password"
 msgstr "你想要设置的密码"
 
 #: users.py:106 users.py:160
-#, fuzzy
 msgid "Confirm password"
-msgstr "你想要设置的密码"
+msgstr "确认密码"
 
 #: users.py:107
 msgid "Type your password again to ensure it is entered correctly"
-msgstr ""
+msgstr "请再次输入密码以确保输入正确"
 
 #: users.py:109
 msgid "Register Account"
@@ -810,7 +809,7 @@ msgstr "翻译模式下的行数"
 
 #: users.py:240
 msgid "Error"
-msgstr ""
+msgstr "错误"
 
 #: users.py:292
 msgid "You need to be siteadmin to change users"
@@ -819,10 +818,9 @@ msgstr "你需要成为网站管理员才能改变用户"
 #: users.py:356
 msgid ""
 "Username must be alphanumeric, and must start with an alphabetic character."
-msgstr ""
+msgstr "用户名只能包含字母和数字，必须以字母开头"
 
 #: users.py:362
-#, fuzzy
 msgid "You must supply a valid email address"
 msgstr "必须是一个合法的email地址"
 
@@ -965,9 +963,8 @@ msgid "Need to log in to access home page"
 msgstr "访问主页需要登录"
 
 #: pootle.py:333
-#, fuzzy
 msgid "Personal details updated"
-msgstr "个人详细资料"
+msgstr "个人详细资料已经更新"
 
 #: pootle.py:351
 msgid "Need to log in to access admin page"

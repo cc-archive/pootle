@@ -3,15 +3,15 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: translate-pootle@lists.sourceforge.net\n"
 "POT-Creation-Date: 2006-09-16 01:51+0200\n"
-"PO-Revision-Date: 2006-08-22 21:57+0200\n"
-"Last-Translator: Miguel Figueiredo <elmig@debianpt.org>\n"
+"PO-Revision-Date: 2006-12-03 06:17+0100\n"
+"Last-Translator: ptbranco <ptbranco@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "Generated-By: pygettext.py 1.1\n"
-"X-Generator: Pootle 0.10rc3\n"
+"X-Generator: Pootle 0.10.1\n"
 
 #. l10n: Verb
 #: projects.py:135
@@ -109,7 +109,7 @@ msgstr ""
 #: indexpage.py:97 indexpage.py:137 indexpage.py:191 indexpage.py:253
 #: indexpage.py:339
 msgid "Pootle Demo"
-msgstr "Demo do Pootle"
+msgstr "Demonstração do Pootle"
 
 #. l10n: first parameter: name of the installation (like "Pootle")
 #. l10n: second parameter: project name
@@ -208,7 +208,7 @@ msgstr "Nenhum item coincide com a busca ('%s') "
 
 #: translatepage.py:338
 msgid "You have finished going through the items you selected"
-msgstr "Você acabou de verificar todos os itens que você selecionou"
+msgstr "Acabou de verificar todos os itens que seleccionou"
 
 #: translatepage.py:536
 msgid "Singular"
@@ -326,7 +326,7 @@ msgstr "Projectos"
 
 #: adminpages.py:47
 msgid "General options"
-msgstr "Opções Gerais"
+msgstr "Opções gerais"
 
 #: adminpages.py:48 users.py:153
 msgid "Option"
@@ -339,7 +339,7 @@ msgstr "Valor actual"
 #: adminpages.py:50 adminpages.py:85 adminpages.py:141 adminpages.py:203
 #: users.py:168
 msgid "Save changes"
-msgstr "Salvar alterações"
+msgstr "Guardar alterações"
 
 #: adminpages.py:54
 msgid "Title"
@@ -477,7 +477,7 @@ msgstr "Remover Utilizador"
 
 #: adminpages.py:267
 msgid "Back to main page"
-msgstr "Voltar a página principal"
+msgstr "Voltar à página principal"
 
 #: adminpages.py:268
 msgid "Existing languages"
@@ -524,13 +524,11 @@ msgstr ""
 
 #: adminpages.py:352
 msgid "This is a GNU-style project (one directory, files named per language)."
-msgstr ""
-"Este é um projeto do estilo GNU (um directório, ficheiros chamados como o "
-"idioma)."
+msgstr "Este é um projecto ao estilo GNU (uma pasta com ficheiros denominados tendo em conta o idioma)."
 
 #: adminpages.py:354
 msgid "This is a standard style project (one directory per language)."
-msgstr "Este é um projeto de estilo padrão (um directório por idioma)."
+msgstr "Este é um projecto de estilo padrão (uma pasta por idioma)."
 
 #: adminpages.py:355
 msgid "User Permissions"
@@ -595,7 +593,7 @@ msgstr "Activar"
 
 #: pagelayout.py:67
 msgid "Pootle Logo"
-msgstr "Logo do Pootle"
+msgstr "Logótipo do Pootle"
 
 #: pagelayout.py:68
 msgid "WordForge Translation Project"
@@ -657,15 +655,15 @@ msgstr "Palavras aproximadas (fuzzy)"
 
 #: pagelayout.py:222 indexpage.py:751
 msgid "Untranslated"
-msgstr "Sem Tradução"
+msgstr "Por traduzir"
 
 #: pagelayout.py:223
 msgid "Untranslated percentage"
-msgstr "Percentagem sem tradução"
+msgstr "Percentagem não traduzida"
 
 #: pagelayout.py:224
 msgid "Untranslated words"
-msgstr "Palavras sem tradução"
+msgstr "Palavras não traduzidas"
 
 #: pagelayout.py:225
 msgid "Total"
@@ -683,11 +681,11 @@ msgstr "Gráfico"
 #: users.py:39
 #, python-format
 msgid "You must supply a valid password of at least %d characters."
-msgstr "Tem de indicar uma password válida de pelo menos %d caracteres."
+msgstr "Tem de indicar uma senha válida com pelo menos %d caracteres."
 
 #: users.py:41
 msgid "The password is not the same as the confirmation."
-msgstr ""
+msgstr "A senha não coincide com a confirmação"
 
 #: users.py:55
 msgid "Login to Pootle"
@@ -719,7 +717,7 @@ msgstr "Registo no Pootle"
 
 #: users.py:95 users.py:131
 msgid "Your requested username"
-msgstr "O seu nome de utilizador pedido"
+msgstr "O seu nome de utilizador pretendido"
 
 #: users.py:98
 msgid "Must be a valid email address"
@@ -734,13 +732,12 @@ msgid "Your desired password"
 msgstr "A sua senha desejada"
 
 #: users.py:106 users.py:160
-#, fuzzy
 msgid "Confirm password"
-msgstr "A sua senha desejada"
+msgstr "Confirme a sua senha"
 
 #: users.py:107
 msgid "Type your password again to ensure it is entered correctly"
-msgstr ""
+msgstr "Introduza novamente a sua senha para verificação"
 
 #: users.py:109
 msgid "Register Account"
@@ -817,7 +814,7 @@ msgstr "Número de linhas no modo de tradução"
 
 #: users.py:240
 msgid "Error"
-msgstr ""
+msgstr "Erro"
 
 #: users.py:292
 msgid "You need to be siteadmin to change users"
@@ -826,12 +823,11 @@ msgstr "Você precisa ser o administrador do site para alterar utilizadores"
 #: users.py:356
 msgid ""
 "Username must be alphanumeric, and must start with an alphabetic character."
-msgstr ""
+msgstr "O nome do utilizador é alfanumérico e tem que iniciar por uma letra."
 
 #: users.py:362
-#, fuzzy
 msgid "You must supply a valid email address"
-msgstr "Tem de ser um endereço de email válido"
+msgstr "Tem de fornecer um endereço de email válido"
 
 #: users.py:371
 msgid ""
@@ -982,9 +978,8 @@ msgid "Need to log in to access home page"
 msgstr "Precisa de fazer login para aceder á home page"
 
 #: pootle.py:333
-#, fuzzy
 msgid "Personal details updated"
-msgstr "Detalhes Pessoais"
+msgstr "Foram actualizados os seus detalhes pessoais"
 
 #: pootle.py:351
 msgid "Need to log in to access admin page"

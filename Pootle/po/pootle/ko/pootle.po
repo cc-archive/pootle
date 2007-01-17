@@ -3,15 +3,15 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: translate-pootle@lists.sourceforge.net\n"
 "POT-Creation-Date: 2006-09-16 01:51+0200\n"
-"PO-Revision-Date: 2006-10-04 09:46+0200\n"
-"Last-Translator: YoungHo Kang <ykang@deskweb.net>\n"
+"PO-Revision-Date: 2006-11-03 22:58+0100\n"
+"Last-Translator: Jonghoon Kim <jonghoon@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 "Generated-By: pygettext.py 1.1\n"
-"X-Generator: Pootle 0.10.1rc1\n"
+"X-Generator: Pootle 0.10.1\n"
 
 #. l10n: Verb
 #: projects.py:135
@@ -162,7 +162,7 @@ msgstr "시작"
 #: translatepage.py:158 translatepage.py:161
 #, python-format
 msgid "Previous %d"
-msgstr ""
+msgstr "이전"
 
 #. l10n: the third parameter refers to the total number of messages in the file
 #: translatepage.py:163
@@ -174,12 +174,12 @@ msgstr "%d번째 항목 (%d / %d)"
 #: translatepage.py:168 translatepage.py:171
 #, python-format
 msgid "Next %d"
-msgstr ""
+msgstr "이후"
 
 #. l10n: noun (the end)
 #: translatepage.py:174 translatepage.py:177
 msgid "End"
-msgstr ""
+msgstr "끝"
 
 #. l10n: the parameter is the name of one of the quality checks, like "fuzzy"
 #: translatepage.py:194
@@ -219,12 +219,12 @@ msgstr ""
 #. l10n: verb
 #: translatepage.py:551
 msgid "Edit"
-msgstr ""
+msgstr "수정"
 
 #. l10n: verb
 #: translatepage.py:567
 msgid "Copy"
-msgstr ""
+msgstr "복사"
 
 #: translatepage.py:568 translatepage.py:747
 msgid "Skip"
@@ -233,7 +233,7 @@ msgstr ""
 #. l10n: verb
 #: translatepage.py:570 translatepage.py:746 users.py:245
 msgid "Back"
-msgstr ""
+msgstr "이전"
 
 #: translatepage.py:572
 msgid "Submit"
@@ -242,12 +242,12 @@ msgstr ""
 #. l10n: action that increases the height of the textarea
 #: translatepage.py:575
 msgid "Grow"
-msgstr ""
+msgstr "확장"
 
 #. l10n: action that decreases the height of the textarea
 #: translatepage.py:577
 msgid "Shrink"
-msgstr ""
+msgstr "축소"
 
 #. l10n: action that increases the width of the textarea
 #: translatepage.py:579
@@ -306,68 +306,68 @@ msgstr ""
 #: adminpages.py:43 adminpages.py:82 adminpages.py:138 adminpages.py:200
 #: pagelayout.py:36
 msgid "Home"
-msgstr ""
+msgstr "홈"
 
 #: adminpages.py:44 adminpages.py:202
 msgid "Users"
-msgstr ""
+msgstr "사용자"
 
 #: adminpages.py:45 adminpages.py:84 indexpage.py:95
 msgid "Languages"
-msgstr ""
+msgstr "언어"
 
 #: adminpages.py:46 adminpages.py:140 indexpage.py:96
 msgid "Projects"
-msgstr ""
+msgstr "프로젝트들"
 
 #: adminpages.py:47
 msgid "General options"
-msgstr ""
+msgstr "일반적인 선택사항"
 
 #: adminpages.py:48 users.py:153
 msgid "Option"
-msgstr ""
+msgstr "선택사항"
 
 #: adminpages.py:49 users.py:154
 msgid "Current value"
-msgstr ""
+msgstr "현제 값"
 
 #: adminpages.py:50 adminpages.py:85 adminpages.py:141 adminpages.py:203
 #: users.py:168
 msgid "Save changes"
-msgstr ""
+msgstr "저장"
 
 #: adminpages.py:54
 msgid "Title"
-msgstr ""
+msgstr "제목"
 
 #: adminpages.py:55
 msgid "Description"
-msgstr ""
+msgstr "설명"
 
 #: adminpages.py:56
 msgid "Base URL"
-msgstr ""
+msgstr "기본 URL"
 
 #: adminpages.py:57
 msgid "Home Page"
-msgstr ""
+msgstr "홈 페이지"
 
 #: adminpages.py:83 adminpages.py:139 adminpages.py:201
 msgid "Main admin page"
-msgstr ""
+msgstr "메인 관리자 페이지"
 
 #: adminpages.py:89
 msgid "ISO Code"
-msgstr ""
+msgstr "ISO 코드"
 
 #: adminpages.py:90 adminpages.py:146 adminpages.py:208 users.py:100
 msgid "Full Name"
-msgstr ""
+msgstr "성함"
 
 #: adminpages.py:91
 msgid "(add language here)"
-msgstr ""
+msgstr "(여기에 다른언어를 더하세요)"
 
 #: adminpages.py:92
 msgid "Special Chars"
@@ -375,7 +375,7 @@ msgstr ""
 
 #: adminpages.py:92
 msgid "(special characters)"
-msgstr ""
+msgstr "(특별 케릭터)"
 
 #: adminpages.py:93 indexpage.py:214
 msgid "Number of Plurals"

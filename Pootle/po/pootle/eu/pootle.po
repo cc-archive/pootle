@@ -3,14 +3,14 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: translate-pootle@lists.sourceforge.net\n"
 "POT-Creation-Date: 2006-09-16 01:51+0200\n"
-"PO-Revision-Date: 2006-09-21 22:50+0200\n"
-"Last-Translator: Piarres Beobide <piarres@gmail.com>\n"
+"PO-Revision-Date: 2006-12-19 22:43+0100\n"
+"Last-Translator: Piarres Beobide <pi@beobide.net>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Pootle 0.10.1rc1\n"
+"X-Generator: Pootle 0.10.1\n"
 "Generated-By: pygettext.py 1.1\n"
 
 #. l10n: Verb
@@ -310,7 +310,7 @@ msgstr "Gomendioa:"
 #: adminpages.py:43 adminpages.py:82 adminpages.py:138 adminpages.py:200
 #: pagelayout.py:36
 msgid "Home"
-msgstr "Etxea"
+msgstr "Hasiera Orrialdea"
 
 #: adminpages.py:44 adminpages.py:202
 msgid "Users"
@@ -504,7 +504,7 @@ msgstr "Txantilloietatik eguneratu"
 
 #: adminpages.py:284
 msgid "Add Language"
-msgstr "Hizkunzta gehitu"
+msgstr "Hizkuntza gehitu"
 
 #. l10n: This is the page title. The first parameter is the language name, the second parameter is the project name
 #: adminpages.py:316
@@ -809,11 +809,11 @@ msgstr "Sarrera zabalera (karaktere)"
 
 #: users.py:202
 msgid "Number of rows in view mode"
-msgstr "Bistaratze moduko errenkada kopurua"
+msgstr "Bistaratze moduko kate kopurua"
 
 #: users.py:203
 msgid "Number of rows in translate mode"
-msgstr "Itzulpen moduko errenkada kopurua"
+msgstr "Itzulpen moduko kate kopurua"
 
 #: users.py:240
 msgid "Error"
@@ -830,7 +830,7 @@ msgstr "Erabiltzaile izena alfazenbakizkoa izan eta hizki batez hasi behar da"
 
 #: users.py:362
 msgid "You must supply a valid email address"
-msgstr "Baliozko ePosta helbide bateman behar duzu"
+msgstr "Baliozko ePosta helbide bat idatzi behar duzu"
 
 #: users.py:371
 msgid ""
@@ -899,8 +899,7 @@ msgid ""
 "This message is sent to verify that the email address is in fact correct. If "
 "you did not want to register an account, you may simply ignore the message.\n"
 msgstr ""
-"Mezu hau eposta helbidea benetanbaliozkoa den egiaztatzeko bidaltzen da. Ez "
-"baduzu kontu bat harpidetu nahi, alde batetara utz ezazu.\n"
+"Mezu hau eposta helbidea benetan baliozkoa den egiaztatzeko bidaltzen da. Ez baduzu kontu bat harpidetu nahi, alde batetara utz ezazu.\n"
 
 #: users.py:398
 #, python-format

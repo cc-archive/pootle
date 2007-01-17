@@ -3,15 +3,15 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: translate-pootle@lists.sourceforge.net\n"
 "POT-Creation-Date: 2006-09-16 01:51+0200\n"
-"PO-Revision-Date: 2006-10-02 18:40+0200\n"
-"Last-Translator: Ain Vagula <avagula@gmail.com>\n"
+"PO-Revision-Date: 2006-12-29 04:00+0100\n"
+"Last-Translator: Laur Mõtus <vprints@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "Generated-By: pygettext.py 1.1\n"
-"X-Generator: Pootle 0.10.1rc1\n"
+"X-Generator: Pootle 0.10.1\n"
 
 #. l10n: Verb
 #: projects.py:135
@@ -51,7 +51,7 @@ msgstr "Administreeri"
 #. l10n: Commit to version control (like CVS or Subversion)
 #: projects.py:145 indexpage.py:713
 msgid "Commit"
-msgstr ""
+msgstr "Soorita täiendus"
 
 #. l10n: Don't translate "nobody" or "default"
 #: projects.py:203
@@ -75,13 +75,12 @@ msgid "You do not have rights to update files here"
 msgstr "Sul ei ole õiguseid siin failide uuendamiseks"
 
 #: projects.py:560
-#, fuzzy
 msgid "You do not have rights to commit files here"
-msgstr "sul ei ole õigusi siin muudatusi soovitada"
+msgstr "Sul ei ole õiguseid siia failide soovitamiseks"
 
 #: projects.py:893 projects.py:934
 msgid "You do not have rights to alter assignments here"
-msgstr ""
+msgstr "Sul ei ole õiguseid siin ülesannete muutmiseks"
 
 #: projects.py:1138
 msgid "You do not have rights to change translations here"
@@ -89,11 +88,11 @@ msgstr "Sul ei ole õiguseid siin tõlke muutmiseks"
 
 #: projects.py:1148
 msgid "You do not have rights to suggest changes here"
-msgstr "Sul ei ole õigusied siin muutusi soovitada"
+msgstr "Sul ei ole õiguseid siin muutusi soovitada"
 
 #: projects.py:1164 projects.py:1187
 msgid "You do not have rights to review suggestions here"
-msgstr ""
+msgstr "Sul ei ole õiguseid siia tehtud soovitusi ülevaadata"
 
 #: translatepage.py:80
 #, python-format
@@ -117,29 +116,25 @@ msgstr "Pootle Demo"
 #. l10n: third parameter: target language
 #. l10n: fourth parameter: file name
 #: translatepage.py:97
-#, fuzzy, python-format
+#, python-format
 msgid "%s: translating %s into %s: %s"
 msgstr "Pootle: %s tõlkimine %s keelde: %s"
 
 #: translatepage.py:111
-#, fuzzy
 msgid "Original"
-msgstr "originaal"
+msgstr "Originaal"
 
 #: translatepage.py:112
-#, fuzzy
 msgid "Translation"
-msgstr "tõlge"
+msgstr "Tõlge"
 
 #: translatepage.py:115
-#, fuzzy
 msgid "Accept"
-msgstr "nõustu"
+msgstr "Nõustu"
 
 #: translatepage.py:116
-#, fuzzy
 msgid "Reject"
-msgstr "keeldu"
+msgstr "Keeldu"
 
 #. l10n: This heading refers to related translations and terminology
 #: translatepage.py:118
@@ -154,11 +149,11 @@ msgstr "Otsi"
 #. l10n: "batch" refers to the set of translations that were reviewed
 #: translatepage.py:136
 msgid "End of batch"
-msgstr ""
+msgstr "Paki lõpp"
 
 #: translatepage.py:138
 msgid "Click here to return to the index"
-msgstr "Avalehele põõrdumiseks kliki siia"
+msgstr "Avalehele pöördumiseks kliki siia"
 
 #. l10n: noun (the start)
 #: translatepage.py:151 translatepage.py:154
@@ -181,7 +176,7 @@ msgstr "Objektid %d kuni %d %d-st"
 #: translatepage.py:168 translatepage.py:171
 #, python-format
 msgid "Next %d"
-msgstr "Järgmine %d"
+msgstr "Järgmised %d"
 
 #. l10n: noun (the end)
 #: translatepage.py:174 translatepage.py:177
@@ -192,19 +187,19 @@ msgstr "Lõpp"
 #: translatepage.py:194
 #, python-format
 msgid "checking %s"
-msgstr "kontrollimine %s"
+msgstr "%s kontrollimine"
 
 #: translatepage.py:201 translatepage.py:204 indexpage.py:510 indexpage.py:513
 msgid "Assign Strings"
-msgstr "Seosta string"
+msgstr "Määra stringe"
 
 #: translatepage.py:202 indexpage.py:512
 msgid "Assign to User"
-msgstr "Seosta kasutajaga"
+msgstr "Määra kasutajale"
 
 #: translatepage.py:203 indexpage.py:511
 msgid "Assign Action"
-msgstr "Seosta tegevus"
+msgstr "Määra tegevus"
 
 #: translatepage.py:336
 #, python-format
@@ -230,34 +225,31 @@ msgstr "Muuda"
 
 #. l10n: verb
 #: translatepage.py:567
-#, fuzzy
 msgid "Copy"
-msgstr "kopeeri"
+msgstr "Kopeeri"
 
 #: translatepage.py:568 translatepage.py:747
-#, fuzzy
 msgid "Skip"
-msgstr "jäta vahele"
+msgstr "Jäta vahele"
 
 #. l10n: verb
 #: translatepage.py:570 translatepage.py:746 users.py:245
 msgid "Back"
-msgstr "Tagasi"
+msgstr "Back"
 
 #: translatepage.py:572
-#, fuzzy
 msgid "Submit"
-msgstr "sisesta"
+msgstr "Sisesta"
 
 #. l10n: action that increases the height of the textarea
 #: translatepage.py:575
 msgid "Grow"
-msgstr "Suurenda"
+msgstr "Kasvata"
 
 #. l10n: action that decreases the height of the textarea
 #: translatepage.py:577
 msgid "Shrink"
-msgstr "Vähenda"
+msgstr "Kahanda"
 
 #. l10n: action that increases the width of the textarea
 #: translatepage.py:579
@@ -285,12 +277,11 @@ msgstr "Mitmuse vorm %d"
 msgid ""
 "Translation not possible because plural information for your language is not "
 "available. Please contact the site administrator."
-msgstr ""
+msgstr "Tõlkimine pole võimalik, sest mitmuse informatsioon sinu keele jaoks ei ole saadaval. Palun võta ühendust administraatoriga."
 
 #: translatepage.py:702
-#, fuzzy
 msgid "Current Translation:"
-msgstr "<b>Hetke tõlkimine:</b>"
+msgstr "<b>Hetke tõlge:</b>"
 
 #. l10n: First parameter: number
 #. l10n: Second parameter: name of translator
@@ -312,7 +303,7 @@ msgstr "Soovitus kasutajalt %s:"
 
 #: translatepage.py:723
 msgid "Suggestion:"
-msgstr "Soovitused:"
+msgstr "Soovitus:"
 
 #: adminpages.py:43 adminpages.py:82 adminpages.py:138 adminpages.py:200
 #: pagelayout.py:36
@@ -332,7 +323,6 @@ msgid "Projects"
 msgstr "Projektid"
 
 #: adminpages.py:47
-#, fuzzy
 msgid "General options"
 msgstr "Üldised valikud"
 
@@ -366,7 +356,6 @@ msgid "Home Page"
 msgstr "Koduleht"
 
 #: adminpages.py:83 adminpages.py:139 adminpages.py:201
-#, fuzzy
 msgid "Main admin page"
 msgstr "Peamine Administreerimise leht"
 
@@ -392,22 +381,21 @@ msgstr "(erilised märgid)"
 
 #: adminpages.py:93 indexpage.py:214
 msgid "Number of Plurals"
-msgstr ""
+msgstr "Mitmuste arv"
 
 #: adminpages.py:93
 msgid "(number of plurals)"
-msgstr ""
+msgstr "(mitmuste arv)"
 
 #: adminpages.py:94 indexpage.py:215
 msgid "Plural Equation"
-msgstr ""
+msgstr "Mitmuse võrrand"
 
 #: adminpages.py:94
 msgid "(plural equation)"
-msgstr ""
+msgstr "(mitmuse võrrand)"
 
 #: adminpages.py:95
-#, fuzzy
 msgid "Remove Language"
 msgstr "Eemalda keel"
 
@@ -439,14 +427,13 @@ msgstr "(projekti kirjeldus)"
 
 #: adminpages.py:149
 msgid "Checker Style"
-msgstr ""
+msgstr "Kontrollija stiil"
 
 #: adminpages.py:150
 msgid "Create MO Files"
 msgstr "Loo MO faile"
 
 #: adminpages.py:151
-#, fuzzy
 msgid "Remove Project"
 msgstr "Eemalda projekt"
 
@@ -483,9 +470,8 @@ msgid "Activate New User"
 msgstr "Aktiveeri uus kasutaja"
 
 #: adminpages.py:213
-#, fuzzy
 msgid "Remove User"
-msgstr "Eemalda %s"
+msgstr "Eemalda kasutaja"
 
 #: adminpages.py:267
 msgid "Back to main page"
@@ -535,11 +521,11 @@ msgstr "Ei saa seada õigusi kasutajanimele %s - kasutajat ei eksisteeri"
 
 #: adminpages.py:352
 msgid "This is a GNU-style project (one directory, files named per language)."
-msgstr ""
+msgstr "See on GNU stiilis projekt (üks kaust, failid keelenimede järgi)."
 
 #: adminpages.py:354
 msgid "This is a standard style project (one directory per language)."
-msgstr ""
+msgstr "See on standardstiilis projekt (üks kaust keele kohta)."
 
 #: adminpages.py:355
 msgid "User Permissions"
@@ -551,7 +537,7 @@ msgstr "Kasutajanimi"
 
 #: adminpages.py:357
 msgid "(select to add user)"
-msgstr ""
+msgstr "(määra et lisada kasutajat)"
 
 #: adminpages.py:358
 msgid "Rights"
@@ -566,35 +552,30 @@ msgid "Update Rights"
 msgstr "Uuenda õigused"
 
 #: pagelayout.py:37
-#, fuzzy
 msgid "All projects"
 msgstr "Kõik projektid"
 
 #: pagelayout.py:38
-#, fuzzy
 msgid "All languages"
 msgstr "Kõik keeled"
 
 #: pagelayout.py:39
 msgid "My account"
-msgstr ""
+msgstr "Minu konto"
 
 #: pagelayout.py:40 pagelayout.py:144 indexpage.py:197 indexpage.py:259
 msgid "Admin"
-msgstr ""
+msgstr "Administraator"
 
 #: pagelayout.py:41
-#, fuzzy
 msgid "Docs & help"
 msgstr "Dokumendid & Abi"
 
 #: pagelayout.py:42
-#, fuzzy
 msgid "Log out"
 msgstr "Logi välja"
 
 #: pagelayout.py:43
-#, fuzzy
 msgid "Log in"
 msgstr "Logi sisse"
 
@@ -608,14 +589,12 @@ msgid "Activate"
 msgstr "Aktiveeri"
 
 #: pagelayout.py:67
-#, fuzzy
 msgid "Pootle Logo"
-msgstr "Pootle Demo"
+msgstr "Pootle Logo"
 
 #: pagelayout.py:68
-#, fuzzy
 msgid "WordForge Translation Project"
-msgstr "<b>Hetke tõlkimine:</b>"
+msgstr "WordForge Tõlkeprojekt"
 
 #: pagelayout.py:133
 msgid "All goals"
@@ -648,91 +627,82 @@ msgid "Name"
 msgstr "Nimi"
 
 #: pagelayout.py:216
-#, fuzzy
 msgid "Translated"
-msgstr "Tõlgi"
+msgstr "Tõlgitud"
 
 #: pagelayout.py:217
-#, fuzzy
 msgid "Translated percentage"
-msgstr "Tõlgi"
+msgstr "Tõlgitud protsent"
 
 #: pagelayout.py:218
-#, fuzzy
 msgid "Translated words"
-msgstr "Tõlgi"
+msgstr "Tõlgitud sõnad"
 
 #: pagelayout.py:219
 msgid "Fuzzy"
-msgstr ""
+msgstr "Ähmane"
 
 #: pagelayout.py:220
 msgid "Fuzzy percentage"
-msgstr ""
+msgstr "Ähmaste protsent"
 
 #: pagelayout.py:221
 msgid "Fuzzy words"
-msgstr ""
+msgstr "Ähmaseid sõnu"
 
 #: pagelayout.py:222 indexpage.py:751
 msgid "Untranslated"
 msgstr "Tõlkimata"
 
 #: pagelayout.py:223
-#, fuzzy
 msgid "Untranslated percentage"
-msgstr "Tõlkimata"
+msgstr "Tõlkimata protsent"
 
 #: pagelayout.py:224
-#, fuzzy
 msgid "Untranslated words"
-msgstr "Tõlkimata"
+msgstr "Tõlkimata sõnu"
 
 #: pagelayout.py:225
-#, fuzzy
 msgid "Total"
-msgstr "Eesmärgid"
+msgstr "Kokku"
 
 #: pagelayout.py:226
 msgid "Total words"
-msgstr ""
+msgstr "Kokku sõnu"
 
 #. l10n: noun. The graphical representation of translation status
 #: pagelayout.py:228
 msgid "Graph"
-msgstr ""
+msgstr "Graafik"
 
 #: users.py:39
 #, python-format
 msgid "You must supply a valid password of at least %d characters."
-msgstr ""
+msgstr "Sa pead määrama sobiva salasõna pikkusega vähemalt %d tähemärki."
 
 #: users.py:41
 msgid "The password is not the same as the confirmation."
-msgstr ""
+msgstr "Salasõna pole sama mis kinnituses."
 
 #: users.py:55
 msgid "Login to Pootle"
 msgstr "Logi sisse Pootle'sse"
 
 #: users.py:61
-#, fuzzy
 msgid "Username:"
-msgstr "Kasutajanimi"
+msgstr "Kasutajanimi:"
 
 #: users.py:63
-#, fuzzy
 msgid "Password:"
-msgstr "Parool"
+msgstr "Salasõna:"
 
 #: users.py:64
-#, fuzzy
 msgid "Language:"
-msgstr "Keeled"
+msgstr "Keel:"
 
 #: users.py:73
 msgid "Default"
-msgstr ""
+msgstr "Vaikimisi"
 
 #: users.py:85
 msgid "Please enter your registration details"
@@ -756,21 +726,19 @@ msgstr "Sinu täisnimi"
 
 #: users.py:104
 msgid "Your desired password"
-msgstr "Sinu soovitud parool"
+msgstr "Sinu soovitud salasõna"
 
 #: users.py:106 users.py:160
-#, fuzzy
 msgid "Confirm password"
-msgstr "Sinu soovitud parool"
+msgstr "Kinnita salasõna"
 
 #: users.py:107
 msgid "Type your password again to ensure it is entered correctly"
-msgstr ""
+msgstr "Trüki oma salasõna uuesti, et tagada, et see on õigesti sisestatud"
 
 #: users.py:109
-#, fuzzy
 msgid "Register Account"
-msgstr "Aktiveeri konto"
+msgstr "Registreeri konto"
 
 #: users.py:118
 msgid "Please enter your activation details"
@@ -778,7 +746,7 @@ msgstr "Palun sisesta oma aktiveerimise andmed"
 
 #: users.py:123
 msgid "Pootle Account Activation"
-msgstr "Pootle konto aktiveerimine"
+msgstr "Pootle'i konto aktiveerimine"
 
 #: users.py:133
 msgid "Activation Code"
@@ -795,7 +763,7 @@ msgstr "Aktiveeri konto"
 #: users.py:147
 #, python-format
 msgid "Options for: %s"
-msgstr ""
+msgstr "Valikud %s jaoks"
 
 #: users.py:152
 msgid "Personal Details"
@@ -803,15 +771,15 @@ msgstr "Isiklikud detailid"
 
 #: users.py:157
 msgid "Email"
-msgstr "Email"
+msgstr "E-post"
 
 #: users.py:161
 msgid "Translation Interface Configuration"
-msgstr ""
+msgstr "Tõlkekeskkonna seaded"
 
 #: users.py:162
 msgid "User Interface language"
-msgstr ""
+msgstr "Kasutajakeskkonna keel"
 
 #: users.py:163
 msgid "My Projects"
@@ -827,35 +795,34 @@ msgstr "Koduleht"
 
 #: users.py:201
 msgid "Input Height (in lines)"
-msgstr ""
+msgstr "Sisestuskõrgus (joontes)"
 
 #: users.py:201
 msgid "Input Width (in characters)"
-msgstr ""
+msgstr "Sisestuslaius (tähemärkides)"
 
 #: users.py:202
 msgid "Number of rows in view mode"
-msgstr ""
+msgstr "Ridade arv vaaterežiimis"
 
 #: users.py:203
 msgid "Number of rows in translate mode"
-msgstr ""
+msgstr "Ridade arv tõlkerežiimis"
 
 #: users.py:240
 msgid "Error"
-msgstr ""
+msgstr "Viga"
 
 #: users.py:292
 msgid "You need to be siteadmin to change users"
-msgstr ""
+msgstr "Sa pead olema lehekülje administraator, et muuta kasutajaid"
 
 #: users.py:356
 msgid ""
 "Username must be alphanumeric, and must start with an alphabetic character."
-msgstr ""
+msgstr "Kasutajanimi peab koosnema tärk ja peab algama tähestikulise märgiga."
 
 #: users.py:362
-#, fuzzy
 msgid "You must supply a valid email address"
 msgstr "Peab olema õige emaili aadress"
 

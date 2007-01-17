@@ -1,18 +1,17 @@
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2005-06-13 14:54-0500\n"
-"PO-Revision-Date: 2006-08-07 14:58+0200\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"PO-Revision-Date: 2006-10-24 01:55+0200\n"
+"Last-Translator: Artur R. Czechowski <arturcz@hell.pl>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10< =4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "Generated-By: pygettext.py 1.5\n"
-"X-Generator: Translate Toolkit 0.9rc1\n"
+"X-Generator: Pootle 0.10.1\n"
 
 #: web/server.py:57
 #, python-format
@@ -21,11 +20,11 @@ msgstr "Login dla %s"
 
 #: web/server.py:91
 msgid "Cancel this action and start a new session"
-msgstr "Anuluj tą akcję i rozpocznij nową sesję"
+msgstr "Anuluj tę akcję i rozpocznij nową sesję"
 
 #: web/server.py:92
 msgid "Instead of confirming this action, log out and start from scratch"
-msgstr "Zamiast potwierdzać tą akcję, wyloguj się i rozpocznij od początku"
+msgstr "Zamiast potwierdzać tę akcję, wyloguj się i rozpocznij od początku"
 
 #: web/server.py:97
 msgid "Exit application"
@@ -55,7 +54,8 @@ msgstr "Hasło:"
 msgid "Language:"
 msgstr "Język:"
 
-#: web/server.py:551 web/server.py:642
+#: web/server.py:551
+#: web/server.py:642
 msgid "Select Application"
 msgstr "Wybierz aplikację"
 
@@ -67,7 +67,9 @@ msgstr "Wyloguj się"
 msgid "Exit"
 msgstr "Wyjdź"
 
-#: web/session.py:191 web/session.py:344 web/session.py:350
+#: web/session.py:191
+#: web/session.py:344
+#: web/session.py:350
 #, python-format
 msgid "logged in as <b>%s</b>"
 msgstr "zalogowany jako <b>%s</b>"
@@ -90,11 +92,10 @@ msgstr "zakończ macierzystą sesję"
 
 #: web/session.py:314
 msgid "need to define the users or userprefs entry on the server config"
-msgstr ""
-"wejdź na kofiguraciję serwera, zeby definować użytkownicy lub preferencje "
-"użytkowników  "
+msgstr "należy zdefiniować użytkowników lub preference użytkowników w konfiguracji serwera"
 
-#: web/session.py:321 web/session.py:453
+#: web/session.py:321
+#: web/session.py:453
 #, python-format
 msgid "user does not exist (%r)"
 msgstr "użytkownik nie istnieje (%s)"
@@ -103,23 +104,28 @@ msgstr "użytkownik nie istnieje (%s)"
 msgid "invalid username and/or password"
 msgstr "nieprawidłowa nazwa użytkownika i/lub hasło"
 
-#: web/session.py:433 web/session.py:437
+#: web/session.py:433
+#: web/session.py:437
 msgid "failed login confirmation"
 msgstr "potwierdzenie logowania nie powiodło się"
 
-#: widgets/form.py:79 widgets/thumbgallery.py:292
+#: widgets/form.py:79
+#: widgets/thumbgallery.py:292
 msgid "No"
-msgstr "Tak"
-
-#: widgets/form.py:80 widgets/thumbgallery.py:293
-msgid "Yes"
 msgstr "Nie"
 
-#: widgets/thumbgallery.py:233 attachments.py:348
+#: widgets/form.py:80
+#: widgets/thumbgallery.py:293
+msgid "Yes"
+msgstr "Tak"
+
+#: widgets/thumbgallery.py:233
+#: attachments.py:348
 msgid "remove"
 msgstr "usuń"
 
-#: widgets/thumbgallery.py:289 attachments.py:322
+#: widgets/thumbgallery.py:289
+#: attachments.py:322
 msgid "(no attachment)"
 msgstr "(brak załączników)"
 
