@@ -262,7 +262,7 @@ class TranslationProject(object):
       goalmembers = getattr(goalnode, "files", "")
       goalmembers = [goalfile.strip() for goalfile in goalmembers.split(",") if goalfile.strip()]
       goaldirs = [goaldir for goaldir in goalmembers if goaldir.endswith(pathsep)]
-      goalfiles = [goalfile for goalfile in goalmembers if not goalfile.endswith(pathsep)]
+      goalfiles = [goalfile for goalfile in goalmembers if not goalfile.endswith(pathsep) and goalfile in self.pofilenames]
       if expanddirs:
         expandgoaldirs = []
         expandgoalfiles = []
