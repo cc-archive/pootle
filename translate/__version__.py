@@ -1,5 +1,5 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """this file contains the version of translate"""
-ver = "0.11.rc"
+ver = "0.11rc"
 build = "9900"
