@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!usr/bin/env python
 # -*- coding: utf-8 -*-
 
 from translate.storage import po
@@ -82,6 +82,13 @@ class TestPOUnit(test_base.TestTranslationUnit):
         assert str(unit) == '# # Double commented comment\nmsgid "File"\nmsgstr ""\n'
         assert unit.getnotes() == "# Double commented comment"
         
+    def test_extract_msgidcomments_from_text(self):
+        """Test that KDE style comments are extracted correctly."""
+        unit = self.UnitClass("test source")
+
+        kdetext = "_: Simple comment\nsimple text"
+        assert unit.extract_msgidcomments_from_text(kdetext) == "Simple comment"
+
 class TestPO(test_base.TestTranslationStore):
     StoreClass = po.pofile
     def poparse(self, posource):
