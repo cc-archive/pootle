@@ -244,9 +244,9 @@ class pootlefile(po.pofile):
         print "invalid stats line in", self.statsfilename,line
         continue
       name, items = line.split(":", 1)
-      if name == "msgidwordcounts":
+      if name == "msgidwordcounts" or name == "sourcewordcounts":
         msgidwordcounts = [[int(subitem.strip()) for subitem in item.strip().split("/")] for item in items.strip().split(",") if item]
-      elif name == "msgstrwordcounts":
+      elif name == "msgstrwordcounts" or name == "targetwordcounts":
         msgstrwordcounts = [[int(subitem.strip()) for subitem in item.strip().split("/")] for item in items.strip().split(",") if item]
       else:
         items = [int(item.strip()) for item in items.strip().split(",") if item]
