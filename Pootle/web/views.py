@@ -8,6 +8,7 @@ from django.shortcuts import render_to_response
 from django import forms
 from django.core.mail import send_mail
 
+from Pootle.web.forms import SiteOptionsManipulator
 from Pootle.compat.authforms import RegistrationManipulator, ActivationManipulator
 from Pootle import indexpage, adminpages, users, translatepage
 from Pootle.conf import instance, potree
@@ -328,7 +329,19 @@ def projectadmin(req, project):
     return render_to_pootleresponse(adminpages.ProjectAdminPage(potree(), project, pootlesession(req), argdict))
     
 def admin(req):
-    return render_to_pootleresponse(adminpages.AdminPage(potree(), pootlesession(req), instance))
+    manipulator = SiteOptionsManipulator()
+    if req.POST:
+        new_data = req.POST.copy()
+        errors = manipulator.get_validation_errors(new_data)
+        if not errors:
+            manipulator.do_html2python(new_data)
+            manipulator.save(new_data)
+            return HttpResponseRedirect(req.path)
+    else:
+        errors = {}
+        new_data = manipulator.old_data()
+    form = forms.FormWrapper(manipulator, new_data, errors)
+    return render_to_response("adminindex.html", RequestContext(req, { 'form': form } ))
 
 def adminusers(req):
     return render_to_pootleresponse(adminpages.UsersAdminPage(None, pootleusers(), pootlesession(req), instance))

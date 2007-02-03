@@ -23,6 +23,9 @@ def instance():
 def potree():
     return _potree
 
+def saveprefs():
+    prefsfile = instance().__root__.__dict__["_setvalue"].im_self
+    prefsfile.savefile()
 
 def set_instance(inst, potree, users):
     global _instance, _potree, _users
