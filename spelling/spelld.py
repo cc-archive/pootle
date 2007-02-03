@@ -1,11 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Copyright 2005 Dwayne Bailey
+# Copyright 2007 Zuza Software Foundation, WordForge Foundation
 #
-# This file is part of the translate toolkit
-#
-# The translate toolkit is free software; you can redistribute it and/or modify
+# This is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
@@ -16,116 +14,171 @@
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with translate; if not, write to the Free Software
+# along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-"""A server that provides access to a spell checker for validating words and receiving suggestions.
-It is based on the ideas of Ikakispell but written in Python to make it multi-platform and easier
-to code."""
+"""A Spell Checking server
 
-import SocketServer
+The server will use the Google spell checker for languages supported by Google
+otherwise it will use spell checkers provided by the enchant spell checker 
+broker.
+
+Enchant is used so that any of the enchant supported spell checker engines can 
+be used.  Currently this includes: ispell, aspell, myspell/hunspell and others.
+
+This server follows the Google spell checker protocol as used by the Google
+toolbar.  The XML based protocol is documented in L{spell.SpellRequest} 
+and L{spell.SpellResult}
+"""
+
+import spell
+import lang
 import optparse
-import spellchecker
-import win32com.client
-import pythoncom
-import psyco
+from cherrypy import wsgiserver
+import socket
+import __version__
 
-class MSSpell:
+class TooLarge(Exception): 
+    """Query was too large
+    """
+    pass
 
-  customdict = ""
-  ignoreuppercase = False
+class SpellServer:
+    """Spelling Server using the Google protocol
 
-  def __init__(self, language=None):
-    pythoncom.CoInitialize()
-    self.msword = win32com.client.Dispatch("Word.Application")
-    self.msword.Visible = 0
-    worddoc = self.msword.Documents.Add()
-    self.language = language
+    @todo: allow a query to get back the languages available
+    @todo: allow update of a pwl (ideal for supplying new words to the checker teams)
+    @todo: allow user to override Google API uages and choose Enchant first
+    @todo: remove the useGoogle useEnchant messiness (mostly done but needs some magic to remove the if then stuff)
+    @todo: look at CherryPy to see if we can present the AJAX based forms as 
+        part of the server if a user browsed to the server
+    @todo: better language detection
+    @todo: language fallback en_ZA->en_GB->en af_ZA->af or even af->af_ZA
+    @todo: logging (at various levels: connections, languages, words requested, errors found, etc)
+    """
+    def __init__(self, pwldir=None):
+        self._pwldir = pwldir
 
-  def closeword():
-    worddoc.Close()
+    def _getlang(self):
+        """The spell check language requested.
 
-  def suggest(self, word):
-    return self.msword.GetSpellingSuggestions(Word=word, CustomDictionary=self.customdict, IgnoreUppercase=self.ignoreuppercase, MainDictionary=self.language)
+        @rtype: string
+        @return: the spell check language [default English (en)]
+        """
+        requestlang = self._environ['QUERY_STRING'].replace("lang=", "")
 
-  def check(self, word):
-    return self.msword.CheckSpelling(Word=word, CustomDictionary=self.customdict, IgnoreUppercase=self.ignoreuppercase, MainDictionary=self.language)
-  
-class SpellServerHandler(SocketServer.StreamRequestHandler):
-  
-  def handle(self):
-    self.suggestions = {}
-    self.checks = {}      
-    io = self.connection.makefile("rw")
-    line = io.readline()
-    self.results = {}
-    while line:
-      if line == "\r\n" or line == ".\r\n":
-        break
-      command, parameters = line.decode("utf-8").split('>')
-      if command.startswith('LANG'):
-        for value in parameters.split():
-          print "Language: %s" % value
-          self.server.checker.language = value
-          break
-      if command.startswith('CHECK'):
-        for word in parameters.split():
-          print "Checking: %s" % word.encode('utf-8')
-          self.request_check(word)
-      if command.startswith('SUGGEST'):
-        for word in parameters.split():
-          print "Suggesting: %s" % word.encode('utf-8')
-          self.request_suggestion(word)
-      line = io.readline()
-    self.report_suggestions(io)
-    self.report_checks(io)
-    io.close()
-    self.connection.close()
-  
-  def request_suggestion(self, word):
-    results = self.server.checker.suggest(word)
-    listed = []
-    for suggestion in results:
-      listed.append(suggestion.Name.encode("UTF-8"))
-    self.suggestions[word.encode('utf-8')] = listed
+        if len(requestlang) == 2 or (len(requestlang) == 5 
+                and requestlang[2] == "_"):
+            return requestlang
+        else:
+            return "en"
 
-  def request_check(self, word):
-    result = self.server.checker.check(word)
-    self.checks[word.encode('utf-8')] = result
-    
-  def report_suggestions(self, output):
-    for word, suggestions in self.suggestions.iteritems():
-      output.write("%s:%s\r\n" % (word, ":".join(suggestions)))
-    self.suggestions = None
+    def _getpostdata(self):
+        """The raw L{spell.SpellRequest}
 
-  def report_checks(self,output):
-    for word, check in self.checks.iteritems():
-      output.write("%s:%s\r\n" % (word, check))
-    self.checks = None
-      
-class SpellServer(SocketServer.TCPServer):
+        @rtype: SpellRequest
+        @return: A spelling request
+        """
+        data_len = int(self._environ.get('HTTP_CONTENT_LENGTH', 0))
+        if data_len > 30000:
+            raise TooLarge
+        data = self._environ.get("wsgi.input").read(data_len)
+        return spell.SpellRequest(data, self._getlang())
 
-  def __init__(self, host="localhost", port=8000, language=None, handler=SpellServerHandler):
-    self.checker = MSSpell()
-    SocketServer.TCPServer.__init__(self, (host, port), handler)
-    print "SpellServer started: host=%s port=%d" % (host, port)
-  
+    def __call__(self, environ, start_response):
+        self._environ = environ
+        try:
+            request = self._getpostdata()
+        except socket.timeout:
+            print "Socket timeout error"
+            start_response('502 BAD GATEWAY', 
+                    [('Content-Type', 'text/html; charset=%s' % "utf-8")])
+            return "Error"
+        except TooLarge:
+            start_response('502 BAD GATEWAY', 
+                    [('Content-Type', 'text/html; charset=%s' % "utf-8")])
+            return "Error: Too large"
+
+        start_response('200 OK', 
+                [('Content-Type', 'text/html; charset=%s' % "utf-8")])
+
+        #if self._environ['PATH_INFO'].find("/") == 0:
+        if self._getlang() in spell.GoogleChecker.langs():
+            speller = spell.GoogleChecker(request, self._pwldir)
+        elif self._getlang() in spell.EnchantChecker.langs():
+            speller = spell.EnchantChecker(request, self._pwldir)
+        else:
+            return "No spell checker for that language"
+        return str(speller.check())
+        #return "Not found"
+
+class Languages:
+    """List all languages served from this SpellServer
+    """
+    def _getpostdata(self):
+        """The raw L{spell.SpellRequest}
+
+        @rtype: SpellRequest
+        @return: A spelling request
+        """
+        data_len = int(self._environ.get('HTTP_CONTENT_LENGTH', 0))
+        if data_len > 30000:
+            raise TooLarge
+        data = self._environ.get("wsgi.input").read(data_len)
+        return data
+
+    def __call__(self, environ, start_response):
+        self._environ = environ
+        try:
+            request = self._getpostdata()
+        except socket.timeout:
+            print "Socket timeout error"
+            start_response('502 BAD GATEWAY', 
+                    [('Content-Type', 'text/html; charset=%s' % "utf-8")])
+            return "Error"
+        except TooLarge:
+            start_response('502 BAD GATEWAY', 
+                    [('Content-Type', 'text/html; charset=%s' % "utf-8")])
+            return "Error: Too large"
+
+        start_response('200 OK', 
+                [('Content-Type', 'text/html; charset=%s' % "utf-8")])
+
+        if self._environ['PATH_INFO'].find("/") == 0:
+            return str(lang.LangResult())
+        return "Not found"
+
+class AddtoPWL:
+    """Add a word to the servers Personal Word List
+
+    The server does not use the PWL but it would allow users to contribute 
+    corrections.  The client side coomponent should store the real PWL.  This
+    service simply allows the data to be stored in both places and for the
+    server-side PWL to act as input for missing words in the spell checker.
+    """
+    pass
+
 def main():
-  psyco.full()
-  optParser = optparse.OptionParser()
-  default_hostname = "localhost"
-  default_port = 8000
-  optParser.add_option("", "--host", action="store", dest="hostname", default=default_hostname, metavar="HOST", type="string",
-      help="the spelling servers hostname (default: %s)" % default_hostname)
-  optParser.add_option("-p", "--port", action="store", dest="port", default=default_port, metavar="PORT", type="int", help="the spelling servers port (default: %d)" % default_port)
-  optParser.add_option("-o", "--once", action="store_true", dest="runonce", help="answer one query then exit")
-  optParser.add_option("-l", "--language", action="store", dest="language", help="set the default language")
-  (options, remainingArgs) = optParser.parse_args()
-  server = SpellServer(options.hostname, options.port, options.language)
-  if options.runonce:
-    server.handle_request()
-  else:
-    server.serve_forever()
+    """Start the Spell Checking server with command line options
+    """
+    parser = optparse.OptionParser(version="%prog "+
+            __version__.ver, description="Spell checking server")
+    defaultport = 8008
+    parser.add_option("-p", "--port", dest="port", default=defaultport,
+            metavar="PORT", type="int",
+            help="server port [default: %i]" % defaultport)
+    parser.add_option("", "--pwl", dest="pwldir", 
+            metavar="PWLDIR", type="string",
+            help="personal word list directory")
+    (options, args) = parser.parse_args()
+    server = wsgiserver.CherryPyWSGIServer(('', options.port), 
+            [('/', SpellServer(options.pwldir)), ('/lang', Languages())])
+    try:
+        print "Server started on port %s" % options.port
+        server.start()
+    except KeyboardInterrupt:
+        server.stop()
+        print "Server stopped"
 
 if __name__ == "__main__":
-  main()
+    main()
