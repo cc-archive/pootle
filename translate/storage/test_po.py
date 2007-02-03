@@ -161,6 +161,13 @@ msgstr ""
         print expected, str(unit)
         assert str(unit) == expected
 
+    def test_extract_msgidcomments_from_text(self):
+        """Test that KDE style comments are extracted correctly."""
+        unit = self.UnitClass("test source")
+
+        kdetext = "_: Simple comment\nsimple text"
+        assert unit.extract_msgidcomments(kdetext) == "Simple comment"
+
 class TestPO(test_base.TestTranslationStore):
     StoreClass = po.pofile
     def poparse(self, posource):
@@ -241,6 +248,94 @@ msgstr "TRANSLATED-STRING"'''
         assert len(pofile.units) == 2
         assert str(pofile.units[0]).count("source1") == 2
         assert str(pofile.units[1]).count("source2") == 2
+  
+    def test_parse_context(self):
+        """Tests that msgctxt is parsed correctly and that it is accessible via the api methods."""
+        posource = '''# Test comment
+#: source1
+msgctxt "noun"
+msgid "convert"
+msgstr "bekeerling"
+
+# Test comment 2
+#: source2
+msgctxt "verb"
+msgid "convert"
+msgstr "omskakel"
+'''
+        pofile = self.poparse(posource)
+        unit = pofile.units[0]
+
+        assert unit.getcontext() == 'noun'
+        assert unit.getnotes() == 'Test comment'
+
+        unit = pofile.units[1]
+        assert unit.getcontext() == 'verb'
+        assert unit.getnotes() == 'Test comment 2'
+
+
+    def test_parse_advanced_context(self):
+        """Tests that some weird possible msgctxt scenarios are parsed correctly."""
+        posource = r'''# Test multiline context
+#: source1
+msgctxt "Noun."
+" A person that changes his or her ways."
+msgid "convert"
+msgstr "bekeerling"
+
+# Test quotes
+#: source2
+msgctxt "Verb. Converting from \"something\" to \"something else\"."
+msgid "convert"
+msgstr "omskakel"
+
+# Test quotes, newlines and multiline.
+#: source3
+msgctxt "Verb.\nConverting from \"something\""
+" to \"something else\"."
+msgid "convert"
+msgstr "omskakel"
+'''
+        pofile = self.poparse(posource)
+        unit = pofile.units[0]
+
+        assert unit.getcontext() == 'Noun. A person that changes his or her ways.'
+        assert unit.getnotes() == 'Test multiline context'
+
+        unit = pofile.units[1]
+        assert unit.getcontext() == 'Verb. Converting from "something" to "something else".'
+        assert unit.getnotes() == 'Test quotes'
+        
+        unit = pofile.units[2]
+        assert unit.getcontext() == 'Verb.\nConverting from "something" to "something else".'
+        assert unit.getnotes() == 'Test quotes, newlines and multiline.'
+ 
+    def test_kde_context(self):
+        """Tests that kde-style msgid comments can be retrieved via getcontext()."""
+        posource = '''# Test comment
+#: source1
+msgid ""
+"_: Noun\n"
+"convert"
+msgstr "bekeerling"
+
+# Test comment 2
+#: source2
+msgid ""
+"_: Verb. _: "
+"The action of changing.\n"
+"convert"
+msgstr "omskakel"
+'''
+        pofile = self.poparse(posource)
+        unit = pofile.units[0]
+
+        assert unit.getcontext() == 'Noun'
+        assert unit.getnotes() == 'Test comment'
+
+        unit = pofile.units[1]
+        assert unit.getcontext() == 'Verb. _: The action of changing.'
+        assert unit.getnotes() == 'Test comment 2'
 
     def test_merge_mixed_sources(self):
         """checks that merging works with different source location styles"""
@@ -362,6 +457,27 @@ msgstr[0] "Sheep"
         print unit.target.strings
         assert unit.target == "Sheep"
         assert unit.target.strings == ["Sheep"]
+
+    def wtest_kde_plurals(self):
+        """Tests kde-style plurals. (Bug: 191)"""
+        posource = '''msgid "_n Singular\n"
+"Plural"
+msgstr "Een\n"
+"Twee\n"
+"Drie"
+'''
+        pofile = self.poparse(posource)
+        assert len(pofile.units) == 1
+        unit = pofile.units[0]
+	assert unit.hasplural() == True
+        assert isinstance(unit.source, multistring)
+        print unit.source.strings
+        assert unit.source == "Singular"
+        assert unit.source.strings == ["Singular", "Plural"]
+        assert isinstance(unit.target, multistring)
+        print unit.target.strings
+        assert unit.target == "Een"
+        assert unit.target.strings == ["Een", "Twee", "Drie"]
 
     def test_posections(self):
         """checks the content of all the expected sections of a PO message"""
@@ -515,77 +631,3 @@ msgstr[1] "Koeie"
         print "__str__", str(oldfile)
         assert len(oldfile.units) == 2
         assert str(oldfile).find("# old lonesome comment\n\n") >= 0
-
-    def test_header_blank(self):
-        """test header functionality"""
-        posource = r'''# other comment\n
-msgid ""
-msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-03-08 17:30+0200\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
-'''
-        pofile = self.poparse(posource)
-        print pofile
-        assert len(pofile.units) == 1
-        header = pofile.units[0]
-        assert header.isheader()
-        assert not header.isblank()
-
-        headeritems = pofile.parseheader()
-        assert headeritems["Project-Id-Version"] == "PACKAGE VERSION"
-        assert headeritems["Report-Msgid-Bugs-To"] == ""
-        #assert headeritems["POT-Creation-Date"] == ""
-        assert headeritems["PO-Revision-Date"] == "YEAR-MO-DA HO:MI+ZONE"
-        assert headeritems["Last-Translator"] == "FULL NAME <EMAIL@ADDRESS>"
-        assert headeritems["Language-Team"] == "LANGUAGE <LL@li.org>"
-        assert headeritems["MIME-Version"] == "1.0"
-        assert headeritems["Content-Type"] == "text/plain; charset=UTF-8"
-        assert headeritems["Content-Transfer-Encoding"] == "8bit"
-        assert headeritems["Plural-Forms"] == "nplurals=INTEGER; plural=EXPRESSION;"
-        
-    def test_plural_equation(self):
-        """test that we work with the equation even is the last semicolon is left out, since gettext
-        tools don't seem to mind"""
-        posource = r'''msgid ""
-msgstr ""
-"Plural-Forms: nplurals=2; plural=(n != 1)%s\n"
-'''
-        for colon in ("", ";"):
-          pofile = self.poparse(posource % colon)
-          print pofile
-          assert len(pofile.units) == 1
-          header = pofile.units[0]
-          assert header.isheader()
-          assert not header.isblank()
-
-          headeritems = pofile.parseheader()
-          nplural, plural = pofile.getheaderplural()
-          assert nplural == "2"
-          assert plural == "(n != 1)"
-
-    def test_plural_equation_across_lines(self):
-        """test that we work if the plural equation spans more than one line"""
-        posource = r'''msgid ""
-msgstr ""
-"Plural-Forms:  nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%"
-"10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-'''
-        pofile = self.poparse(posource)
-        print pofile
-        assert len(pofile.units) == 1
-        header = pofile.units[0]
-        assert header.isheader()
-        assert not header.isblank()
-
-        headeritems = pofile.parseheader()
-        nplural, plural = pofile.getheaderplural()
-        assert nplural == "3"
-        assert plural == "(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)"

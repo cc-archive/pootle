@@ -36,6 +36,7 @@ class propunit(base.TranslationUnit):
   """an element of a properties file i.e. a name and value, and any comments associated"""
   def __init__(self, source=""):
     """construct a blank propunit"""
+    super(propunit, self).__init__(source)
     self.name = ""
     self.comments = []
     self.source = source
@@ -84,8 +85,14 @@ class propunit(base.TranslationUnit):
   def getlocations(self):
     return [self.name]
 
-  def addnote(self, note):
-    self.comments.append(note + "\n")
+  def addnote(self, note, origin=None):
+    self.comments.append(note)
+
+  def getnotes(self, origin=None):
+    return '\n'.join(self.comments)
+
+  def removenotes(self):
+    self.comments = []
 
   def isblank(self):
     """returns whether this is a blank element, containing only comments..."""

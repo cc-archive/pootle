@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # 
-# Copyright 2002-2005 Zuza Software Foundation
-# 
 # This file is part of translate.
 #
 # translate is free software; you can redistribute it and/or modify
@@ -19,6 +17,13 @@
 # along with translate; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-"""The Translate Toolkit is a Python package that assists in localization of software
-See http://translate.sourceforge.net or http://www.translate.org.za for more information"""
+"""The Translate Toolkit is a Python package that assists in localization of software.
+
+See U{http://translate.sourceforge.net} or U{http://translate.org.za} for more information.
+
+@organization: Zuza Software Foundation
+@copyright: 2002-2007 Zuza Software Foundation
+@license: U{GPL <http://www.fsf.org/licensing/licenses/gpl.html>}
+
+"""
 

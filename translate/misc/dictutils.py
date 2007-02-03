@@ -114,7 +114,7 @@ class ordereddict(dict):
   def __delitem__(self, key):
     alreadypresent = key in self
     result = dict.__delitem__(self, key)
-    if not alreadypresent: del self.order[self.order.find(key)]
+    if alreadypresent: del self.order[self.order.index(key)]
     return result
 
   def copy(self):
@@ -157,4 +157,8 @@ class ordereddict(dict):
     del self[k]
     return (k,v)
 
-
+  def pop(self, key):
+    """remove entry from dict and internal list"""
+    value = super(ordereddict, self).pop(key)
+    del self.order[self.order.index(key)]
+    return value

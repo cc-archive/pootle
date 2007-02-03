@@ -36,6 +36,7 @@ from Pootle import projects
 from Pootle import potree
 from Pootle import users
 from Pootle import filelocations
+from translate.misc import optrecurse
 from Pootle.conf import set_instance
 from Pootle.storage_client import generaterobotsfile
 # Versioning information
@@ -48,6 +49,7 @@ from elementtree import ElementTree
 import kid
 import sys
 import os
+import sre
 import random
 import pprint
 
@@ -174,6 +176,7 @@ class PootleServer(users.OptionalLoginAppServer, templateserver.TemplateServer):
             reldirname = dirname.replace(dummyproject.podir, "")
             for fname in fnames:
               fpath = os.path.join(reldirname, fname)
+              #TODO: PO specific
               if fname.endswith(".po") and not os.path.isdir(os.path.join(dummyproject.podir, fpath)):
                 print "refreshing stats for", fpath
                 projects.pootlefile.pootlefile(dummyproject, fpath).updatequickstats()
@@ -204,9 +207,15 @@ class PootleServer(users.OptionalLoginAppServer, templateserver.TemplateServer):
        value = value.decode("utf-8")
       newargdict[key] = value
     argdict = newargdict
-    # TODO: strip off the initial path properly
-    while pathwords and pathwords[0] in ("pootle", "static"):
+
+    # Strip of the base url
+    baseurl = sre.sub('http://[^/]', '', self.instance.baseurl)
+    # Split up and remove empty parts
+    basepathwords = filter(None, baseurl.split('/'))
+    while pathwords and basepathwords and basepathwords[0] == pathwords[0]:
+      basepathwords = basepathwords[1:]
       pathwords = pathwords[1:]
+
     if pathwords:
       top = pathwords[0]
     else:
@@ -428,8 +437,12 @@ class PootleServer(users.OptionalLoginAppServer, templateserver.TemplateServer):
             try:
               return translatepage.TranslatePage(project, session, argdict, dirfilter=pofilename)
             except projects.RightsError, stoppedby:
+              if len(pathwords) > 1:
+                dirfilter = os.path.join(*pathwords[:-1])
+              else:
+                dirfilter = ""
               argdict["message"] = str(stoppedby)
-              return indexpage.ProjectIndex(project, session, argdict, dirfilter=pofilename)
+              return indexpage.ProjectIndex(project, session, argdict, dirfilter=dirfilter)
           elif argdict.get("index", 0):
             return indexpage.ProjectIndex(project, session, argdict, dirfilter=pofilename)
           else:
@@ -515,8 +528,8 @@ class PootleOptionParser(simplewebserver.WebOptionParser):
 
 def checkversions():
   """Checks that version dependencies are met"""
-  if not hasattr(toolkitversion, "build") or toolkitversion.build < 9900:
-    raise RuntimeError("requires Translate Toolkit version >= 0.10.  Current installed version is: %s" % toolkitversion.ver)
+  if not hasattr(toolkitversion, "build") or toolkitversion.build < 10000:
+    raise RuntimeError("requires Translate Toolkit version >= 1.0.  Current installed version is: %s" % toolkitversion.ver)
 
 def usepsyco(options):
   # options.psyco == None means the default, which is "full", but don't give a warning...
@@ -525,9 +538,9 @@ def usepsyco(options):
     return
   try:
     import psyco
-  except Exception:
+  except ImportError:
     if options.psyco is not None:
-      self.warning("psyco unavailable", options, sys.exc_info())
+      optrecurse.RecursiveOptionParser(formats={}).warning("psyco unavailable", options, sys.exc_info())
     return
   if options.psyco is None:
     options.psyco = "full"
@@ -544,6 +557,7 @@ def main():
   checkversions()
   parser = PootleOptionParser()
   options, args = parser.parse_args()
+  options.errorlevel = options.logerrors
   usepsyco(options)
   if options.action != "runwebserver":
     options.servertype = "dummy"

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Copyright 2006 Zuza Software Foundation
+# Copyright 2006-2007 Zuza Software Foundation
 # 
 # This file is part of translate.
 #
@@ -23,11 +23,11 @@
 """An xliff file specifically suited for handling the po representation of 
 xliff. """
 
-from translate.storage import po
 from translate.storage import xliff
 from translate.storage import lisa 
+from translate.storage import poheader
 from translate.misc.multistring import multistring
-from xml.dom import minidom
+from translate.misc import ourdom
 import xml
 import re
 
@@ -43,7 +43,7 @@ class PoXliffUnit(xliff.xliffunit):
         if document:
             self.document = document
         else:
-            self.document = minidom.Document()
+            self.document = ourdom.Document()
             
         if empty:
             return
@@ -122,24 +122,6 @@ class PoXliffUnit(xliff.xliffunit):
         
         for i in range(len(self.units)):
             self.units[i].target = targets[i]
-        
-#        pluralnum = 0
-#        group = self.creategroup(filename, True, restype="x-gettext-plural")
-#        for (src, tgt) in zip(sources, targets):
-#            unit = self.UnitClass(src, self.document)
-#            unit.target = tgt
-#            unit.setid("%d[%d]" % (self._messagenum, pluralnum))
-#            pluralnum += 1
-#            group.appendChild(unit)
-
-#        if pluralnum < sourcel:
-#            for string in sources[pluralnum:]:
-#                unit = self.UnitClass(src, self.document)
-#                unit.xmlelement.setAttribute("translate", "no")
-#                unit.setid("%d[%d]" % (self._messagenum, pluralnum))
-#                pluralnum += 1
-#                group.appendChild(unit)
-        
 
     def gettarget(self):
         if self.hasplural():
@@ -151,12 +133,6 @@ class PoXliffUnit(xliff.xliffunit):
         else:
             return super(PoXliffUnit, self).gettarget()
 
-#        strings = [super(PoXliffUnit, self).gettarget()]
-#        strings.extend([unit.target for unit in self.units[1:]])
-#        if strings:
-#            return multistring(strings)
-#        else:
-#            return None
     target = property(gettarget, settarget)
 
     def addnote(self, text, origin=None):
@@ -171,26 +147,6 @@ class PoXliffUnit(xliff.xliffunit):
         for unit in self.units[1:]:
             unit.addnote(text, origin)
 
-    def getnotes(self, origin=None):
-        """Returns the text from notes matching 'origin' or all notes"""
-        notenodes = self.xmlelement.getElementsByTagName("note")
-        textlist = [lisa.getText(note) for note in notenodes if self.correctorigin(note, origin)]
-        notelist = []
-        for i in textlist:
-            if i not in notelist:
-                notelist.append(i)
-        return ''.join(notelist) 
-
-#    def isfuzzy(self):
-#       #We only need to check the first element, so we can simply inherit, but
-#       #for compatibility with po we might want to also return true if 
-#       #approved=no and target string is empty.  
-#       if super(PoXliffUnit, self).isfuzzy():
-#           return True
-#       if self.target is None and self.xmlelement.getAttribute("approved") == "no":
-#           return True
-#       return False
-       
     def markfuzzy(self, value=True):
         super(PoXliffUnit, self).markfuzzy(value)
         for unit in self.units[1:]:
@@ -272,7 +228,7 @@ class PoXliffUnit(xliff.xliffunit):
         return self.xmlelement.tagName == "group"
 
 
-class PoXliffFile(xliff.xlifffile):
+class PoXliffFile(xliff.xlifffile, poheader.poheader):
     """a file for the po variant of Xliff files"""
     UnitClass = PoXliffUnit
     def __init__(self, *args, **kwargs):
@@ -292,39 +248,6 @@ class PoXliffFile(xliff.xlifffile):
         unit.xmlelement.setAttribute("approved", "no")
         unit.xmlelement.setAttribute("xml:space", "preserve")
         return unit
-
-    def header(self):
-        """Attempt to return the unit that corresponds to the PO header unit"""
-        if len(self.units) > 0:
-            candidate = self.units[0]
-            if candidate.isheader():
-                return candidate
-        else:
-            return None
-
-    def parseheader(self):
-        """parses the values in the PO style header into a dictionary"""
-        header = self.header()
-        if not header:
-            return {}
-        return po.poheader.parse(header.target)
-
-    def updateheader(self, add=False, **kwargs):
-        """Updates the fields in the PO style header. 
-        Remember that this is not present in XLIFF files in general"""
-        headeritems = self.parseheader()
-        if not headeritems and not add:
-           return
-        header = self.header()
-        # TODO: Should we add a header if there is none?
-        if header:
-            header.target = po.poheader.update(headeritems, add, **kwargs)
-            header.markfuzzy(False)
-        return header
-
-    def getheaderplural(self):
-        """returns the nplural and plural values from the po header"""
-        return poheader.getheaderplural(self.parseheader())
 
     def addplural(self, source, target, filename, createifmissing=False):
         """This method should now be unnecessary, but is left for reference"""
@@ -377,7 +300,7 @@ class PoXliffFile(xliff.xlifffile):
             xmlsrc = xml.read()
             xml.close()
             xml = xmlsrc
-        self.document = minidom.parseString(xml)
+        self.document = ourdom.parseString(xml)
         assert self.document.documentElement.tagName == self.rootNode
         self.initbody()
         groups = self.document.getElementsByTagName("group")

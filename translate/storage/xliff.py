@@ -20,53 +20,12 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-"""module for parsing .xliff files for translation"""
+"""module for handling XLIFF files for translation.
 
+The official recommendation is to use the extention .xlf for XLIFF files."""
+
+from translate.storage import base
 from translate.storage import lisa
-from xml.dom import minidom
-
-def writexml(self, writer, indent="", addindent="", newl=""):
-    """a replacement to writexml that formats it more like typical .ts files"""
-    # indent = current indentation
-    # addindent = indentation to add to higher levels
-    # newl = newline string
-    writer.write(indent+"<" + self.tagName)
-
-    attrs = self._get_attributes()
-    a_names = attrs.keys()
-    a_names.sort()
-
-    for a_name in a_names:
-        writer.write(" %s=\"" % a_name)
-        minidom._write_data(writer, attrs[a_name].value)
-        writer.write("\"")
-    if self.childNodes:
-        if len(self.childNodes) == 1 and self.childNodes[0].nodeType == self.TEXT_NODE:
-          writer.write(">")
-          for node in self.childNodes:
-              node.writexml(writer,"","","")
-          writer.write("</%s>%s" % (self.tagName,newl))
-        else:
-          writer.write(">%s"%(newl))
-          for node in self.childNodes:
-              node.writexml(writer,indent+addindent,addindent,newl)
-          writer.write("%s</%s>%s" % (indent,self.tagName,newl))
-    else:
-        writer.write("/>%s"%(newl))
-
-# commented out modifications to minidom classes
-'''
-Element_writexml = minidom.Element.writexml
-for elementclassname in dir(minidom):
-  elementclass = getattr(minidom, elementclassname)
-  if not isinstance(elementclass, type(minidom.Element)):
-    continue
-  if not issubclass(elementclass, minidom.Element):
-    continue
-  if elementclass.writexml != Element_writexml:
-    continue
-  elementclass.writexml = writexml
-'''
 
 # TODO: handle translation types
 
@@ -108,10 +67,14 @@ class xliffunit(lisa.LISAunit):
 
     def addalttrans(self, txt, origin=None, lang=None):
         """Adds a alt-trans tag and alt-trans components to <source>"""
+        #TODO: support adding a source tag ad match quality attribute.  At 
+        # the source tag is needed to inject fuzzy matches from a TM.
         if isinstance(txt, str):
             txt = txt.decode("utf-8")
+        alttarget = self.document.createElement("target")
+        alttarget.appendChild(self.document.createTextNode(txt))
         alttrans = self.document.createElement("alt-trans")
-        alttrans.appendChild(self.document.createTextNode(txt))
+        alttrans.appendChild(alttarget)
         if origin:
             alttrans.setAttribute("origin", origin)
         if lang:
@@ -119,17 +82,35 @@ class xliffunit(lisa.LISAunit):
         self.xmlelement.appendChild(alttrans)
 
     def getalttrans(self, origin=None):
-        """Returns <alt-trans> for source as a list"""
+        """Returns <alt-trans> for the given origin as a list of units. No 
+        origin means all alternatives."""
         nodes = self.xmlelement.getElementsByTagName("alt-trans")
         translist = []
-        if not origin:
-            for i in range(len(nodes)):
-                translist.append(lisa.getText(nodes[i]))
-        else:
-            for i in range(len(nodes)):
-                if self.correctorigin(nodes[i], origin):
-                    translist.append(lisa.getText(nodes[i]))
+        for i in range(len(nodes)):
+            if self.correctorigin(nodes[i], origin):
+                # We build some mini units that keep the xmlelement. This 
+                # makes it easier to delete it if it is passed back to us.
+                newunit = base.TranslationUnit(self.source)
+                node = nodes[i]
+
+                # the source tag is optional
+                sourcelist = node.getElementsByTagName("source")
+                if sourcelist:
+                    newunit.source = lisa.getText(sourcelist[0])
+
+                # must have one or more targets
+                targetlist = node.getElementsByTagName("target")
+                newunit.target = lisa.getText(targetlist[0])
+                #TODO: support multiple targets better
+                #TODO: support notes in alt-trans
+                newunit.xmlelement = node
+
+                translist.append(newunit)
         return translist
+
+    def delalttrans(self, alternative):
+        """Removes the supplied alternative from the list of alt-trans tags"""
+        self.xmlelement.removeChild(alternative.xmlelement)
 
     def addnote(self, text, origin=None):
         """Add a note specifically in a "note" tag"""
@@ -141,25 +122,41 @@ class xliffunit(lisa.LISAunit):
             note.setAttribute("from", origin)
         self.xmlelement.appendChild(note)        
 
-    def getnotes(self, origin=None):
-        """Returns the text from notes matching 'origin' or all notes"""
+    def getnotelist(self, origin=None):
+        """Private method that returns the text from notes matching 'origin' or all notes."""
         notenodes = self.xmlelement.getElementsByTagName("note")
-        if origin == None:
-          return lisa.getText(notenodes)
-        else:
-          notes = ""
-          for i in range(len(notenodes)):
-             if self.correctorigin(notenodes[i], origin):
-                notes += lisa.getText(notenodes[i])
-          return notes
+        initial_list = [lisa.getText(note) for note in notenodes if self.correctorigin(note, origin)]
+
+        # Remove duplicate entries from list:
+        dictset = {}
+        notelist = [dictset.setdefault(note, note) for note in initial_list if note not in dictset]
+
+        return notelist 
+
+    def getnotes(self, origin=None):
+        return '\n'.join(self.getnotelist(origin=origin)) 
 
     def removenotes(self):
-        """Remove all the notes"""
-        # TODO: Do we really want to remove all the notes?
+        """Remove all the translator notes."""
         notes = self.xmlelement.getElementsByTagName("note")
-        for i in range(len(notes)):
-            self.xmlelement.removeChild(notes[i])    
-    
+        for note in notes:
+            if self.correctorigin(note, origin="translator"):
+                self.xmlelement.removeChild(note)
+
+    def adderror(self, errorname, errortext):
+        """Adds an error message to this unit."""
+        text = errorname + ': ' + errortext
+        self.addnote(text, origin="pofilter")
+
+    def geterrors(self):
+        """Get all error messages."""
+        notelist = self.getnotelist(origin="pofilter")
+        errordict = {}
+        for note in notelist:
+            errorname, errortext = note.split(': ')
+            errordict[errorname] = errortext
+        return errordict
+
     def isapproved(self):
         """States whether this unit is approved"""
         return self.xmlelement.getAttribute("approved") == "yes"
@@ -169,6 +166,17 @@ class xliffunit(lisa.LISAunit):
         targetnode = self.getlanguageNode(lang=None, index=1)
         return not targetnode is None and \
                 "needs-review" in targetnode.getAttribute("state")
+
+    def markreviewneeded(self, needsreview=True, explanation=None):
+        """Marks the unit to indicate whether it needs review. Adds an optional explanation as a note."""
+        targetnode = self.getlanguageNode(lang=None, index=1)
+        if targetnode:
+            if needsreview:
+                targetnode.setAttribute("state", "needs-review-translation")
+                if explanation:
+                    self.addnote(explanation, origin="translator")
+            else:
+                targetnode.removeAttribute("state")
 
     def isfuzzy(self):
         targetnode = self.getlanguageNode(lang=None, index=1)
@@ -283,21 +291,34 @@ class xlifffile(lisa.LISAfile):
         self._filename = "NoName"
         self._messagenum = 0
 
+        # Allow the inputfile to override defaults for source and target language.
+        filenode = self.document.getElementsByTagName('file')[0]
+        sourcelanguage = filenode.getAttribute('source-language')
+        if sourcelanguage:
+            self.setsourcelanguage(sourcelanguage)
+        targetlanguage = filenode.getAttribute('target-language')
+        if targetlanguage:
+            self.settargetlanguage(targetlanguage)
+
     def addheader(self):
         """Initialise the file header."""
         self.document.getElementsByTagName("file")[0].setAttribute("source-language", self.sourcelanguage)
         if self.targetlanguage:
             self.document.getElementsByTagName("file")[0].setAttribute("target-language", self.targetlanguage)
 
-    def createfilenode(self, filename, sourcelanguage=None, datatype='plaintext'):
+    def createfilenode(self, filename, sourcelanguage=None, targetlanguage=None, datatype='plaintext'):
         """creates a filenode with the given filename. All parameters are needed
         for XLIFF compliance."""
         self.removedefaultfile()
         if sourcelanguage is None:
             sourcelanguage = self.sourcelanguage
+        if targetlanguage is None:
+            targetlanguage = self.targetlanguage
         filenode = self.document.createElement("file")
         filenode.setAttribute("original", filename)
         filenode.setAttribute("source-language", sourcelanguage)
+        if targetlanguage:
+            filenode.setAttribute("target-language", targetlanguage)
         filenode.setAttribute("datatype", datatype)
         bodyNode = self.document.createElement(self.bodyNode)
         filenode.appendChild(bodyNode)
@@ -346,13 +367,13 @@ class xlifffile(lisa.LISAfile):
 
     def getheadernode(self, filenode, createifmissing=False):
         """finds the header node for the given filenode"""
-        #Deprecated?
+        # TODO: Deprecated?
         headernodes = list(filenode.getElementsByTagName("header"))
         if headernodes:
             return headernodes[0]
         if not createifmissing:
             return None
-        headernode = minidom.Element("header")
+        headernode = ourdom.Element("header")
         filenode.appendChild(headernode)
         return headernode
 
@@ -414,24 +435,15 @@ class xlifffile(lisa.LISAfile):
         self.removedefaultfile()
         return super(xlifffile, self).__str__()
 
-    def parsefile(cls, storefile):
-        """Normal parsing, but if it smells like a PO-XLIFF, rather hand over to poxliff."""
-        if isinstance(storefile, basestring):
-            storefile = open(storefile, "r")
-        storestring = storefile.read()
-        return xlifffile.parsestring(storestring)
-
-    parsefile = classmethod(parsefile)
-
     def parsestring(cls, storestring):
-	"""Parses the string to return the correct file object"""
-	xliff = super(xlifffile, cls).parsestring(storestring)
-	if xliff.units:
-	    header = xliff.units[0]
-	    if ("gettext-domain-header" in header.getrestype() or xliff.getdatatype() == "po") \
-		    and cls.__name__.lower() != "poxlifffile":
-		import poxliff
-		xliff = poxliff.PoXliffFile.parsestring(storestring)
-	return xliff
+        """Parses the string to return the correct file object"""
+        xliff = super(xlifffile, cls).parsestring(storestring)
+        if xliff.units:
+            header = xliff.units[0]
+            if ("gettext-domain-header" in header.getrestype() or xliff.getdatatype() == "po") \
+                    and cls.__name__.lower() != "poxlifffile":
+                import poxliff
+                xliff = poxliff.PoXliffFile.parsestring(storestring)
+        return xliff
     parsestring = classmethod(parsestring)
 

@@ -71,22 +71,96 @@ class TestTranslationUnit:
         unit = self.UnitClass('bla')
         specials = ['Fish & chips', 'five < six', 'six > five', 'five &lt; six',
                     'Use &nbsp;', 'Use &amp;nbsp;', 'Use &amp;amp;nbsp;'
-                    'A "solution"', "skop 'n bal", '"""', "'''", 
-                    '\n', '\t', '\r', 
-                    '\\n', '\\t', '\\r', '\\"', '\\', '\\ ',
-		    '\\\n', '\\\t', '\\\r', 
-		    '\\\\n', '\\\\t', '\\\\r', '\\\\"',
-		    '\r\n', '\\r\\n', '\\\\r\\n', '\\r\\\\n', '\\\\n\\\\r'
-		    u'µ']
+                    'A "solution"', "skop 'n bal", '"""', "'''", u'µ',
+                    '\n', '\t', '\r', '\r\n', '\\r', '\\', '\\\r'] 
         for special in specials:
             unit.source = special
-            print "unit.source:"
-            print repr(unit.source)
-            print unit.source.encode('utf-8')
-            print "special:"
-            print repr(special)
-            print special.encode('utf-8')
+            print "unit.source:", repr(unit.source)
+            print "special:", repr(special)
             assert unit.source == special
+
+    def test_difficult_escapes(self):
+        """Test difficult characters that might go wrong in a quoting and 
+        escaping roundtrip."""
+
+        unit = self.UnitClass('bla')
+        specials = ['\\n', '\\t', '\\"', '\\ ',
+                    '\\\n', '\\\t', '\\\\n', '\\\\t', '\\\\r', '\\\\"',
+                    '\\r\\n', '\\\\r\\n', '\\r\\\\n', '\\\\n\\\\r']
+        for special in specials:
+            unit.source = special
+            print "unit.source:", repr(unit.source) + '|'
+            print "special:", repr(special) + '|'
+            assert unit.source == special
+
+    def test_markreview(self):
+        """Tests if we can mark the unit to need review."""
+        unit = self.UnitClass("Test String")
+        # We have to explicitly set the target to nothing, otherwise xliff
+        # tests will fail.
+        # Can we make it default behavior for the UnitClass?
+        unit.target = ""
+
+        unit.addnote("Test note 1", origin="translator")
+        unit.addnote("Test note 2", origin="translator")
+        original_notes = unit.getnotes(origin="translator")
+
+        # The base class methods won't be implemented:
+        if self.__module__.endswith('test_base'):
+            assert test.raises(NotImplementedError, unit.markreviewneeded) 
+            return
+
+        assert not unit.isreview()
+        unit.markreviewneeded()
+        assert unit.isreview()
+        unit.markreviewneeded(False)
+        assert not unit.isreview()
+        assert unit.getnotes(origin="translator") == original_notes
+        unit.markreviewneeded(explanation="Double check spelling.")
+        assert unit.isreview()
+        notes = unit.getnotes(origin="translator")
+        assert notes.count("Double check spelling.") == 1
+
+    def test_note_sanity(self):
+        """Tests that all subclasses of the base behaves consistently with regards to notes."""
+        unit = self.UnitClass("Test String")
+
+        unit.addnote("Test note 1", origin="translator")
+        unit.addnote("Test note 2", origin="translator")
+        unit.addnote("Test note 3", origin="translator")
+        expected_notes = u"Test note 1\nTest note 2\nTest note 3"
+        actual_notes = unit.getnotes(origin="translator")
+        assert actual_notes == expected_notes
+
+        # Test with no origin.
+        unit.removenotes()
+        assert not unit.getnotes()
+        unit.addnote("Test note 1")
+        unit.addnote("Test note 2")
+        unit.addnote("Test note 3")
+        expected_notes = u"Test note 1\nTest note 2\nTest note 3"
+        actual_notes = unit.getnotes()
+        assert actual_notes == expected_notes
+
+    def test_errors(self):
+        """Tests that we can add and retrieve error messages for a unit."""
+        unit = self.UnitClass("Test String")
+
+        # The base class methods won't be implemented:
+        if self.__module__.endswith('test_base'):
+            assert test.raises(NotImplementedError, unit.markreviewneeded) 
+            return
+
+        assert len(unit.geterrors()) == 0
+        unit.adderror(errorname='test1', errortext='Test error message 1.')
+        unit.adderror(errorname='test2', errortext='Test error message 2.')
+        unit.adderror(errorname='test3', errortext='Test error message 3.')
+        assert len(unit.geterrors()) == 3
+        assert unit.geterrors()['test1'] == 'Test error message 1.'
+        assert unit.geterrors()['test2'] == 'Test error message 2.'
+        assert unit.geterrors()['test3'] == 'Test error message 3.'
+        unit.adderror(errorname='test1', errortext='New error 1.')
+        assert unit.geterrors()['test1'] == 'New error 1.'
 
 class TestTranslationStore:
     """Tests a TranslationStore.

@@ -19,8 +19,8 @@
 # along with translate; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
+from jToolkit import web
 from jToolkit.web import server
-from jToolkit.web import session
 from jToolkit import mailer
 from jToolkit import prefs
 from Pootle import pagelayout
@@ -199,13 +199,13 @@ class OptionalLoginAppServer(server.LoginAppServer):
       options = getattr(self, "options", None)
       # with unit tests we might not have self.options, therefore this test
       if options:
-        if self.options.browsererrors == 'traceback':
+        if options.browsererrors == 'traceback':
           browsertraceback = traceback
-        if self.options.logerrors == 'traceback':
+        if options.logerrors == 'traceback':
           self.errorhandler.logerror(traceback)
-        elif self.options.logerrors == 'exception':
+        elif options.logerrors == 'exception':
           self.errorhandler.logerror(exceptionstr)
-        elif self.options.logerrors == 'message':
+        elif options.logerrors == 'message':
           self.errorhandler.logerror(errormessage)
       else:
         self.errorhandler.logerror(traceback)
@@ -248,7 +248,7 @@ class OptionalLoginAppServer(server.LoginAppServer):
     usernode = self.getusernode(users, username)
     usernode.name = fullname
     usernode.email = email
-    usernode.passwdhash = session.md5hexdigest(password)
+    usernode.passwdhash = web.session.md5hexdigest(password)
 
   def makeactivationcode(self, users, username):
     """makes a new activation code for the user and returns it"""
@@ -291,7 +291,7 @@ class OptionalLoginAppServer(server.LoginAppServer):
         if self.hasuser(users, username):
           usernode = self.getusernode(users, username)
           if value and value.strip():
-            usernode.passwdhash = session.md5hexdigest(value.strip())
+            usernode.passwdhash = web.session.md5hexdigest(value.strip())
       elif key.startswith("useractivated-"):
         username = key.replace("useractivated-", "", 1)
         self.activate(users, username)
@@ -402,6 +402,8 @@ class OptionalLoginAppServer(server.LoginAppServer):
       redirectpage = pagelayout.PootlePage("Redirecting...", {}, session)
       redirectpage.templatename = "redirect"
       redirectpage.templatevars = {
+          # BUG: We won't redirect to registration page, we will go to 
+          # activation or login
           "pagetitle": session.localize("Redirecting to Registration Page..."),
           "refresh": 10,
           "refreshurl": redirecturl,
@@ -438,7 +440,7 @@ class OptionalLoginAppServer(server.LoginAppServer):
     else:
       return ActivatePage(session, argdict)
 
-class PootleSession(session.LoginSession):
+class PootleSession(web.session.LoginSession):
   """a session object that knows about Pootle"""
   def __init__(self, sessioncache, server, sessionstring = None, loginchecker = None):
     """sets up the session and remembers the users prefs"""
@@ -489,6 +491,7 @@ class PootleSession(session.LoginSession):
       if not getattr(self.prefs, "uilanguage", "") and self.language_set:
         self.setinterfaceoptions({"option-uilanguage": self.language_set})
     self.translation = self.server.gettranslation(self.language)
+    self.checkstatus(None, None)
 
   def validate(self):
     """checks if this session is valid (which means the user must be activated)"""
@@ -526,7 +529,7 @@ class PootleSession(session.LoginSession):
     setattr(self.prefs, "name", name)
     setattr(self.prefs, "email", email)
     if password:
-      passwdhash = session.md5hexdigest(argdict.get("option-password", ""))
+      passwdhash = web.session.md5hexdigest(argdict.get("option-password", ""))
       setattr(self.prefs, "passwdhash", passwdhash)
     self.saveprefs()
 

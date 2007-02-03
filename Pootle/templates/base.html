@@ -6,11 +6,11 @@
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
   <meta name="description" content="{{ meta_description }}" />
   <meta name="keywords" content="{{ keywords|join:", " }}" />
-  <link rel="stylesheet" type="text/css" href="/static/pootle.css" />
-  <link rel="shortcut icon" href="/favicon.ico" />
+  <link rel="stylesheet" type="text/css" href="{{ baseurl }}/static/pootle.css" />
+  <link rel="shortcut icon" href="{{ baseurl }}/favicon.ico" />
 {% block head %}{% endblock %}
   <!--[if lt IE 7.]>
-    <script defer type="text/javascript" src="/static/js/correctpng.js"></script>
+    <script defer type="text/javascript" src="{{ baseurl }}/static/js/correctpng.js"></script>
   <![endif]-->
 </head>
 

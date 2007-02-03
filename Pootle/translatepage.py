@@ -24,6 +24,7 @@ from jToolkit import spellcheck
 from Pootle import pagelayout
 from Pootle import projects
 from Pootle import pootlefile
+from translate.storage import po
 import difflib
 import urllib
 
@@ -86,7 +87,7 @@ class TranslatePage(pagelayout.PootleNavPage):
       rows = self.getdisplayrows("translate")
       pagelinks = self.getpagelinks("?translate=1&view=1", rows)
       icon="edit"
-    navbarpath_dict = self.makenavbarpath_dict(self.project, self.session, self.pofilename)
+    navbarpath_dict = self.makenavbarpath_dict(self.project, self.session, self.pofilename, dirfilter=self.dirfilter or "")
     # templatising
     templatename = "translatepage"
     instancetitle = getattr(session.instance, "title", session.localize("Pootle Demo"))
@@ -132,7 +133,7 @@ class TranslatePage(pagelayout.PootleNavPage):
     if self.showassigns and "assign" in self.rights:
       templatevars["assign"] = self.getassignbox()
     pagelayout.PootleNavPage.__init__(self, templatename, templatevars, session, bannerheight=81)
-    self.addfilelinks(self.pofilename, self.matchnames)
+    self.addfilelinks()
 
   def getfinishedtext(self, stoppedby):
     """gets notice to display when the translation is finished"""
@@ -187,13 +188,13 @@ class TranslatePage(pagelayout.PootleNavPage):
         pagelink["sep"] = ""
     return pagelinks
 
-  def addfilelinks(self, pofilename, matchnames):
+  def addfilelinks(self):
     """adds a section on the current file, including any checks happening"""
     if self.showassigns and "assign" in self.rights:
       self.templatevars["assigns"] = self.getassignbox()
     if self.pofilename is not None:
-      if matchnames:
-        checknames = [matchname.replace("check-", "", 1) for matchname in matchnames]
+      if self.matchnames:
+        checknames = [matchname.replace("check-", "", 1) for matchname in self.matchnames]
         # TODO: put the following parameter in quotes, since it will be foreign in all target languages
         # l10n: the parameter is the name of one of the quality checks, like "fuzzy"
         self.templatevars["checking_text"] = self.localize("checking %s", ", ".join(checknames))
@@ -222,7 +223,8 @@ class TranslatePage(pagelayout.PootleNavPage):
     rejects = []
     translations = {}
     suggestions = {}
-    pluralitems = {}
+    comments = {}
+    fuzzies = {}
     keymatcher = sre.compile("(\D+)([0-9.]+)")
     def parsekey(key):
       match = keymatcher.match(key)
@@ -258,6 +260,12 @@ class TranslatePage(pagelayout.PootleNavPage):
         accepts.append((item, pointitem))
       elif keytype == "reject":
         rejects.append((item, pointitem))
+      elif keytype == "translator_comments":
+        # We need to remove carriage returns from the input.
+        value = value.replace("\r", "")
+        comments[item] = value
+      elif keytype == "fuzzy":
+        fuzzies[item] = value
       elif keytype == "trans":
         value = self.unescapesubmition(value)
         if pointitem is not None:
@@ -273,8 +281,6 @@ class TranslatePage(pagelayout.PootleNavPage):
         continue
       delkeys.append(key)
 
-    # Get the translator comments from the form. We need to remove carriage returns from the input.
-    translator_comments = self.argdict.pop('translator_comments'+str(item), "").replace("\r", "")
 
     for key in delkeys:
       del self.argdict[key]
@@ -298,13 +304,13 @@ class TranslatePage(pagelayout.PootleNavPage):
       if isinstance(newvalues["target"], dict) and len(newvalues["target"]) == 1 and 0 in newvalues["target"]:
         newvalues["target"] = newvalues["target"][0]
 
-      # Get the fuzzy bool value from the user supplied form variables.
-      fuzzyvalue = self.argdict.pop('fuzzy'+str(item), None)
       newvalues["fuzzy"] = False
-      if (fuzzyvalue==u'on'):
+      if (fuzzies.get(item) == u'on'):
         newvalues["fuzzy"] = True
 
-      newvalues["translator_comments"] = translator_comments
+      translator_comments = comments.get(item)
+      if translator_comments:
+        newvalues["translator_comments"] = translator_comments
 
       self.project.updatetranslation(self.pofilename, item, newvalues, self.session)
       
@@ -338,7 +344,7 @@ class TranslatePage(pagelayout.PootleNavPage):
   def getusernode(self):
     """gets the user's prefs node"""
     if self.session.isopen:
-      return getattr(self.session.loginchecker.users, self.session.username, None)
+      return getattr(self.session.loginchecker.users, self.session.username.encode("utf-8"), None)
     else:
       return None
 
@@ -436,10 +442,13 @@ class TranslatePage(pagelayout.PootleNavPage):
       origdict = self.getorigdict(item, orig, item in self.editable)
       transmerge = {}
 
+      message_context = ""
       if item in self.editable:
         translator_comments = thepo.getnotes(origin="translator")
         developer_comments = self.escapetext(thepo.getnotes(origin="developer"), stripescapes=True)
         locations = " ".join(thepo.getlocations())
+        if isinstance(unit, po.pounit):
+          message_context = "".join(unit.getcontext())
         tmsuggestions = self.project.gettmsuggestions(self.pofilename, self.item)
         tmsuggestions.extend(self.project.getterminology(self.session, self.pofilename, self.item))
         
@@ -460,8 +469,6 @@ class TranslatePage(pagelayout.PootleNavPage):
                   }
       transdict.update(transmerge)
       polarity = oddoreven(item)
-      origcell_class = "translate-original translate-original-%s" % polarity
-      transcell_class = "translate-translation translate-translation-%s" % polarity
       if item in self.editable:
         focus_class = "translate-focus"
       else:
@@ -485,6 +492,7 @@ class TranslatePage(pagelayout.PootleNavPage):
                  "translator_comments": translator_comments,
                  "developer_comments": developer_comments,
                  "locations": locations,
+                 "message_context": message_context,
                  "tm": tmsuggestions,
                  }
       items.append(itemdict)

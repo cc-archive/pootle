@@ -38,11 +38,30 @@ classes = {"po": po.pofile, "pot": po.pofile, "csv": csvl10n.csvfile,
             "xliff": xliff.xlifffile, "xlf": xliff.xlifffile, 
             "tmx": tmx.tmxfile, "tbx": tbx.tbxfile}
 
+def guessextention(storefile):
+    """Guesses the type of a file object by looking at the first few characters.
+    The return value is a file extention ."""
+    start = storefile.read(200).strip()
+    if '<xliff ' in start:
+        extention = 'xlf'
+    elif 'msgid "' in start:
+        extention = 'po'
+    else:
+        raise ValueError("Failed to guess file type.")
+    storefile.seek(0)
+    return extention
+
+def getdummyname(storefile):
+    """Provides a dummy name for a file object without a name attribute, by guessing the file type."""
+    return 'dummy.' + guessextention(storefile)
+
 def getname(storefile):
     """returns the filename"""
+    if storefile is None:
+        raise ValueError("This method cannot magically produce a filename when given None as input.")
     if not isinstance(storefile, basestring):
         if not hasattr(storefile, "name"):
-            raise ValueError("Factory can only guess filetype from filename")
+            storefilename = getdummyname(storefile)
         else:
             storefilename = storefile.name
     else:

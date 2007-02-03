@@ -40,6 +40,7 @@ class POTree:
       self.saveprefs()
     self.projects = instance.projects
     self.podirectory = instance.podirectory
+    self.instance = instance
     self.projectcache = {}
 
   def saveprefs(self):
@@ -342,9 +343,13 @@ class POTree:
     setattr(projectprefs, "description", projectdescription)
 
   def getprojectlocalfiletype(self, projectcode):
-    """returns the project allowed file type"""
+    """returns the project allowed file type. We assume it is .po if nothing
+    else is specified."""
     projectprefs = getattr(self.projects, projectcode)
-    return getattr(projectprefs, "localfiletype", "po")
+    type = getattr(projectprefs, "localfiletype", "po")
+    if not type:
+      type = "po"
+    return type
 
   def setprojectlocalfiletype(self, projectcode, projectfiletype):
     """sets the allowed file type for the project"""
@@ -433,7 +438,6 @@ class POTree:
     projectdir = os.path.join(self.podirectory, projectcode)
     if not os.path.exists(projectdir):
       raise IndexError("directory not found for project %s" % (projectcode))
-      return None
     languagedir = os.path.join(projectdir, languagecode)
     if not os.path.exists(languagedir):
       languagedirs = [languagedir for languagedir in os.listdir(projectdir) if self.languagematch(languagecode, languagedir)]
@@ -479,6 +483,10 @@ class POTree:
     else:
       os.path.walk(podir, addfiles, podir)
     return pofilenames
+
+  def getdefaultrights(self):
+    """Returns the default rights for a logged in user on this Pootle server."""
+    return getattr(self.instance, "defaultrights", "view, suggest, archive, pocompile")
 
   def refreshstats(self):
     """manually refreshes (all or missing) the stats files"""

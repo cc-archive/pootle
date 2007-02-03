@@ -4,9 +4,29 @@
 from translate.storage import properties
 from translate.storage import test_monolingual
 from translate.misc import wStringIO
+from py import test
 
 class TestPropUnit(test_monolingual.TestMonolingualUnit):
     UnitClass = properties.propunit
+
+    def setup_method(self, method):
+        self.unit = self.UnitClass("Test Source String")
+
+    def test_errors(self):
+        """Assert the fact that geterrors() and adderror() is not (yet) implemented.
+        This test needs to be removed when these methods get implemented."""
+        assert test.raises(NotImplementedError, self.unit.geterrors)
+        assert test.raises(NotImplementedError, self.unit.adderror, 'testname', 'Test error')
+
+    def test_difficult_escapes(self):
+        """It doesn't seem that properties files can store double backslashes.
+        
+        We are disabling the double-backslash tests for now.
+        If we are mistaken in the above assumption, we need to fix getsource()
+        and setsource() and delete this test override.
+        
+        """
+        pass
 
 class TestProp(test_monolingual.TestMonolingualStore):
     StoreClass = properties.propfile
@@ -61,5 +81,5 @@ class TestProp(test_monolingual.TestMonolingualStore):
         propfile = self.propparse(propsource)
         propunit = propfile.units[0]
         assert propunit.name == "whitespace"
-        assert propunit.source == "Start "
+        assert propunit.source == "Start"
      

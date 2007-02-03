@@ -45,7 +45,7 @@ def getlanguageselector(languagenames, session):
         languageoptions += languagenames.items()
     else:
         languageoptions += languagenames
-    return [{"code": key, "name": value, "selected": key==session.language or None} for key, value in languageoptions]
+    return [{"code": key, "name": value, "selected": key==session.language or None} for key, value in languageoptions if key != 'templates']
 
 def getprojectoptions(session):
     """gets the options box to change the user's projects"""
@@ -75,6 +75,8 @@ def getotheroptions(session):
         uilanguage = userlanguages[0]
     languageoptions = [{"code": '', "name": ''}]
     for code, name in potree().getlanguages():
+      if code == "templates":
+        continue
       languageoptions.append({"code": code, "name": name, "selected": uilanguage == code or None})
     options = {
         "inputheight": _("Input Height (in lines)"),

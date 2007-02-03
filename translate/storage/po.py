@@ -25,12 +25,10 @@ gettext-style .po (or .pot) files are used in translations for KDE et al (see kb
 from __future__ import generators
 from translate.misc.multistring import multistring
 from translate.misc import quote
-from translate.misc import dictutils
 from translate.misc import textwrap
 from translate.storage import base
-from translate import __version__
+from translate.storage import poheader
 import sre
-import time
 import codecs
 
 # general functions for quoting / unquoting po strings
@@ -158,9 +156,10 @@ From the GNU gettext manual:
      WHITE-SPACE
      #  TRANSLATOR-COMMENTS
      #. AUTOMATIC-COMMENTS
+     #| PREVIOUS MSGID                 (Gettext 0.16 - check if this is the correct position - not yet implemented)
      #: REFERENCE...
      #, FLAG...
-     msgctxt CONTEXT
+     msgctxt CONTEXT                   (Gettext 0.15)
      msgid UNTRANSLATED-STRING
      msgstr TRANSLATED-STRING
 """
@@ -219,7 +218,7 @@ class pounit(base.TranslationUnit):
     return multi
 
   def setsource(self, source):
-    """Sets the msgstr to the given (unescaped) value"""
+    """Sets the msgid to the given (unescaped) value"""
     if isinstance(source, multistring):
       source = source.strings
     if isinstance(source, list):
@@ -260,7 +259,11 @@ class pounit(base.TranslationUnit):
     elif isinstance(target, dict):
       self.msgstr = dict([(i, quoteforpo(targetstring, templates.get(i, None))) for i, targetstring in target.iteritems()])
     else:
-      self.msgstr = quoteforpo(target, template=templates.get(0, None))
+      # TODO: Using the template parameter on headers buggers up the header layout.
+      if self.isheader():
+        self.msgstr = quoteforpo(target)
+      else:
+        self.msgstr = quoteforpo(target, template=templates.get(0, None))
   target = property(gettarget, settarget)
 
   def getnotes(self, origin=None):
@@ -293,6 +296,25 @@ class pounit(base.TranslationUnit):
   def removenotes(self):
     """Remove all the translator's notes (other comments)"""
     self.othercomments = []
+
+  def adderror(self, errorname, errortext):
+    """Adds an error message to this unit."""
+    text = '(pofilter) ' + errorname + ': ' + errortext
+
+    # Don't add the same error twice:
+    if text not in self.getnotes(origin='translator'):
+        self.addnote(text, origin="translator")
+
+  def geterrors(self):
+    """Get all error messages."""
+    notes = self.getnotes(origin="translator").split('\n')
+    errordict = {}
+    for note in notes:
+      if '(pofilter) ' in note:
+        error = note.replace('(pofilter) ', '')
+        errorname, errortext = error.split(': ')
+        errordict[errorname] = errortext
+    return errordict
 
   def copy(self):
     newpo = self.__class__()
@@ -337,9 +359,13 @@ class pounit(base.TranslationUnit):
       return len(unquotefrompo(self.msgstr).strip())
 
   def merge(self, otherpo, overwrite=False, comments=True, authoritative=False):
-    """merges the otherpo (with the same msgid) into this one
-    overwrite non-blank self.msgstr only if overwrite is True
-    merge comments only if comments is True"""
+    """Merges the otherpo (with the same msgid) into this one.
+
+    Overwrite non-blank self.msgstr only if overwrite is True
+    merge comments only if comments is True
+    
+    """
+
     def mergelists(list1, list2, split=False):
       #decode where necessary
       if unicode in [type(item) for item in list2] + [type(item) for item in list1]:
@@ -390,10 +416,13 @@ class pounit(base.TranslationUnit):
       if not authoritative:
         # We don't bring across otherpo.automaticcomments as we consider ourself
         # to be the the authority.  Same applies to otherpo.msgidcomments
-        self.automaticcomments = otherpo.automaticcomments
+        mergelists(self.automaticcomments, otherpo.automaticcomments)
         mergelists(self.msgidcomments, otherpo.msgidcomments)
         mergelists(self.sourcecomments, otherpo.sourcecomments, split=True)
     if self.isblankmsgstr() or overwrite:
+      # Remove kde-style comments from the translation (if any).
+      if self.extract_msgidcomments(otherpo.target):
+        otherpo.target = otherpo.target.replace('_: ' + otherpo.extract_msgidcomments()+ '\n', '')
       self.target = otherpo.target
       if self.source != otherpo.source:
         self.markfuzzy()
@@ -457,6 +486,26 @@ class pounit(base.TranslationUnit):
 
   def isreview(self):
     return self.hastypecomment("review") or self.hasmarkedcomment("review") or self.hasmarkedcomment("pofilter")
+
+  def markreviewneeded(self, needsreview=True, explanation=None):
+    """Marks the unit to indicate whether it needs review. Adds an optional explanation as a note."""
+    if needsreview:
+      reviewnote = "(review)"
+      if explanation:
+        reviewnote += " " + explanation
+      self.addnote(reviewnote, origin="translator")
+    else:
+      # Strip (review) notes.
+      notestring = self.getnotes(origin="translator")
+      notes = notestring.split('\n')
+      newnotes = []
+      for note in notes:
+        if not '(review)' in note:
+          newnotes.append(note)
+      newnotes = '\n'.join(newnotes)
+      self.removenotes()
+      self.addnote(newnotes, origin="translator")
+      
 
   def isnotblank(self):
     return not self.isblank()
@@ -598,6 +647,12 @@ class pounit(base.TranslationUnit):
             self.msgstr[msgstr_pluralid].append(extracted)
     if self.obsolete:
       self.makeobsolete()
+    # If this unit is the header, we have to get the encoding to ensure that no
+    # methods are called that need the encoding before we obtained it.
+    if self.isheader():
+      charset = sre.search("charset=([^\\s]+)", unquotefrompo(self.msgstr))
+      if charset:
+        self.encoding = encodingToUse(charset.group(1))
     return linesprocessed
 
   def getmsgpartstr(self, partname, partlines, partcomments=""):
@@ -704,82 +759,25 @@ class pounit(base.TranslationUnit):
     """add to sourcecomments"""
     self.sourcecomments.append("#: %s\n" % location)
 
-class poheader:
-  """This class implements functionality for manipulation of po file headers"""
-  header_order = [
-    "Project-Id-Version",
-    "Report-Msgid-Bugs-To",
-    "POT-Creation-Date",
-    "PO-Revision-Date",
-    "Last-Translator",
-    "Language-Team",
-    "MIME-Version",
-    "Content-Type",
-    "Content-Transfer-Encoding",
-    "Plural-Forms",
-    "X-Generator",
-    ]
+  def extract_msgidcomments(self, text=None):
+    """Extract KDE style msgid comments from the unit.
+    
+    @rtype: String
+    @return: Returns the extracted msgidcomments found in this unit's msgid.
+    
+    """
 
-  def parse(cls, input):
-    """Parses an input string with the definition of a PO header and returns 
-    the interpreted values as a dictionary"""
-    headervalues = dictutils.ordereddict()
-    for line in input.split("\n"):
-      if not line or ":" not in line:
-        continue
-      key, value = line.split(":", 1)
-      #We don't want unicode keys
-      key = str(key.strip())
-      headervalues[key] = value.strip()
-    return headervalues
-  parse= classmethod(parse)
+    if not text:
+        text = unquotefrompo(self.msgidcomments)
+    return text.split('\n')[0].replace('_: ', '', 1)
 
-  def update(cls, existing, add=False, **kwargs):
-    """Update an existing header with the values in kwargs, adding new values 
-    only if add is true. This returns the string representation."""
-    headerargs = dictutils.ordereddict()
-    fixedargs = dictutils.cidict()
-    for key, value in kwargs.items():
-      key = key.replace("_", "-")
-      if key.islower():
-        key = key.title()
-      fixedargs[key] = value
-    for key in poheader.header_order:
-      if key in fixedargs:
-        headerargs[key] = fixedargs.pop(key)
-    for key in fixedargs:
-      headerargs[key] = kwargs[key]
-    for key, value in headerargs.iteritems():
-      if existing.has_key(key) or add:
-        existing[key] = value
-    header = ""
-    for key, value in existing.items():
-      header += "%s: %s\n" % (key, value)
-    return header
-  update = classmethod(update)
+  def getcontext(self):
+    """Get the message context."""
+    return unquotefrompo(self.msgctxt) + self.extract_msgidcomments()
 
-  def getheaderplural(cls, header):
-    """returns the nplural and plural values from the header"""
-    pluralformvalue = header.get('Plural-Forms', None)
-    if pluralformvalue is None:
-      return None, None
-    nplural = sre.findall("nplurals=(.+?);", pluralformvalue)
-    plural = sre.findall("plural=(.+?);?$", pluralformvalue)
-    if not nplural or nplural[0] == "INTEGER":
-      nplural = None
-    else:
-      nplural = nplural[0]
-    if not plural or plural[0] == "EXPRESSION":
-      plural = None
-    else:
-      plural = plural[0]
-    return nplural, plural
-  getheaderplural= classmethod(getheaderplural)
-
-class pofile(base.TranslationStore):
+class pofile(base.TranslationStore, poheader.poheader):
   """this represents a .po file containing various units"""
   UnitClass = pounit
-  x_generator = "Translate Toolkit %s" % __version__.ver
   def __init__(self, inputfile=None, encoding=None, unitclass=pounit):
     """construct a pofile, optionally reading in from inputfile.
     encoding can be specified but otherwise will be read from the PO header"""
@@ -790,107 +788,19 @@ class pofile(base.TranslationStore):
     if inputfile is not None:
       self.parse(inputfile)
 
-  def header(self):
-    """Returns the header element, or None. Only the first element is allowed
-    to be a header. Note that this could still return an empty header element,
-    if present."""
-    if len(self.units) == 0:
-      return None
-    candidate = self.units[0]
-    if candidate.isheader():
-      return candidate
-    else:
-      return None
-
-  def makeheader(self, charset="CHARSET", encoding="ENCODING", project_id_version=None, pot_creation_date=None, po_revision_date=None, last_translator=None, language_team=None, mime_version=None, plural_forms=None, report_msgid_bugs_to=None, **kwargs):
+  def makeheader(self, **kwargs):
     """create a header for the given filename. arguments are specially handled, kwargs added as key: value
     pot_creation_date can be None (current date) or a value (datetime or string)
     po_revision_date can be None (form), False (=pot_creation_date), True (=now), or a value (datetime or string)"""
-    headerargs = dictutils.cidict()
-    for key, value in kwargs.iteritems():
-      key = key.replace("_", "-")
-      if key.islower():
-        key = key.title()
-      headerargs[key] = value
+
     headerpo = self.UnitClass(encoding=self.encoding)
     headerpo.markfuzzy()
     headerpo.msgid = ['""']
-    headeritems = [""]
-    if project_id_version is None:
-      project_id_version = "PACKAGE VERSION"
-    if pot_creation_date is None or pot_creation_date == True:
-      pot_creation_date = time.strftime("%Y-%m-%d %H:%M%z")
-    if isinstance(pot_creation_date, time.struct_time):
-      pot_creation_date = pot_creation_date.strftime("%Y-%m-%d %H:%M%z")
-    if po_revision_date is None:
-      po_revision_date = "YEAR-MO-DA HO:MI+ZONE"
-    elif po_revision_date == False:
-      po_revision_date = pot_creation_date
-    elif po_revision_date == True:
-      po_revision_date = time.strftime("%Y-%m-%d %H:%M%z")
-    if isinstance(po_revision_date, time.struct_time):
-      po_revision_date = po_revision_date.strftime("%Y-%m-%d %H:%M%z")
-    if last_translator is None:
-      last_translator = "FULL NAME <EMAIL@ADDRESS>"
-    if language_team is None:
-      language_team = "LANGUAGE <LL@li.org>"
-    if mime_version is None:
-      mime_version = "1.0"
-    if plural_forms is None:
-      plural_forms = "nplurals=INTEGER; plural=EXPRESSION;"
-    if report_msgid_bugs_to is None:
-      report_msgid_bugs_to = ""
-    defaultargs = {
-      "Project-Id-Version":  project_id_version,
-      "Report-Msgid-Bugs-To":  report_msgid_bugs_to,
-      "POT-Creation-Date":  pot_creation_date,
-      "PO-Revision-Date":  po_revision_date,
-      "Last-Translator":  last_translator,
-      "Language-Team":  language_team,
-      "MIME-Version":  mime_version,
-      "Content-Type": "text/plain; charset=%s" % charset,
-      "Content-Transfer-Encoding":  encoding,
-      "Plural-Forms":  plural_forms,
-      "X-Generator": self.x_generator,
-      }
-    for key in poheader.header_order:
-      value = headerargs.pop(key, defaultargs[key])
-      headeritems.append("%s: %s\\n" % (key, value))
-    for key, value in headerargs.iteritems():
-      headeritems.append("%s: %s\\n" % (key, value))
-    headerpo.msgstr = [quote.quotestr(headerstr) for headerstr in headeritems]
+    headeritems = self.makeheaderdict(**kwargs)
+    headerpo.msgstr = ['""']
+    for (key, value) in headeritems.items():
+        headerpo.msgstr.append(quote.quotestr("%s: %s\\n" % (key, value)))
     return headerpo
-
-  def parseheader(self):
-    """parses the values in the header into a dictionary"""
-    header = self.header()
-    if not header:
-      return {}
-    return poheader.parse(header.target)
-
-  def updateheader(self, add=False, **kwargs):
-    """update field(s) in the PO header"""
-    headeritems = self.parseheader()
-    if not headeritems and not add:
-      return
-    header = self.header()
-    if not header:
-      header = self.makeheader(**kwargs)
-      self.units.insert(0, header)
-    else:
-      header.target = poheader.update(headeritems, add, **kwargs)
-    header.markfuzzy(False)
-    return header
-
-  def updateheaderplural(self, nplurals, plural):
-    """update the Plural-Form PO header"""
-    if isinstance(nplurals, basestring):
-      nplurals = int(nplurals)
-    self.updateheader( Plural_Forms = "nplurals=%d; plural=%s;" % (nplurals, plural) )
-
-  def getheaderplural(self):
-    """returns the nplural and plural values from the header"""
-    return poheader.getheaderplural(self.parseheader())
 
   def changeencoding(self, newencoding):
     """changes the encoding on the file"""
@@ -956,15 +866,11 @@ class pofile(base.TranslationStore):
           if linesprocessed >= 1 and newpe.getoutput():
             self.units.append(newpe)
             if newpe.isheader():
-              headervalues = self.parseheader()
-              contenttype = headervalues.get("Content-Type", None)
-              if contenttype is not None:
-                charsetmatch = sre.search("charset=([^ ]*)", contenttype)
-                if charsetmatch:
-                  self.encoding = charsetmatch.group(1)
-                # now that we know the encoding, decode the whole file
-                if self.encoding is not None and self.encoding.lower() != 'charset':
-                  lines = self.decode(lines)
+              if "Content-Type" in self.parseheader():
+                self.encoding = newpe.encoding
+              # now that we know the encoding, decode the whole file
+              if self.encoding is not None and self.encoding.lower() != 'charset':
+                lines = self.decode(lines)
             if self.encoding is None: #still have not found an encoding, let's assume UTF-8
               #TODO: This might be dead code
               self.encoding = 'utf-8'

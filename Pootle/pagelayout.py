@@ -50,9 +50,11 @@ def localize_links(session):
 
 def languagedir(language):
   """Returns whether the language is right to left"""
-  for code in ["ar", "fa", "he", "ks", "ps", "ur", "yi"]:
-    if language.startswith(code):
-      return "rtl"
+  shortcode = language[:3]
+  if not shortcode.isalpha():
+    shortcode = language[:2]
+  if shortcode in ["ar", "arc", "dv", "fa", "he", "ks", "ps", "ur", "yi"]:
+    return "rtl"
   return "ltr"
 
 def weblanguage(language):
@@ -72,6 +74,10 @@ def completetemplatevars(templatevars, session, bannerheight=135):
     templatevars["instancetitle"] = getattr(session.instance, "title", session.localize("Pootle Demo"))
   if not "session" in templatevars:
     templatevars["session"] = {"status": session.status, "isopen": session.isopen, "issiteadmin": session.issiteadmin()}
+  if not "baseurl" in templatevars:
+    templatevars["baseurl"] = getattr(session.instance, "baseurl", "/")
+    if not templatevars["baseurl"].endswith("/"):
+    	templatevars["baseurl"] += "/"
   banner_layout = layout_banner(bannerheight)
   banner_layout["logo_alttext"] = session.localize("Pootle Logo")
   banner_layout["banner_alttext"] = session.localize("WordForge Translation Project")
@@ -111,8 +117,9 @@ class PootlePage:
     return itemlist
 
 class PootleNavPage(PootlePage):
-  def makenavbarpath_dict(self, project=None, session=None, currentfolder=None, language=None, argdict=None):
+  def makenavbarpath_dict(self, project=None, session=None, currentfolder=None, language=None, argdict=None, dirfilter=None):
     """create the navbar location line"""
+    #FIXME: Still lots of PO specific references here!
     rootlink = ""
     paramstring = ""
     if argdict:
@@ -122,18 +129,27 @@ class PootleNavPage(PootlePage):
     if currentfolder:
       pathlinks = []
       dirs = currentfolder.split("/")
-      depth = len(dirs)
-      if currentfolder.endswith(".po"):
+      if dirfilter is None:
+        dirfilter = currentfolder
+      
+      depth = dirfilter.count('/') + 1
+      if dirfilter == "":
+        depth -= 1
+      elif dirfilter.endswith(".po"):
         depth = depth - 1
+
       rootlink = "/".join([".."] * depth)
       if rootlink:
         rootlink += "/"
+      backlinks = ""
       for backlinkdir in dirs:
-        if backlinkdir.endswith(".po"):
+        if depth >= 0:
           backlinks = "../" * depth + backlinkdir
+          depth -= 1
         else:
-          backlinks = "../" * depth + backlinkdir + "/"
-        depth = depth - 1
+          backlinks += backlinkdir
+        if not backlinkdir.endswith(".po") and not backlinks.endswith("/"):
+          backlinks = backlinks + "/"
         pathlinks.append({"href": self.getbrowseurl(backlinks), "text": backlinkdir, "sep": " / "})
       if pathlinks:
         pathlinks[-1]["sep"] = ""

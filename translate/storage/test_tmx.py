@@ -3,11 +3,22 @@
 from translate.storage import tmx
 from translate.storage import test_base
 from translate.misc import wStringIO
-
 from py import test
 
 class TestTMXUnit(test_base.TestTranslationUnit):
     UnitClass = tmx.tmxunit
+
+    def setup_method(self, method):
+        self.unit = self.UnitClass("Test Source String")
+
+    def test_markreview(self):
+        assert test.raises(NotImplementedError, self.unit.markreviewneeded)
+
+    def test_errors(self):
+        """Assert the fact that geterrors() and adderror() is not (yet) implemented.
+        This test needs to be removed when these methods get implemented."""
+        assert test.raises(NotImplementedError, self.unit.geterrors)
+        assert test.raises(NotImplementedError, self.unit.adderror, 'testname', 'Test error')
 
 class TestTMXfile(test_base.TestTranslationStore):
     StoreClass = tmx.tmxfile

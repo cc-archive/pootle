@@ -132,13 +132,20 @@ class ServerTester:
         assert "0 files, 0/0 words (0%) translated" in language_page
     test_add_project_language.userprefs = {"rights.siteadmin": True}
 
-    def setup_testproject_dir(self):
+    def setup_testproject_dir(self, perms=None):
         """Sets up a blank test project directory"""
-        projectdir = os.path.join(self.podir, "testproject")
+        projectname = "testproject"
+        lang = "zxx"
+        projectdir = os.path.join(self.podir, projectname)
         os.mkdir(projectdir)
-        podir = os.path.join(projectdir, "zxx")
+        podir = os.path.join(projectdir, lang)
         os.mkdir(podir)
-        language_page = self.fetch_page("zxx/testproject/")
+	if perms:
+            prefsfile = file(os.path.join(projectdir, lang, "pootle-%s-%s.prefs" % (projectname, lang)), 'w')
+            prefsfile.write("# Prefs file for Pootle unit tests\nrights:\n  testuser = '%s'\n" % perms)
+            prefsfile.close()
+        language_page = self.fetch_page("%s/%s/" % (lang, projectname))
+
         assert "Test Language" in language_page
         assert "Pootle Unit Tests" in language_page
         assert "0 files, 0/0 words (0%) translated" in language_page
@@ -147,7 +154,7 @@ class ServerTester:
     def test_upload_new_file(self):
         """tests that we can upload a new file into a project"""
         self.login()
-        podir = self.setup_testproject_dir()
+        podir = self.setup_testproject_dir(perms="view, translate, admin")
         fields = [("doupload", "Upload File")]
         pocontents = '#: test.c\nmsgid "test"\nmsgstr "rest"\n'
         files = [("uploadfile", "test_upload.po", pocontents)]
@@ -164,7 +171,7 @@ class ServerTester:
     def test_upload_new_xlifffile(self):
         """tests that we can upload a new xliff file into a project"""
         self.login()
-        podir = self.setup_testproject_dir()
+        podir = self.setup_testproject_dir(perms="view, translate, admin")
         fields = [("doupload", "Upload File")]
         xliffcontents = '''<?xml version="1.0" encoding="utf-8"?>
 <xliff version="1.1" xmlns="urn:oasis:names:tc:xliff:document:1.1"><file datatype="po" original="test_upload.po" source-language="en-US"><body><trans-unit id="1" xml:space="preserve"><source>test</source><target state="translated">rest</target><context-group name="po-reference" purpose="location"><context context-type="sourcefile">test.c</context></context-group></trans-unit></body></file></xliff>'''
@@ -181,10 +188,39 @@ class ServerTester:
 #                pocontents_download = self.fetch_page("zxx/testproject/test_upload.po")
 #                assert pocontents_download == pocontents_expected
 
+    def test_upload_overwrite(self):
+        """tests that we can overwrite a file in a project"""
+        self.login()
+        podir = self.setup_testproject_dir(perms="view, translate, overwrite")
+
+        tree = potree.POTree(self.prefs.Pootle)
+        project = projects.TranslationProject("zxx", "testproject", tree)
+        po1contents = '#: test.c\nmsgid "test"\nmsgstr ""\n'
+        open(os.path.join(podir, "test_upload.po"), "w").write(po1contents)
+
+        fields = [("doupload", "Upload File"),("dooverwrite", "No")]
+        pocontents = '#: test.c\nmsgid "test"\nmsgstr "rest"\n'
+        files = [("uploadfile", "test_upload.po", pocontents)]
+        content_type, upload_contents = postMultipart.encode_multipart_formdata(fields, files)
+        headers = {"Content-Type": content_type, "Content-Length": len(upload_contents)}
+        response = self.post_request("zxx/testproject/", upload_contents, headers)
+        assert ' href="test_upload.po?' in response
+        # Now we only test with 'in' since the header is added
+        assert pocontents in self.fetch_page("zxx/testproject/test_upload.po")
+        firstpofile = self.fetch_page("zxx/testproject/test_upload.po")
+
+        fields = [("doupload", "Upload File"),("dooverwrite", "Yes")]
+        pocontents = '#: test.c\nmsgid "test"\nmsgstr "rest"\n#: test.c\nmsgid "azoozoo"\nmsgstr ""'
+        files = [("uploadfile", "test_upload.po", pocontents)]
+        content_type, upload_contents = postMultipart.encode_multipart_formdata(fields, files)
+        headers = {"Content-Type": content_type, "Content-Length": len(upload_contents)}
+        response = self.post_request("zxx/testproject/", upload_contents, headers)
+        assert pocontents == self.fetch_page("zxx/testproject/test_upload.po")
+
     def test_upload_new_archive(self):
         """tests that we can upload a new archive of files into a project"""
         self.login()
-        podir = self.setup_testproject_dir()
+        podir = self.setup_testproject_dir(perms="view, translate, admin")
         fields = [("doupload", "Upload File")]
         po1contents = '#: test.c\nmsgid "test"\nmsgstr "rest"\n'
         po2contents = '#: frog.c\nmsgid "tadpole"\nmsgstr "fish"\n'
@@ -208,7 +244,7 @@ class ServerTester:
     def test_upload_over_file(self):
         """tests that we can upload a new version of a file into a project"""
         self.login()
-        podir = self.setup_testproject_dir()
+        podir = self.setup_testproject_dir(perms="view, translate")
         tree = potree.POTree(self.prefs.Pootle)
         project = projects.TranslationProject("zxx", "testproject", tree)
         po1contents = '#: test.c\nmsgid "test"\nmsgstr "rest"\n\n#: frog.c\nmsgid "tadpole"\nmsgstr "fish"\n'
@@ -237,7 +273,7 @@ class ServerTester:
     def test_upload_xliff_over_file(self):
         """tests that we can upload a new version of a file into a project"""
         self.login()
-        podir = self.setup_testproject_dir()
+        podir = self.setup_testproject_dir(perms="view, translate")
         tree = potree.POTree(self.prefs.Pootle)
         project = projects.TranslationProject("zxx", "testproject", tree)
         pocontents = '#: test.c\nmsgid "test"\nmsgstr "rest"\n\n#: frog.c\nmsgid "tadpole"\nmsgstr "fish"\n'
@@ -285,7 +321,7 @@ class ServerTester:
     def test_submit_translation(self):
         """tests that we can upload a new file into a project"""
         self.login()
-        podir = self.setup_testproject_dir()
+        podir = self.setup_testproject_dir(perms="view, translate")
         pofile_storename = os.path.join(podir, "test_upload.po")
         pocontents = '#: test.c\nmsgid "test"\nmsgstr "rest"\n'
         open(pofile_storename, "w").write(pocontents)
@@ -302,7 +338,7 @@ class ServerTester:
     def test_submit_plural_translation(self):
         """tests that we can submit a translation with plurals"""
         self.login()
-        podir = self.setup_testproject_dir()
+        podir = self.setup_testproject_dir(perms="view, translate")
         pofile_storename = os.path.join(podir, "test_upload.po")
         pocontents = 'msgid "singular"\nmsgid_plural "plural"\nmsgstr[0] "enkelvoud string"\nmsgstr[1] "meervoud boodskap"\n'
         open(pofile_storename, "w").write(pocontents)
@@ -319,7 +355,7 @@ class ServerTester:
     def test_submit_plural_to_singular_lang(self):
         """tests that we can submit a translation with plurals to a language without plurals."""
         self.login()
-        podir = self.setup_testproject_dir()
+        podir = self.setup_testproject_dir(perms="view, translate")
         pofile_storename = os.path.join(podir, "test_upload.po")
         pocontents = 'msgid "singular"\nmsgid_plural "plural"\nmsgstr[0] "enkelvoud string"\n'
         open(pofile_storename, "w").write(pocontents)
@@ -337,7 +373,7 @@ class ServerTester:
     def test_submit_fuzzy(self):
         """tests that we can mark a unit as fuzzy"""
         self.login()
-        podir = self.setup_testproject_dir()
+        podir = self.setup_testproject_dir(perms="view, translate")
         pofile_storename = os.path.join(podir, "test_fuzzy.po")
         pocontents = '#: test.c\nmsgid "fuzzy"\nmsgstr "wuzzy"\n'
         open(pofile_storename, "w").write(pocontents)
@@ -379,7 +415,7 @@ class ServerTester:
     def test_submit_translator_comments(self):
         """tests that we can edit translator comments"""
         self.login()
-        podir = self.setup_testproject_dir()
+        podir = self.setup_testproject_dir(perms="view, translate")
         pofile_storename = os.path.join(podir, "test_upload.po")
         pocontents = '#: test.c\nmsgid "test"\nmsgstr "rest"\n'
         open(pofile_storename, "w").write(pocontents)
@@ -397,7 +433,7 @@ class ServerTester:
     def test_navigation_url_parameters(self):
         """tests that the navigation urls (next/end etc) has the necessary parameters"""
         self.login()
-        podir = self.setup_testproject_dir()
+        podir = self.setup_testproject_dir(perms="view, translate")
         pofile_storename = os.path.join(podir, "test_nav_url.po")
         pocontents = '#: test.c\nmsgid "test1"\nmsgstr "rest"\n'
         pocontents += '\n#. Second Unit\nmsgid "test2"\nmsgstr "rest2"\n'

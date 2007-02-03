@@ -341,11 +341,21 @@ class ProjectIndex(pagelayout.PootleNavPage):
       print "removed %d assigns from %s" % (assigncount, assignedto)
       del self.argdict["removeassigns"]
     if "doupload" in self.argdict:
+      extensiontypes = ("xlf", "xlff", "xliff", "po")
+      if "Yes" in self.argdict.pop("dooverwrite", []):
+        overwrite = True
+      else:
+        overwrite = False
       uploadfile = self.argdict.pop("uploadfile", None)
+      # multiple translation file extensions check
+      if filter(uploadfile.filename.endswith, extensiontypes):
+       transfiles = True
+      else:
+       transfiles = False
       if not uploadfile.filename:
         raise ValueError(self.localize("Cannot upload file, no file attached"))
-      if uploadfile.filename.endswith(".po") or uploadfile.filename.endswith(".xlf"):
-        self.project.uploadfile(self.session, self.dirname, uploadfile.filename, uploadfile.contents)
+      if transfiles:
+        self.project.uploadfile(self.session, self.dirname, uploadfile.filename, uploadfile.contents, overwrite)
       elif uploadfile.filename.endswith(".zip"):
         self.project.uploadarchive(self.session, self.dirname, uploadfile.contents)
       else:
@@ -470,9 +480,23 @@ class ProjectIndex(pagelayout.PootleNavPage):
 
   def getuploadbox(self):
     """adds a box that lets the user assign strings"""
-    return {"title": self.localize("Upload File"),
+    uploadbox = {
+            "title": self.localize("Upload File"),
             "file_title": self.localize("Select file to upload"),
-            "button": self.localize("Upload File")}
+            "upload_button": self.localize("Upload File")
+            }
+    if "admin" in self.rights or "overwrite" in self.rights:
+      uploadbox.update({
+            #l10n: radio button text
+            "overwrite": self.localize("Overwrite"),
+            #l10n: tooltip
+            "overwrite_title": self.localize("Overwrite the current file if it exists"),
+            #l10n: radio button text
+            "merge": self.localize("Merge"),
+            #l10n: tooltip
+            "merge_title": self.localize("Merge the file with the current file and turn conflicts into suggestions"),
+            })
+    return uploadbox
 
   def getchilditems(self, dirfilter):
     """get all the items for directories and files viewable at this level"""

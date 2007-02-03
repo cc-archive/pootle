@@ -6,11 +6,11 @@
 
   <title py:content="pagetitle">Pootle: Project ${project.name}, Language ${language.name}</title>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  <link rel="stylesheet" type="text/css" href="/static/pootle.css" />
-  <link rel="shortcut icon" href="/favicon.ico" />
-  <script type="text/javascript" src="/static/js/sorttable.js"></script>
+  <link rel="stylesheet" type="text/css" href="${baseurl}/static/pootle.css" />
+  <link rel="shortcut icon" href="${baseurl}/favicon.ico" />
+  <script type="text/javascript" src="${baseurl}/static/js/sorttable.js"></script>
   <!--[if lt IE 7.]>
-    <script defer type="text/javascript" src="/static/js/correctpng.js"></script>
+    <script defer type="text/javascript" src="${baseurl}/static/js/correctpng.js"></script>
   <![endif]-->
 </head>
 
@@ -75,12 +75,16 @@
       <div py:if="'isgoal' in item" class="goalitem">
         <div over:include="navbar#item">
           <div py:if="item.goal.users or item.goal.show_adduser">
+<<<<<<< .working
             <img src="/static/images/person.png" class="icon" alt="" dir="$uidir" lang="$uilanguage" />
+=======
+            <img src="${baseurl}images/person.png" class="icon" alt="" dir="$uidir" lang="$uilanguage" />
+>>>>>>> .merge-right.r4911
             <span py:for="user in item.goal.users" py:strip="True">${user.name}${user.sep}</span>
             <form py:if="item.goal.show_adduser" action="" method="post" name="goaluserform">
               <input type="hidden" name="editgoalname" value="${item.goal.name}"/>
               <select name="newgoaluser">
-                <option py:for="user in item.goal.otherusers" py:content="item.goal.otherusers[user].description">Username</option>
+                <option py:for="user in item.goal.otherusers" value="${user}" py:content="item.goal.otherusers[user].description">Username</option>
               </select>
               <input type="submit" name="doeditgoalusers" value="${item.goal.adduser_title}"/>
             </form>
@@ -131,7 +135,11 @@
       <div>
         <input type="file" name="uploadfile" size="15" class="upload" title="${upload.file_title}" />
       </div>
-      <input type="submit" name="doupload" value="${upload.button}" />
+      <div py:if="upload.overwrite">
+        <input type="radio" name="dooverwrite" value="Yes" title="${upload.overwrite_title}" py:content="upload.overwrite"/>
+        <input type="radio" name="dooverwrite" checked="checked" value="No" title="${upload.merge_title}" py:content="upload.merge"/>
+      </div>
+      <input type="submit" name="doupload" value="${upload.upload_button}" />
     </form>
 
   </div>

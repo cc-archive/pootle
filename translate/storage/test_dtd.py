@@ -3,6 +3,7 @@
 from translate.storage import dtd
 from translate.storage import test_monolingual
 from translate.misc import wStringIO
+from py import test
 
 def test_roundtrip_quoting():
     specials = ['Fish & chips', 'five < six', 'six > five',
@@ -20,6 +21,12 @@ def test_roundtrip_quoting():
 class TestDTDUnit(test_monolingual.TestMonolingualUnit):
     UnitClass = dtd.dtdunit
 
+    def setup_method(self, method):
+        self.unit = self.UnitClass("Test Source String")
+
+    def test_markreview(self):
+        assert test.raises(NotImplementedError, self.unit.markreviewneeded)
+    
 class TestDTD(test_monolingual.TestMonolingualStore):
     StoreClass = dtd.dtdfile
     def dtdparse(self, dtdsource):
