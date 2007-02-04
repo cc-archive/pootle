@@ -1,0 +1,39 @@
+{% load i18n %}
+{% extends "base.html" %}
+
+{% block title %}Pootle Projects Admin Page{% endblock %}
+
+{% block content %}
+{% if user.is_authenticated and user.is_superuser %}
+  <div id="fullwidthcontent" dir="{{ uidir }}" lang="{{ uilanguage }}">
+    <div class="intro">
+      <a href="../home/">{% trans "Home" %}</a>
+    </div>
+
+    <div class="intro">
+      <a href="index.html">{% trans "Main admin page" %}</a>
+    </div>
+
+    <div class="fullwidthcontents">
+      <h3 class="title">{% trans "Projects" %}</h3>
+
+      <form action="" method="post" name="projects" id="projects">
+        <table cellpadding="1" cellspacing="1">
+          <tr><td colspan="1" rowspan="1"><h3 class="title">{% trans "Project Code" %}</h3></td><td>{{ project.code }}</td></tr>
+          <tr><td colspan="1" rowspan="1"><h3 class="title">{% trans "Full Name" %}</h3></td><td>{{ form.name }}</td></tr>
+          <tr><td colspan="1" rowspan="1"><h3 class="title">{% trans "Project Description" %}</h3></td><td>{{ form.description }}</td></tr>
+          <tr><td colspan="1" rowspan="1"><h3 class="title">{% trans "Checker Style" %}</h3></td><td>{{ form.checkerstyle }}</td></tr>
+          <tr><td colspan="1" rowspan="1"><h3 class="title">{% trans "File Type" %}</h3></td><td>{{ form.filetype }}</td></tr>
+          <tr><td colspan="1" rowspan="1"><h3 class="title">{% trans "Create MO Files" %}</h3></td><td>{{ form.create_mo_files }}</td></tr>
+        </table><input type="submit" name="changeprojects" value="{% trans "Save changes" %}" />
+      </form>
+    </div>
+  </div>
+{% else %}
+  <div id="content" dir="{{ uidir }}" lang="{{ uilanguage }}">
+    <div class="intro">
+      {% trans "You do not have the rights to administer Pootle" %}
+    </div>
+  </div>
+{% endif %}
+{% endblock %}

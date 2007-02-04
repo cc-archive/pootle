@@ -1,6 +1,16 @@
 from django import forms
 from Pootle.conf import instance, saveprefs
 from Pootle.compat.pootleauth import PootleAuth, create_user, save_users
+from Pootle import storage_client
+from translate.filters import checks
+
+
+CHECKS = [ ('Standard', 'Standard')] + [ (ch, ch) for ch in checks.projectcheckers.keys()]
+# FIXME: Filetypes should probably be provided by translate-toolkit.
+FILETYPES = [
+    ('po', 'po'),
+    ('xliff','xliff'),
+    ]
 
 class SiteOptionsManipulator(forms.Manipulator):
     def __init__(self):
@@ -46,4 +56,22 @@ class UserAdminManipulator(forms.Manipulator):
         user.set_user(new_data)
         save_users()
 
+class ProjectAdminManipulator(forms.Manipulator):
+    def __init__(self):
+        self.fields = (
+            forms.TextField(field_name="name", length=10),
+            forms.LargeTextField(field_name="description"),
+            forms.SelectField(field_name="checkerstyle", choices=CHECKS),
+            forms.SelectField(field_name="filetype", choices=FILETYPES),
+            forms.CheckboxField(field_name="create_mo_files"),
+            )
+
+    def old_data(self, project):
+        p = storage_client.ProjectWrapper(project)
+        return dict([ (k.field_name, getattr(p,k.field_name)) for k in self.fields ])
+
+    def save(self, new_data, projectcode):
+        p = storage_client.ProjectWrapper(projectcode)
+        for k in self.fields:
+            setattr(p, k.field_name, new_data[k.field_name])
 

@@ -8,13 +8,14 @@ from django.shortcuts import render_to_response
 from django import forms
 from django.core.mail import send_mail
 
-from Pootle.web.forms import SiteOptionsManipulator, UserAdminManipulator
+from Pootle.web.forms import SiteOptionsManipulator, UserAdminManipulator, ProjectAdminManipulator
 from Pootle.compat.authforms import RegistrationManipulator, ActivationManipulator
 from Pootle.compat import pootleauth
 from Pootle import indexpage, adminpages, users, translatepage
 from Pootle.conf import instance, potree
 from Pootle.conf import users as pootleusers
-from Pootle.storage_client import generaterobotsfile, get_language_objects
+from Pootle import storage_client
+from Pootle.storage_client import generaterobotsfile, get_language_objects, get_project_objects
 from django.utils.translation import gettext_lazy as _
 from django.utils.translation import ngettext
 import random
@@ -374,7 +375,25 @@ def adminlanguages(req):
     return render_to_response("adminlanguages.html", RequestContext(req, context))
 
 def adminprojects(req):
-    return render_to_pootleresponse(adminpages.ProjectsAdminPage(potree(), pootlesession(req), instance))
+    context = { 'projects' : get_project_objects() }
+    return render_to_response("adminprojects.html", RequestContext(req, context))
+
+def admin_projectedit(req, project):
+    manipulator = ProjectAdminManipulator()
+    if req.POST:
+        new_data = req.POST.copy()
+        errors = manipulator.get_validation_errors(new_data)
+        if not errors:
+            manipulator.do_html2python(new_data)
+            manipulator.save(new_data, project)
+            return HttpResponseRedirect(req.path)
+    else:
+        errors = {}
+        new_data = manipulator.old_data(project)
+    form = forms.FormWrapper(manipulator, new_data, errors)
+    context = { 'project' : storage_client.ProjectWrapper(project),
+                'form': form }
+    return render_to_response("admin_projectedit.html", RequestContext(req, context))
 
 def admintranslationproject(req):
     return render_to_pootleresponse(adminpages.TranslationProjectAdminPage(potree(), project, pootlesession(req), argdict))

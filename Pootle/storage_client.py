@@ -214,3 +214,47 @@ def get_language_objects():
     for lcode, lname in potree().getlanguages():
         yield LanguageWrapper(lcode, lname)
         
+
+class ProjectWrapper(object):
+    def __init__(self, projectcode):
+        self.code = projectcode
+
+    def _get_name(self):
+        return potree().getprojectname(self.code)
+
+    def _set_name(self, name):
+        potree().setprojectname(self.code, name)
+    name = property(_get_name, _set_name)
+
+    def _get_description(self):
+        return potree().getprojectdescription(self.code)
+
+    def _set_description(self, desc):
+        potree().setprojectdescription(self.code, desc)
+    description = property(_get_description, _set_description)
+
+    def _get_checkerstyle(self):
+        return potree().getprojectcheckerstyle(self.code)
+
+    def _set_checkerstyle(self, checkerstyle):
+        potree().setprojectcheckerstyle(self.code, checkerstyle)
+    checkerstyle = property(_get_checkerstyle, _set_checkerstyle)
+
+    def _get_filetype(self):
+        return potree().getprojectlocalfiletype(self.code)
+
+    def _set_filetype(self, filetype):
+        potree().setprojectlocalfiletype(self.code, filetype)
+    filetype = property(_get_filetype, _set_filetype)
+
+    def _get_create_mo_files(self):
+        return potree().getprojectcreatemofiles(self.code)
+
+    def _set_create_mo_files(self, createmo):
+        potree().setprojectcreatemofiles(self.code, createmo)
+    create_mo_files = property(_get_create_mo_files, _set_create_mo_files)
+    
+def get_project_objects():
+    for pcode in potree().getprojectcodes():
+        yield ProjectWrapper(pcode)
+
