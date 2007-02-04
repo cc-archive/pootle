@@ -34,7 +34,7 @@ urlpatterns += patterns('Pootle.web.views',
     (r'^admin/index.html$', 'admin'),
     (r'^admin/users/$', 'adminusers'),
     (r'^admin/users/(?P<user>\w+)/$', 'admin_useredit'),
-    (r'^admin/languages.html$', 'adminlanguages'),
+    (r'^admin/languages/$', 'adminlanguages'),
     (r'^admin/projects/$', 'adminprojects'),
     (r'^admin/projects/(?P<project>\w+)/$', 'admin_projectedit'),
 

@@ -1,24 +1,9 @@
 {% load i18n %}
-{% extends "base.html" %}
+{% extends "base_admin.html" %}
 
 {% block title %}Pootle Admin Page{% endblock %}
 
-{% block content %}
-  <div id="content" py:if="not session.issiteadmin" dir="{{ uidir }}" lang="{{ uilanguage }}">
-{% if user.is_authenticated and user.is_superuser %}
-    <div class="intro">
-      <a href="../home/">{% trans "Home" %}</a>
-    </div>
-    <div class="intro">
-      <a href="users/">{% trans "Users" %}</a>
-    </div>
-    <div class="intro">
-      <a href="languages.html">{% trans "Languages" %}</a>
-    </div>
-    <div class="intro">
-      <a href="projects.html">{% trans "Projects" %}</a>
-    </div>
-
+{% block adminpanel %}
     <div class="contents">
       <h3 class="title">{% trans "General options" %}</h3>
       <form action="" method="post" name="general" id="general">
@@ -51,12 +36,6 @@
         </table><input type="submit" name="changegeneral" value="{% trans "Save changes" %}" />
       </form>
     </div>
-{% else %}
-    <div class="intro">
-      You do not have the rights to administer Pootle
-    </div>
-{% endif %}
-  </div>
 {% endblock %}
 
 

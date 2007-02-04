@@ -59,7 +59,7 @@ class UserAdminManipulator(forms.Manipulator):
 class ProjectAdminManipulator(forms.Manipulator):
     def __init__(self):
         self.fields = (
-            forms.TextField(field_name="name", length=10),
+            forms.TextField(field_name="name", length=40),
             forms.LargeTextField(field_name="description"),
             forms.SelectField(field_name="checkerstyle", choices=CHECKS),
             forms.SelectField(field_name="filetype", choices=FILETYPES),

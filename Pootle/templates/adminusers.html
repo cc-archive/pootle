@@ -1,18 +1,8 @@
 {% load i18n %}
-{% extends "base.html" %}
+{% extends "base_admin.html" %}
 {% block title %}Pootle User Admin Page{% endblock %}
 
-{% block content %}
-{% if user.is_authenticated and user.is_superuser %}
-  <div id="fullwidthcontent" dir="{{ uidir }}" lang="{{ uilanguage }}">
-    <div class="intro">
-      <a href="../../home/">{% trans "Home" %}</a>
-    </div>
-
-    <div class="intro">
-      <a href="index.html">{% trans "Main admin page" %}</a>
-    </div>
-
+{% block adminpanel %}
     <div class="fullwidthcontents">
       <h3 class="title">{% trans "Users" %}</h3>
 
@@ -47,12 +37,4 @@
         </table><input type="submit" name="delete-selected" value="{% trans "Delete selected" %}" />
       </form>
     </div>
-  </div>
-{% else %}
-  <div id="content" dir="{{ uidir }}" lang="{{ uilanguage }}">
-    <div class="intro">
-      You do not have the rights to administer Pootle
-    </div>
-  </div>
-{% endif %}
 {% endblock %}

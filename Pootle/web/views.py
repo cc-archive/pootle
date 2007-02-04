@@ -332,7 +332,7 @@ def projectadmin(req, project):
     
 def admin(req):
     manipulator = SiteOptionsManipulator()
-    if req.POST:
+    if req.POST and req.user.is_superuser():
         new_data = req.POST.copy()
         errors = manipulator.get_validation_errors(new_data)
         if not errors:
@@ -347,14 +347,14 @@ def admin(req):
 
 def admin_useredit(req, user):
     manipulator = UserAdminManipulator()
-    if req.POST:
+    if req.POST and req.user.is_superuser():
         new_data = req.POST.copy()
         new_data['username'] = user
         errors = manipulator.get_validation_errors(new_data)
         if not errors:
             manipulator.do_html2python(new_data)
             manipulator.save(new_data)
-            return HttpResponseRedirect(req.path)
+            return HttpResponseRedirect('/'.join(req.path.split("/")[:-2]) + '/')
     else:
         errors = {}
         new_data = manipulator.old_data(user)
@@ -362,7 +362,7 @@ def admin_useredit(req, user):
     return render_to_response("admin_useredit.html", RequestContext(req, { 'form': form, 'u': user} ))
 
 def adminusers(req):
-    if req.POST:
+    if req.POST and req.user.is_superuser():
         selected = [ u for u in pootleauth.get_users() if "select-%s" % u.username in req.POST]
         if 'delete-selected' in req.POST:
             for u in selected:
@@ -371,22 +371,26 @@ def adminusers(req):
     return render_to_response("adminusers.html", RequestContext(req, { 'users': pootleauth.get_users() } ))
 
 def adminlanguages(req):
+    if req.POST and req.user.is_superuser():
+        pass
     context = { 'languages': get_language_objects() }
     return render_to_response("adminlanguages.html", RequestContext(req, context))
 
 def adminprojects(req):
+    if req.POST and req.user.is_superuser():
+        pass
     context = { 'projects' : get_project_objects() }
     return render_to_response("adminprojects.html", RequestContext(req, context))
 
 def admin_projectedit(req, project):
     manipulator = ProjectAdminManipulator()
-    if req.POST:
+    if req.POST and req.user.is_superuser():
         new_data = req.POST.copy()
         errors = manipulator.get_validation_errors(new_data)
         if not errors:
             manipulator.do_html2python(new_data)
             manipulator.save(new_data, project)
-            return HttpResponseRedirect(req.path)
+            return HttpResponseRedirect('/'.join(req.path.split("/")[:-2]) + '/')
     else:
         errors = {}
         new_data = manipulator.old_data(project)
@@ -396,6 +400,8 @@ def admin_projectedit(req, project):
     return render_to_response("admin_projectedit.html", RequestContext(req, context))
 
 def admintranslationproject(req):
+    if req.POST and req.user.is_superuser():
+        pass
     return render_to_pootleresponse(adminpages.TranslationProjectAdminPage(potree(), project, pootlesession(req), argdict))
 
 # translatepage.py

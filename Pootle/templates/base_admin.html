@@ -1,0 +1,24 @@
+{% load i18n %}
+{% extends "base.html" %}
+
+{% block title %}Pootle Admin Page{% endblock %}
+
+{% block content %}
+  <div id="fullwidthcontent" dir="{{ uidir }}" lang="{{ uilanguage }}">
+{% if user.is_authenticated and user.is_superuser %}
+    <div class="intro">
+      <a href="{{ baseurl }}/admin/users/">{% trans "Users" %}</a>
+      <a href="{{ baseurl }}/admin/languages/">{% trans "Languages" %}</a>
+      <a href="{{ baseurl }}/admin/projects/">{% trans "Projects" %}</a>
+    </div>
+{% block adminpanel %}{% endblock %}
+{% else %}
+    <div class="intro">
+      {% trans "You do not have the rights to administer Pootle" %}
+    </div>
+{% endif %}
+  </div>
+{% endblock %}
+
+
+
