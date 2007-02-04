@@ -393,3 +393,39 @@ def spellcheck(req):
 def spellingstandby(req):
     return render_to_pootleresponse(spellui.SpellingStandby())
 
+
+def test(req):
+    tests = []
+    ta = tests.append
+    # Pootle.compat.pootleauth
+    ta(("<b>Pootle.compat.pootleauth</b>",))
+    # user created
+    testuser = pootleauth.create_user('testuser','test@example.com')
+    ta(('user created', pootleauth.get_user('testuser') == testuser._user))
+    # password set
+    testuser.set_password('testpassword')
+    try: t = testuser.check_password('testpassword')
+    except: t = False
+    ta(('password set', t))
+    # user authenticated
+    pa = pootleauth.PootleAuth()
+    u = pa.authenticate('testuser', 'testpassword')
+    ta(('user authenticated', u != None and type(u) == type(pootleauth.UserWrapper(testuser._user,'testuser'))))
+    # is_authenticated is true
+    ta(('is_authenticated is true', testuser.is_authenticated() == True))
+    # is_anonymous is false
+    ta(('is_anonymous is false', testuser.is_anonymous() == False))
+    # is_active is false
+    ta(('is_active is false', testuser.is_active() == False))
+    # activate 
+    testuser.activate()
+    ta(('activate', testuser.is_active() == True))
+    # is_superuser is false
+    ta(('is_superuser is false', testuser.is_superuser() == False))
+    # user deleted
+    testuser.delete()
+    pootleauth.save_users()
+    ta( ('user deleted', pootleauth.get_user('testuser') == None))
+
+
+    return render_to_response("test.html", RequestContext(req, {'tests': tests}))

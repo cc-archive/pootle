@@ -74,7 +74,8 @@ class UserWrapper:
     
     def activate(self):
         self._user.activated = 1
-        self._user.__delattr__('activationcode')
+        if hasattr(self._user, 'activationcode'):
+            self._user.__delattr__('activationcode')
 
     def set_password(self, raw_password):
         self._user.passwdhash = md5hexdigest(raw_password)
