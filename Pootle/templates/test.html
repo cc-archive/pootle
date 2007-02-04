@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block content %}
+<table>
+{% for t in tests %}
+<tr><td>{{ t.0 }}</td><td>{{ t.1 }}</td></tr>
+{% endfor %}
+</table>
+{% endblock %}
