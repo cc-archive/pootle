@@ -82,6 +82,10 @@ class UserWrapper:
     def check_password(self, raw_password):
         return self._user.passwdhash == md5hexdigest(raw_password)
 
+    def delete(self):
+        if users().__hasattr__(self._username):
+            users().removekey(self._username)
+
 class PootleAuth:
     "Authenticate against Pootle's users.prefs file"
     def authenticate(self, username=None, password=None):

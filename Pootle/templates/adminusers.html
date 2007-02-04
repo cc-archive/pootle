@@ -20,6 +20,9 @@
         <table cellpadding="1" cellspacing="1">
           <tr>
             <td colspan="1" rowspan="1">
+              <h3 class="title">{% trans "Selected" %}</h3>
+            </td>
+            <td colspan="1" rowspan="1">
               <h3 class="title">{% trans "Username" %}</h3>
             </td>
             <td colspan="1" rowspan="1">
@@ -34,13 +37,14 @@
           </tr>
 {% for u in users %}
           <tr>
+            <td colspan="1" rowspan="1"><input type="checkbox" name="select-{{ u.username }}" /></a></td>
             <td colspan="1" rowspan="1"><a href="{{ u.username }}/">{{ u.username }}</a></td>
             <td colspan="1" rowspan="1">{{ u.name }}</td>
             <td colspan="1" rowspan="1">{{ u.email }}</td>
             <td colspan="1" rowspan="1">{% if u.activated %}{% trans "True" %}{% else %}{% trans "False" %}{% endif %}</td>
           </tr>
 {% endfor %}
-        </table><input type="submit" name="changeusers" value="{% trans "Save changes" %}" />
+        </table><input type="submit" name="delete-selected" value="{% trans "Delete selected" %}" />
       </form>
     </div>
   </div>
