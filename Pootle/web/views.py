@@ -14,7 +14,7 @@ from Pootle.compat import pootleauth
 from Pootle import indexpage, adminpages, users, translatepage
 from Pootle.conf import instance, potree
 from Pootle.conf import users as pootleusers
-from Pootle.storage_client import generaterobotsfile
+from Pootle.storage_client import generaterobotsfile, get_language_objects
 from django.utils.translation import gettext_lazy as _
 from django.utils.translation import ngettext
 import random
@@ -370,7 +370,8 @@ def adminusers(req):
     return render_to_response("adminusers.html", RequestContext(req, { 'users': pootleauth.get_users() } ))
 
 def adminlanguages(req):
-    return render_to_pootleresponse(adminpages.LanguagesAdminPage(potree(), pootlesession(req), instance))
+    context = { 'languages': get_language_objects() }
+    return render_to_response("adminlanguages.html", RequestContext(req, context))
 
 def adminprojects(req):
     return render_to_pootleresponse(adminpages.ProjectsAdminPage(potree(), pootlesession(req), instance))

@@ -193,3 +193,24 @@ def generaterobotsfile(excludedfiles=[]):
     content.extend([ "Disallow: /%s/\n" % lc for lc in potree().getlanguagecodes() ])
     return ''.join(content)
 
+class LanguageWrapper(object):
+    def __init__(self, languagecode, languagename):
+        self.code = languagecode
+        self.name = languagename
+
+    def _get_specialchars(self):
+        return potree().getlanguagespecialchars(self.code)
+    specialchars = property(_get_specialchars)
+
+    def _get_plurals(self):
+        return potree().getlanguagenplurals(self.code)
+    plurals = property(_get_plurals)
+
+    def _get_plural_equation(self):
+        return potree().getlanguagepluralequation(self.code)
+    plural_equation = property(_get_plural_equation)
+
+def get_language_objects():
+    for lcode, lname in potree().getlanguages():
+        yield LanguageWrapper(lcode, lname)
+        
