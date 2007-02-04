@@ -8,8 +8,9 @@ from django.shortcuts import render_to_response
 from django import forms
 from django.core.mail import send_mail
 
-from Pootle.web.forms import SiteOptionsManipulator
+from Pootle.web.forms import SiteOptionsManipulator, UserAdminManipulator
 from Pootle.compat.authforms import RegistrationManipulator, ActivationManipulator
+from Pootle.compat.pootleauth import get_users
 from Pootle import indexpage, adminpages, users, translatepage
 from Pootle.conf import instance, potree
 from Pootle.conf import users as pootleusers
@@ -343,8 +344,23 @@ def admin(req):
     form = forms.FormWrapper(manipulator, new_data, errors)
     return render_to_response("adminindex.html", RequestContext(req, { 'form': form } ))
 
+def admin_useredit(req, user):
+    manipulator = UserAdminManipulator()
+    if req.POST:
+        new_data = req.POST.copy()
+        errors = manipulator.get_validation_errors(new_data)
+        if not errors:
+            manipulator.do_html2python(new_data)
+            manipulator.save(new_data)
+            return HttpResponseRedirect(req.path)
+    else:
+        errors = {}
+        new_data = manipulator.old_data(user)
+    form = forms.FormWrapper(manipulator, new_data, errors)
+    return render_to_response("admin_useredit.html", RequestContext(req, { 'form': form } ))
+
 def adminusers(req):
-    return render_to_pootleresponse(adminpages.UsersAdminPage(None, pootleusers(), pootlesession(req), instance))
+    return render_to_response("adminusers.html", RequestContext(req, { 'users': get_users() } ))
 
 def adminlanguages(req):
     return render_to_pootleresponse(adminpages.LanguagesAdminPage(potree(), pootlesession(req), instance))

@@ -3,7 +3,7 @@ from django import forms
 from django.utils.translation import gettext_lazy as _
 from django.core import validators
 from django.core.validators import ValidationError
-from Pootle.compat.pootleauth import get_user, set_password, create_user, save_users
+from Pootle.compat.pootleauth import get_user, create_user, save_users, PootleAuth
 
 class CallableWrapper:
     """
@@ -38,17 +38,17 @@ class RegistrationManipulator(forms.Manipulator):
             )
 
     def save(self, new_data):
-        usernode = get_user(new_data['username'])
-        if not usernode:
-            usernode = create_user(new_data['username'], new_data['email'])
-            usernode.name = u"%s %s" % (new_data['first_name'], new_data['last_name'])
-            set_password(usernode, new_data['password'])
-        if 'activationcode' in new_data:
-            usernode.activationcode = new_data['activationcode']
-            usernode.activated = 0
+        pa = PootleAuth()
+        user = pa.get_user(new_data['username'])
+        if not user:
+            user = create_user(new_data['username'], new_data['email'])
+            user.set_user({
+                'name': u"%s %s" % (new_data['first_name'], new_data['last_name']),
+                'password': new_data['password'],
+                'activationcode': new_data['activationcode'],
+                'activated': 0, })
         save_users()
-        return usernode
-    
+        return user
 
 class ActivationManipulator(forms.Manipulator):
     def __init__(self):
@@ -58,14 +58,14 @@ class ActivationManipulator(forms.Manipulator):
             )
     
     def save(self, data):
-        usernode = get_user(data['username'])
-        if usernode:
+        pa = PootleAuth()
+        user = pa.get_user(data['username'])
+        if user:
             try:
-                if data['activationcode'] == usernode.activationcode:
-                    usernode.activated = 1
-                    usernode.__delattr__('activationcode')
+                if data['activationcode'] == user.activationcode:
+                    user.activate()
                     save_users()
-                return usernode.activated
+                return user.activated
             except AttributeError:
                 return 0
         else:

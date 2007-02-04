@@ -61,6 +61,26 @@ class UserWrapper:
                 return self.__getattr__(key)
             except:
                 return self._user.__getattr__(key)
+    
+    def set_user(self, kwargs):
+        self._user.name = kwargs['name']
+        self._user.email = kwargs['email']
+        self._user.activated = kwargs['activated']
+        if 'activationcode' in kwargs:
+            self._user.activationcode = kwargs['activationcode']
+        if kwargs.get('password') != None:
+            self.set_password(kwargs['password'])
+        save_users()
+    
+    def activate(self):
+        self._user.activated = 1
+        self._user.__delattr__('activationcode')
+
+    def set_password(self, raw_password):
+        self._user.passwdhash = md5hexdigest(raw_password)
+
+    def check_password(self, raw_password):
+        return self._user.passwdhash == md5hexdigest(raw_password)
 
 class PootleAuth:
     "Authenticate against Pootle's users.prefs file"
@@ -76,13 +96,6 @@ class PootleAuth:
             return UserWrapper(users().__getattr__(username), username)
         return None
 
-
-def check_password(usernode, password):
-    return usernode.passwdhash == md5hexdigest(password)
-
-def set_password(usernode, password):
-    usernode.passwdhash = md5hexdigest(password)
-
 def get_user(username):
     """
     Returns jToolkit user object if user found, 
@@ -96,7 +109,16 @@ def get_user(username):
     except AttributeError:
         return None
 
-def create_user(username, email):
+def get_users():
+    """
+    Returns an iterable over all Pootle users.
+    """
+    if not users():
+        raise UsersNotInitialized
+    for u in users().iteritems(sorted=True):
+        yield UserWrapper(u[1], u[0])
+
+def create_usernode(username, email):
     """
     Creates a new user out of a username and email
     """
@@ -107,6 +129,14 @@ def create_user(username, email):
     usernode.passwdhash = ""
     save_users()
     return usernode
+
+def create_user(username, email):
+    """
+    Creates and returns user wrapped in UserWrapper
+    """
+    user = create_usernode(username,email)
+    if user:
+        return UserWrapper(user, username)
 
 def save_users():
     prefsfile = users().__root__.__dict__["_setvalue"].im_self

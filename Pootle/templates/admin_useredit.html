@@ -1,0 +1,52 @@
+{% load i18n %}
+{% extends "base.html" %}
+{% block title %}Pootle User Admin Page{% endblock %}
+
+{% block content %}
+{% if user.is_authenticated and user.is_superuser %}
+  <div id="fullwidthcontent" dir="{{ uidir }}" lang="{{ uilanguage }}">
+    <div class="intro">
+      <a href="../home/">{% trans "Home" %}</a>
+    </div>
+
+    <div class="intro">
+      <a href="../../">{% trans "Main admin page" %}</a>
+    </div>
+
+    <div class="fullwidthcontents">
+      <h3 class="title">{% trans "Editing user " %}</h3>
+
+      <form action="" method="post" name="users" id="users">
+        <table cellpadding="1" cellspacing="1">
+          <tr>
+            <td colspan="1" rowspan="1"><h3 class="title">{% trans "Username" %}</h3></td>
+            <td colspan="1" rowspan="1">{{ form.username }}</td>
+          </tr>
+          <tr>
+            <td colspan="1" rowspan="1"><h3 class="title">{% trans "Full Name" %}</h3></td>
+            <td colspan="1" rowspan="1">{{ form.name }}</td>
+          </tr>
+          <tr>
+            <td colspan="1" rowspan="1"><h3 class="title">{% trans "Email Address" %}</h3></td>
+            <td colspan="1" rowspan="1">{{ form.email }}</td>
+          </tr>
+          <tr>
+            <td colspan="1" rowspan="1"><h3 class="title">{% trans "Password" %}</h3></td>
+            <td colspan="1" rowspan="1">{{ form.password }}</td>
+          </tr>
+          <tr>
+            <td colspan="1" rowspan="1"><h3 class="title">{% trans "Activated" %}</h3></td>
+            <td colspan="1" rowspan="1">{{ form.activated }}</td>
+          </tr>
+        </table><input type="submit" name="changeusers" value="{% trans "Save changes" %}" />
+      </form>
+    </div>
+  </div>
+{% else %}
+  <div id="content" dir="{{ uidir }}" lang="{{ uilanguage }}">
+    <div class="intro">
+      You do not have the rights to administer Pootle
+    </div>
+  </div>
+{% endif %}
+{% endblock %}

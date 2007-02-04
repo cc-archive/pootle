@@ -1,5 +1,6 @@
 from django import forms
 from Pootle.conf import instance, saveprefs
+from Pootle.compat.pootleauth import PootleAuth, create_user, save_users
 
 class SiteOptionsManipulator(forms.Manipulator):
     def __init__(self):
@@ -18,4 +19,31 @@ class SiteOptionsManipulator(forms.Manipulator):
             setattr(instance(), optionname.field_name, new_data[optionname.field_name])
         saveprefs()
         
+
+class UserAdminManipulator(forms.Manipulator):
+    def __init__(self):
+        self.fields = (
+            forms.TextField(field_name="username", length=6),
+            forms.TextField(field_name="name", length=20),
+            forms.TextField(field_name="email", length=20),
+            forms.TextField(field_name="password", length=20),
+            forms.CheckboxField(field_name="activated"),
+            )
+
+    def old_data(self, user):
+        pa = PootleAuth()
+        u = pa.get_user(user)
+        if u:
+            return dict([ (k.field_name, getattr(u,k.field_name)) for k in self.fields if k.field_name != 'password'])
+        else:
+            return {}
+
+    def save(self, new_data):
+        pa = PootleAuth()
+        user = pa.get_user(new_data['username'])
+        if not user:
+            user = create_user(new_data['username'], new_data['email'])
+        user.set_user(new_data)
+        save_users()
+
 

@@ -1,70 +1,54 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html  PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns:py="http://purl.org/kid/ns#" xmlns:over="http://dev.sjsoft.com/ns/overlay" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<head>
-  <meta name="generator" content="HTML Tidy for Linux/x86 (vers 1st January 2004), see www.w3.org" />
+{% load i18n %}
+{% extends "base.html" %}
+{% block title %}Pootle User Admin Page{% endblock %}
 
-  <title>Pootle User Admin Page</title>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  <link rel="stylesheet" type="text/css" href="${baseurl}static/pootle.css" />
-  <link rel="shortcut icon" href="${baseurl}favicon.ico" />
-  <!--[if lt IE 7.]>
-    <script defer type="text/javascript" src="${baseurl}static/js/correctpng.js"></script>
-  <![endif]-->
-</head>
-
-<body bgcolor="#FFFFFF">
-  <div id="abovefooter">
-  <div id="banner" over:include="pootlepage#banner"/>
-
-  <div id="content" py:if="not session.issiteadmin" dir="$uidir" lang="$uilanguage">
+{% block content %}
+{% if user.is_authenticated and user.is_superuser %}
+  <div id="fullwidthcontent" dir="{{ uidir }}" lang="{{ uilanguage }}">
     <div class="intro">
-      You do not have the rights to administer Pootle
-    </div>
-  </div>
-  <div id="fullwidthcontent" py:if="session.issiteadmin" dir="$uidir" lang="$uilanguage">
-    <div class="intro">
-      <a href="../home/" py:content="text.home">Home page</a>
+      <a href="../../home/">{% trans "Home" %}</a>
     </div>
 
     <div class="intro">
-      <a href="index.html" py:content="text.admin">Admin page</a>
+      <a href="index.html">{% trans "Main admin page" %}</a>
     </div>
 
     <div class="fullwidthcontents">
-      <h3 class="title" py:content="text.users">Users</h3>
+      <h3 class="title">{% trans "Users" %}</h3>
 
       <form action="" method="post" name="users" id="users">
         <table cellpadding="1" cellspacing="1">
           <tr>
-            <td colspan="1" rowspan="1" py:for="option in options">
-              <h3 class="title" py:content="option.title">Login</h3>
+            <td colspan="1" rowspan="1">
+              <h3 class="title">{% trans "Username" %}</h3>
+            </td>
+            <td colspan="1" rowspan="1">
+              <h3 class="title">{% trans "Full Name" %}</h3>
+            </td>
+            <td colspan="1" rowspan="1">
+              <h3 class="title">{% trans "Email Address" %}</h3>
+            </td>
+            <td colspan="1" rowspan="1">
+              <h3 class="title">{% trans "Activated" %}</h3>
             </td>
           </tr>
-
-          <tr py:for="user in users">
-            <td colspan="1" rowspan="1" py:content="user.code">davidfraser</td>
-
-            <td colspan="1" rowspan="1" py:for="option in user.options">
-               <input name="${option.name}" type="${option.type}" value="${option.value}" checked="${option.checked}"/>
-               <span py:if="option.label" py:content="option.label"/>
-            </td>
-
-          </tr>
-
+{% for u in users %}
           <tr>
-            <td colspan="1" rowspan="1" py:for="option in options">
-              <input py:if="option.newname" name="${option.newname}" type="${option.type}" value="${option.newvalue}" size="${option.size}" checked="${option.checked}"/>
-              <span py:if="option.label" py:content="option.label"/>
-            </td>
+            <td colspan="1" rowspan="1"><a href="{{ u.username }}/">{{ u.username }}</a></td>
+            <td colspan="1" rowspan="1">{{ u.name }}</td>
+            <td colspan="1" rowspan="1">{{ u.email }}</td>
+            <td colspan="1" rowspan="1">{% if u.activated %}{% trans "True" %}{% else %}{% trans "False" %}{% endif %}</td>
           </tr>
-        </table><input type="submit" name="changeusers" value="${text.savechanges}" />
+{% endfor %}
+        </table><input type="submit" name="changeusers" value="{% trans "Save changes" %}" />
       </form>
     </div>
   </div>
-
+{% else %}
+  <div id="content" dir="{{ uidir }}" lang="{{ uilanguage }}">
+    <div class="intro">
+      You do not have the rights to administer Pootle
+    </div>
   </div>
-  <div id="links" over:include="pootlepage#links"/>
-  <div id="about" over:include="pootlepage#about"/>
-</body>
-</html>
+{% endif %}
+{% endblock %}
