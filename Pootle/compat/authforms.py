@@ -4,18 +4,7 @@ from django.utils.translation import gettext_lazy as _
 from django.core import validators
 from django.core.validators import ValidationError
 from Pootle.compat.pootleauth import get_user, create_user, save_users, PootleAuth
-
-class CallableWrapper:
-    """
-    This is needed here to make the validator an object, 
-    that has an attribute 'always_test' set to true.
-    """
-    def __init__(self, check):
-        self._callable = check
-        self.always_test = True
-
-    def __call__(self, field_data, all_data):
-        return self._callable(field_data, all_data)
+from Pootle.utils import CallableValidatorWrapper
 
 # checks for user manipulator
 def user_already_exists(field_data, all_data):
@@ -27,7 +16,7 @@ class RegistrationManipulator(forms.Manipulator):
     def __init__(self):
         self.fields = (
             forms.TextField(field_name="username", length=16, 
-                validator_list=[CallableWrapper(user_already_exists)]),
+                validator_list=[CallableValidatorWrapper(user_already_exists)]),
             forms.TextField(field_name="first_name", length=16),
             forms.TextField(field_name="last_name", length=16),
             forms.TextField(field_name="email", length=16, 
