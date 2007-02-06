@@ -7,6 +7,7 @@ import os
 from django.conf import settings
 from jToolkit import prefs
 from Pootle.conf import instance, users
+from Pootle.storage_client import ProjectWrapper, LanguageWrapper, get_project_objects, get_language_objects
 
 
 class UsersNotInitialized(Exception): pass
@@ -15,32 +16,49 @@ def md5hexdigest(text):
   if isinstance(text, unicode): text = text.encode('utf8')
   return md5.md5(text).hexdigest()
 
-class UserWrapper:
+class UserWrapper(object):
     """A class to wrap user object in just to map different naming 
     between jToolkit and Django"""
     def __init__(self, user, username):
-        def get_and_delete_messages():
-            return []
         self._user = user
-        self._username = username
-        self.mapping = {
-            'id': username,
-            'username': username,
-            'get_and_delete_messages': get_and_delete_messages,
-            }
+        self.id = username
+        self.username = username
 
     def __repr__(self):
-        return "<PootleUser: %s>" % self._username
+        return "<PootleUser: %s>" % self.username
 
     def __str__(self):
-        return str(self._username)
+        return str(self.username)
+   
+    # properties
+    def __getattr__(self, key):
+        if key in ['name', 'email', 'uilanguage', 'inputheight', 'inputwidth', 'viewrows', 'translaterows']:
+            return getattr(self._user, key, None)
+
+    def _get_projects(self):
+        return getattr(self._user, 'projects', '').split(',')
+
+    def _set_projects(self, project_list):
+        setattr(self._user, 'projects', ",".join(list(project_list)))
+    projects = property(_get_projects, _set_projects)
+
+    def _get_languages(self):
+        return getattr(self._user, 'languages', '').split(',')
     
+    def _set_languages(self, language_list):
+        setattr(self._user, 'languages', ",".join(list(language_list)))
+    languages = property(_get_languages, _set_languages)
+    # end properties
+
     def is_authenticated(self):
         return True
 
     def is_anonymous(self):
         return False
         
+    def get_and_delete_messages(self):
+        return []
+
     def is_superuser(self):
         try:
             return self._user.rights.siteadmin
@@ -53,24 +71,16 @@ class UserWrapper:
         except AttributeError:
             return False
 
-    def __getattr__(self, key):
-        if key in self.mapping:
-            return self.mapping[key]
-        else:
-            try:
-                return self.__getattr__(key)
-            except:
-                return self._user.__getattr__(key)
-    
     def set_user(self, kwargs):
-        self._user.name = kwargs['name']
-        self._user.email = kwargs['email']
-        self._user.activated = kwargs['activated']
+        for i in ['name', 'email', 'uilanguage', 'inputheight', 'inputwidth', 'viewrows', 'translaterows']:
+            if i in kwargs:
+                setattr(self._user, i, kwargs[i])
+        if 'activated' in kwargs:
+            self._user.activated = kwargs['activated']
         if 'activationcode' in kwargs:
             self._user.activationcode = kwargs['activationcode']
-        if kwargs.get('password') != None:
+        if kwargs['password']:
             self.set_password(kwargs['password'])
-        save_users()
     
     def activate(self):
         self._user.activated = 1
@@ -83,9 +93,28 @@ class UserWrapper:
     def check_password(self, raw_password):
         return self._user.passwdhash == md5hexdigest(raw_password)
 
+    def save(self):
+        save_users()
+
     def delete(self):
-        if users().__hasattr__(self._username):
-            users().removekey(self._username)
+        if users().__hasattr__(self.username):
+            users().removekey(self.username)
+
+    def is_project_member(self, project):
+        return project in [i.strip() for i in getattr(self._user, 'projects', '').split(',')]
+
+    def project_list(self):
+        for p in getattr(self._user, 'projects', '').split(','):
+            if p.strip():
+                yield ProjectWrapper(p)
+
+    def is_language_member(self, language):
+        return language in [i.strip() for i in getattr(self._user, 'projects', '').split(',')]
+
+    def language_list(self):
+        for p in getattr(self._user, 'languages', '').split(','):
+            if p.strip():
+                yield LanguageWrapper(p)
 
 class PootleAuth:
     "Authenticate against Pootle's users.prefs file"

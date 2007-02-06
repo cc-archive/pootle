@@ -194,9 +194,12 @@ def generaterobotsfile(excludedfiles=[]):
     return ''.join(content)
 
 class LanguageWrapper(object):
-    def __init__(self, languagecode, languagename):
+    def __init__(self, languagecode, languagename=None):
         self.code = languagecode
-        self.name = languagename
+        if languagename:
+            self.name = languagename.encode("utf-8")
+        else:
+            self.name = potree().getlanguagename(languagecode).encode("utf-8")
 
     def _get_specialchars(self):
         return potree().getlanguagespecialchars(self.code)

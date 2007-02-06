@@ -22,7 +22,7 @@ urlpatterns += patterns('Pootle.web.views',
     (r'^about.html$', 'about'),
     (r'^home/$', 'home'),
     (r'^home/index.html$', 'home'),
-    (r'^home/options.html$', 'options'),
+    (r'^home/options/$', 'options'),
     (r'^(?P<what>languages)/$', 'index'),
     
     (r'^(?P<what>projects)/$', 'index'),

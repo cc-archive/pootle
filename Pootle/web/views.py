@@ -8,7 +8,7 @@ from django.shortcuts import render_to_response
 from django import forms
 from django.core.mail import send_mail
 
-from Pootle.web.forms import SiteOptionsManipulator, UserAdminManipulator, ProjectAdminManipulator
+from Pootle.web import forms as pootleforms 
 from Pootle.compat.authforms import RegistrationManipulator, ActivationManipulator
 from Pootle.compat import pootleauth
 from Pootle import indexpage, adminpages, users, translatepage
@@ -214,22 +214,21 @@ def projectindex(req, language, project):
     proj = potree().getproject(language, project)
     return render_to_pootleresponse(indexpage.ProjectIndex(proj, pootlesession(req), argdict, dirfilter=None))
 
-# users.py
-
 def options(req):
-    # use manipulator here
-    message = None
+    manipulator = pootleforms.UserProfileManipulator(req.user)
     if req.POST:
-        try:
-            if "changeoptions" in req.POST:
-                pass
-            elif "changepersonal" in req.POST:
-                pass
-            elif "changeinterface" in req.POST:
-                pass
-        except users.RegistrationError, errormessage:
-            message = errormessage
-    return render_to_pootleresponse(users.UserOptions(potree(), pootlesession(req), message))
+        new_data = req.POST.copy()
+        errors = manipulator.get_validation_errors(new_data)
+        if not errors:
+            manipulator.do_html2python(new_data)
+            manipulator.save(new_data)
+            return HttpResponseRedirect(req.path)
+    else:
+        errors = {}
+        new_data = manipulator.old_data()
+    form = forms.FormWrapper(manipulator, new_data, errors)
+    context = { 'form' : form, 'errors': errors }
+    return render_to_response("options.html", RequestContext(req, context))
 
 def login(req):
     message = None
@@ -331,7 +330,7 @@ def projectadmin(req, project):
     return render_to_pootleresponse(adminpages.ProjectAdminPage(potree(), project, pootlesession(req), argdict))
     
 def admin(req):
-    manipulator = SiteOptionsManipulator()
+    manipulator = pootleforms.SiteOptionsManipulator()
     if req.POST and req.user.is_superuser():
         new_data = req.POST.copy()
         errors = manipulator.get_validation_errors(new_data)
@@ -343,10 +342,10 @@ def admin(req):
         errors = {}
         new_data = manipulator.old_data()
     form = forms.FormWrapper(manipulator, new_data, errors)
-    return render_to_response("adminindex.html", RequestContext(req, { 'form': form } ))
+    return render_to_response("adminindex.html", RequestContext(req, { 'form': form, 'errors': errors } ))
 
 def admin_useredit(req, user):
-    manipulator = UserAdminManipulator()
+    manipulator = pootleforms.UserAdminManipulator()
     if req.POST and req.user.is_superuser():
         new_data = req.POST.copy()
         new_data['username'] = user
@@ -359,7 +358,7 @@ def admin_useredit(req, user):
         errors = {}
         new_data = manipulator.old_data(user)
     form = forms.FormWrapper(manipulator, new_data, errors)
-    return render_to_response("admin_useredit.html", RequestContext(req, { 'form': form, 'u': user} ))
+    return render_to_response("admin_useredit.html", RequestContext(req, { 'form': form, 'u': user, 'errors':errors} ))
 
 def adminusers(req):
     if req.POST and req.user.is_superuser():
@@ -383,7 +382,7 @@ def adminprojects(req):
     return render_to_response("adminprojects.html", RequestContext(req, context))
 
 def admin_projectedit(req, project):
-    manipulator = ProjectAdminManipulator()
+    manipulator = pootleforms.ProjectAdminManipulator()
     if req.POST and req.user.is_superuser():
         new_data = req.POST.copy()
         errors = manipulator.get_validation_errors(new_data)
@@ -396,7 +395,8 @@ def admin_projectedit(req, project):
         new_data = manipulator.old_data(project)
     form = forms.FormWrapper(manipulator, new_data, errors)
     context = { 'project' : storage_client.ProjectWrapper(project),
-                'form': form }
+                'form': form,
+                'errors': errors,}
     return render_to_response("admin_projectedit.html", RequestContext(req, context))
 
 def admintranslationproject(req):

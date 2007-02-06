@@ -18,7 +18,7 @@
           </tr>
           <tr>
             <td colspan="1" rowspan="1"><h3 class="title">{% trans "Email Address" %}</h3></td>
-            <td colspan="1" rowspan="1">{{ form.email }}</td>
+            <td colspan="1" rowspan="1">{{ form.email }} {{ errors.email|join:" " }}</td>
           </tr>
           <tr>
             <td colspan="1" rowspan="1"><h3 class="title">{% trans "Password" %}</h3></td>

@@ -10,11 +10,11 @@
       <form action="" method="post" name="projects" id="projects">
         <table cellpadding="1" cellspacing="1">
           <tr><td colspan="1" rowspan="1"><h3 class="title">{% trans "Project Code" %}</h3></td><td>{{ project.code }}</td></tr>
-          <tr><td colspan="1" rowspan="1"><h3 class="title">{% trans "Full Name" %}</h3></td><td>{{ form.name }}</td></tr>
-          <tr><td colspan="1" rowspan="1"><h3 class="title">{% trans "Project Description" %}</h3></td><td>{{ form.description }}</td></tr>
-          <tr><td colspan="1" rowspan="1"><h3 class="title">{% trans "Checker Style" %}</h3></td><td>{{ form.checkerstyle }}</td></tr>
-          <tr><td colspan="1" rowspan="1"><h3 class="title">{% trans "File Type" %}</h3></td><td>{{ form.filetype }}</td></tr>
-          <tr><td colspan="1" rowspan="1"><h3 class="title">{% trans "Create MO Files" %}</h3></td><td>{{ form.create_mo_files }}</td></tr>
+          <tr><td colspan="1" rowspan="1"><h3 class="title">{% trans "Full Name" %}</h3></td><td>{{ form.name }} {{ errors.name|join:" " }}</td></tr>
+          <tr><td colspan="1" rowspan="1"><h3 class="title">{% trans "Project Description" %}</h3></td><td>{{ form.description }} {{ errors.description|join:" " }}</td></tr>
+          <tr><td colspan="1" rowspan="1"><h3 class="title">{% trans "Checker Style" %}</h3></td><td>{{ form.checkerstyle }} {{ errors.checkerstyle|join:" " }}</td></tr>
+          <tr><td colspan="1" rowspan="1"><h3 class="title">{% trans "File Type" %}</h3></td><td>{{ form.filetype }} {{ errors.filetype|join:" " }}</td></tr>
+          <tr><td colspan="1" rowspan="1"><h3 class="title">{% trans "Create MO Files" %}</h3></td><td>{{ form.create_mo_files }} {{ errors.create_mo_files|join:" " }}</td></tr>
         </table><input type="submit" name="changeprojects" value="{% trans "Save changes" %}" />
       </form>
     </div>

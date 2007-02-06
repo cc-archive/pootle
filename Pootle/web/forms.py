@@ -3,7 +3,11 @@ from Pootle.conf import instance, saveprefs
 from Pootle.compat.pootleauth import PootleAuth, create_user, save_users
 from Pootle import storage_client
 from translate.filters import checks
+from django.core import validators
+from django.core.validators import isOnlyDigits, isValidEmail
+from Pootle.utils import CallableValidatorWrapper
 
+isValidEmail = CallableValidatorWrapper(isValidEmail)
 
 CHECKS = [ ('Standard', 'Standard')] + [ (ch, ch) for ch in checks.projectcheckers.keys()]
 # FIXME: Filetypes should probably be provided by translate-toolkit.
@@ -35,7 +39,7 @@ class UserAdminManipulator(forms.Manipulator):
         self.fields = (
             forms.TextField(field_name="username", length=6),
             forms.TextField(field_name="name", length=20),
-            forms.TextField(field_name="email", length=20),
+            forms.TextField(field_name="email", length=20, validator_list=[isValidEmail]),
             forms.TextField(field_name="password", length=20),
             forms.CheckboxField(field_name="activated"),
             )
@@ -75,3 +79,32 @@ class ProjectAdminManipulator(forms.Manipulator):
         for k in self.fields:
             setattr(p, k.field_name, new_data[k.field_name])
 
+class UserProfileManipulator(forms.Manipulator):
+    def __init__(self, user):
+        self.user = user
+        project_choices = [(p.code, p.name) for p in storage_client.get_project_objects()]
+        language_choices = [(p.code, p.name) for p in storage_client.get_language_objects()]
+        self.fields = (
+            forms.TextField(field_name="name", length=40),
+            forms.TextField(field_name="email", length=40, validator_list=[isValidEmail]),
+            forms.PasswordField(field_name="password", length=40),
+            forms.PasswordField(field_name="password_confirm", length=40, validator_list=[validators.AlwaysMatchesOtherField('password')]),
+            forms.SelectField(field_name="uilanguage", choices=[]), # FIXME add choices
+            forms.TextField(field_name="inputheight", length=10, validator_list=[isOnlyDigits]),
+            forms.TextField(field_name="inputwidth", length=10, validator_list=[isOnlyDigits]),
+            forms.TextField(field_name="viewrows", length=10, validator_list=[isOnlyDigits]),
+            forms.TextField(field_name="translaterows", length=10, validator_list=[isOnlyDigits]),
+            forms.SelectMultipleField(field_name="projects", size=min(max(len(project_choices), 5), 15), choices=project_choices),
+            forms.SelectMultipleField(field_name="languages", size=min(max(len(language_choices), 5), 15), choices=language_choices),
+        )
+
+    def old_data(self):
+        return dict([ (k.field_name, getattr(self.user, k.field_name, None)) for k in self.fields if not k.field_name.startswith("password") ])
+
+    def save(self, new_data):
+        u = self.user
+        u.set_user(new_data)
+        u.projects = new_data.getlist('projects')
+        u.languages = new_data.getlist('languages')
+        u.save()
+        return u
