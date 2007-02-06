@@ -222,9 +222,9 @@ Pootle:
     ca.pluralequation ='(n != 1)'
 
 # Czech
-#    cs.fullname = u'Česky'
-#    cs.nplurals = '3'
-#    cs.pluralequation ='(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2'
+    cs.fullname = u'Česky'
+    cs.nplurals = '3'
+    cs.pluralequation ='(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2'
 
 # Welsh
 #    cy.fullname = u'Cymraeg'
@@ -251,10 +251,10 @@ Pootle:
 #    el.nplurals = '2'
 #    el.pluralequation ='(n != 1)'
 
-# English
-#    en.fullname = u'English'
-#    en.nplurals = '2'
-#    en.pluralequation ='(n != 1)'
+ English
+    en.fullname = u'English'
+    en.nplurals = '2'
+    en.pluralequation ='(n != 1)'
 
 # English (British)
 #    en_GB.fullname = u'English (British)'
@@ -468,9 +468,9 @@ Pootle:
 #    pa.pluralequation ='(n != 1)'
 
 # Polish
-#    pl.fullname = u'Polski'
-#    pl.nplurals = '3'
-#    pl.pluralequation ='(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)'
+    pl.fullname = u'Polski'
+    pl.nplurals = '3'
+    pl.pluralequation ='(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)'
 
 # Portuguese
     pt.fullname = u'Português'
@@ -483,14 +483,14 @@ Pootle:
     pt_BR.pluralequation ='(n > 1)'
 
 # Romanian
-#    ro.fullname = u'Română'
-#    ro.nplurals = '3'
-#    ro.pluralequation ='(n==1 ? 0 : (n==0 || (n%100 > 0 && n%100 < 20)) ? 1 : 2);'
+    ro.fullname = u'Română'
+    ro.nplurals = '3'
+    ro.pluralequation ='(n==1 ? 0 : (n==0 || (n%100 > 0 && n%100 < 20)) ? 1 : 2);'
 
 # Russian
-#    ru.fullname = u'Русский'
-#    ru.nplurals = '3'
-#    ru.pluralequation ='(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)'
+    ru.fullname = u'Русский'
+    ru.nplurals = '3'
+    ru.pluralequation ='(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)'
 
 # Slovak
 #    sk.fullname = u'Slovenčina'
@@ -508,9 +508,9 @@ Pootle:
 #    sq.pluralequation ='(n != 1)'
 
 # Serbian (Српски / Srpski)
-#    sr.fullname = u'Serbian'
-#    sr.nplurals = '3'
-#    sr.pluralequation ='(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)'
+    sr.fullname = u'Serbian'
+    sr.nplurals = '3'
+    sr.pluralequation ='(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)'
 
 # Swedish
     sv.fullname = u'Svenska'
@@ -556,6 +556,11 @@ Pootle:
     zh_HK.fullname = u'繁體中文'
     zh_HK.nplurals = '1'
     zh_HK.pluralequation ='0'
+
+# Traditional Chinese (Taiwan used below, but also used in Hong Kong and Macau)
+    zh_TW.fullname = u'繁體中文'
+    zh_TW.nplurals = '1'
+    zh_TW.pluralequation ='0'
 
   # This is a "language" that gives people access to the (untranslated) template files
     templates.fullname = u'Templates'
