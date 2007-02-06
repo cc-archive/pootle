@@ -116,7 +116,7 @@ class xliffunit(lisa.LISAunit):
             note.setAttribute("from", origin)
         self.xmlelement.appendChild(note)        
 
-    def getnotes(self):
+    def getnotes(self, origin=None):
         """Returns the text from all the notes"""
         return lisa.getText(self.xmlelement.getElementsByTagName("note"))
 
