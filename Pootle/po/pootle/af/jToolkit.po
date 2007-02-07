@@ -10,8 +10,8 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"Generated-By: pygettext.py 1.5\n"
 "X-Generator: Pootle 0.10rc2\n"
+"Generated-By: pygettext.py 1.5\n"
 
 #: web/server.py:57
 #, python-format
@@ -89,9 +89,7 @@ msgstr "het ouertoepassing verlaat"
 
 #: web/session.py:314
 msgid "need to define the users or userprefs entry on the server config"
-msgstr ""
-"u moet die gebruikers- of gebruikersvoorkeure-opsie in die bediener-"
-"konfigurasie instel"
+msgstr "u moet die gebruikers- of gebruikersvoorkeure-opsie in die bediener-konfigurasie instel"
 
 #: web/session.py:321 web/session.py:453
 #, python-format

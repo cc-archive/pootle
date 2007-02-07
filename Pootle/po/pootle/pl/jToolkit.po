@@ -3,15 +3,15 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2005-06-13 14:54-0500\n"
-"PO-Revision-Date: 2006-10-24 01:55+0200\n"
-"Last-Translator: Artur R. Czechowski <arturcz@hell.pl>\n"
+"PO-Revision-Date: 2007-01-31 23:48+0100\n"
+"Last-Translator: jo no soi marinero <SaimBaldOd4@tlen.pl>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10< =4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "Generated-By: pygettext.py 1.5\n"
-"X-Generator: Pootle 0.10.1\n"
+"X-Generator: Pootle 0.11rc\n"
 
 #: web/server.py:57
 #, python-format
@@ -92,7 +92,7 @@ msgstr "zakończ macierzystą sesję"
 
 #: web/session.py:314
 msgid "need to define the users or userprefs entry on the server config"
-msgstr "należy zdefiniować użytkowników lub preference użytkowników w konfiguracji serwera"
+msgstr "trzeba dopisać w konfiguracji serwera wpis dla użytkowników lub preferencji"
 
 #: web/session.py:321
 #: web/session.py:453
