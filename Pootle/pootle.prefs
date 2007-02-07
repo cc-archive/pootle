@@ -251,7 +251,7 @@ Pootle:
 #    el.nplurals = '2'
 #    el.pluralequation ='(n != 1)'
 
- English
+# English
     en.fullname = u'English'
     en.nplurals = '2'
     en.pluralequation ='(n != 1)'
@@ -262,9 +262,9 @@ Pootle:
 #    en_GB.pluralequation ='(n != 1)'
 
 # English (South African)
-#    en_ZA.fullname = u'English (South African)'
-#    en_ZA.nplurals = '2'
-#    en_ZA.pluralequation ='(n != 1)'
+    en_ZA.fullname = u'English (South Africa)'
+    en_ZA.nplurals = '2'
+    en_ZA.pluralequation ='(n != 1)'
 
 # Esperanto
 #    eo.fullname = u'Esperanto'
