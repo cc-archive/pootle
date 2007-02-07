@@ -549,19 +549,20 @@ class TranslationProject(object):
           localmsgstr = localpo.target
           if origmsgstr == localmsgstr:
             continue
+
         foundsource = False
-        if usesources:
-          for location in origpo.getlocations():
-            if location in newpofile.locationindex:
-              newpo = newpofile.locationindex[location]
-              if newpo is not None:
-                foundsource = True
-                newmatches.append((newpo, localpo))
-                continue
+        # First try to find a match on location
+        for location in origpo.getlocations():
+          if location in newpofile.locationindex:
+            newpo = newpofile.locationindex[location]
+            if newpo is not None and newpo.source == localpo.source:
+              foundsource = True
+              newmatches.append((newpo, localpo))
+              continue
         if not foundsource:
-          msgid = origpo.unquotedmsgid
-          if msgid in newpofile.sourceindex:
-            newpo = newpofile.sourceindex[msgid]
+          source = origpo.source
+          if source in newpofile.sourceindex:
+            newpo = newpofile.sourceindex[source]
             newmatches.append((newpo, localpo))
           else:
             newmatches.append((None, localpo))
