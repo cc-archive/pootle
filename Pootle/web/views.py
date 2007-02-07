@@ -85,6 +85,7 @@ def render_to_pootleresponse(pootlepage):
 def pootlesession(req):
     """Make a wrapper around Django session object to make it work
     with Pootle's page classes seamlessly."""
+    print 'WARNING: This view uses pootlesession.'
     def localize(s, *args):
         if args:
             return _(s) % args
@@ -176,9 +177,7 @@ def about(req):
     return render_to_response("about.html", RequestContext(req, context ))
 
 def home(req):
-    context = {
-        'quicklinks': getquicklinks(pootlesession(req)), }
-    return render_to_response("home.html", RequestContext(req, context))
+    return render_to_response("home.html", RequestContext(req, {}))
 home = login_required(home)
 
 def projectlanguageindex(req, project):

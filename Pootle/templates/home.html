@@ -5,29 +5,17 @@
 
 {% block content %}
     <div class="contents"><h3 class="title">{% trans "Quick Links" %}</h3>
-{% if quicklinks %}
-{% for language in quicklinks %}
-        <h3 class="title">
-          <a href="../{{ language.code }}/">{{ language.name }}</a>
-        </h3>
-{% if language.projects %}      
-        <div class="item-description">
-{% for project in langugage.projects %}
-          <a href="../{{ language.code }}/{{ project.code }}/">{{ project.name }}</a>
-{% if project.isprojectadmin %}
-          (<a href="../{{ language.code }}/{{ project.code }}/admin.html/">{% trans "Admin" %}</a>)
-{% endif %}
+
+{% for lang in user.language_list %}
+    <h3 class="title"><a href="../{{ lang.code }}/">{{ lang.name }}</a></h3>
+    <div class="item-description">
+{% for project in user.project_list %}
+          <a href="../{{ lang.code }}/{{ project.code }}/">{{ project.name }}</a>
+          (<a href="../{{ lang.code }}/{{ project.code }}/admin.html/">{% trans "Admin" %}</a>)
 {% endfor %}
-        </div>
-{% endif %}
-{% endfor %}
-      </div>
-{% else %}
-      <div py:if="not quicklinks" class="item-description">
-        {% trans "Please click on 'Change options' and select some languages and projects" %}
-      </div>
-{% endif %}
+
     </div>
+{% endfor %}
     
     <div class="intro">
       <a href="options/">{% trans "Change options" %}</a>
