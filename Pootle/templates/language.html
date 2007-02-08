@@ -38,7 +38,7 @@
       <tbody class="stats">
 {% for item in projects %}
           <tr class="item item-{{ item.parity }}" title="{{ item.description }}">
-            {% itemnode %}
+            {% itemnode stats %}
           </tr>
 {% endfor %}
       </tbody>
