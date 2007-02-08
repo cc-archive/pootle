@@ -1,3 +1,78 @@
+2007-02-08 09:13  friedelwolff
+
+	* ChangeLog: Update ChangeLog with changes since 0.10.1 up until
+	  2007-01-31
+
+2007-02-07 16:06  friedelwolff
+
+	* __version__.py: Version 0.11
+
+2007-02-07 14:49  friedelwolff
+
+	* projects.py: Fix the undefined variable 'usesources'. Reported
+	  in bug 217.
+
+2007-02-07 14:48  friedelwolff
+
+	* pootle.prefs: Enable en_ZA and fix typo with English (en)
+
+2007-02-07 14:33  friedelwolff
+
+	* po/pootle/af/jToolkit.po, po/pootle/ak/pootle.po,
+	  po/pootle/am/pootle.po, po/pootle/ar/pootle.po,
+	  po/pootle/bg/pootle.po, po/pootle/bn/pootle.po,
+	  po/pootle/ca/pootle.po, po/pootle/cs/pootle.po,
+	  po/pootle/da/pootle.po, po/pootle/de/pootle.po,
+	  po/pootle/el/pootle.po, po/pootle/en/pootle.po,
+	  po/pootle/en_ZA/pootle.po, po/pootle/es/pootle.po,
+	  po/pootle/et/pootle.po, po/pootle/eu/pootle.po,
+	  po/pootle/fa/pootle.po, po/pootle/fi/pootle.po,
+	  po/pootle/fr/pootle.po, po/pootle/fur/pootle.po,
+	  po/pootle/gl/pootle.po, po/pootle/ha/pootle.po,
+	  po/pootle/he/pootle.po, po/pootle/hi/pootle.po,
+	  po/pootle/hr/pootle.po, po/pootle/hu/pootle.po,
+	  po/pootle/hy/pootle.po, po/pootle/is/pootle.po,
+	  po/pootle/it/pootle.po, po/pootle/ja/pootle.po,
+	  po/pootle/ka/pootle.po, po/pootle/kg/pootle.po,
+	  po/pootle/km/pootle.po, po/pootle/ko/pootle.po,
+	  po/pootle/ku/pootle.po, po/pootle/lt/pootle.po,
+	  po/pootle/lv/pootle.po, po/pootle/mr/pootle.po,
+	  po/pootle/ms/pootle.po, po/pootle/mt/pootle.po,
+	  po/pootle/nb/pootle.po, po/pootle/ne/pootle.po,
+	  po/pootle/nl/pootle.po, po/pootle/nn/pootle.po,
+	  po/pootle/pa/pootle.po, po/pootle/pl/jToolkit.po,
+	  po/pootle/pl/pootle.po, po/pootle/pt/pootle.po,
+	  po/pootle/pt_BR/jToolkit.po, po/pootle/pt_BR/pootle.po,
+	  po/pootle/ro/pootle.po, po/pootle/ru/pootle.po,
+	  po/pootle/sl/pootle.po, po/pootle/sr/pootle.po,
+	  po/pootle/st/pootle.po, po/pootle/sv/pootle.po,
+	  po/pootle/tr/pootle.po, po/pootle/uk/pootle.po,
+	  po/pootle/ve/pootle.po, po/pootle/vi/pootle.po,
+	  po/pootle/xh/pootle.po, po/pootle/zh_CN/pootle.po,
+	  po/pootle/zh_HK/pootle.po, po/pootle/zh_TW/pootle.po,
+	  po/pootle/zu/pootle.po: Update translations from
+	  pootle.wordforge.org for 0.11 release
+
+2007-02-07 14:02  friedelwolff
+
+	* po/pootle/af/pootle.po: Commit from Poetel by user startup. 290
+	  of 290 messages translated (0 fuzzy).
+
+2007-02-07 13:24  friedelwolff
+
+	* html/pootle.css: Only use unicode-bidi: embed for the navigation
+	  bar. This improves rtl display with somewhat untranslated Pootle
+	  interface
+
+2007-02-06 13:56  friedelwolff
+
+	* pootle.prefs: Enable languages acording to 80% translation
+	  status (add zh_TW for that)
+
+2007-02-05 10:48  friedelwolff
+
+	* __version__.py: Version 0.11rc2
+
 2007-01-31 13:57  friedelwolff
 
 	* pootlefile.py: Support the upcomming file format for fowards
