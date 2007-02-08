@@ -1,3 +1,124 @@
+2007-01-31 15:21  friedelwolff
+
+	* convert/test_pot2po.py: Test that automatic comments get
+	  converted correctly when the location changes
+
+2007-01-31 15:20  friedelwolff
+
+	* search/match.py: Only gather the translator notes (comments),
+	  otherwise we might end up getting programmer notes in the
+	  translator notes if the unit is used
+
+2007-01-24 13:04  andreaspauley
+
+	* storage/po.py, tools/test_pomerge.py: Remove any kde-style
+	  msgidcomments from the translation when merging.
+
+2007-01-24 12:23  andreaspauley
+
+	* storage/po.py, storage/test_po.py, tools/test_pomerge.py: Cater
+	  for kde-style msgid comments in translations. This fixes
+	  TestPOMerge().test_merging_dont_merge_kde_comments_found_in_translation.
+
+2007-01-19 09:39  friedelwolff
+
+	* __version__.py: Version 0.11rc (fix typo)
+
+2007-01-19 09:03  friedelwolff
+
+	* __version__.py: Version 0.11rc
+
+2007-01-17 08:51  friedelwolff
+
+	* convert/xliff2po.py: Change expected extention from .xliff to
+	  .xlf [Bug 220]
+
+2007-01-15 10:43  friedelwolff
+
+	* README: Fix link to toolkit documentation on the wiki
+
+2007-01-11 14:53  friedelwolff
+
+	* README: Some updates to the old README file. Could use more
+	  attention.
+
+2006-12-28 08:29  friedelwolff
+
+	* convert/po2oo.py: Make unicode location a string before printing
+	  to screen. Fix for bug 211
+
+2006-12-27 14:11  friedelwolff
+
+	* storage/po.py: Detect the encoding from the header somewhat
+	  earlier. Fix for bug 193
+
+2006-11-21 09:00  friedelwolff
+
+	* storage/po.py: [backport from trunk -r4298] Rewrite the plural
+	  handling logic in settarget to distinguish clearly between a
+	  single plural form language and a single (simple) string passed
+	  in a list
+
+2006-11-21 08:51  friedelwolff
+
+	* convert/pot2po.py: Revert incorrect patch from revision 4070 to
+	  always use Project-Id-Version from the POT
+
+2006-11-02 11:01  friedelwolff
+
+	* storage/po.py: Use the dictionary with corrected keys [reported
+	  by Hok Kakada]
+
+2006-11-01 14:42  friedelwolff
+
+	* __version__.py: Change the version up 0.10.1svn
+
+2006-10-26 08:33  friedelwolff
+
+	* convert/test_po2oo.py: Test conversion with escpaes of \t, \r
+	  and \n
+
+2006-10-26 08:31  friedelwolff
+
+	* convert/test_po2oo.py: Rename exclude -> exclude-all as it is in
+	  po2oo
+
+2006-10-26 06:03  friedelwolff
+
+	* storage/oo.py: Escape \r and \t correctly with output
+
+2006-10-24 16:09  friedelwolff
+
+	* storage/po.py: Remove incorrect extra unescaping
+
+2006-10-24 05:59  friedelwolff
+
+	* filters/checks.py, filters/test_checks.py: [backport from trunk
+	  4110:4111]
+	  Handle the case where we have xmltag false positives. E.g.
+	  "<Error>" which looks
+	  like XML/HTML but should actually be translated.
+	  These are handles by 1) identifying them as being the same
+	  length as the source text,
+	  2) not containing any '=' sign. Thus the following would not be
+	  detected by this hack.
+	  "An <Error> occured"
+	  "<Error name="bob">"
+	  But these ones need human eyes anyway.
+
+2006-10-24 05:57  friedelwolff
+
+	* convert/po2oo.py: [backport from trunk 4109:4110] Make the
+	  defalt filter action = none ie do nothing and don't warn. Until
+	  we have a way of clearly marking false positives we'll have to
+	  diable this funtionality. Also renamed exclude to exclude-all
+	  so that it is clearer what it does ie it excludes 'all' vs
+	  excludes 'serious'
+
+2006-10-13 17:06  friedelwolff
+
+	* ChangeLog: Update ChangeLog before 0.10.1 release
+
 2006-10-13 12:03  friedelwolff
 
 	* convert/pot2po.py: Always use Project-Id-Version from the POT
