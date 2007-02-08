@@ -1,3 +1,221 @@
+2007-01-31 13:57  friedelwolff
+
+	* pootlefile.py: Support the upcomming file format for fowards
+	  compatibility
+
+2007-01-31 10:15  friedelwolff
+
+	* pootle.prefs: [backport from trunk] Several documentation
+	  updates and improvements
+
+2007-01-31 09:36  friedelwolff
+
+	* potree.py, projects.py: Get the default project rights from the
+	  preferences
+
+2007-01-31 09:09  friedelwolff
+
+	* templates/pootlepage.html: Don't use baseurl for the
+	  documentation for the moment
+
+2007-01-26 11:27  friedelwolff
+
+	* projects.py: Remove review right by default
+
+2007-01-26 10:15  friedelwolff
+
+	* pootle.py: Rather send user to index page with all the files on
+	  error
+
+2007-01-26 09:22  friedelwolff
+
+	* pagelayout.py, pootle.py, templates/about.html,
+	  templates/activate.html, templates/adminindex.html,
+	  templates/adminlanguages.html, templates/adminprojects.html,
+	  templates/adminusers.html, templates/error.html,
+	  templates/fileindex.html, templates/home.html,
+	  templates/index.html, templates/language.html,
+	  templates/languages.html, templates/login.html,
+	  templates/navbar.html, templates/options.html,
+	  templates/pootlepage.html, templates/project.html,
+	  templates/projectadmin.html, templates/projectlangadmin.html,
+	  templates/projects.html, templates/redirect.html,
+	  templates/register.html, templates/translatepage.html:
+	  [Contributed by Lars Kruse] Use the configured baseurl. Fix for
+	  bug 113.
+
+2007-01-24 11:36  friedelwolff
+
+	* html/pootle.css, pagelayout.py: Add two more languages as rtl
+	  (right-to-left): Aramaic (arc) and Dhivehi (dv). Rewrite
+	  direction detection slightly to be more robust
+
+2007-01-22 14:48  friedelwolff
+
+	* translatepage.py: A fix for an encoding problem with non-ascii
+	  usernames
+
+2007-01-19 09:03  friedelwolff
+
+	* __version__.py: Version 0.11rc
+
+2007-01-18 08:11  friedelwolff
+
+	* po/pootle/bg, po/pootle/bg/jToolkit.po, po/pootle/bg/pootle.po,
+	  po/pootle/ha, po/pootle/ha/jToolkit.po, po/pootle/ha/pootle.po,
+	  po/pootle/km, po/pootle/km/jToolkit.po, po/pootle/km/pootle.po,
+	  po/pootle/ro, po/pootle/ro/jToolkit.po, po/pootle/ro/pootle.po:
+	  Add new translations for Bulgarian (bg), Romanian (ro), Khmer
+	  (km), and Hausa (ha)
+
+2007-01-18 08:03  friedelwolff
+
+	* po/pootle/ak/pootle.po: Updated Akan (ak) translation
+
+2007-01-18 06:56  friedelwolff
+
+	* po/pootle/ns: Remove old garbage translation (ns)
+
+2007-01-17 15:51  friedelwolff
+
+	* po/pootle/ak, po/pootle/ak/jToolkit.po, po/pootle/ak/pootle.po,
+	  po/pootle/aka: Move old Akan tranlsation (aka) to correct
+	  directory (ak)
+
+2007-01-17 13:48  friedelwolff
+
+	* po/pootle/ar/jToolkit.po, po/pootle/ar/pootle.po,
+	  po/pootle/bn/pootle.po, po/pootle/ca/pootle.po,
+	  po/pootle/cs/pootle.po, po/pootle/da/pootle.po,
+	  po/pootle/de/jToolkit.po, po/pootle/de/pootle.po,
+	  po/pootle/el/pootle.po, po/pootle/en_ZA/jToolkit.po,
+	  po/pootle/et/jToolkit.po, po/pootle/et/pootle.po,
+	  po/pootle/eu/pootle.po, po/pootle/he/pootle.po,
+	  po/pootle/hi/pootle.po, po/pootle/is/pootle.po,
+	  po/pootle/ja/pootle.po, po/pootle/ka/jToolkit.po,
+	  po/pootle/ka/pootle.po, po/pootle/kg/jToolkit.po,
+	  po/pootle/kg/pootle.po, po/pootle/ko/pootle.po,
+	  po/pootle/lt/pootle.po, po/pootle/lv/jToolkit.po,
+	  po/pootle/lv/pootle.po, po/pootle/nb/jToolkit.po,
+	  po/pootle/nl/jToolkit.po, po/pootle/nl/pootle.po,
+	  po/pootle/pl/jToolkit.po, po/pootle/pl/pootle.po,
+	  po/pootle/pt/pootle.po, po/pootle/pt_BR/pootle.po,
+	  po/pootle/ru/pootle.po, po/pootle/sr/pootle.po,
+	  po/pootle/tr/pootle.po, po/pootle/uk/pootle.po,
+	  po/pootle/vi/pootle.po, po/pootle/zh_CN/pootle.po,
+	  po/pootle/zh_TW/jToolkit.po, po/pootle/zh_TW/pootle.po: Update
+	  all existing translations from pootle.wordforge.org
+
+2007-01-17 13:36  friedelwolff
+
+	* templates/fileindex.html: Fix problem where we are unable to
+	  assign a user to a goal because of naming mismatch
+
+2007-01-17 13:32  friedelwolff
+
+	* projects.py: Ignore files in the goal that has been removed from
+	  the project
+
+2007-01-17 12:05  friedelwolff
+
+	* po/pootle/templates/pootle.pot: New POT file for upcoming release
+
+2007-01-17 07:43  friedelwolff
+
+	* CREDITS: Credit Lars Kruse and Add Simos' name in Greek script
+
+2007-01-17 07:34  friedelwolff
+
+	* versioncontrol.py: [Contributed by Lars Kruse] Also use
+	  shellescape for for cvsroot, revision and message
+
+2007-01-17 06:42  friedelwolff
+
+	* pagelayout.py, translatepage.py: Fix the bug with links in the
+	  navigation bar with certain directory tries. Fix for bug 218.
+
+2007-01-12 15:04  friedelwolff
+
+	* indexpage.py, projects.py, templates/fileindex.html,
+	  test_client.py: [backport from trunk revisions 4741-4743,4760]
+	  Add the overwrite right and reword the upload form.
+
+2007-01-12 08:32  friedelwolff
+
+	* README: Update URL for wiki documentation
+
+2007-01-10 10:56  friedelwolff
+
+	* projects.py: Disable translate right by default
+
+2007-01-10 10:55  friedelwolff
+
+	* projects.py: Enable suggest right by default
+
+2007-01-10 09:08  friedelwolff
+
+	* indexpage.py, projects.py, templates/fileindex.html,
+	  test_client.py: [backport from trunk, revisions 4346,4716,4717]
+	  Give the user an option to overwrite a file on upload
+
+2007-01-08 11:45  friedelwolff
+
+	* users.py: [backport from trunk -r 3991 and 4714] Correctly
+	  display exceptions in unit tests (we don't have a server.options
+	  variable)
+
+2007-01-08 07:47  friedelwolff
+
+	* users.py: Don't make 'templates' a possible interface language
+
+2006-12-28 08:42  friedelwolff
+
+	* templates/translatepage.html: Keep displaying the search text in
+	  the search form. Fix for bug 195
+
+2006-12-22 07:25  friedelwolff
+
+	* users.py: Recheck the session status after changing the
+	  interface language to ensure that the status message is
+	  correctly traslated in the new locale (fix for bug 197)
+
+2006-11-03 14:35  friedelwolff
+
+	* test_client.py, translatepage.py: [backport from trunk by
+	  Andreas] Fix navigation url (+test)
+
+2006-11-01 10:10  friedelwolff
+
+	* templates/home.html: Remove trailing slash (/) in admin url
+
+2006-10-19 13:57  friedelwolff
+
+	* projects.py: Fix typo
+
+2006-10-19 13:36  friedelwolff
+
+	* projects.py: Cosmetic reordering of instructions
+
+2006-10-19 13:34  friedelwolff
+
+	* projects.py: Use correct filename when uploading new file from
+	  template. This fixes the bug with projects with a directory
+	  hierarchy in the temlates directory
+
+2006-10-18 15:25  friedelwolff
+
+	* pootle.prefs: Update plural equation for Akan from information
+	  from paa kwesi imbeah
+
+2006-10-13 22:15  friedelwolff
+
+	* projects.py: Filter interested users by language only, not by
+	  project as well.
+
+2006-10-13 17:10  friedelwolff
+
+	* ChangeLog: Update ChangeLog before 0.10.1 release
+
 2006-10-13 15:53  friedelwolff
 
 	* test_client.py: [backport from trunk 4046 and 4067] Adapt
