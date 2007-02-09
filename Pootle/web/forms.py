@@ -1,7 +1,6 @@
 from django import forms
-from Pootle.conf import instance, saveprefs
+from Pootle.conf import instance, saveprefs, potree
 from Pootle.compat.pootleauth import PootleAuth, create_user, save_users
-from Pootle import storage_client
 from translate.filters import checks
 from django.core import validators
 from django.core.validators import isOnlyDigits, isValidEmail
@@ -65,25 +64,25 @@ class ProjectAdminManipulator(forms.Manipulator):
         self.fields = (
             forms.TextField(field_name="name", length=40),
             forms.LargeTextField(field_name="description"),
-            forms.SelectField(field_name="checkerstyle", choices=CHECKS),
+            forms.SelectField(field_name="checkstyle", choices=CHECKS),
             forms.SelectField(field_name="filetype", choices=FILETYPES),
-            forms.CheckboxField(field_name="create_mo_files"),
+            forms.CheckboxField(field_name="createmofiles"),
             )
 
     def old_data(self, project):
-        p = storage_client.ProjectWrapper(project)
+        p = potree().get_project(project)
         return dict([ (k.field_name, getattr(p,k.field_name)) for k in self.fields ])
 
     def save(self, new_data, projectcode):
-        p = storage_client.ProjectWrapper(projectcode)
+        p = potree().get_project(projectcode)
         for k in self.fields:
             setattr(p, k.field_name, new_data[k.field_name])
 
 class UserProfileManipulator(forms.Manipulator):
     def __init__(self, user):
         self.user = user
-        project_choices = [(p.code, p.name) for p in storage_client.get_project_objects()]
-        language_choices = [(p.code, p.name) for p in storage_client.get_language_objects()]
+        project_choices = [(p.code, p.name) for p in potree().get_project_list()]
+        language_choices = [(p.code, p.name) for p in potree().get_language_list()]
         self.fields = (
             forms.TextField(field_name="name", length=40),
             forms.TextField(field_name="email", length=40, validator_list=[isValidEmail]),

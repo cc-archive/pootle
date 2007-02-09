@@ -31,6 +31,80 @@ import sre
 languagere = sre.compile("^[a-z]{2,3}([_-][A-Z]{2,3}|)$")
 regionre = sre.compile("^[_-][A-Z]{2,3}$")
 
+class Language(object):
+    """Language object
+    "mapping" is a dict of attributes that languages have and are saved to 
+    prefs.
+    "changed" returns True, if any attribute has changed.
+
+    Language attributes are accessed as object attributes, eg.:
+        >>> L = Language("en")
+        >>> L.name
+        'English'
+    """
+    mapping = {
+        'name':'fullname', 
+        'specialchars': 'specialchars',
+        'nplurals':'nplurals',
+        'plural_equation':'pluralequation',
+        }
+    def __init__(self, language_prefs):
+        self.prefs = language_prefs
+        self.changed = False
+        self.code = str(self.prefs).split('.')[-1]
+
+    def __repr__(self):
+        return "<%s>" % self.prefs
+
+    def __setattr__(self, key, value):
+        if key in self.mapping:
+            self.prefs.__setattr__(self.mapping[key], value)
+            self.changed = True
+        else:
+            super(Language,self).__setattr__(key, value)
+
+    def __getattr__(self, key):
+        if key in self.mapping:
+            return getattr(self.prefs, self.mapping[key])
+        else:
+            raise KeyError("Language object %s does not have %s attribute." % (self,key))
+
+class Project(object):
+    mapping = { 
+        'name':'fullname', 
+        'description': 'description',
+        'checkstyle': 'checkstyle',
+        'filetype': 'localfiletype', 
+        # 'createmofiles': 'createmofiles', need to set default false
+        }
+    def __init__(self, project_prefs):
+        self.prefs = project_prefs
+        self.code = str(project_prefs).split(".")[-1]
+        self.changed = False
+
+    def __repr__(self):
+        return "<Pootle Project: %s>" % self.name
+
+    def _get_createmofiles(self):
+        return getattr(self.prefs, 'createmofiles', False) and True 
+
+    def _set_createmofiles(self, value=1):
+        self.prefs.__setattr__('createmofiles', value)
+    createmofiles = property(_get_createmofiles, _set_createmofiles)
+
+    def __setattr__(self, key, value):
+        if key in self.mapping:
+            self.prefs.__setattr__(self.mapping[key], value)
+            self.changed = True
+        else:
+            super(Project,self).__setattr__(key, value)
+
+    def __getattr__(self, key):
+        if key in self.mapping:
+            return getattr(self.prefs, self.mapping[key])
+        else:
+            raise KeyError("Project %s does not have %s attribute." % (self,key))
+
 class POTree:
     """Manages the tree of projects and languages"""
     def __init__(self, instance):
@@ -49,7 +123,29 @@ class POTree:
         prefsfile = self.languages.__root__.__dict__["_setvalue"].im_self
         prefsfile.savefile()
 
-    def changelanguages(self, argdict):
+    def get_language(self, language_code):
+        return Language(getattr(self.languages, language_code))
+
+    def get_language_list(self, project_code=None):
+        if project_code:
+            for lang in [ code for code, name in self.languages.iteritems() if self.haslanguage(project_code, code)]:
+                yield self.get_language(lang)
+        else:
+            for lang, name in self.languages.iteritems():
+                yield self.get_language(lang)
+
+    def get_project(self, project_code):
+        return Project(getattr(self.projects, project_code))
+
+    def get_project_list(self, language_code=None):
+        if language_code: # if we are interested in specific translation
+            for project in [ code for code, name in self.projects.iteritems() if self.hasproject(language_code, code)]:
+                yield self.get_project(project)
+        else:
+            for project, name in self.projects.iteritems():
+                yield self.get_project(project)
+
+    def changelanguages(self, argdict): # FIXME obsoleted
         """changes language entries"""
         for key, value in argdict.iteritems():
             if key.startswith("languageremove-"):
@@ -119,7 +215,7 @@ class POTree:
                 setattr(self.languages, languagecode + ".pluralequation", languagepluralequation)
         self.saveprefs()
 
-    def changeprojects(self, argdict):
+    def changeprojects(self, argdict): # FIXME : obsoleted
         """changes project entries"""
         #Let's reset all "createmofiles" to 0, otherwise we can't disable one
         #since the key will never arrive
@@ -185,48 +281,13 @@ class POTree:
         """checks if this language exists"""
         return hasattr(self.languages, languagecode)
 
-    def getlanguageprefs(self, languagecode):
-        """returns the language object"""
-        return getattr(self.languages, languagecode)
-
-    def getlanguagename(self, languagecode):
-        """returns the language's full name"""
-        return getattr(self.getlanguageprefs(languagecode), "fullname", languagecode)
-
-    def setlanguagename(self, languagecode, languagename):
-        """stes the language's full name"""
-        setattr(self.getlanguageprefs(languagecode), "fullname", languagename)
-
-    def getlanguagespecialchars(self, languagecode):
-        """returns the language's special characters"""
-        return autoencode.autoencode(getattr(self.getlanguageprefs(languagecode), "specialchars", ""), "utf-8")
-
-    def setlanguagespecialchars(self, languagecode, languagespecialchars):
-        """sets the language's special characters"""
-        setattr(self.getlanguageprefs(languagecode), "specialchars", languagespecialchars)
-
-    def getlanguagenplurals(self, languagecode):
-        """returns the language's number of plural forms"""
-        return getattr(self.getlanguageprefs(languagecode), "nplurals", "")
-
-    def setlanguagenplurals(self, languagecode, languagenplurals):
-        """sets the language's number of plural forms"""
-        setattr(self.getlanguageprefs(languagecode), "nplurals", languagenplurals)
-
-    def getlanguagepluralequation(self, languagecode):
-        """returns the language's number of plural forms"""
-        return getattr(self.getlanguageprefs(languagecode), "pluralequation", "")
-
-    def setlanguagepluralequation(self, languagecode, languagepluralequation):
-        """sets the language's number of plural forms"""
-        setattr(self.getlanguageprefs(languagecode), "pluralequation", languagepluralequation)
-
-    def getlanguagecodes(self, projectcode=None):
+    def getlanguagecodes(self, projectcode=None): # FIXME : obsoleted, no need to get only codes
         """returns a list of valid languagecodes for a given project or all projects"""
         alllanguagecodes = [languagecode for languagecode, language in self.languages.iteritems()]
         if projectcode is None:
             languagecodes = alllanguagecodes
-        else:
+        else: # FIXME : does this need to be moved to hasproject/haslanguage
+            # project dir
             projectdir = os.path.join(self.podirectory, projectcode)
             if not os.path.exists(projectdir):
                 return []
@@ -250,25 +311,6 @@ class POTree:
         languagecodes.sort()
         return languagecodes
 
-    def getlanguages(self, projectcode=None, sortbyname=True):
-        """gets a list of (languagecode, languagename) tuples"""
-        languagecodes = self.getlanguagecodes(projectcode)
-        if sortbyname:
-            languages = [(self.getlanguagename(languagecode), languagecode) for languagecode in languagecodes]
-            languages.sort()
-            return [(languagecode, languagename) for languagename, languagecode in languages]
-        else:
-            return [(languagecode, self.getlanguagename(languagecode)) for languagecode in languagecodes]
-
-    def getprojectcodes(self, languagecode=None):
-        """returns a list of project codes that are valid for the given languagecode or all projects"""
-        projectcodes = [projectcode for projectcode, projectprefs in self.projects.iteritems()]
-        projectcodes.sort()
-        if languagecode is None:
-            return projectcodes
-        else:
-            return [projectcode for projectcode in projectcodes if self.hasproject(languagecode, projectcode)]
-
     def hasproject(self, languagecode, projectcode):
         """returns whether the project exists for the language"""
         if not hasattr(self.projects, projectcode):
@@ -278,7 +320,7 @@ class POTree:
         if not self.haslanguage(languagecode):
             return False
         try:
-            self.getpodir(languagecode, projectcode)
+            self.getpodir(languagecode, projectcode) # FIXME : is this still ok?
             return True
         except IndexError:
             return False
@@ -321,60 +363,6 @@ class POTree:
         if self.hasproject(languagecode, projectcode):
             raise ValueError("projects.TranslationProject for project %s, language %s already exists" % (projectcode, languagecode))
         self.projectcache[languagecode, projectcode] = projects.TranslationProject(languagecode, projectcode, self, create=True)
-
-    def getprojectname(self, projectcode):
-        """returns the full name of the project"""
-        projectprefs = getattr(self.projects, projectcode)
-        return getattr(projectprefs, "fullname", projectcode)
-
-    def setprojectname(self, projectcode, projectname):
-        """returns the full name of the project"""
-        projectprefs = getattr(self.projects, projectcode)
-        setattr(projectprefs, "fullname", projectname)
-
-    def getprojectdescription(self, projectcode):
-        """returns the project description"""
-        projectprefs = getattr(self.projects, projectcode)
-        return getattr(projectprefs, "description", projectcode)
-
-    def setprojectdescription(self, projectcode, projectdescription):
-        """returns the project description"""
-        projectprefs = getattr(self.projects, projectcode)
-        setattr(projectprefs, "description", projectdescription)
-
-    def getprojectlocalfiletype(self, projectcode):
-        """returns the project allowed file type. We assume it is .po if nothing
-        else is specified."""
-        projectprefs = getattr(self.projects, projectcode)
-        type = getattr(projectprefs, "localfiletype", "po")
-        if not type:
-            type = "po"
-        return type
-
-    def setprojectlocalfiletype(self, projectcode, projectfiletype):
-        """sets the allowed file type for the project"""
-        projectprefs = getattr(self.projects, projectcode)
-        setattr(projectprefs, "localfiletype", projectfiletype)
-
-    def getprojectcheckerstyle(self, projectcode):
-        """returns the project checker style"""
-        projectprefs = getattr(self.projects, projectcode)
-        return getattr(projectprefs, "checkerstyle", projectcode)
-
-    def setprojectcheckerstyle(self, projectcode, projectcheckerstyle):
-        """sets the project checker style"""
-        projectprefs = getattr(self.projects, projectcode)
-        setattr(projectprefs, "checkerstyle", projectcheckerstyle)
-
-    def getprojectcreatemofiles(self, projectcode):
-        """returns whether the project builds MO files"""
-        projectprefs = getattr(self.projects, projectcode)
-        return getattr(projectprefs, "createmofiles", False)
-
-    def setprojectcreatemofiles(self, projectcode, projectcreatemofiles):
-        """sets whether the project builds MO files"""
-        projectprefs = getattr(self.projects, projectcode)
-        setattr(projectprefs, "createmofiles", projectcreatemofiles)
 
     def hasgnufiles(self, podir, languagecode=None, depth=0, maxdepth=3, poext="po"):
         """returns whether this directory contains gnu-style PO filenames for the given language"""

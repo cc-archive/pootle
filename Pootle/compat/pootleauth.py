@@ -6,8 +6,7 @@ import md5
 import os
 from django.conf import settings
 from jToolkit import prefs
-from Pootle.conf import instance, users
-from Pootle.storage_client import ProjectWrapper, LanguageWrapper, get_project_objects, get_language_objects
+from Pootle.conf import instance, users, potree
 
 
 class UsersNotInitialized(Exception): pass
@@ -106,7 +105,7 @@ class UserWrapper(object):
     def project_list(self):
         for p in getattr(self._user, 'projects', '').split(','):
             if p.strip():
-                yield ProjectWrapper(p)
+                yield potree().get_project(p)
 
     def is_language_member(self, language):
         return language in [i.strip() for i in getattr(self._user, 'projects', '').split(',')]
@@ -114,7 +113,7 @@ class UserWrapper(object):
     def language_list(self):
         for p in getattr(self._user, 'languages', '').split(','):
             if p.strip():
-                yield LanguageWrapper(p)
+                yield potree().get_language(p)
 
 class PootleAuth:
     "Authenticate against Pootle's users.prefs file"
