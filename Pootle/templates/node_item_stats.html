@@ -1,6 +1,6 @@
     <td class="stats-name">
       <img src="/static/images/{{ item.icon }}.png" class="icon" alt="" dir="{{ uidir }}" lang="{{ uilanguage }}" />
-      <a href="{{ item.href }}" lang="en" dir="ltr">{{ item.title }}</a>
+      <a href="{{ item.code }}" lang="en" dir="ltr">{{ item.name }}</a>
     </td>
 {% if item.data %}
       <td class="stats">{{ item.data.translatedwords }}</td><td class="stats">{{ item.data.translatedpercentage }}%</td>

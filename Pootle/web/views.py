@@ -18,7 +18,7 @@ from django.utils.translation import gettext_lazy as _
 from django.utils.translation import ngettext
 import random
 
-from Pootle.storage_client import getprojects, getlanguageselector, getquicklinks, getlanguages, getlanguageinfo, getprojects_languageindex, getstats
+from Pootle.storage_client import getlanguageselector, getlanguageinfo
 
 from Pootle import __version__ as pootleversion
 from translate import __version__ as toolkitversion
@@ -185,28 +185,25 @@ def home(req):
 home = login_required(home)
 
 def projectlanguageindex(req, project):
-    languages = getlanguages(project)
+    languages = list(potree().get_language_list(project))
     context = {
-        'projectcode': project,
-        'projectname': potree().getprojectname(project),
+        'project': potree().get_project(project),
         'stats': ngettext(  "%(count)d language, average %(average)d%% translated", # FIXME
                             "%(count)d languages, average %(average)d%% translated", 
                             len(languages)) % { 
                                 'count': len(languages),
                                 'average': 0 #getpagestats(), }, 
                                 },
-        'projectdescription': potree().getprojectdescription(project),
         'languages': languages,
         }
     return render_to_response("project.html", RequestContext(req, context))
 
 def languageindex(req, language):
     context = {
-        "languagecode": language,
-        "languagename": potree().getlanguagename(language),
+        "language": potree().get_language(language),
         "languagestats": '',
         "languageinfo": getlanguageinfo(language),
-        "projects": getprojects_languageindex(language),
+        "projects": potree().get_project_list(language),
         }
     return render_to_response("language.html", RequestContext(req, context))
     

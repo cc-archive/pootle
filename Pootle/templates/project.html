@@ -10,9 +10,9 @@
 
 {% block content %}
     <div class="navbar">
-      <img src="/static/images/folder.png" class="icon" alt="" dir="$uidir" lang="$uilanguage" />
+      <img src="/static/images/folder.png" class="icon" alt="" dir="{{ uidir }}" lang="{{ uilanguage }}" />
 
-      <h3 class="title">[ <a href="/projects/{{ projectcode }}/">{{ projectname }}</a> ]</h3>
+      <h3 class="title">[ <a href="/projects/{{ project.code }}/">{{ project.name }}</a> ]</h3>
 {% if user.is_superuser %}
       <div class="item-description">
         <a href="admin.html">{% trans "Admin" %}</a>
@@ -25,7 +25,7 @@
     </div>
 
     <div class="intro">
-      {{ projectdescription }}
+      {{ project.description }}
     </div>
 
       <table class="sortable stats" id="stats" cellpadding="5" cellspacing="0" width="100%">
@@ -44,7 +44,7 @@
       </thead>
       <tbody class="stats">
 {% for item in languages %}
-          <tr  class="item item-{{ item.parity }}">
+          <tr  class="item item-{% cycle even,odd %}">
             {% itemnode stats %}
           </tr>
 {% endfor %}

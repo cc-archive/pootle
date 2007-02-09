@@ -42,6 +42,8 @@ class Language(object):
         >>> L.name
         'English'
     """
+    icon = 'language'
+    data = False # see templates/node_item_stats.html for more
     mapping = {
         'name':'fullname', 
         'specialchars': 'specialchars',
@@ -70,6 +72,9 @@ class Language(object):
             raise KeyError("Language object %s does not have %s attribute." % (self,key))
 
 class Project(object):
+    icon = 'folder'
+    data = False # see templates/node_item_stats.html for structure
+    stats = False # see templates/project.html for more
     mapping = { 
         'name':'fullname', 
         'description': 'description',
@@ -128,7 +133,7 @@ class POTree:
 
     def get_language_list(self, project_code=None):
         if project_code:
-            for lang in [ code for code, name in self.languages.iteritems() if self.haslanguage(project_code, code)]:
+            for lang in [ code for code, name in self.languages.iteritems() if self.haslanguage(code)]:
                 yield self.get_language(lang)
         else:
             for lang, name in self.languages.iteritems():
