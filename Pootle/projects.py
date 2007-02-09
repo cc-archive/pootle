@@ -35,6 +35,7 @@ from translate.search import match
 from Pootle import statistics
 from Pootle import pootlefile
 from Pootle import versioncontrol
+from Pootle.conf import potree
 from jToolkit import timecache
 from jToolkit import prefs
 import time
@@ -86,26 +87,20 @@ class potimecache(timecache.timecache):
 class TranslationProject(object):
   """Manages iterating through the translations in a particular project"""
   fileext = "po"
-  def __init__(self, languagecode, projectcode, potree, create=False):
-    self.languagecode = languagecode
-    self.projectcode = projectcode
-    self.potree = potree
-    self.languagename = self.potree.getlanguagename(self.languagecode)
-    self.projectname = self.potree.getprojectname(self.projectcode)
-    self.projectdescription = self.potree.getprojectdescription(self.projectcode)
-    self.pofiles = potimecache(15*60, self)
-    self.projectcheckerstyle = self.potree.getprojectcheckerstyle(self.projectcode)
+  def __init__(self, language, project, create=False):
+    self.language = language
+    self.project = project
+    self.pofiles = potimecache(15*60, self) 
     checkerclasses = [checks.projectcheckers.get(self.projectcheckerstyle, checks.StandardChecker), pofilter.StandardPOChecker]
     self.checker = pofilter.POTeeChecker(checkerclasses=checkerclasses, errorhandler=self.filtererrorhandler)
-    self.fileext = self.potree.getprojectlocalfiletype(self.projectcode)
     self.quickstats = {}
     # terminology matcher
     self.termmatcher = None
     self.termmatchermtime = None
     if create:
       self.converttemplates(InternalAdminSession())
-    self.podir = potree.getpodir(languagecode, projectcode)
-    if self.potree.hasgnufiles(self.podir, self.languagecode) == "gnu":
+    self.podir = potree().getpodir(languagecode, projectcode)
+    if potree().hasgnufiles(self.podir, self.languagecode) == "gnu": # will be obsoleted
       self.filestyle = "gnu"
     else:
       self.filestyle = "std"
@@ -116,7 +111,7 @@ class TranslationProject(object):
 
   def readprefs(self):
     """reads the project preferences"""
-    self.prefs = prefs.PrefsParser()
+    self.prefs = prefs.PrefsParser() # FIXME is PrefsParser a bit too heavy for every project?
     self.prefsfile = os.path.join(self.podir, "pootle-%s-%s.prefs" % (self.projectcode, self.languagecode))
     if not os.path.exists(self.prefsfile):
       prefsfile = open(self.prefsfile, "w")
@@ -128,7 +123,7 @@ class TranslationProject(object):
     """saves the project preferences"""
     self.prefs.savefile()
 
-  def getrightnames(self, session):
+  def getrightnames(self, session): # FIXME gettext
     """gets the available rights and their localized names"""
     localize = session.localize
     # l10n: Verb
@@ -146,7 +141,7 @@ class TranslationProject(object):
             ("commit", localize("Commit")),
            ]
 
-  def getrights(self, session=None, username=None, usedefaults=True):
+  def getrights(self, session=None, username=None, usedefaults=True): # FIXME move to UserWrapper
     """gets the rights for the given user (name or session, or not-logged-in if username is None)
     if usedefaults is False then None will be returned if no rights are defined (useful for editing rights)"""
     # internal admin sessions have all rights
@@ -171,7 +166,7 @@ class TranslationProject(object):
           if self.languagecode == "en":
             rights = "view, archive, pocompile"
           else:
-            rights = self.potree.getdefaultrights()
+            rights = potree().getdefaultrights()
         else:
           rights = getattr(rightstree, "default", None)
       else:
@@ -182,7 +177,7 @@ class TranslationProject(object):
         rights.append("admin")
     return rights
 
-  def getuserswithinterest(self, session):
+  def getuserswithinterest(self, session): # FIXME Returns prefs instead of userwrapper
     """returns all the users who registered for this language and project"""
 
     def usableuser(user, userprefs):
@@ -451,7 +446,7 @@ class TranslationProject(object):
 
   def scanpofiles(self):
     """sets the list of pofilenames by scanning the project directory"""
-    self.pofilenames = self.potree.getpofiles(self.languagecode, self.projectcode, poext=self.fileext)
+    self.pofilenames = potree().getpofiles(self.languagecode, self.projectcode, poext=self.fileext)
     for pofilename in self.pofilenames:
       if not pofilename in self.pofiles:
         self.pofiles[pofilename] = pootlefile.pootlefile(self, pofilename)
@@ -467,7 +462,7 @@ class TranslationProject(object):
     if os.path.basename(localfilename) != localfilename or localfilename.startswith("."):
       raise ValueError("invalid/insecure file name: %s" % localfilename)
     if self.filestyle == "gnu":
-      if not self.potree.languagematch(self.languagecode, localfilename[:-len("."+self.fileext)]):
+      if not potree().languagematch(self.languagecode, localfilename[:-len("."+self.fileext)]):
         raise ValueError("invalid GNU-style file name %s: must match '%s.%s' or '%s[_-][A-Z]{2,3}.%s'" % (localfilename, self.fileext, self.languagecode, self.languagecode, self.fileext))
     dircheck = self.podir
     for part in dirname.split(os.sep):
@@ -596,7 +591,7 @@ class TranslationProject(object):
 
   def converttemplates(self, session):
     """creates PO files from the templates"""
-    projectdir = os.path.join(self.potree.podirectory, self.projectcode)
+    projectdir = os.path.join(potree().podirectory, self.projectcode)
     if not os.path.exists(projectdir):
       os.mkdir(projectdir)
     templatesdir = os.path.join(projectdir, "templates")
@@ -604,11 +599,11 @@ class TranslationProject(object):
       templatesdir = os.path.join(projectdir, "pot")
       if not os.path.exists(templatesdir):
         templatesdir = projectdir
-    if self.potree.isgnustyle(self.projectcode):
+    if potree().isgnustyle(self.projectcode):
       self.filestyle = "gnu"
     else:
       self.filestyle = "std"
-    templates = self.potree.gettemplates(self.projectcode)
+    templates = potree().gettemplates(self.projectcode)
     if self.filestyle == "gnu":
       self.podir = projectdir
       if not templates:
@@ -691,7 +686,7 @@ class TranslationProject(object):
   def ootemplate(self):
     """Tests whether this project has an OpenOffice.org template SDF file in
     the templates directory."""
-    projectdir = os.path.join(self.potree.podirectory, self.projectcode)
+    projectdir = os.path.join(potree().podirectory, self.projectcode)
     templatefilename = os.path.join(projectdir, "templates", "en-US.sdf")
     if os.path.exists(templatefilename):
       return templatefilename
@@ -705,7 +700,7 @@ class TranslationProject(object):
     if templateoo is None:
       return
     outputoo = os.path.join(self.podir, self.languagecode + ".sdf")
-    inputdir = os.path.join(self.potree.podirectory, self.projectcode, self.languagecode)
+    inputdir = os.path.join(potree().podirectory, self.projectcode, self.languagecode)
     po2oo.main(["-i%s"%inputdir, "-t%s"%templateoo, "-o%s"%outputoo, "-l%s"%self.languagecode, "--progress=none"])
     return file(os.path.join(self.podir, self.languagecode + ".sdf"), "r").read()
 
@@ -1226,8 +1221,8 @@ class TranslationProject(object):
           self.termmatcher = match.terminologymatcher(self.pofiles.values())
         else:
           self.termmatcher = match.terminologymatcher(termbase)
-    elif not self.isterminologyproject() and self.potree.hasproject(self.languagecode, "terminology"):
-      termproject = self.potree.getproject(self.languagecode, "terminology")
+    elif not self.isterminologyproject() and potree().hasproject(self.languagecode, "terminology"):
+      termproject = potree().getproject(self.languagecode, "terminology")
       self.termmatcher = termproject.gettermmatcher()
       self.termmatchermtime = termproject.termmatchermtime
     else:
@@ -1356,9 +1351,9 @@ class TranslationProject(object):
     else:
       return unicode(plural)
 
-  def hascreatemofiles(self, projectcode):
+  def hascreatemofiles(self, projectcode): # FIXME obsolete
     """returns whether the project has createmofile set"""
-    return self.potree.getprojectcreatemofiles(projectcode) == 1
+    return potree().getprojectcreatemofiles(projectcode) == 1
 
 class DummyProject(TranslationProject):
   """a project that is just being used for handling pootlefiles"""

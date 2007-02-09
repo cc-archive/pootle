@@ -14,8 +14,6 @@ from Pootle.compat import pootleauth
 from Pootle import indexpage, adminpages, users, translatepage
 from Pootle.conf import instance, potree
 from Pootle.conf import users as pootleusers
-from Pootle import storage_client
-from Pootle.storage_client import generaterobotsfile, get_language_objects, get_project_objects
 from django.utils.translation import gettext_lazy as _
 from django.utils.translation import ngettext
 import random
@@ -125,7 +123,13 @@ def pootlesession(req):
     def getlanguages():
         return []
     session.getlanguages = getlanguages
-    
+    from Pootle.conf import users as old_users
+    class LoginChecker:
+        def _get_users(self):
+            return old_users()
+        users = property(_get_users)
+
+    session.loginchecker = LoginChecker()
     session.language = 'sl'
     return session
 
@@ -154,21 +158,21 @@ def index(req, what=None):
             next_page = req.GET.get('next_page','/')
             from django.contrib.auth import logout as djangologout
             djangologout(req)
-            req.session.isopen = False
+            req.session.isopen = False # FIXME: will be obsoleted
             return HttpResponseRedirect(next_page)
 
     if what == 'languages':
         context = {
-            'languages': [{"code": code, "name": name } for code, name in potree().getlanguages()],
+            'languages': potree().get_language_list(),
             }
     elif what == 'projects':
         context = {
-            'projects': getprojects(),
+            'projects': potree().get_project_list(),
             }
     else:
         context = {
-            'languages': [{"code": code, "name": name } for code, name in potree().getlanguages()],
-            'projects': getprojects(),
+            'languages': potree().get_language_list(),
+            'projects': potree().get_project_list(),
             }
     return render_to_response("index.html", RequestContext(req, context))
     
@@ -185,7 +189,7 @@ def projectlanguageindex(req, project):
     context = {
         'projectcode': project,
         'projectname': potree().getprojectname(project),
-        'stats': ngettext(  "%(count)d language, average %(average)d%% translated", 
+        'stats': ngettext(  "%(count)d language, average %(average)d%% translated", # FIXME
                             "%(count)d languages, average %(average)d%% translated", 
                             len(languages)) % { 
                                 'count': len(languages),
@@ -371,13 +375,13 @@ def adminusers(req):
 def adminlanguages(req):
     if req.POST and req.user.is_superuser():
         pass
-    context = { 'languages': get_language_objects() }
+    context = { 'languages': potree().get_language_list() }
     return render_to_response("adminlanguages.html", RequestContext(req, context))
 
 def adminprojects(req):
     if req.POST and req.user.is_superuser():
         pass
-    context = { 'projects' : get_project_objects() }
+    context = { 'projects' : potree().get_project_list() }
     return render_to_response("adminprojects.html", RequestContext(req, context))
 
 def admin_projectedit(req, project):
@@ -393,15 +397,17 @@ def admin_projectedit(req, project):
         errors = {}
         new_data = manipulator.old_data(project)
     form = forms.FormWrapper(manipulator, new_data, errors)
-    context = { 'project' : storage_client.ProjectWrapper(project),
+    context = { 'project' : potree().get_project(project),
                 'form': form,
                 'errors': errors,}
     return render_to_response("admin_projectedit.html", RequestContext(req, context))
 
-def admintranslationproject(req):
+def admintranslationproject(req, language, project):
     if req.POST and req.user.is_superuser():
         pass
-    return render_to_pootleresponse(adminpages.TranslationProjectAdminPage(potree(), project, pootlesession(req), argdict))
+    argdict = {}
+    project_obj = potree().getproject(language, project)
+    return render_to_pootleresponse(adminpages.TranslationProjectAdminPage(potree(), project_obj, pootlesession(req), argdict))
 
 # translatepage.py
 

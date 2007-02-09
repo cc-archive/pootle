@@ -350,7 +350,7 @@ class POTree:
             if languagecode == "templates":
                 self.projectcache[languagecode, projectcode] = projects.TemplatesProject(projectcode, self)
             else:
-                self.projectcache[languagecode, projectcode] = projects.TranslationProject(languagecode, projectcode, self)
+                self.projectcache[languagecode, projectcode] = projects.TranslationProject(Language(languagecode), Project(projectcode))
         return self.projectcache[languagecode, projectcode]
 
     def isgnustyle(self, projectcode):
@@ -362,7 +362,7 @@ class POTree:
         """creates a new TranslationProject"""
         if self.hasproject(languagecode, projectcode):
             raise ValueError("projects.TranslationProject for project %s, language %s already exists" % (projectcode, languagecode))
-        self.projectcache[languagecode, projectcode] = projects.TranslationProject(languagecode, projectcode, self, create=True)
+        self.projectcache[languagecode, projectcode] = projects.TranslationProject(Language(languagecode), Project(projectcode), create=True)
 
     def hasgnufiles(self, podir, languagecode=None, depth=0, maxdepth=3, poext="po"):
         """returns whether this directory contains gnu-style PO filenames for the given language"""
