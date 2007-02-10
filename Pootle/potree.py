@@ -43,6 +43,7 @@ class Language(object):
         'English'
     """
     icon = 'language'
+    stats = False 
     data = False # see templates/node_item_stats.html for more
     mapping = {
         'name':'fullname', 
@@ -355,7 +356,7 @@ class POTree:
             if languagecode == "templates":
                 self.projectcache[languagecode, projectcode] = projects.TemplatesProject(projectcode, self)
             else:
-                self.projectcache[languagecode, projectcode] = projects.TranslationProject(Language(languagecode), Project(projectcode))
+                self.projectcache[languagecode, projectcode] = projects.TranslationProject(self.get_language(languagecode), self.get_project(projectcode))
         return self.projectcache[languagecode, projectcode]
 
     def isgnustyle(self, projectcode):
@@ -426,7 +427,7 @@ class POTree:
                     return projectcode, languagecode
         return None, None
 
-    def getpodir(self, languagecode, projectcode):
+    def getpodir(self, languagecode, projectcode): # FIXME differentiates gnu/std
         """returns the base directory containing po files for the project"""
         projectdir = os.path.join(self.podirectory, projectcode)
         if not os.path.exists(projectdir):

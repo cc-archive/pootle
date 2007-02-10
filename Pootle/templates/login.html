@@ -26,7 +26,7 @@
 
             <td colspan="1" rowspan="1">
               <select name="language">
-                {% for l in languages %}<option {% if l.selected %}selected="true" {% endif %}value="{{ l.code }}">{{ l.name }}</option>{% endfor %}
+                {% for l in languages %}<option {% if lang.selected %}selected="true" {% endif %}value="{{ l.code }}">{{ l.name }}</option>{% endfor %}
               </select>
             </td>
           </tr>

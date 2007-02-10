@@ -24,7 +24,6 @@ from jToolkit.web import server
 from jToolkit import mailer
 from jToolkit import prefs
 from Pootle import pagelayout
-from Pootle.storage_client import getlanguageselector as new_getlanguageselector
 from Pootle.storage_client import getlanguageoptions as new_getlanguageoptions
 from Pootle.storage_client import getprojectoptions as new_getprojectoptions
 from Pootle.storage_client import getotheroptions as new_getotheroptions

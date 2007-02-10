@@ -23,14 +23,14 @@ from Pootle import pagelayout
 from Pootle import projects
 from Pootle import pootlefile
 from Pootle import versioncontrol
-from Pootle.storage_client import getprojects as new_getprojects
-from Pootle.storage_client import getprojectnames as new_getprojectnames
-from Pootle.storage_client import getquicklinks as new_getquicklinks
-from Pootle.storage_client import getlanguageinfo as new_getlanguageinfo
-from Pootle.storage_client import getprojects_languageindex as new_getprojects_languageindex
-from Pootle.storage_client import getprojectitem as new_getprojectitem
-from Pootle.storage_client import getlanguages as new_getlanguages
-from Pootle.storage_client import getlanguageitem as new_getlanguageitem
+#from Pootle.storage_client import getprojects as new_getprojects
+#from Pootle.storage_client import getprojectnames as new_getprojectnames
+#from Pootle.storage_client import getquicklinks as new_getquicklinks
+#from Pootle.storage_client import getlanguageinfo as new_getlanguageinfo
+#from Pootle.storage_client import getprojects_languageindex as new_getprojects_languageindex
+#from Pootle.storage_client import getprojectitem as new_getprojectitem
+#from Pootle.storage_client import getlanguages as new_getlanguages
+#from Pootle.storage_client import getlanguageitem as new_getlanguageitem
 # Versioning information
 from Pootle import __version__ as pootleversion
 from translate import __version__ as toolkitversion
@@ -288,12 +288,12 @@ class ProjectIndex(pagelayout.PootleNavPage):
       childitems = self.getchilditems(dirfilter)
     instancetitle = getattr(session.instance, "title", session.localize("Pootle Demo"))
     # l10n: The first parameter is the name of the installation (like "Pootle")
-    pagetitle = self.localize("%s: Project %s, Language %s", instancetitle, self.project.projectname, self.project.languagename)
+    pagetitle = self.localize("%s: Project %s, Language %s", instancetitle, self.project.project.name, self.project.language.name)
     templatename = "fileindex"
     sessionvars = {"status": session.status, "isopen": session.isopen, "issiteadmin": session.issiteadmin()}
     templatevars = {"pagetitle": pagetitle,
-        "project": {"code": self.project.projectcode, "name": self.project.projectname},
-        "language": {"code": self.project.languagecode, "name": self.project.languagename},
+        "project": {"code": self.project.project.code, "name": self.project.project.name},
+        "language": {"code": self.project.language.code, "name": self.project.language.name},
         # optional sections, will appear if these values are replaced
         "assign": None, "goals": None, "upload": None,
         "search": {"title": self.localize("Search")}, "message": message,
@@ -670,7 +670,7 @@ class ProjectIndex(pagelayout.PootleNavPage):
       csvlink = {"href": csvname, "text": self.localize('CSV file')}
       actionlinks.append(csvlink)
     if "mo" in linksrequired:
-      if self.project.hascreatemofiles(self.project.projectcode) and "pocompile" in self.rights:
+      if self.project.hascreatemofiles(self.project.project.code) and "pocompile" in self.rights:
         moname = basename.replace(".po", ".mo")
         molink = {"href": moname, "text": self.localize('MO file')}
         actionlinks.append(molink)
@@ -827,7 +827,7 @@ class ProjectIndex(pagelayout.PootleNavPage):
         currentfolder = "/".join(filepath.split("/")[:-1])
       else:
         currentfolder = filepath
-      archivename = "%s-%s" % (self.project.projectcode, self.project.languagecode)
+      archivename = "%s-%s" % (self.project.project.code, self.project.language.code)
       if currentfolder:
         archivename += "-%s" % currentfolder.replace("/", "-")
       if goal:

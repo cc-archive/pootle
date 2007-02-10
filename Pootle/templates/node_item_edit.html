@@ -1,0 +1,18 @@
+    <div id="item" class="contentsitem">
+    <img src="{{ baseurl }}static/images/{{ item.icon }}.png" class="icon" alt="" dir="{{ uidir }}" lang="{{ uilanguage }}" />
+    <h3 id="itemtitle" class="title"><a href="{{ item.href }}">{{ item.title }}</a></h3>
+{% if item.actions %}
+    <div id="actionlinks" class="item-description">
+{% for link in item.actions.basic %}
+        <a href="{{ link.href }}" title="{{ link.title }}">{{ link.text }}</a>
+        ${link.sep}
+{% endfor %}
+{% for link in item.actions.extended %}
+        <a href="{{ link.href }}" title="{{ link.title }}">{{ link.text }}</a>
+        ${link.sep}
+{% endfor %}
+{% endif %}
+</div>
+
+
+

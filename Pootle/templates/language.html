@@ -9,16 +9,17 @@
 {% block content %}
     <div class="navbar">
       <img src="/static/images/language.png" class="icon" alt="" dir="{{ uidir }}" lang="{{ uilanguage }}" />
-      <h3 class="title">[ <a href="/{{ languagecode }}/">{{ languagename }}</a> ]</h3>
+      <h3 class="title">[ <a href="/{{ languagecode }}/">{{ language.name }}</a> ]</h3>
       <div class="item-statistics">
-        {{ languagestats }}
+        {{ language.stats }} FIXME
       </div>
     </div>
 
     <div class="intro">
-{% for i in languageinfo %}
-      <b>{{ i.title }}</b>: {{ i.value }}<br/>
-{% endfor %}
+      <b>{% trans "Language Code" %}</b>: {{ language.code }}<br />
+      <b>{% trans "Language Name" %}</b>: {{ language.name }}<br />
+      <b>{% trans "Number of Plurals" %}</b>: {{ language.nplurals }}<br />
+      <b>{% trans "Plural Equation" %}</b>: {{ language.plural_equation }}
     </div>
 
       <table class="sortable stats" id="stats" cellpadding="5" cellspacing="0" width="100%">

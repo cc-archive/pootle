@@ -160,11 +160,11 @@ class PootleNavPage(PootlePage):
     if project:
       if isinstance(project, tuple):
         projectcode, projectname = project
-        links["project"] = {"href": "/projects/%s/%s" % (projectcode, paramstring), "text": projectname}
+        links["project"] = {"href": "/projects/%s/%s" % (projectcode, paramstring), "text": project.name}
       else:
-        links["language"] = {"href": rootlink + "../index.html", "text": project.languagename}
+        links["language"] = {"href": rootlink + "../index.html", "text": project.language.name}
         # don't getbrowseurl on the project link, so sticky options won't apply here
-        links["project"] = {"href": (rootlink or "index.html") + paramstring, "text": project.projectname}
+        links["project"] = {"href": (rootlink or "index.html") + paramstring, "text": project.project.name}
         if session:
           if "admin" in project.getrights(session) or session.issiteadmin():
             links["admin"] = {"href": rootlink + "admin.html", "text": self.localize("Admin")}

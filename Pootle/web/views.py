@@ -18,8 +18,6 @@ from django.utils.translation import gettext_lazy as _
 from django.utils.translation import ngettext
 import random
 
-from Pootle.storage_client import getlanguageselector, getlanguageinfo
-
 from Pootle import __version__ as pootleversion
 from translate import __version__ as toolkitversion
 
@@ -201,18 +199,20 @@ def projectlanguageindex(req, project):
 def languageindex(req, language):
     context = {
         "language": potree().get_language(language),
-        "languagestats": '',
-        "languageinfo": getlanguageinfo(language),
         "projects": potree().get_project_list(language),
         }
     return render_to_response("language.html", RequestContext(req, context))
     
 def projectindex(req, language, project):
-    # important, handles 4 urls
-    argdict = {}
-
     proj = potree().getproject(language, project)
-    return render_to_pootleresponse(indexpage.ProjectIndex(proj, pootlesession(req), argdict, dirfilter=None))
+    print proj.browsefiles(dirfilter=None, depth=0)
+
+    context = {
+        'project': potree().get_project(project),
+        'lang': potree().get_language(language),
+        'items': [1,2,3]
+       }
+    return render_to_response("fileindex.html", RequestContext(req, context))
 
 def options(req):
     manipulator = pootleforms.UserProfileManipulator(req.user)
@@ -258,7 +258,7 @@ def login(req):
         
         form = forms.FormWrapper(manipulator, new_data, errors)
         context = { 
-            'languages': getlanguageselector(potree().getlanguages(), pootlesession(req)), # FIXME
+            'languages': potree().get_language_list(), # FIXME validation
             'form': form,
             }
         return render_to_response("login.html", RequestContext(req, context))
