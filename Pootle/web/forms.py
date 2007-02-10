@@ -82,7 +82,7 @@ class UserProfileManipulator(forms.Manipulator):
     def __init__(self, user):
         self.user = user
         project_choices = [(p.code, p.name) for p in potree().get_project_list()]
-        language_choices = [(p.code, p.name) for p in potree().get_language_list()]
+        language_choices = [(p.code, p.name.encode("utf-8")) for p in potree().get_language_list()]
         self.fields = (
             forms.TextField(field_name="name", length=40),
             forms.TextField(field_name="email", length=40, validator_list=[isValidEmail]),
