@@ -24,6 +24,7 @@
 from Pootle import projects
 from Pootle import pootlefile
 from Pootle import pagelayout
+from Pootle.path import path
 from translate.misc import autoencode
 import os
 import sre
@@ -111,6 +112,20 @@ class Project(object):
         else:
             raise KeyError("Project %s does not have %s attribute." % (self,key))
 
+class FSObject(path):
+    icon = 'folder'
+    href = 'FIXME'
+    title = 'FIXME'
+
+    def __repr__(self):
+        return "<PootleFS object: %s>" % path.__repr__(self)
+
+    def _get_stats(self):
+        return {}
+    stats = property(_get_stats)
+
+
+
 class POTree:
     """Manages the tree of projects and languages"""
     def __init__(self, instance):
@@ -119,7 +134,7 @@ class POTree:
             setattr(self.languages, "templates.fullname", "Templates")
             self.saveprefs()
         self.projects = instance.projects
-        self.podirectory = instance.podirectory
+        self.podirectory = path(instance.podirectory)
         self.instance = instance
         self.projectcache = {}
 
@@ -429,12 +444,12 @@ class POTree:
 
     def getpodir(self, languagecode, projectcode): # FIXME differentiates gnu/std
         """returns the base directory containing po files for the project"""
-        projectdir = os.path.join(self.podirectory, projectcode)
-        if not os.path.exists(projectdir):
+        projectdir = self.podirectory / projectcode
+        if not projectdir.exists():
             raise IndexError("directory not found for project %s" % (projectcode))
-        languagedir = os.path.join(projectdir, languagecode)
-        if not os.path.exists(languagedir):
-            languagedirs = [languagedir for languagedir in os.listdir(projectdir) if self.languagematch(languagecode, languagedir)]
+        languagedir = projectdir / languagecode
+        if not languagedir.exists():
+            languagedirs = [languagedir for languagedir in projectdir.listdir() if self.languagematch(languagecode, languagedir)]
             if not languagedirs:
                 # if no matching directories can be found, check if it is a GNU-style project
                 if self.hasgnufiles(projectdir, languagecode) == "gnu":
@@ -443,8 +458,8 @@ class POTree:
             # TODO: handle multiple regions
             if len(languagedirs) > 1:
                 raise IndexError("multiple regions defined for language %s, project %s" % (languagecode, projectcode))
-            languagedir = os.path.join(projectdir, languagedirs[0])
-        return languagedir
+            languagedir = projectdir / languagedirs[0]
+        return FSObject(languagedir)
 
     def languagematch(self, languagecode, otherlanguagecode):
         """matches a languagecode to another, ignoring regions in the second"""

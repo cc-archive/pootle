@@ -48,14 +48,6 @@ from jToolkit.data import indexer
 class RightsError(ValueError):
     pass
 
-class FSObject(object):
-    def __init__(self, path):
-        self.path = path
-
-    def __repr__(self):
-        return "<Pootle FS object: %s>" % self.path
-
-
 class InternalAdminSession:
     """A fake session used for doing internal admin jobs"""
     def __init__(self):
@@ -114,6 +106,8 @@ class TranslationProject(object):
         else:
             self.filestyle = "std"
         self._prefs = None
+        self._quickstats = {}
+        
         self.scanpofiles()
         self.readquickstats()
         self.initindex()
@@ -717,35 +711,8 @@ class TranslationProject(object):
 
     def browsefiles(self, dirfilter=None, depth=None, maxdepth=None, includedirs=False, includefiles=True):
         """gets a list of pofilenames, optionally filtering with the parent directory"""
-        if dirfilter is None:
-            pofilenames = self.pofilenames
-        else:
-            if not dirfilter.endswith(os.path.sep) and not dirfilter.endswith(os.extsep + self.fileext):
-                dirfilter += os.path.sep
-            pofilenames = [pofilename for pofilename in self.pofilenames if pofilename.startswith(dirfilter)]
-        if includedirs:
-            podirs = {}
-            for pofilename in pofilenames:
-                dirname = os.path.dirname(pofilename)
-                if not dirname:
-                    continue
-                podirs[dirname] = True
-                while dirname:
-                    dirname = os.path.dirname(dirname)
-                    if dirname:
-                        podirs[dirname] = True
-            podirs = podirs.keys()
-        else:
-            podirs = []
-        if not includefiles:
-            pofilenames = []
-        if maxdepth is not None:
-            pofilenames = [pofilename for pofilename in pofilenames if pofilename.count(os.path.sep) <= maxdepth]
-            podirs = [podir for podir in podirs if podir.count(os.path.sep) <= maxdepth]
-        if depth is not None:
-            pofilenames = [pofilename for pofilename in pofilenames if pofilename.count(os.path.sep) == depth]
-            podirs = [podir for podir in podirs if podir.count(os.path.sep) == depth]
-        return pofilenames + podirs
+        print 'Warning, using browsefiles'
+        return self.podir.listdir('*.po')
 
     def iterpofilenames(self, lastpofilename=None, includelast=False):
         """iterates through the pofilenames starting after the given pofilename"""
@@ -987,32 +954,32 @@ class TranslationProject(object):
 
     def savequickstats(self):
         """saves the quickstats"""
-        self.quickstatsfilename = os.path.join(self.podir, "pootle-%s-%s.stats" % (self.project.code, self.language.code))
-        quickstatsfile = open(self.quickstatsfilename, "w")
+        qstatsfilename = self.podir / "pootle-%s-%s.stats" % (self.project.code, self.language.code)
+        qstatsfile = open(qstatsfilename, "w")
         sortedquickstats = self.quickstats.items()
         sortedquickstats.sort()
         for pofilename, (translatedwords, translated, fuzzywords, fuzzy, totalwords, total) in sortedquickstats:
-            quickstatsfile.write("%s, %d, %d, %d, %d, %d, %d\n" % \
+            qstatsfile.write("%s, %d, %d, %d, %d, %d, %d\n" % \
                     (pofilename, translatedwords, translated, fuzzywords, fuzzy, totalwords, total))
-        quickstatsfile.close()
+        qstatsfile.close()
 
-    def readquickstats(self):
-        """reads the quickstats from disk"""
-        self.quickstats = {}
-        self.quickstatsfilename = os.path.join(self.podir, "pootle-%s-%s.stats" % (self.project.code, self.language.code))
-        if os.path.exists(self.quickstatsfilename):
-            quickstatsfile = open(self.quickstatsfilename, "r")
-            for line in quickstatsfile:
-                items = line.split(",")
-                if len(items) != 7:
-                    #Must be an old format style without the fuzzy stats
-                    self.quickstats = self.getquickstats()
-                    self.savequickstats()
-                    break
-                else:
-                    pofilename, translatedwords, translated, fuzzywords, fuzzy, totalwords, total = items
-                    self.quickstats[pofilename] = tuple([int(a.strip()) for a in \
-                            translatedwords, translated, fuzzywords, fuzzy, totalwords, total])
+    def _get_quickstats(self):
+        if not self._quickstats:
+            qstats = {}
+            qstatsfile = self.podir / "pootle-%s-%s.stats" % (self.project.code, self.language.code)
+            if qstatsfile.exists():
+                file = open(qstatsfile,'r')
+                for line in file:
+                    items = line.split(",")
+                    if len(items) != 7:
+                        # in case it's an old format
+                        self._quickstats = self.getquickstats()
+                        self.savequickstats()
+                        break
+                    else:
+                        self.quickstats[items[0]] = tuple([int(a.strip()) for a in items[1:]])
+        return self._quickstats
+    quickstats = property(_get_quickstats)
 
     def getquickstats(self, pofilenames=None):
         """gets translated and total stats and wordcouts without doing calculations returning dictionary"""
