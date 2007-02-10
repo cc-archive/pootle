@@ -113,20 +113,22 @@ class TranslationProject(object):
             self.filestyle = "gnu"
         else:
             self.filestyle = "std"
-        self.readprefs()
+        self._prefs = None
         self.scanpofiles()
         self.readquickstats()
         self.initindex()
 
-    def readprefs(self):
-        """reads the project preferences"""
-        self.prefs = prefs.PrefsParser() # FIXME is PrefsParser a bit too heavy for every project?
-        self.prefsfile = os.path.join(self.podir, "pootle-%s-%s.prefs" % (self.project.code, self.language.code))
-        if not os.path.exists(self.prefsfile):
-            prefsfile = open(self.prefsfile, "w")
-            prefsfile.write("# Pootle preferences for project %s, language %s\n\n" % (self.project.code, self.language.code))
-            prefsfile.close()
-        self.prefs.parsefile(self.prefsfile)
+    def _get_prefs(self):
+        if not self._prefs:
+            self._prefs = prefs.PrefsParser() # FIXME is PrefsParser a bit too heavy for every project?
+            prefsfile = os.path.join(self.podir, "pootle-%s-%s.prefs" % (self.project.code, self.language.code))
+            if not os.path.exists(prefsfile):
+                prefsfd = open(prefsfile, "w")
+                prefsfd.write("# Pootle preferences for project %s, language %s\n\n" % (self.project.code, self.language.code))
+                prefsfd.close()
+            self._prefs.parsefile(prefsfile)
+        return self._prefs
+    prefs = property(_get_prefs)
 
     def saveprefs(self):
         """saves the project preferences"""
