@@ -35,6 +35,7 @@ from translate.search import match
 from Pootle import statistics
 from Pootle import pootlefile
 from Pootle import versioncontrol
+from Pootle.path import path
 from Pootle.conf import potree
 from jToolkit import timecache
 from jToolkit import prefs
@@ -94,7 +95,6 @@ class TranslationProject(object):
         self.pofiles = potimecache(15*60, self) 
         checkerclasses = [checks.projectcheckers.get(self.project.checkstyle, checks.StandardChecker), pofilter.StandardPOChecker]
         self.checker = pofilter.POTeeChecker(checkerclasses=checkerclasses, errorhandler=self.filtererrorhandler)
-        self.quickstats = {}
         # terminology matcher
         self.termmatcher = None
         self.termmatchermtime = None
@@ -107,10 +107,13 @@ class TranslationProject(object):
             self.filestyle = "std"
         self._prefs = None
         self._quickstats = {}
+        self._stats = None   # cumulative statistics for project
         
         self.scanpofiles()
-        self.readquickstats()
         self.initindex()
+
+    def __repr__(self):
+        return "<TranslationProject /%s/%s/>" % (self.project.code, self.language.code)
 
     def _get_prefs(self):
         if not self._prefs:
@@ -966,7 +969,7 @@ class TranslationProject(object):
     def _get_quickstats(self):
         if not self._quickstats:
             qstats = {}
-            qstatsfile = self.podir / "pootle-%s-%s.stats" % (self.project.code, self.language.code)
+            qstatsfile = path(self.podir / "pootle-%s-%s.stats" % (self.project.code, self.language.code))
             if qstatsfile.exists():
                 file = open(qstatsfile,'r')
                 for line in file:
@@ -977,10 +980,25 @@ class TranslationProject(object):
                         self.savequickstats()
                         break
                     else:
-                        self.quickstats[items[0]] = tuple([int(a.strip()) for a in items[1:]])
+                        self._quickstats[items[0]] = tuple([int(a.strip()) for a in items[1:]])
         return self._quickstats
     quickstats = property(_get_quickstats)
 
+    def _get_stats(self):
+        if not self._stats:
+            tw, ts, fw, fs, allw, alls = 0, 0, 0, 0, 0, 0
+            for transw, transs, fuzzyw, fuzzys, allwords, allstring in self.quickstats.itervalues():
+                tw, ts, fw, fs, allw, alls = tw+transw, ts+transs, fw+fuzzyw, fs+fuzzys, allw+allwords, alls+allstring
+            # 'data' property format is translated, fuzzy, untranslated; for each wordcount, stringcount, percentage
+            uw, us = allw-tw-fw, alls-ts-fs
+            perc = alls/100.0
+            if perc: # in case of zero division error
+                self._stats = (tw, ts, int(ts/perc), fw, fs, int(fs/perc), uw, us, int(us/perc), allw, alls)
+            else:
+                self._stats = (0,0,0,0,0,0,0,0,0,0,0)
+        return self._stats
+    stats = property(_get_stats)
+                 
     def getquickstats(self, pofilenames=None):
         """gets translated and total stats and wordcouts without doing calculations returning dictionary"""
         if pofilenames is None:

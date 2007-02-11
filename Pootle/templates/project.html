@@ -20,7 +20,7 @@
 {% endif %}
 
       <div class="item-statistics">
-        {{ project.stats }} FIXME
+        {{ stats }} FIXME
       </div>
     </div>
 
@@ -45,7 +45,18 @@
       <tbody class="stats">
 {% for item in languages %}
           <tr  class="item item-{% cycle even,odd %}">
-            {% itemnode stats %}
+            <td class="stats-name">
+      <img src="/static/images/{{ item.language.icon }}.png" class="icon" alt="" dir="{{ uidir }}" lang="{{ uilanguage }}" />
+      <a href="{{ item.language.code }}" lang="en" dir="ltr">{{ item.language.name }}</a>
+    </td>
+      <td class="stats">{{ item.stats.0 }}</td><td class="stats">{{ item.stats.2 }}%</td>
+      <td class="stats">{{ item.stats.3 }}</td><td class="stats">{{ item.stats.5 }}%</td>
+      <td class="stats">{{ item.stats.6 }}</td><td class="stats">{{ item.stats.8 }}%</td>
+      <td class="stats">{{ item.stats.9 }}</td>
+      <td class="stats-graph">
+        <span class="sortkey">{{ item.stats.2 }}</span>
+<img src="/static/images/green.png" class="data" height="20" width="{{ item.stats.2 }}" /><img src="/static/images/blue.png" class="data" height="20" width="{{ item.stats.5 }}" /><img src="/static/images/red.png" class="data" height="20" width="{{ item.stats.8 }}" />
+      </td>
           </tr>
 {% endfor %}
       </tbody>
