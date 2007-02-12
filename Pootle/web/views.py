@@ -207,8 +207,6 @@ def languageindex(req, language):
     return render_to_response("language.html", RequestContext(req, context))
     
 def projectindex(req, language, project, subdir=None):
-    proj = potree().getproject(language, project)
-
     p = TranslationProject(potree().get_language(language), potree().get_project(project))
     context = {
         'project': p,

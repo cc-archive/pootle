@@ -978,7 +978,7 @@ class path(_base):
         return self.files("*.xlf")
 
     def stats(self):
-        return {}
+        return (0,0,0,0,0,0,0,0,0,0,0)
 
     def icon(self):
         if self.isdir():
