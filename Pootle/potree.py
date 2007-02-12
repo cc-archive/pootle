@@ -112,19 +112,6 @@ class Project(object):
         else:
             raise KeyError("Project %s does not have %s attribute." % (self,key))
 
-class FSObject(path):
-    icon = 'folder'
-    href = 'FIXME'
-    title = 'FIXME'
-
-    def __repr__(self):
-        return "<PootleFS object: %s>" % path.__repr__(self)
-
-    def _get_stats(self):
-        return {}
-    stats = property(_get_stats)
-
-
 
 class POTree:
     """Manages the tree of projects and languages"""
@@ -459,7 +446,7 @@ class POTree:
             if len(languagedirs) > 1:
                 raise IndexError("multiple regions defined for language %s, project %s" % (languagecode, projectcode))
             languagedir = projectdir / languagedirs[0]
-        return FSObject(languagedir)
+        return path(languagedir)
 
     def languagematch(self, languagecode, otherlanguagecode):
         """matches a languagecode to another, ignoring regions in the second"""

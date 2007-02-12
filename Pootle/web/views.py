@@ -206,14 +206,13 @@ def languageindex(req, language):
         }
     return render_to_response("language.html", RequestContext(req, context))
     
-def projectindex(req, language, project):
+def projectindex(req, language, project, subdir=None):
     proj = potree().getproject(language, project)
-    print proj.browsefiles(dirfilter=None, depth=0)
 
+    p = TranslationProject(potree().get_language(language), potree().get_project(project))
     context = {
-        'project': potree().get_project(project),
-        'lang': potree().get_language(language),
-        'items': [1,2,3]
+        'project': p,
+        'items': p.list_dir(subdir),
        }
     return render_to_response("fileindex.html", RequestContext(req, context))
 

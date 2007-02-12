@@ -131,6 +131,10 @@ class TranslationProject(object):
         """saves the project preferences"""
         self.prefs.savefile()
 
+    def list_dir(self, subdir=None):
+        listing = subdir and path(self.podir / subdir) or path(self.podir)
+        return listing.dirs("[!.]*") + listing.listpo() 
+
     def getrightnames(self, session): # FIXME gettext
         """gets the available rights and their localized names"""
         localize = session.localize

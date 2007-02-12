@@ -969,3 +969,19 @@ class path(_base):
         def startfile(self):
             os.startfile(self)
 
+    # --- Special stuff for Pootle
+
+    def listpo(self):
+        return self.files("*.po")
+
+    def listxliff(self):
+        return self.files("*.xlf")
+
+    def stats(self):
+        return {}
+
+    def icon(self):
+        if self.isdir():
+            return 'folder'
+        elif self.isfile(): 
+            return 'file'
