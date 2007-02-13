@@ -8,12 +8,11 @@ from django.shortcuts import render_to_response
 from django import forms
 from django.core.mail import send_mail
 
-from Pootle.web import forms as pootleforms 
-from Pootle.compat.authforms import RegistrationManipulator, ActivationManipulator
+from Pootle.compat import forms as pootleforms 
 from Pootle.compat import pootleauth
-from Pootle import indexpage, adminpages, users, translatepage
+from Pootle.compat.authforms import RegistrationManipulator, ActivationManipulator
+from Pootle import adminpages, users, translatepage
 from Pootle.conf import instance, potree
-from Pootle.conf import users as pootleusers
 from Pootle.projects import TranslationProject
 from django.utils.translation import gettext_lazy as _
 from django.utils.translation import ngettext
@@ -150,7 +149,6 @@ def errorlist_from_errors(errors):
 def robots(req):
     return HttpResponse(content=generaterobotsfile(["login.html", "register.html", "activate.html"]), mimetype="text/plain")
 
-# indexpage.py
 def index(req, what=None):
     if req.GET:
         if 'islogout' in req.GET:

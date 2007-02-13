@@ -23,7 +23,11 @@ TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
-    '/home/hruske/Desktop/pootle/pootle_src/django-migration-orig/Pootle/templates/',
+    next_to_this_file(__file__,'templates/'),
 )
 
 POOTLE_INSTANCE = 'Pootle'
+
+# If you have old Pootle installation, this setting will keep using 
+# Pootle's prefs files for metadata storage instead of databases.
+POOTLE_BACKWARDS_COMPATIBILITY = False

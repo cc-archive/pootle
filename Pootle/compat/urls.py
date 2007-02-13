@@ -2,19 +2,8 @@
 import Pootle.instance
 
 from django.conf.urls.defaults import *
-from django.conf import settings
 
-urlpatterns = patterns('',
-    # js, images, pootle.css, /favicon.ico
-    (r'^static/(?P<path>.*)$', 'django.views.static.serve', { 'document_root': settings.MEDIA_ROOT} ),
-)
-
-if settings.DEBUG:
-    urlpatterns += patterns('',
-        (r'^test/$', 'Pootle.web.views.test'),
-    )
-
-urlpatterns += patterns('Pootle.web.views',
+urlpatterns = patterns('Pootle.compat.views',
     (r'^$', 'index'),
     (r'^login.html$', 'login'),
     (r'^register.html$', 'register'),
