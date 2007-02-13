@@ -12,7 +12,7 @@ jToolkit server, this code acts as a bridge between these differences.
 from django.conf import settings
 from Pootle import potree
 from Pootle.conf import set_instance
-from jToolkit import prefs
+from Pootle.compat import prefs
 import os
 
 serverprefs = prefs.PrefsParser()

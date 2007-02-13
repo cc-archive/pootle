@@ -5,7 +5,7 @@ file, just like with Pootle."""
 import md5
 import os
 from django.conf import settings
-from jToolkit import prefs
+from Pootle.compat import prefs
 from Pootle.conf import instance, users, potree
 
 

@@ -38,7 +38,7 @@ from Pootle import versioncontrol
 from Pootle.path import path
 from Pootle.conf import potree
 from jToolkit import timecache
-from jToolkit import prefs
+from Pootle.compat import prefs
 import time
 import os
 import cStringIO

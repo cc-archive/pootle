@@ -22,7 +22,7 @@
 from jToolkit import web
 from jToolkit.web import server
 from jToolkit import mailer
-from jToolkit import prefs
+from Pootle.compat import prefs
 from Pootle import pagelayout
 from Pootle.storage_client import getlanguageoptions as new_getlanguageoptions
 from Pootle.storage_client import getprojectoptions as new_getprojectoptions
