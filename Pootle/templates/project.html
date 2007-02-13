@@ -47,7 +47,7 @@
           <tr  class="item item-{% cycle even,odd %}">
             <td class="stats-name">
       <img src="/static/images/{{ item.language.icon }}.png" class="icon" alt="" dir="{{ uidir }}" lang="{{ uilanguage }}" />
-      <a href="{{ item.language.code }}" lang="en" dir="ltr">{{ item.language.name }}</a>
+      <a href="/{{ item.language.code }}/{{ project.code }}/browse/" lang="en" dir="ltr">{{ item.language.name }}</a>
     </td>
       <td class="stats">{{ item.stats.0 }}</td><td class="stats">{{ item.stats.2 }}%</td>
       <td class="stats">{{ item.stats.3 }}</td><td class="stats">{{ item.stats.5 }}%</td>

@@ -41,11 +41,12 @@ urlpatterns += patterns('Pootle.web.views',
     
     (r'^(?P<language>\w+)/$', 'languageindex'),
     (r'^(?P<language>\w+)/(?P<project>\w+)/$', 'projectindex'),
-    (r'^(?P<language>\w+)/(?P<project>\w+)/index.html$', 'projectindex'),
+    (r'^(?P<language>\w+)/(?P<project>\w+)/browse/(?P<subdir>[\w/]*?)$', 'projectindex'),
+    (r'^(?P<language>\w+)/(?P<project>\w+)/translate/(?P<subdir>[\w/]*?)(?P<filename>\w+)\.po', 'translatepage'),
+    (r'^(?P<language>\w+)/(?P<project>\w+)/download/(?P<subdir>[\w/]*?)(?P<filename>\w+)\.po', 'downloadfile'),
+    (r'^(?P<language>\w+)/(?P<project>\w+)/review/(?P<subdir>[\w/]*?)(?P<filename>\w+)\.po', 'review'),
     
-    (r'^(?P<language>\w+)/(?P<project>\w+)/admin.html', 'admintranslationproject'),
-    (r'^(?P<language>\w+)/(?P<project>\w+)/translate.html$', 'translatepage'),
-    (r'^(?P<language>\w+)/(?P<project>\w+)/(.*)/(.*).po?translate$', 'translatepage'),
+    (r'^(?P<language>\w+)/(?P<project>\w+)/admin/', 'admintranslationproject'),
     (r'^(?P<language>\w+)/(?P<project>\w+)/(.*)/spellcheck.html$', 'spellcheck'),
     (r'^(?P<language>\w+)/(?P<project>\w+)/(.*)/spellingstandby.html$', 'spellingstandby'),
 
