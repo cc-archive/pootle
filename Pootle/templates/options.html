@@ -15,8 +15,12 @@
             <td colspan="1" rowspan="1"><h3 class="title">{% trans "Current value" %}</h3></td>
           </tr>
           <tr>
-            <td colspan="1" rowspan="1">{% trans "Name" %}</td>
-            <td colspan="1" rowspan="1">{{ form.name }} {{ errors.name|join:" " }}</td>
+            <td colspan="1" rowspan="1">{% trans "First Name" %}</td>
+            <td colspan="1" rowspan="1">{{ form.first_name }} {{ errors.first_name|join:" " }}</td>
+          </tr>
+          <tr>
+            <td colspan="1" rowspan="1">{% trans "Last Name" %}</td>
+            <td colspan="1" rowspan="1">{{ form.last_name }} {{ errors.last_name|join:" " }}</td>
           </tr>
           <tr>
             <td colspan="1" rowspan="1">{% trans "Email" %}</td>

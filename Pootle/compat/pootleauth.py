@@ -71,7 +71,7 @@ class UserWrapper(object):
             return False
 
     def set_user(self, kwargs):
-        for i in ['name', 'email', 'uilanguage', 'inputheight', 'inputwidth', 'viewrows', 'translaterows']:
+        for i in ['first_name', 'last_name', 'email', 'uilanguage', 'inputheight', 'inputwidth', 'viewrows', 'translaterows']:
             if i in kwargs:
                 setattr(self._user, i, kwargs[i])
         if 'activated' in kwargs:

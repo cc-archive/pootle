@@ -8,6 +8,8 @@ from django.shortcuts import render_to_response
 from django import forms
 from django.core.mail import send_mail
 
+from Pootle.web import webforms
+from Pootle.web.models import Project, Language
 from Pootle.compat import forms as pootleforms 
 from Pootle.compat import pootleauth
 from Pootle.compat.authforms import RegistrationManipulator, ActivationManipulator
@@ -17,6 +19,8 @@ from Pootle.projects import TranslationProject
 from django.utils.translation import gettext_lazy as _
 from django.utils.translation import ngettext
 import random
+
+from Pootle.web.models import Language, Project
 
 from Pootle import __version__ as pootleversion
 from translate import __version__ as toolkitversion
@@ -34,16 +38,16 @@ def index(req, what=None):
 
     if what == 'languages':
         context = {
-            'languages': potree().get_language_list(),
+            'languages': Language.objects.all(),
             }
     elif what == 'projects':
         context = {
-            'projects': potree().get_project_list(),
+            'projects': Project.objects.all(),
             }
     else:
         context = {
-            'languages': potree().get_language_list(),
-            'projects': potree().get_project_list(),
+            'languages': Language.objects.all(),
+            'projects': Project.objects.all(),
             }
     return render_to_response("index.html", RequestContext(req, context))
     
@@ -56,7 +60,7 @@ def home(req):
 home = login_required(home)
 
 def projectlanguageindex(req, project):
-    p = potree().get_project(project)
+    p = Project.objects.get(code=project)
     languages = [] # FIXME
     context = {
         'project': p,
@@ -66,15 +70,15 @@ def projectlanguageindex(req, project):
                                 'count': len(languages),
                                 'average': 0 #getpagestats(), }, 
                                 },
-        'languages': [ TranslationProject(lang, p) for lang in potree().get_language_list(project)],
+        'languages': [ TranslationProject(lang, p) for lang in Language.objects.all()],
         }
     return render_to_response("project.html", RequestContext(req, context))
 
 def languageindex(req, language):
-    lang = potree().get_language(language)
+    lang = Language.objects.get(code=language)
     context = {
         "language": lang,
-        "projects": [TranslationProject(lang, p) for p in potree().get_project_list(language)],
+        "projects": [TranslationProject(lang, p) for p in Project.objects.all()],
         }
     return render_to_response("language.html", RequestContext(req, context))
     
@@ -87,7 +91,7 @@ def projectindex(req, language, project, subdir=None):
     return render_to_response("fileindex.html", RequestContext(req, context))
 
 def options(req):
-    manipulator = pootleforms.UserProfileManipulator(req.user)
+    manipulator = webforms.UserProfileManipulator(req.user)
     if req.POST:
         new_data = req.POST.copy()
         errors = manipulator.get_validation_errors(new_data)

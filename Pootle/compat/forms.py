@@ -1,4 +1,6 @@
 from django import forms
+
+from Pootle.web import webforms
 from Pootle.conf import instance, saveprefs, potree
 from Pootle.compat.pootleauth import PootleAuth, create_user, save_users
 from translate.filters import checks
@@ -78,27 +80,15 @@ class ProjectAdminManipulator(forms.Manipulator):
         for k in self.fields:
             setattr(p, k.field_name, new_data[k.field_name])
 
-class UserProfileManipulator(forms.Manipulator):
-    def __init__(self, user):
-        self.user = user
-        project_choices = [(p.code, p.name) for p in potree().get_project_list()]
-        language_choices = [(p.code, p.name.encode("utf-8")) for p in potree().get_language_list()]
-        self.fields = (
-            forms.TextField(field_name="name", length=40),
-            forms.TextField(field_name="email", length=40, validator_list=[isValidEmail]),
-            forms.PasswordField(field_name="password", length=40),
-            forms.PasswordField(field_name="password_confirm", length=40, validator_list=[validators.AlwaysMatchesOtherField('password')]),
-            forms.SelectField(field_name="uilanguage", choices=[]), # FIXME add choices
-            forms.TextField(field_name="inputheight", length=10, validator_list=[isOnlyDigits]),
-            forms.TextField(field_name="inputwidth", length=10, validator_list=[isOnlyDigits]),
-            forms.TextField(field_name="viewrows", length=10, validator_list=[isOnlyDigits]),
-            forms.TextField(field_name="translaterows", length=10, validator_list=[isOnlyDigits]),
-            forms.SelectMultipleField(field_name="projects", size=min(max(len(project_choices), 5), 15), choices=project_choices),
-            forms.SelectMultipleField(field_name="languages", size=min(max(len(language_choices), 5), 15), choices=language_choices),
-        )
+project_choices = [(p.code, p.name) for p in potree().get_project_list()]
+language_choices = [(p.code, p.name.encode("utf-8")) for p in potree().get_language_list()]
 
+class UserProfileManipulator(webforms.UserProfileManipulator):
     def old_data(self):
-        return dict([ (k.field_name, getattr(self.user, k.field_name, None)) for k in self.fields if not k.field_name.startswith("password") ])
+        data = dict([ (k.field_name, getattr(self.user, k.field_name, None)) for k in self.fields if not k.field_name not in ["password", "password_confirm", "first_name", "last_name" ] ])
+        for field in ["first_name", "last_name" ]:
+            if hasattr(self.user, field):
+                data[field] = getattr(self.user, field)
 
     def save(self, new_data):
         u = self.user

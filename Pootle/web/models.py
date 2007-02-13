@@ -7,19 +7,26 @@ CHECKSTYLES = [ ('Standard', 'Standard')] + [ (ch, ch) for ch in checks.projectc
 FILETYPES = (   ('po', 'po'),  ('xliff','xliff'), )
 
 class Project(models.Model):
-    code = models.SlugField(maxlength=32)
+    code = models.SlugField(maxlength=32,unique=True)
     name = models.CharField(maxlength=100)
     checkstyle = models.CharField(maxlength=20, choices=CHECKSTYLES)
     description = models.TextField()
     filetype = models.CharField(maxlength=10, choices=FILETYPES)
     createmofiles = models.BooleanField()
+    
+    def __str__(self):
+        return self.name
 
 class Language(models.Model):
-    code = models.SlugField(maxlength=5)
+    code = models.SlugField(maxlength=5,unique=True)
     name = models.CharField(maxlength=100)
     specialchars = models.CharField(maxlength=100)
     nplurals = models.IntegerField()
     plural_equation = models.CharField(maxlength=200)
+    enabled = models.BooleanField()
+
+    def __str__(self):
+        return self.name
     
 class TranslationProject(models.Model):
     language = models.ForeignKey(Language)
@@ -30,6 +37,9 @@ class TranslationProject(models.Model):
     fuzzystrings = models.IntegerField()
     allwords = models.IntegerField()
     allstrings = models.IntegerField()
+
+    class Meta:
+        unique_together = ( ('language','project'),) 
 
     def _get_stats(self):
         perc = self.allstrings/100.0
@@ -103,4 +113,14 @@ class PootlePermission(models.Model):
         if right in self.RIGHTS:
             # bitwise AND with bit negative right clears the right
             self.rights = self.rights & ~ 2**self.RIGHTS[right]
+
+class UserProfile(models.Model):
+    user = models.ForeignKey(User, unique=True)  
+    uilanguage = models.ForeignKey(Language, blank=True, null=True)
+    inputheight = models.SmallIntegerField(blank=True, null=True)
+    inputwidth = models.SmallIntegerField(blank=True, null=True)
+    viewrows = models.SmallIntegerField(blank=True, null=True)
+    translaterows = models.SmallIntegerField(blank=True, null=True)
+    projects = models.ManyToManyField(Project, related_name='joined_projects', blank=True, null=True)
+    languages = models.ManyToManyField(Language, related_name='joined_languages', blank=True, null=True)
 
