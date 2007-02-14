@@ -4,11 +4,38 @@ from django.contrib.auth.models import User
 from django.core import validators
 from django.core.validators import isOnlyDigits, isValidEmail
 from Pootle.utils import CallableValidatorWrapper
+from translate.filters import checks
 
 isValidEmail = CallableValidatorWrapper(isValidEmail)
 
 project_choices = [(p.id, p.name) for p in Project.objects.all()]
 language_choices = [(p.id, p.name) for p in Language.objects.all()]
+CHECKS = [ ('Standard', 'Standard')] + [ (ch, ch) for ch in checks.projectcheckers.keys()]
+FILETYPES = [
+    ('po', 'po'),
+    ('xliff','xliff'),
+    ]
+
+class ProjectAdminManipulator(forms.Manipulator):
+    def __init__(self, project):
+        self.project = project
+        self.fields = (
+            forms.TextField(field_name="name", length=40),
+            forms.LargeTextField(field_name="description"),
+            forms.SelectField(field_name="checkstyle", choices=CHECKS),
+            forms.SelectField(field_name="filetype", choices=FILETYPES),
+            forms.CheckboxField(field_name="createmofiles"),
+            )
+
+    def old_data(self):
+        return dict([ (k.field_name, getattr(self.project,k.field_name)) for k in self.fields ])
+
+    def save(self, new_data):
+        p = self.project
+        for k in self.fields:
+            setattr(p, k.field_name, new_data[k.field_name])
+        p.createmofiles = new_data.get('createmofiles', False) and True
+        p.save()
 
 class UserAdminManipulator(forms.Manipulator):
     def __init__(self, user):

@@ -262,23 +262,34 @@ def adminlanguages(req):
     return render_to_response("adminlanguages.html", RequestContext(req, context))
 
 def adminprojects(req):
-    if req.POST and req.user.is_superuser():
-        pass
-    context = { 'projects' : potree().get_project_list() }
+    error = None
+    if req.POST: 
+        if req.user.is_superuser:
+            for project in Project.objects.all():
+                if project.code in req.POST:
+                    # FIXME do something 
+                    pass
+        else:
+            error = _("You do not have sufficient rights.")
+    context = { 
+        'error': error,
+        'projects' : Project.objects.all() }
     return render_to_response("adminprojects.html", RequestContext(req, context))
 
 def admin_projectedit(req, project):
-    manipulator = pootleforms.ProjectAdminManipulator()
-    if req.POST and req.user.is_superuser():
-        new_data = req.POST.copy()
-        errors = manipulator.get_validation_errors(new_data)
-        if not errors:
-            manipulator.do_html2python(new_data)
-            manipulator.save(new_data, project)
-            return HttpResponseRedirect('/'.join(req.path.split("/")[:-2]) + '/')
+    p = get_object_or_404(Project, code=project)
+    manipulator = webforms.ProjectAdminManipulator(p)
+    if req.POST:
+        if req.user.is_superuser:
+            new_data = req.POST.copy()
+            errors = manipulator.get_validation_errors(new_data)
+            if not errors:
+                manipulator.do_html2python(new_data)
+                manipulator.save(new_data)
+                return HttpResponseRedirect('/'.join(req.path.split("/")[:-2]) + '/')
     else:
         errors = {}
-        new_data = manipulator.old_data(project)
+        new_data = manipulator.old_data()
     form = forms.FormWrapper(manipulator, new_data, errors)
     context = { 'project' : potree().get_project(project),
                 'form': form,
