@@ -13,8 +13,12 @@
             <td colspan="1" rowspan="1">{{ u }}</td>
           </tr>
           <tr>
-            <td colspan="1" rowspan="1"><h3 class="title">{% trans "Full Name" %}</h3></td>
-            <td colspan="1" rowspan="1">{{ form.name }}</td>
+            <td colspan="1" rowspan="1"><h3 class="title">{% trans "First Name" %}</h3></td>
+            <td colspan="1" rowspan="1">{{ form.first_name }}</td>
+          </tr>
+          <tr>
+            <td colspan="1" rowspan="1"><h3 class="title">{% trans "Last Name" %}</h3></td>
+            <td colspan="1" rowspan="1">{{ form.last_name }}</td>
           </tr>
           <tr>
             <td colspan="1" rowspan="1"><h3 class="title">{% trans "Email Address" %}</h3></td>
@@ -26,7 +30,11 @@
           </tr>
           <tr>
             <td colspan="1" rowspan="1"><h3 class="title">{% trans "Activated" %}</h3></td>
-            <td colspan="1" rowspan="1">{{ form.activated }}</td>
+            <td colspan="1" rowspan="1">{{ form.is_active }}</td>
+          </tr>
+          <tr>
+            <td colspan="1" rowspan="1"><h3 class="title">{% trans "Superuser" %}</h3></td>
+            <td colspan="1" rowspan="1">{{ form.is_superuser }}</td>
           </tr>
         </table><input type="submit" name="changeusers" value="{% trans "Save changes" %}" />
       </form>

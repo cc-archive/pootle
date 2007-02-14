@@ -5,7 +5,7 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.auth import REDIRECT_FIELD_NAME
-from django.shortcuts import render_to_response
+from django.shortcuts import render_to_response, get_object_or_404
 from django import forms
 from django.core.mail import send_mail
 
@@ -222,8 +222,8 @@ def admin(req):
     return render_to_response("adminindex.html", RequestContext(req, { 'form': form, 'errors': errors } ))
 
 def admin_useredit(req, user):
-    manipulator = pootleforms.UserAdminManipulator()
-    if req.POST and req.user.is_superuser():
+    manipulator = webforms.UserAdminManipulator(user)
+    if req.POST and req.user.is_superuser:
         new_data = req.POST.copy()
         new_data['username'] = user
         errors = manipulator.get_validation_errors(new_data)
@@ -233,7 +233,7 @@ def admin_useredit(req, user):
             return HttpResponseRedirect('/'.join(req.path.split("/")[:-2]) + '/')
     else:
         errors = {}
-        new_data = manipulator.old_data(user)
+        new_data = manipulator.old_data()
     form = forms.FormWrapper(manipulator, new_data, errors)
     return render_to_response("admin_useredit.html", RequestContext(req, { 'form': form, 'u': user, 'errors':errors} ))
 

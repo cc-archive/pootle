@@ -10,7 +10,6 @@
         <table cellpadding="1" cellspacing="1">
           <tr>
             <td colspan="1" rowspan="1">
-              <h3 class="title">{% trans "Selected" %}</h3>
             </td>
             <td colspan="1" rowspan="1">
               <h3 class="title">{% trans "Username" %}</h3>
@@ -35,7 +34,7 @@
             <td colspan="1" rowspan="1">{{ u.first_name }}</td>
             <td colspan="1" rowspan="1">{{ u.last_name }}</td>
             <td colspan="1" rowspan="1">{{ u.email }}</td>
-            <td colspan="1" rowspan="1">{% if u.activated %}{% trans "True" %}{% else %}{% trans "False" %}{% endif %}</td>
+            <td colspan="1" rowspan="1">{% if u.is_active %}{% trans "True" %}{% else %}{% trans "False" %}{% endif %}</td>
           </tr>
 {% endfor %}
         </table><input type="submit" name="delete-selected" value="{% trans "Delete selected" %}" />
