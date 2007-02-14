@@ -42,7 +42,7 @@ class propunit(base.TranslationUnit):
 
   def setsource(self, source):
     """Sets the source AND the target to be equal"""
-    self.msgid = quote.mozillapropertiesencode(source)
+    self.msgid = quote.mozillapropertiesencode(source or "")
 
   def getsource(self):
     msgid = quote.mozillapropertiesdecode(self.msgid)
@@ -59,10 +59,10 @@ class propunit(base.TranslationUnit):
   def settarget(self, target):
     """Note: this also sets the .source attribute!"""
     # TODO: shouldn't this just call the .source property? no quoting done here...
-    self.msgid = target
+    self.source = target
 
   def gettarget(self):
-    return self.msgid
+    return self.source
   target = property(gettarget, settarget)
 
   def __str__(self):
