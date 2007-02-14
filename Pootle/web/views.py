@@ -61,7 +61,7 @@ def home(req):
 home = login_required(home)
 
 def projectlanguageindex(req, project):
-    p = Project.objects.get(code=project)
+    p = get_object_or_404(Project, code=project)
     languages = [] # FIXME
     context = {
         'project': p,
@@ -76,7 +76,7 @@ def projectlanguageindex(req, project):
     return render_to_response("project.html", RequestContext(req, context))
 
 def languageindex(req, language):
-    lang = Language.objects.get(code=language)
+    lang = get_object_or_404(Language, code=language)
     context = {
         "language": lang,
         "projects": [TranslationProject(lang, p) for p in Project.objects.all()],
