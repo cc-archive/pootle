@@ -17,6 +17,10 @@ class Project(models.Model):
     def __str__(self):
         return self.name
 
+class AllowedLanguageManager(models.Manager):
+    def get_query_set(self):
+        return super(AllowedLanguageManager, self).get_query_set().filter(enabled=True)
+
 class Language(models.Model):
     code = models.SlugField(maxlength=5,unique=True)
     name = models.CharField(maxlength=100)
@@ -25,8 +29,14 @@ class Language(models.Model):
     plural_equation = models.CharField(maxlength=200)
     enabled = models.BooleanField()
 
+    objects = AllowedLanguageManager()
+    unfiltered = models.Manager()
+
     def __str__(self):
         return self.name
+
+    class Meta:
+        ordering = ('code',)
     
 class TranslationProject(models.Model):
     language = models.ForeignKey(Language)

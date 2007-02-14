@@ -4,27 +4,26 @@
 {% block title %}Pootle Languages Admin Page{% endblock %}
 
 {% block adminpanel %}
+{% if error %}<div class="message">{{ error }}</div>{% endif %}
     <div class="fullwidthcontents">
       <h3 class="title">{% trans "Languages" %}</h3>
 
       <form action="" method="post" name="languages" id="languages">
         <table cellpadding="1" cellspacing="1">
           <tr>
-            <td colspan="1" rowspan="1"><h3 class="title">{% trans "Selected" %}</h3></td>
+            <td colspan="1" rowspan="1"><h3 class="title">{% trans "Enabled" %}</h3></td>
             <td colspan="1" rowspan="1"><h3 class="title">{% trans "ISO Code" %}</h3></td>
             <td colspan="1" rowspan="1"><h3 class="title">{% trans "Full Name" %}</h3></td>
             <td colspan="1" rowspan="1"><h3 class="title">{% trans "Special Chars" %}</h3></td>
             <td colspan="1" rowspan="1"><h3 class="title">{% trans "Number of Plurals" %}</h3></td>
-            <td colspan="1" rowspan="1"><h3 class="title">{% trans "Plural Equation" %}</h3></td>
           </tr>
 {% for lang in languages %}
           <tr>
-            <td colspan="1" rowspan="1"><input type="checkbox" /></td>
+            <td colspan="1" rowspan="1"><input type="checkbox" name="{{ lang.code }}"{% if lang.enabled %} checked="on"{% endif%} /></td>
             <td colspan="1" rowspan="1">{{ lang.code }}</td>
             <td colspan="1" rowspan="1">{{ lang.name }}</td>
             <td colspan="1" rowspan="1">{{ lang.specialchars }}</td>
-            <td colspan="1" rowspan="1">{{ lang.nplurals }}</td>
-            <td colspan="1" rowspan="1">{{ lang.plural_equation }}</td>
+            <td colspan="1" rowspan="1" title="{{ lang.plural_equation }}">{{ lang.nplurals }}</td>
           </tr>
 {% endfor %}
         </table><input type="submit" name="changelanguages" value="{% trans "Save changes" %}" />

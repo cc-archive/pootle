@@ -16,7 +16,10 @@
               <h3 class="title">{% trans "Username" %}</h3>
             </td>
             <td colspan="1" rowspan="1">
-              <h3 class="title">{% trans "Full Name" %}</h3>
+              <h3 class="title">{% trans "First Name" %}</h3>
+            </td>
+            <td colspan="1" rowspan="1">
+              <h3 class="title">{% trans "Last Name" %}</h3>
             </td>
             <td colspan="1" rowspan="1">
               <h3 class="title">{% trans "Email Address" %}</h3>
@@ -29,7 +32,8 @@
           <tr>
             <td colspan="1" rowspan="1"><input type="checkbox" name="select-{{ u.username }}" /></a></td>
             <td colspan="1" rowspan="1"><a href="{{ u.username }}/">{{ u.username }}</a></td>
-            <td colspan="1" rowspan="1">{{ u.name }}</td>
+            <td colspan="1" rowspan="1">{{ u.first_name }}</td>
+            <td colspan="1" rowspan="1">{{ u.last_name }}</td>
             <td colspan="1" rowspan="1">{{ u.email }}</td>
             <td colspan="1" rowspan="1">{% if u.activated %}{% trans "True" %}{% else %}{% trans "False" %}{% endif %}</td>
           </tr>

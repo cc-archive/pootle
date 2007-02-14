@@ -3,6 +3,7 @@ from django.template import Context, RequestContext, loader
 from django.conf import settings
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from django.contrib.auth import REDIRECT_FIELD_NAME
 from django.shortcuts import render_to_response
 from django import forms
@@ -237,18 +238,27 @@ def admin_useredit(req, user):
     return render_to_response("admin_useredit.html", RequestContext(req, { 'form': form, 'u': user, 'errors':errors} ))
 
 def adminusers(req):
-    if req.POST and req.user.is_superuser():
-        selected = [ u for u in pootleauth.get_users() if "select-%s" % u.username in req.POST]
+    if req.POST and req.user.is_superuser:
+        selected = [ u for u in User.objects.all() if "select-%s" % u.username in req.POST]
         if 'delete-selected' in req.POST:
             for u in selected:
                 u.delete()
-            pootleauth.save_users()
-    return render_to_response("adminusers.html", RequestContext(req, { 'users': pootleauth.get_users() } ))
+    
+    return render_to_response("adminusers.html", RequestContext(req, { 'users': User.objects.all() } ))
 
 def adminlanguages(req):
-    if req.POST and req.user.is_superuser():
-        pass
-    context = { 'languages': potree().get_language_list() }
+    error = None
+    if req.POST:
+        if req.user.is_superuser:
+            for lang in Language.unfiltered.all():
+                lang.enabled = lang.code in req.POST
+                lang.save()
+        else:   
+            error = _("You do not have sufficient rights.")
+    context = { 
+        'languages': Language.unfiltered.all(), 
+        'error':error, 
+        'selected': [ lang.code for lang in Language.unfiltered.all()] }
     return render_to_response("adminlanguages.html", RequestContext(req, context))
 
 def adminprojects(req):
