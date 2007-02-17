@@ -26,10 +26,25 @@
       </div>
     </div>
 
-<table>
+<table class="sortable stats" width="100%">
 {% for item in items %}
-<tr><td><img src="/static/images/{{ item.icon }}.png" class="icon" alt="" dir="{{ uidir }}" lang="{{ uilanguage }}" />
-<a href="{{ item.basename }}">{{ item.basename }}</a><br /></td></tr>
+<tr><td>
+<img src="/static/images/{{ item.icon }}.png" class="icon" alt="" dir="{{ uidir }}" lang="{{ uilanguage }}" /></td><td>
+<b><a href="{{ item.basename }}">{{ item.basename }}</a></b>
+{% if item.isfile %}
+<br />{% trans "Download:" %}&nbsp;<a href="{{ item.basename }}">PO</a>&nbsp;<a href="{{ item.basename }}">.ts</a>&nbsp;<a href="{{ item.basename }}">XLIFF</a>&nbsp;<a href="{{ item.basename }}">CSV</a>
+{% endif %}
+</td><td>
+&nbsp;
+</td><td align="right">
+{{ item.stats.0 }}t, 
+{{ item.stats.3 }}f,
+{{ item.stats.6 }}u of 
+{{ item.stats.9 }} total
+<br />
+<span class="sortkey">{{ item.stats.2 }}</span>
+<img src="/static/images/green.png" class="data" height="20" width="{{ item.stats.2 }}" alt="{{ item.stats.2 }}%" /><img src="/static/images/blue.png" class="data" height="20" width="{{ item.stats.5 }}" alt="{{ item.stats.5 }}%" /><img src="/static/images/red.png" class="data" height="20" width="{{ item.stats.8 }}" alt="{{ item.stats.8 }}%" />
+</td></tr>
 {% endfor %}
 </table>
 {% endblock %}

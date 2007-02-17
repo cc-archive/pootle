@@ -978,7 +978,11 @@ class path(_base):
         return self.files("*.xlf")
 
     def stats(self):
-        return (0,0,0,0,0,0,0,0,0,0,0)
+        # stats:  0,  1, 2 translated words, string, percentage    
+        #         3,  4, 5 fuzzy words, string, percentage         
+        #         6,  7, 8 untranslated words, string, percentage  
+        #         9, 10    all words, string                       
+        return (0,0,0, 0,0,0, 0,0,0, 0,0)
 
     def icon(self):
         if self.isdir():
