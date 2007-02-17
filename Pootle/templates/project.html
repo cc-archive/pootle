@@ -28,6 +28,7 @@
       {{ project.description }}
     </div>
 
+{% if languages %}
       <table class="sortable stats" id="stats" cellpadding="5" cellspacing="0" width="100%">
         <thead>
           <tr>
@@ -61,4 +62,7 @@
 {% endfor %}
       </tbody>
     </table>
+{% else %}
+<p>{% trans "This project is not being translated to any language." %}</p>
+{% endif %}
 {% endblock %}

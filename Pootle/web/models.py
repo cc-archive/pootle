@@ -2,6 +2,8 @@ from django.db import models
 from translate.filters import checks
 from Pootle.path import path
 from django.contrib.auth.models import User
+from Pootle.conf import potree
+import Pootle.instance
 
 CHECKSTYLES = [ ('Standard', 'Standard')] + [ (ch, ch) for ch in checks.projectcheckers.keys()]
 FILETYPES = (   ('po', 'po'),  ('xliff','xliff'), )
@@ -41,15 +43,20 @@ class Language(models.Model):
 class TranslationProject(models.Model):
     language = models.ForeignKey(Language)
     project = models.ForeignKey(Project)
-    translatedwords = models.IntegerField()
-    translatedstrings = models.IntegerField()
-    fuzzywords = models.IntegerField()
-    fuzzystrings = models.IntegerField()
-    allwords = models.IntegerField()
-    allstrings = models.IntegerField()
+    translatedwords = models.IntegerField(default=0)
+    translatedstrings = models.IntegerField(default=0)
+    fuzzywords = models.IntegerField(default=0)
+    fuzzystrings = models.IntegerField(default=0)
+    allwords = models.IntegerField(default=0)
+    allstrings = models.IntegerField(default=0)
+    
+    _podir = None
 
     class Meta:
         unique_together = ( ('language','project'),) 
+
+    def __repr__(self):
+        return "<TranslationProject: /%s/%s/>" % (self.project.code, self.language.code)
 
     def _get_stats(self):
         perc = self.allstrings/100.0
@@ -61,6 +68,7 @@ class TranslationProject(models.Model):
                     untransw, untranss, int(untranss/perc), 
                     self.allwords, self.allstrings)
         except ZeroDivisionError:
+            # fixme emit signal to indexer here
             return (0,0,0, 0,0,0, 0,0,0, 0,0)
     stats = property(_get_stats)
 
@@ -69,7 +77,7 @@ class TranslationProject(models.Model):
         return listing.dirs("[!.]*") + listing.listpo()
 
     def _get_podir(self):
-        if not hasattr(self, "_podir"):
+        if not self._podir:
             self._podir = path(potree().getpodir(self.language.code, self.project.code))
         return self._podir
     podir = property(_get_podir)

@@ -10,13 +10,12 @@ from django import forms
 from django.core.mail import send_mail
 
 from Pootle.web import webforms
-from Pootle.web.models import Project, Language
+from Pootle.web.models import Project, Language, TranslationProject
 from Pootle.compat import forms as pootleforms 
 from Pootle.compat import pootleauth
 from Pootle.compat.authforms import RegistrationManipulator, ActivationManipulator
 from Pootle import adminpages, users, translatepage
 from Pootle.conf import instance, potree
-from Pootle.projects import TranslationProject
 from django.utils.translation import gettext_lazy as _
 from django.utils.translation import ngettext
 import random
@@ -71,7 +70,7 @@ def projectlanguageindex(req, project):
                                 'count': len(languages),
                                 'average': 0 #getpagestats(), }, 
                                 },
-        'languages': [ TranslationProject(lang, p) for lang in Language.objects.all()],
+        'languages': TranslationProject.objects.filter(project=p),
         }
     return render_to_response("project.html", RequestContext(req, context))
 
@@ -79,12 +78,12 @@ def languageindex(req, language):
     lang = get_object_or_404(Language, code=language)
     context = {
         "language": lang,
-        "projects": [TranslationProject(lang, p) for p in Project.objects.all()],
+        "projects": TranslationProject.objects.filter(language=lang),
         }
     return render_to_response("language.html", RequestContext(req, context))
     
 def projectindex(req, language, project, subdir=None):
-    p = TranslationProject(potree().get_language(language), potree().get_project(project))
+    p = TranslationProject(language=Language.objects.get(code=language), project=Project.objects.get(code=project))
     context = {
         'project': p,
         'items': p.list_dir(subdir),
@@ -125,7 +124,6 @@ def login(req):
                 from django.contrib.auth import login
                 login(req, manipulator.get_user())
                 req.session.delete_test_cookie()
-                req.session.isopen = True
                 return HttpResponseRedirect(redirect_to) 
             new_data = req.POST.copy()
             del(new_data['password'])
@@ -291,7 +289,7 @@ def admin_projectedit(req, project):
         errors = {}
         new_data = manipulator.old_data()
     form = forms.FormWrapper(manipulator, new_data, errors)
-    context = { 'project' : potree().get_project(project),
+    context = { 'project' : Project.objects.get(code=project),
                 'form': form,
                 'errors': errors,}
     return render_to_response("admin_projectedit.html", RequestContext(req, context))

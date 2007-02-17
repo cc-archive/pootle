@@ -87,9 +87,11 @@ class UserProfileManipulator(forms.Manipulator):
     def old_data(self):
         data = dict([ (k.field_name, getattr(self.user, k.field_name, None)) \
             for k in self.fields if not k.field_name.startswith("password") ])
-        profile = self.user.get_profile()
+        profile, created = UserProfile.objects.get_or_create(user=self.user)
         data.update({   'projects': [p.id for p in profile.projects.all()], 
                         'languages': [lang.id for lang in profile.languages.all()]} )
+        if created:
+            profile.save()
         return data
 
     def save(self, new_data):
