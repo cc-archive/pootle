@@ -55,11 +55,7 @@ def about(req):
     context = { 'pootleversion':pootleversion.ver, 'toolkitversion':toolkitversion.ver }
     return render_to_response("about.html", RequestContext(req, context ))
 
-def home(req):
-    return render_to_response("home.html", RequestContext(req, {}))
-home = login_required(home)
-
-def projectlanguageindex(req, project):
+def project(req, project):
     p = get_object_or_404(Project, code=project)
     languages = [] # FIXME
     context = {
@@ -74,7 +70,7 @@ def projectlanguageindex(req, project):
         }
     return render_to_response("project.html", RequestContext(req, context))
 
-def languageindex(req, language):
+def language(req, language):
     lang = get_object_or_404(Language, code=language)
     context = {
         "language": lang,
@@ -82,13 +78,13 @@ def languageindex(req, language):
         }
     return render_to_response("language.html", RequestContext(req, context))
     
-def projectindex(req, language, project, subdir=None):
+def translationproject(req, language, project, subdir=None):
     p = TranslationProject(language=Language.objects.get(code=language), project=Project.objects.get(code=project))
     context = {
         'project': p,
         'items': p.list_dir(subdir),
        }
-    return render_to_response("fileindex.html", RequestContext(req, context))
+    return render_to_response("translationproject.html", RequestContext(req, context))
 
 def options(req):
     manipulator = webforms.UserProfileManipulator(req.user)
@@ -235,16 +231,16 @@ def admin_useredit(req, user):
     form = forms.FormWrapper(manipulator, new_data, errors)
     return render_to_response("admin_useredit.html", RequestContext(req, { 'form': form, 'u': user, 'errors':errors} ))
 
-def adminusers(req):
+def admin_users(req):
     if req.POST and req.user.is_superuser:
         selected = [ u for u in User.objects.all() if "select-%s" % u.username in req.POST]
         if 'delete-selected' in req.POST:
             for u in selected:
                 u.delete()
     
-    return render_to_response("adminusers.html", RequestContext(req, { 'users': User.objects.all() } ))
+    return render_to_response("admin_users.html", RequestContext(req, { 'users': User.objects.all() } ))
 
-def adminlanguages(req):
+def admin_languages(req):
     error = None
     if req.POST:
         if req.user.is_superuser:
@@ -257,9 +253,9 @@ def adminlanguages(req):
         'languages': Language.unfiltered.all(), 
         'error':error, 
         'selected': [ lang.code for lang in Language.unfiltered.all()] }
-    return render_to_response("adminlanguages.html", RequestContext(req, context))
+    return render_to_response("admin_languages.html", RequestContext(req, context))
 
-def adminprojects(req):
+def admin_projects(req):
     error = None
     if req.POST: 
         if req.user.is_superuser:
@@ -272,7 +268,7 @@ def adminprojects(req):
     context = { 
         'error': error,
         'projects' : Project.objects.all() }
-    return render_to_response("adminprojects.html", RequestContext(req, context))
+    return render_to_response("admin_projects.html", RequestContext(req, context))
 
 def admin_projectedit(req, project):
     p = get_object_or_404(Project, code=project)
