@@ -15,9 +15,31 @@ class Project(models.Model):
     description = models.TextField()
     filetype = models.CharField(maxlength=10, choices=FILETYPES)
     createmofiles = models.BooleanField()
+    translatedwords = models.IntegerField(default=0)
+    translatedstrings = models.IntegerField(default=0)
+    fuzzywords = models.IntegerField(default=0)
+    fuzzystrings = models.IntegerField(default=0)
+    allwords = models.IntegerField(default=0)
+    allstrings = models.IntegerField(default=0)
+    
+    icon = 'folder'
     
     def __str__(self):
         return self.name
+
+    def _get_stats(self):
+        perc = self.allstrings/100.0
+        untransw = self.allwords - self.translatedwords - self.fuzzywords
+        untranss = self.allstrings - self.translatedstrings - self.fuzzystrings
+        try:    
+            return (self.translatedwords, self.translatedstrings, int(self.translatedstrings/perc), 
+                    self.fuzzywords, self.fuzzystrings, int(self.fuzzystrings/perc),
+                    untransw, untranss, int(untranss/perc), 
+                    self.allwords, self.allstrings)
+        except ZeroDivisionError:
+            # fixme emit signal to indexer here
+            return (0,0,0, 0,0,0, 0,0,0, 0,0)
+    stats = property(_get_stats)
 
 class AllowedLanguageManager(models.Manager):
     def get_query_set(self):
@@ -30,9 +52,17 @@ class Language(models.Model):
     nplurals = models.IntegerField()
     plural_equation = models.CharField(maxlength=200)
     enabled = models.BooleanField()
+    translatedwords = models.IntegerField(default=0)
+    translatedstrings = models.IntegerField(default=0)
+    fuzzywords = models.IntegerField(default=0)
+    fuzzystrings = models.IntegerField(default=0)
+    allwords = models.IntegerField(default=0)
+    allstrings = models.IntegerField(default=0)
 
     objects = AllowedLanguageManager()
     unfiltered = models.Manager()
+
+    icon = 'language'
 
     def __str__(self):
         return self.name
@@ -40,6 +70,20 @@ class Language(models.Model):
     class Meta:
         ordering = ('code',)
     
+    def _get_stats(self):
+        perc = self.allstrings/100.0
+        untransw = self.allwords - self.translatedwords - self.fuzzywords
+        untranss = self.allstrings - self.translatedstrings - self.fuzzystrings
+        try:    
+            return (self.translatedwords, self.translatedstrings, int(self.translatedstrings/perc), 
+                    self.fuzzywords, self.fuzzystrings, int(self.fuzzystrings/perc),
+                    untransw, untranss, int(untranss/perc), 
+                    self.allwords, self.allstrings)
+        except ZeroDivisionError:
+            # fixme emit signal to indexer here
+            return (0,0,0, 0,0,0, 0,0,0, 0,0)
+    stats = property(_get_stats)
+
 class TranslationProject(models.Model):
     language = models.ForeignKey(Language)
     project = models.ForeignKey(Project)
