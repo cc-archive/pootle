@@ -35,6 +35,7 @@ Date:    7 Mar 2004
 from __future__ import generators
 
 import sys, warnings, os, fnmatch, glob, shutil, codecs, md5
+from Pootle.utils.fstags import create_tag
 
 __version__ = '2.1'
 __all__ = ['path']
@@ -971,6 +972,14 @@ class path(_base):
 
     # --- Special stuff for Pootle
 
+    def _is_po_file(self):
+        return self.ext == "po"
+    is_po = property(_is_po_file)
+
+    def _is_xliff_file(self):
+        return self.ext in ['xlf', 'xlff', 'xliff']
+    is_xliff = property(_is_xliff_file)
+
     def listpo(self):
         return self.files("*.po")
 
@@ -982,7 +991,14 @@ class path(_base):
         #         3,  4, 5 fuzzy words, string, percentage         
         #         6,  7, 8 untranslated words, string, percentage  
         #         9, 10    all words, string                       
-        return (0,0,0, 0,0,0, 0,0,0, 0,0)
+        if not self._stats:
+            pass # FIXME : actually recalculate the stats (and add timestamp?)
+        data = self.stats.split(",")
+        map(int, data)
+        print type(data[1])
+        return data
+
+    _stats = property(*create_tag(stats))
 
     def icon(self):
         if self.isdir():
