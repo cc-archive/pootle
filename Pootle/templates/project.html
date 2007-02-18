@@ -20,13 +20,19 @@
 {% endif %}
 
       <div class="item-statistics">
-        {{ stats }} FIXME
+        {{ stats }}
       </div>
     </div>
 
     <div class="intro">
       {{ project.description }}
     </div>
+
+{% if starttranslating %}
+<div class="starttranslating">
+<p>{% trans "You can start translating this project to:" %}<ul>{% for lang in starttranslating %}<li><a href="start/{{ lang.code }}/">{{ lang }}</a></li>{% endfor %}</ul></p>
+</div>
+{% endif %}
 
 {% if languages %}
       <table class="sortable stats" id="stats" cellpadding="5" cellspacing="0" width="100%">

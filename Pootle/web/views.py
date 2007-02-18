@@ -57,18 +57,40 @@ def about(req):
 
 def project(req, project):
     p = get_object_or_404(Project, code=project)
-    languages = [] # FIXME
+    languages = TranslationProject.objects.filter(project=p)
+    start_translating = [ i for i in req.user.get_profile().languages.all() if i not in 
+        [ lang.language for lang in languages ]]
     context = {
         'project': p,
-        'stats': ngettext(  "%(count)d language, average %(average)d%% translated", # FIXME
+        'stats': ngettext(  "%(count)d language, average %(average)d%% translated",
                             "%(count)d languages, average %(average)d%% translated", 
                             len(languages)) % { 
                                 'count': len(languages),
-                                'average': 0 #getpagestats(), }, 
+                                'average': 0 #getpagestats(), },  # FIXME
                                 },
-        'languages': TranslationProject.objects.filter(project=p),
+        'languages': languages,
+        'starttranslating': start_translating,
         }
     return render_to_response("project.html", RequestContext(req, context))
+
+def project_start(req, project, language):
+    if settings.REQUIRE_NEW_PROJECT_APPROVAL:
+        context = { 'message': _("This site requires administrator approval when creating new translation projects. When your translation project is approved, you will be notified by email.") }
+    else:
+        try:
+            p = Project.objects.get(code=project)
+            lang = Language.objects.get(code=language)
+        except Project.DoesNotExist:
+            pass
+        except Language.DoesNotExist:
+            pass
+        else:
+            newproject = TranslationProject(project=p, language=lang)
+            newproject.save()
+            # FIXME join req.user to group as admin
+            return HttpResponseRedirect("/%s/%s/" % (language, project) )
+        context = { 'message': _("Creating new project has failed.") }
+    return render_to_response("project_start.html", RequestContext(req, context))
 
 def language(req, language):
     lang = get_object_or_404(Language, code=language)
@@ -79,7 +101,7 @@ def language(req, language):
     return render_to_response("language.html", RequestContext(req, context))
     
 def translationproject(req, language, project, subdir=None):
-    p = TranslationProject(language=Language.objects.get(code=language), project=Project.objects.get(code=project))
+    p = get_object_or_404(TranslationProject, language=Language.objects.get(code=language), project=Project.objects.get(code=project))
     context = {
         'project': p,
         'items': p.list_dir(subdir),

@@ -78,8 +78,6 @@ class UserProfileManipulator(forms.Manipulator):
             forms.TextField(field_name="inputwidth", length=10, validator_list=[isOnlyDigits]),
             forms.TextField(field_name="viewrows", length=10, validator_list=[isOnlyDigits]),
             forms.TextField(field_name="translaterows", length=10, validator_list=[isOnlyDigits]),
-            forms.SelectMultipleField(field_name="projects", 
-                size=min(max(len(project_choices), 5), 15), choices=project_choices),
             forms.SelectMultipleField(field_name="languages", 
                 size=min(max(len(language_choices), 5), 15), choices=language_choices),
         )
@@ -88,8 +86,7 @@ class UserProfileManipulator(forms.Manipulator):
         data = dict([ (k.field_name, getattr(self.user, k.field_name, None)) \
             for k in self.fields if not k.field_name.startswith("password") ])
         profile, created = UserProfile.objects.get_or_create(user=self.user)
-        data.update({   'projects': [p.id for p in profile.projects.all()], 
-                        'languages': [lang.id for lang in profile.languages.all()]} )
+        data['languages'] = [lang.id for lang in profile.languages.all()]
         if created:
             profile.save()
         return data
@@ -109,12 +106,6 @@ class UserProfileManipulator(forms.Manipulator):
 
         for k in ['uilanguage', 'inputheight', 'inputwidth', 'viewrows', 'translaterows']:
             setattr(profile, k, new_data[k])
-        
-        for p in Project.objects.all():
-            if str(p.id) in new_data.getlist('projects'):
-                profile.projects.add(Project.objects.get(pk=p.id))
-            else:
-                profile.projects.remove(Project.objects.get(pk=p.id))
         
         for lang in Language.objects.all():
             if str(lang.id) in new_data.getlist('languages'):

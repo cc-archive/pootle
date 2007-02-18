@@ -95,6 +95,7 @@ class TranslationProject(models.Model):
     allstrings = models.IntegerField(default=0)
     
     _podir = None
+    _stats = None
 
     class Meta:
         unique_together = ( ('language','project'),) 
@@ -103,17 +104,19 @@ class TranslationProject(models.Model):
         return "<TranslationProject: /%s/%s/>" % (self.project.code, self.language.code)
 
     def _get_stats(self):
-        perc = self.allstrings/100.0
-        untransw = self.allwords - self.translatedwords - self.fuzzywords
-        untranss = self.allstrings - self.translatedstrings - self.fuzzystrings
-        try:    
-            return (self.translatedwords, self.translatedstrings, int(self.translatedstrings/perc), 
-                    self.fuzzywords, self.fuzzystrings, int(self.fuzzystrings/perc),
-                    untransw, untranss, int(untranss/perc), 
-                    self.allwords, self.allstrings)
-        except ZeroDivisionError:
-            # fixme emit signal to indexer here
-            return (0,0,0, 0,0,0, 0,0,0, 0,0)
+        if not self._stats:
+            perc = self.allstrings/100.0
+            untransw = self.allwords - self.translatedwords - self.fuzzywords
+            untranss = self.allstrings - self.translatedstrings - self.fuzzystrings
+            try:    
+                self._stats = (self.translatedwords, self.translatedstrings, int(self.translatedstrings/perc), 
+                            self.fuzzywords, self.fuzzystrings, int(self.fuzzystrings/perc),
+                            untransw, untranss, int(untranss/perc), 
+                            self.allwords, self.allstrings)
+            except ZeroDivisionError:
+                # FIXME emit signal to indexer here
+                self._stats = (0,0,0, 0,0,0, 0,0,0, 0,0)
+        return self._stats
     stats = property(_get_stats)
 
     def list_dir(self, subdir=None):
@@ -183,6 +186,5 @@ class UserProfile(models.Model):
     inputwidth = models.SmallIntegerField(blank=True, null=True)
     viewrows = models.SmallIntegerField(blank=True, null=True)
     translaterows = models.SmallIntegerField(blank=True, null=True)
-    projects = models.ManyToManyField(Project, related_name='joined_projects', blank=True, null=True)
     languages = models.ManyToManyField(Language, related_name='joined_languages', blank=True, null=True)
 

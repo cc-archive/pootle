@@ -14,7 +14,7 @@ urlpatterns = patterns('Pootle.web.views',
     
     (r'^(?P<what>projects)/$', 'index'),
     (r'^projects/(?P<project>\w+)/$', 'project'),
-    (r'^projects/(?P<project>\w+)/index.html$', 'project'),
+    (r'^projects/(?P<project>\w+)/start/(?P<language>\w+)/$', 'project_start'),
     (r'^projects/(?P<project>\w+)/admin.html$', 'projectadmin'),
     
     (r'^admin/$', 'admin'),

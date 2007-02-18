@@ -9,7 +9,7 @@
 
       <form action="" method="post" name="personal" id="personal">
         <table cellpadding="1" cellspacing="1">
-          <tr><td><h3 class="title">{% trans "Personal Details" %}</h3></td></tr>
+          <tr><td colspan="2"><h3 class="title">{% trans "Personal Details" %}</h3></td></tr>
           <tr>
             <td colspan="1" rowspan="1"><h3 class="title">{% trans "Option" %}</h3></td>
             <td colspan="1" rowspan="1"><h3 class="title">{% trans "Current value" %}</h3></td>
@@ -34,11 +34,9 @@
             <td colspan="1" rowspan="1">{% trans "Confirm password" %}</td>
             <td colspan="1" rowspan="1">{{ form.password_confirm }} {{ errors.password_confirm|join:" " }}</td>
           </tr>
-          <tr><td><h3 class="title">{% trans "My Projects" %}</h3></td></tr>
-          <tr><td>{{ form.projects }}</td></tr>
-          <tr><td><h3 class="title">{% trans "My Languages" %}</h3></td></tr>
-          <tr><td>{{ form.languages }}</td></tr>
-          <tr><td><h3 class="title">{% trans "Translation Interface Configuration" %}</h3></td></tr>
+          <tr><td></td><td><h3 class="title">{% trans "My Languages" %}</h3></td></tr>
+          <tr><td></td><td>{{ form.languages }}</td></tr>
+          <tr><td colspan="2"><h3 class="title">{% trans "Translation Interface Configuration" %}</h3></td></tr>
           <tr>
             <td colspan="1" rowspan="1"><h3 class="title">{% trans "Option" %}</h3></td>
             <td colspan="1" rowspan="1"><h3 class="title">{% trans "Current value" %}</h3></td>
