@@ -4,38 +4,6 @@
 {% block title %}Pootle Admin Page{% endblock %}
 
 {% block adminpanel %}
-    <div class="contents">
-      <h3 class="title">{% trans "General options" %}</h3>
-      <form action="" method="post" name="general" id="general">
-        <table cellpadding="1" cellspacing="1">
-          <tr>
-            <td colspan="1" rowspan="1">
-              <h3 class="title">{% trans "Option" %}</h3>
-            </td>
-            <td colspan="1" rowspan="1">
-              <h3 class="title">{% trans "Current value" %}</h3>
-            </td>
-          </tr>
-
-          <tr>
-            <td colspan="1" rowspan="1">{% trans "Title" %}</td>
-            <td colspan="1" rowspan="1">{{ form.title }} {{ errors.title|join:" " }}</td>
-          </tr>
-          <tr>
-            <td colspan="1" rowspan="1">{% trans "Description" %}</td>
-            <td colspan="1" rowspan="1">{{ form.description }} {{ errors.description|join:" " }}</td>
-          </tr>
-          <tr>
-            <td colspan="1" rowspan="1">{% trans "Base URL" %}</td>
-            <td colspan="1" rowspan="1">{{ form.baseurl }} {{ errors.baseurl|join:" " }}</td>
-          </tr>
-          <tr>
-            <td colspan="1" rowspan="1">{% trans "Home Page" %}</td>
-            <td colspan="1" rowspan="1">{{ form.homepage }} {{ errors.homepage|join:" " }}</td>
-          </tr>
-        </table><input type="submit" name="changegeneral" value="{% trans "Save changes" %}" />
-      </form>
-    </div>
 {% endblock %}
 
 
