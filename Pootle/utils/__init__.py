@@ -26,3 +26,20 @@ class CallableValidatorWrapper:
     def __call__(self, field_data, all_data):
         return self._callable(field_data, all_data)
 
+
+def flatten(l, ltypes=(list, tuple)):
+    """Flattens a list, eg.:
+    >>> flatten([1,[2,[3],[4,5]]])
+    [1, 2, 3, 4, 5]
+
+    It is not recursive and returns a list, not an iterator.
+    """
+    i = 0
+    while i < len(l):
+        if not l[i]:
+            l.pop(i)
+            continue
+        while isinstance(l[i], ltypes):
+            l[i:i+1] = list(l[i])
+        i += 1
+    return l

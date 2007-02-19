@@ -36,6 +36,9 @@ from __future__ import generators
 
 import sys, warnings, os, fnmatch, glob, shutil, codecs, md5
 from Pootle.utils.fstags import create_tag
+from Pootle.utils.stats import enumerating_classify
+from translate.filters import checks
+from translate.storage import po
 
 __version__ = '2.1'
 __all__ = ['path']
@@ -79,6 +82,8 @@ _textmode = 'r'
 if hasattr(file, 'newlines'):
     _textmode = 'U'
 
+class NotImplementedException(Exception):
+    pass
 
 class TreeWalkWarning(Warning):
     pass
@@ -972,13 +977,11 @@ class path(_base):
 
     # --- Special stuff for Pootle
 
-    def _is_po_file(self):
-        return self.ext == "po"
-    is_po = property(_is_po_file)
+    def is_po_file(self):
+        return self.ext == ".po"
 
-    def _is_xliff_file(self):
-        return self.ext in ['xlf', 'xlff', 'xliff']
-    is_xliff = property(_is_xliff_file)
+    def is_xliff_file(self):
+        return self.ext in ['.xlf', '.xlff', '.xliff']
 
     def listpo(self):
         return self.files("*.po")
@@ -986,19 +989,73 @@ class path(_base):
     def listxliff(self):
         return self.files("*.xlf")
 
-    def stats(self):
-        # stats:  0,  1, 2 translated words, string, percentage    
-        #         3,  4, 5 fuzzy words, string, percentage         
-        #         6,  7, 8 untranslated words, string, percentage  
-        #         9, 10    all words, string                       
-        if not self._stats:
-            pass # FIXME : actually recalculate the stats (and add timestamp?)
-        data = self.stats.split(",")
-        map(int, data)
-        print type(data[1])
+    def _get_stats(self):
+        """_get_stats is a method that retrieves statistics for a file
+        that get displayed when browsing files that are part of 
+        TranslationProject.
+        
+        It returns a list with following indexes:
+            0   translated words
+            1   translated strings
+            2   translated percentage    
+            3   fuzzy words
+            4   fuzzy strings
+            5   fuzzy percentage
+            6   untranslated words
+            7   untranslated strings
+            8   untranslated percentage
+            9   all words
+            10  all strings
+        """
+        if not self._stats and self.classify:
+            c = self.classify
+            def _wordcount(index):
+                return c['sourcewordcount'][index]
+            transs = len(c['translated'])
+            fuzzys = len(c['fuzzy'])
+            blank = len(c['blank'])
+            totals = len(c['total']) - blank
+            untras = totals - transs - fuzzys
+            perc = total/100.0
+            transw = sum(map(_wordcount, c['translated']))
+            fuzzyw = sum(map(_wordcount, c['fuzzy']))
+            untraw = sum(map(_wordcount, [ i for i in c['total'] if i not in c['translated'] and i not in c['fuzzy']]))
+            data = [transw,transs,transs/perc, 
+                    fuzzyw,fuzzys,fuzzys/perc, 
+                    untraw,untras,untras/perc, 
+                    sum(c['sourcewordcount']), totals]
+            data = map(int, data)
+            writable_data = map(str, data)
+            self._stats = ",".join(writable_data)
+        else:
+            data = map(int, self._stats.split(","))
         return data
+    stats = property(_get_stats)
+    
+    _stats = property(*create_tag('stats'))
 
-    _stats = property(*create_tag(stats))
+    def _get_translation_store(self):
+        if not hasattr(self, '_translation_store'):
+            if self.is_po_file():
+                newpo = po.pofile()
+                newpo.parse(self.bytes())
+                self._translation_store = newpo
+            elif self.isdir():
+                self._translation_store = None
+            elif self.is_xliff_file():
+                raise NotImplementedException
+            else:
+                raise NotImplementedException
+        return self._translation_store
+    translationstore = property(_get_translation_store)
+
+    def _get_classify(self): # FIXME this should probably go to TranslationStore object
+        if not hasattr(self,'_classify'):
+            # FIXME standard checker
+            checker = checks.StandardChecker()
+            self._classify = enumerating_classify( checker , [u for u in self.translationstore.units if not u.isheader() or u.isblank()] )
+        return self._classify
+    classify = property(_get_classify)
 
     def icon(self):
         if self.isdir():
