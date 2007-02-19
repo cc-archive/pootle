@@ -1016,7 +1016,7 @@ class path(_base):
             blank = len(c['blank'])
             totals = len(c['total']) - blank
             untras = totals - transs - fuzzys
-            perc = total/100.0
+            perc = totals/100.0
             transw = sum(map(_wordcount, c['translated']))
             fuzzyw = sum(map(_wordcount, c['fuzzy']))
             untraw = sum(map(_wordcount, [ i for i in c['total'] if i not in c['translated'] and i not in c['fuzzy']]))
