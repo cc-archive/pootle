@@ -8,8 +8,6 @@ from translate.filters import checks
 
 isValidEmail = CallableValidatorWrapper(isValidEmail)
 
-project_choices = [(p.id, p.name) for p in Project.objects.all()]
-language_choices = [(p.id, p.name) for p in Language.objects.all()]
 CHECKS = [ ('Standard', 'Standard')] + [ (ch, ch) for ch in checks.projectcheckers.keys()]
 FILETYPES = [
     ('po', 'po'),
@@ -65,6 +63,7 @@ class UserAdminManipulator(forms.Manipulator):
 
 class UserProfileManipulator(forms.Manipulator):
     def __init__(self, user):
+        language_choices = [(p.id, p.name) for p in Language.objects.all()]
         self.user = user
         self.fields = (
             forms.TextField(field_name="first_name", length=40),
