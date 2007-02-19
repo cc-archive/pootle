@@ -3,6 +3,7 @@ from translate.filters import checks
 from Pootle.path import path
 from django.contrib.auth.models import User
 from Pootle.conf import potree
+from Pootle.utils.stats import SimpleStats
 import Pootle.instance
 
 CHECKSTYLES = [ ('Standard', 'Standard')] + [ (ch, ch) for ch in checks.projectcheckers.keys()]
@@ -114,14 +115,18 @@ class TranslationProject(models.Model):
                             untransw, untranss, int(untranss/perc), 
                             self.allwords, self.allstrings)
             except ZeroDivisionError:
-                # FIXME emit signal to indexer here
-                self._stats = (0,0,0, 0,0,0, 0,0,0, 0,0)
-        return self._stats
+                # refresh stats
+                stats = SimpleStats( (0,0,0, 0,0,0, 0,0,0, 0,0) )
+                for s in [i.stats for i in self.list_dir()]:
+                    stats = stats & s
+                stats.recalculate()
+                self._stats = stats
+        return SimpleStats(self._stats)
     stats = property(_get_stats)
 
     def list_dir(self, subdir=None):
         listing = subdir and path(self.podir / subdir) or path(self.podir)
-        return listing.dirs("[!.]*") + listing.listpo()
+        return listing.list_trans()
 
     def _get_podir(self):
         if not self._podir:

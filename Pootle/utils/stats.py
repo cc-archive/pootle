@@ -2,6 +2,24 @@
 from translate.tools import pocount
 from Pootle.utils import flatten # FIXME pocount returns generators
 
+class SimpleStats(list):
+    "This implements a new operation of adding stats together for easier calculation."
+    def __repr__(self):
+        return "stats: %s" % super(SimpleStats, self).__repr__()
+
+    def __and__(self, other):
+        "vector addition"
+        assert len(self) == len(other)
+        return SimpleStats([ self[i] + other[i] for i in xrange(len(self)) ])
+
+    def recalculate(self):
+        "racalculates percentage for stats"
+        assert len(self) == 11
+        perc = self[10]/100.0
+        self[2] = int(self[1]/perc)
+        self[5] = int(self[4]/perc)
+        self[8] = int(self[7]/perc)
+
 def enumerating_classify(checker, transunits):
     """Analyzes TranslationStore and returns checks as are written in 
     

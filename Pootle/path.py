@@ -34,9 +34,9 @@ Date:    7 Mar 2004
 
 from __future__ import generators
 
-import sys, warnings, os, fnmatch, glob, shutil, codecs, md5
+import sys, warnings, os, fnmatch, glob, shutil, codecs, md5, re
 from Pootle.utils.fstags import create_tag
-from Pootle.utils.stats import enumerating_classify
+from Pootle.utils.stats import enumerating_classify, SimpleStats
 from translate.filters import checks
 from translate.storage import po
 
@@ -81,6 +81,8 @@ except NameError:
 _textmode = 'r'
 if hasattr(file, 'newlines'):
     _textmode = 'U'
+
+translatable_file_re = re.compile(".*?\.(po|xli?ff?)$")
 
 class NotImplementedException(Exception):
     pass
@@ -983,11 +985,9 @@ class path(_base):
     def is_xliff_file(self):
         return self.ext in ['.xlf', '.xlff', '.xliff']
 
-    def listpo(self):
-        return self.files("*.po")
-
-    def listxliff(self):
-        return self.files("*.xlf")
+    def list_trans(self):
+        "lists files pootle storage can understand"
+        return self.dirs("[!.]*") + [ i for i in self.files() if translatable_file_re.match(i)]
 
     def _get_stats(self):
         """_get_stats is a method that retrieves statistics for a file
@@ -1007,28 +1007,34 @@ class path(_base):
             9   all words
             10  all strings
         """
-        if not self._stats and self.classify:
-            c = self.classify
-            def _wordcount(index):
-                return c['sourcewordcount'][index]
-            transs = len(c['translated'])
-            fuzzys = len(c['fuzzy'])
-            blank = len(c['blank'])
-            totals = len(c['total']) - blank
-            untras = totals - transs - fuzzys
-            perc = totals/100.0
-            transw = sum(map(_wordcount, c['translated']))
-            fuzzyw = sum(map(_wordcount, c['fuzzy']))
-            untraw = sum(map(_wordcount, [ i for i in c['total'] if i not in c['translated'] and i not in c['fuzzy']]))
-            data = [transw,transs,transs/perc, 
-                    fuzzyw,fuzzys,fuzzys/perc, 
-                    untraw,untras,untras/perc, 
-                    sum(c['sourcewordcount']), totals]
-            data = map(int, data)
-            writable_data = map(str, data)
-            self._stats = ",".join(writable_data)
+        if not self._stats:
+            if self.classify:
+                c = self.classify
+                def _wordcount(index):
+                    return c['sourcewordcount'][index]
+                transs = len(c['translated'])
+                fuzzys = len(c['fuzzy'])
+                blank = len(c['blank'])
+                totals = len(c['total']) - blank
+                untras = totals - transs - fuzzys
+                perc = totals/100.0
+                transw = sum(map(_wordcount, c['translated']))
+                fuzzyw = sum(map(_wordcount, c['fuzzy']))
+                untraw = sum(map(_wordcount, [ i for i in c['total'] if i not in c['translated'] and i not in c['fuzzy']]))
+                data = [transw,transs,transs/perc, 
+                        fuzzyw,fuzzys,fuzzys/perc, 
+                        untraw,untras,untras/perc, 
+                        sum(c['sourcewordcount']), totals]
+                data = SimpleStats(map(int, data))
+                self._stats = ",".join(map(str, data))
+            else:
+                data = SimpleStats( (0,0,0, 0,0,0, 0,0,0, 0,0) )
+                for s in [ i.stats for i in self.list_trans()]:
+                    data = data & s
+                data.recalculate()
+                self._stats = ",".join(map(str, data))
         else:
-            data = map(int, self._stats.split(","))
+            data = SimpleStats(map(int, self._stats.split(",")))
         return data
     stats = property(_get_stats)
     
@@ -1040,20 +1046,21 @@ class path(_base):
                 newpo = po.pofile()
                 newpo.parse(self.bytes())
                 self._translation_store = newpo
-            elif self.isdir():
-                self._translation_store = None
             elif self.is_xliff_file():
                 raise NotImplementedException
             else:
-                raise NotImplementedException
+                self._translation_store = None
         return self._translation_store
     translationstore = property(_get_translation_store)
 
     def _get_classify(self): # FIXME this should probably go to TranslationStore object
         if not hasattr(self,'_classify'):
-            # FIXME standard checker
-            checker = checks.StandardChecker()
-            self._classify = enumerating_classify( checker , [u for u in self.translationstore.units if not u.isheader() or u.isblank()] )
+            if self.is_po_file():
+                # FIXME standard checker
+                checker = checks.StandardChecker()
+                self._classify = enumerating_classify( checker , [u for u in self.translationstore.units if not u.isheader() or u.isblank()] )
+            else:
+                self._classify = None
         return self._classify
     classify = property(_get_classify)
 
