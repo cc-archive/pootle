@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: translate-pootle@lists.sourceforge.net\n"
 "POT-Creation-Date: 2007-01-17 14:02+0200\n"
-"PO-Revision-Date: 2007-01-18 14:50+0100\n"
+"PO-Revision-Date: 2007-02-20 19:28+0100\n"
 "Last-Translator: Carles Muñoz Gorriz <carlesmu@internautas.org>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -11,7 +11,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "Generated-By: pygettext.py 1.1\n"
-"X-Generator: Pootle 0.10.1\n"
+"X-Generator: Pootle 0.11rc2\n"
 
 #. l10n: Verb
 #: projects.py:135
@@ -29,7 +29,7 @@ msgstr "Tradueix"
 #. l10n: radio button text
 #: projects.py:138 indexpage.py:544
 msgid "Overwrite"
-msgstr ""
+msgstr "Sobreescriu"
 
 #. l10n: Verb
 #: projects.py:140
@@ -39,7 +39,7 @@ msgstr "Revisa"
 #. l10n: Verb
 #: projects.py:142
 msgid "Archive"
-msgstr "Arxiu"
+msgstr "Arxiva"
 
 #: projects.py:143
 msgid "Compile PO files"
@@ -72,9 +72,8 @@ msgid "You do not have rights to upload files here"
 msgstr "No teniu permisos per penjar aquí fitxers"
 
 #: projects.py:507
-#, fuzzy
 msgid "You do not have rights to overwrite files here"
-msgstr "No teniu permisos per guardar aquí fitxers"
+msgstr "No teniu permisos per sobreescriure fitxers aquí"
 
 #: projects.py:509
 msgid "You do not have rights to upload new files here"
@@ -1161,18 +1160,18 @@ msgstr "Seleccioneu un fitxer per carregar"
 #. l10n: tooltip
 #: indexpage.py:546
 msgid "Overwrite the current file if it exists"
-msgstr ""
+msgstr "Sobreescriu el fitxer actual si aquest existeix"
 
 #. l10n: radio button text
 #: indexpage.py:548
 msgid "Merge"
-msgstr ""
+msgstr "Uneix"
 
 #. l10n: tooltip
 #: indexpage.py:550
 msgid ""
 "Merge the file with the current file and turn conflicts into suggestions"
-msgstr ""
+msgstr "Uneix el fitxer amb l'actual i transforma els conflictes en suggeriments"
 
 #: indexpage.py:653
 msgid "Not in a goal"
