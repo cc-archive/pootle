@@ -63,13 +63,15 @@ def project(req, project):
             [ lang.language for lang in languages ]]
     else:
         start_translating = []
+    
+    average_translated = sum([x.stats[2] for x in languages])/len(languages)
     context = {
         'project': p,
         'stats': ngettext(  "%(count)d language, average %(average)d%% translated",
                             "%(count)d languages, average %(average)d%% translated", 
                             len(languages)) % { 
                                 'count': len(languages),
-                                'average': 0 #getpagestats(), },  # FIXME
+                                'average': average_translated,
                                 },
         'languages': languages,
         'starttranslating': start_translating,
@@ -97,9 +99,18 @@ def project_start(req, project, language):
 
 def language(req, language):
     lang = get_object_or_404(Language, code=language)
+    projects = TranslationProject.objects.filter(language=lang)
+
+    average_translated = sum([x.stats[2] for x in projects])/len(projects)
     context = {
         "language": lang,
-        "projects": TranslationProject.objects.filter(language=lang),
+        "stats": ngettext(  "%(count)d project, average %(average)d%% translated",
+                            "%(count)d projects, average %(average)d%% translated", 
+                            len(projects)) % { 
+                                'count': len(projects),
+                                'average': average_translated,
+                                },
+        "projects": projects,
         }
     return render_to_response("language.html", RequestContext(req, context))
     
