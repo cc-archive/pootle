@@ -1010,31 +1010,31 @@ class path(_base):
         if not self._stats:
             if self.classify:
                 c = self.classify
-                def _wordcount(index):
-                    return c['sourcewordcount'][index]
                 transs = len(c['translated'])
                 fuzzys = len(c['fuzzy'])
-                blank = len(c['blank'])
-                totals = len(c['total']) - blank
-                untras = totals - transs - fuzzys
+                totals = len(c['total'])
+                untras = totals - transs - fuzzys 
                 perc = totals/100.0
-                transw = sum(map(_wordcount, c['translated']))
-                fuzzyw = sum(map(_wordcount, c['fuzzy']))
-                untraw = sum(map(_wordcount, [ i for i in c['total'] if i not in c['translated'] and i not in c['fuzzy']]))
+                # sum number of words
+                transw = sum(c['sourcewordcount'][x] for x in c['translated']])
+                fuzzyw = sum(c['sourcewordcount'][x] for x in c['fuzzy']])
+                untraw = sum(c['sourcewordcount'][x] for x in [ 
+                    i for i in c['total'] if i not in c['translated'] and i not in c['fuzzy']]])
                 data = [transw,transs,transs/perc, 
                         fuzzyw,fuzzys,fuzzys/perc, 
                         untraw,untras,untras/perc, 
                         sum(c['sourcewordcount']), totals]
-                data = SimpleStats(map(int, data))
-                self._stats = ",".join(map(str, data))
+                print '==',data
+                data = SimpleStats([int(x) for x in data])
+                self._stats = ",".join([str(x) for x in data])
             else:
                 data = SimpleStats( (0,0,0, 0,0,0, 0,0,0, 0,0) )
                 for s in [ i.stats for i in self.list_trans()]:
                     data = data & s
                 data.recalculate()
-                self._stats = ",".join(map(str, data))
+                self._stats = ",".join([str(x) for x in data])
         else:
-            data = SimpleStats(map(int, self._stats.split(",")))
+            data = SimpleStats([int(x) for x in self._stats.split(",")])
         return data
     stats = property(_get_stats)
     
@@ -1058,7 +1058,7 @@ class path(_base):
             if self.is_po_file():
                 # FIXME standard checker
                 checker = checks.StandardChecker()
-                self._classify = enumerating_classify( checker , [u for u in self.translationstore.units if not u.isheader() or u.isblank()] )
+                self._classify = enumerating_classify( checker , [u for u in self.translationstore.units if not u.isheader() and not u.isobsolete()] )
             else:
                 self._classify = None
         return self._classify
