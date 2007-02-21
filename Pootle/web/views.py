@@ -58,8 +58,11 @@ def about(req):
 def project(req, project):
     p = get_object_or_404(Project, code=project)
     languages = TranslationProject.objects.filter(project=p)
-    start_translating = [ i for i in req.user.get_profile().languages.all() if i not in 
-        [ lang.language for lang in languages ]]
+    if req.user.is_authenticated():
+        start_translating = [ i for i in req.user.get_profile().languages.all() if i not in 
+            [ lang.language for lang in languages ]]
+    else:
+        start_translating = []
     context = {
         'project': p,
         'stats': ngettext(  "%(count)d language, average %(average)d%% translated",
