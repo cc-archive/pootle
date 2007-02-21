@@ -133,7 +133,7 @@ def login(req):
     manipulator = AuthenticationForm(req)
     new_data = {}
     if not redirect_to or '://' in redirect_to or ' ' in redirect_to:
-        redirect_to = '/home/'
+        redirect_to = '/'
 
     if req.user.is_authenticated():
         return HttpResponseRedirect(redirect_to)
