@@ -1016,9 +1016,9 @@ class path(_base):
                 untras = totals - transs - fuzzys 
                 perc = totals/100.0
                 # sum number of words
-                transw = sum(c['sourcewordcount'][x] for x in c['translated']])
-                fuzzyw = sum(c['sourcewordcount'][x] for x in c['fuzzy']])
-                untraw = sum(c['sourcewordcount'][x] for x in [ 
+                transw = sum([c['sourcewordcount'][x] for x in c['translated']])
+                fuzzyw = sum([c['sourcewordcount'][x] for x in c['fuzzy']])
+                untraw = sum([c['sourcewordcount'][x] for x in [ 
                     i for i in c['total'] if i not in c['translated'] and i not in c['fuzzy']]])
                 data = [transw,transs,transs/perc, 
                         fuzzyw,fuzzys,fuzzys/perc, 
