@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: pootle 0.11\n"
 "Report-Msgid-Bugs-To: translate-pootle@lists.sourceforge.net\n"
 "POT-Creation-Date: 2007-01-17 14:02+0200\n"
-"PO-Revision-Date: 2007-01-22 23:03+0100\n"
+"PO-Revision-Date: 2007-02-21 22:32+0100\n"
 "Last-Translator: Leonardo Ferreira Fontenelle <leo.fontenelle@gmail.com>\n"
 "Language-Team: Brazilian Portuguese <ldp-br@bazar.conectiva.com.br>\n"
 "MIME-Version: 1.0\n"
@@ -14,7 +14,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "Generated-By: pygettext.py 1.1\n"
-"X-Generator: Pootle 0.11rc\n"
+"X-Generator: Pootle 0.11rc2\n"
 
 #. l10n: Verb
 #: projects.py:135
@@ -182,7 +182,7 @@ msgstr "%d anteriores"
 #: translatepage.py:164
 #, python-format
 msgid "Items %d to %d of %d"
-msgstr "Itens %d para %d de %d"
+msgstr "Itens %d até %d de %d"
 
 #. l10n: the parameter refers to the number of messages
 #: translatepage.py:169 translatepage.py:172
@@ -216,7 +216,7 @@ msgstr "Designar Ação"
 #: translatepage.py:337
 #, python-format
 msgid "There are no items matching that search ('%s')"
-msgstr "Nenhum item coincide com a pesquisa ('%s') "
+msgstr "Nenhum item coincide com a pesquisa (\"%s\")"
 
 #: translatepage.py:339
 msgid "You have finished going through the items you selected"
@@ -769,7 +769,7 @@ msgstr "Favor digitar seus detalhes de ativação"
 
 #: users.py:123
 msgid "Pootle Account Activation"
-msgstr "Ativação da Conta Pootle "
+msgstr "Ativação da Conta Pootle"
 
 #: users.py:133
 msgid "Activation Code"
@@ -879,8 +879,7 @@ msgid ""
 "That username already exists. An email will be sent to the registered email "
 "address.\n"
 msgstr ""
-"O nome de usuário já existe. Será enviado um e-mail para o endereço de e-"
-"mail registado."
+"O nome de usuário já existe. Será enviado um e-mail para o endereço de e-mail registrado.\n"
 
 #: users.py:386
 #, python-format
@@ -901,7 +900,9 @@ msgstr "Para ativar a sua conta, siga este vínculo:\n"
 msgid ""
 "Your activation code is:\n"
 "%s\n"
-msgstr "O seu código de ativação é:\n"
+msgstr ""
+"O seu código de ativação é:\n"
+"%s\n"
 
 #: users.py:402
 msgid ""
@@ -979,15 +980,11 @@ msgstr "A largura do campo de texto deve ser um número"
 
 #: users.py:579
 msgid "The number of rows displayed in view mode must be numeric"
-msgstr ""
-"O número de linhas exibidas no modo de visualização deve deve conter apenas "
-"algarismos"
+msgstr "O número de linhas exibidas no modo de visualização deve conter apenas algarismos"
 
 #: users.py:580
 msgid "The number of rows displayed in translate mode must be numeric"
-msgstr ""
-"O número de linhas exibidas no modo de tradução deve deve conter apenas "
-"algarismos"
+msgstr "O número de linhas exibidas no modo de tradução deve conter apenas algarismos"
 
 #: pootle.py:275
 msgid "Login failed"
@@ -1029,12 +1026,7 @@ msgid ""
 "you can download it and run your own copy if you like. You can also help "
 "participate in the development in many ways (you don't have to be able to "
 "program)."
-msgstr ""
-"<strong>Pootle</strong> é um portal da <i>web</i> simples que permite a você "
-"fazer <strong>tradução</strong>! Pootle é <strong><i>Software</i> Livre</"
-"strong>, então você pode baixá-lo e rodar sua própria cópia, se quiser. Você "
-"também pode ajudar no desenvolvimento de várias formas, não é necessário "
-"saber programar."
+msgstr "<strong>Pootle</strong> é um portal <i>web</i> simples que permite a você fazer <strong>tradução</strong>! Pootle é <strong><i>Software</i> Livre</strong>: você pode baixá-lo e rodar sua própria cópia, se quiser. Você também pode ajudar no desenvolvimento de várias formas (não é necessário saber programar)."
 
 #: indexpage.py:64
 msgid ""
@@ -1142,7 +1134,7 @@ msgstr "Não foi possível enviar arquivo, nenhum arquivo anexado"
 
 #: indexpage.py:415
 msgid "Can only upload PO files and zips of PO files"
-msgstr "Só é possível enviar arquivos PO simples ou compactados."
+msgstr "Só é possível enviar arquivos PO simples ou compactados"
 
 #: indexpage.py:530
 msgid "goals"
@@ -1162,7 +1154,7 @@ msgstr "Enviar Arquivo"
 
 #: indexpage.py:538
 msgid "Select file to upload"
-msgstr "Selecione o arquivo a ser enviado"
+msgstr "Seleciona o arquivo a ser enviado"
 
 #. l10n: tooltip
 #: indexpage.py:546
