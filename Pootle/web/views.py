@@ -117,8 +117,19 @@ def language(req, language):
     
 def translationproject(req, language, project, subdir=None):
     p = get_object_or_404(TranslationProject, language=Language.objects.get(code=language), project=Project.objects.get(code=project))
+    
+    files = p.list_dir(subdir)
+    numfiles = len(files)
+    average_translated = int(sum([f.stats[2] for f in files])/float(numfiles))
+
     context = {
         'project': p,
+        'stats': ngettext(  "%(count)d file, average %(average)d%% translated",
+                            "%(count)d files, average %(average)d%% translated",
+                            numfiles) % {
+                                'count': numfiles,
+                                'average': average_translated,
+                                },
         'items': p.list_dir(subdir),
        }
     return render_to_response("translationproject.html", RequestContext(req, context))
