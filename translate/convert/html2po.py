@@ -32,12 +32,10 @@ class html2po:
   def convertfile(self, inputfile, filename, includeheader, includeuntagged=False, duplicatestyle="msgid_comment"):
     """converts a html file to .po format"""
     thepofile = po.pofile()
-    htmlparser = html.htmlfile(includeuntaggeddata=includeuntagged)
+    htmlparser = html.htmlfile(includeuntaggeddata=includeuntagged, inputfile=inputfile)
     if includeheader:
       headerpo = thepofile.makeheader(charset="UTF-8", encoding="8bit")
       thepofile.units.append(headerpo)
-    contents = inputfile.read()
-    htmlparser.feed(contents)
     for htmlunit in htmlparser.units:
       thepo = thepofile.addsourceunit(htmlunit.source)
       thepo.addlocations(htmlunit.getlocations())
@@ -59,7 +57,7 @@ def main(argv=None):
   from translate.misc import stdiotell
   import sys
   sys.stdout = stdiotell.StdIOWrapper(sys.stdout)
-  formats = {"html":("po",converthtml), "htm":("po",converthtml), "xhtml":("po",converthtml)}
+  formats = {"html":("po",converthtml), "htm":("po",converthtml), "xhtml":("po",converthtml), None:("po",converthtml)}
   parser = convert.ConvertOptionParser(formats, usepots=True, description=__doc__)
   parser.add_option("-u", "--untagged", dest="includeuntagged", default=False, action="store_true",
                     help="include untagged sections")
@@ -68,3 +66,6 @@ def main(argv=None):
   parser.passthrough.append("pot")
   parser.run(argv)
 
+
+if __name__ == '__main__':
+    main()
