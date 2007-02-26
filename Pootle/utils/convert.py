@@ -53,5 +53,6 @@ def convert_translation_store(inputpath, outputfd, format):
 
     if inputpath.is_po_file():
         outputfd.write(str(_po_converters[format](inputpath)))
-    raise NotImplementedException
+    else:    
+        raise NotImplementedException
 
