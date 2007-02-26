@@ -3,8 +3,8 @@
 {% extends "base.html" %}
 
 {% block head %}
-  <script type="text/javascript" src="{{ baseurl }}static/js/sorttable.js"></script>
-  <script type="text/javascript" src="{{ baseurl }}static/js/show-hide.js"></script>
+  <script type="text/javascript" src="{{ baseurl }}/static/js/sorttable.js"></script>
+  <script type="text/javascript" src="{{ baseurl }}/static/js/show-hide.js"></script>
 {% endblock %}
 
 {% block content %}
@@ -30,9 +30,9 @@
 {% for item in items %}
 <tr><td>
 <img src="/static/images/{{ item.icon }}.png" class="icon" alt="" dir="{{ uidir }}" lang="{{ uilanguage }}" /></td><td>
-<b><a href="{{ item.basename }}">{{ item.basename }}</a></b>
+<b><a href="{{ project.dir }}{% if item.isdir %}browse{% else %}translate{% endif %}/{{ item.href }}">{{ item.basename }}</a></b>
 {% if item.isfile %}
-<br />{% trans "Download:" %}&nbsp;<a href="{{ item.basename }}">PO</a>&nbsp;<a href="{{ item.basename }}">.ts</a>&nbsp;<a href="{{ item.basename }}">XLIFF</a>&nbsp;<a href="{{ item.basename }}">CSV</a>
+<br />{% trans "Download:" %}&nbsp;<a href="{{ project.dir }}download/{{ item.href }}">PO</a>&nbsp;<a href="{{ project.dir }}download/{{ item.href }}?format=ts">.ts</a>&nbsp;<a href="{{ project.dir }}download/{{ item.href }}?format=xliff">XLIFF</a>&nbsp;<a href="{{ project.dir }}download/{{ item.basename }}?format=csv">CSV</a>
 {% endif %}
 </td><td>
 &nbsp;

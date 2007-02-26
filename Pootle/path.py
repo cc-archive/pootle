@@ -37,6 +37,9 @@ from __future__ import generators
 import sys, warnings, os, fnmatch, glob, shutil, codecs, md5, re
 from Pootle.utils.fstags import create_tag
 from Pootle.utils.stats import enumerating_classify, SimpleStats
+from Pootle.utils import NotImplementedException
+from Pootle.conf import instance
+from Pootle.utils.convert import convert_translation_store
 from translate.filters import checks
 from translate.storage import po
 
@@ -83,9 +86,6 @@ if hasattr(file, 'newlines'):
     _textmode = 'U'
 
 translatable_file_re = re.compile(".*?\.(po|xli?ff?)$")
-
-class NotImplementedException(Exception):
-    pass
 
 class TreeWalkWarning(Warning):
     pass
@@ -1064,8 +1064,25 @@ class path(_base):
         return self._classify
     classify = property(_get_classify)
 
+    # conveniently convert translation store
+    convert = convert_translation_store
+
     def icon(self):
+        "returns name of the icon"
         if self.isdir():
             return 'folder'
         elif self.isfile(): 
             return 'file'
+    
+    def __sub__(self, other):
+        "If path starts with 'other', this method removes the 'other' and returns the leftover"
+        if other[-1] != os.pathsep:
+            other = other + os.sep
+        if self.startswith(other):
+            return str(self[len(other):])
+        return 
+
+    def href(self):
+        "returns a path relative to project"
+        interesting = (self - getattr(instance(), 'podirectory')).split(os.sep)
+        return os.sep.join(interesting[2:])

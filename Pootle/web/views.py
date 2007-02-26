@@ -1,4 +1,4 @@
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.template import Context, RequestContext, loader
 from django.conf import settings
 from django.contrib.auth.forms import AuthenticationForm
@@ -19,6 +19,7 @@ from Pootle.conf import instance, potree
 from django.utils.translation import gettext_lazy as _
 from django.utils.translation import ngettext
 import random
+from cStringIO import StringIO
 
 from Pootle.web.models import Language, Project
 
@@ -338,6 +339,16 @@ def admintranslationproject(req, language, project):
 def translatepage(req):
     # handles 2 urls
     return render_to_pootleresponse(translatepage.TranslatePage(project, pootlesession(req), argdict={}, dirfilter=None))
+
+def downloadfile(req, project, language, subdir, filename):
+    format = req.GET.get('format', 'po')
+    translationproject = TranslationProject.objects.get(project__code=project, language__code=language)
+    fullpath = translationproject.podir / (subdir + filename)
+    buffer = StringIO()
+    fullpath.convert(buffer, format)
+    contents = buffer.getvalue()
+    buffer.close()    
+    return HttpResponse(contents,mimetype="text/plain")
 
 # spellui.py
 

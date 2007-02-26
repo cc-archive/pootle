@@ -133,6 +133,9 @@ class TranslationProject(models.Model):
             self._podir = path(potree().getpodir(self.language.code, self.project.code))
         return self._podir
     podir = property(_get_podir)
+    
+    def dir(self):
+        return '/%s/%s/' % (self.language.code, self.project.code)
 
 class PootlePermission(models.Model):
     tproject = models.ForeignKey(TranslationProject)

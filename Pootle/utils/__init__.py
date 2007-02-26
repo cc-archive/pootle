@@ -3,6 +3,9 @@
 import sre
 import os
 
+class NotImplementedException(Exception):
+    pass
+
 def shortdescription(descr):
     """Returns a short description by removing markup and only including up
     to the first br-tag"""
