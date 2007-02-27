@@ -3,15 +3,15 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: translate-pootle@lists.sourceforge.net\n"
 "POT-Creation-Date: 2007-01-17 14:02+0200\n"
-"PO-Revision-Date: 2006-12-03 06:17+0100\n"
-"Last-Translator: ptbranco <ptbranco@gmail.com>\n"
+"PO-Revision-Date: 2007-02-26 23:36+0100\n"
+"Last-Translator: Miguel Figueiredo <elmig@debianpt.org>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "Generated-By: pygettext.py 1.1\n"
-"X-Generator: Pootle 0.10.1\n"
+"X-Generator: Pootle 0.11rc2\n"
 
 #. l10n: Verb
 #: projects.py:135
@@ -29,7 +29,7 @@ msgstr "Traduzir"
 #. l10n: radio button text
 #: projects.py:138 indexpage.py:544
 msgid "Overwrite"
-msgstr ""
+msgstr "Sobreescrever"
 
 #. l10n: Verb
 #: projects.py:140
@@ -47,7 +47,7 @@ msgstr "Compilar ficheiros PO"
 
 #: projects.py:144
 msgid "Assign"
-msgstr "Designar"
+msgstr "Atribuir"
 
 #: projects.py:145 indexpage.py:134
 msgid "Administrate"
@@ -72,9 +72,8 @@ msgid "You do not have rights to upload files here"
 msgstr "Você não tem direitos de enviar ficheiros aqui"
 
 #: projects.py:507
-#, fuzzy
 msgid "You do not have rights to overwrite files here"
-msgstr "Você não tem direitos para submeter ficheiros aqui"
+msgstr "Você não tem direitos para sobreescrever ficheiros aqui"
 
 #: projects.py:509
 msgid "You do not have rights to upload new files here"
@@ -201,15 +200,15 @@ msgstr "a verificar %s"
 
 #: translatepage.py:202 translatepage.py:205 indexpage.py:522 indexpage.py:525
 msgid "Assign Strings"
-msgstr "Frases Designadas"
+msgstr "Atribuir Strings"
 
 #: translatepage.py:203 indexpage.py:524
 msgid "Assign to User"
-msgstr "Designado ao Utilizador"
+msgstr "Atribuir ao Utilizador"
 
 #: translatepage.py:204 indexpage.py:523
 msgid "Assign Action"
-msgstr "Acção Designada"
+msgstr "Atribuir Acção"
 
 #: translatepage.py:337
 #, python-format
@@ -259,7 +258,7 @@ msgstr "Aumentar"
 #. l10n: action that decreases the height of the textarea
 #: translatepage.py:578
 msgid "Shrink"
-msgstr "Diminuir"
+msgstr "Encolher"
 
 #. l10n: action that increases the width of the textarea
 #: translatepage.py:580
@@ -659,11 +658,11 @@ msgstr "Palavras traduzidas"
 
 #: pagelayout.py:237
 msgid "Fuzzy"
-msgstr "Tradução aproximada"
+msgstr "Tradução aproximada (fuzzy)"
 
 #: pagelayout.py:238
 msgid "Fuzzy percentage"
-msgstr "Percentagem de traduções aproximadas"
+msgstr "Percentagem de traduções aproximadas (fuzzys)"
 
 #: pagelayout.py:239
 msgid "Fuzzy words"
@@ -1158,18 +1157,18 @@ msgstr "Selecione o ficheiro para enviar"
 #. l10n: tooltip
 #: indexpage.py:546
 msgid "Overwrite the current file if it exists"
-msgstr ""
+msgstr "Sobreescrever o ficheiro actual se este existir"
 
 #. l10n: radio button text
 #: indexpage.py:548
 msgid "Merge"
-msgstr ""
+msgstr "Juntar"
 
 #. l10n: tooltip
 #: indexpage.py:550
 msgid ""
 "Merge the file with the current file and turn conflicts into suggestions"
-msgstr ""
+msgstr "Juntar o ficheiro com o ficheiro actual e tornar os conflitos em sugestões"
 
 #: indexpage.py:653
 msgid "Not in a goal"
