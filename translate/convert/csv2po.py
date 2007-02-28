@@ -86,9 +86,10 @@ class csv2po:
   def convertelement(self,thecsv):
     """converts csv element to po element"""
     thepo = po.pounit(encoding="UTF-8")
-    thepo.sourcecomments = ["#: " + thecsv.comment + "\n"]
-    thepo.msgid = [quotecsvstr(line) for line in thecsv.source.split('\n')]
-    thepo.msgstr = [quotecsvstr(line) for line in thecsv.target.split('\n')]
+    if thecsv.comment:
+      thepo.addlocation(thecsv.comment)
+    thepo.source = thecsv.source
+    thepo.target = thecsv.target
     return thepo
 
   def handlecsvunit(self, thecsv):
