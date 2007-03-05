@@ -304,9 +304,9 @@ Pootle:
 
 # فارسی
 # Persian
-#    fa.fullname = u'Persian'
-#    fa.nplurals = '1'
-#    fa.pluralequation ='0'
+   fa.fullname = u'Persian'
+   fa.nplurals = '1'
+   fa.pluralequation ='0'
 
 # Suomi
 # Finnish
@@ -562,9 +562,9 @@ Pootle:
 
 # Српски / Srpski
 # Serbian
-#    sr.fullname = u'Serbian'
-#    sr.nplurals = '3'
-#    sr.pluralequation ='(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)'
+    sr.fullname = u'Serbian'
+    sr.nplurals = '3'
+    sr.pluralequation ='(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)'
 
 # Svenska
 # Swedish
@@ -586,9 +586,9 @@ Pootle:
 
 # Türkçe
 # Turkish
-   tr.fullname = u'Türkçe'
-   tr.nplurals = '1'
-   tr.pluralequation ='0'
+    tr.fullname = u'Türkçe'
+    tr.nplurals = '1'
+    tr.pluralequation ='0'
 
 # Українська
 # Ukrainian
