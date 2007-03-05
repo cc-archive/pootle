@@ -1,3 +1,56 @@
+2007-03-05 14:48  friedelwolff
+
+	* pootle.prefs: Enable Persian (fa) and Serbian (sr) in default
+	  install. Fix indentation
+
+2007-03-05 14:39  friedelwolff
+
+	* po/pootle/fa/jToolkit.po, po/pootle/fa/pootle.po: Update Persian
+	  (fa) translations from pootle.wordforge.org
+
+2007-02-28 08:51  friedelwolff
+
+	* po/pootle/da/pootle.po: Update Danish translation (da)
+
+2007-02-27 14:34  friedelwolff
+
+	* pootle.prefs: Enable Turkish (translation now at 80%)
+
+2007-02-27 14:31  friedelwolff
+
+	* po/pootle/pt/pootle.po, po/pootle/sl/pootle.po,
+	  po/pootle/tr/pootle.po: Update translations from
+	  pootle.wordforge.org (pt, sl, tr)
+
+2007-02-27 09:11  andreaspauley
+
+	* pootle.prefs: Display language names in English by default.
+
+2007-02-22 09:08  friedelwolff
+
+	* pootle.prefs: Disable Hungarian by default. Current translation
+	  status is 71%
+
+2007-02-22 09:00  friedelwolff
+
+	* po/pootle/pt_BR/pootle.po, po/pootle/ro/pootle.po: Updated
+	  translations for pt_BR and ro
+
+2007-02-21 14:58  friedelwolff
+
+	* po/pootle/ca/pootle.po, po/pootle/cs/jToolkit.po,
+	  po/pootle/cs/pootle.po, po/pootle/el/pootle.po: Updated
+	  translations from pootle.wordforge.org for ca, cs, el
+
+2007-02-20 13:43  andreaspauley
+
+	* pootlesetup.py: Remove subversion directories from our
+	  distribution.
+
+2007-02-08 09:27  friedelwolff
+
+	* ChangeLog: Update ChangeLog with most recent entries
+
 2007-02-08 09:13  friedelwolff
 
 	* ChangeLog: Update ChangeLog with changes since 0.10.1 up until
