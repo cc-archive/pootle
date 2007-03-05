@@ -1,3 +1,63 @@
+2007-03-05 14:32  friedelwolff
+
+	* doc/index.html: Point to the correct index page
+
+2007-03-05 13:35  friedelwolff
+
+	* __version__.py: Version 0.11
+
+2007-03-01 10:31  friedelwolff
+
+	* README: Mention the packaged documentation in doc/
+
+2007-02-28 15:24  friedelwolff
+
+	* convert/csv2po.py: Properly convert cvs unit with base class
+	  methods without doing the escaping here.
+
+2007-02-28 15:23  andreaspauley
+
+	* storage/csvl10n.py: Don't remove newlines and carriage returns
+	  in field values.
+
+2007-02-28 13:52  friedelwolff
+
+	* doc, doc/README, doc/api, doc/index.html, doc/user: Add the doc/
+	  directory where documentation will be added during the build
+	  process.
+
+2007-02-26 14:27  andreaspauley
+
+	* convert/html2po.py, convert/po2html.py, convert/test_html2po.py,
+	  convert/test_po2html.py, storage/html.py: Backport all changes
+	  made in po2html and html2po from trunk to the 0.10 branch.
+	  Changes based on trunk r5176.
+
+2007-02-23 13:40  andreaspauley
+
+	* setup.py: Include api documentation in the binary distribution.
+
+2007-02-20 17:42  andreaspauley
+
+	* setup.py: Include our documentation in the source distribution.
+
+2007-02-20 17:21  andreaspauley
+
+	* setup.py: Remove pootling files from our toolkit distribution.
+
+2007-02-20 14:19  friedelwolff
+
+	* filters/checks.py: Fix encoding problem with non-ascii messages
+	  in filter messages
+
+2007-02-14 14:46  friedelwolff
+
+	* storage/properties.py: Handle None source and target better.
+
+2007-02-08 09:26  friedelwolff
+
+	* ChangeLog: Update ChangeLog with most recent entries
+
 2007-02-08 09:12  friedelwolff
 
 	* ChangeLog: Update ChangeLog with changes since 0.10.1 up until
