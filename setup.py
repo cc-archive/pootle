@@ -246,6 +246,7 @@ def getdatafiles():
   docfiles.append(listfiles(join('translate', 'doc', 'api')))
   docfiles.append(listfiles(join('translate', 'doc', 'api', 'private')))
   docfiles.append(listfiles(join('translate', 'doc', 'api', 'public')))
+  docfiles.append(listfiles(join('translate', 'doc', 'user')))
   datafiles += docfiles
   return datafiles
 
