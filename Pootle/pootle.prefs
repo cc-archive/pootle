@@ -304,9 +304,9 @@ Pootle:
 
 # فارسی
 # Persian
-   fa.fullname = u'Persian'
-   fa.nplurals = '1'
-   fa.pluralequation ='0'
+    fa.fullname = u'Persian'
+    fa.nplurals = '1'
+    fa.pluralequation ='0'
 
 # Suomi
 # Finnish
