@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block head %}
+<script src="{{ baseurl }}static/js/autoexpand.js" type="text/javascript" />
+{% endblock %}
+
+{% block content %}
+
+{% trans "Original:" %}
+
+<br />
+{% trans "Translation:" %}
+{{ form.translation }}
+
+{% endblock %}

@@ -345,11 +345,18 @@ def admintranslationproject(req, language, project):
     project_obj = potree().getproject(language, project)
     return render_to_pootleresponse(adminpages.TranslationProjectAdminPage(potree(), project_obj, pootlesession(req), argdict))
 
-# translatepage.py
+def translate(req, language, project, subdir, filename):
+    translationproject = TranslationProject.objects.get(project__code=project, language__code=language)
+    file = translationproject.podir / (subdir + filename)
+    manipulator = webforms.TranslationManipulator(file)
 
-def translatepage(req):
-    # handles 2 urls
-    return render_to_pootleresponse(translatepage.TranslatePage(project, pootlesession(req), argdict={}, dirfilter=None))
+    new_data = errors = {} 
+    form = forms.FormWrapper(manipulator, new_data, errors)
+
+    context = {
+        'form' : form,
+        }
+    return render_to_response("translate.html", RequestContext(req, context))
 
 def downloadfile(req, project, language, subdir, filename):
     format = req.GET.get('format', 'po')

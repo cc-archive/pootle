@@ -114,3 +114,14 @@ class UserProfileManipulator(forms.Manipulator):
         profile.save()
         u.save()
         return u
+
+class TranslationManipulator(forms.Manipulator):
+    def __init__(self, translationunit):
+        self.unit = translationunit
+        self.fields = (
+            forms.LargeTextField(field_name="translation"),
+            )
+
+    def save(self, new_data):
+        # FIXME
+        print 'should save'
