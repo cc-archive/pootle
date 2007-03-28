@@ -8,7 +8,7 @@ from translate.filters import checks
 
 isValidEmail = CallableValidatorWrapper(isValidEmail)
 
-CHECKS = [ ('Standard', 'Standard')] + [ (ch, ch) for ch in checks.projectcheckers.keys()]
+CHECKS = [ (ch, ch) for ch in checks.projectcheckers.keys()]
 FILETYPES = [
     ('po', 'po'),
     ('xliff','xliff'),

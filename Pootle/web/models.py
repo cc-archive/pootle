@@ -6,13 +6,13 @@ from Pootle.conf import potree
 from Pootle.utils.stats import SimpleStats
 import Pootle.instance
 
-CHECKSTYLES = [ ('Standard', 'Standard')] + [ (ch, ch) for ch in checks.projectcheckers.keys()]
+CHECKSTYLES = [ (ch, ch) for ch in checks.projectcheckers.keys()]
 FILETYPES = (   ('po', 'po'),  ('xliff','xliff'), )
 
 class Project(models.Model):
     code = models.SlugField(maxlength=32,unique=True)
     name = models.CharField(maxlength=100)
-    checkstyle = models.CharField(maxlength=20, choices=CHECKSTYLES)
+    checkstyle = models.CharField(maxlength=20, choices=CHECKSTYLES, default='standard')
     description = models.TextField()
     filetype = models.CharField(maxlength=10, choices=FILETYPES)
     createmofiles = models.BooleanField()
@@ -24,6 +24,7 @@ class Project(models.Model):
     allstrings = models.IntegerField(default=0)
     
     icon = 'folder'
+    _checker_cache = None
     
     def __str__(self):
         return self.name
@@ -41,6 +42,12 @@ class Project(models.Model):
             # fixme emit signal to indexer here
             return (0,0,0, 0,0,0, 0,0,0, 0,0)
     stats = property(_get_stats)
+
+    def checker(self):
+        "returns the checker this project uses"
+        if not self._checker_cache:
+            self._checker_cache = checks.projectcheckers[self.checkstyle]()
+        return self._checker_cache
 
 class AllowedLanguageManager(models.Manager):
     def get_query_set(self):

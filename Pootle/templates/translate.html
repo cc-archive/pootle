@@ -7,10 +7,17 @@
 
 {% block content %}
 
-{% trans "Original:" %}
-
-<br />
-{% trans "Translation:" %}
-{{ form.translation }}
+<table>
+<tr>
+<td>{% trans "String number:" %}</td>
+<td>{{ stringnumber }}</td>
+</tr><tr>
+<td>{% trans "Original:" %}</td>
+<td>{{ originalstring }}</td>
+</tr><tr>
+<td>{% trans "Translation:" %}</td>
+<td>{{ form.translation }}</td>
+</tr>
+</table>
 
 {% endblock %}
