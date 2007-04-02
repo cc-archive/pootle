@@ -1075,8 +1075,7 @@ class path(_base):
         """Filters translation units and return next one, that doesn't have 
         checks listed in exclude_list."""
         if start == None:
-            start = -1
-        start = start + 1
+            start = 0
         end = start
         units = [u for u in self.translationstore.units if not u.isheader() and not u.isobsolete()]
         for unit in units[start:]:
@@ -1091,7 +1090,7 @@ class path(_base):
         unit = self.filter(exclude_list)
         while unit:
             yield unit
-            unit = self.filter(exclude_list, unit[0])
+            unit = self.filter(exclude_list, unit[0]+1)
 
     def icon(self):
         "returns name of the icon"

@@ -24,7 +24,7 @@ class TestPath:
     def test_filter(self):
         next, unit = test_path.filter(['translated'],1)
         assert next == 65
-        next, unit = test_path.filter(['translated'],next)
+        next, unit = test_path.filter(['translated'],next+1)
         assert next == 73
 
     def test_iterfilter(self):
