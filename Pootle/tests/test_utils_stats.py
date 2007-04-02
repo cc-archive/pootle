@@ -150,19 +150,3 @@ class TestStats:
         for key in data.iterkeys():
             assert data[key] == expected_result[key]
 
-class TestFilter:
-    def test_filter(self):
-
-        next, unit = test_path.filter(['translated'],1)
-        assert next == 65
-        next, unit = test_path.filter(['translated'],next)
-        assert next == 73
-
-    def test_iterfilter(self):
-        result = []
-    
-        for c in test_path.iterfilter(['translated']): 
-            result.append(c[0])
-
-        assert result == [65, 73, 78, 79, 99, 106, 107, 143, 144, 150, 151, 152, 153, 154, 155, 156, 157, 158, 159, 160, 161, 180, 215, 216, 217, 218, 219, 220, 221, 222, 223, 224, 225, 226, 227, 228, 229, 230, 231, 235, 242, 247, 263, 271]
-

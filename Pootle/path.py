@@ -1024,7 +1024,6 @@ class path(_base):
                         fuzzyw,fuzzys,fuzzys/perc, 
                         untraw,untras,untras/perc, 
                         sum(c['sourcewordcount']), totals]
-                print '==',data
                 data = SimpleStats([int(x) for x in data])
                 self._stats = ",".join([str(x) for x in data])
             else:
@@ -1073,6 +1072,8 @@ class path(_base):
     checker = property(_get_checker)
 
     def filter(self, exclude_list, start=None):
+        """Filters translation units and return next one, that doesn't have 
+        checks listed in exclude_list."""
         if start == None:
             start = -1
         start = start + 1
@@ -1085,6 +1086,8 @@ class path(_base):
             end = end + 1
 
     def iterfilter(self, exclude_list):
+        """Filters translation units and returns a generator yielding the ones,
+        that don't have checks listed in exclude_list."""
         unit = self.filter(exclude_list)
         while unit:
             yield unit
