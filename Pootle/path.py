@@ -36,7 +36,7 @@ from __future__ import generators
 
 import sys, warnings, os, fnmatch, glob, shutil, codecs, md5, re
 from Pootle.utils.fstags import create_tag
-from Pootle.utils.stats import enumerating_classify, SimpleStats
+from Pootle.utils.stats import enumerating_classify, classify_unit, SimpleStats
 from Pootle.utils import NotImplementedException
 from Pootle.conf import instance
 from Pootle.utils.convert import convert_translation_store
@@ -1056,9 +1056,7 @@ class path(_base):
     def _get_classify(self): # FIXME this should probably go to TranslationStore object
         if not hasattr(self,'_classify'):
             if self.is_po_file():
-                # FIXME standard checker
-                checker = checks.StandardChecker()
-                self._classify = enumerating_classify( checker , [u for u in self.translationstore.units if not u.isheader() and not u.isobsolete()] )
+                self._classify = enumerating_classify( self.checker , [u for u in self.translationstore.units if not u.isheader() and not u.isobsolete()] )
             else:
                 self._classify = None
         return self._classify
@@ -1066,6 +1064,31 @@ class path(_base):
 
     # conveniently convert translation store
     convert = convert_translation_store
+
+    def _get_checker(self):
+        # FIXME : make this translation project aware
+        if not hasattr(self, '_checker'):
+            self._checker = checks.StandardChecker()
+        return self._checker
+    checker = property(_get_checker)
+
+    def filter(self, exclude_list, start=None):
+        if start == None:
+            start = -1
+        start = start + 1
+        end = start
+        units = [u for u in self.translationstore.units if not u.isheader() and not u.isobsolete()]
+        for unit in units[start:]:
+            d = classify_unit(self.checker, unit)
+            if sum([int(d.has_key(f)) for f in exclude_list]) == 0:
+                return end, unit
+            end = end + 1
+
+    def iterfilter(self, exclude_list):
+        unit = self.filter(exclude_list)
+        while unit:
+            yield unit
+            unit = self.filter(exclude_list, unit[0])
 
     def icon(self):
         "returns name of the icon"
