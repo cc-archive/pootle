@@ -620,7 +620,7 @@ msgstr "%d/%d개 파일"
 #, python-format
 msgid "%d file"
 msgid_plural "%d files"
-msgstr "%d개 파일"
+msgstr[0] "%d개 파일"
 
 #: pagelayout.py:226 indexpage.py:985
 #, python-format
@@ -1066,7 +1066,7 @@ msgstr "'설정 바꾸기'를 눌러 언어와 프로젝트를 선택하십시�
 #, python-format
 msgid "%d project, average %d%% translated"
 msgid_plural "%d projects, average %d%% translated"
-msgstr "%d개 프로젝트, 평균 %d%% 번역함"
+msgstr[0] "%d개 프로젝트, 평균 %d%% 번역함"
 
 #. l10n: The first parameter is the name of the installation
 #. l10n: The second parameter is the name of the project/language
@@ -1088,7 +1088,7 @@ msgstr "언어 이름"
 #, python-format
 msgid "%d language, average %d%% translated"
 msgid_plural "%d languages, average %d%% translated"
-msgstr "%d개 언어, 평균 %d%% 번역함"
+msgstr[0] "%d개 언어, 평균 %d%% 번역함"
 
 #: indexpage.py:265
 msgid "Language"
@@ -1307,7 +1307,7 @@ msgstr "SDF 만들기"
 #, python-format
 msgid "%d string (%d%%) failed"
 msgid_plural "%d strings (%d%%) failed"
-msgstr "%d개 문자열 (%d%%) 실패"
+msgstr[0] "%d개 문자열 (%d%%) 실패"
 
 #: indexpage.py:983
 #, python-format
