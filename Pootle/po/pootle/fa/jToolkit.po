@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2005-06-13 14:54-0500\n"
-"PO-Revision-Date: 2007-03-05 01:28+0100\n"
+"PO-Revision-Date: 2007-03-10 00:34+0100\n"
 "Last-Translator: Mohammad Ebrahim Mohammadi Panah <mebrahim@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -11,7 +11,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 "Generated-By: pygettext.py 1.5\n"
-"X-Generator: Pootle 0.11rc2\n"
+"X-Generator: Pootle 0.11\n"
 
 #: web/server.py:57
 #, python-format
@@ -85,11 +85,11 @@ msgstr "متصل شد"
 
 #: web/session.py:269
 msgid "exited parent session"
-msgstr ""
+msgstr "خارج شده از نشست پدر"
 
 #: web/session.py:314
 msgid "need to define the users or userprefs entry on the server config"
-msgstr ""
+msgstr "نیاز است ورودی users یا userprefs در پیکربندی خادم تعریف شود"
 
 #: web/session.py:321 web/session.py:453
 #, python-format

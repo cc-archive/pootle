@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2005-06-13 14:54-0500\n"
-"PO-Revision-Date: 2006-11-18 00:49+0100\n"
+"PO-Revision-Date: 2007-03-21 09:50+0100\n"
 "Last-Translator: Khaled Hosny <khaledhosny@eglug.org>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -11,7 +11,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n>=3 && n<=10 ? 3 : n>=11 && n<=99 ? 4 : 5;\n"
 "Generated-By: pygettext.py 1.5\n"
-"X-Generator: Pootle 0.10.1\n"
+"X-Generator: Pootle 0.11\n"
 
 #: web/server.py:57
 #, python-format
@@ -48,7 +48,7 @@ msgstr "اسم المستخدم:"
 
 #: web/server.py:125
 msgid "Password:"
-msgstr "كلمة المرور:"
+msgstr "كلمة السر:"
 
 #: web/server.py:130
 msgid "Language:"

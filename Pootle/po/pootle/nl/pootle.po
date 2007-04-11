@@ -3,15 +3,15 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: translate-pootle@lists.sourceforge.net\n"
 "POT-Creation-Date: 2007-01-17 14:02+0200\n"
-"PO-Revision-Date: 2006-11-17 07:11+0100\n"
-"Last-Translator: Tom Verlinden <nednilrev@mail.ru>\n"
+"PO-Revision-Date: 2007-03-06 12:35+0100\n"
+"Last-Translator: Martijn van der Kleijn <martijn@vanderkleijn.net>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "Generated-By: pygettext.py 1.1\n"
-"X-Generator: Pootle 0.10.1\n"
+"X-Generator: Pootle 0.11rc2\n"
 
 #. l10n: Verb
 #: projects.py:135
@@ -29,7 +29,7 @@ msgstr "Vertalen"
 #. l10n: radio button text
 #: projects.py:138 indexpage.py:544
 msgid "Overwrite"
-msgstr ""
+msgstr "Overschrijven"
 
 #. l10n: Verb
 #: projects.py:140
@@ -72,9 +72,8 @@ msgid "You do not have rights to upload files here"
 msgstr "U heeft niet de rechten om hier bestanden te uploaden"
 
 #: projects.py:507
-#, fuzzy
 msgid "You do not have rights to overwrite files here"
-msgstr "U heeft niet de rechten om hier bestanden in te leveren"
+msgstr "U heeft niet de rechten om hier bestanden te overschijven"
 
 #: projects.py:509
 msgid "You do not have rights to upload new files here"
@@ -1161,18 +1160,18 @@ msgstr "Selecteer een bestand om te uploaden"
 #. l10n: tooltip
 #: indexpage.py:546
 msgid "Overwrite the current file if it exists"
-msgstr ""
+msgstr "Overschrijf het bestaande bestand indien het bestaat"
 
 #. l10n: radio button text
 #: indexpage.py:548
 msgid "Merge"
-msgstr ""
+msgstr "Samenvoegen"
 
 #. l10n: tooltip
 #: indexpage.py:550
 msgid ""
 "Merge the file with the current file and turn conflicts into suggestions"
-msgstr ""
+msgstr "Voeg het bestand samen met het huidige bestand en zet conflicten om in suggesties"
 
 #: indexpage.py:653
 msgid "Not in a goal"

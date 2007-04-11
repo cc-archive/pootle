@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: translate-pootle@lists.sourceforge.net\n"
 "POT-Creation-Date: 2007-01-17 14:02+0200\n"
-"PO-Revision-Date: 2006-10-15 14:36+0200\n"
+"PO-Revision-Date: 2007-03-06 06:58+0100\n"
 "Last-Translator: Kenshi Muto <kmuto@debian.org>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -11,7 +11,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 "Generated-By: pygettext.py 1.1\n"
-"X-Generator: Pootle 0.10.1\n"
+"X-Generator: Pootle 0.11rc2\n"
 
 #. l10n: Verb
 #: projects.py:135
@@ -29,7 +29,7 @@ msgstr "翻訳"
 #. l10n: radio button text
 #: projects.py:138 indexpage.py:544
 msgid "Overwrite"
-msgstr ""
+msgstr "上書き"
 
 #. l10n: Verb
 #: projects.py:140
@@ -72,9 +72,8 @@ msgid "You do not have rights to upload files here"
 msgstr "このファイルをアップロードする権限がありません"
 
 #: projects.py:507
-#, fuzzy
 msgid "You do not have rights to overwrite files here"
-msgstr "このファイルをコミットする権限がありません"
+msgstr "このファイルを上書きする権限がありません"
 
 #: projects.py:509
 msgid "You do not have rights to upload new files here"
@@ -845,6 +844,7 @@ msgstr "有効な email アドレスを入力してください"
 msgid ""
 "You (or someone else) attempted to register an account with your username.\n"
 msgstr ""
+"このユーザ名は既に登録されています。\n"
 
 #: users.py:379
 msgid "We don't store your actual password but only a hash of it.\n"
@@ -875,10 +875,12 @@ msgstr ""
 #: users.py:392
 msgid "A Pootle account has been created for you using this email address.\n"
 msgstr ""
+"Pootle のアカウントをこの e-mail アドレスで作成しました。\n"
 
 #: users.py:394
 msgid "To activate your account, follow this link:\n"
 msgstr ""
+"アカウントを有効にするには、以下のリンクをクリックしてください。\n"
 
 #: users.py:400
 #, python-format

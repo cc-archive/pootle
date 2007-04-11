@@ -5,27 +5,27 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: translate-pootle@lists.sourceforge.net\n"
 "POT-Creation-Date: 2007-01-17 14:02+0200\n"
-"PO-Revision-Date: 2006-04-13 03:45-0500\n"
-"Last-Translator: Shiva Pokharel <shiva@mpp.org.np>\n"
+"PO-Revision-Date: 2007-03-31 18:03+0200\n"
+"Last-Translator: Deepak <buddy132@yahoo.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
-"X-Generator: Pootle 0.6.3\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Pootle 0.11\n"
 
 #. l10n: Verb
 #: projects.py:135
 msgid "View"
-msgstr ""
+msgstr "हेर्नुहोस्"
 
 #: projects.py:136 translatepage.py:572
 msgid "Suggest"
-msgstr ""
+msgstr "सुझाव"
 
 #: projects.py:137
 msgid "Translate"
-msgstr ""
+msgstr "उल्था"
 
 #. l10n: radio button text
 #: projects.py:138 indexpage.py:544
@@ -35,12 +35,12 @@ msgstr ""
 #. l10n: Verb
 #: projects.py:140
 msgid "Review"
-msgstr ""
+msgstr "पुनरावलोकन"
 
 #. l10n: Verb
 #: projects.py:142
 msgid "Archive"
-msgstr ""
+msgstr "संग्रह"
 
 #: projects.py:143
 msgid "Compile PO files"
@@ -48,32 +48,31 @@ msgstr ""
 
 #: projects.py:144
 msgid "Assign"
-msgstr ""
+msgstr "खटाउनुहोस्"
 
 #: projects.py:145 indexpage.py:134
 msgid "Administrate"
-msgstr ""
+msgstr "प्रशासन"
 
 #. l10n: Commit to version control (like CVS or Subversion)
 #: projects.py:146 indexpage.py:738
 msgid "Commit"
-msgstr ""
+msgstr "निधो गर्नुहोस्"
 
 #. l10n: Don't translate "nobody" or "default"
 #: projects.py:226
 msgid "You cannot remove the \"nobody\" or \"default\" user"
-msgstr ""
+msgstr "तपाईंले \"nobody\" अथवा \"default\" प्रयोगकर्तालाई हटाउन सक्नुहुँदैन ।"
 
 #: projects.py:379 projects.py:441
 msgid "You do not have rights to alter goals here"
-msgstr ""
+msgstr "तपाईलाई यहाँ उद्देश्य परिवर्तन गर्ने अनुमति छैन"
 
 #: projects.py:504
 msgid "You do not have rights to upload files here"
-msgstr ""
+msgstr "तपाईलाई फाईल अपलोड गर्ने अनुति छैन"
 
 #: projects.py:507
-#, fuzzy
 msgid "You do not have rights to overwrite files here"
 msgstr "तपाइँ लाई पोटल प्रशासित गर्ने अधिकार छैन ।"
 
@@ -96,15 +95,15 @@ msgstr ""
 
 #: projects.py:1167
 msgid "You do not have rights to change translations here"
-msgstr ""
+msgstr "तपाईलाई उल्था परिवर्तन गर्ने अनुमति छैन"
 
 #: projects.py:1177
 msgid "You do not have rights to suggest changes here"
-msgstr ""
+msgstr "तपाईंलाई सुझाव परिवर्तन गर्ने अनुमति छैन"
 
 #: projects.py:1193 projects.py:1216
 msgid "You do not have rights to review suggestions here"
-msgstr ""
+msgstr "तपाईंलाई सुझाव पुनरावलोकन गर्ने अनुमति छैन"
 
 #: translatepage.py:80
 #, python-format
@@ -119,7 +118,7 @@ msgstr ""
 #: indexpage.py:96 indexpage.py:136 indexpage.py:194 indexpage.py:256
 #: indexpage.py:342
 msgid "Pootle Demo"
-msgstr ""
+msgstr "पूतल प्रदर्शन"
 
 #. l10n: first parameter: name of the installation (like "Pootle")
 #. l10n: second parameter: project name
@@ -128,35 +127,33 @@ msgstr ""
 #: translatepage.py:97
 #, python-format
 msgid "%s: translating %s into %s: %s"
-msgstr ""
+msgstr "%s: %s लाई %s: %s मा उल्था गर्दै"
 
 #: translatepage.py:111
 msgid "Original"
-msgstr ""
+msgstr "सक्कल"
 
 #: translatepage.py:112
-#, fuzzy
 msgid "Translation"
-msgstr "अनेक समिकरण"
+msgstr "उल्था"
 
 #: translatepage.py:115
 msgid "Accept"
-msgstr ""
+msgstr "सहमत"
 
 #: translatepage.py:116
-#, fuzzy
 msgid "Reject"
-msgstr "परियोजना हटाउनुहोस्"
+msgstr "असहमत"
 
 #. l10n: This heading refers to related translations and terminology
 #: translatepage.py:118
 msgid "Related"
-msgstr ""
+msgstr "सम्बन्धित"
 
 #. l10n: text next to search field
 #: translatepage.py:122 indexpage.py:352
 msgid "Search"
-msgstr ""
+msgstr "खोजी"
 
 #. l10n: "batch" refers to the set of translations that were reviewed
 #: translatepage.py:136
@@ -165,24 +162,24 @@ msgstr ""
 
 #: translatepage.py:138
 msgid "Click here to return to the index"
-msgstr ""
+msgstr "index मा फर्कन यहाँ क्लिक गर्नुहोस्"
 
 #. l10n: noun (the start)
 #: translatepage.py:152 translatepage.py:155
 msgid "Start"
-msgstr ""
+msgstr "सुरू"
 
 #. l10n: the parameter refers to the number of messages
 #: translatepage.py:159 translatepage.py:162
 #, python-format
 msgid "Previous %d"
-msgstr ""
+msgstr "पहिलेका"
 
 #. l10n: the third parameter refers to the total number of messages in the file
 #: translatepage.py:164
 #, python-format
 msgid "Items %d to %d of %d"
-msgstr ""
+msgstr "जम्म %d मध्ये %d देखि %d सम्म"
 
 #. l10n: the parameter refers to the number of messages
 #: translatepage.py:169 translatepage.py:172
@@ -193,13 +190,13 @@ msgstr ""
 #. l10n: noun (the end)
 #: translatepage.py:175 translatepage.py:178
 msgid "End"
-msgstr ""
+msgstr "अन्त्य"
 
 #. l10n: the parameter is the name of one of the quality checks, like "fuzzy"
 #: translatepage.py:195
 #, python-format
 msgid "checking %s"
-msgstr ""
+msgstr "जाँच गर्दै"
 
 #: translatepage.py:202 translatepage.py:205 indexpage.py:522 indexpage.py:525
 msgid "Assign Strings"
@@ -216,38 +213,38 @@ msgstr ""
 #: translatepage.py:337
 #, python-format
 msgid "There are no items matching that search ('%s')"
-msgstr ""
+msgstr "('%s') खोजीसँग मिल्ने कुनै बस्तु भेटिएन "
 
 #: translatepage.py:339
 msgid "You have finished going through the items you selected"
-msgstr ""
+msgstr "तपाईं आफूले छानेका बस्तुहरू सबै हेरी सक्नुभयो"
 
 #: translatepage.py:537
 msgid "Singular"
-msgstr ""
+msgstr "एकबचन"
 
 #: translatepage.py:538
 msgid "Plural"
-msgstr ""
+msgstr "बहुबचन"
 
 #. l10n: verb
 #: translatepage.py:552
 msgid "Edit"
-msgstr ""
+msgstr "सम्पादन गर्नुहोस्"
 
 #. l10n: verb
 #: translatepage.py:568
 msgid "Copy"
-msgstr ""
+msgstr "कपी गर्नुहोस्"
 
 #: translatepage.py:569 translatepage.py:748
 msgid "Skip"
-msgstr ""
+msgstr "छोड्नुहोस्"
 
 #. l10n: verb
 #: translatepage.py:571 translatepage.py:747 users.py:252
 msgid "Back"
-msgstr ""
+msgstr "फर्कनुहोस्"
 
 #: translatepage.py:573
 msgid "Submit"
@@ -256,22 +253,22 @@ msgstr ""
 #. l10n: action that increases the height of the textarea
 #: translatepage.py:576
 msgid "Grow"
-msgstr ""
+msgstr "बढाउनुहोस्"
 
 #. l10n: action that decreases the height of the textarea
 #: translatepage.py:578
 msgid "Shrink"
-msgstr ""
+msgstr "घटाउनुहोस्"
 
 #. l10n: action that increases the width of the textarea
 #: translatepage.py:580
 msgid "Broaden"
-msgstr ""
+msgstr "फराकिलो बनाउनुहोस्"
 
 #. l10n: action that decreases the width of the textarea
 #: translatepage.py:582
 msgid "Narrow"
-msgstr ""
+msgstr "साँघुरो बनाउनुहोस्"
 
 #. l10n: action that resets the size of the textarea
 #: translatepage.py:584
@@ -282,7 +279,7 @@ msgstr ""
 #: translatepage.py:769
 #, python-format
 msgid "Plural Form %d"
-msgstr ""
+msgstr "%d बहुबचन"
 
 #. l10n: This is an error message that will display if the relevant problem occurs
 #: translatepage.py:621
@@ -292,36 +289,35 @@ msgid ""
 msgstr ""
 
 #: translatepage.py:703
-#, fuzzy
 msgid "Current Translation:"
-msgstr "चालु मान"
+msgstr "हालको उल्था"
 
 #. l10n: First parameter: number
 #. l10n: Second parameter: name of translator
 #: translatepage.py:716
 #, python-format
 msgid "Suggestion %d by %s:"
-msgstr ""
+msgstr "%s: बाट %d सुझाव"
 
 #: translatepage.py:718
 #, python-format
 msgid "Suggestion %d:"
-msgstr ""
+msgstr "सुझाव %d:"
 
 #. l10n: parameter: name of translator
 #: translatepage.py:722
 #, python-format
 msgid "Suggestion by %s:"
-msgstr ""
+msgstr "%s: बाट सुझाव"
 
 #: translatepage.py:724
 msgid "Suggestion:"
-msgstr ""
+msgstr "सुझाव:"
 
 #: adminpages.py:43 adminpages.py:82 adminpages.py:138 adminpages.py:200
 #: pagelayout.py:36
 msgid "Home"
-msgstr ""
+msgstr "मुख्य पृष्ठ"
 
 #: adminpages.py:44 adminpages.py:202
 msgid "Users"
@@ -336,9 +332,8 @@ msgid "Projects"
 msgstr "परियोजनाहरू"
 
 #: adminpages.py:47
-#, fuzzy
 msgid "General options"
-msgstr "साधारण विकल्पहरू"
+msgstr "सामान्य विकल्पहरू"
 
 #: adminpages.py:48 users.py:153
 msgid "Option"
@@ -380,7 +375,7 @@ msgstr "ISO कोड"
 
 #: adminpages.py:90 adminpages.py:146 adminpages.py:208 users.py:100
 msgid "Full Name"
-msgstr "पुरा नाम"
+msgstr "पूरा नाम"
 
 #: adminpages.py:91
 msgid "(add language here)"
@@ -499,7 +494,7 @@ msgstr "मुख्य पृष्ठमा फर्किनुहोस्"
 
 #: adminpages.py:268
 msgid "Existing languages"
-msgstr ""
+msgstr "भैरहेका भाषाहरू"
 
 #. l10n: This refers to updating the translation files from the templates like with .pot files
 #: adminpages.py:272
@@ -594,67 +589,65 @@ msgstr "भाषाहरु"
 
 #: pagelayout.py:39
 msgid "My account"
-msgstr ""
+msgstr "मेरो खाता"
 
 #: pagelayout.py:40 pagelayout.py:162 indexpage.py:200 indexpage.py:262
 msgid "Admin"
-msgstr ""
+msgstr "प्रशासन"
 
 #: pagelayout.py:41
 msgid "Docs & help"
-msgstr ""
+msgstr "कागजात तथा सहयोग"
 
 #: pagelayout.py:42
 msgid "Log out"
-msgstr ""
+msgstr "लग-आउट"
 
 #: pagelayout.py:43
-#, fuzzy
 msgid "Log in"
-msgstr "लगइन"
+msgstr "लग-इन"
 
 #. l10n: Verb, as in "to register"
 #: pagelayout.py:45
 msgid "Register"
-msgstr ""
+msgstr "दर्ता गर्नुहोस्"
 
 #: pagelayout.py:46
 msgid "Activate"
-msgstr ""
+msgstr "चालु"
 
 #: pagelayout.py:74
 msgid "Pootle Logo"
-msgstr ""
+msgstr "पूतल लोगो"
 
 #: pagelayout.py:75
-#, fuzzy
 msgid "WordForge Translation Project"
-msgstr "चालु मान"
+msgstr "WordForge उल्था परियोजना"
 
 #: pagelayout.py:77
 msgid "About this Pootle server"
-msgstr "Pootle server बारेमा"
+msgstr "Pootle सर्भरका बारेमा"
 
 #: pagelayout.py:151
 msgid "All goals"
-msgstr ""
+msgstr "सबै उद्दश्यहरू"
 
 #: pagelayout.py:222
 #, python-format
 msgid "%d/%d files"
-msgstr ""
+msgstr "%d/%d फाईलहरू"
 
 #: pagelayout.py:225
 #, python-format
 msgid "%d file"
 msgid_plural "%d files"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d फाईल"
+msgstr[1] "%d फाईलहरू"
 
 #: pagelayout.py:226 indexpage.py:985
 #, python-format
 msgid "%d/%d words (%d%%) translated"
-msgstr ""
+msgstr "%d/%d शब्दहरू (%d%%) उल्था गरिएको"
 
 #: pagelayout.py:227
 #, python-format
@@ -663,72 +656,69 @@ msgstr ""
 
 #: pagelayout.py:233 users.py:155
 msgid "Name"
-msgstr ""
+msgstr "नाम"
 
 #: pagelayout.py:234
-#, fuzzy
 msgid "Translated"
-msgstr "अनेक समिकरण"
+msgstr "उल्था"
 
 #: pagelayout.py:235
 msgid "Translated percentage"
-msgstr ""
+msgstr "उल्था गरिएको प्रतिशत"
 
 #: pagelayout.py:236
-#, fuzzy
 msgid "Translated words"
-msgstr "अनेक समिकरण"
+msgstr "उल्था गरिएका शब्दहरू"
 
 #: pagelayout.py:237
 msgid "Fuzzy"
-msgstr ""
+msgstr "अस्पस्ट"
 
 #: pagelayout.py:238
 msgid "Fuzzy percentage"
-msgstr ""
+msgstr "अस्पस्ट प्रतिशत"
 
 #: pagelayout.py:239
 msgid "Fuzzy words"
-msgstr ""
+msgstr "अस्पस्ट शब्दहरू"
 
 #: pagelayout.py:240 indexpage.py:776
 msgid "Untranslated"
-msgstr ""
+msgstr "उल्था नगरिएका"
 
 #: pagelayout.py:241
 msgid "Untranslated percentage"
-msgstr ""
+msgstr "उल्था नगरिएको प्रतिशत"
 
 #: pagelayout.py:242
 msgid "Untranslated words"
-msgstr ""
+msgstr "उल्था नगरिएका शब्दहरू"
 
 #: pagelayout.py:243
-#, fuzzy
 msgid "Total"
-msgstr "शीर्षक"
+msgstr "जम्मा"
 
 #: pagelayout.py:244
 msgid "Total words"
-msgstr ""
+msgstr "जम्मा शब्दहरू"
 
 #. l10n: noun. The graphical representation of translation status
 #: pagelayout.py:246
 msgid "Graph"
-msgstr ""
+msgstr "ग्राफ"
 
 #: users.py:39
 #, python-format
 msgid "You must supply a valid password of at least %d characters."
-msgstr ""
+msgstr "कम्तिमा %d अक्षर भएको बैधानिक पासवर्ड उपलब्ध गराउनु पर्छ ।"
 
 #: users.py:41
 msgid "The password is not the same as the confirmation."
-msgstr ""
+msgstr "confirmation अनुसार पासवर्ड मिलेन"
 
 #: users.py:55
 msgid "Login to Pootle"
-msgstr ""
+msgstr "पूतलमा लग-ईन गर्नुहोस्"
 
 #: users.py:61
 #, fuzzy
@@ -994,27 +984,27 @@ msgstr ""
 
 #: pootle.py:275
 msgid "Login failed"
-msgstr ""
+msgstr "लग-ईन असफल भयो"
 
 #: pootle.py:319 pootle.py:350
 msgid "Redirecting to login..."
-msgstr ""
+msgstr "लग-ईन तर्फ लैजाँदै..."
 
 #: pootle.py:322
 msgid "Need to log in to access home page"
-msgstr ""
+msgstr "मुख्य पृष्ठमा पहुँचको लागि लग-ईन गर्नु पर्छ"
 
 #: pootle.py:335
 msgid "Personal details updated"
-msgstr ""
+msgstr "व्यक्तिगत जानकारीहरू अध्यावधिक गरियो"
 
 #: pootle.py:353
 msgid "Need to log in to access admin page"
-msgstr ""
+msgstr "प्रसाशनिक पृष्ठमा पहुँचको लागि लग-ईन गर्नु पर्छ"
 
 #: pootle.py:360
 msgid "Redirecting to home..."
-msgstr ""
+msgstr "मुख्य पृष्ठतर्फ लैजादै..."
 
 #: pootle.py:363
 msgid "You do not have the rights to administer pootle."
@@ -1088,39 +1078,35 @@ msgid "Admin page"
 msgstr "प्रशासन पृष्ठ"
 
 #: indexpage.py:135
-#, fuzzy
 msgid "Quick Links"
 msgstr "छिटो सम्पर्कहरु"
 
 #: indexpage.py:139
-#, fuzzy
 msgid "Please click on 'Change options' and select some languages and projects"
-msgstr "क्लिक मा परिवर्तन गर्नुहोस र र"
+msgstr "'रोजाई फेर्नुहोस्' मा क्लिक गर्नुहोस र केही भाषा तथा परियोजनाहरू छान्नुहोस्"
 
 #: indexpage.py:192
 #, python-format
 msgid "%d project, average %d%% translated"
 msgid_plural "%d projects, average %d%% translated"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d परियोजना, औसत %d%% उल्था गरिएको"
+msgstr[1] "%d परियोजनाहरू, औसत %d%% उल्था गरिएको"
 
 #. l10n: The first parameter is the name of the installation
 #. l10n: The second parameter is the name of the project/language
 #. l10n: This is used as a page title. Most languages won't need to change this
 #: indexpage.py:198 indexpage.py:260
-#, fuzzy, python-format
+#, python-format
 msgid "%s: %s"
-msgstr "%s %s"
+msgstr "%s: %s"
 
 #: indexpage.py:214
-#, fuzzy
 msgid "Language Code"
-msgstr "भाषाहरु"
+msgstr "भाषाको कोड"
 
 #: indexpage.py:215
-#, fuzzy
 msgid "Language Name"
-msgstr "भाषाहरु"
+msgstr "भाषाको नाम"
 
 #: indexpage.py:252
 #, python-format
@@ -1138,45 +1124,45 @@ msgstr "भाषाहरु"
 #: indexpage.py:344
 #, python-format
 msgid "%s: Project %s, Language %s"
-msgstr ""
+msgstr "%s: परियोजनाहरू %s, भाषाहरू %s"
 
 #: indexpage.py:409
 msgid "Cannot upload file, no file attached"
-msgstr ""
+msgstr "फाईल अपलोड गर्न सकिएन, कुनै फाईल संलग्न गरिएको छैन"
 
 #: indexpage.py:415
 msgid "Can only upload PO files and zips of PO files"
-msgstr ""
+msgstr "PO फाईल तथा तिनका जिप फाईल मात्र अपलोड गर्न सकिन्छ"
 
 #: indexpage.py:530
 msgid "goals"
-msgstr ""
+msgstr "उद्देश्यहरू"
 
 #: indexpage.py:531
 msgid "Enter goal name"
-msgstr ""
+msgstr "उद्देश्यका नाम लेख्नुहोस्"
 
 #: indexpage.py:532
 msgid "Add Goal"
-msgstr ""
+msgstr "उद्देश्य थप्नुहोस्"
 
 #: indexpage.py:537 indexpage.py:539
 msgid "Upload File"
-msgstr ""
+msgstr "फाईल अपलोड"
 
 #: indexpage.py:538
 msgid "Select file to upload"
-msgstr ""
+msgstr "अपलोड गर्न फाईल छान्नुहोस्"
 
 #. l10n: tooltip
 #: indexpage.py:546
 msgid "Overwrite the current file if it exists"
-msgstr ""
+msgstr "हाल भैरहेको फाईल बिस्थापित गर्नुहोस्"
 
 #. l10n: radio button text
 #: indexpage.py:548
 msgid "Merge"
-msgstr ""
+msgstr "संबन्ध जोड्नुहोस्"
 
 #. l10n: tooltip
 #: indexpage.py:550
@@ -1190,32 +1176,32 @@ msgstr ""
 
 #: indexpage.py:673
 msgid "Add User"
-msgstr ""
+msgstr "प्रयोगकर्ता थप्नुहोस्"
 
 #: indexpage.py:711
 msgid "PO file"
-msgstr ""
+msgstr "PO फाईल"
 
 #: indexpage.py:715
 msgid "XLIFF file"
-msgstr ""
+msgstr "XLIFF फाईल"
 
 #: indexpage.py:719
 msgid "Qt .ts file"
-msgstr ""
+msgstr "Qt .ts फाईल"
 
 #: indexpage.py:723
 msgid "CSV file"
-msgstr ""
+msgstr "CSV फाईल"
 
 #: indexpage.py:728
 msgid "MO file"
-msgstr ""
+msgstr "MO फाईल"
 
 #. l10n: Update from version control (like CVS or Subversion)
 #: indexpage.py:733
 msgid "Update"
-msgstr ""
+msgstr "अपडेट"
 
 #: indexpage.py:775
 msgid "All Strings"
@@ -1293,7 +1279,7 @@ msgstr ""
 
 #: indexpage.py:843
 msgid "View My Strings"
-msgstr ""
+msgstr "आफ्नो शब्द हेर्नुहोस्"
 
 #: indexpage.py:848
 msgid "No strings assigned to you"
@@ -1317,19 +1303,19 @@ msgstr ""
 
 #: indexpage.py:867
 msgid "Quick Translate"
-msgstr ""
+msgstr "छिटो उल्था"
 
 #: indexpage.py:869
 msgid "View Untranslated"
-msgstr ""
+msgstr "उल्था नभएका हेर्नुहोस्"
 
 #: indexpage.py:873
 msgid "No untranslated items"
-msgstr ""
+msgstr "उल्था नभएका कुनै छैनन्"
 
 #: indexpage.py:876
 msgid "Translate All"
-msgstr ""
+msgstr "सबै उल्था गर्नुहोस्"
 
 #: indexpage.py:891
 msgid "ZIP of goal"

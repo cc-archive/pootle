@@ -3,15 +3,15 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: translate-pootle@lists.sourceforge.net\n"
 "POT-Creation-Date: 2007-01-17 14:02+0200\n"
-"PO-Revision-Date: 2006-12-31 09:05+0100\n"
-"Last-Translator: Michael Lugassy <pootle@kehalim.co.il>\n"
+"PO-Revision-Date: 2007-04-04 16:29+0200\n"
+"Last-Translator: Dotan <kamberd@yahoo.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "Generated-By: pygettext.py 1.1\n"
-"X-Generator: Pootle 0.10.1\n"
+"X-Generator: Pootle 0.11\n"
 
 #. l10n: Verb
 #: projects.py:135
@@ -29,7 +29,7 @@ msgstr "תרגם"
 #. l10n: radio button text
 #: projects.py:138 indexpage.py:544
 msgid "Overwrite"
-msgstr ""
+msgstr "שכתב"
 
 #. l10n: Verb
 #: projects.py:140
@@ -43,67 +43,65 @@ msgstr "העבר לארכיון"
 
 #: projects.py:143
 msgid "Compile PO files"
-msgstr "קמפל קבצי PO"
+msgstr "הדר קבצי PO"
 
 #: projects.py:144
 msgid "Assign"
-msgstr "מנה"
+msgstr "הקצאה"
 
 #: projects.py:145 indexpage.py:134
 msgid "Administrate"
-msgstr "נהל"
+msgstr "ניהול"
 
 #. l10n: Commit to version control (like CVS or Subversion)
 #: projects.py:146 indexpage.py:738
 msgid "Commit"
-msgstr ""
+msgstr "הגשה"
 
 #. l10n: Don't translate "nobody" or "default"
 #: projects.py:226
 msgid "You cannot remove the \"nobody\" or \"default\" user"
-msgstr ""
+msgstr "אין באפשרותך להסיר את המשתמשים \"nobody\" או \"default\""
 
 #: projects.py:379 projects.py:441
 msgid "You do not have rights to alter goals here"
-msgstr ""
+msgstr "אין לך הרשאות לשנות את המטרות כאן"
 
 #: projects.py:504
 msgid "You do not have rights to upload files here"
-msgstr ""
+msgstr "אין לך הרשאות להעלות קבצים כאן"
 
 #: projects.py:507
-#, fuzzy
 msgid "You do not have rights to overwrite files here"
-msgstr "הנך בעל\\ת הרשאות להציע שינויים במקום זה"
+msgstr "אין לך הרשאות לשכתב קבצים כאן"
 
 #: projects.py:509
 msgid "You do not have rights to upload new files here"
-msgstr ""
+msgstr "אין לך הרשאות להעלות קבצים חדשים כאן"
 
 #: projects.py:518
 msgid "You do not have rights to update files here"
-msgstr ""
+msgstr "אין לך הרשאות לעדכן קבצים כאן"
 
 #: projects.py:588
-#, fuzzy
 msgid "You do not have rights to commit files here"
-msgstr "הנך בעל\\ת הרשאות להציע שינויים במקום זה"
+msgstr "אין לך הרשאות להגיש קבצים כאן"
 
 #: projects.py:922 projects.py:963
 msgid "You do not have rights to alter assignments here"
-msgstr ""
+msgstr "אין לך הרשאות לשנות הקצאות כאן"
 
 #: projects.py:1167
 msgid "You do not have rights to change translations here"
-msgstr ""
+msgstr "אין לך הרשאות לשנות תרגומים כאן"
 
 #: projects.py:1177
 msgid "You do not have rights to suggest changes here"
-msgstr ""
+msgstr "אין לך הרשאות להציע שינויים כאן"
 
 #: projects.py:1193 projects.py:1216
 msgid "You do not have rights to review suggestions here"
-msgstr ""
+msgstr "אין לך הרשאות לסקור הצעות כאן"
 
 #: translatepage.py:80
 #, python-format
@@ -120,38 +118,37 @@ msgstr ""
 #: indexpage.py:96 indexpage.py:136 indexpage.py:194 indexpage.py:256
 #: indexpage.py:342
 msgid "Pootle Demo"
-msgstr ""
+msgstr "הדמית Pootle"
 
 #. l10n: first parameter: name of the installation (like "Pootle")
 #. l10n: second parameter: project name
 #. l10n: third parameter: target language
 #. l10n: fourth parameter: file name
 #: translatepage.py:97
-#, fuzzy, python-format
+#, python-format
 msgid "%s: translating %s into %s: %s"
-msgstr "פוטל: תרגום %s ל-%s: %s"
+msgstr "%s: תרגום %s ל-%s: %s"
 
 #: translatepage.py:111
 msgid "Original"
-msgstr ""
+msgstr "מקור"
 
 #: translatepage.py:112
-#, fuzzy
 msgid "Translation"
-msgstr "תרגם הכל"
+msgstr "תרגום"
 
 #: translatepage.py:115
 msgid "Accept"
-msgstr ""
+msgstr "קבלה"
 
 #: translatepage.py:116
 msgid "Reject"
-msgstr ""
+msgstr "דחיה"
 
 #. l10n: This heading refers to related translations and terminology
 #: translatepage.py:118
 msgid "Related"
-msgstr ""
+msgstr "קשורים"
 
 #. l10n: text next to search field
 #: translatepage.py:122 indexpage.py:352
@@ -161,22 +158,22 @@ msgstr "חיפוש"
 #. l10n: "batch" refers to the set of translations that were reviewed
 #: translatepage.py:136
 msgid "End of batch"
-msgstr ""
+msgstr "סוף אסופה"
 
 #: translatepage.py:138
 msgid "Click here to return to the index"
-msgstr ""
+msgstr "יש ללחוץ כאן כדי לחזור לתוכן"
 
 #. l10n: noun (the start)
 #: translatepage.py:152 translatepage.py:155
 msgid "Start"
-msgstr ""
+msgstr "התחלה"
 
 #. l10n: the parameter refers to the number of messages
 #: translatepage.py:159 translatepage.py:162
 #, python-format
 msgid "Previous %d"
-msgstr ""
+msgstr "%d קודמים"
 
 #. l10n: the third parameter refers to the total number of messages in the file
 #: translatepage.py:164
@@ -193,7 +190,7 @@ msgstr "הבא %d"
 #. l10n: noun (the end)
 #: translatepage.py:175 translatepage.py:178
 msgid "End"
-msgstr ""
+msgstr "סוף"
 
 #. l10n: the parameter is the name of one of the quality checks, like "fuzzy"
 #: translatepage.py:195
@@ -203,15 +200,15 @@ msgstr "בודק %s"
 
 #: translatepage.py:202 translatepage.py:205 indexpage.py:522 indexpage.py:525
 msgid "Assign Strings"
-msgstr ""
+msgstr "הקצה מחרוזות"
 
 #: translatepage.py:203 indexpage.py:524
 msgid "Assign to User"
-msgstr ""
+msgstr "הקצה למשתמש"
 
 #: translatepage.py:204 indexpage.py:523
 msgid "Assign Action"
-msgstr ""
+msgstr "פעולת הקצאה"
 
 #: translatepage.py:337
 #, python-format
@@ -224,77 +221,76 @@ msgstr "סיימת לעבור על הפריטים שבחרת"
 
 #: translatepage.py:537
 msgid "Singular"
-msgstr ""
+msgstr "יחיד"
 
 #: translatepage.py:538
 msgid "Plural"
-msgstr ""
+msgstr "רבים"
 
 #. l10n: verb
 #: translatepage.py:552
 msgid "Edit"
-msgstr ""
+msgstr "עריכה"
 
 #. l10n: verb
 #: translatepage.py:568
 msgid "Copy"
-msgstr ""
+msgstr "העתקה"
 
 #: translatepage.py:569 translatepage.py:748
 msgid "Skip"
-msgstr ""
+msgstr "דילוג"
 
 #. l10n: verb
 #: translatepage.py:571 translatepage.py:747 users.py:252
 msgid "Back"
-msgstr ""
+msgstr "חזרה"
 
 #: translatepage.py:573
 msgid "Submit"
-msgstr ""
+msgstr "הגשה"
 
 #. l10n: action that increases the height of the textarea
 #: translatepage.py:576
 msgid "Grow"
-msgstr ""
+msgstr "הגדלה"
 
 #. l10n: action that decreases the height of the textarea
 #: translatepage.py:578
 msgid "Shrink"
-msgstr ""
+msgstr "הקטנה"
 
 #. l10n: action that increases the width of the textarea
 #: translatepage.py:580
 msgid "Broaden"
-msgstr ""
+msgstr "הרחבה"
 
 #. l10n: action that decreases the width of the textarea
 #: translatepage.py:582
 msgid "Narrow"
-msgstr ""
+msgstr "הצרה"
 
 #. l10n: action that resets the size of the textarea
 #: translatepage.py:584
 msgid "Reset"
-msgstr ""
+msgstr "שחזור"
 
 #: translatepage.py:605 translatepage.py:699 translatepage.py:736
 #: translatepage.py:769
 #, python-format
 msgid "Plural Form %d"
-msgstr ""
+msgstr "%d צורות רבים"
 
 #. l10n: This is an error message that will display if the relevant problem occurs
 #: translatepage.py:621
 msgid ""
 "Translation not possible because plural information for your language is not "
 "available. Please contact the site administrator."
-msgstr ""
+msgstr "תרגום לא אפשרי בגלל שהמידע על צורת הרבים לשפתך אינו זמין. נא לפנות אל מנהל האתר."
 
 #: translatepage.py:703
-#, fuzzy
 msgid "Current Translation:"
-msgstr "<b>תרגום נוכחי:</b>"
+msgstr "תרגום נוכחי:"
 
 #. l10n: First parameter: number
 #. l10n: Second parameter: name of translator
@@ -321,15 +317,15 @@ msgstr "הצעה:"
 #: adminpages.py:43 adminpages.py:82 adminpages.py:138 adminpages.py:200
 #: pagelayout.py:36
 msgid "Home"
-msgstr ""
+msgstr "בית"
 
 #: adminpages.py:44 adminpages.py:202
 msgid "Users"
-msgstr ""
+msgstr "משתמשים"
 
 #: adminpages.py:45 adminpages.py:84 indexpage.py:94
 msgid "Languages"
-msgstr ""
+msgstr "שפות"
 
 #: adminpages.py:46 adminpages.py:140 indexpage.py:95
 msgid "Projects"
@@ -337,68 +333,68 @@ msgstr "פרויקטים"
 
 #: adminpages.py:47
 msgid "General options"
-msgstr ""
+msgstr "אפשרויות כלליות"
 
 #: adminpages.py:48 users.py:153
 msgid "Option"
-msgstr ""
+msgstr "אפשרות"
 
 #: adminpages.py:49 users.py:154
 msgid "Current value"
-msgstr ""
+msgstr "ערך נוכחי"
 
 #: adminpages.py:50 adminpages.py:85 adminpages.py:141 adminpages.py:203
 #: users.py:168
 msgid "Save changes"
-msgstr ""
+msgstr "שמירת שינויים"
 
 #: adminpages.py:54
 msgid "Title"
-msgstr ""
+msgstr "כותרת"
 
 #: adminpages.py:55
 msgid "Description"
-msgstr ""
+msgstr "תיאור"
 
 #: adminpages.py:56
 msgid "Base URL"
-msgstr ""
+msgstr "כתובת בסיס"
 
 #: adminpages.py:57
 msgid "Home Page"
-msgstr ""
+msgstr "דף הבית"
 
 #: adminpages.py:83 adminpages.py:139 adminpages.py:201
 msgid "Main admin page"
-msgstr ""
+msgstr "דף הניהול הראשי"
 
 #: adminpages.py:89
 msgid "ISO Code"
-msgstr ""
+msgstr "קוד ה-ISO"
 
 #: adminpages.py:90 adminpages.py:146 adminpages.py:208 users.py:100
 msgid "Full Name"
-msgstr ""
+msgstr "שם מלא"
 
 #: adminpages.py:91
 msgid "(add language here)"
-msgstr ""
+msgstr "(כאן מוסיפים שפה)"
 
 #: adminpages.py:92
 msgid "Special Chars"
-msgstr ""
+msgstr "תווים מיוחדים"
 
 #: adminpages.py:92
 msgid "(special characters)"
-msgstr ""
+msgstr "(תווים מיוחדים)"
 
 #: adminpages.py:93 indexpage.py:217
 msgid "Number of Plurals"
-msgstr ""
+msgstr "מספר צורות הרבים"
 
 #: adminpages.py:93
 msgid "(number of plurals)"
-msgstr ""
+msgstr "(מספר צורות הרבים)"
 
 #: adminpages.py:94 indexpage.py:218
 msgid "Plural Equation"
@@ -409,35 +405,34 @@ msgid "(plural equation)"
 msgstr ""
 
 #: adminpages.py:95
-#, fuzzy
 msgid "Remove Language"
-msgstr "%s שפה"
+msgstr "הסרת שפה"
 
 #. l10n: The parameter is a languagecode, projectcode or username
 #: adminpages.py:110 adminpages.py:173 adminpages.py:235 adminpages.py:405
 #, python-format
 msgid "Remove %s"
-msgstr ""
+msgstr "הסרת %s"
 
 #: adminpages.py:128
 msgid "Standard"
-msgstr ""
+msgstr "רגיל"
 
 #: adminpages.py:145
 msgid "Project Code"
-msgstr ""
+msgstr "קוד הפרויקט"
 
 #: adminpages.py:147
 msgid "(add project here)"
-msgstr ""
+msgstr "(כאן מוסיפים פרויקט)"
 
 #: adminpages.py:148
 msgid "Project Description"
-msgstr ""
+msgstr "תיאור הפרויקט"
 
 #: adminpages.py:148
 msgid "(project description)"
-msgstr ""
+msgstr "(תיאור הפרויקט)"
 
 #: adminpages.py:149
 msgid "Checker Style"
@@ -445,20 +440,19 @@ msgstr ""
 
 #: adminpages.py:150
 msgid "Create MO Files"
-msgstr ""
+msgstr "יצירת קבצי MO"
 
 #: adminpages.py:151
-#, fuzzy
 msgid "Remove Project"
-msgstr "פרויקטים"
+msgstr "הסרת פרויקט"
 
 #: adminpages.py:207 users.py:66
 msgid "Login"
-msgstr ""
+msgstr "כניסה"
 
 #: adminpages.py:209 users.py:343
 msgid "(add full name here)"
-msgstr ""
+msgstr "(כאן יש להוסיף שם מלא)"
 
 #: adminpages.py:210 users.py:97
 msgid "Email Address"
@@ -466,7 +460,7 @@ msgstr "כתובת דוא\"ל"
 
 #: adminpages.py:210 users.py:346
 msgid "(add email here)"
-msgstr ""
+msgstr "(כאן יש להוסיף כתובת דוא\"ל)"
 
 #: adminpages.py:211 users.py:103 users.py:159
 msgid "Password"
@@ -474,77 +468,77 @@ msgstr "סיסמה"
 
 #: adminpages.py:211 users.py:340
 msgid "(add password here)"
-msgstr ""
+msgstr "(כאן יש להוסיף סיסמה)"
 
 #: adminpages.py:212
 msgid "Activated"
-msgstr ""
+msgstr "הופעל"
 
 #: adminpages.py:212
 msgid "Activate New User"
-msgstr ""
+msgstr "הפעלת משתמש חדש"
 
 #: adminpages.py:213
 msgid "Remove User"
-msgstr ""
+msgstr "הסרת משתמש"
 
 #: adminpages.py:267
 msgid "Back to main page"
-msgstr ""
+msgstr "חזרה לדף הראשי"
 
 #: adminpages.py:268
 msgid "Existing languages"
-msgstr ""
+msgstr "שפות קיימות"
 
 #. l10n: This refers to updating the translation files from the templates like with .pot files
 #: adminpages.py:272
 msgid "Update Languages"
-msgstr ""
+msgstr "עידכון שפות"
 
 #: adminpages.py:273
 #, python-format
 msgid "Pootle Admin: %s"
-msgstr ""
+msgstr "מנהל Pootle: %s"
 
 #: adminpages.py:274 adminpages.py:336
 msgid "You do not have the rights to administer this project."
-msgstr ""
+msgstr "אי לך הרשאות לניהול הפרויקט"
 
 #. l10n: This refers to updating the translation files from the templates like with .pot files
 #: adminpages.py:276
 msgid "Update from templates"
-msgstr ""
+msgstr "עידכון מתבנית"
 
 #: adminpages.py:284
 msgid "Add Language"
-msgstr ""
+msgstr "הוספת שפה"
 
 #. l10n: This is the page title. The first parameter is the language name, the second parameter is the project name
 #: adminpages.py:316
 #, python-format
 msgid "Pootle Admin: %s %s"
-msgstr ""
+msgstr "מנהל Pootle: %s %s"
 
 #: adminpages.py:317
 msgid "Project home page"
-msgstr ""
+msgstr "דף הבית של הפרויקט"
 
 #: adminpages.py:335
 #, python-format
 msgid "Cannot set rights for username %s - user does not exist"
-msgstr ""
+msgstr "אין אפשרות לתת הרשאות לשם המשתמש %s - המשתמש אינו קיים"
 
 #: adminpages.py:352
 msgid "This is a GNU-style project (one directory, files named per language)."
-msgstr ""
+msgstr "זהו פרויקט בתבנית GNU (תיקיה בודדת וקבצים בעלי שם השפה)."
 
 #: adminpages.py:354
 msgid "This is a standard style project (one directory per language)."
-msgstr ""
+msgstr "זהו פרויקט במבנה רגיל (תיקיה נפרדת לכל שפה)."
 
 #: adminpages.py:355
 msgid "User Permissions"
-msgstr ""
+msgstr "הרשאות המשתמש"
 
 #: adminpages.py:356 users.py:94 users.py:130
 msgid "Username"
@@ -552,49 +546,45 @@ msgstr "שם משתמש"
 
 #: adminpages.py:357
 msgid "(select to add user)"
-msgstr ""
+msgstr "(יש לבחור להוספת משתמש)"
 
 #: adminpages.py:358
 msgid "Rights"
-msgstr ""
+msgstr "הרשאות"
 
 #: adminpages.py:359 indexpage.py:988
 msgid "Remove"
-msgstr ""
+msgstr "הסרה"
 
 #: adminpages.py:386
 msgid "Update Rights"
-msgstr ""
+msgstr "עידכון הרשאות"
 
 #: pagelayout.py:37
-#, fuzzy
 msgid "All projects"
-msgstr "פרויקט %s"
+msgstr "כל הפרויקטים"
 
 #: pagelayout.py:38
-#, fuzzy
 msgid "All languages"
-msgstr "%s שפה"
+msgstr "כל השפות"
 
 #: pagelayout.py:39
 msgid "My account"
-msgstr ""
+msgstr "החשבון שלי"
 
 #: pagelayout.py:40 pagelayout.py:162 indexpage.py:200 indexpage.py:262
 msgid "Admin"
-msgstr ""
+msgstr "מנהל"
 
 #: pagelayout.py:41
 msgid "Docs & help"
-msgstr ""
+msgstr "תיעוד ועזרה"
 
 #: pagelayout.py:42
-#, fuzzy
 msgid "Log out"
 msgstr "יציאה"
 
 #: pagelayout.py:43
-#, fuzzy
 msgid "Log in"
 msgstr "כניסה"
 
@@ -605,136 +595,127 @@ msgstr "הרשמה"
 
 #: pagelayout.py:46
 msgid "Activate"
-msgstr "הפעל"
+msgstr "הפעלה"
 
 #: pagelayout.py:74
-#, fuzzy
 msgid "Pootle Logo"
-msgstr "פוטל"
+msgstr "סמל Pootle"
 
 #: pagelayout.py:75
-#, fuzzy
 msgid "WordForge Translation Project"
-msgstr "<b>תרגום נוכחי:</b>"
+msgstr "פרויקט התרגום של WordForge"
 
 #: pagelayout.py:77
 msgid "About this Pootle server"
-msgstr ""
+msgstr "אודות שרת Pootle זה"
 
 #: pagelayout.py:151
 msgid "All goals"
-msgstr ""
+msgstr "כל המטרות"
 
 #: pagelayout.py:222
 #, python-format
 msgid "%d/%d files"
-msgstr ""
+msgstr "%d/%d קבצים"
 
 #: pagelayout.py:225
 #, python-format
 msgid "%d file"
 msgid_plural "%d files"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "קובץ %d"
+msgstr[1] "%d קבצים"
 
 #: pagelayout.py:226 indexpage.py:985
 #, python-format
 msgid "%d/%d words (%d%%) translated"
-msgstr ""
+msgstr "%d/%d מילים (%d%%) תורגמו"
 
 #: pagelayout.py:227
 #, python-format
 msgid "%d/%d strings"
-msgstr ""
+msgstr "%d/%d מחרוזות"
 
 #: pagelayout.py:233 users.py:155
 msgid "Name"
-msgstr ""
+msgstr "שם"
 
 #: pagelayout.py:234
-#, fuzzy
 msgid "Translated"
-msgstr "תרגם הכל"
+msgstr "תורגם"
 
 #: pagelayout.py:235
 msgid "Translated percentage"
-msgstr ""
+msgstr "אחוזי תרגום"
 
 #: pagelayout.py:236
-#, fuzzy
 msgid "Translated words"
-msgstr "תרגם הכל"
+msgstr "מילים שתורגמו"
 
 #: pagelayout.py:237
 msgid "Fuzzy"
-msgstr ""
+msgstr "בספק"
 
 #: pagelayout.py:238
 msgid "Fuzzy percentage"
-msgstr ""
+msgstr "אחוזים בספק"
 
 #: pagelayout.py:239
 msgid "Fuzzy words"
-msgstr ""
+msgstr "מילים בספק"
 
 #: pagelayout.py:240 indexpage.py:776
 msgid "Untranslated"
-msgstr ""
+msgstr "לא תורגמו"
 
 #: pagelayout.py:241
-#, fuzzy
 msgid "Untranslated percentage"
-msgstr "צפה במחרוזות שלא תורגמו"
+msgstr "אחוזים שלא תורגמו"
 
 #: pagelayout.py:242
-#, fuzzy
 msgid "Untranslated words"
-msgstr "צפה במחרוזות שלא תורגמו"
+msgstr "מילים שלא תורגמו"
 
 #: pagelayout.py:243
 msgid "Total"
-msgstr ""
+msgstr "סך הכל"
 
 #: pagelayout.py:244
 msgid "Total words"
-msgstr ""
+msgstr "סך כל המילים"
 
 #. l10n: noun. The graphical representation of translation status
 #: pagelayout.py:246
 msgid "Graph"
-msgstr ""
+msgstr "גרף"
 
 #: users.py:39
 #, python-format
 msgid "You must supply a valid password of at least %d characters."
-msgstr ""
+msgstr "עליך לבחור סיסמה תקפה בת %d תוים לכל הפחות"
 
 #: users.py:41
 msgid "The password is not the same as the confirmation."
-msgstr ""
+msgstr "הסיסמה אינה תואמת את האישור"
 
 #: users.py:55
 msgid "Login to Pootle"
 msgstr "כניסה לפוטל"
 
 #: users.py:61
-#, fuzzy
 msgid "Username:"
-msgstr "שם משתמש"
+msgstr "שם משתמש:"
 
 #: users.py:63
-#, fuzzy
 msgid "Password:"
-msgstr "סיסמה"
+msgstr "סיסמה:"
 
 #: users.py:64
-#, fuzzy
 msgid "Language:"
-msgstr "%s שפה"
+msgstr "שפה:"
 
 #: users.py:73
 msgid "Default"
-msgstr ""
+msgstr "ברירת מחדל"
 
 #: users.py:85
 msgid "Please enter your registration details"
@@ -754,25 +735,23 @@ msgstr "יש להזין כתובת דוא\"ל תקפה"
 
 #: users.py:101
 msgid "Your full name"
-msgstr ""
+msgstr "שמך המלא"
 
 #: users.py:104
 msgid "Your desired password"
 msgstr "הסיסמה שבחרת"
 
 #: users.py:106 users.py:160
-#, fuzzy
 msgid "Confirm password"
-msgstr "הסיסמה שבחרת"
+msgstr "אישור סיסמה"
 
 #: users.py:107
 msgid "Type your password again to ensure it is entered correctly"
-msgstr ""
+msgstr "נא להקליד את הסיסמה שנית כדי להבטיח את נכונותה"
 
 #: users.py:109
-#, fuzzy
 msgid "Register Account"
-msgstr "הפעל חשבון"
+msgstr "רישום חשבון"
 
 #: users.py:118
 msgid "Please enter your activation details"
@@ -797,67 +776,66 @@ msgstr "הפעל חשבון"
 #: users.py:147
 #, python-format
 msgid "Options for: %s"
-msgstr ""
+msgstr "אפשרויות עבור: %s"
 
 #: users.py:152
 msgid "Personal Details"
-msgstr ""
+msgstr "פרטים אישיים"
 
 #: users.py:157
 msgid "Email"
-msgstr ""
+msgstr "דוא\"ל"
 
 #: users.py:161
 msgid "Translation Interface Configuration"
-msgstr ""
+msgstr "תצורת מנשק התרגום"
 
 #: users.py:162
 msgid "User Interface language"
-msgstr ""
+msgstr "שפת מנשק המשתמש"
 
 #: users.py:163
 msgid "My Projects"
-msgstr ""
+msgstr "הפרויקטים שלי"
 
 #: users.py:165
 msgid "My Languages"
-msgstr ""
+msgstr "השפות שלי"
 
 #: users.py:167
 msgid "Home page"
-msgstr ""
+msgstr "דף הבית"
 
 #: users.py:203
 msgid "Input Height (in lines)"
-msgstr ""
+msgstr "גובה הקלט (בשורות)"
 
 #: users.py:203
 msgid "Input Width (in characters)"
-msgstr ""
+msgstr "רוחב הקלט (בתווים)"
 
 #: users.py:204
 msgid "Number of rows in view mode"
-msgstr ""
+msgstr "מספר השורות במצב צפיה"
 
 #: users.py:205
 msgid "Number of rows in translate mode"
-msgstr ""
+msgstr "מספר השורות במצב תרגום"
 
 #: users.py:247
 msgid "Error"
-msgstr ""
+msgstr "שגיאה"
 
 #: users.py:299
 msgid "You need to be siteadmin to change users"
-msgstr ""
+msgstr "עליך להיות מנהל האתר כדי לשנות משתמשים"
 
 #: users.py:363
 msgid ""
 "Username must be alphanumeric, and must start with an alphabetic character."
-msgstr ""
+msgstr "על שם המשתמש להכיל אותיות ומספרים בלבד."
 
 #: users.py:369
-#, fuzzy
 msgid "You must supply a valid email address"
 msgstr "יש להזין כתובת דוא\"ל תקפה"
 
@@ -865,10 +843,12 @@ msgstr "יש להזין כתובת דוא\"ל תקפה"
 msgid ""
 "You (or someone else) attempted to register an account with your username.\n"
 msgstr ""
+"ניסית (או שמישהו אחר ניסה) לרשום חשבון עם שם המשתמש שלך.\n"
 
 #: users.py:379
 msgid "We don't store your actual password but only a hash of it.\n"
 msgstr ""
+"איננו שומרים את סיסמתך אלא רק את חתימתה.\n"
 
 #: users.py:381
 #, python-format
@@ -901,11 +881,13 @@ msgid "To activate your account, follow this link:\n"
 msgstr ""
 
 #: users.py:400
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "Your activation code is:\n"
 "%s\n"
-msgstr "קוד הפעלה"
+msgstr ""
+"קוד ההפעלה שלך הוא:\n"
+"%s\n"
 
 #: users.py:402
 msgid ""
@@ -936,9 +918,10 @@ msgid "Your user name is: %s\n"
 msgstr ""
 
 #: users.py:411
-#, fuzzy, python-format
+#, python-format
 msgid "Your password is: %s\n"
-msgstr "הסיסמה שבחרת"
+msgstr ""
+"הסיסמה שבחרת היא: %s\n"
 
 #: users.py:412
 #, python-format
@@ -962,9 +945,8 @@ msgid "The activation information was not valid."
 msgstr ""
 
 #: users.py:468
-#, fuzzy
 msgid "Activation Failed"
-msgstr "קוד הפעלה"
+msgstr "הפעלה כשלה"
 
 #: users.py:577
 msgid "Input height must be numeric"
@@ -1108,9 +1090,8 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: indexpage.py:265
-#, fuzzy
 msgid "Language"
-msgstr "%s שפה"
+msgstr "שפה"
 
 #. l10n: The first parameter is the name of the installation (like "Pootle")
 #: indexpage.py:344
