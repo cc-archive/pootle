@@ -68,7 +68,7 @@ msgstr "Lukk"
 #: web/session.py:191 web/session.py:344 web/session.py:350
 #, python-format
 msgid "logged in as <b>%s</b>"
-msgstr "logga inn som &lt;b&gt;%s&lt;/b&gt;"
+msgstr "logga inn som <b>%s</b>"
 
 #: web/session.py:193
 msgid "couldn't add new session"

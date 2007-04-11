@@ -1055,11 +1055,11 @@ msgid ""
 "b>ocalization <b>E</b>ngine, but you may need to read <a href=\"http://www."
 "thechestnut.com/flumps.htm\">this</a>."
 msgstr ""
-"Tên \"Pootle\" là từ cấu tạo có nghĩa là &lt;b&gt;PO&lt;/b&gt;-based &lt;"
-"b&gt;O&lt;/b&gt;nline &lt;b&gt;T&lt;/b&gt;ranslation / &lt;b&gt;L&lt;/b&gt;"
-"ocalization &lt;b&gt;E&lt;/b&gt;ngine (Dụng cụ địa phương hóa dịch trực "
-"tuyến đựa vào .po), nhưng mà có lễ bạn sẽ muốn đọc &lt;a href=\"http://www."
-"thechestnut.com/flumps.htm\"&gt;thông tin này&lt;/a&gt; (tiếng Anh)."
+"Tên \"Pootle\" là từ cấu tạo có nghĩa là <b>PO</b>-based <"
+"b>O</b>nline <b>T</b>ranslation / <b>L</b>"
+"ocalization <b>E</b>ngine (Dụng cụ địa phương hóa dịch trực "
+"tuyến đựa vào .po), nhưng mà có lễ bạn sẽ muốn đọc <a href=\"http://www."
+"thechestnut.com/flumps.htm\">thông tin này</a> (tiếng Anh)."
 
 #: indexpage.py:68
 msgid "Versions"
@@ -1073,8 +1073,8 @@ msgid ""
 "This site is running:<br />Pootle %s<br />Translate Toolkit %s<br />jToolkit "
 "%s<br />Kid %s<br />ElementTree %s<br />Python %s (on %s/%s)"
 msgstr ""
-"Nơi Mạng này có chạy:<br/>Pootle %s</br>Translate Toolkit %s</br>jToolkit %"
-"s</br>Kid %s<br />ElementTree %s<br />Python %s (trên %s/%s)"
+"Nơi Mạng này có chạy:<br />Pootle %s<br />Translate Toolkit %s<br />jToolkit %"
+"s<br />Kid %s<br />ElementTree %s<br />Python %s (trên %s/%s)"
 
 #: indexpage.py:130
 #, python-format

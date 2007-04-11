@@ -1033,13 +1033,14 @@ msgstr ""
 #. l10n: If your language uses right-to-left layout and you leave the English untranslated, consider enclosing the necessary text with <span dir="ltr">.......</span> to help browsers to display it correctly.
 #. l10n: Take care to use HTML tags correctly. A markup error could cause a display error.
 #: indexpage.py:67
+#, fuzzy
 msgid ""
 "The name stands for <b>PO</b>-based <b>O</b>nline <b>T</b>ranslation / <b>L</"
 "b>ocalization <b>E</b>ngine, but you may need to read <a href=\"http://www."
 "thechestnut.com/flumps.htm\">this</a>."
 msgstr ""
 "igama elimele u <b>PO</b>-ligxininise<b>o</b>nline<b>T</b>ngine, kodwa "
-"unganqwenela ukufunda <ahref=\"http//www.thechestnut.com/flumps.htm\">le</a>."
+"unganqwenela ukufunda <a href=\"http//www.thechestnut.com/flumps.htm\">le</a>."
 
 #: indexpage.py:68
 msgid "Versions"

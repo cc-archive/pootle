@@ -1070,7 +1070,7 @@ msgid ""
 "%s<br />Kid %s<br />ElementTree %s<br />Python %s (on %s/%s)"
 msgstr ""
 "Dan is-sit qed juża :<br />Pootle %s<br />Translate Toolkit %s<br />jToolkit "
-"%s<br />Kid %s<br/>ElementTree %s<br/>Python %s (fuq %s/%s)"
+"%s<br />Kid %s<br />ElementTree %s<br />Python %s (fuq %s/%s)"
 
 #: indexpage.py:130
 #, python-format

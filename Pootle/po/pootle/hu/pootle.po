@@ -1041,7 +1041,7 @@ msgid ""
 msgstr ""
 "A név jelentése <b>PO</b>-based <b>O</b>nline <b>T</b>ranslation / <b>L</"
 "b>ocalization <b>E</b>ngine, /PO bázisú, Web alapú Fordító/Honosító Motor/, "
-"de elolvashatja még <a>href=\"http://www.thechestnut.com/flumps.htm\">ezt</"
+"de elolvashatja még <a href=\"http://www.thechestnut.com/flumps.htm\">ezt</"
 "a> is."
 
 #: indexpage.py:68
