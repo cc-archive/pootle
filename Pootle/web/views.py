@@ -116,7 +116,7 @@ def language(req, language):
     return render_to_response("language.html", RequestContext(req, context))
     
 def translationproject(req, language, project, subdir=None):
-    p = get_object_or_404(TranslationProject, language=Language.objects.get(code=language), project=Project.objects.get(code=project))
+    p = get_object_or_404(TranslationProject, language__code=language, project__code=project)
     
     files = p.list_dir(subdir)
     numfiles = len(files)
