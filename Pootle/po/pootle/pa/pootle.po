@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: translate-pootle@lists.sourceforge.net\n"
 "POT-Creation-Date: 2007-01-17 14:02+0200\n"
-"PO-Revision-Date: 2006-07-07 13:51+0200\n"
+"PO-Revision-Date: 2007-04-12 14:15+0200\n"
 "Last-Translator: A S Alam <apbrar@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -11,52 +11,52 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "Generated-By: pygettext.py 1.1\n"
-"X-Generator: Pootle 0.9\n"
+"X-Generator: Pootle 0.11\n"
 
 #. l10n: Verb
 #: projects.py:135
 msgid "View"
-msgstr ""
+msgstr "ਵੇਖੋ"
 
 #: projects.py:136 translatepage.py:572
 msgid "Suggest"
-msgstr ""
+msgstr "ਸੁਝਾਅ"
 
 #: projects.py:137
 msgid "Translate"
-msgstr ""
+msgstr "ਅਨੁਵਾਦ"
 
 #. l10n: radio button text
 #: projects.py:138 indexpage.py:544
 msgid "Overwrite"
-msgstr ""
+msgstr "ਉੱਤੇ ਲਿਖੋ"
 
 #. l10n: Verb
 #: projects.py:140
 msgid "Review"
-msgstr ""
+msgstr "ਰੀਵਿਊ"
 
 #. l10n: Verb
 #: projects.py:142
 msgid "Archive"
-msgstr ""
+msgstr "ਅਕਾਇਵ"
 
 #: projects.py:143
 msgid "Compile PO files"
-msgstr ""
+msgstr "PO ਫਾਇਲ ਕੰਪਾਇਲ ਕਰੋ"
 
 #: projects.py:144
 msgid "Assign"
-msgstr ""
+msgstr "ਜਾਰੀ"
 
 #: projects.py:145 indexpage.py:134
 msgid "Administrate"
-msgstr ""
+msgstr "ਪਰਸ਼ਾਸ਼ਨ"
 
 #. l10n: Commit to version control (like CVS or Subversion)
 #: projects.py:146 indexpage.py:738
 msgid "Commit"
-msgstr ""
+msgstr "ਕਮਿਟ"
 
 #. l10n: Don't translate "nobody" or "default"
 #: projects.py:226
@@ -133,7 +133,7 @@ msgstr "ਪੌਟਲੀ: %s ਨੂੰ %s ਵਿੱਚੋਂ ਅਨੁਵਾਦ: 
 
 #: translatepage.py:111
 msgid "Original"
-msgstr ""
+msgstr "ਅਸਲੀ"
 
 #: translatepage.py:112
 msgid "Translation"
@@ -232,30 +232,30 @@ msgstr ""
 #. l10n: verb
 #: translatepage.py:552
 msgid "Edit"
-msgstr ""
+msgstr "ਸੋਧ"
 
 #. l10n: verb
 #: translatepage.py:568
 msgid "Copy"
-msgstr ""
+msgstr "ਨਕਲ"
 
 #: translatepage.py:569 translatepage.py:748
 msgid "Skip"
-msgstr ""
+msgstr "ਛੱਡੋ"
 
 #. l10n: verb
 #: translatepage.py:571 translatepage.py:747 users.py:252
 msgid "Back"
-msgstr ""
+msgstr "ਪਿੱਛੇ"
 
 #: translatepage.py:573
 msgid "Submit"
-msgstr ""
+msgstr "ਭੇਜੋ"
 
 #. l10n: action that increases the height of the textarea
 #: translatepage.py:576
 msgid "Grow"
-msgstr ""
+msgstr "ਫੈਲਾਓ"
 
 #. l10n: action that decreases the height of the textarea
 #: translatepage.py:578
@@ -291,9 +291,8 @@ msgid ""
 msgstr ""
 
 #: translatepage.py:703
-#, fuzzy
 msgid "Current Translation:"
-msgstr "<b>ਮੌਜੂਦਾ ਅਨੁਵਾਦ:</b>"
+msgstr "ਮੌਜੂਦਾ ਅਨੁਵਾਦ"
 
 #. l10n: First parameter: number
 #. l10n: Second parameter: name of translator
@@ -320,15 +319,15 @@ msgstr "ਸੁਝਾਅ:"
 #: adminpages.py:43 adminpages.py:82 adminpages.py:138 adminpages.py:200
 #: pagelayout.py:36
 msgid "Home"
-msgstr ""
+msgstr "ਘਰ"
 
 #: adminpages.py:44 adminpages.py:202
 msgid "Users"
-msgstr ""
+msgstr "ਉਪਭੋਗੀ"
 
 #: adminpages.py:45 adminpages.py:84 indexpage.py:94
 msgid "Languages"
-msgstr ""
+msgstr "ਭਾਸ਼ਾਵਾਂ"
 
 #: adminpages.py:46 adminpages.py:140 indexpage.py:95
 msgid "Projects"
@@ -336,11 +335,11 @@ msgstr "ਪ੍ਰੋਜੈਕਟ"
 
 #: adminpages.py:47
 msgid "General options"
-msgstr ""
+msgstr "ਆਮ ਚੋਣਾਂ"
 
 #: adminpages.py:48 users.py:153
 msgid "Option"
-msgstr ""
+msgstr "ਚੋਣਾਂ"
 
 #: adminpages.py:49 users.py:154
 msgid "Current value"
@@ -365,7 +364,7 @@ msgstr ""
 
 #: adminpages.py:57
 msgid "Home Page"
-msgstr ""
+msgstr "ਮੁੱਖ ਸਫ਼ਾ"
 
 #: adminpages.py:83 adminpages.py:139 adminpages.py:201
 msgid "Main admin page"
@@ -377,7 +376,7 @@ msgstr ""
 
 #: adminpages.py:90 adminpages.py:146 adminpages.py:208 users.py:100
 msgid "Full Name"
-msgstr ""
+msgstr "ਪੂਰਾ ਨਾਂ"
 
 #: adminpages.py:91
 msgid "(add language here)"
@@ -453,7 +452,7 @@ msgstr "ਪ੍ਰੋਜੈਕਟ"
 
 #: adminpages.py:207 users.py:66
 msgid "Login"
-msgstr ""
+msgstr "ਲਾਗਇਨ"
 
 #: adminpages.py:209 users.py:343
 msgid "(add full name here)"
@@ -461,11 +460,11 @@ msgstr ""
 
 #: adminpages.py:210 users.py:97
 msgid "Email Address"
-msgstr "ਈ-ਪੱਤਰ ਸਿਰਨਾਵਾਂ"
+msgstr "ਈ-ਮੇਲ ਸਿਰਨਾਵਾਂ"
 
 #: adminpages.py:210 users.py:346
 msgid "(add email here)"
-msgstr ""
+msgstr "ਈਮੇਲ ਇੱਥੇ ਜੋੜੋ"
 
 #: adminpages.py:211 users.py:103 users.py:159
 msgid "Password"
@@ -566,18 +565,16 @@ msgid "Update Rights"
 msgstr ""
 
 #: pagelayout.py:37
-#, fuzzy
 msgid "All projects"
-msgstr "%s ਪ੍ਰੋਜੈਕਟ"
+msgstr "ਸਭ ਪ੍ਰੋਜੈਕਟ"
 
 #: pagelayout.py:38
-#, fuzzy
 msgid "All languages"
-msgstr "%s ਬੋਲੀ"
+msgstr "ਸਭ ਭਾਸ਼ਾਵਾਂ"
 
 #: pagelayout.py:39
 msgid "My account"
-msgstr ""
+msgstr "ਮੇਰਾ ਖਾਤਾ"
 
 #: pagelayout.py:40 pagelayout.py:162 indexpage.py:200 indexpage.py:262
 msgid "Admin"
@@ -585,17 +582,15 @@ msgstr ""
 
 #: pagelayout.py:41
 msgid "Docs & help"
-msgstr ""
+msgstr "ਦਸਤਾਵੇਜ਼ ਅਤੇ ਮੱਦਦ"
 
 #: pagelayout.py:42
-#, fuzzy
 msgid "Log out"
-msgstr "ਬਾਹਰੀ ਦਰ"
+msgstr "ਲਾਗਆਉਟ"
 
 #: pagelayout.py:43
-#, fuzzy
 msgid "Log in"
-msgstr "ਲਾਗਿੰਨ"
+msgstr "ਲਾਗਇਨ"
 
 #. l10n: Verb, as in "to register"
 #: pagelayout.py:45
@@ -648,16 +643,15 @@ msgstr ""
 
 #: pagelayout.py:233 users.py:155
 msgid "Name"
-msgstr ""
+msgstr "ਨਾਂਂ"
 
 #: pagelayout.py:234
-#, fuzzy
 msgid "Translated"
-msgstr "ਸਭ ਅਨੁਵਾਦਿਤ"
+msgstr "ਅਨੁਵਾਦ"
 
 #: pagelayout.py:235
 msgid "Translated percentage"
-msgstr ""
+msgstr "ਫੀ-ਸਦੀ ਅਨੁਵਾਦ"
 
 #: pagelayout.py:236
 #, fuzzy
@@ -692,16 +686,16 @@ msgstr "ਨਾ-ਅਨੁਵਾਦਿਤ ਝਾਤੀ"
 
 #: pagelayout.py:243
 msgid "Total"
-msgstr ""
+msgstr "ਕੁੱਲ"
 
 #: pagelayout.py:244
 msgid "Total words"
-msgstr ""
+msgstr "ਕੁੱਲ ਸ਼ਬਦ"
 
 #. l10n: noun. The graphical representation of translation status
 #: pagelayout.py:246
 msgid "Graph"
-msgstr ""
+msgstr "ਗਰਾਫ਼"
 
 #: users.py:39
 #, python-format
@@ -714,26 +708,23 @@ msgstr ""
 
 #: users.py:55
 msgid "Login to Pootle"
-msgstr "ਪੌਟਲੀ ਲਈ ਦਾਖਲਾ"
+msgstr "ਪੌਟਲੀ ਲਈ ਲਾਗਇਨ"
 
 #: users.py:61
-#, fuzzy
 msgid "Username:"
-msgstr "ਉਪਭੋਗੀ ਨਾਂ"
+msgstr "ਉਪਭੋਗੀ ਨਾਂ:"
 
 #: users.py:63
-#, fuzzy
 msgid "Password:"
-msgstr "ਗੁਪਤ-ਕੋਡ"
+msgstr "ਗੁਪਤ-ਕੋਡ:"
 
 #: users.py:64
-#, fuzzy
 msgid "Language:"
-msgstr "%s ਬੋਲੀ"
+msgstr "ਭਾਸ਼ਾ"
 
 #: users.py:73
 msgid "Default"
-msgstr ""
+msgstr "ਭਾਸ਼ਾ"
 
 #: users.py:85
 msgid "Please enter your registration details"
@@ -1179,7 +1170,7 @@ msgstr ""
 
 #: indexpage.py:719
 msgid "Qt .ts file"
-msgstr ""
+msgstr "Qt .ts ਫਾਇਲ"
 
 #: indexpage.py:723
 msgid "CSV file"
