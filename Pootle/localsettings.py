@@ -31,3 +31,8 @@ POOTLE_INSTANCE = 'Pootle'
 # If you have old Pootle installation, this setting will keep using 
 # Pootle's prefs files for metadata storage instead of databases.
 POOTLE_BACKWARDS_COMPATIBILITY = False
+
+# If the site admin wants to approve new projects (advised), set this 
+# option to True.
+REQUIRE_NEW_PROJECT_APPROVAL = True
+
