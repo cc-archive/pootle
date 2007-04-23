@@ -120,8 +120,9 @@ class TranslationManipulator(forms.Manipulator):
         self.unit = translationunit
         self.fields = (
             forms.LargeTextField(field_name="translation"),
+            forms.HiddenField(field_name="id", validator_list=[isOnlyDigits] ),
             )
 
     def save(self, new_data):
-        # FIXME
+        self.unit.target = new_data['translation']
         print 'should save'

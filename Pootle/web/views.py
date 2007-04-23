@@ -354,13 +354,45 @@ def admintranslationproject(req, language, project):
 def translate(req, language, project, subdir, filename):
     translationproject = TranslationProject.objects.get(project__code=project, language__code=language)
     file = translationproject.podir / (subdir + filename)
-    manipulator = webforms.TranslationManipulator(file)
+    
+    errors = {}
+    if req.POST:
+        if req.POST.has_key('id'):
+            try:
+                id = int(req.POST['id'])
+            except ValueError:
+                return HttpResponseRedirect(req.path)
+            num, unit = file.filter([], id)
+            manipulator = webforms.TranslationManipulator(unit)
 
-    new_data = errors = {} 
+            new_data = req.POST.copy()
+            errors = manipulator.get_validation_errors(new_data)
+            if not errors:
+                manipulator.do_html2python(new_data)
+                unit.target = new_data['translation']
+                print unit.__repr__()
+                return HttpResponseRedirect("%s?id=%d" % (req.path, int(req.POST['id'])+1))
+    try:
+        stringnumber = int(req['id'])
+    except ValueError:
+        stringnumber = 0
+    except KeyError:
+        stringnumber = 0
+
+    stringnumber, unit = file.filter([], stringnumber)
+
+    print "This", unit.__repr__()
+    manipulator = webforms.TranslationManipulator()
+    new_data = { 
+        'translation': unit.target,
+        'id': stringnumber
+        } 
     form = forms.FormWrapper(manipulator, new_data, errors)
 
     context = {
         'form' : form,
+        'originalstring': unit.source,
+        'stringnumber': stringnumber,
         }
     return render_to_response("translate.html", RequestContext(req, context))
 
