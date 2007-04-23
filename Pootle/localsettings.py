@@ -4,7 +4,7 @@ from Pootle.utils import next_to_this_file
 DEBUG = True
 
 DATABASE_ENGINE = 'sqlite3'           # 'postgresql', 'mysql', 'sqlite3' or 'ado_mssql'.
-DATABASE_NAME = '/home/hruske/Desktop/pootle/db'             # Or path to database file if using sqlite3.
+DATABASE_NAME = next_to_this_file(__file__,'db')             # Or path to database file if using sqlite3.
 DATABASE_USER = ''             # Not used with sqlite3.
 DATABASE_PASSWORD = ''         # Not used with sqlite3.
 DATABASE_HOST = ''             # Set to empty string for localhost. Not used with sqlite3.
