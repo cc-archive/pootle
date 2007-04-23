@@ -1,0 +1,69 @@
+
+=== Instructions on how to run Django version of Pootle ===
+
+Here are step by step instructions how to set up Django version of Pootle. The 
+commands you need to issue have $ prepended, so you can do 
+egrep '^\$' README.Django to see only the needed commands.
+
+
+Check out Django. Revision 5061 is the one I am using at the time I am writing 
+this.
+
+$ svn co -r5061 http://code.djangoproject.com/svn/django/trunk/django
+
+Check out Pootle.
+
+$ svn co https://translate.svn.sourceforge.net/svnroot/translate/src/branches/django-migration
+
+This checks out sources. You will need to cd into newly created dir.
+
+$ cd django-migration
+
+Before running the Django development server and commands provided by manage.py,
+you will need to export PYTHONPATH variable. This is a bug and will be fixed 
+soon.
+
+$ export PYTHONPATH=`pwd`
+
+Before running the development server, you need to create a development DB where
+Django stores session data. This is done by running a 'syncdb'. Manage.py will 
+prompt you for a username, email and password to create an admin account. You 
+don't need real email for development purposes.
+
+$ Pootle/manage.py syncdb
+ Creating table auth_message
+ Creating table auth_group
+ Creating table auth_user
+ Creating table auth_permission
+ Creating table django_content_type
+ Creating table django_session
+ Creating table django_site
+ Creating table web_project
+ Creating table web_translationproject
+ Creating table web_pootlepermission
+ Creating table web_language
+ Creating table web_userprofile
+
+ You just installed Django's auth system, which means you don't have any superusers defined.
+ Would you like to create one now? (yes/no):yes
+ Username (Leave blank to use 'user'): admin
+ E-mail address: admin@foo.com
+ Password:
+ Password (again):
+ Superuser created successfully.
+ Installing index for auth.Message model
+ Installing index for auth.Permission model
+ Installing index for web.Project model
+ Installing index for web.TranslationProject model
+ Installing index for web.PootlePermission model
+ Installing index for web.Language model
+ Installing index for web.UserProfile model
+ Loading 'initial_data' fixtures...
+ Installing xml fixture 'initial_data' from 'Pootle/web/fixtures'.
+ Installed 79 object(s) from 1 fixture(s)
+
+Then you are ready to run Pootle's development server.
+
+$ Pootle/manage.py runserver
+
+Have fun.
