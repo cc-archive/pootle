@@ -65,7 +65,10 @@ def project(req, project):
     else:
         start_translating = []
     
-    average_translated = sum([x.stats[2] for x in languages])/len(languages)
+    if len(languages):
+        average_translated = sum([x.stats[2] for x in languages])/len(languages)
+    else:
+        average_translated = 0
     context = {
         'project': p,
         'stats': ngettext(  "%(count)d language, average %(average)d%% translated",
