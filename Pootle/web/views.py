@@ -102,7 +102,10 @@ def language(req, language):
     lang = get_object_or_404(Language, code=language)
     projects = TranslationProject.objects.filter(language=lang)
 
-    average_translated = sum([x.stats[2] for x in projects])/len(projects)
+    if len(projects):
+        average_translated = sum([x.stats[2] for x in projects])/len(projects)
+    else:
+        average_translated = 0
     context = {
         "language": lang,
         "stats": ngettext(  "%(count)d project, average %(average)d%% translated",
