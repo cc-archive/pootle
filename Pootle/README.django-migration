@@ -6,11 +6,6 @@ commands you need to issue have $ prepended, so you can do
 egrep '^\$' README.Django to see only the needed commands.
 
 
-Check out Django. Revision 5061 is the one I am using at the time I am writing 
-this.
-
-$ svn co -r5061 http://code.djangoproject.com/svn/django/trunk/django
-
 Check out Pootle.
 
 $ svn co https://translate.svn.sourceforge.net/svnroot/translate/src/branches/django-migration
@@ -18,6 +13,11 @@ $ svn co https://translate.svn.sourceforge.net/svnroot/translate/src/branches/dj
 This checks out sources. You will need to cd into newly created dir.
 
 $ cd django-migration
+
+Check out Django. Revision 5061 is the one I am using at the time I am writing 
+this.
+
+$ svn co -r5061 http://code.djangoproject.com/svn/django/trunk/django
 
 Before running the Django development server and commands provided by manage.py,
 you will need to export PYTHONPATH variable. This is a bug and will be fixed 
