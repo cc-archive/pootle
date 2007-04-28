@@ -14,9 +14,6 @@ def shortdescription(descr):
         descr = descr[:stopsign]
     return sre.sub("<[^>]*>", "", descr).strip()
 
-def next_to_this_file(this_file, additional_path):
-    return os.path.join(os.path.dirname(os.path.abspath(this_file)), additional_path)
-
 class CallableValidatorWrapper:
     """
     This is needed here to make the validator an object,

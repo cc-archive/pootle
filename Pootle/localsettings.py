@@ -1,5 +1,9 @@
 # Django settings for Pootle project.
-from Pootle.utils import next_to_this_file
+import os
+
+def next_to_this_file(this_file, additional_path):
+    return os.path.join(os.path.dirname(os.path.abspath(this_file)), additional_path)
+
 
 DEBUG = True
 
