@@ -64,7 +64,6 @@ INSTALLED_APPS = (
 )
 
 # This sets pootle.prefs file path to be in same dir as these settings.py
-from Pootle.utils import next_to_this_file
 POOTLE_PREFS = next_to_this_file(__file__,'pootle.prefs')
 
 if POOTLE_BACKWARDS_COMPATIBILITY:
