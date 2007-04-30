@@ -96,6 +96,26 @@ class gettext_path(path):
         index_file.write("".join(stats))
         index_file.close()
 
+    def indexed(self, key):
+        """return an offset from start of file and length of unit in bytes"""
+        index_file = self.index
+        if not index_file.exists():
+            self.update_index()
+        index_file = index_file.open()
+        key = int(key)
+        if key <= 0:
+            raise ValueError("key must be positive integer")
+        
+        index_file.seek(32*(key))
+        line1 = [int(i) for i in index_file.readline().split()]
+        line2 = [int(i) for i in index_file.readline().split()]
+        if not line1 or not line2:
+            # if index is invalid, rebuild it and rerun indexed
+            self.update_index()
+            return self.indexed(key)
+        return (line1[0], line2[0] - line1[0], line1[1])
+        
+
     def __getitem__(self, key):
         key = int(key)
         if key <= 0:
@@ -105,17 +125,11 @@ class gettext_path(path):
         if pending.exists():
             data = pending.bytes()
         else:
-            # open index file and read position of pounit
-            index_file = self.index.open()
-            index_file.seek(32*(key))
-            line1 = index_file.readline().split()
-            line2 = index_file.readline().split()
-            line1 = [int(i) for i in line1]
-            line2 = [int(i) for i in line2]
+            offset, numread, stats = self.indexed(key)
             # read pounit
             current_file = self.current.open()
-            current_file.seek(line1[0])
-            data = current_file.read(line2[0] - line1[0])
+            current_file.seek(offset)
+            data = current_file.read(numread)
         unit = pounit()
         unit.parse(data)
         return unit
