@@ -12,29 +12,55 @@ STORAGE_ROOT = None
 class PootleHandler(RequestHandler):
     
     def do_GET(self):
-        print 'my get'
-        qspos = self.path.find('?')
-        if qspos >= 0:
-            self.body = cgi.parse_qs(self.path[qspos+1:], keep_blank_values=1)
-            self.path = self.path[:qspos]
+        self.body = {}
         match = pofile_re.match(self.path)
         if match:
             mdict = match.groupdict()
+            print mdict
             if mdict['file']:
+                self.send_response(200)
+                self.send_header("Content-type", 'text/plain')
                 a = gettext_path(STORAGE_ROOT / mdict['dir'] / mdict['file'])
 
                 if a.exists():
                     if mdict['id']:
                         # return only one translation
                         id = int(mdict['id'])
-                        print a[id]
-
+                        response = str(a[id])
+                        self.send_header("Content-Length", str(len(response)))
+                        self.end_headers()
+                        self.wfile.write(response)
+                    else:
+                        # send whole file
+                        self.send_header("Content-Length", str(a.current.size))
+                        self.end_headers()
+                        self.copyfile(a.current.open(), self.wfile)
             else:
-                print 'file not present'
-            print mdict
-        self.handle_data()
+                # list dir
+                if not mdict['dir']:
+                    return None
 
-        
+                a = STORAGE_ROOT / mdict['dir']
+                if not a.exists():
+                    self.send_error(404, "File not found")
+                    return None
+                response = "<html><head><title>Index of %s</title></head><body><ul>" % str(a - STORAGE_ROOT)
+                response += "".join(['<li><a href="%s">%s</a></li>' % (i.name, i.name) for i in a.listdir()]) 
+                response += "</body></html>"
+                self.send_response(200)
+                self.send_header("Content-type", 'text/html')
+                self.send_header("Content-Length", str(len(response)))
+                self.end_headers()
+                self.wfile.write(response)
+
+                #self.send_error(404, "File not found")
+            print mdict
+        else:
+            # no file found
+            return None
+
+    def handle_data(self):
+        pass
         
     def do_POST(self):
         print 'my post'
@@ -48,7 +74,6 @@ class PootleHandler(RequestHandler):
         else:
             self.body = '' # unknown content type
         self.handle_data()
-
 
 def set_storage_root(storage_root):
     global STORAGE_ROOT
