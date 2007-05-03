@@ -104,7 +104,7 @@ class gettext_path(path):
         index_file = index_file.open()
         key = int(key)
         if key <= 0:
-            raise ValueError("key must be positive integer")
+            raise IndexError("key must be positive integer")
         
         index_file.seek(32*(key))
         line1 = [int(i) for i in index_file.readline().split()]
@@ -115,11 +115,27 @@ class gettext_path(path):
             return self.indexed(key)
         return (line1[0], line2[0] - line1[0], line1[1])
         
+    def __setitem__(self, key, value):
+        key = int(key)
+        if key <= 0:
+            raise IndexError("key must be positive integer")
+        unit = pounit()
+        unit.parse(value)
+    
+        if value != str(unit):
+            # if parsing fails, don't do it
+            raise ValueError("unit was not parsed correctly")
+
+        pending = self / 'pending' / ('%.8d' % key)
+        if pending.exists():
+            # already exists, merge first
+            self.merge()
+        pending.write_bytes(str(unit))       
 
     def __getitem__(self, key):
         key = int(key)
         if key <= 0:
-            raise ValueError("key must be positive integer")
+            raise IndexError("key must be positive integer")
         pending = self / 'pending' / ('%.8d' % key)
         
         if pending.exists():
