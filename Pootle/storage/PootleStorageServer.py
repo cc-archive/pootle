@@ -2,7 +2,7 @@
 
 from SimpleAsyncHTTPServer import Server,RequestHandler
 import asyncore, cgi, re
-from Pootle.storage.dirlayout import gettext_path
+from Pootle.storage.storagelayout import gettext_path
 from Pootle.path import path
 from urllib import quote
 
