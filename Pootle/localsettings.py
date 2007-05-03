@@ -40,3 +40,8 @@ POOTLE_BACKWARDS_COMPATIBILITY = False
 # option to True.
 REQUIRE_NEW_PROJECT_APPROVAL = True
 
+# Set this to root url for storage daemon. This is where Pootle web 
+# interface will fetch translatable strings from and submit back 
+# the translated ones.
+STORAGE_ROOT_URL = "http://127.0.0.1:8080/"
+
