@@ -31,6 +31,9 @@ class gettext_path(path):
     locked = property(is_locked, None, None)
 
     def merge(self):
+        """ Merges pending units and current po file, resulting 
+        in a new revision.
+        """
 
         self.lock()
         pending = self / 'pending'
@@ -79,6 +82,8 @@ class gettext_path(path):
         self.unlock()
 
     def update_index(self, indexfile=None):
+        """Updates the index file, where file offset and checks are stored"""
+
         if indexfile == None:
             indexfile = 'index'
         index_file = os.open(self / indexfile, os.O_TRUNC | os.O_CREAT, 0666)
@@ -106,7 +111,7 @@ class gettext_path(path):
         if key <= 0:
             raise IndexError("key must be positive integer")
         
-        index_file.seek(32*(key))
+        index_file.seek(32*(key)) # records are 32 chars wide
         line1 = [int(i) for i in index_file.readline().split()]
         line2 = [int(i) for i in index_file.readline().split()]
         if not line1 or not line2:
@@ -148,7 +153,7 @@ class gettext_path(path):
             data = current_file.read(numread)
         unit = pounit()
         unit.parse(data)
-        return unit
+        return unit, stats
 
     def _get_version(self):
         return int((self / 'version').bytes())
