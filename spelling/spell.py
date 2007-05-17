@@ -30,7 +30,7 @@ L{SpellRequest} and L{SpellResult}
 """
 
 import httplib
-import sre
+import re
 import enchant
 import os
 
@@ -167,7 +167,7 @@ class EnchantChecker(SpellChecker):
 
         for word in text.split():
             # Should probably use some kind of proper tokenizer here
-            word = sre.sub("\*|\&|@|#|-|\+|!|%|\^|\?", "", word)
+            word = re.sub("\*|\&|@|#|-|\+|!|%|\^|\?", "", word)
             if not self.__dict.check(word):
                 offset = text.find(word, offset)
                 length = len(word)
@@ -234,7 +234,7 @@ class MSChecker(SpellChecker):
 
         for word in text.split():
             # Should probably use some kind of proper tokenizer here
-            word = sre.sub("\*|\&|@|#|-|\+|!|%|\^|\?", "", word)
+            word = re.sub("\*|\&|@|#|-|\+|!|%|\^|\?", "", word)
             if not self.__msword.CheckSpelling(Word=word, CustomDictionary="", 
                       IgnoreUppercase=False, MainDictionary=self._request.lang()):
                 offset = text.find(word, offset)
@@ -295,11 +295,11 @@ class SpellRequest:
         self.__ignoredigits = False
         self.__ignoreallcaps = False
         try:
-            options = sre.search('<spellrequest textalreadyclipped="(\d)" ignoredups="(\d)" ignoredigits="(\d)" ignoreallcaps="(\d)">', self.__request).groups()
+            options = re.search('<spellrequest textalreadyclipped="(\d)" ignoredups="(\d)" ignoredigits="(\d)" ignoreallcaps="(\d)">', self.__request).groups()
             self.__ignoredups = bool(int(options[1]))
             self.__ignoredigits = bool(int(options[2]))
             self.__ignoreallcaps = bool(int(options[3]))
-            self.__text = sre.search("<text>(.*?)</text>", self.__request).group(1)
+            self.__text = re.search("<text>(.*?)</text>", self.__request).group(1)
         except AttributeError:
             print "Request XML: '%s'" % self.__request
             raise
@@ -341,9 +341,9 @@ class SpellRequest:
         """
         tocheck = self.__text
         if self.ignoreallcaps():
-            tocheck = sre.sub("\b([A-Z]+?)\b", "", tocheck)
+            tocheck = re.sub("\b([A-Z]+?)\b", "", tocheck)
         if self.ignoredigits():
-            tocheck = sre.sub("\b\w*?\d\w*?\b", "", tocheck)
+            tocheck = re.sub("\b\w*?\d\w*?\b", "", tocheck)
         return tocheck.encode("utf-8")
 
     def ignoredups(self):
@@ -555,11 +555,11 @@ class SpellResult:
         """
         if not (self.__rawresult and self.__needsparsing):
             return
-        spellintro = sre.search('(<spellresult [^>]*>)', self.__rawresult).groups()[0]
-        for attribute, value in sre.findall('([^= ]+)="([^"]+)"[^\S]*', spellintro):
+        spellintro = re.search('(<spellresult [^>]*>)', self.__rawresult).groups()[0]
+        for attribute, value in re.findall('([^= ]+)="([^"]+)"[^\S]*', spellintro):
             self.__spellheader[attribute] = value
-        for suggestion in sre.findall('(<c o="\d+?" l="\d+?" s="\d+?">.+?</c>)', self.__rawresult):
-            offset, length, quality, suggestions = sre.search('<c o="(\d+?)" l="(\d+?)" s="(\d+?)">(.+?)</c>', suggestion).groups()
+        for suggestion in re.findall('(<c o="\d+?" l="\d+?" s="\d+?">.+?</c>)', self.__rawresult):
+            offset, length, quality, suggestions = re.search('<c o="(\d+?)" l="(\d+?)" s="(\d+?)">(.+?)</c>', suggestion).groups()
             offset, length, quality = int(offset), int(length), int(quality)
             self.add(offset, length, suggestions.split("\t"), self.__request.text()[offset:offset+length])
         self.__needsparsing = False
