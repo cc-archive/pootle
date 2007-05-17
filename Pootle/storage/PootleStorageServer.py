@@ -28,7 +28,7 @@ STORAGE_ROOT = None
 
 class PootleHandler(RequestHandler):
     
-    def gettext_path_or_404(file_path):
+    def gettext_path_or_404(self, file_path):
         a = gettext_path(file_path)
         if not a.exists():
             self.send_error(404, 'File not found')
@@ -36,7 +36,7 @@ class PootleHandler(RequestHandler):
         return a
 
     def serve_unit(self, directory, filename, id):
-        a = gettext_path_or_404(STORAGE_ROOT / directory / filename)
+        a = self.gettext_path_or_404(STORAGE_ROOT / directory / filename)
         id = int(id)
 
         if self.POST:
@@ -61,7 +61,7 @@ class PootleHandler(RequestHandler):
             self.wfile.write(response)
     
     def serve_file(self, directory, filename):
-        a = gettext_path_or_404(STORAGE_ROOT / directory / filename)
+        a = self.gettext_path_or_404(STORAGE_ROOT / directory / filename)
 
         self.send_response(200)
         self.send_header("Content-type", 'text/plain')
