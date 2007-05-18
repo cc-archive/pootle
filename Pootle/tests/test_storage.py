@@ -4,7 +4,8 @@
 """tests for stats classes"""
 
 from py import test
-from Pootle.storage.dirlayout import gettext_path
+from Pootle.storage.storagelayout import gettext_path
+from Pootle.storage_client import get_unit, post_unit
 
 from Pootle.path import path
 import os
@@ -55,4 +56,20 @@ class TestStorage:
             assert(t.index.exists() == True)
             assert(t.index.bytes() == data)
             
-            #cleanup()
+    def test_storage_client__get_unit(self):
+        for root in testroots:
+            print 'test'
+            setup(root)
+            
+            unit, info = get_unit('test/test.po',3)
+            assert str(unit) == 'msgid "Suggest"\nmsgstr "Predlagaj"\n\n'
+
+    def test_storage_client__post_unit(self):
+        setup(testroots[0])
+
+        unit1, info = get_unit('test/test.po',3)
+        unit1.settarget("To je novi target")
+        unit, info = post_unit('test/test.po',3, unit1)
+
+        assert str(unit) == 'msgid "Suggest"\nmsgstr "To je novi target"\n'
+

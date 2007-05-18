@@ -165,7 +165,7 @@ class PootleHandler(RequestHandler):
 def set_storage_root(storage_root):
     global STORAGE_ROOT
 
-    STORAGE_ROOT = storage_root
+    STORAGE_ROOT = path(storage_root)
 
 def run_storage():
     if STORAGE_ROOT == None:
@@ -176,5 +176,5 @@ def run_storage():
     asyncore.loop()
 
 if __name__ == "__main__":
-    set_storage_root(path('/home/hruske/projekti/pootle/django-migration/Pootle/storage/testroot/'))
+    set_storage_root('/home/hruske/projekti/pootle/django-migration/Pootle/storage/testroot/')
     run_storage()
