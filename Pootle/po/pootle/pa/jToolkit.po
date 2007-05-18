@@ -1,18 +1,17 @@
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2005-06-13 14:54-0500\n"
-"PO-Revision-Date: 2006-06-14 14:28+0200\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"PO-Revision-Date: 2007-04-12 14:01+0200\n"
+"Last-Translator: A S Alam <apbrar@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "Generated-By: pygettext.py 1.5\n"
-"X-Generator: Translate Toolkit 0.9rc1\n"
+"X-Generator: Pootle 0.11\n"
 
 #: web/server.py:57
 #, python-format
@@ -25,7 +24,7 @@ msgstr "ਇਹ ਕਾਰਵਾਈ ਰੱਦ ਕਰਕੇ ਨਵਾਂ ਅਜਲ�
 
 #: web/server.py:92
 msgid "Instead of confirming this action, log out and start from scratch"
-msgstr "ਇਸ ਕਾਰਵਾੀਈ ਪੁਸ਼ਟੀ ਕਰਨ ਦੀ ਬਜਾਏ ਬਾਹਰ ਜਾਓ ਅਤੇ ਸ਼ੁਰੂ ਤੋਂਸ਼ੁਰੂ ਕਰੋ"
+msgstr "ਇਸ ਕਾਰਵਾਈ ਪੁਸ਼ਟੀ ਕਰਨ ਦੀ ਬਜਾਏ ਬਾਹਰ ਜਾਓ ਅਤੇ ਸ਼ੁਰੂ ਤੋਂ ਸ਼ੁਰੂ ਕਰੋ"
 
 #: web/server.py:97
 msgid "Exit application"
@@ -90,7 +89,7 @@ msgstr "ਖਤਮ ਮੁੱਢਲਾ ਅਜਲਾਸ"
 
 #: web/session.py:314
 msgid "need to define the users or userprefs entry on the server config"
-msgstr ""
+msgstr "ਸਰਵਰ ਸੰਰਚਨਾ ਉੱਤੇ ਉਪਭੋਗੀ ਜਾਂ ਉਪਭੋਗੀ ਪਸੰਦ ਦੇਣ ਦੀ ਲੋੜ ਹੈ।"
 
 #: web/session.py:321 web/session.py:453
 #, python-format

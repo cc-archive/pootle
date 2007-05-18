@@ -1,278 +1,1000 @@
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: translate-pootle@lists.sourceforge.net\n"
-"POT-Creation-Date: 2006-08-07 12:36+0200\n"
-"PO-Revision-Date: 2006-06-14 14:26+0200\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2007-04-13 12:24+0200\n"
+"PO-Revision-Date: 2007-03-14 21:20+0100\n"
+"Last-Translator: Changwoo Ryu <cwryu@debian.org>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Pootle 0.11\n"
 "Generated-By: pygettext.py 1.1\n"
-"X-Generator: Translate Toolkit 0.9rc1\n"
 
-#: adminpages.py:35 adminpages.py:71 adminpages.py:126 adminpages.py:187
-#: adminpages.py:273 adminpages.py:333 indexpage.py:58 indexpage.py:77
-#: indexpage.py:112 indexpage.py:166 indexpage.py:226 indexpage.py:312
-#: pagelayout.py:59 users.py:38 users.py:71 users.py:104 users.py:125
-#: translatepage.py:91
+#. l10n: Verb
+#: projects.py:136
+msgid "View"
+msgstr "보기"
+
+#: projects.py:137 translatepage.py:613
+msgid "Suggest"
+msgstr "제안"
+
+#: projects.py:138
+msgid "Translate"
+msgstr "번역"
+
+#. l10n: radio button text
+#: projects.py:139 indexpage.py:548
+msgid "Overwrite"
+msgstr "덮어쓰기"
+
+#. l10n: Verb
+#: projects.py:141
+msgid "Review"
+msgstr "검토"
+
+#. l10n: Verb
+#: projects.py:143
+msgid "Archive"
+msgstr "저장"
+
+#. l10n: This refers to generating the binary .mo file
+#: projects.py:145
+msgid "Compile PO files"
+msgstr "PO 파일 컴파일"
+
+#: projects.py:146
+msgid "Assign"
+msgstr "할당"
+
+#: projects.py:147 indexpage.py:134
+msgid "Administrate"
+msgstr "관리"
+
+#. l10n: Commit to version control (like CVS or Subversion)
+#: projects.py:148 indexpage.py:748
+msgid "Commit"
+msgstr "제출"
+
+#. l10n: Don't translate "nobody" or "default"
+#: projects.py:228
+msgid "You cannot remove the \"nobody\" or \"default\" user"
+msgstr "\"nobody\" 혹은 \"default\" 사용자는 지울 수 없습니다"
+
+#: projects.py:380 projects.py:442
+msgid "You do not have rights to alter goals here"
+msgstr "여기 있는 목표들을 변경할 권한이 없습니다"
+
+#: projects.py:505
+msgid "You do not have rights to upload files here"
+msgstr "여기에 파일을 올릴 권한이 없습니다"
+
+#: projects.py:508
+msgid "You do not have rights to overwrite files here"
+msgstr "여기에 파일을 덮어 쓸 권한이 없습니다"
+
+#: projects.py:510
+msgid "You do not have rights to upload new files here"
+msgstr "여기에 새로운 파일을 올릴 권한이 없습니다"
+
+#: projects.py:519
+msgid "You do not have rights to update files here"
+msgstr "여기에 파일을 올릴 권한이 없습니다"
+
+#: projects.py:590
+msgid "You do not have rights to commit files here"
+msgstr "여기에 파일을 제출할 권한이 없습니다"
+
+#: projects.py:919 projects.py:960
+msgid "You do not have rights to alter assignments here"
+msgstr "여기서 할당된 임무를 변경할 권한이 없습니다"
+
+#: projects.py:1141
+msgid "You do not have rights to change translations here"
+msgstr "여기의 변역을 변경할 권한이 없습니다"
+
+#: projects.py:1151
+msgid "You do not have rights to suggest changes here"
+msgstr "여기서 변경을 제안할 권한이 없습니다"
+
+#: projects.py:1167 projects.py:1185
+msgid "You do not have rights to review suggestions here"
+msgstr "여기서 제안들을 검토할 권한이 없습니다"
+
+#: translatepage.py:89
+#, python-format
+msgid ""
+"%d/%d translated\n"
+"(%d blank, %d fuzzy)"
+msgstr "%d/%d개 번역함 (%d 공백, %d 퍼지)"
+
+#: translatepage.py:94 adminpages.py:35 adminpages.py:74 adminpages.py:132
+#: adminpages.py:197 adminpages.py:284 adminpages.py:344 pagelayout.py:72
+#: users.py:58 users.py:95 users.py:131 users.py:153 indexpage.py:73
+#: indexpage.py:96 indexpage.py:136 indexpage.py:194 indexpage.py:256
+#: indexpage.py:346
 msgid "Pootle Demo"
+msgstr "Pootle 데모"
+
+#. l10n: first parameter: name of the installation (like "Pootle")
+#. l10n: second parameter: project name
+#. l10n: third parameter: target language
+#. l10n: fourth parameter: file name
+#: translatepage.py:99
+#, python-format
+msgid "%s: translating %s into %s: %s"
+msgstr "%s: %s %s 언어로 번역: %s"
+
+#. l10n: Heading above the table column with the source language
+#: translatepage.py:114
+msgid "Original"
+msgstr "원본"
+
+#. l10n: Heading above the table column with the target language
+#: translatepage.py:116
+msgid "Translation"
+msgstr "번역"
+
+#: translatepage.py:119
+msgid "Accept"
+msgstr "수락"
+
+#: translatepage.py:120
+msgid "Reject"
+msgstr "거부"
+
+#: translatepage.py:121 pagelayout.py:243
+msgid "Fuzzy"
+msgstr "퍼지"
+
+#. l10n: Heading above the textarea for translator comments.
+#: translatepage.py:123
+msgid "Translator comments"
 msgstr ""
 
-#: adminpages.py:43 adminpages.py:79 adminpages.py:134 adminpages.py:195
+#. l10n: Heading above the comments extracted from the programing source code
+#: translatepage.py:125
+msgid "Developer comments"
+msgstr ""
+
+#. l10n: This heading refers to related translations and terminology
+#: translatepage.py:127
+msgid "Related"
+msgstr "관련된"
+
+#. l10n: text next to search field
+#: translatepage.py:131 indexpage.py:356
+msgid "Search"
+msgstr "찾기"
+
+#. l10n: "batch" refers to the set of translations that were reviewed
+#: translatepage.py:145
+msgid "End of batch"
+msgstr "배치의 끝"
+
+#: translatepage.py:147
+msgid "Click here to return to the index"
+msgstr "색인으로 가려면 여기를 누르세요"
+
+#. l10n: noun (the start)
+#: translatepage.py:161 translatepage.py:164
+msgid "Start"
+msgstr "시작"
+
+#. l10n: the parameter refers to the number of messages
+#: translatepage.py:168 translatepage.py:171
+#, python-format
+msgid "Previous %d"
+msgstr "이전 %d개"
+
+#. l10n: the third parameter refers to the total number of messages in the file
+#: translatepage.py:173
+#, python-format
+msgid "Items %d to %d of %d"
+msgstr "%d번째 항목 (%d/%d)"
+
+#. l10n: the parameter refers to the number of messages
+#: translatepage.py:178 translatepage.py:181
+#, python-format
+msgid "Next %d"
+msgstr "다음 %d개"
+
+#. l10n: noun (the end)
+#: translatepage.py:184 translatepage.py:187
+msgid "End"
+msgstr "끝"
+
+#. l10n: the parameter is the name of one of the quality checks, like "fuzzy"
+#: translatepage.py:204
+#, python-format
+msgid "checking %s"
+msgstr "%s 검사하는 중"
+
+#: translatepage.py:211 translatepage.py:214 indexpage.py:526 indexpage.py:529
+msgid "Assign Strings"
+msgstr "문자열 할당"
+
+#: translatepage.py:212 indexpage.py:528
+msgid "Assign to User"
+msgstr "사용자에게 할당"
+
+#: translatepage.py:213 indexpage.py:527
+msgid "Assign Action"
+msgstr "활동 할당"
+
+#: translatepage.py:368
+#, python-format
+msgid "There are no items matching that search ('%s')"
+msgstr "그 찾기에 ('%s') 해당하는 항목이 없습니다"
+
+#: translatepage.py:370
+msgid "You have finished going through the items you selected"
+msgstr "선택한 항목에 대해 끝까지 모두 작업을 마쳤습니다."
+
+#: translatepage.py:578
+msgid "Singular"
+msgstr "단수형"
+
+#: translatepage.py:579
+msgid "Plural"
+msgstr "복수형"
+
+#. l10n: verb
+#: translatepage.py:593
+msgid "Edit"
+msgstr "편집"
+
+#. l10n: verb
+#: translatepage.py:609
+msgid "Copy"
+msgstr "복사"
+
+#: translatepage.py:610 translatepage.py:784
+msgid "Skip"
+msgstr "건너뛰기"
+
+#. l10n: verb
+#: translatepage.py:612 translatepage.py:783 users.py:256
+msgid "Back"
+msgstr "이전"
+
+#: translatepage.py:614
+msgid "Submit"
+msgstr "제출"
+
+#. l10n: action that increases the height of the textarea
+#: translatepage.py:617
+msgid "Grow"
+msgstr "늘리기"
+
+#. l10n: action that decreases the height of the textarea
+#: translatepage.py:619
+msgid "Shrink"
+msgstr "줄이기"
+
+#: translatepage.py:641 translatepage.py:735 translatepage.py:772
+#: translatepage.py:805
+#, python-format
+msgid "Plural Form %d"
+msgstr "복수 형태 %d"
+
+#. l10n: This is an error message that will display if the relevant problem occurs
+#: translatepage.py:657
+msgid ""
+"Translation not possible because plural information for your language is not "
+"available. Please contact the site administrator."
+msgstr ""
+"이 언어에 대한 복수형 정보가 없기 때문에 번역할 수 없습니다. 사이트 관리자에"
+"게 문의하십시오."
+
+#: translatepage.py:739
+msgid "Current Translation:"
+msgstr "현재 번역:"
+
+#. l10n: First parameter: number
+#. l10n: Second parameter: name of translator
+#: translatepage.py:752
+#, python-format
+msgid "Suggestion %d by %s:"
+msgstr "%s의 제안 %d"
+
+#: translatepage.py:754
+#, python-format
+msgid "Suggestion %d:"
+msgstr "제안 %d:"
+
+#. l10n: parameter: name of translator
+#: translatepage.py:758
+#, python-format
+msgid "Suggestion by %s:"
+msgstr "%s의 제안"
+
+#: translatepage.py:760
+msgid "Suggestion:"
+msgstr "제안:"
+
+#: adminpages.py:43 adminpages.py:82 adminpages.py:140 adminpages.py:205
 #: pagelayout.py:36
 msgid "Home"
-msgstr ""
+msgstr "홈"
 
-#: adminpages.py:44 adminpages.py:197
+#: adminpages.py:44 adminpages.py:207
 msgid "Users"
-msgstr ""
+msgstr "사용자"
 
-#: adminpages.py:45 adminpages.py:81 indexpage.py:75
+#: adminpages.py:45 adminpages.py:84 indexpage.py:94
 msgid "Languages"
-msgstr ""
+msgstr "언어"
 
-#: adminpages.py:46 adminpages.py:136 indexpage.py:76
+#: adminpages.py:46 adminpages.py:142 indexpage.py:95
 msgid "Projects"
-msgstr ""
+msgstr "프로젝트"
 
 #: adminpages.py:47
 msgid "General options"
-msgstr ""
+msgstr "일반적인 선택사항"
 
-#: adminpages.py:48 users.py:129
+#: adminpages.py:48 users.py:157
 msgid "Option"
-msgstr ""
+msgstr "선택사항"
 
-#: adminpages.py:49 users.py:130
+#: adminpages.py:49 users.py:158
 msgid "Current value"
-msgstr ""
+msgstr "현재 값"
 
-#: adminpages.py:50 adminpages.py:82 adminpages.py:137 adminpages.py:198
-#: users.py:142
+#: adminpages.py:50 adminpages.py:85 adminpages.py:143 adminpages.py:208
+#: users.py:172
 msgid "Save changes"
-msgstr ""
+msgstr "저장"
 
 #: adminpages.py:54
 msgid "Title"
-msgstr ""
+msgstr "제목"
 
-#: adminpages.py:54
+#: adminpages.py:55
 msgid "Description"
-msgstr ""
+msgstr "설명"
 
-#: adminpages.py:54
+#: adminpages.py:56
 msgid "Base URL"
-msgstr ""
+msgstr "기본 URL"
 
-#: adminpages.py:54
+#: adminpages.py:57
 msgid "Home Page"
-msgstr ""
+msgstr "홈페이지"
 
-#: adminpages.py:80 adminpages.py:135 adminpages.py:196
+#: adminpages.py:83 adminpages.py:141 adminpages.py:206
 msgid "Main admin page"
-msgstr ""
-
-#: adminpages.py:86
-msgid "ISO Code"
-msgstr ""
-
-#: adminpages.py:87 adminpages.py:142 adminpages.py:203 users.py:80
-msgid "Full Name"
-msgstr ""
-
-#: adminpages.py:87
-msgid "(add language here)"
-msgstr ""
-
-#: adminpages.py:88
-msgid "Special Chars"
-msgstr ""
-
-#: adminpages.py:88
-msgid "(special characters)"
-msgstr ""
-
-#: adminpages.py:89 indexpage.py:189
-msgid "Number of Plurals"
-msgstr ""
+msgstr "메인 관리자 페이지"
 
 #: adminpages.py:89
-msgid "(number of plurals)"
-msgstr ""
+msgid "ISO Code"
+msgstr "ISO 코드"
 
-#: adminpages.py:90 indexpage.py:190
-msgid "Plural Equation"
-msgstr ""
-
-#: adminpages.py:90
-msgid "(plural equation)"
-msgstr ""
+#: adminpages.py:90 adminpages.py:148 adminpages.py:213 users.py:104
+msgid "Full Name"
+msgstr "성함"
 
 #: adminpages.py:91
+msgid "(add language here)"
+msgstr "(여기에 다른언어를 더하세요)"
+
+#: adminpages.py:92
+msgid "Special Chars"
+msgstr "특수 문자"
+
+#: adminpages.py:92
+msgid "(special characters)"
+msgstr "(특별 케릭터)"
+
+#: adminpages.py:93 indexpage.py:217
+msgid "Number of Plurals"
+msgstr "복수형의 수"
+
+#: adminpages.py:93
+msgid "(number of plurals)"
+msgstr "(복수형의 수)"
+
+#: adminpages.py:94 indexpage.py:218
+msgid "Plural Equation"
+msgstr "복수형 계산식"
+
+#: adminpages.py:94
+msgid "(plural equation)"
+msgstr "(복수형 계산식)"
+
+#: adminpages.py:95
 msgid "Remove Language"
-msgstr ""
+msgstr "언어 지우기"
 
 #. l10n: The parameter is a languagecode, projectcode or username
-#: adminpages.py:106 adminpages.py:168 adminpages.py:229 adminpages.py:392
+#: adminpages.py:110 adminpages.py:177 adminpages.py:240 adminpages.py:410
 #, python-format
 msgid "Remove %s"
-msgstr ""
+msgstr "%s 지우기"
 
-#: adminpages.py:124
+#: adminpages.py:129
 msgid "Standard"
-msgstr ""
+msgstr "표준"
 
-#: adminpages.py:141
+#: adminpages.py:147
 msgid "Project Code"
-msgstr ""
+msgstr "프로젝트 코드"
 
-#: adminpages.py:142
+#: adminpages.py:149
 msgid "(add project here)"
-msgstr ""
+msgstr "(여기에 프로젝트 추가)"
 
-#: adminpages.py:143
+#: adminpages.py:150
 msgid "Project Description"
-msgstr ""
+msgstr "프로젝트 설명"
 
-#: adminpages.py:143
+#: adminpages.py:150
 msgid "(project description)"
-msgstr ""
+msgstr "(프로젝트 설명)"
 
-#: adminpages.py:144
+#: adminpages.py:151
 msgid "Checker Style"
+msgstr "검사 스타일"
+
+#: adminpages.py:152
+msgid "File Type"
 msgstr ""
 
-#: adminpages.py:145
+#: adminpages.py:153
 msgid "Create MO Files"
-msgstr ""
+msgstr "MO 파일 만들기"
 
-#: adminpages.py:146
+#: adminpages.py:154
 msgid "Remove Project"
-msgstr ""
+msgstr "프로젝트 지우기"
 
-#: adminpages.py:202 users.py:46
+#: adminpages.py:212 users.py:66
 msgid "Login"
-msgstr ""
+msgstr "로그인"
 
-#: adminpages.py:203 users.py:274
+#: adminpages.py:214 users.py:347
 msgid "(add full name here)"
-msgstr ""
+msgstr "(여기 전체 이름 추가)"
 
-#: adminpages.py:204 users.py:77
+#: adminpages.py:215 users.py:101
 msgid "Email Address"
-msgstr ""
+msgstr "전자메일 주소"
 
-#: adminpages.py:204 users.py:277
+#: adminpages.py:215 users.py:350
 msgid "(add email here)"
-msgstr ""
+msgstr "(여기 전자메일 추가)"
 
-#: adminpages.py:205 users.py:83
+#: adminpages.py:216 users.py:107 users.py:163
 msgid "Password"
-msgstr ""
+msgstr "비밀번호"
 
-#: adminpages.py:205 users.py:271
+#: adminpages.py:216 users.py:344
 msgid "(add password here)"
-msgstr ""
+msgstr "(여기 비밀번호 추가)"
 
-#: adminpages.py:206
+#: adminpages.py:217
 msgid "Activated"
-msgstr ""
+msgstr "활성화함"
 
-#: adminpages.py:206
+#: adminpages.py:217
 msgid "Activate New User"
-msgstr ""
+msgstr "새 사용자 활성화"
 
-#: adminpages.py:207
+#: adminpages.py:218
 msgid "Remove User"
-msgstr ""
+msgstr "사용자 지우기"
 
-#: adminpages.py:261
+#: adminpages.py:272
 msgid "Back to main page"
-msgstr ""
+msgstr "메인 페이지로 돌아가기"
 
-#: adminpages.py:262
+#: adminpages.py:273
 msgid "Existing languages"
-msgstr ""
+msgstr "기존 언어"
 
 #. l10n: This refers to updating the translation files from the templates like with .pot files
-#: adminpages.py:266
+#: adminpages.py:277
 msgid "Update Languages"
-msgstr ""
-
-#: adminpages.py:267
-#, python-format
-msgid "Pootle Admin: %s"
-msgstr ""
-
-#: adminpages.py:268 adminpages.py:330
-msgid "You do not have the rights to administer this project."
-msgstr ""
-
-#. l10n: This refers to updating the translation files from the templates like with .pot files
-#: adminpages.py:270
-msgid "Update from templates"
-msgstr ""
+msgstr "언어 업데이트"
 
 #: adminpages.py:278
+#, python-format
+msgid "Pootle Admin: %s"
+msgstr "Pootle 관리: %s"
+
+#: adminpages.py:279 adminpages.py:341
+msgid "You do not have the rights to administer this project."
+msgstr "이 프로젝트를 관리할 권한이 없습니다."
+
+#. l10n: This refers to updating the translation files from the templates like with .pot files
+#: adminpages.py:281
+msgid "Update from templates"
+msgstr "템플리트에서 업데이트"
+
+#: adminpages.py:289
 msgid "Add Language"
-msgstr ""
+msgstr "언어 추가"
 
 #. l10n: This is the page title. The first parameter is the language name, the second parameter is the project name
-#: adminpages.py:310
+#: adminpages.py:321
 #, python-format
 msgid "Pootle Admin: %s %s"
-msgstr ""
+msgstr "Pootle 관리: %s %s"
 
-#: adminpages.py:311
+#: adminpages.py:322
 msgid "Project home page"
-msgstr ""
+msgstr "프로젝트 홈페이지"
 
-#: adminpages.py:329
+#: adminpages.py:340
 #, python-format
 msgid "Cannot set rights for username %s - user does not exist"
-msgstr ""
+msgstr "사용자 이름 %s에 대해 권한을 설정할 수 없습니다 - 사용자가 없습니다"
 
-#: adminpages.py:346
+#: adminpages.py:357
 msgid "This is a GNU-style project (one directory, files named per language)."
-msgstr ""
+msgstr "GNU 스타일 프로젝트입니다. (디렉토리 1개, 각 언어마다 파일)"
 
-#: adminpages.py:348
+#: adminpages.py:359
 msgid "This is a standard style project (one directory per language)."
-msgstr ""
+msgstr "표준 스타일 프로젝트입니다. (각 언어마다 디렉토리 1개씩)"
 
-#: adminpages.py:349
+#: adminpages.py:360
 msgid "User Permissions"
-msgstr ""
+msgstr "사용자 권한"
 
-#: adminpages.py:350 users.py:74 users.py:107
+#: adminpages.py:361 users.py:98 users.py:134
 msgid "Username"
-msgstr ""
+msgstr "사용자 이름"
 
-#: adminpages.py:351
+#: adminpages.py:362
 msgid "(select to add user)"
-msgstr ""
+msgstr "(사용자를 추가하려면 선택하십시오)"
 
-#: adminpages.py:352
+#: adminpages.py:363
 msgid "Rights"
-msgstr ""
+msgstr "권한"
 
-#: adminpages.py:353 indexpage.py:929
+#: adminpages.py:364 indexpage.py:998
 msgid "Remove"
-msgstr ""
+msgstr "지우기"
 
-#: adminpages.py:373
+#: adminpages.py:391
 msgid "Update Rights"
-msgstr ""
+msgstr "권한 업데이트"
 
-#: indexpage.py:49
+#: pagelayout.py:37
+msgid "All projects"
+msgstr "모든 프로젝트"
+
+#: pagelayout.py:38
+msgid "All languages"
+msgstr "모든 언어"
+
+#: pagelayout.py:39
+msgid "My account"
+msgstr "내 계정"
+
+#: pagelayout.py:40 pagelayout.py:168 indexpage.py:200 indexpage.py:262
+msgid "Admin"
+msgstr "관리"
+
+#: pagelayout.py:41
+msgid "Docs & help"
+msgstr "문서 및 도움말"
+
+#: pagelayout.py:42
+msgid "Log out"
+msgstr "로그아웃"
+
+#: pagelayout.py:43
+msgid "Log in"
+msgstr "로그인"
+
+#. l10n: Verb, as in "to register"
+#: pagelayout.py:45
+msgid "Register"
+msgstr "등록"
+
+#: pagelayout.py:46
+msgid "Activate"
+msgstr "활성화"
+
+#: pagelayout.py:80
+msgid "Pootle Logo"
+msgstr "Pootle 로고"
+
+#: pagelayout.py:81
+msgid "WordForge Translation Project"
+msgstr "WordForge 번역 프로젝트"
+
+#: pagelayout.py:83
+msgid "About this Pootle server"
+msgstr "이 Pootle 서버 정보"
+
+#: pagelayout.py:157
+msgid "All goals"
+msgstr "모든 목표"
+
+#: pagelayout.py:228
+#, python-format
+msgid "%d/%d files"
+msgstr "%d/%d개 파일"
+
+#: pagelayout.py:231
+#, python-format
+msgid "%d file"
+msgid_plural "%d files"
+msgstr[0] "%d개 파일"
+
+#: pagelayout.py:232 indexpage.py:995
+#, python-format
+msgid "%d/%d words (%d%%) translated"
+msgstr "%d/%d개 단어 (%d%%) 번역함"
+
+#: pagelayout.py:233
+#, python-format
+msgid "%d/%d strings"
+msgstr "%d/%d개 문자열"
+
+#: pagelayout.py:239 users.py:159
+msgid "Name"
+msgstr "이름"
+
+#: pagelayout.py:240
+msgid "Translated"
+msgstr "번역함"
+
+#: pagelayout.py:241
+msgid "Translated percentage"
+msgstr "번역한 퍼센트"
+
+#: pagelayout.py:242
+msgid "Translated words"
+msgstr "번역한 단어"
+
+#: pagelayout.py:244
+msgid "Fuzzy percentage"
+msgstr "퍼지 퍼센트"
+
+#: pagelayout.py:245
+msgid "Fuzzy words"
+msgstr "퍼지 단어"
+
+#: pagelayout.py:246 indexpage.py:786
+msgid "Untranslated"
+msgstr "번역 안 함"
+
+#: pagelayout.py:247
+msgid "Untranslated percentage"
+msgstr "번역 안 한 퍼센트"
+
+#: pagelayout.py:248
+msgid "Untranslated words"
+msgstr "번역 안 한 단어"
+
+#: pagelayout.py:249
+msgid "Total"
+msgstr "전체"
+
+#: pagelayout.py:250
+msgid "Total words"
+msgstr "전체 단어"
+
+#. l10n: noun. The graphical representation of translation status
+#: pagelayout.py:252
+msgid "Graph"
+msgstr "그래프"
+
+#: users.py:39
+#, python-format
+msgid "You must supply a valid password of at least %d characters."
+msgstr "최소한 길이가 %d개 문자인 올바른 비밀번호를 입력해야 합니다."
+
+#: users.py:41
+msgid "The password is not the same as the confirmation."
+msgstr "비밀번호가 확인과 다릅니다."
+
+#: users.py:55
+msgid "Login to Pootle"
+msgstr "Pootle 로그인"
+
+#: users.py:61
+msgid "Username:"
+msgstr "사용자 이름:"
+
+#: users.py:63
+msgid "Password:"
+msgstr "비밀번호:"
+
+#: users.py:64
+msgid "Language:"
+msgstr "언어:"
+
+#: users.py:73
+msgid "Default"
+msgstr "기본값"
+
+#: users.py:89
+msgid "Please enter your registration details"
+msgstr "자세한 등록 정보를 입력하십시오"
+
+#: users.py:92 users.py:419
+msgid "Pootle Registration"
+msgstr "Pootle 등록"
+
+#: users.py:99 users.py:135
+msgid "Your requested username"
+msgstr "요청한 사용자 이름"
+
+#: users.py:102 users.py:373
+msgid "You must supply a valid email address"
+msgstr "올바른 전자메일 주소를 입력해야 합니다."
+
+#: users.py:105
+msgid "Your full name"
+msgstr "전체 이름"
+
+#: users.py:108
+msgid "Your desired password"
+msgstr "사용하고 싶은 비밀 번호"
+
+#: users.py:110 users.py:164
+msgid "Confirm password"
+msgstr "비밀번호 확인"
+
+#: users.py:111
+msgid "Type your password again to ensure it is entered correctly"
+msgstr "제대로 입력했는지 확인을 위해 비밀번호를 다시 입력하십시오"
+
+#: users.py:113
+msgid "Register Account"
+msgstr "계정 등록"
+
+#: users.py:122
+msgid "Please enter your activation details"
+msgstr "활성화 정보를 입력하십시오"
+
+#: users.py:127
+msgid "Pootle Account Activation"
+msgstr "Pootle 계정 활성화"
+
+#: users.py:137
+msgid "Activation Code"
+msgstr "활성화 코드"
+
+#: users.py:138
+msgid "The activation code you received"
+msgstr "받은 활성화 코드"
+
+#: users.py:140
+msgid "Activate Account"
+msgstr "계정 활성화"
+
+#: users.py:151
+#, python-format
+msgid "Options for: %s"
+msgstr "설정: %s"
+
+#: users.py:156
+msgid "Personal Details"
+msgstr "개인 정보"
+
+#: users.py:161
+msgid "Email"
+msgstr "전자메일"
+
+#: users.py:165
+msgid "Translation Interface Configuration"
+msgstr "번역 인터페이스 설정"
+
+#: users.py:166
+msgid "User Interface language"
+msgstr "사용자 인터페이스 언어"
+
+#: users.py:167
+msgid "My Projects"
+msgstr "내 프로젝트"
+
+#: users.py:169
+msgid "My Languages"
+msgstr "내 언어"
+
+#: users.py:171
+msgid "Home page"
+msgstr "홈페이지"
+
+#: users.py:207
+msgid "Input Height (in lines)"
+msgstr "입력 높이 (줄 단위)"
+
+#: users.py:208
+msgid "Number of rows in view mode"
+msgstr "보기 모드에서 줄 수"
+
+#: users.py:209
+msgid "Number of rows in translate mode"
+msgstr "번역 모드에서 줄 수"
+
+#: users.py:251
+msgid "Error"
+msgstr "오류"
+
+#: users.py:303
+msgid "You need to be siteadmin to change users"
+msgstr "사용자를 바꾸려면 사이트 관리자여야 합니다"
+
+#: users.py:367
+msgid ""
+"Username must be alphanumeric, and must start with an alphabetic character."
+msgstr "사용자 이름은 알파벳과 숫자여야 하고, 알파벳으로 시작해야 합니다."
+
+#: users.py:382
+msgid ""
+"You (or someone else) attempted to register an account with your username.\n"
+msgstr ""
+"내 사용자 이름으로 (본인 아니면 다른 누군가가) 계정 등록을 시도했습니다.\n"
+
+#: users.py:383
+msgid "We don't store your actual password but only a hash of it.\n"
+msgstr "이 사이트는 열쇠글 원본을 저장하지 않고 해시값만을 저장합니다.\n"
+
+#: users.py:385
+#, python-format
+msgid "If you have a problem with registration, please contact %s.\n"
+msgstr "등록에 문제가 있으면 %s에 연락하십시오.\n"
+
+#: users.py:387
+msgid ""
+"If you have a problem with registration, please contact the site "
+"administrator.\n"
+msgstr "등록에 문제가 있으면 사이트 관리자에게 연락하십시오."
+
+#: users.py:388
+msgid ""
+"That username already exists. An email will be sent to the registered email "
+"address.\n"
+msgstr ""
+"사용자 이름이 이미 사용중입니다. 등록한 전자메일 주소로 전자메일을 보냈습니"
+"다.\n"
+
+#: users.py:390
+#, python-format
+msgid "Proceeding to <a href='%s'>login</a>\n"
+msgstr "<a href='%s'>로그인</a>으로 계속\n"
+
+#: users.py:396
+msgid "A Pootle account has been created for you using this email address.\n"
+msgstr "이 전자메일 주소를 사용해 Pootle 계정을 만들어습니다\n"
+
+#: users.py:398
+msgid "To activate your account, follow this link:\n"
+msgstr "계정을 활성화하려면 다음 링크로 가십시오:\n"
+
+#: users.py:404
+#, python-format
+msgid ""
+"Your activation code is:\n"
+"%s\n"
+msgstr ""
+"계정 활성화 코드는 다음과 같습니다:\n"
+"%s\n"
+
+#: users.py:406
+msgid ""
+"If you are unable to follow the link, please enter the above code at the "
+"activation page.\n"
+msgstr "이 링크를 열 수 없다면, 활성화 페이지에서 위의 코드를 입력하십시오.\n"
+
+#: users.py:407
+msgid ""
+"This message is sent to verify that the email address is in fact correct. If "
+"you did not want to register an account, you may simply ignore the message.\n"
+msgstr ""
+"전자메일 주소가 정말로 맞는지 확인하기 위해 이 메세지를 보냅니다. 계정을 등록"
+"하고 싶지 않다면, 그냥 이 메세지를 무시해 주십시오.\n"
+
+#: users.py:409
+#, python-format
+msgid ""
+"Account created. You will be emailed login details and an activation code. "
+"Please enter your activation code on the <a href='%s'>activation page</a>."
+msgstr ""
+"계정을 만들었습니다. 로그인 정보와 활성화 코드를 전자메일로 받게 될 것입니"
+"다. 받은 해당 활성화 코드를 <a href='%s'>활성화 페이지</a>에서 입력하십시오."
+
+#: users.py:411
+msgid "(Or simply click on the activation link in the email)"
+msgstr "(아니면 전자메일에 들어 있는 활성화 링크를 누르십시오.)"
+
+#: users.py:413
+#, python-format
+msgid "Your user name is: %s\n"
+msgstr "사용자 이름은: %s\n"
+
+#: users.py:415
+#, python-format
+msgid "Your password is: %s\n"
+msgstr "비밀번호는: %s\n"
+
+#: users.py:416
+#, python-format
+msgid "Your registered email address is: %s\n"
+msgstr "등록한 전자메일 주소는: %s\n"
+
+#: users.py:442
+msgid "Redirecting to Registration Page..."
+msgstr "등록 페이지로 이동합니다..."
+
+#: users.py:466
+msgid "Redirecting to login Page..."
+msgstr "로그인 페이지로 이동합니다..."
+
+#: users.py:469
+msgid "Your account has been activated! Redirecting to login..."
+msgstr "계정을 활성화했습니다! 로그인으로 이동합니다..."
+
+#: users.py:473
+msgid "The activation information was not valid."
+msgstr "활성화 정보가 올바르지 않습니다."
+
+#: users.py:474
+msgid "Activation Failed"
+msgstr "활성화가 실패했습니다"
+
+#: users.py:583
+msgid "Input height must be numeric"
+msgstr "입력 높이는 숫자로 써야 합니다"
+
+#: users.py:584
+msgid "Input width must be numeric"
+msgstr "입력 너비는 숫자로 써야 합니다"
+
+#: users.py:585
+msgid "The number of rows displayed in view mode must be numeric"
+msgstr "보기 모드에서 줄 수는 숫자로 써야 합니다"
+
+#: users.py:586
+msgid "The number of rows displayed in translate mode must be numeric"
+msgstr "번역 모드에서 줄 수는 숫자로 써야 합니다"
+
+#: pootle.py:293
+msgid "Login failed"
+msgstr "로그인이 실패했습니다"
+
+#: pootle.py:337 pootle.py:368
+msgid "Redirecting to login..."
+msgstr "로그인으로 이동합니다..."
+
+#: pootle.py:340
+msgid "Need to log in to access home page"
+msgstr "홈페이지를 보려면 로그인해야 합니다"
+
+#: pootle.py:353
+msgid "Personal details updated"
+msgstr "개인 정보를 업데이트했습니다"
+
+#: pootle.py:371
+msgid "Need to log in to access admin page"
+msgstr "관리 페이지를 보려면 로그인해야 합니다"
+
+#: pootle.py:378
+msgid "Redirecting to home..."
+msgstr "홈으로 이동합니다..."
+
+#: pootle.py:381
+msgid "You do not have the rights to administer pootle."
+msgstr "Pootle을 관리할 권한이 없습니다."
+
+#: indexpage.py:61
 msgid "About Pootle"
-msgstr ""
+msgstr "Pootle 정보"
 
-#: indexpage.py:50
+#. l10n: Take care to use HTML tags correctly. A markup error could cause a display error.
+#: indexpage.py:63
 msgid ""
 "<strong>Pootle</strong> is a simple web portal that should allow you to "
 "<strong>translate</strong>! Since Pootle is <strong>Free Software</strong>, "
@@ -280,967 +1002,340 @@ msgid ""
 "participate in the development in many ways (you don't have to be able to "
 "program)."
 msgstr ""
+"<strong>Pootle</strong>은 간단한 웹 포탈로 여기에서 <strong>번역</strong>을 "
+"할 수 있습니다! Pootle은 <strong>자유 소프트웨어</strong>이므로, 얼마든지 "
+"Pootle을 내려받아서 자기만의 Pootle을 실행할 수 있습니다. 또 여러가지 방법으"
+"로 개발에 참여하실 수 있습니다. (프로그래밍을 몰라도 참여할 수 있습니다.)"
 
-#: indexpage.py:51
+#: indexpage.py:64
 msgid ""
 "The Pootle project itself is hosted at <a href=\"http://translate."
 "sourceforge.net/\">translate.sourceforge.net</a> where you can find the "
 "details about source code, mailing lists etc."
 msgstr ""
+"이 Pootle 프로젝트는 <a href=\"http://translate.sourceforge.net/\">translate."
+"sourceforge.net</a>에서 호스팅하고 여기에서 소스코드와 메일링 리스트 등의 정"
+"보를 얻을 수 있습니다."
 
-#. l10n: If your language uses right-to-left layout and you leave the English untranslated, consider enclosing the necessary text with <span dir="ltr">.......</span> to help browsers to display it correctly
-#: indexpage.py:53
+#. l10n: If your language uses right-to-left layout and you leave the English untranslated, consider enclosing the necessary text with <span dir="ltr">.......</span> to help browsers to display it correctly.
+#. l10n: Take care to use HTML tags correctly. A markup error could cause a display error.
+#: indexpage.py:67
 msgid ""
 "The name stands for <b>PO</b>-based <b>O</b>nline <b>T</b>ranslation / <b>L</"
 "b>ocalization <b>E</b>ngine, but you may need to read <a href=\"http://www."
 "thechestnut.com/flumps.htm\">this</a>."
 msgstr ""
+"Pootle이라는 이름은 <b>PO</b>-based <b>O</b>nline <b>T</b>ranslation / <b>L</"
+"b>ocalization <b>E</b>ngine을 뜻합니다. 하지만 <a href=\"http://www."
+"thechestnut.com/flumps.htm\">이 페이지</a>를 읽어 보십시오."
 
-#: indexpage.py:54
+#: indexpage.py:68
 msgid "Versions"
-msgstr ""
+msgstr "버전"
 
-#. l10n: If your language uses right-to-left layout and you leave the English untranslated, consider enclosing the necessary text with <span dir="ltr">.......</span> to help browsers to display it correctly
-#: indexpage.py:56
+#. l10n: If your language uses right-to-left layout and you leave the English untranslated, consider enclosing the necessary text with <span dir="ltr">.......</span> to help browsers to display it correctly.
+#. l10n: Take care to use HTML tags correctly. A markup error could cause a display error.
+#: indexpage.py:71
 #, python-format
 msgid ""
 "This site is running:<br />Pootle %s<br />Translate Toolkit %s<br />jToolkit "
 "%s<br />Kid %s<br />ElementTree %s<br />Python %s (on %s/%s)"
 msgstr ""
+"이 사이트에서 실행중인 프로그램: <br />Pootle %s<br />Translate Toolkit %"
+"s<br />jToolkit %s<br />Kid %s<br />ElementTree %s<br />Python %s (on %s/%s)"
 
-#: indexpage.py:74
-msgid "About this Pootle server"
-msgstr ""
-
-#: indexpage.py:107
+#: indexpage.py:130
 #, python-format
 msgid "User Page for: %s"
-msgstr ""
+msgstr "다음 사용자의 페이지: %s"
 
-#: indexpage.py:109
+#: indexpage.py:132
 msgid "Change options"
-msgstr ""
+msgstr "설정 바꾸기"
 
-#: indexpage.py:110
+#: indexpage.py:133
 msgid "Admin page"
-msgstr ""
+msgstr "관리 페이지"
 
-#: indexpage.py:111
+#: indexpage.py:135
 msgid "Quick Links"
-msgstr ""
+msgstr "빠른 링크"
 
-#: indexpage.py:115
+#: indexpage.py:139
 msgid "Please click on 'Change options' and select some languages and projects"
-msgstr ""
+msgstr "'설정 바꾸기'를 눌러 언어와 프로젝트를 선택하십시오"
 
-#: indexpage.py:164
+#: indexpage.py:192
 #, python-format
 msgid "%d project, average %d%% translated"
 msgid_plural "%d projects, average %d%% translated"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d개 프로젝트, 평균 %d%% 번역함"
 
 #. l10n: The first parameter is the name of the installation
 #. l10n: The second parameter is the name of the project/language
 #. l10n: This is used as a page title. Most languages won't need to change this
-#: indexpage.py:170 indexpage.py:230
+#: indexpage.py:198 indexpage.py:260
 #, python-format
 msgid "%s: %s"
-msgstr ""
+msgstr "%s: %s"
 
-#: indexpage.py:172 indexpage.py:232 pagelayout.py:40 pagelayout.py:140
-msgid "Admin"
-msgstr ""
-
-#: indexpage.py:186
+#: indexpage.py:214
 msgid "Language Code"
-msgstr ""
+msgstr "언어 코드"
 
-#: indexpage.py:187
+#: indexpage.py:215
 msgid "Language Name"
-msgstr ""
+msgstr "언어 이름"
 
-#: indexpage.py:224
+#: indexpage.py:252
 #, python-format
 msgid "%d language, average %d%% translated"
 msgid_plural "%d languages, average %d%% translated"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d개 언어, 평균 %d%% 번역함"
 
-#: indexpage.py:235
+#: indexpage.py:265
 msgid "Language"
-msgstr ""
+msgstr "언어"
 
 #. l10n: The first parameter is the name of the installation (like "Pootle")
-#: indexpage.py:314
+#: indexpage.py:348
 #, python-format
 msgid "%s: Project %s, Language %s"
-msgstr ""
+msgstr "%s: 프로젝트 %s, 언어 %s"
 
-#. l10n: text next to search field
-#: indexpage.py:322 translatepage.py:121
-msgid "Search"
-msgstr ""
-
-#: indexpage.py:369
+#: indexpage.py:413
 msgid "Cannot upload file, no file attached"
-msgstr ""
+msgstr "파일을 올릴 수 없습니다. 파일을 첨부하지 않았습니다"
 
-#: indexpage.py:375
+#: indexpage.py:419
 msgid "Can only upload PO files and zips of PO files"
-msgstr ""
+msgstr "PO 파일과 PO 파일의 ZIP 압축만 올릴 수 있습니다"
 
-#: indexpage.py:483 indexpage.py:486 translatepage.py:199 translatepage.py:202
-msgid "Assign Strings"
-msgstr ""
-
-#: indexpage.py:484 translatepage.py:201
-msgid "Assign Action"
-msgstr ""
-
-#: indexpage.py:485 translatepage.py:200
-msgid "Assign to User"
-msgstr ""
-
-#: indexpage.py:491
+#: indexpage.py:534
 msgid "goals"
-msgstr ""
+msgstr "목표"
 
-#: indexpage.py:491
+#: indexpage.py:535
 msgid "Enter goal name"
-msgstr ""
+msgstr "목표 이름을 입력하십시오"
 
-#: indexpage.py:491
+#: indexpage.py:536
 msgid "Add Goal"
-msgstr ""
+msgstr "목표 추가"
 
-#: indexpage.py:495 indexpage.py:497
+#: indexpage.py:541 indexpage.py:543
 msgid "Upload File"
-msgstr ""
+msgstr "파일 올리기"
 
-#: indexpage.py:496
+#: indexpage.py:542
 msgid "Select file to upload"
-msgstr ""
+msgstr "올릴 파일을 선택하십시오"
 
-#: indexpage.py:599
+#. l10n: tooltip
+#: indexpage.py:550
+msgid "Overwrite the current file if it exists"
+msgstr "파일이 있으면 덮어쓰기"
+
+#. l10n: radio button text
+#: indexpage.py:552
+msgid "Merge"
+msgstr "합치기"
+
+#. l10n: tooltip
+#: indexpage.py:554
+msgid ""
+"Merge the file with the current file and turn conflicts into suggestions"
+msgstr "파일을 현재 파일과 합쳐서 충돌한 사항을 제안사항으로 만듭니다"
+
+#: indexpage.py:657
 msgid "Not in a goal"
-msgstr ""
+msgstr "목표에 없음"
 
-#: indexpage.py:620
+#: indexpage.py:677
 msgid "Add User"
-msgstr ""
+msgstr "사용자 추가"
 
-#: indexpage.py:658
+#: indexpage.py:719
 msgid "PO file"
-msgstr ""
+msgstr "PO 파일"
 
-#: indexpage.py:662
+#: indexpage.py:723
 msgid "XLIFF file"
-msgstr ""
-
-#: indexpage.py:666
-msgid "Qt .ts file"
-msgstr ""
-
-#: indexpage.py:670
-msgid "CSV file"
-msgstr ""
-
-#: indexpage.py:675
-msgid "MO file"
-msgstr ""
-
-#: indexpage.py:679
-msgid "Update"
-msgstr ""
-
-#: indexpage.py:683 projects.py:141
-msgid "Commit"
-msgstr ""
-
-#: indexpage.py:720
-msgid "All Strings"
-msgstr ""
-
-#: indexpage.py:720 pagelayout.py:218
-msgid "Untranslated"
-msgstr ""
-
-#: indexpage.py:720
-msgid "Unassigned"
-msgstr ""
-
-#: indexpage.py:720
-msgid "Unassigned and Untranslated"
-msgstr ""
+msgstr "XLIFF 파일"
 
 #: indexpage.py:727
-msgid "Set Goal"
-msgstr ""
+msgid "Qt .ts file"
+msgstr "Qt .ts 파일"
 
 #: indexpage.py:731
+msgid "CSV file"
+msgstr "CSV 파일"
+
+#: indexpage.py:736
+msgid "MO file"
+msgstr "MO 파일"
+
+#. l10n: Update from version control (like CVS or Subversion)
+#: indexpage.py:742
+msgid "Update"
+msgstr "업데이트"
+
+#: indexpage.py:785
+msgid "All Strings"
+msgstr "모든 문자열"
+
+#: indexpage.py:787
+msgid "Unassigned"
+msgstr "할당하지 않음"
+
+#: indexpage.py:788
+msgid "Unassigned and Untranslated"
+msgstr "할당하지 않았고 번역하지 않음"
+
+#: indexpage.py:795
+msgid "Set Goal"
+msgstr "목표 설정"
+
+#: indexpage.py:799
 msgid "Select Multiple"
-msgstr ""
-
-#: indexpage.py:733
-msgid "Assign To"
-msgstr ""
-
-#: indexpage.py:762
-msgid "Show Editing Functions"
-msgstr ""
-
-#: indexpage.py:762
-msgid "Show Statistics"
-msgstr ""
-
-#: indexpage.py:763
-msgid "Show Tracks"
-msgstr ""
-
-#: indexpage.py:763
-msgid "Hide Tracks"
-msgstr ""
-
-#. l10n: "Checks" are quality checks that Pootle performs on translations to test for common mistakes
-#: indexpage.py:765
-msgid "Show Checks"
-msgstr ""
-
-#: indexpage.py:765
-msgid "Hide Checks"
-msgstr ""
-
-#: indexpage.py:766
-msgid "Show Goals"
-msgstr ""
-
-#: indexpage.py:766
-msgid "Hide Goals"
-msgstr ""
-
-#: indexpage.py:767
-msgid "Show Assigns"
-msgstr ""
-
-#: indexpage.py:767
-msgid "Hide Assigns"
-msgstr ""
-
-#: indexpage.py:776
-#, python-format
-msgid "All Goals: %s"
-msgstr ""
-
-#: indexpage.py:782
-msgid "Translate My Strings"
-msgstr ""
-
-#: indexpage.py:784
-msgid "View My Strings"
-msgstr ""
-
-#: indexpage.py:789
-msgid "No strings assigned to you"
-msgstr ""
-
-#: indexpage.py:793
-msgid "Quick Translate My Strings"
-msgstr ""
-
-#: indexpage.py:797
-msgid "No untranslated strings assigned to you"
-msgstr ""
+msgstr "여러 개 선택"
 
 #: indexpage.py:801
-msgid "Review Suggestions"
-msgstr ""
+msgid "Assign To"
+msgstr "할당할 사람"
 
-#: indexpage.py:803
-msgid "View Suggestions"
-msgstr ""
+#: indexpage.py:830
+msgid "Show Editing Functions"
+msgstr "편집 옵션 보기"
 
-#: indexpage.py:808
-msgid "Quick Translate"
-msgstr ""
-
-#: indexpage.py:810
-msgid "View Untranslated"
-msgstr ""
-
-#: indexpage.py:814
-msgid "No untranslated items"
-msgstr ""
-
-#: indexpage.py:817
-msgid "Translate All"
-msgstr ""
+#: indexpage.py:831
+msgid "Show Statistics"
+msgstr "통계 보기"
 
 #: indexpage.py:832
-msgid "ZIP of goal"
-msgstr ""
+msgid "Show Tracks"
+msgstr "기록 보기"
+
+#: indexpage.py:832
+msgid "Hide Tracks"
+msgstr "기록 감추기"
+
+#. l10n: "Checks" are quality checks that Pootle performs on translations to test for common mistakes
+#: indexpage.py:834
+msgid "Show Checks"
+msgstr "검사 결과 보기"
 
 #: indexpage.py:834
+msgid "Hide Checks"
+msgstr "검사 결과 감추기"
+
+#: indexpage.py:835
+msgid "Show Goals"
+msgstr "목표 보기"
+
+#: indexpage.py:835
+msgid "Hide Goals"
+msgstr "목표 감추기"
+
+#: indexpage.py:836
+msgid "Show Assigns"
+msgstr "할당 보기"
+
+#: indexpage.py:836
+msgid "Hide Assigns"
+msgstr "할당 감추기"
+
+#: indexpage.py:845
+#, python-format
+msgid "All Goals: %s"
+msgstr "모든 목표: %s"
+
+#: indexpage.py:851
+msgid "Translate My Strings"
+msgstr "내 문자열 번역"
+
+#: indexpage.py:853
+msgid "View My Strings"
+msgstr "내 문자열 보기"
+
+#: indexpage.py:858
+msgid "No strings assigned to you"
+msgstr "내게 할당된 문자열이 없습니다"
+
+#: indexpage.py:862
+msgid "Quick Translate My Strings"
+msgstr "내 문자열 빠른 번역"
+
+#: indexpage.py:866
+msgid "No untranslated strings assigned to you"
+msgstr "내게 할당된 번역하지 않은 문자열이 없습니다"
+
+#: indexpage.py:870
+msgid "Review Suggestions"
+msgstr "제안 검토"
+
+#: indexpage.py:872
+msgid "View Suggestions"
+msgstr "제안 보기"
+
+#: indexpage.py:877
+msgid "Quick Translate"
+msgstr "빠른 번역"
+
+#: indexpage.py:879
+msgid "View Untranslated"
+msgstr "번역하지 않은 항목 보기"
+
+#: indexpage.py:883
+msgid "No untranslated items"
+msgstr "번역하지 않은 항목이 없습니다"
+
+#: indexpage.py:886
+msgid "Translate All"
+msgstr "모두 번역"
+
+#: indexpage.py:901
+msgid "ZIP of goal"
+msgstr "목표 ZIP"
+
+#: indexpage.py:903
 msgid "ZIP of folder"
-msgstr ""
+msgstr "폴더 ZIP"
 
-#: indexpage.py:841
+#: indexpage.py:910
 msgid "Generate SDF"
-msgstr ""
+msgstr "SDF 만들기"
 
-#: indexpage.py:894
+#: indexpage.py:963
 #, python-format
 msgid "%d string (%d%%) failed"
 msgid_plural "%d strings (%d%%) failed"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d개 문자열 (%d%%) 실패"
 
-#: indexpage.py:924
+#: indexpage.py:993
 #, python-format
 msgid "%d/%d words (%d%%) assigned"
-msgstr ""
+msgstr "%d/%d개 단어 (%d%%) 할당"
 
-#: indexpage.py:925 indexpage.py:927
+#: indexpage.py:994 indexpage.py:996
 #, python-format
 msgid "[%d/%d strings]"
-msgstr ""
+msgstr "[%d/%d개 문자열]"
 
-#: indexpage.py:926 pagelayout.py:204
-#, python-format
-msgid "%d/%d words (%d%%) translated"
-msgstr ""
+#~ msgid "Broaden"
+#~ msgstr "넓게"
 
-#: pagelayout.py:37
-msgid "All projects"
-msgstr ""
+#~ msgid "Narrow"
+#~ msgstr "좁게"
 
-#: pagelayout.py:38
-msgid "All languages"
-msgstr ""
+#~ msgid "Reset"
+#~ msgstr "초기화"
 
-#: pagelayout.py:39
-msgid "My account"
-msgstr ""
+#~ msgid "Must be a valid email address"
+#~ msgstr "올바른 전자메일 주소를 써야 합니다"
 
-#: pagelayout.py:41
-msgid "Docs & help"
-msgstr ""
-
-#: pagelayout.py:42
-msgid "Log out"
-msgstr ""
-
-#: pagelayout.py:43
-msgid "Log in"
-msgstr ""
-
-#. l10n: Verb, as in "to register"
-#: pagelayout.py:45
-msgid "Register"
-msgstr ""
-
-#: pagelayout.py:46
-msgid "Activate"
-msgstr ""
-
-#: pagelayout.py:63
-msgid "Pootle Logo"
-msgstr ""
-
-#: pagelayout.py:64
-msgid "WordForge Translation Project"
-msgstr ""
-
-#: pagelayout.py:129
-msgid "All goals"
-msgstr ""
-
-#: pagelayout.py:200
-#, python-format
-msgid "%d/%d files"
-msgstr ""
-
-#: pagelayout.py:203
-#, python-format
-msgid "%d file"
-msgid_plural "%d files"
-msgstr[0] ""
-msgstr[1] ""
-
-#: pagelayout.py:205
-#, python-format
-msgid "%d/%d strings"
-msgstr ""
-
-#: pagelayout.py:211 users.py:131
-msgid "Name"
-msgstr ""
-
-#: pagelayout.py:212
-msgid "Translated"
-msgstr ""
-
-#: pagelayout.py:213
-msgid "Translated percentage"
-msgstr ""
-
-#: pagelayout.py:214
-msgid "Translated words"
-msgstr ""
-
-#: pagelayout.py:215
-msgid "Fuzzy"
-msgstr ""
-
-#: pagelayout.py:216
-msgid "Fuzzy percentage"
-msgstr ""
-
-#: pagelayout.py:217
-msgid "Fuzzy words"
-msgstr ""
-
-#: pagelayout.py:219
-msgid "Untranslated percentage"
-msgstr ""
-
-#: pagelayout.py:220
-msgid "Untranslated words"
-msgstr ""
-
-#: pagelayout.py:221
-msgid "Total"
-msgstr ""
-
-#: pagelayout.py:222
-msgid "Total words"
-msgstr ""
-
-#: pagelayout.py:223
-msgid "Graph"
-msgstr ""
-
-#: pootle.py:226
-msgid "Login failed"
-msgstr ""
-
-#: pootle.py:270 pootle.py:296
-msgid "Redirecting to login..."
-msgstr ""
-
-#: pootle.py:273
-msgid "Need to log in to access home page"
-msgstr ""
-
-#: pootle.py:299
-msgid "Need to log in to access admin page"
-msgstr ""
-
-#: pootle.py:306
-msgid "Redirecting to home..."
-msgstr ""
-
-#: pootle.py:309
-msgid "You do not have the rights to administer pootle."
-msgstr ""
-
-#: projects.py:133
-msgid "View"
-msgstr ""
-
-#: projects.py:134 translatepage.py:570
-msgid "Suggest"
-msgstr ""
-
-#: projects.py:135
-msgid "Translate"
-msgstr ""
-
-#: projects.py:136
-msgid "Review"
-msgstr ""
-
-#: projects.py:137
-msgid "Archive"
-msgstr ""
-
-#: projects.py:138
-msgid "Compile PO files"
-msgstr ""
-
-#: projects.py:139
-msgid "Assign"
-msgstr ""
-
-#: projects.py:140
-msgid "Administrate"
-msgstr ""
-
-#: projects.py:197
-msgid "You cannot remove the \"nobody\" or \"default\" user"
-msgstr ""
-
-#: projects.py:334 projects.py:394
-msgid "You do not have rights to alter goals here"
-msgstr ""
-
-#: projects.py:454
-msgid "You do not have rights to upload files here"
-msgstr ""
-
-#: projects.py:457
-msgid "You do not have rights to upload new files here"
-msgstr ""
-
-#: projects.py:466
-msgid "You do not have rights to update files here"
-msgstr ""
-
-#: projects.py:536
-msgid "You do not have rights to commit files here"
-msgstr ""
-
-#: projects.py:864 projects.py:905
-msgid "You do not have rights to alter assignments here"
-msgstr ""
-
-#: projects.py:1109
-msgid "You do not have rights to change translations here"
-msgstr ""
-
-#: projects.py:1119
-msgid "You do not have rights to suggest changes here"
-msgstr ""
-
-#: projects.py:1135 projects.py:1158
-msgid "You do not have rights to review suggestions here"
-msgstr ""
-
-#: users.py:36
-msgid "Login to Pootle"
-msgstr "Pootle 로그인"
-
-#: users.py:41
-msgid "Username:"
-msgstr ""
-
-#: users.py:43
-msgid "Password:"
-msgstr ""
-
-#: users.py:44
-msgid "Language:"
-msgstr ""
-
-#: users.py:53
-msgid "Default"
-msgstr ""
-
-#: users.py:65
-msgid "Please enter your registration details"
-msgstr "자세한 등록 정보를 입력하세요."
-
-#: users.py:68
-msgid "Pootle Registration"
-msgstr ""
-
-#: users.py:75 users.py:108
-msgid "Your requested username"
-msgstr ""
-
-#: users.py:78
-msgid "Must be a valid email address"
-msgstr ""
-
-#: users.py:81
-msgid "Your full name"
-msgstr ""
-
-#: users.py:84
-msgid "Your desired password"
-msgstr ""
-
-#: users.py:86
-msgid "Register Account"
-msgstr ""
-
-#: users.py:95
-msgid "Please enter your activation details"
-msgstr ""
-
-#: users.py:100
-msgid "Pootle Account Activation"
-msgstr ""
-
-#: users.py:110
-msgid "Activation Code"
-msgstr ""
-
-#: users.py:111
-msgid "The activation code you received"
-msgstr "받은 활성화 코드"
-
-#: users.py:113
-msgid "Activate Account"
-msgstr ""
-
-#: users.py:123
-#, python-format
-msgid "Options for: %s"
-msgstr ""
-
-#: users.py:128
-msgid "Personal Details"
-msgstr ""
-
-#: users.py:133
-msgid "Email"
-msgstr ""
-
-#: users.py:135
-msgid "Translation Interface Configuration"
-msgstr ""
-
-#: users.py:136
-msgid "User Interface language"
-msgstr ""
-
-#: users.py:137
-msgid "My Projects"
-msgstr ""
-
-#: users.py:139
-msgid "My Languages"
-msgstr ""
-
-#: users.py:141
-msgid "Home page"
-msgstr ""
-
-#: users.py:175
-msgid "Input Height (in lines)"
-msgstr ""
-
-#: users.py:175
-msgid "Input Width (in characters)"
-msgstr ""
-
-#: users.py:176
-msgid "Number of rows in view mode"
-msgstr ""
-
-#: users.py:177
-msgid "Number of rows in translate mode"
-msgstr ""
-
-#: users.py:230
-msgid "You need to be siteadmin to change users"
-msgstr ""
-
-#: users.py:307
-msgid ""
-"You (or someone else) attempted to register an account with your username.\n"
-msgstr ""
-
-#: users.py:308
-msgid "We don't store your actual password but only a hash of it.\n"
-msgstr ""
-
-#: users.py:310
-#, python-format
-msgid "If you have a problem with registration, please contact %s.\n"
-msgstr ""
-
-#: users.py:312
-msgid ""
-"If you have a problem with registration, please contact the site "
-"administrator.\n"
-msgstr ""
-
-#: users.py:313
-msgid ""
-"That username already exists. An email will be sent to the registered email "
-"address.\n"
-msgstr ""
-
-#: users.py:315
-#, python-format
-msgid "Proceeding to <a href='%s'>login</a>\n"
-msgstr ""
-
-#: users.py:319
-#, python-format
-msgid "You must supply a valid password of at least %d characters."
-msgstr ""
-
-#: users.py:323
-msgid "A Pootle account has been created for you using this email address.\n"
-msgstr ""
-
-#: users.py:325
-msgid "To activate your account, follow this link:\n"
-msgstr ""
-
-#: users.py:331
-#, fuzzy, python-format
-msgid ""
-"Your activation code is:\n"
-"%s\n"
-msgstr "받은 활성화 코드"
-
-#: users.py:333
-msgid ""
-"If you are unable to follow the link, please enter the above code at the "
-"activation page.\n"
-msgstr ""
-
-#: users.py:334
-msgid ""
-"This message is sent to verify that the email address is in fact correct. If "
-"you did not want to register an account, you may simply ignore the message.\n"
-msgstr ""
-
-#: users.py:336
-#, python-format
-msgid ""
-"Account created. You will be emailed login details and an activation code. "
-"Please enter your activation code on the <a href='%s'>activation page</a>."
-msgstr ""
-
-#: users.py:338
-msgid "(Or simply click on the activation link in the email)"
-msgstr ""
-
-#: users.py:340
-#, python-format
-msgid "Your user name is: %s\n"
-msgstr ""
-
-#: users.py:342
-#, python-format
-msgid "Your password is: %s\n"
-msgstr ""
-
-#: users.py:343
-#, python-format
-msgid "Your registered email address is: %s\n"
-msgstr ""
-
-#: users.py:367
-msgid "Redirecting to Registration Page..."
-msgstr ""
-
-#: users.py:391
-msgid "Redirecting to login Page..."
-msgstr ""
-
-#: users.py:394
-msgid "Your account has been activated! Redirecting to login..."
-msgstr ""
-
-#: users.py:398
-msgid "The activation information was not valid."
-msgstr ""
-
-#: users.py:399
-msgid "Activation Failed"
-msgstr ""
-
-#: users.py:493
-msgid "Input height must be numeric"
-msgstr ""
-
-#: users.py:494
-msgid "Input width must be numeric"
-msgstr ""
-
-#: users.py:495
-msgid "The number of rows displayed in view mode must be numeric"
-msgstr ""
-
-#: users.py:496
-msgid "The number of rows displayed in translate mode must be numeric"
-msgstr ""
-
-#: translatepage.py:80
-#, python-format
-msgid ""
-"%d/%d translated\n"
-"(%d blank, %d fuzzy)"
-msgstr ""
-
-#. l10n: first parameter: name of the installation (like "Pootle")
-#. l10n: second parameter: project name
-#. l10n: third parameter: target language
-#. l10n: fourth parameter: file name
-#: translatepage.py:96
-#, fuzzy, python-format
-msgid "%s: translating %s into %s: %s"
-msgstr "Pootle: translating %s into %s: %sPootle: %s을 %s로: %s"
-
-#: translatepage.py:110
-msgid "Original"
-msgstr ""
-
-#: translatepage.py:111
-msgid "Translation"
-msgstr ""
-
-#: translatepage.py:114
-msgid "Accept"
-msgstr ""
-
-#: translatepage.py:115
-msgid "Reject"
-msgstr ""
-
-#. l10n: This heading refers to related translations and terminology
-#: translatepage.py:117
-msgid "Related"
-msgstr ""
-
-#. l10n: "batch" refers to the set of translations that were reviewed
-#: translatepage.py:135
-msgid "End of batch"
-msgstr ""
-
-#: translatepage.py:137
-msgid "Click here to return to the index"
-msgstr ""
-
-#. l10n: noun (the start)
-#: translatepage.py:150 translatepage.py:153
-msgid "Start"
-msgstr ""
-
-#. l10n: the parameter refers to the number of messages
-#: translatepage.py:157 translatepage.py:160
-#, python-format
-msgid "Previous %d"
-msgstr ""
-
-#. l10n: the third parameter refers to the total number of messages in the file
-#: translatepage.py:162
-#, python-format
-msgid "Items %d to %d of %d"
-msgstr "%d번째 항목 (%d / %d)"
-
-#. l10n: the parameter refers to the number of messages
-#: translatepage.py:167 translatepage.py:170
-#, python-format
-msgid "Next %d"
-msgstr ""
-
-#. l10n: noun (the end)
-#: translatepage.py:173 translatepage.py:176
-msgid "End"
-msgstr ""
-
-#. l10n: the parameter is the name of one of the quality checks, like "fuzzy"
-#: translatepage.py:192
-#, python-format
-msgid "checking %s"
-msgstr ""
-
-#: translatepage.py:334
-#, python-format
-msgid "There are no items matching that search ('%s')"
-msgstr ""
-
-#: translatepage.py:336
-msgid "You have finished going through the items you selected"
-msgstr ""
-
-#: translatepage.py:534
-msgid "Singular"
-msgstr ""
-
-#: translatepage.py:535
-msgid "Plural"
-msgstr ""
-
-#. l10n: verb
-#: translatepage.py:549
-msgid "Edit"
-msgstr ""
-
-#. l10n: verb
-#: translatepage.py:566
-msgid "Copy"
-msgstr ""
-
-#: translatepage.py:567 translatepage.py:741
-msgid "Skip"
-msgstr ""
-
-#. l10n: verb
-#: translatepage.py:569 translatepage.py:740
-msgid "Back"
-msgstr ""
-
-#: translatepage.py:571
-msgid "Submit"
-msgstr ""
-
-#. l10n: action that increases the height of the textarea
-#: translatepage.py:576
-msgid "Grow"
-msgstr ""
-
-#. l10n: action that decreases the height of the textarea
-#: translatepage.py:578
-msgid "Shrink"
-msgstr ""
-
-#. l10n: action that increases the width of the textarea
-#: translatepage.py:580
-msgid "Broaden"
-msgstr ""
-
-#. l10n: action that decreases the width of the textarea
-#: translatepage.py:582
-msgid "Narrow"
-msgstr ""
-
-#. l10n: action that resets the size of the textarea
-#: translatepage.py:584
-msgid "Reset"
-msgstr ""
-
-#: translatepage.py:602 translatepage.py:695 translatepage.py:729
-#: translatepage.py:762
-#, python-format
-msgid "Plural Form %d"
-msgstr ""
-
-#: translatepage.py:617
-msgid ""
-"Translation not possible because plural information for your language is not "
-"available. Please contact the site administrator."
-msgstr ""
-
-#: translatepage.py:699
-msgid "Current Translation:"
-msgstr ""
-
-#: translatepage.py:710
-#, python-format
-msgid "Suggestion %d by %s:"
-msgstr ""
-
-#: translatepage.py:712
-#, python-format
-msgid "Suggestion %d:"
-msgstr ""
-
-#: translatepage.py:715
-#, python-format
-msgid "Suggestion by %s:"
-msgstr ""
-
-#: translatepage.py:717
-msgid "Suggestion:"
-msgstr ""
+#~ msgid "Input Width (in characters)"
+#~ msgstr "입력 너비 (문자 단위)"
 
 #~ msgid ""
 #~ "<strong>Pootle</strong> is a simple web portal that should allow you to "

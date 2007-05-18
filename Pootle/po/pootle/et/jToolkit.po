@@ -1,18 +1,17 @@
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2005-06-13 14:54-0500\n"
-"PO-Revision-Date: 2006-06-14 14:24+0200\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"PO-Revision-Date: 2006-11-06 14:36+0100\n"
+"Last-Translator: Laur Mõtus <vprints@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "Generated-By: pygettext.py 1.5\n"
-"X-Generator: Translate Toolkit 0.9rc1\n"
+"X-Generator: Pootle 0.10.1\n"
 
 #: web/server.py:57
 #, python-format
@@ -90,7 +89,7 @@ msgstr "peasessioonist väljutud"
 
 #: web/session.py:314
 msgid "need to define the users or userprefs entry on the server config"
-msgstr ""
+msgstr "vaja on määrata kasutajate või kasutajaeelistuste sissekanne serveri seadetes"
 
 #: web/session.py:321 web/session.py:453
 #, python-format

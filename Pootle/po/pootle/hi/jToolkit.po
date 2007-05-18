@@ -70,7 +70,7 @@ msgstr "बाहर"
 #: web/session.py:191 web/session.py:344 web/session.py:350
 #, python-format
 msgid "logged in as <b>%s</b>"
-msgstr "<%b>%s</b> लॉग इन"
+msgstr "<b>%s</b> लॉग इन"
 
 #: web/session.py:193
 msgid "couldn't add new session"
