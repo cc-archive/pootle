@@ -143,10 +143,10 @@ class gettext_path(path):
             raise IndexError("key must be positive integer")
         pending = self / 'pending' / ('%.8d' % key)
         
+        offset, numread, stats = self.indexed(key)
         if pending.exists():
             data = pending.bytes()
         else:
-            offset, numread, stats = self.indexed(key)
             # read pounit
             current_file = self.current.open()
             current_file.seek(offset)
