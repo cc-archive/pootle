@@ -26,6 +26,7 @@ from translate.filters import checks
 from translate.filters import pofilter
 from translate.convert import po2csv
 from translate.convert import po2xliff
+from translate.convert import xliff2po
 from translate.convert import po2ts
 from translate.convert import pot2po
 from translate.convert import po2oo

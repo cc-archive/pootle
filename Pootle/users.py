@@ -140,6 +140,7 @@ class UserOptions(pagelayout.PootlePage):
     self.potree = potree
     self.session = session
     self.localize = session.localize
+    self.tr_lang = session.tr_lang
     message = forcemessage(message)
     pagetitle = self.localize("Options for: %s", session.username)
     templatename = "options"
@@ -181,6 +182,7 @@ class OptionalLoginAppServer(server.LoginAppServer):
   """a server that enables login but doesn't require it except for specified pages"""
   def handle(self, req, pathwords, argdict):
     """handles the request and returns a page object in response"""
+    session = None
     try:
       argdict = self.processargs(argdict)
       session = self.getsession(req, argdict)
@@ -191,6 +193,11 @@ class OptionalLoginAppServer(server.LoginAppServer):
         self.initlanguage(req, session)
       page = self.getpage(pathwords, session, argdict)
     except Exception, e:
+      # Because of the exception, 'session' might not be initialised. So let's
+      # play extra safe
+      if not session:
+          raise Exception("Could not initialise session.\nDetail:%s" % str(e))
+
       exceptionstr = self.errorhandler.exception_str()
       errormessage = str(e).decode("utf-8")
       traceback = self.errorhandler.traceback_str().decode('utf-8')
@@ -380,7 +387,9 @@ class OptionalLoginAppServer(server.LoginAppServer):
     message += session.localize("Your registered email address is: %s\n", email)
     smtpserver = self.instance.registration.smtpserver
     fromaddress = self.instance.registration.fromaddress
-    messagedict = {"from": fromaddress, "to": [email], "subject": session.localize("Pootle Registration"), "body": message}
+    subject = Header(session.localize("Pootle Registration"),
+                     "utf-8").encode()
+    messagedict = {"from": fromaddress, "to": [email], "subject": subject, "body": message}
     if supportaddress:
       messagedict["reply-to"] = supportaddress
     fullmessage = mailer.makemessage(messagedict)
@@ -490,6 +499,12 @@ class PootleSession(web.session.LoginSession):
       if not getattr(self.prefs, "uilanguage", "") and self.language_set:
         self.setinterfaceoptions({"option-uilanguage": self.language_set})
     self.translation = self.server.gettranslation(self.language)
+    self.tr_lang = langdata.tr_lang(self.language)
+    try:
+        locale.setlocale(locale.LC_ALL, str(self.language))
+    except locale.Error:
+        # The system might not have the locale installed
+        pass
     self.checkstatus(None, None)
 
   def validate(self):

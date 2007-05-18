@@ -49,7 +49,7 @@ from elementtree import ElementTree
 import kid
 import sys
 import os
-import sre
+import re
 import random
 import pprint
 
@@ -209,7 +209,7 @@ class PootleServer(users.OptionalLoginAppServer, templateserver.TemplateServer):
     argdict = newargdict
 
     # Strip of the base url
-    baseurl = sre.sub('http://[^/]', '', self.instance.baseurl)
+    baseurl = re.sub('http://[^/]', '', self.instance.baseurl)
     # Split up and remove empty parts
     basepathwords = filter(None, baseurl.split('/'))
     while pathwords and basepathwords and basepathwords[0] == pathwords[0]:
@@ -449,10 +449,10 @@ class PootleServer(users.OptionalLoginAppServer, templateserver.TemplateServer):
             pofile = project.getpofile(pofilename, freshen=False)
             page = widgets.SendFile(pofile.filename)
             page.etag = str(pofile.pomtime)
-            encoding = pofile.encoding or "UTF-8"
+            encoding = getattr(pofile, "encoding", "UTF-8")
             page.content_type = "text/plain; charset=%s" % encoding
             return page
-        elif bottom.endswith(".csv") or bottom.endswith(".xlf") or bottom.endswith(".ts") or bottom.endswith("mo"):
+        elif bottom.endswith(".csv") or bottom.endswith(".xlf") or bottom.endswith(".ts") or bottom.endswith("po") or bottom.endswith("mo"):
           destfilename = os.path.join(*pathwords)
           basename, extension = os.path.splitext(destfilename)
           pofilename = basename + os.extsep + project.fileext
@@ -466,7 +466,7 @@ class PootleServer(users.OptionalLoginAppServer, templateserver.TemplateServer):
             page.etag = str(etag)
           else:
             page = widgets.PlainContents(filepath_or_contents)
-          if extension == "csv":
+          if extension == "po" or extension == "csv":
             page.content_type = "text/plain; charset=UTF-8"
           elif extension == "xlf" or extension == "ts":
             page.content_type = "text/xml; charset=UTF-8"

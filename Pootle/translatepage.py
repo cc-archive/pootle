@@ -19,7 +19,7 @@
 # along with translate; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-import sre
+import re
 from jToolkit import spellcheck
 from Pootle import pagelayout
 from Pootle import projects
@@ -56,7 +56,8 @@ class TranslatePage(pagelayout.PootleNavPage):
     self.pofilename = self.argdict.pop("pofilename", None)
     if self.pofilename == "":
       self.pofilename = None
-    if self.pofilename is None and self.dirfilter is not None and self.dirfilter.endswith(".po"):
+    if self.pofilename is None and self.dirfilter is not None and \
+            (self.dirfilter.endswith(".po") or self.dirfilter.endswith(".xlf")):
       self.pofilename = self.dirfilter
     self.receivetranslations()
     # TODO: clean up modes to be one variable
@@ -74,19 +75,19 @@ class TranslatePage(pagelayout.PootleNavPage):
     givenpofilename = self.pofilename
     formaction = self.makelink("")
     mainstats = ""
+    pagelinks = None
+    if self.viewmode:
+      rows = self.getdisplayrows("view")
+      icon="file"
+    else:
+      rows = self.getdisplayrows("translate")
+      icon="edit"
     if self.pofilename is not None:
       postats = self.project.getpostats(self.pofilename)
       blank, fuzzy = postats["blank"], postats["fuzzy"]
       translated, total = postats["translated"], postats["total"]
       mainstats = self.localize("%d/%d translated\n(%d blank, %d fuzzy)", len(translated), len(total), len(blank), len(fuzzy))
-    if self.viewmode:
-      rows = self.getdisplayrows("view")
       pagelinks = self.getpagelinks("?translate=1&view=1", rows)
-      icon="file"
-    else:
-      rows = self.getdisplayrows("translate")
-      pagelinks = self.getpagelinks("?translate=1&view=1", rows)
-      icon="edit"
     navbarpath_dict = self.makenavbarpath_dict(self.project, self.session, self.pofilename, dirfilter=self.dirfilter or "")
     # templatising
     templatename = "translatepage"
@@ -109,7 +110,9 @@ class TranslatePage(pagelayout.PootleNavPage):
         # translation form
         "actionurl": formaction,
         "notice": notice,
+        # l10n: Heading above the table column with the source language
         "original_title": self.localize("Original"),
+        # l10n: Heading above the table column with the target language
         "translation_title": self.localize("Translation"),
         "items": items,
         "reviewmode": self.reviewmode,
@@ -118,6 +121,7 @@ class TranslatePage(pagelayout.PootleNavPage):
         "fuzzytext": self.localize("Fuzzy"),
         # l10n: Heading above the textarea for translator comments.
         "translator_comments_title": self.localize("Translator comments"),
+        # l10n: Heading above the comments extracted from the programing source code
         "developer_comments_title": self.localize("Developer comments"),
         # l10n: This heading refers to related translations and terminology
         "related_title": self.localize("Related"),
@@ -225,7 +229,7 @@ class TranslatePage(pagelayout.PootleNavPage):
     suggestions = {}
     comments = {}
     fuzzies = {}
-    keymatcher = sre.compile("(\D+)([0-9.]+)")
+    keymatcher = re.compile("(\D+)([0-9.]+)")
     def parsekey(key):
       match = keymatcher.match(key)
       if match:
@@ -530,13 +534,13 @@ class TranslatePage(pagelayout.PootleNavPage):
   def addfancyspaces(self, text):
     """Insert fancy spaces"""
     #More than two consecutive:
-    text = sre.sub("[ ]{2,}", self.fancyspaces, text)
+    text = re.sub("[ ]{2,}", self.fancyspaces, text)
     #At start of string
-    text = sre.sub("^[ ]+", self.fancyspaces, text)
+    text = re.sub("^[ ]+", self.fancyspaces, text)
     #After newline
-    text = sre.sub("\\n([ ]+)", self.fancyspaces, text)
+    text = re.sub("\\n([ ]+)", self.fancyspaces, text)
     #At end of string
-    text = sre.sub("[ ]+$", self.fancyspaces, text)
+    text = re.sub("[ ]+$", self.fancyspaces, text)
     return text
 
   def escapefortextarea(self, text):
@@ -614,11 +618,6 @@ class TranslatePage(pagelayout.PootleNavPage):
             # l10n: action that decreases the height of the textarea
             "shrink": self.localize("Shrink"),
             # l10n: action that increases the width of the textarea
-            "broaden": self.localize("Broaden"),
-            # l10n: action that decreases the width of the textarea
-            "narrow": self.localize("Narrow"),
-            # l10n: action that resets the size of the textarea
-            "reset": self.localize("Reset")
            }
 
   def gettransedit(self, item, trans):

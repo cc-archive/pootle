@@ -39,7 +39,8 @@ from kid import __version__ as kidversion
 from elementtree import ElementTree
 import os
 import sys
-import sre
+import re
+import locale
 
 def summarizestats(statslist, totalstats=None):
   if totalstats is None:
@@ -55,7 +56,7 @@ def shortdescription(descr):
   stopsign = descr.find("<br")
   if stopsign >= 0:
     descr = descr[:stopsign]
-  return sre.sub("<[^>]*>", "", descr).strip()
+  return re.sub("<[^>]*>", "", descr).strip()
   
 class AboutPage(pagelayout.PootlePage):
   """the bar at the side describing current login details etc"""
@@ -94,6 +95,7 @@ class PootleIndex(pagelayout.PootlePage):
     self.potree = potree
     self.localize = session.localize
     self.nlocalize = session.nlocalize
+    self.tr_lang = session.tr_lang
     templatename = "index"
     description = getattr(session.instance, "description")
     meta_description = shortdescription(description)
@@ -104,7 +106,8 @@ class PootleIndex(pagelayout.PootlePage):
     instancetitle = getattr(session.instance, "title", session.localize("Pootle Demo"))
     pagetitle = instancetitle
     sessionvars = {"status": session.status, "isopen": session.isopen, "issiteadmin": session.issiteadmin()}
-    languages = [{"code": code, "name": name, "sep": ", "} for code, name in self.potree.getlanguages()]
+    languages = [{"code": code, "name": self.tr_lang(name), "sep": ", "} for code, name in self.potree.getlanguages()]
+    languages.sort(cmp=locale.strcoll, key=lambda dict: dict["name"])
     if languages:
       languages[-1]["sep"] = ""
     templatevars = {"pagetitle": pagetitle, "description": description, 
@@ -125,6 +128,7 @@ class UserIndex(pagelayout.PootlePage):
   def __init__(self, potree, session):
     self.potree = potree
     self.session = session
+    self.tr_lang = session.tr_lang
     self.localize = session.localize
     self.nlocalize = session.nlocalize
     pagetitle = self.localize("User Page for: %s", session.username)
@@ -166,6 +170,7 @@ class LanguageIndex(pagelayout.PootleNavPage):
     self.languagecode = languagecode
     self.localize = session.localize
     self.nlocalize = session.nlocalize
+    self.tr_lang = session.tr_lang
     self.languagename = self.potree.getlanguagename(self.languagecode)
     self.initpagestats()
     languageprojects = self.getprojects()
@@ -177,12 +182,12 @@ class LanguageIndex(pagelayout.PootleNavPage):
     # l10n: The first parameter is the name of the installation
     # l10n: The second parameter is the name of the project/language
     # l10n: This is used as a page title. Most languages won't need to change this
-    pagetitle =  self.localize("%s: %s", instancetitle, self.languagename)
+    pagetitle =  self.localize("%s: %s", instancetitle, self.tr_lang(self.languagename))
     templatename = "language"
     adminlink = self.localize("Admin")
     sessionvars = {"status": session.status, "isopen": session.isopen, "issiteadmin": session.issiteadmin()}
     templatevars = {"pagetitle": pagetitle,
-        "language": {"code": languagecode, "name": self.languagename, "stats": languagestats, "info": languageinfo},
+        "language": {"code": languagecode, "name": self.tr_lang(self.languagename), "stats": languagestats, "info": languageinfo},
         "projects": languageprojects, 
         "statsheadings": self.getstatsheadings(),
         "session": sessionvars, "instancetitle": instancetitle}
@@ -204,6 +209,7 @@ class ProjectLanguageIndex(pagelayout.PootleNavPage):
     self.projectcode = projectcode
     self.localize = session.localize
     self.nlocalize = session.nlocalize
+    self.tr_lang = session.tr_lang
     self.initpagestats()
     languages = self.getlanguages()
     average = self.getpagestats()
@@ -242,6 +248,7 @@ class ProjectIndex(pagelayout.PootleNavPage):
     self.session = session
     self.localize = session.localize
     self.nlocalize = session.nlocalize
+    self.tr_lang = session.tr_lang
     self.rights = self.project.getrights(self.session)
     message = argdict.get("message", "")
     if dirfilter == "":
@@ -365,19 +372,19 @@ class ProjectIndex(pagelayout.PootleNavPage):
       updatefile = self.argdict.pop("updatefile", None)
       if not updatefile:
         raise ValueError("cannot update file, no file specified")
-      if updatefile.endswith(".po"):
+      if updatefile.endswith("." + self.project.fileext):
         self.project.updatepofile(self.session, self.dirname, updatefile)
       else:
-        raise ValueError("can only update PO files")
+        raise ValueError("can only update files with extension ." + self.project.fileext)
       del self.argdict["doupdate"]
     if "docommit" in self.argdict:
       commitfile = self.argdict.pop("commitfile", None)
       if not commitfile:
         raise ValueError("cannot commit file, no file specified")
-      if commitfile.endswith(".po"):
+      if commitfile.endswith("." + self.project.fileext):
         self.project.commitpofile(self.session, self.dirname, commitfile)
       else:
-        raise ValueError("can only commit PO files")
+        raise ValueError("can only commit files with extension ." + self.project.fileext)
       del self.argdict["docommit"]
     if "doaddgoal" in self.argdict:
       goalname = self.argdict.pop("newgoal", None)
@@ -647,7 +654,10 @@ class ProjectIndex(pagelayout.PootleNavPage):
   def getfileitem(self, fileentry, linksrequired=None, **newargs):
     """returns an item showing a file entry"""
     if linksrequired is None:
-      linksrequired = ["mine", "review", "quick", "all", "po", "xliff", "ts", "csv", "mo", "update", "commit"]
+      if fileentry.endswith('.po'):
+        linksrequired = ["mine", "review", "quick", "all", "po", "xliff", "ts", "csv", "mo", "update", "commit"]
+      else:
+        linksrequired = ["mine", "review", "quick", "all", "po", "xliff", "update", "commit"]
     basename = os.path.basename(fileentry)
     projectstats = self.project.combinestats([fileentry])
     browseurl = self.getbrowseurl(basename, **newargs)
@@ -655,8 +665,9 @@ class ProjectIndex(pagelayout.PootleNavPage):
     actions = self.getactionlinks(basename, projectstats, linksrequired=linksrequired)
     actionlinks = actions["extended"]
     if "po" in linksrequired:
-      downloadlink = {"href": basename, "text": self.localize('PO file')}
-      actionlinks.append(downloadlink)
+      poname = basename.replace(".xlf", ".po")
+      polink = {"href": poname, "text": self.localize('PO file')}
+      actionlinks.append(polink)
     if "xliff" in linksrequired and "translate" in self.rights:
       xliffname = basename.replace(".po", ".xlf")
       xlifflink = {"href": xliffname, "text": self.localize('XLIFF file')}

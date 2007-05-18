@@ -58,39 +58,39 @@ class Wrapper(object):
 
 class LockedFile:
   """locked interaction with a filesystem file"""
+  #Locking is disabled for now since it impacts performance negatively and was
+  #not complete yet anyway. Reverse svn revision 5271 to regain the locking 
+  #code here.
   def __init__(self, filename):
     self.filename = filename
+    self.lock = None
+
+  def initlock(self):
     self.lock = glock.GlobalLock(self.filename + os.extsep + "lock")
+
+  def dellock(self):
+    del self.lock
+    self.lock = None
 
   def readmodtime(self):
     """returns the modification time of the file (locked operation)"""
-    self.lock.acquire()
-    try:
-      return statistics.getmodtime(self.filename)
-    finally:
-      self.lock.forcerelease()
+    return statistics.getmodtime(self.filename)
 
   def getcontents(self):
     """returns modtime, contents tuple (locked operation)"""
-    self.lock.acquire()
-    try:
-      pomtime = statistics.getmodtime(self.filename)
-      filecontents = open(self.filename, 'r').read()
-      return pomtime, filecontents
-    finally:
-      self.lock.forcerelease()
+    pomtime = statistics.getmodtime(self.filename)
+    fp = open(self.filename, 'r')
+    filecontents = fp.read()
+    fp.close()
+    return pomtime, filecontents
 
   def writecontents(self, contents):
     """writes contents to file, returning modification time (locked operation)"""
-    self.lock.acquire()
-    try:
-      f = open(self.filename, 'w')
-      f.write(contents)
-      f.close()
-      pomtime = statistics.getmodtime(self.filename)
-      return pomtime
-    finally:
-      self.lock.release()
+    f = open(self.filename, 'w')
+    f.write(contents)
+    f.close()
+    pomtime = statistics.getmodtime(self.filename)
+    return pomtime
 
 class pootleassigns:
   """this represents the assignments for a file"""
@@ -118,7 +118,9 @@ class pootleassigns:
     assignsmtime = statistics.getmodtime(self.assignsfilename)
     if assignsmtime == getattr(self, "assignsmtime", None):
       return
-    assignsstring = open(self.assignsfilename, "r").read()
+    assignsfile = open(self.assignsfilename, "r")
+    assignsstring = assignsfile.read()
+    assignsfile.close()
     poassigns = {}
     itemcount = len(getattr(self, "classify", {}).get("total", []))
     for line in assignsstring.split("\n"):
@@ -342,7 +344,9 @@ class pootlefile(Wrapper):
   def savependingfile(self):
     """saves changes to disk..."""
     output = str(self.pendingfile)
-    open(self.pendingfilename, "w").write(output)
+    outputfile = open(self.pendingfilename, "w")
+    outputfile.write(output)
+    outputfile.close()
     self.pendingmtime = statistics.getmodtime(self.pendingfilename)
 
   def readtmfile(self):
@@ -391,6 +395,8 @@ class pootlefile(Wrapper):
     """adds a new suggestion for the given item"""
     unit = self.transunits[item]
     if isinstance(unit, xliff.xliffunit):
+      if isinstance(suggtarget, list) and (len(suggtarget) > 0):
+        suggtarget = suggtarget[0]
       unit.addalttrans(suggtarget, origin=username)
       self.statistics.reclassifyunit(item)
       self.savepofile()
@@ -412,6 +418,7 @@ class pootlefile(Wrapper):
     if hasattr(unit, "xmlelement"):
       suggestions = self.getsuggestions(item)
       unit.delalttrans(suggestions[suggitem])
+      self.savepofile()
     else:
       self.readpendingfile()
       locations = unit.getlocations()

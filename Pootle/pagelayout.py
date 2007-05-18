@@ -25,12 +25,15 @@ def layout_banner(maxheight):
   """calculates dimensions, image name for banner"""
   logo_width, logo_height = min((98*maxheight/130, maxheight), (98, 130))
   banner_width, banner_height = min((290*maxheight/160, maxheight), (290, 160))
+
   if logo_width <= 61:
-    logo_image = "pootle-medium.png"
+    logo_image = getattr(getattr(session.instance, "logos", None), "medium", "/images/pootle-medium.png")
   else:
-    logo_image = "pootle.png"
+    logo_image = getattr(getattr(session.instance, "logos", None), "normal", "/images/pootle.png")
+  banner_image = getattr(getattr(session.instance, "logos", None), "banner", "/images/WordForge-white.png")
   return {"logo_width": logo_width, "logo_height": logo_height,
-    "banner_width": banner_width, "banner_height": banner_height, "logo_image": logo_image}
+    "banner_width": banner_width, "banner_height": banner_height,
+    "logo_image": logo_image, "banner_image": banner_image}
 
 def localize_links(session):
   """Localize all the generic links"""
@@ -41,12 +44,23 @@ def localize_links(session):
   links["account"] = session.localize("My account")
   links["admin"] = session.localize("Admin")
   links["doc"] = session.localize("Docs & help")
+  links["doclang"] = getdoclang(session.language)
   links["logout"] = session.localize("Log out")
   links["login"] = session.localize("Log in")
   #l10n: Verb, as in "to register"
   links["register"] = session.localize("Register")
   links["activate"] = session.localize("Activate")
   return links
+
+def getdoclang(language):
+  """Get the language code that the docs should be displayed in."""
+
+  #TODO: Determine the available languages programmatically.
+  available_languages = ["en"]
+  if language in available_languages:
+    return language
+  else:
+    return "en"
 
 def languagedir(language):
   """Returns whether the language is right to left"""
@@ -78,7 +92,7 @@ def completetemplatevars(templatevars, session, bannerheight=135):
     templatevars["baseurl"] = getattr(session.instance, "baseurl", "/")
     if not templatevars["baseurl"].endswith("/"):
     	templatevars["baseurl"] += "/"
-  banner_layout = layout_banner(bannerheight)
+  banner_layout = layout_banner(bannerheight, session)
   banner_layout["logo_alttext"] = session.localize("Pootle Logo")
   banner_layout["banner_alttext"] = session.localize("WordForge Translation Project")
   templatevars.update(banner_layout)
@@ -135,7 +149,7 @@ class PootleNavPage(PootlePage):
       depth = dirfilter.count('/') + 1
       if dirfilter == "":
         depth -= 1
-      elif dirfilter.endswith(".po"):
+      elif dirfilter.endswith(".po") or dirfilter.endswith(".xlf"):
         depth = depth - 1
 
       rootlink = "/".join([".."] * depth)
@@ -148,7 +162,7 @@ class PootleNavPage(PootlePage):
           depth -= 1
         else:
           backlinks += backlinkdir
-        if not backlinkdir.endswith(".po") and not backlinks.endswith("/"):
+        if not (backlinkdir.endswith(".po") or backlinkdir.endswith(".xlf")) and not backlinks.endswith("/"):
           backlinks = backlinks + "/"
         pathlinks.append({"href": self.getbrowseurl(backlinks), "text": backlinkdir, "sep": " / "})
       if pathlinks:
@@ -170,7 +184,7 @@ class PootleNavPage(PootlePage):
             links["admin"] = {"href": rootlink + "admin.html", "text": self.localize("Admin")}
     elif language:
       languagecode, languagename = language
-      links["language"] = {"href": "/%s/" % languagecode, "text": languagename}
+      links["language"] = {"href": "/%s/" % languagecode, "text": session.tr_lang(languagename)}
     return links
 
   def getbrowseurl(self, basename, **newargs):

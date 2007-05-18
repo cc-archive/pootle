@@ -107,7 +107,7 @@ function mouseGoesOver()
 	if (this.partner)
 		if (this.partner.timeevent)
 			clearTimeout(this.partner.timeevent);
-	this.timeevent = setTimeout('timedexpansion("'+this.id+'")', 300);
+	this.timeevent = setTimeout('timedexpansion("'+this.id+'")', 500);
 }
 
 function mouseGoesOut()
@@ -178,40 +178,6 @@ function contracttextarea(link)
 		textarea.rows -= 3;
 	else if (textarea.rows > 1)
 		textarea.rows -= 1;
-	return false;
-}
-
-function broadentextarea(link)
-{
-	if (link == null) alert("link is null");
-	var textarea = findsiblingtextarea(link);
-	if (textarea == null) return true;
-	if (textarea.cols >= 40)
-		textarea.cols += 10;
-	else
-		textarea.cols += 5;
-	return false;
-}
-
-function narrowtextarea(link)
-{
-	if (link == null) alert("link is null");
-	var textarea = findsiblingtextarea(link);
-	if (textarea == null) return true;
-	if (textarea.cols > 40)
-		textarea.cols -= 10;
-	else if (textarea.cols > 1)
-		textarea.cols -= 5;
-	return false;
-}
-
-function resettextarea(link, rows, cols)
-{
-	if (link == null) alert("link is null");
-	var textarea = findsiblingtextarea(link);
-	if (textarea == null) return true;
-	textarea.rows = rows;
-	textarea.cols = cols;
 	return false;
 }
 

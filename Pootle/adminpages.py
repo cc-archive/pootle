@@ -124,7 +124,7 @@ class ProjectsAdminPage(pagelayout.PootlePage):
     self.instance = instance
     self.localize = session.localize
     templatename = "adminprojects"
-    projectfiletypes = ["po","xliff"]
+    projectfiletypes = ["po","xlf"]
     self.allchecks = [{"value": check, "description": check} for check in checks.projectcheckers.keys()]
     self.allchecks.insert(0, {"value": "", "description": self.localize("Standard")})
     self.alltypes = [{"value": check, "description": check} for check in projectfiletypes]
@@ -149,7 +149,7 @@ class ProjectsAdminPage(pagelayout.PootlePage):
                                 "newvalue": self.localize("(add project here)")},
                {"name": "description", "title": self.localize("Project Description"), "newvalue": self.localize("(project description)")},
                {"name": "checkerstyle", "title": self.localize("Checker Style"), "selectoptions": self.allchecks, "newvalue": ""},
-               {"name": "filetypes", "title": self.localize("File Type"), "selectoptions": self.alltypes, "newvalue": ""},
+               {"name": "filetype", "title": self.localize("File Type"), "selectoptions": self.alltypes, "newvalue": ""},
                {"name": "createmofiles", "title": self.localize("Create MO Files"), "type": "checkbox", "newvalue": ""},
                {"name": "remove", "title": self.localize("Remove Project")}]
     for option in options:
