@@ -8,12 +8,12 @@ It provides functions get_tag, set_tag and del_tag, but most useful is
 create_tag, which returns tuple of above three functions.
 """
 
-xattr_type=None
+class XattrRequiredException(Exception): pass
 
 try:
     import xattr
 except ImportError:
-    xattr = None
+    raise XattrRequiredException("xattr support is required for Pootle")
 
 # xattr
 def xattr_settag(filename, tagname, value):
@@ -28,13 +28,8 @@ def xattr_gettag(filename, tagname):
 def xattr_deltag(filename, tagname):
     xattr.removexattr(filename, "user.%s" % str(tagname))
 
-
-
 # choose the right implementation
-if xattr:
-    set_tag, get_tag, del_tag = xattr_settag, xattr_gettag, xattr_deltag
-else:
-    set_tag, get_tag, del_tag = None, None, None
+set_tag, get_tag, del_tag = xattr_settag, xattr_gettag, xattr_deltag
 
 
 # tag factory, particularly useful for properties

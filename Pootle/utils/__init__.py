@@ -1,6 +1,6 @@
 # Useful functions used throughout Pootle
 
-import sre
+import re
 import os
 
 class NotImplementedException(Exception):
