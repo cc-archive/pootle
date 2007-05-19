@@ -20,8 +20,10 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-"""Converts Gettext .po files to .xliff localization files
-You can convert back from .xliff to .po using po2xliff"""
+"""Converts Gettext .po files to xliff (.xlf) localization files.
+
+You can convert back from xliff to po using xliff2po.
+"""
 
 from translate.storage import po
 from translate.storage import poxliff
@@ -38,11 +40,9 @@ class po2xliff:
     else:
       unit = xlifffile.addsourceunit(source, filename, True)
       unit.target = target
-      if thepo.isfuzzy():
-        unit.markfuzzy()
-      elif target:
-        #TODO: consider if an empty target can be considered as translated
-        unit.marktranslated()
+      #Explicetely marking the fuzzy state will ensure that normal (translated)
+      #units in the PO file end up as approved in the XLIFF file.
+      unit.markfuzzy(thepo.isfuzzy())
       
       #Handle #: location comments
       for location in thepo.getlocations():
@@ -77,7 +77,7 @@ class po2xliff:
     return contexts
     
   def convertfile(self, thepofile, templatefile=None, **kwargs):
-    """converts a .po file to .xliff format"""
+    """converts a .po file to .xlf format"""
     if templatefile is None: 
       xlifffile = poxliff.PoXliffFile(**kwargs)
     else:
@@ -101,7 +101,7 @@ def convertpo(inputfile, outputfile, templatefile):
 
 def main(argv=None):
   from translate.convert import convert
-  formats = {"po": ("xliff", convertpo), ("po", "xliff"): ("xliff", convertpo)}
+  formats = {"po": ("xlf", convertpo), ("po", "xlf"): ("xlf", convertpo)}
   parser = convert.ConvertOptionParser(formats, usepots=True, usetemplates=True, description=__doc__)
   parser.run(argv)
 

@@ -23,11 +23,12 @@
 
 @organization: Zuza Software Foundation
 @copyright: 2006-2007 Zuza Software Foundation
-@license: GPL
+@license: U{GPL <http://www.fsf.org/licensing/licenses/gpl.html>}
 """
 
 import pickle
 from exceptions import NotImplementedError
+from translate.storage.statistics import Statistics
 
 def force_override(method, baseclass):
     """Forces derived classes to override method."""
@@ -72,6 +73,7 @@ class TranslationUnit(object):
         self.source = source
         self.target = None
         self.notes = ""
+        super(TranslationUnit, self).__init__()
 
     def __eq__(self, other):
         """Compares two TranslationUnits.
@@ -98,7 +100,7 @@ class TranslationUnit(object):
         
         """
 
-        length = len(self.target)
+        length = len(self.target or "")
         strings = getattr(self.target, "strings", [])
         if strings:
             length += sum([len(pluralform) for pluralform in strings[1:]])
@@ -137,6 +139,10 @@ class TranslationUnit(object):
         else:
             self.addlocation(location)
 
+    def getcontext(self):
+        """Get the message context."""
+        return ""
+    
     def getnotes(self, origin=None):
         """Returns all notes about this unit.
         
@@ -159,7 +165,7 @@ class TranslationUnit(object):
                          - 'developer', 'programmer', 'source code' (synonyms)
 
         """
-        if self.notes:
+        if getattr(self, "notes", None):
             self.notes += '\n'+text
         else:
             self.notes = text
@@ -216,6 +222,10 @@ class TranslationUnit(object):
 
         return False
 
+    def markfuzzy(self, value=True):
+        """Marks the unit as fuzzy or not."""
+        pass
+
     def isheader(self):
         """Indicates whether this unit is a header."""
 
@@ -223,8 +233,8 @@ class TranslationUnit(object):
 
     def isreview(self):
         """Indicates whether this unit needs review."""
+        return False
 
-        raise NotImplementedError
 
     def isblank(self):
         """Used to see if this unit has no source or target string.
@@ -234,7 +244,7 @@ class TranslationUnit(object):
         
         """
 
-        return not (self.source and self.target)
+        return not (self.source or self.target)
 
     def hasplural(self):
         """Tells whether or not this specific unit has plural strings."""
@@ -248,11 +258,19 @@ class TranslationUnit(object):
         if self.target == "" or overwrite:
             self.target = otherunit.target
 
+    def unit_iter(self):
+        """Iterator that only returns this unit."""
+        yield self
+
+    def getunits(self):
+        """This unit in a list."""
+        return [self]
+
     def buildfromunit(cls, unit):
         """Build a native unit from a foreign unit, preserving as much as 
         possible information."""
 
-        if type(unit) == cls and hasattr(unit, "copy") and iscallable(unit.copy):
+        if type(unit) == cls and hasattr(unit, "copy") and callable(unit.copy):
             return unit.copy()
         newunit = cls(unit.source)
         newunit.target = unit.target
@@ -264,7 +282,7 @@ class TranslationUnit(object):
         return newunit
     buildfromunit = classmethod(buildfromunit)
 
-class TranslationStore(object):
+class TranslationStore(Statistics):
     """Base class for stores for multiple translation units of type UnitClass."""
 
     UnitClass = TranslationUnit
@@ -273,8 +291,21 @@ class TranslationStore(object):
         """Constructs a blank TranslationStore."""
 
         self.units = []
+        self.filepath = None
+        self.translator = ""
+        self.date = ""
         if unitclass:
             self.UnitClass = unitclass
+        super(TranslationStore, self).__init__()
+
+    def unit_iter(self):
+        """Iterator over all the units in this store."""
+        for unit in self.units:
+            yield unit
+
+    def getunits(self):
+        """Return a list of all units in this store."""
+        return [unit for unit in self.unit_iter()]
 
     def addunit(self, unit):
         """Appends the given unit to the object's list of units.
@@ -350,8 +381,12 @@ class TranslationStore(object):
     def __str__(self):
         """Converts to a string representation that can be parsed back using L{parsestring()}."""
 
-        force_override(self.__str__, TranslationStore)
-        return pickle.dumps(self)
+        # We can't pickle fileobj if it is there, so let's hide it for a while.
+        fileobj = getattr(self, "fileobj", None)
+        self.fileobj = None
+        dump = pickle.dumps(self)
+        self.fileobj = fileobj
+        return dump
 
     def isempty(self):
       """Returns True if the object doesn't contain any translation units."""
@@ -372,7 +407,6 @@ class TranslationStore(object):
     def parsestring(cls, storestring):
         """Converts the string representation back to an object."""
 
-        force_override(cls.parsestring, TranslationStore)
         return pickle.loads(storestring)
     parsestring = classmethod(parsestring)
 
@@ -382,18 +416,39 @@ class TranslationStore(object):
         storestring = str(self)
         if isinstance(storefile, basestring):
             storefile = open(storefile, "w")
+        self.fileobj = storefile
         storefile.write(storestring)
         storefile.close()
+
+    def save(self):
+        """Save to the file that data was originally read from, if available."""
+        fileobj = getattr(self, "fileobj", None)
+        if not fileobj:
+            filename = getattr(self, "filename", None)
+            if filename:
+                fileobj = file(filename, "w")
+        else:
+            fileobj.close()
+            filename = getattr(fileobj, "name", getattr(fileobj, "filename", None))
+            if not filename:
+                raise ValueError("No file or filename to save to")
+            fileobj = fileobj.__class__(filename, "w")
+        self.savefile(fileobj)
 
     def parsefile(cls, storefile):
         """Reads the given file (or opens the given filename) and parses back to an object."""
 
         if isinstance(storefile, basestring):
             storefile = open(storefile, "r")
-        if "r" in getattr(storefile, "mode", "r"):
+        mode = getattr(storefile, "mode", "r")
+        #For some reason GzipFile returns 1, so we have to test for that here
+        if mode == 1 or "r" in mode:
           storestring = storefile.read()
+          storefile.close()
         else:
           storestring = ""
-        return cls.parsestring(storestring)
+        newstore = cls.parsestring(storestring)
+        newstore.fileobj = storefile
+        return newstore
     parsefile = classmethod(parsefile)
 

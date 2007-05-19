@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from translate.filters import checks
+from translate.misc.multistring import multistring
 
 def test_defaults():
     """tests default setup and that checks aren't altered by other constructions"""
@@ -59,6 +60,9 @@ def test_accelerators():
     assert checks.passes(ooochecker.accelerators, "~File", "~Fayile") 
     assert checks.fails(ooochecker.accelerators, "~File", "Fayile") 
     assert checks.fails(ooochecker.accelerators, "File", "~Fayile") 
+
+    # We don't want an accelerator for letters with a diacritic
+    assert checks.fails(ooochecker.accelerators, "F~ile", "L~êer")
     # Problems:
     # Accelerator before variable - see test_acceleratedvariables
 
@@ -78,6 +82,7 @@ def test_accronyms():
     stdchecker = checks.StandardChecker()
     assert checks.passes(stdchecker.acronyms, "An HTML file", "'n HTML leer")
     assert checks.fails(stdchecker.acronyms, "An HTML file", "'n LMTH leer")
+    assert checks.passes(stdchecker.acronyms, "It is HTML.", "Dit is HTML.")
     # We don't mind if you add an acronym to correct bad capitalisation in the original
     assert checks.passes(stdchecker.acronyms, "An html file", "'n HTML leer")
     # We shouldn't worry about acronyms that appear in a musttranslate file
@@ -117,6 +122,13 @@ def test_doublequoting():
     assert checks.passes(stdchecker.doublequoting, "\"Hot\" plate", "\"Ipuleti\" elishisa")
     assert checks.fails(stdchecker.doublequoting, "'Hot' plate", "\"Ipuleti\" elishisa")
     assert checks.passes(stdchecker.doublequoting, "\\\"Hot\\\" plate", "\\\"Ipuleti\\\" elishisa")
+
+    # We don't want the filter to complain about "untranslated" quotes in xml attributes
+    frchecker = checks.StandardChecker(checks.CheckerConfig(targetlanguage="fr"))
+    assert checks.passes(frchecker.doublequoting, "Click <a href=\"page.html\">", "Clique <a href=\"page.html\">")
+    assert checks.fails(frchecker.doublequoting, "Do \"this\"", "Do \"this\"")
+    assert checks.passes(frchecker.doublequoting, "Do \"this\"", "Do « this »")
+    assert checks.fails(frchecker.doublequoting, "Do \"this\"", "Do « this » « this »")
     
 def test_doublespacing():
     """tests double spacing"""
@@ -152,6 +164,12 @@ def test_endpunc():
     assert checks.fails(stdchecker.endpunc, "Question", u"Wrong\u2026")
     # Making sure singlequotes don't confuse things
     assert checks.passes(stdchecker.endpunc, "Pseudo-elements can't be negated '%1$S'.", "Pseudo-elemente kan nie '%1$S' ontken word nie.")
+
+    stdchecker = checks.StandardChecker(checks.CheckerConfig(targetlanguage='km'))
+    assert checks.passes(stdchecker.endpunc, "In this new version, there are some minor conversion improvements on complex style in Openoffice.org Writer.", u"នៅ​ក្នុង​កំណែ​ថ្មីនេះ មាន​ការ​កែសម្រួល​មួយ​ចំនួន​តូច​ទាក់​ទង​នឹង​ការ​បំលែង​ពុម្ពអក្សរ​ខ្មែរ​ ក្នុង​កម្មវិធី​ការិយាល័យ​ ស្លឹករឹត ដែល​មាន​ប្រើ​ប្រាស់​រចនាប័ទ្មស្មុគស្មាញច្រើន\u00a0។")
+
+    stdchecker = checks.StandardChecker(checks.CheckerConfig(targetlanguage='zh'))
+    assert checks.passes(stdchecker.endpunc, "To activate your account, follow this link:\n", u"要啟用戶口，請瀏覽這個鏈結：\n")
 
 def test_endwhitespace():
     """tests endwhitespace"""
@@ -337,6 +355,11 @@ def test_puncspacing():
     assert checks.fails(stdchecker.puncspacing, "One, two, three. ", "Kunye, kubili,kuthathu.")
     assert checks.passes(stdchecker.puncspacing, "One, two, three!?", "Kunye, kubili, kuthathu?")
 
+    # Some languages have padded puntuation marks
+    frchecker = checks.StandardChecker(checks.CheckerConfig(targetlanguage="fr"))
+    assert checks.passes(frchecker.puncspacing, "Do \"this\"", "Do « this »")
+    assert checks.fails(frchecker.puncspacing, "Do \"this\"", "Do «this»")
+
 def test_purepunc():
     """tests messages containing only punctuation"""
     stdchecker = checks.StandardChecker()
@@ -348,7 +371,7 @@ def test_sentencecount():
     """tests sentencecount messages"""
     stdchecker = checks.StandardChecker()
     assert checks.passes(stdchecker.sentencecount, "One. Two. Three.", "Een. Twee. Drie.")
-    assert checks.fails(stdchecker.sentencecount, "One two three", "Een twee drie.")
+    assert checks.passes(stdchecker.sentencecount, "One two three", "Een twee drie.")
     assert checks.fails(stdchecker.sentencecount, "One. Two. Three.", "Een Twee. Drie.")
     assert checks.passes(stdchecker.sentencecount, "Sentence with i.e. in it.", "Sin met d.w.s. in dit.") # bug 178, description item 8
 
@@ -604,6 +627,17 @@ Start %PRODUCTNAME%""", "Begin %PRODUCTNAME%")
     assert checks.passes(ooochecker.variables, r"""_: Do not translate %PROGRAMNAME% in the text\n
 Start %PROGRAMNAME%""", "Begin %PROGRAMNAME%")
 
+def test_variables_cclicense():
+    """Tests variables in Creative Commons translations."""
+    checker = checks.CCLicenseChecker()
+    assert checks.passes(checker.variables, "CC-GNU @license_code@.", "CC-GNU @license_code@.")
+    assert checks.fails_serious(checker.variables, "CC-GNU @license_code@.", "CC-GNU @lisensie_kode@.")
+    assert checks.passes(checker.variables, "Deed to the @license_name_full@", "Akte vir die @license_name_full@")
+    assert checks.fails_serious(checker.variables, "Deed to the @license_name_full@", "Akte vir die @volle_lisensie@")
+    assert checks.passes(checker.variables, "The @license_name_full@ is", "Die @license_name_full@ is")
+    assert checks.fails_serious(checker.variables, "The @license_name_full@ is", "Die @iiilicense_name_full@ is")
+    assert checks.fails_serious(checker.variables, "A @ccvar@", "'n @ccvertaaldeveranderlike@")
+
 def test_xmltags():
     """tests xml tags"""
     stdchecker = checks.StandardChecker()
@@ -619,6 +653,8 @@ def test_xmltags():
     assert checks.fails(stdchecker.xmltags, "Click <a href=\"page.html\" target=\"koei\">", "Klik <a href=\"page.html\">")
     assert checks.fails(stdchecker.xmltags, "<b>Current Translation</b>", "<b>Traducción Actual:<b>")
     assert checks.passes(stdchecker.xmltags, "<Error>", "<Fout>")
+    frchecker = checks.StandardChecker(checks.CheckerConfig(targetlanguage="fr"))
+    assert checks.fails(frchecker.xmltags, "Click <a href=\"page.html\">", "Klik <a href=« page.html »>")
 
 def test_ooxmltags():
     """Tests the xml tags in OpenOffice.org translations for quality as done in gsicheck"""
@@ -668,3 +704,20 @@ def test_simpleplurals():
     assert checks.passes(stdchecker.simpleplurals, "computer(s)", "rekenaar(s)")
     assert checks.fails(stdchecker.simpleplurals, "plural(s)", "meervoud(e)")
     assert checks.fails(stdchecker.simpleplurals, "Ungroup Metafile(s)...", "Kuvhanganyululani Metafaela(dzi)...")
+
+def test_nplurals():
+    """test that we can find the wrong number of plural forms"""
+    stdchecker = checks.StandardChecker()
+    assert checks.passes(stdchecker.nplurals, multistring(["%d file", "%d files"]), multistring([u"%d lêer", u"%d lêers"]))
+
+    stdchecker = checks.StandardChecker(checks.CheckerConfig(targetlanguage='af'))
+    assert checks.passes(stdchecker.nplurals, "%d files", "%d lêer")
+    assert checks.passes(stdchecker.nplurals, multistring(["%d file", "%d files"]), multistring([u"%d lêer", u"%d lêers"]))
+    assert checks.fails(stdchecker.nplurals, multistring(["%d file", "%d files"]), multistring([u"%d lêer", u"%d lêers", u"%d lêeeeers"]))
+    assert checks.fails(stdchecker.nplurals, multistring(["%d file", "%d files"]), multistring([u"%d lêer"]))
+
+    stdchecker = checks.StandardChecker(checks.CheckerConfig(targetlanguage='km'))
+    assert checks.passes(stdchecker.nplurals, "%d files", "%d ឯកសារ")
+    assert checks.passes(stdchecker.nplurals, multistring(["%d file", "%d files"]), multistring([u"%d ឯកសារ"]))
+    assert checks.fails(stdchecker.nplurals, multistring(["%d file", "%d files"]), multistring([u"%d ឯកសារ", u"%d lêers"]))
+

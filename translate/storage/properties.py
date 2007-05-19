@@ -25,7 +25,7 @@ these files are used in translating Mozilla and other software"""
 from translate.storage import base
 from translate.misc import quote
 import sys
-import sre
+import re
 
 # the rstripeols convert dos <-> unix nicely as well
 # output will be appropriate for the platform
@@ -43,7 +43,7 @@ class propunit(base.TranslationUnit):
 
   def setsource(self, source):
     """Sets the source AND the target to be equal"""
-    self.msgid = quote.mozillapropertiesencode(source)
+    self.msgid = quote.mozillapropertiesencode(source or "")
 
   def getsource(self):
     msgid = quote.mozillapropertiesdecode(self.msgid)
@@ -52,7 +52,7 @@ class propunit(base.TranslationUnit):
     if rstriped and rstriped[-1] != "\\":
       msgid = rstriped
 
-    msgid = sre.sub("\\\\ ", " ", msgid)
+    msgid = re.sub("\\\\ ", " ", msgid)
     return msgid
 
   source = property(getsource, setsource)
@@ -60,10 +60,10 @@ class propunit(base.TranslationUnit):
   def settarget(self, target):
     """Note: this also sets the .source attribute!"""
     # TODO: shouldn't this just call the .source property? no quoting done here...
-    self.msgid = target
+    self.source = target
 
   def gettarget(self):
-    return self.msgid
+    return self.source
   target = property(gettarget, settarget)
 
   def __str__(self):
@@ -103,6 +103,7 @@ class propfile(base.TranslationStore):
   UnitClass = propunit
   def __init__(self, inputfile=None):
     """construct a propfile, optionally reading in from inputfile"""
+    super(propfile, self).__init__(unitclass = self.UnitClass)
     self.units = []
     self.filename = getattr(inputfile, 'name', '')
     if inputfile is not None:

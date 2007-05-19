@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # 
-# Copyright 2003-2006 Zuza Software Foundation
+# Copyright 2003-2007 Zuza Software Foundation
 # 
 # This file is part of translate.
 #
@@ -19,12 +19,13 @@
 # along with translate; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-"""takes a .po translation file and produces word counts and other statistics"""
+"""takes a translation file and produces word counts and other statistics"""
 
 import sys
 import os
-from translate.storage import po
-import sre
+from translate.storage import factory
+from translate.lang.common import Common
+import re
 
 if not hasattr(__builtins__, "sum"):
   def sum(parts):
@@ -35,14 +36,20 @@ def untranslatedwords(pair):
   if translation.words != 0: return 0
   return original.words
 
+kdepluralre = re.compile("^_n: ")
+brtagre = re.compile("<br\s*?/?>")
+xmltagre = re.compile("<[^>]+>")
+numberre = re.compile("\\D\\.\\D")
+
 def wordcount(postr):
-  # TODO: po class should understand KDE style plurals and comments
-  postr = sre.sub("^_n: ", "", postr)
-  postr = sre.sub("^_: .*?\\n", "", postr)
-  postr = sre.sub("<br>", "\n", postr)
-  postr = sre.sub("<[^>]+>", "", postr)
-  postr = sre.sub("\\D\\.\\D", " ", postr)
-  return len(postr.split())
+  # TODO: po class should understand KDE style plurals
+  postr = kdepluralre.sub("", postr)
+  postr = brtagre.sub("\n", postr)
+  postr = xmltagre.sub("", postr)
+  postr = numberre.sub(" ", postr)
+  #TODO: This should still use the correct language to count in the target 
+  #language
+  return len(Common.words(postr))
 
 def wordsinpoel(poel):
   """counts the words in the msgid, msgstr, taking plurals into account"""
@@ -53,7 +60,7 @@ def wordsinpoel(poel):
     msgstrwords += wordcount(s)
   return msgidwords, msgstrwords
 
-def summarize(title, units, CSVstyle=False):
+def calcstats(units):
   # ignore totally blank or header units
   units = filter(lambda poel: not poel.isheader(), units)
   translated = translatedmessages(units)
@@ -63,24 +70,43 @@ def summarize(title, units, CSVstyle=False):
   wordcounts = dict(map(lambda poel: (poel, wordsinpoel(poel)), units))
   msgidwords = lambda elementlist: sum(map(lambda poel: wordcounts[poel][0], elementlist))
   msgstrwords = lambda elementlist: sum(map(lambda poel: wordcounts[poel][1], elementlist))
+  stats = {}
+
+  #units
+  stats["translated"] = len(translated)
+  stats["fuzzy"] = len(fuzzy)
+  stats["untranslated"] = len(untranslated)
+  stats["review"] = len(review)
+  stats["total"] = stats["translated"] + stats["fuzzy"] + stats["untranslated"]
+
+  #words
+  stats["translatedsourcewords"] = sourcewords(translated)
+  stats["translatedtargetwords"] = targetwords(translated)
+  stats["fuzzysourcewords"] = sourcewords(fuzzy)
+  stats["untranslatedsourcewords"] = sourcewords(untranslated)
+  stats["reviewsourcewords"] = sourcewords(review)
+  stats["totalsourcewords"] = stats["translatedsourcewords"] + stats["fuzzysourcewords"] + stats["untranslatedsourcewords"]
+  return stats
+
+def summarize(title, stats, CSVstyle=False):
   if CSVstyle:
     print "%s, " % title,
-    print "%d, %d, %d," % (len(translated), msgidwords(translated), msgstrwords(translated)),
-    print "%d, %d," % (len(fuzzy), msgidwords(fuzzy)),
-    print "%d, %d," % (len(untranslated), msgidwords(untranslated)),
-    print "%d, %d" % (len(translated) + len(fuzzy) + len(untranslated), msgidwords(translated) + msgidwords(fuzzy) + msgidwords(untranslated)),
-    if len(review) > 0:
-      print ", %d, %d" % (len(review), msgidwords(review)),
+    print "%d, %d, %d," % stats["translated"], stats["translatedsourcewords"], stats["translatedtargetwords"]
+    print "%d, %d," % stats["fuzzy"], stats["fuzzytargetwords"]
+    print "%d, %d," % stats["untranslated"], stats["untranslatedsourcewords"]
+    print "%d, %d" % stats["total"], stats["totalsourcewords"]
+    if stats["review"] > 0:
+      print ", %d, %d" % stats["review"], stats["reviewsourdcewords"]
     print
   else:
     print title
     print "type           strings words (source) words (translation)"
-    print "translated:   %5d %10d %15d" % (len(translated), msgidwords(translated), msgstrwords(translated))
-    print "fuzzy:        %5d %10d             n/a" % (len(fuzzy), msgidwords(fuzzy))
-    print "untranslated: %5d %10d             n/a" % (len(untranslated), msgidwords(untranslated))
-    print "Total:        %5d %10d %15d" % (len(translated) + len(fuzzy) + len(untranslated), msgidwords(translated) + msgidwords(fuzzy) + msgidwords(untranslated), msgstrwords(translated))
-    if len(review) > 0:
-      print "review:       %5d %10d             n/a" % (len(review), msgidwords(review))
+    print "translated:   %5d %10d %15d" % (stats["translated"], stats["translatedsourcewords"], stats["translatedtargetwords"])
+    print "fuzzy:        %5d %10d             n/a" % (stats["fuzzy"], stats["fuzzysourcewords"])
+    print "untranslated: %5d %10d             n/a" % (stats["untranslated"], stats["untranslatedsourcewords"])
+    print "Total:        %5d %10d %15d" % (stats["total"], stats["totalsourcewords"], stats["translatedtargetwords"])
+    if stats["review"] > 0:
+      print "review:       %5d %10d             n/a" % (stats["review"], stats["reviewsourcewords"])
     print
 
 def fuzzymessages(units):
@@ -90,11 +116,11 @@ def translatedmessages(units):
     return filter(lambda unit: unit.istranslated(), units)
 
 def untranslatedmessages(units):
-    return filter(lambda unit: not (unit.istranslated() or unit.isfuzzy()), units)
+    return filter(lambda unit: not (unit.istranslated() or unit.isfuzzy()) and unit.source, units)
 
 class summarizer:
   def __init__(self, filenames, CSVstyle):
-    self.allelements = []
+    self.totals = {}
     self.filecount = 0
     self.CSVstyle = CSVstyle
     if self.CSVstyle:
@@ -111,17 +137,22 @@ Review Messages, Review Source Words"
       else:
         self.handlefile(filename)
     if self.filecount > 1 and not self.CSVstyle:
-      summarize("TOTAL:", self.allelements)
+      summarize("TOTAL:", self.totals)
       print "File count:   %5d" % (self.filecount)
       print
 
+  def updatetotals(self, stats):
+    """Update self.totals with the statistics in stats."""
+    for key in stats.keys():
+        if not self.totals.has_key(key):
+            self.totals[key] = 0
+        self.totals[key] += stats[key]
+
   def handlefile(self, filename):
-    infile = open(filename)
-    pof = po.pofile()
-    pof.parse(infile.read())
-    infile.close()
-    self.allelements.extend(pof.units)
-    summarize(filename, pof.units, self.CSVstyle)
+    pof = factory.getobject(filename)
+    stats = calcstats(pof.units)
+    self.updatetotals(stats)
+    summarize(filename, stats, self.CSVstyle)
     self.filecount += 1
 
   def handlefiles(self, arg, dirname, filenames):

@@ -24,7 +24,9 @@
 from translate.filters import helpers
 from translate.filters import decoration
 from translate.filters import prefilters
-import sre
+from translate.misc.multistring import multistring
+from translate.lang import factory
+import re
 try:
   from enchant import checker
   checkers = {}
@@ -44,10 +46,19 @@ except ImportError:
   except ImportError:
     def dospellcheck(text, lang):
       return []
+
+def forceunicode(string):
+  """Helper method to ensure that the parameter becomes unicode if not yet"""
+  if string is None:
+    return None
+  if isinstance(string, str):
+    encoding = getattr(string, "encoding", "utf-8")
+    string = string.decode(encoding)
+  return string
     
 def tagname(string):
   """Returns the name of the XML/HTML tag in string"""
-  return sre.match("<[\s]*([\w\/]*)", string).groups(1)[0]
+  return re.match("<[\s]*([\w\/]*)", string).groups(1)[0]
 
 def intuplelist(pair, list):
   """Tests to see if pair == (a,b,c) is in list, but handles None entries in 
@@ -73,7 +84,7 @@ def tagproperties(strings, ignore):
     properties += [(tag, None, None)]
     #Now we isolate the attribute pairs. We allow escaped quotes
     #TODO: remove escaped strings once usage is audited
-    pairs = sre.findall(" (\w*)=((\\\\?\".*?\\\\?\")|(\\\\?'.*?\\\\?'))", string)
+    pairs = re.findall(" (\w*)=((\\\\?\".*?\\\\?\")|(\\\\?'.*?\\\\?'))", string)
     for property, value, a, b in pairs:
       #Strip the quotes:
       value = value[1:-1]
@@ -108,6 +119,8 @@ class SeriousFilterFailure(FilterFailure):
 
 def passes(filterfunction, str1, str2):
   """returns whether the given strings pass on the given test, handling FilterFailures"""
+  str1 = forceunicode(str1)
+  str2 = forceunicode(str2)
   try:
     filterresult = filterfunction(str1, str2)
   except FilterFailure, e:
@@ -116,6 +129,8 @@ def passes(filterfunction, str1, str2):
 
 def fails(filterfunction, str1, str2):
   """returns whether the given strings fail on the given test, handling only FilterFailures"""
+  str1 = forceunicode(str1)
+  str2 = forceunicode(str2)
   try:
     filterresult = filterfunction(str1, str2)
   except SeriousFilterFailure, e:
@@ -126,17 +141,17 @@ def fails(filterfunction, str1, str2):
 
 def fails_serious(filterfunction, str1, str2):
   """returns whether the given strings fail on the given test, handling only SeriousFilterFailures"""
+  str1 = forceunicode(str1)
+  str2 = forceunicode(str2)
   try:
     filterresult = filterfunction(str1, str2)
   except SeriousFilterFailure, e:
     filterresult = False
   return not filterresult
 
-punctuation_chars = u'.,;:!?-@#$%^*_()[]{}/\\\'"<>\u2018\u2019\u201a\u201b\u201c\u201d\u201e\u201f\u2032\u2033\u2034\u2035\u2036\u2037\u2039\u203a\xab\xbb\xb1\xb3\xb9\xb2\xb0\xbf\xa9\xae\xd7\xa3\xa5\u2026'
-endpunctuation_chars = u'.:!?\u2026'
 # printf syntax based on http://en.wikipedia.org/wiki/Printf which doens't cover everything we leave \w instead of specifying the exact letters as
 # this should capture printf types defined in other platforms.
-printf_pat = sre.compile('%((?:(?P<ord>\d+)\$)*(?P<fullvar>[+#-]*(?:\d+)*(?:\.\d+)*(hh\|h\|l\|ll)*(?P<type>[\w%])+))')
+printf_pat = re.compile('%((?:(?P<ord>\d+)\$)*(?P<fullvar>[+#-]*(?:\d+)*(?:\.\d+)*(hh\|h\|l\|ll)*(?P<type>[\w%])+))')
 
 #(tag, attribute, value) specifies a certain attribute which can be changed/
 #ignored if it exists inside tag. In the case where there is a third element
@@ -161,24 +176,23 @@ class CheckerConfig(object):
     if notranslatewords is None:
       notranslatewords = []
     self.targetlanguage = targetlanguage
+    self.updatetargetlanguage(targetlanguage)
+    self.sourcelang = factory.getlanguage('en')
     self.accelmarkers = accelmarkers
     self.varmatches = varmatches
     # TODO: allow user configuration of untranslatable words
     self.notranslatewords = dict.fromkeys([key for key in notranslatewords])
     self.musttranslatewords = dict.fromkeys([key for key in musttranslatewords])
-    if isinstance(validchars, str):
-      validchars = validchars.decode("utf-8")
+    validchars = forceunicode(validchars)
     self.validcharsmap = {}
     self.updatevalidchars(validchars)
-    if isinstance(punctuation, str):
-      punctuation = punctuation.decode("utf-8")
-    elif punctuation is None:
-      punctuation = punctuation_chars
+    punctuation = forceunicode(punctuation)
+    if punctuation is None:
+      punctuation = self.lang.punctuation
     self.punctuation = punctuation
-    if isinstance(endpunctuation, str):
-      endpunctuation = endpunctuation.decode("utf-8")
-    elif endpunctuation is None:
-      endpunctuation = endpunctuation_chars
+    endpunctuation = forceunicode(endpunctuation)
+    if endpunctuation is None:
+      endpunctuation = self.lang.sentenceend
     self.endpunctuation = endpunctuation
     if ignoretags is None:
       self.ignoretags = common_ignoretags
@@ -195,6 +209,7 @@ class CheckerConfig(object):
   def update(self, otherconfig):
     """combines the info in otherconfig into this config object"""
     self.targetlanguage = otherconfig.targetlanguage or self.targetlanguage
+    self.lang = otherconfig.lang
     self.accelmarkers.extend(otherconfig.accelmarkers)
     self.varmatches.extend(otherconfig.varmatches)
     self.notranslatewords.update(otherconfig.notranslatewords)
@@ -213,6 +228,10 @@ class CheckerConfig(object):
       return True
     validcharsmap = dict([(ord(validchar), None) for validchar in validchars])
     self.validcharsmap.update(validcharsmap)
+
+  def updatetargetlanguage(self, langcode):
+      """Updates the target language in the config to the given target language"""
+      self.lang = factory.getlanguage(langcode)
 
 class TranslationChecker(object):
   """Base Checker class which does the checking based on functions available in derived classes"""
@@ -275,10 +294,16 @@ class TranslationChecker(object):
     """replaces words with punctuation with their unpunctuated equivalents..."""
     return prefilters.filterwordswithpunctuation(str1)
 
+  def filterxml(self, str1):
+    """filter out XML from the string so only text remains"""
+    return re.sub("<[^>]+>", "", str1)
+
   def run_filters(self, str1, str2):
     """run all the tests in this suite, return failures as testname, message_or_exception"""
+    str1 = forceunicode(str1)
+    str2 = forceunicode(str2)
     failures = []
-    ignores = []
+    ignores = self.config.lang.ignoretests[:]
     functionnames = self.defaultfilters.keys()
     priorityfunctionnames = self.preconditions.keys()
     otherfunctionnames = filter(lambda functionname: functionname not in self.preconditions, functionnames)
@@ -294,7 +319,7 @@ class TranslationChecker(object):
         filterresult = filterfunction(str1, str2)
       except FilterFailure, e:
         filterresult = False
-        filtermessage = str(e)
+        filtermessage = str(e).decode('utf-8')
       except Exception, e:
         if self.errorhandler is None:
           raise
@@ -312,12 +337,15 @@ class TranslationChecker(object):
 
 class TeeChecker:
   """A Checker that controls multiple checkers..."""
-  def __init__(self, checkerconfig=None, excludefilters=None, limitfilters=None, checkerclasses=None, errorhandler=None):
+  def __init__(self, checkerconfig=None, excludefilters=None, limitfilters=None, checkerclasses=None, errorhandler=None, languagecode=None):
     """construct a TeeChecker from the given checkers"""
     self.limitfilters = limitfilters
     if checkerclasses is None:
       checkerclasses = [StandardChecker]
     self.checkers = [checkerclass(checkerconfig=checkerconfig, excludefilters=excludefilters, limitfilters=limitfilters, errorhandler=errorhandler) for checkerclass in checkerclasses]
+    if languagecode:
+        for checker in self.checkers:
+            checker.config.updatetargetlanguage(languagecode)
     self.combinedfilters = self.getfilters(excludefilters, limitfilters)
 
   def getfilters(self, excludefilters=None, limitfilters=None):
@@ -370,7 +398,7 @@ class StandardChecker(TranslationChecker):
     return True
 
   def blank(self, str1, str2):
-    """checks whether a translation is totally blank"""
+    """checks whether a translation only contains spaces"""
     len1 = len(prefilters.removekdecomments(str1).strip())
     len2 = len(str2.strip())
     return not (len1 > 0 and len(str2) != 0 and len2 == 0)
@@ -391,9 +419,9 @@ class StandardChecker(TranslationChecker):
     """checks whether escaping is consistent between the two strings"""
     str1 = prefilters.removekdecomments(str1)
     if not helpers.countsmatch(str1, str2, ("\\", "\\\\")):
-      escapes1 = ", ".join(["'%s'" % word for word in str1.split() if "\\" in word])
-      escapes2 = ", ".join(["'%s'" % word for word in str2.split() if "\\" in word])
-      raise SeriousFilterFailure("escapes in original (%s) don't match escapes in translation (%s)" % (escapes1, escapes2))
+      escapes1 = u", ".join([u"'%s'" % word for word in str1.split() if "\\" in word])
+      escapes2 = u", ".join([u"'%s'" % word for word in str2.split() if "\\" in word])
+      raise SeriousFilterFailure(u"escapes in original (%s) don't match escapes in translation (%s)" % (escapes1, escapes2))
     else:
       return True
 
@@ -422,8 +450,11 @@ class StandardChecker(TranslationChecker):
   def doublequoting(self, str1, str2):
     """checks whether doublequoting is consistent between the two strings"""
     str1 = self.filteraccelerators(self.filtervariables(str1))
+    str1 = self.filterxml(str1)
+    str1 = self.config.lang.punctranslate(str1)
     str2 = self.filteraccelerators(self.filtervariables(str2))
-    return helpers.countsmatch(str1, str2, ('"', '""', '\\"'))
+    str2 = self.filterxml(str2)
+    return helpers.countsmatch(str1, str2, ('"', '""', '\\"', u"«", u"»"))
 
   def doublespacing(self, str1, str2):
     """checks for bad double-spaces by comparing to original"""
@@ -434,6 +465,7 @@ class StandardChecker(TranslationChecker):
   def puncspacing(self, str1, str2):
     """checks for bad spacing after punctuation"""
     str1 = self.filteraccelerators(self.filtervariables(str1))
+    str1 = self.config.lang.punctranslate(str1)
     str2 = self.filteraccelerators(self.filtervariables(str2))
     for puncchar in self.config.punctuation:
       plaincount1 = str1.count(puncchar)
@@ -588,12 +620,14 @@ class StandardChecker(TranslationChecker):
   def startpunc(self, str1, str2):
     """checks whether punctuation at the beginning of the strings match"""
     str1 = self.filteraccelerators(self.filtervariables(self.filterwordswithpunctuation(str1)))
+    str1 = self.config.lang.punctranslate(str1)
     str2 = self.filteraccelerators(self.filtervariables(self.filterwordswithpunctuation(str2)))
     return helpers.funcmatch(str1, str2, decoration.puncstart, self.config.punctuation)
 
   def endpunc(self, str1, str2):
     """checks whether punctuation at the end of the strings match"""
     str1 = self.filteraccelerators(self.filtervariables(self.filterwordswithpunctuation(str1)))
+    str1 = self.config.lang.punctranslate(str1)
     str2 = self.filteraccelerators(self.filtervariables(self.filterwordswithpunctuation(str2)))
     return helpers.funcmatch(str1, str2, decoration.puncend, self.config.endpunctuation)
 
@@ -629,9 +663,9 @@ class StandardChecker(TranslationChecker):
   def sentencecount(self, str1, str2):
     """checks that the number of sentences in both strings match"""
     str1 = prefilters.removekdecomments(str1)
-    str1 = sre.sub("\s((?:\w\.)+)\s", " ", str1) 
-    str2 = sre.sub("\s((?:\w\.)+)\s", " ", str2) 
-    return helpers.countsmatch(str1, str2, ".")
+    sentences1 = self.config.sourcelang.sentences(str1)
+    sentences2 = self.config.lang.sentences(str2)
+    return len(sentences1) == len(sentences2)
 
   def startcaps(self, str1, str2):
     """checks that the message starts with the correct capitalisation"""
@@ -650,9 +684,11 @@ class StandardChecker(TranslationChecker):
     """checks the capitalisation of two strings isn't wildly different"""
     str1 = self.removevariables(prefilters.removekdecomments(str1))
     str2 = self.removevariables(str2)
-    str1 = sre.sub("[^.]( I )", " i ", str1)
-    capitals1, capitals2 = helpers.filtercount(str1, type(str1).isupper), helpers.filtercount(str2, type(str2).isupper)
-    alpha1, alpha2 = helpers.filtercount(str1, type(str1).isalpha), helpers.filtercount(str2, type(str2).isalpha)
+    str1 = re.sub("[^.]( I )", " i ", str1)
+    capitals1 = helpers.filtercount(str1, type(str1).isupper)
+    capitals2 = helpers.filtercount(str2, type(str2).isupper)
+    alpha1 = helpers.filtercount(str1, type(str1).isalpha)
+    alpha2 = helpers.filtercount(str2, type(str2).isalpha)
     # Capture the all caps case
     if capitals1 == alpha1:
       return capitals2 == alpha2
@@ -675,8 +711,9 @@ class StandardChecker(TranslationChecker):
     for startmatch, endmatch in self.config.varmatches:
       allowed += decoration.getvariables(startmatch, endmatch)(str1)
     allowed += self.config.musttranslatewords.keys()
-    for word in self.filteraccelerators(self.filtervariables(str1)).split():
-      word = word.strip(self.config.punctuation)
+    str1 = self.filteraccelerators(self.filtervariables(str1))
+    iter = self.config.lang.word_iter(str1)
+    for word in iter:
       if word.isupper() and len(word) > 1 and word not in allowed:
         if self.filteraccelerators(self.filtervariables(str2)).find(word) == -1:
           acronyms.append(word)
@@ -741,10 +778,6 @@ class StandardChecker(TranslationChecker):
     """checks that only characters specified as valid appear in the translation"""
     if not self.config.validcharsmap:
       return True
-    if isinstance(str1, str):
-      str1 = str1.decode('utf-8')
-    if isinstance(str2, str):
-      str2 = str2.decode('utf-8')
     invalid1 = str1.translate(self.config.validcharsmap)
     invalid2 = str2.translate(self.config.validcharsmap)
     invalidchars = ["'%s' (\\u%04x)" % (invalidchar.encode('utf-8'), ord(invalidchar)) for invalidchar in invalid2 if invalidchar not in invalid1]
@@ -763,11 +796,11 @@ class StandardChecker(TranslationChecker):
   def xmltags(self, str1, str2):
     """checks that XML/HTML tags have not been translated"""
     str1 = prefilters.removekdecomments(str1)
-    tags1 = sre.findall("<[^>]+>", str1)
+    tags1 = re.findall("<[^>]+>", str1)
     if len(tags1) > 0:
       if (len(tags1[0]) == len(str1)) and not "=" in tags1[0]:
         return True
-      tags2 = sre.findall("<[^>]+>", str2)
+      tags2 = re.findall("<[^>]+>", str2)
       properties1 = tagproperties(tags1, self.config.ignoretags)
       properties2 = tagproperties(tags2, self.config.ignoretags)
       filtered1 = []
@@ -783,7 +816,7 @@ class StandardChecker(TranslationChecker):
     else:
       # No tags in str1, let's just check that none were added in str2. This 
       # might be useful for fuzzy strings wrongly unfuzzied, for example.
-      tags2 = sre.findall("<[^>]+>", str2)
+      tags2 = re.findall("<[^>]+>", str2)
       if len(tags2) > 0:
         return False
     return True
@@ -801,7 +834,7 @@ class StandardChecker(TranslationChecker):
     def numberofpatterns(string, patterns):
       number = 0
       for pattern in patterns:
-        number += len(sre.findall(pattern, string))
+        number += len(re.findall(pattern, string))
       return number
 
     sourcepatterns = ["\(s\)"]
@@ -809,6 +842,17 @@ class StandardChecker(TranslationChecker):
     sourcecount = numberofpatterns(str1, sourcepatterns)
     targetcount = numberofpatterns(str2, targetpatterns)
     return sourcecount == targetcount
+
+  def nplurals(self, str1, str2):
+    """Checks for the correct number of noun forms for plural translations."""
+    if isinstance(str1, multistring) and isinstance(str2, multistring):
+      # if we don't have a valid nplurals value, don't run the test
+      if len(str1.strings) > 1 and self.config.lang.nplurals != 0:
+        return len(str2.strings) == self.config.lang.nplurals
+      else:
+        return True
+    else:
+      return True
 
   def spellcheck(self, str1, str2):
     """checks words that don't pass a spell check"""
@@ -844,8 +888,18 @@ class StandardChecker(TranslationChecker):
                                     "sentencecount", "numbers", "isfuzzy",
                                     "isreview", "notranslatewords", "musttranslatewords",
                                     "emails", "simpleplurals", "urls", "printf",
+                                    "tabs", "newlines", "blank", "nplurals"),
+                    "blank":        ("simplecaps", "variables", "startcaps",
+                                    "accelerators", "brackets", "endpunc",
+                                    "acronyms", "xmltags", "startpunc",
+                                    "endwhitespace", "startwhitespace",
+                                    "escapes", "doublequoting", "singlequoting", 
+                                    "filepaths", "purepunc", "doublespacing",
+                                    "sentencecount", "numbers", "isfuzzy",
+                                    "isreview", "notranslatewords", "musttranslatewords",
+                                    "emails", "simpleplurals", "urls", "printf",
                                     "tabs", "newlines"),
-                   "unchanged": ("doublewords",), 
+                   "unchanged":     ("doublewords",), 
                    "compendiumconflicts": ("accelerators", "brackets", "escapes", 
                                     "numbers", "startpunc", "long", "variables", 
                                     "startcaps", "sentencecount", "simplecaps",
@@ -917,11 +971,22 @@ class KdeChecker(StandardChecker):
     checkerconfig.update(kdeconfig)
     StandardChecker.__init__(self, **kwargs)
 
+cclicenseconfig = CheckerConfig(varmatches = [("@", "@")])
+class CCLicenseChecker(StandardChecker):
+  def __init__(self, **kwargs):
+    checkerconfig = kwargs.get("checkerconfig", None)
+    if checkerconfig is None:
+      checkerconfig = CheckerConfig()
+      kwargs["checkerconfig"] = checkerconfig
+    checkerconfig.update(cclicenseconfig)
+    StandardChecker.__init__(self, **kwargs)
+
 projectcheckers = {
   "openoffice": OpenOfficeChecker,
   "mozilla": MozillaChecker,
   "kde": KdeChecker,
-  "gnome": GnomeChecker
+  "gnome": GnomeChecker,
+  "creativecommons": CCLicenseChecker
   }
 
 def runtests(str1, str2, ignorelist=()):

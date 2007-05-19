@@ -20,9 +20,10 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-"""module for handling XLIFF files for translation.
+"""Module for handling XLIFF files for translation.
 
-The official recommendation is to use the extention .xlf for XLIFF files."""
+The official recommendation is to use the extention .xlf for XLIFF files.
+"""
 
 from translate.storage import base
 from translate.storage import lisa
@@ -30,7 +31,8 @@ from translate.storage import lisa
 # TODO: handle translation types
 
 class xliffunit(lisa.LISAunit):
-    """A single term in the xliff file.""" 
+    """A single term in the xliff file."""
+
     rootNode = "trans-unit"
     languageNode = "source"
     textNode = ""
@@ -38,7 +40,8 @@ class xliffunit(lisa.LISAunit):
     #TODO: id and all the trans-unit level stuff
 
     def createlanguageNode(self, lang, text, purpose):
-        """returns an xml Element setup with given parameters"""
+        """Returns an xml Element setup with given parameters."""
+
         #TODO: for now we do source, but we have to test if it is target, perhaps 
         # with parameter. Alternatively, we can use lang, if supplied, since an xliff 
         #file has to conform to the bilingual nature promised by the header.
@@ -54,6 +57,7 @@ class xliffunit(lisa.LISAunit):
     
     def getlanguageNodes(self):
         """We override this to get source and target nodes."""
+
         sources = self.xmlelement.getElementsByTagName(self.languageNode)
         targets = self.xmlelement.getElementsByTagName("target")
         sourcesl = len(sources)
@@ -66,7 +70,12 @@ class xliffunit(lisa.LISAunit):
         return nodes
 
     def addalttrans(self, txt, origin=None, lang=None):
-        """Adds a alt-trans tag and alt-trans components to <source>"""
+        """Adds an alt-trans tag and alt-trans components to the unit.
+        
+        @type txt: String
+        @param txt: Alternative translation of the source text.
+        """
+
         #TODO: support adding a source tag ad match quality attribute.  At 
         # the source tag is needed to inject fuzzy matches from a TM.
         if isinstance(txt, str):
@@ -179,36 +188,44 @@ class xliffunit(lisa.LISAunit):
                 targetnode.removeAttribute("state")
 
     def isfuzzy(self):
-        targetnode = self.getlanguageNode(lang=None, index=1)
-        return not targetnode is None and \
-                (targetnode.getAttribute("state-qualifier") == "fuzzy-match" or \
-                targetnode.getAttribute("state") == "needs-review-translation")
+#        targetnode = self.getlanguageNode(lang=None, index=1)
+#        return not targetnode is None and \
+#                (targetnode.getAttribute("state-qualifier") == "fuzzy-match" or \
+#                targetnode.getAttribute("state") == "needs-review-translation")
+        return not self.isapproved()
                 
     def markfuzzy(self, value=True):
+        if value:
+            self.xmlelement.setAttribute("approved", "no")
+        else:
+            self.xmlelement.setAttribute("approved", "yes")
         targetnode = self.getlanguageNode(lang=None, index=1)
         if targetnode:
             if value:
                 targetnode.setAttribute("state", "needs-review-translation")
-                targetnode.setAttribute("state-qualifier", "fuzzy-match")
-            elif self.isfuzzy():                
-                targetnode.removeAttribute("state")
-                targetnode.removeAttribute("state-qualifier")
-        elif value:
-            #If there is no target, we can't really indicate fuzzyness, so we set
-            #approved to "no", but we don't take it into account in isfuzzy()
-            #TODO: review decision
-            self.xmlelement.setAttribute("approved", "no")
+            else:
+                for attribute in ["state", "state-qualifier"]:
+                    if targetnode.hasAttribute(attribute):
+                        targetnode.removeAttribute(attribute)
 
-    def istranslated(self):
-        targetnode = self.getlanguageNode(lang=None, index=1)
-        return not targetnode is None and \
-                (targetnode.getAttribute("state") == "translated")
+    def settarget(self, text, lang='xx', append=False):
+        """Sets the target string to the given value."""
+        super(xliffunit, self).settarget(text, lang, append)
+        if text:
+            self.marktranslated()
+
+# This code is commented while this will almost always return false.
+# This way pocount, etc. works well.
+#    def istranslated(self):
+#        targetnode = self.getlanguageNode(lang=None, index=1)
+#        return not targetnode is None and \
+#                (targetnode.getAttribute("state") == "translated")
 
     def marktranslated(self):
         targetnode = self.getlanguageNode(lang=None, index=1)
         if not targetnode:
             return
-        if self.isfuzzy():
+        if self.isfuzzy() and targetnode.hasAttribute("state-qualifier"):
             #TODO: consider
             targetnode.removeAttribute("state-qualifier")
         targetnode.setAttribute("state", "translated")
@@ -218,6 +235,9 @@ class xliffunit(lisa.LISAunit):
 
     def getid(self):
         return self.xmlelement.getAttribute("id")
+
+    def getlocations(self):
+        return [self.getid()]
 
     def createcontextgroup(self, name, contexts=None, purpose=None):
         """Add the context group to the trans-unit with contexts a list with
@@ -331,7 +351,10 @@ class xlifffile(lisa.LISAfile):
     def getfilenames(self):
         """returns all filenames in this XLIFF file"""
         filenodes = self.document.getElementsByTagName("file")
-        return [self.getfilename(filenode) for filenode in filenodes]
+        filenames = [self.getfilename(filenode) for filenode in filenodes]
+        if len(filenames) == 1 and filenames[0] == '':
+            filenames = []
+        return filenames
 
     def getfilenode(self, filename):
         """finds the filenode with the given name"""

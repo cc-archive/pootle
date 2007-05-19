@@ -8,16 +8,8 @@ from py import test
 class TestTxtUnit(test_monolingual.TestMonolingualUnit):
     UnitClass = txt.TxtUnit
 
-    def setup_method(self, method):
-        self.unit = self.UnitClass("Test Source String")
-
     def test_markreview(self):
         assert test.raises(NotImplementedError, self.unit.markreviewneeded)
-
-    def test_note_sanity(self):
-        """This test should be removed (in favour of the base test)
-        if TxtUnit ever has a 'notes' attribute."""
-        assert test.raises(AttributeError, self.unit.addnote, 'test note')
 
 class TestTxtFile(test_monolingual.TestMonolingualStore):
     StoreClass = txt.TxtFile

@@ -30,14 +30,26 @@ class TestTranslationUnit:
     """Tests a TranslationUnit.
     Derived classes can reuse these tests by pointing UnitClass to a derived Unit"""
     UnitClass = base.TranslationUnit
+
+    def setup_method(self, method):
+        self.unit = self.UnitClass("Test String")
+
+    def test_isfuzzy(self):
+        """Test that we can call isfuzzy() on a unit.
+        
+        The default return value for isfuzzy() should be False.
+        """
+        assert not self.unit.isfuzzy()
+
     def test_create(self):
         """tests a simple creation with a source string"""
-        unit = self.UnitClass("Test String")
+        unit = self.unit
+        print 'unit.source:', unit.source
         assert unit.source == "Test String"
 
     def test_eq(self):
         """tests equality comparison"""
-        unit1 = self.UnitClass("Test String")
+        unit1 = self.unit
         unit2 = self.UnitClass("Test String")
         unit3 = self.UnitClass("Test String")
         unit4 = self.UnitClass("Blessed String")
@@ -56,7 +68,7 @@ class TestTranslationUnit:
         assert unit1 != unit6
 
     def test_target(self):
-        unit = self.UnitClass("Test String")
+        unit = self.unit
         assert not unit.target
         unit.settarget("Stressed Ting")
         assert unit.target == "Stressed Ting"
@@ -68,7 +80,7 @@ class TestTranslationUnit:
     def test_escapes(self):
         """Test all sorts of characters that might go wrong in a quoting and 
         escaping roundtrip."""
-        unit = self.UnitClass('bla')
+        unit = self.unit
         specials = ['Fish & chips', 'five < six', 'six > five', 'five &lt; six',
                     'Use &nbsp;', 'Use &amp;nbsp;', 'Use &amp;amp;nbsp;'
                     'A "solution"', "skop 'n bal", '"""', "'''", u'µ',
@@ -83,7 +95,7 @@ class TestTranslationUnit:
         """Test difficult characters that might go wrong in a quoting and 
         escaping roundtrip."""
 
-        unit = self.UnitClass('bla')
+        unit = self.unit
         specials = ['\\n', '\\t', '\\"', '\\ ',
                     '\\\n', '\\\t', '\\\\n', '\\\\t', '\\\\r', '\\\\"',
                     '\\r\\n', '\\\\r\\n', '\\r\\\\n', '\\\\n\\\\r']
@@ -95,7 +107,7 @@ class TestTranslationUnit:
 
     def test_markreview(self):
         """Tests if we can mark the unit to need review."""
-        unit = self.UnitClass("Test String")
+        unit = self.unit
         # We have to explicitly set the target to nothing, otherwise xliff
         # tests will fail.
         # Can we make it default behavior for the UnitClass?
@@ -123,7 +135,7 @@ class TestTranslationUnit:
 
     def test_note_sanity(self):
         """Tests that all subclasses of the base behaves consistently with regards to notes."""
-        unit = self.UnitClass("Test String")
+        unit = self.unit
 
         unit.addnote("Test note 1", origin="translator")
         unit.addnote("Test note 2", origin="translator")
@@ -144,7 +156,7 @@ class TestTranslationUnit:
 
     def test_errors(self):
         """Tests that we can add and retrieve error messages for a unit."""
-        unit = self.UnitClass("Test String")
+        unit = self.unit
 
         # The base class methods won't be implemented:
         if self.__module__.endswith('test_base'):
@@ -250,6 +262,15 @@ class TestTranslationStore:
         newstore = self.StoreClass.parsefile(self.filename)
         self.check_equality(store, newstore)
 
+    def test_save(self):
+        """Tests that we can save directly back to the original file."""
+        store = self.StoreClass()
+        unit1 = store.addsourceunit("Test String")
+        store.savefile(self.filename)
+        store.save()
+        newstore = self.StoreClass.parsefile(self.filename)
+        self.check_equality(store, newstore)
+
     def test_markup(self):
         """Tests that markup survives the roundtrip. Most usefull for xml types."""
         store = self.StoreClass()
@@ -269,3 +290,37 @@ class TestTranslationStore:
         #Just test that __str__ doesn't raise exception:
         src = str(store)
 
+    def test_store_stats(self):
+        store = self.StoreClass()
+        unit1 = store.addsourceunit("Test source")
+        store.units[0].markfuzzy(False)
+        assert store.source_wordcount() == 2
+        unit2 = store.addsourceunit("Test source 2")
+        store.units[1].markfuzzy(False)
+        store.classifyunits()
+        assert store.source_wordcount() == 5
+        # If the source has also been changed, assume it's a monolingual file.
+        if not unit1.source == unit1.target:
+            assert store.translated_unitcount() == 0
+            assert store.untranslated_unitcount() == 2
+            assert store.translated_wordcount() == 0
+            assert store.untranslated_wordcount() == 5
+        unit1.settarget("Toets bron teks")
+        store.classifyunits()
+        # If the source has also been changed, assume it's a monolingual file.
+        if not unit1.source == unit1.target:
+            assert store.translated_unitcount() == 1
+            assert store.untranslated_unitcount() == 1
+            assert store.translated_wordcount() == 2
+            assert store.untranslated_wordcount() == 3
+
+        assert not store.fuzzy_units()
+        unit1.markfuzzy(True)
+        if unit1.isfuzzy():
+            store.classifyunits()
+            assert store.fuzzy_unitcount() == 1
+
+        store = self.StoreClass()
+        unit1 = store.addsourceunit(u"ភាសា​ខ្មែរ")
+        unit2 = store.addsourceunit(u"សាលារៀន")
+        assert store.source_wordcount() == 3

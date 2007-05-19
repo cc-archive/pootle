@@ -157,7 +157,9 @@ Provisional work is done to make several languages possible."""
         start = 0
         for i,m in enumerate(_getPhMatches(text)):
             #pretext
-            parent.appendChild(self.document.createTextNode(text[start:m.start()]))
+            pretext = text[start:m.start()]
+            if pretext:
+                parent.appendChild(self.document.createTextNode(pretext))
             #ph node
             phnode = ourdom.Element("ph")
             phnode.setAttribute("id", str(i+1))
@@ -165,7 +167,8 @@ Provisional work is done to make several languages possible."""
             parent.appendChild(phnode)
             start = m.end()
         #post text
-        parent.appendChild(self.document.createTextNode(text[start:]))
+        if text[start:]:
+            parent.appendChild(self.document.createTextNode(text[start:]))
 
     def getlanguageNodes(self):
         """Returns a list of all nodes that contain per language information."""
@@ -262,12 +265,14 @@ class LISAfile(base.TranslationStore):
 
     def parse(self, xml):
         """Populates this object from the given xml string"""
-        self.filename = getattr(xml, 'name', '')
+        if not hasattr(self, 'filename'):
+            self.filename = getattr(xml, 'name', '')
         if hasattr(xml, "read"):
+            xml.seek(0)
             posrc = xml.read()
-            xml.close()
             xml = posrc
         self.document = ourdom.parseString(xml)
+        self.encoding = self.document.encoding
         assert self.document.documentElement.tagName == self.rootNode
         self.initbody()
         termEntries = self.document.getElementsByTagName(self.UnitClass.rootNode)

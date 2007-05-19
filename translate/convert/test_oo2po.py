@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from translate.convert import oo2po
+from translate.convert import po2oo
 from translate.convert import test_convert
 from translate.misc import wStringIO
 from translate.storage import po
@@ -22,6 +23,35 @@ class TestOO2PO:
         assert pofile.units[0].isheader()
         return pofile.units[1]
 
+    def roundtripstring(self, entitystring):
+        """Convert the supplied string as part of an OpenOffice.org GSI file to po and back.
+        
+        Return the string once it has been through all the conversions."""
+
+        oointro = r'helpcontent2	source\text\shared\01\02100001.xhp	0	help	par_id3150670 35				0	en-US	'
+        oooutro = r'				2002-02-02 02:02:02' + '\r\n'
+
+        oosource = oointro + entitystring + oooutro
+        ooinputfile = wStringIO.StringIO(oosource)
+        ootemplatefile = wStringIO.StringIO(oosource)
+        pooutputfile = wStringIO.StringIO()
+
+        oo2po.convertoo(ooinputfile, pooutputfile, ootemplatefile, targetlanguage='en-US')
+        posource = pooutputfile.getvalue()
+
+        poinputfile = wStringIO.StringIO(posource)
+        ootemplatefile = wStringIO.StringIO(oosource)
+        oooutputfile = wStringIO.StringIO()
+        po2oo.convertoo(poinputfile, oooutputfile, ootemplatefile, targetlanguage="en-US")
+        ooresult = oooutputfile.getvalue()
+        print "original oo:\n", oosource, "po version:\n", posource, "output oo:\n", ooresult
+        assert ooresult.startswith(oointro) and ooresult.endswith(oooutro)
+        return ooresult[len(oointro):-len(oooutro)]
+
+    def check_roundtrip(self, text):
+        """Checks that the text converted to po and back is the same as the original."""
+        assert self.roundtripstring(text) == text
+
     def test_simpleentity(self):
         """checks that a simple oo entry converts properly to a po entry"""
         oosource = r'svx	source\dialog\numpages.src	0	string	RID_SVXPAGE_NUM_OPTIONS	STR_BULLET			0	en-US	Character				20050924 09:13:58'
@@ -41,14 +71,28 @@ class TestOO2PO:
         assert "Tab \t Tab" in pounit.source 
         assert "CR \r CR" in pounit.source 
 
-    def test_escapes_helpcontent2(self):
-        """checks that a helpcontent2 entry converts escapes properly to a po entry"""
-        oosource = r"wizards	source\formwizard\dbwizres.src	0	string	RID_DB_FORM_WIZARD_START + 19				0	en-US	%s				20050924 09:13:58" % r'size *2 \\langle x \\rangle'
+    def test_roundtrip_escape(self):
+        self.check_roundtrip(r'\\\\<')
+        self.check_roundtrip(r'\\\<')
+        self.check_roundtrip(r'\\<')
+        self.check_roundtrip(r'\<')
+
+    def test_double_escapes(self):
+        oosource = r"helpcontent2	source\text\shared\01\02100001.xhp	0	help	par_id3150670 35				0	en-US	\\<				2002-02-02 02:02:02"
         pofile = self.oo2po(oosource)
         pounit = self.singleelement(pofile)
         poelementsrc = str(pounit)
         print poelementsrc
-        assert pounit.source == 'size *2 \\langle x \\rangle'
+        assert pounit.source == r"\\<"
+
+    def test_escapes_helpcontent2(self):
+        """checks that a helpcontent2 entry converts escapes properly to a po entry"""
+        oosource = r"helpcontent2	source\text\smath\guide\parentheses.xhp	0	help	par_id3150344	4			0	en-US	size *2 \\langle x \\rangle				2002-02-02 02:02:02"
+        pofile = self.oo2po(oosource)
+        pounit = self.singleelement(pofile)
+        poelementsrc = str(pounit)
+        print poelementsrc
+        assert pounit.source == r'size *2 \\langle x \\rangle'
 
     def test_msgid_bug_error_address(self):
         """tests the we have the correct url for reporting msgid bugs"""
@@ -103,6 +147,15 @@ class TestOO2POCommand(test_convert.TestConvertCommand, TestOO2PO):
         options = self.help_check(options, "--duplicates=DUPLICATESTYLE")
         options = self.help_check(options, "--multifile=MULTIFILESTYLE")
         options = self.help_check(options, "--nonrecursiveinput", last=True)
+
+    def test_preserve_filename(self):
+        """Ensures that the filename is preserved."""
+        oosource = r'svx	source\dialog\numpages.src	0	string	RID_SVXPAGE_NUM_OPTIONS	STR_BULLET			0	en-US	Character				20050924 09:13:58'
+        self.create_testfile("snippet.sdf", oosource)
+        oofile = oo.oofile(self.open_testfile("snippet.sdf"))
+        assert oofile.filename.endswith("snippet.sdf")
+        oofile.parse(oosource)
+        assert oofile.filename.endswith("snippet.sdf")
 
     def test_simple_pot(self):
         """tests the simplest possible conversion to a pot file"""

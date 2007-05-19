@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 from translate.convert import html2po
+from translate.convert import po2html
 from translate.convert import test_convert
 from translate.misc import wStringIO
 from translate.storage import po
@@ -14,11 +15,20 @@ class TestHTML2PO:
         outputpo = convertor.convertfile(inputfile, "test", False, False)
         return outputpo
 
+    def po2html(self, posource, htmltemplate):
+        """Helper to convert po to html without a file."""
+        inputfile = wStringIO.StringIO(posource)
+        outputfile = wStringIO.StringIO()
+        templatefile = wStringIO.StringIO(htmltemplate)
+        assert po2html.converthtml(inputfile, outputfile, templatefile)
+        return outputfile.getvalue()
+
     def countunits(self, pofile, expected):
         """helper to check that we got the expected number of messages"""
         actual = len(pofile.units)
-        if pofile.units[0].isheader():
-          actual = actual - 1
+        if actual > 0:
+          if pofile.units[0].isheader():
+            actual = actual - 1
         print pofile
         assert actual == expected
 
@@ -26,9 +36,9 @@ class TestHTML2PO:
         """helper to validate a PO message"""
         if not pofile.units[0].isheader():
           unitnumber = unitnumber - 1
-        print pofile.units[unitnumber]
-        print expected
-        assert str(pofile.units[unitnumber].source) == expected
+        print 'unit source: ' + str(pofile.units[unitnumber].source) + '|'
+        print 'expected: ' + expected.encode('utf-8') + '|'
+        assert unicode(pofile.units[unitnumber].source) == unicode(expected)
 
     def check_single(self, markup, itemtext):
         """checks that converting this markup produces a single element with value itemtext"""
@@ -142,15 +152,20 @@ newlines.</p></body></html>
         self.check_single(htmltext, 'A paragraph with <a href="http://translate.org.za/">hyperlink</a> and newlines.')
 
     def test_tag_img(self):
-        """test that we can extract the <a> tag"""
+        """Test that we can extract the alt attribute from the <img> tag."""
         self.check_single('''<html><head></head><body><img src="picture.png" alt="A picture"></body></html>''', "A picture")
 
+    def test_img_empty(self):
+        """Test that we can extract the alt attribute from the <img> tag."""
+        htmlsource = '''<html><head></head><body><img src="images/topbar.jpg" width="750" height="80"></body></html>'''
+        self.check_null(htmlsource)
+
     def test_tag_table_summary(self):
-        """test that we can extract summary= """
+        """Test that we can extract the summary attribute."""
         self.check_single( '''<html><head></head><body><table summary="Table summary"></table></body></html>''', "Table summary")
 
     def test_table_simple(self):
-        """test that we can fully extract a simple table"""
+        """Test that we can fully extract a simple table."""
         markup = '''<html><head></head><body><table><tr><th>Heading One</th><th>Heading Two</th><tr><td>One</td><td>Two</td></tr></table></body></html>'''
         pofile = self.html2po(markup)
         self.countunits(pofile, 4)
@@ -173,8 +188,12 @@ newlines.</p></body></html>
         self.compareunit(pofile, 8, "One")
         self.compareunit(pofile, 9, "Two")
 
-    def wtest_table_empty(self):
-        """test that we ignore tables that are empty ie they have no translatanle content"""
+    def test_table_empty(self):
+        """Test that we ignore tables that are empty.
+        
+        A table is deemed empty if it has no translatable content.
+        """
+
         self.check_null('''<html><head></head><body><table><tr><td><img src="bob.png"></td></tr></table></body></html>''')
         self.check_null('''<html><head></head><body><table><tr><td>&nbsp;</td></tr></table></body></html>''')
         self.check_null('''<html><head></head><body><table><tr><td><strong></strong></td></tr></table></body></html>''')
@@ -250,6 +269,98 @@ newlines.</p></body></html>
         self.countunits(pofile, 2)
         self.compareunit(pofile, 1, "Extract this")
         self.compareunit(pofile, 2, "And this")
+
+    def test_carriage_return(self):
+        """Remove carriage returns from files in dos format."""
+        htmlsource = '''<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">\r
+<html><!-- InstanceBegin template="/Templates/masterpage.dwt" codeOutsideHTMLIsLocked="false" -->\r
+<head>\r
+<!-- InstanceBeginEditable name="doctitle" -->\r
+<link href="fmfi.css" rel="stylesheet" type="text/css">\r
+</head>\r
+\r
+<body>\r
+<p>The rapid expansion of telecommunications infrastructure in recent\r
+years has helped to bridge the digital divide to a limited extent.</p> \r
+</body>\r
+<!-- InstanceEnd --></html>\r
+'''
+
+        self.check_single(htmlsource, 'The rapid expansion of telecommunications infrastructure in recent years has helped to bridge the digital divide to a limited extent.')
+
+    def test_encoding_latin1(self):
+        """Convert HTML input in iso-8859-1 correctly to unicode."""
+        htmlsource = '''<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><!-- InstanceBegin template="/Templates/masterpage.dwt" codeOutsideHTMLIsLocked="false" -->
+<head>
+<!-- InstanceBeginEditable name="doctitle" -->
+<title>FMFI - South Africa - CSIR Openphone - Overview</title>
+<!-- InstanceEndEditable -->
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta name="keywords" content="fmfi, first mile, first inch, wireless, rural development, access devices, mobile devices, wifi, connectivity, rural connectivty, ict, low cost, cheap, digital divide, csir, idrc, community">
+
+<!-- InstanceBeginEditable name="head" -->
+<!-- InstanceEndEditable -->
+<link href="../../../fmfi.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+<p>We aim to please \x96 will you aim too, please?</p>
+<p>South Africa\x92s language diversity can be challenging.</p>
+</body>
+</html>
+'''
+        pofile = self.html2po(htmlsource)
+
+        self.countunits(pofile, 4)
+        self.compareunit(pofile, 3, u'We aim to please \x96 will you aim too, please?')
+        self.compareunit(pofile, 4, u'South Africa\x92s language diversity can be challenging.')
+
+    def test_strip_html(self):
+        """Ensure that unnecessary html is stripped from the resulting unit."""
+
+        htmlsource = '''<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>FMFI - Contact</title>
+</head>
+<body>
+<table width="100%"  border="0" cellpadding="0" cellspacing="0">
+  <tr align="left" valign="top">
+    <td width="150" height="556"> 
+      <table width="157" height="100%" border="0" cellspacing="0" id="leftmenubg-color">
+      <tr>
+          <td align="left" valign="top" height="555"> 
+            <table width="100%" border="0" cellspacing="0" cellpadding="2">
+              <tr align="left" valign="top" bgcolor="#660000"> 
+                <td width="4%"><strong></strong></td>
+                <td width="96%"><strong><font class="headingwhite">Projects</font></strong></td>
+              </tr>
+              <tr align="left" valign="top"> 
+                <td valign="middle" width="4%"><img src="images/arrow.gif" width="8" height="8"></td>
+                <td width="96%"><a href="index.html">Home Page</a></td>
+              </tr>
+            </table>
+          </td>
+      </tr>
+    </table></td>
+</table>
+</body>
+</html>
+'''
+        pofile = self.html2po(htmlsource)
+        self.countunits(pofile, 3)
+        self.compareunit(pofile, 2, u'Projects')
+        self.compareunit(pofile, 3, u'Home Page')
+
+        # Translate and convert back:
+        pofile.units[1].target = 'Projekte'
+        pofile.units[2].target = 'Tuisblad'
+        htmlresult = self.po2html(str(pofile), htmlsource).replace('\n', ' ').replace('= "', '="').replace('> <', '><')
+        snippet ='<td width="96%"><strong><font class="headingwhite">Projekte</font></strong></td>'
+        assert snippet in htmlresult
+        snippet = '<td width="96%"><a href="index.html">Tuisblad</a></td>'
+        assert snippet in htmlresult
 
 class TestHTML2POCommand(test_convert.TestConvertCommand, TestHTML2PO):
     """Tests running actual html2po commands on files"""

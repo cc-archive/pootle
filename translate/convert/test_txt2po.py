@@ -24,7 +24,8 @@ class TestTxt2PO:
     def test_simple(self):
         """test the most basic txt conversion"""
         txtsource = "A simple string"
-        poexpected = '''msgid "A simple string"
+        poexpected = '''#: :1
+msgid "A simple string"
 msgstr ""
 '''
         poresult = self.txt2po(txtsource)
@@ -44,6 +45,19 @@ Third unit with blank after but no more units.
         poresult = self.txt2po(txtsource)
         assert poresult.units[0].isheader()
         assert len(poresult.units) == 4
+
+    def test_carriage_return(self):
+        """Remove carriage returns from files in dos format."""
+        txtsource = '''The rapid expansion of telecommunications infrastructure in recent years has\r
+helped to bridge the digital divide to a limited extent.\r
+'''
+
+        txtexpected = '''The rapid expansion of telecommunications infrastructure in recent years has
+helped to bridge the digital divide to a limited extent.'''
+
+        poresult = self.txt2po(txtsource)
+        pounit = poresult.units[1]
+        assert str(pounit.getsource()) == txtexpected
 
 class TestDoku2po:
     def doku2po(self, txtsource, template=None):
@@ -119,4 +133,5 @@ class TestTxt2POCommand(test_convert.TestConvertCommand, TestTxt2PO):
         options = test_convert.TestConvertCommand.test_help(self)
         options = self.help_check(options, "-P, --pot")
         options = self.help_check(options, "--duplicates")
+        options = self.help_check(options, "--encoding")
         options = self.help_check(options, "--flavour", last=True)

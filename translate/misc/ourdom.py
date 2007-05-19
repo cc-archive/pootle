@@ -56,7 +56,12 @@ def writexml_helper(self, writer, indent="", addindent="", newl=""):
         # nested tags in a text node (like ph tags in xliff) should also not 
         # have newlines and indentation or an extra newline, since that will 
         # alter the text node.
-        if self.childNodes[0].nodeType == self.TEXT_NODE and self.childNodes[0].data.strip():
+        haveText = False
+        for childNode in self.childNodes:
+            if childNode.nodeType == self.TEXT_NODE and childNode.data.strip():
+                haveText = True
+                break
+        if haveText:
           writer.write(">")
           for node in self.childNodes:
               node.writexml(writer,"","","")
@@ -65,7 +70,8 @@ def writexml_helper(self, writer, indent="", addindent="", newl=""):
           # This is the normal case that we do with pretty layout
           writer.write(">%s"%(newl))
           for node in self.childNodes:
-              node.writexml(writer,indent+addindent,addindent,newl)
+              if node.nodeType != self.TEXT_NODE:
+                  node.writexml(writer,indent+addindent,addindent,newl)
           writer.write("%s</%s>%s" % (indent,self.tagName,newl))
     else:
         writer.write("/>%s"%(newl))
@@ -174,7 +180,7 @@ class ExpatBuilderNS(expatbuilder.ExpatBuilderNS):
     if self._ns_ordered_prefixes:
       for prefix, uri in self._ns_ordered_prefixes:
         if prefix:
-          a = minidom.Attr(_intern(self, 'xmlns:' + prefix),
+          a = minidom.Attr(expatbuilder._intern(self, 'xmlns:' + prefix),
                    expatbuilder.XMLNS_NAMESPACE, prefix, "xmlns")
         else:
           a = minidom.Attr("xmlns", expatbuilder.XMLNS_NAMESPACE,

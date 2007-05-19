@@ -10,6 +10,11 @@ from py import test
 class TestXLIFFUnit(test_base.TestTranslationUnit):
     UnitClass = xliff.xliffunit
    
+    def test_isfuzzy(self):
+        """The default behaviour for XLIFF is different, so we adapt the test
+        from test_base.py"""
+        assert self.unit.isfuzzy()
+
 class TestXLIFFfile(test_base.TestTranslationStore):
     StoreClass = xliff.xlifffile
     def test_basic(self):
@@ -114,9 +119,9 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         xlifffile = xliff.xlifffile()
         unit = xlifffile.addsourceunit("Concept")
         unit.markfuzzy()
-        assert not unit.isfuzzy() #No target yet
+        assert unit.isfuzzy()
         unit.target = "Konsep"
-        assert not unit.isfuzzy()
+        assert unit.isfuzzy()
         unit.markfuzzy()
         assert unit.isfuzzy()
         unit.markfuzzy(False)
@@ -133,4 +138,21 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         unit.markfuzzy(True)
         assert unit.xmlelement.getAttribute("approved") == "no"
         #assert unit.isfuzzy()
+
+    def test_parsing(self):
+        xlfsource = '''<?xml version="1.0" encoding="utf-8"?>
+<xliff version="1.1" xmlns="urn:oasis:names:tc:xliff:document:1.1">
+        <file datatype="po" original="doc.txt" source-language="en-US">
+                <body>
+                        <trans-unit id="2" xml:space="preserve">
+                                <source>&amp;Applications</source>
+                                <target/>
+                        </trans-unit>
+                </body>
+        </file>
+</xliff>'''
+        xlifffile = xliff.xlifffile.parsestring(xlfsource)
+        assert len(xlifffile.units) == 1
+        print xlifffile.units[0].source
+        assert xlifffile.units[0].source == "&Applications"
 

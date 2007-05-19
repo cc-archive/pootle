@@ -8,9 +8,6 @@ from py import test
 class TestTMXUnit(test_base.TestTranslationUnit):
     UnitClass = tmx.tmxunit
 
-    def setup_method(self, method):
-        self.unit = self.UnitClass("Test Source String")
-
     def test_markreview(self):
         assert test.raises(NotImplementedError, self.unit.markreviewneeded)
 
@@ -19,6 +16,28 @@ class TestTMXUnit(test_base.TestTranslationUnit):
         This test needs to be removed when these methods get implemented."""
         assert test.raises(NotImplementedError, self.unit.geterrors)
         assert test.raises(NotImplementedError, self.unit.adderror, 'testname', 'Test error')
+
+class TestTMXUnitFromParsedString(TestTMXUnit):
+    tmxsource = '''<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE tmx
+  SYSTEM 'tmx14.dtd'>
+<tmx version="1.4">
+        <header adminlang="en" creationtool="Translate Toolkit - po2tmx" creationtoolversion="1.0beta" datatype="PlainText" o-tmf="UTF-8" segtype="sentence" srclang="en"/>
+        <body>
+                <tu>
+                        <tuv xml:lang="en">
+                                <seg>Test String</seg>
+                        </tuv>
+                        <tuv xml:lang="af">
+                                <seg>Toets String</seg>
+                        </tuv>
+                </tu>
+        </body>
+</tmx>'''
+
+    def setup_method(self, method):
+        store = tmx.tmxfile.parsestring(self.tmxsource)
+        self.unit = store.units[0]
 
 class TestTMXfile(test_base.TestTranslationStore):
     StoreClass = tmx.tmxfile

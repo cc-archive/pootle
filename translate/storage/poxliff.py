@@ -147,6 +147,30 @@ class PoXliffUnit(xliff.xliffunit):
         for unit in self.units[1:]:
             unit.addnote(text, origin)
 
+    def getnotes(self, origin=None):
+        #NOTE: We support both <context> and <note> tags in xliff files for comments
+        if origin == "translator":
+            notes = super(PoXliffUnit, self).getnotes("translator")
+            trancomments = self.gettranslatorcomments()
+            if notes == trancomments or trancomments.find(notes) >= 0:
+                notes = ""
+            elif notes.find(trancomments) >= 0:
+                trancomments = notes
+                notes = ""
+            trancomments = trancomments + notes
+            return trancomments
+        elif origin in ["programmer", "developer", "source code"]:
+            devcomments = super(PoXliffUnit, self).getnotes("developer")
+            autocomments = self.getautomaticcomments()
+            if devcomments == autocomments or autocomments.find(devcomments) >= 0:
+                devcomments = ""
+            elif devcomments.find(autocomments) >= 0:
+                autocomments = devcomments
+                devcomments = ""
+            return autocomments
+        else:
+            return super(PoXliffUnit, self).getnotes(origin)
+
     def markfuzzy(self, value=True):
         super(PoXliffUnit, self).markfuzzy(value)
         for unit in self.units[1:]:
@@ -291,14 +315,22 @@ class PoXliffFile(xliff.xlifffile, poheader.poheader):
             """determines whether the xml node refers to a getttext plural"""
             return node.getAttribute("restype") == "x-gettext-plurals"
         
-        def issingularunit(node):
-            """determindes whether the xml node contains a plural like id"""
-            return re.match("\\d\[\\d\\]", node.getAttribute("id")) is None
+        def isnonpluralunit(node):
+            """determindes whether the xml node contains a plural like id.
+            
+            We want to filter out all the plural nodes, except the very first
+            one in each group.
+            """
+            return re.match(r"\d+\[[123456]\]$", node.getAttribute("id")) is None
+
+        def pluralunits(pluralgroups):
+            for pluralgroup in pluralgroups:
+                yield self.UnitClass.createfromxmlElement(pluralgroup, self.document)
         
         self.filename = getattr(xml, 'name', '')
         if hasattr(xml, "read"):
+            xml.seek(0)
             xmlsrc = xml.read()
-            xml.close()
             xml = xmlsrc
         self.document = ourdom.parseString(xml)
         assert self.document.documentElement.tagName == self.rootNode
@@ -306,11 +338,24 @@ class PoXliffFile(xliff.xlifffile, poheader.poheader):
         groups = self.document.getElementsByTagName("group")
         pluralgroups = filter(ispluralgroup, groups)
         termEntries = self.document.getElementsByTagName(self.UnitClass.rootNode)
-        singularunits = filter(issingularunit, termEntries)
-        
         if termEntries is None:
             return
-        for entry in singularunits + pluralgroups:
+
+        singularunits = filter(isnonpluralunit, termEntries)
+        pluralunit_iter = pluralunits(pluralgroups)
+        try:
+            nextplural = pluralunit_iter.next()
+        except StopIteration:
+            nextplural = None
+
+        for entry in singularunits:
             term = self.UnitClass.createfromxmlElement(entry, self.document)
-            self.units.append(term)
+            if nextplural and unicode(term.source) in nextplural.source.strings:
+                self.units.append(nextplural)
+                try:
+                    nextplural = pluralunit_iter.next()
+                except StopIteration, i:
+                    nextplural = None
+            else:
+                self.units.append(term)
 
