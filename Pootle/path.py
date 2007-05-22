@@ -35,7 +35,6 @@ Date:    7 Mar 2004
 from __future__ import generators
 
 import sys, warnings, os, fnmatch, glob, shutil, codecs, md5, re
-from Pootle.utils.fstags import create_tag
 from Pootle.utils.stats import enumerating_classify, classify_unit, SimpleStats
 from Pootle.utils import NotImplementedException
 from Pootle.conf import instance
@@ -989,56 +988,6 @@ class path(_base):
         "lists files pootle storage can understand"
         return self.dirs("[!.]*") + [ i for i in self.files() if translatable_file_re.match(i)]
 
-    def _get_stats(self):
-        """_get_stats is a method that retrieves statistics for a file
-        that get displayed when browsing files that are part of 
-        TranslationProject.
-        
-        It returns a list with following indexes:
-            0   translated words
-            1   translated strings
-            2   translated percentage    
-            3   fuzzy words
-            4   fuzzy strings
-            5   fuzzy percentage
-            6   untranslated words
-            7   untranslated strings
-            8   untranslated percentage
-            9   all words
-            10  all strings
-        """
-        if not self._stats:
-            if self.classify:
-                c = self.classify
-                transs = len(c['translated'])
-                fuzzys = len(c['fuzzy'])
-                totals = len(c['total'])
-                untras = totals - transs - fuzzys 
-                perc = totals/100.0
-                # sum number of words
-                transw = sum([c['sourcewordcount'][x] for x in c['translated']])
-                fuzzyw = sum([c['sourcewordcount'][x] for x in c['fuzzy']])
-                untraw = sum([c['sourcewordcount'][x] for x in [ 
-                    i for i in c['total'] if i not in c['translated'] and i not in c['fuzzy']]])
-                data = [transw,transs,transs/perc, 
-                        fuzzyw,fuzzys,fuzzys/perc, 
-                        untraw,untras,untras/perc, 
-                        sum(c['sourcewordcount']), totals]
-                data = SimpleStats([int(x) for x in data])
-                self._stats = ",".join([str(x) for x in data])
-            else:
-                data = SimpleStats( (0,0,0, 0,0,0, 0,0,0, 0,0) )
-                for s in [ i.stats for i in self.list_trans()]:
-                    data = data & s
-                data.recalculate()
-                self._stats = ",".join([str(x) for x in data])
-        else:
-            data = SimpleStats([int(x) for x in self._stats.split(",")])
-        return data
-    stats = property(_get_stats)
-    
-    _stats = property(*create_tag('stats'))
-
     def _get_translation_store(self):
         if not hasattr(self, '_translation_store'):
             if self.is_po_file():
@@ -1051,15 +1000,6 @@ class path(_base):
                 self._translation_store = None
         return self._translation_store
     translationstore = property(_get_translation_store)
-
-    def _get_classify(self): # FIXME this should probably go to TranslationStore object
-        if not hasattr(self,'_classify'):
-            if self.is_po_file():
-                self._classify = enumerating_classify( self.checker , [u for u in self.translationstore.units if not u.isheader() and not u.isobsolete()] )
-            else:
-                self._classify = None
-        return self._classify
-    classify = property(_get_classify)
 
     # conveniently convert translation store
     convert = convert_translation_store
