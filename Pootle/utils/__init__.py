@@ -43,3 +43,10 @@ def flatten(l, ltypes=(list, tuple)):
             l[i:i+1] = list(l[i])
         i += 1
     return l
+
+def localelanguage(language):
+    """Reformats the language code from web style (pt-br) to locale style (pt_BR)"""
+    dashindex = language.find("-")
+    if dashindex >= 0:
+        language = language[:dashindex] + "_" + language[dashindex+1:].upper()
+    return language
