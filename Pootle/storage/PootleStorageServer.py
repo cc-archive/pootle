@@ -21,7 +21,7 @@ urlmaps = [
     (pounit_re, 'unit'),
     (pofile_re, 'file'),
     (podir_re, 'dir'),
-    (root_re, 'dir')
+    (root_re, 'root')
 ]
 
 STORAGE_ROOT = None
