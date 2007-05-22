@@ -1,7 +1,5 @@
 # Django settings for Pootle project.
-from localsettings import *
 
-TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
     # ('Your Name', 'your_email@domain.com'),
@@ -62,6 +60,10 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'Pootle.web',
 )
+
+from localsettings import *
+
+TEMPLATE_DEBUG = DEBUG
 
 # This sets pootle.prefs file path to be in same dir as these settings.py
 POOTLE_PREFS = next_to_this_file(__file__,'pootle.prefs')
