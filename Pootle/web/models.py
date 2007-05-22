@@ -1,8 +1,9 @@
 from django.db import models
+from django.conf import settings
 from translate.filters import checks
 from Pootle.path import path
 from django.contrib.auth.models import User
-from Pootle.conf import potree
+from Pootle import storage_client
 from Pootle.utils.stats import SimpleStats
 import Pootle.instance
 
@@ -137,7 +138,7 @@ class TranslationProject(models.Model):
 
     def _get_podir(self):
         if not self._podir:
-            self._podir = path(potree().getpodir(self.language.code, self.project.code))
+            self._podir = storage_client.get_po_dir(self)
         return self._podir
     podir = property(_get_podir)
     

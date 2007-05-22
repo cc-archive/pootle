@@ -16,12 +16,14 @@ pounit_re = re.compile(r'^/(?P<directory>[\w/]+)/(?P<filename>\w+.po)/(?P<id>\d+
 pofile_re = re.compile(r'^/(?P<directory>[\w/]+)/(?P<filename>\w+.po)/?$')
 podir_re = re.compile(r'^/(?P<directory>[\w/]+)/$')
 root_re = re.compile(r'^/$')
+status_re = re.compile(r'^/storage-status/?$')
 
 urlmaps = [
     (pounit_re, 'unit'),
     (pofile_re, 'file'),
     (podir_re, 'dir'),
-    (root_re, 'root')
+    (root_re, 'root'),
+    (status_re, 'status')
 ]
 
 STORAGE_ROOT = None
@@ -84,6 +86,10 @@ class PootleHandler(RequestHandler):
         f = self.list_directory(STORAGE_ROOT)
         response = f.getvalue()
         self.wfile.write(response)
+    
+    def serve_status(self):
+        statusfields = ["storage_layout=%s" % settings.STORAGE_LAYOUT ]
+        self.wfile.write("<br />".join(statusfields))
 
     def handle_data(self):
         for pattern, func in urlmaps:
