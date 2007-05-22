@@ -12,7 +12,7 @@ def shortdescription(descr):
     stopsign = descr.find("<br")
     if stopsign >= 0:
         descr = descr[:stopsign]
-    return sre.sub("<[^>]*>", "", descr).strip()
+    return re.sub("<[^>]*>", "", descr).strip()
 
 class CallableValidatorWrapper:
     """
