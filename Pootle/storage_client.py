@@ -16,9 +16,10 @@ def get_layout():
         url = storage_root + 'storage-status'
         opened_url = urlopen(url)
         data = opened_url.read()
+        opened_url.close()
         data = data.split("<br />")
         info = dict([ line.split("=") for line in data])
-        return set_layout(**info)
+        set_layout(**info)
     return _layout
 
 def set_layout(storage_layout):
