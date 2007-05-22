@@ -5,6 +5,7 @@ import asyncore, cgi, re, urllib, os
 from Pootle.storage.storagelayout import gettext_path
 from Pootle.path import path
 from urllib import quote
+from Pootle.storage import settings
 
 try:
     from cStringIO import StringIO
@@ -175,6 +176,9 @@ def run_storage():
     print 'Server listening'
     asyncore.loop()
 
-if __name__ == "__main__":
-    set_storage_root('/home/hruske/projekti/pootle/django-migration/Pootle/storage/testroot/')
+def main():
+    set_storage_root(settings.STORAGE_ROOT_PATH)
     run_storage()
+
+if __name__ == "__main__":
+    main()
