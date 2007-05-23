@@ -1,0 +1,524 @@
+# translation of django.po to
+# Robert Ludvik <r@aufbix.org>, 2007.
+# Gasper Zejn <zejn@kiberpipa.org>, 2007.
+msgid ""
+msgstr ""
+"Project-Id-Version: django\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2007-05-23 17:20+0200\n"
+"PO-Revision-Date: 2007-05-23 17:48+0100\n"
+"Last-Translator: Gasper Zejn <zejn@kiberpipa.org>\n"
+"Language-Team:  <sl@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=(n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n%100==4 ? 2 : 3);\n"
+"X-Generator: KBabel 1.11.4\n"
+"Generated-By: pygettext.py 1.1\n"
+
+#: compat/authforms.py:13
+msgid "User with that username already exists. Please choose another username."
+msgstr "To uporabniško ime že obstaja. Prosimo izberite novo uporabnikško ime."
+
+#: compat/authforms.py:26
+msgid "The two password fields didn't match."
+msgstr "Vnosni polji za geslo se ne ujemata."
+
+#: compat/views.py:189
+#: web/views.py:74
+#, python-format
+msgid "%(count)d language, average %(average)d%% translated"
+msgid_plural "%(count)d languages, average %(average)d%% translated"
+msgstr[0] "%(count)d jezik, povprečno %(average)d%% prevedeno"
+msgstr[1] "%(count)d jezika, povprečno %(average)d%% prevedena"
+msgstr[2] "%(count)d jeziki, povprečno %(average)d%% prevedeni"
+msgstr[3] "%(count)d jezikov, povprečno %(average)d%% prevedeni"
+
+#: compat/views.py:267
+#: web/views.py:195
+msgid "Please enter your registration details"
+msgstr "Prosim vpišite Vaše informacije za registracijo"
+
+#: compat/views.py:312
+#: web/views.py:240
+msgid "Your account has been activated!"
+msgstr "Vaš račun je bil aktiviran."
+
+#: templates/register_sent.html:8
+msgid "An email with activation details has been sent to email you have provided. Please follow the instructions in email and activate at the <a href=\"/activate.html\">activation page</a>."
+msgstr "Elektronska pošta z navodili o aktivaciji je bila poslana na navedeni elektronski naslov. Prosimo sledite navodilom v elektronski pošti in aktivirajte račun na <a href=\"/activate.html\">aktivacijski strani</a>."
+
+#: templates/register.html:15
+#: templates/activate.html:19
+msgid "Your requested username"
+msgstr "Vaše uporabniško ime"
+
+#: templates/register.html:15
+#: templates/activate.html:19
+#: templates/admin_useredit.html:12
+#: templates/admin_users.html:15
+msgid "Username"
+msgstr "Uporabniško ime"
+
+#: templates/register.html:25
+msgid "Your desired password"
+msgstr "Vaše geslo"
+
+#: templates/register.html:25
+#: templates/options.html:30
+#: templates/admin_useredit.html:28
+msgid "Password"
+msgstr "Geslo"
+
+#: templates/register.html:35
+msgid "Type your password again to ensure it is entered correctly"
+msgstr "Vpišite vaše geslo še enkrat, da preprečite tipkarske napake"
+
+#: templates/register.html:35
+msgid "Password (Confirm)"
+msgstr "Geslo (Potrditev)"
+
+#: templates/register.html:45
+msgid "Your first name"
+msgstr "Vaše ime"
+
+#: templates/register.html:45
+#: templates/options.html:18
+#: templates/admin_useredit.html:16
+#: templates/admin_users.html:18
+msgid "First Name"
+msgstr "Ime"
+
+#: templates/register.html:55
+msgid "Your last name"
+msgstr "Vaše priimek ime"
+
+#: templates/register.html:55
+#: templates/options.html:22
+#: templates/admin_useredit.html:20
+#: templates/admin_users.html:21
+msgid "Last Name"
+msgstr "Priimek"
+
+#: templates/register.html:65
+msgid "You must supply a valid email address"
+msgstr "Navedite veljaven email naslov"
+
+#: templates/register.html:65
+#: templates/admin_useredit.html:24
+#: templates/admin_users.html:24
+msgid "Email Address"
+msgstr "Email naslov"
+
+#: templates/register.html:72
+msgid "Register Account"
+msgstr "Registriraj račun"
+
+#: templates/activate.html:13
+msgid "Please enter your activation details"
+msgstr "Prosimo vpišite podatke za aktivacijo"
+
+#: templates/activate.html:29
+msgid "The activation code you received"
+msgstr "Prejeta aktivacijska koda"
+
+#: templates/activate.html:29
+msgid "Activation Code"
+msgstr "Aktivacijska koda"
+
+#: templates/activate.html:36
+msgid "Activate Account"
+msgstr "Aktiviraj račun"
+
+#: templates/options.html:12
+msgid "Personal Details"
+msgstr "Osebni podatki"
+
+#: templates/options.html:14
+#: templates/options.html.py:41
+msgid "Option"
+msgstr "Nastavitev"
+
+#: templates/options.html:15
+#: templates/options.html.py:42
+msgid "Current value"
+msgstr "Trenutna vrednost"
+
+#: templates/options.html:26
+msgid "Email"
+msgstr "Email"
+
+#: templates/options.html:34
+msgid "Confirm password"
+msgstr "Potrditev gesla"
+
+#: templates/options.html:37
+msgid "My Languages"
+msgstr "Moji jeziki"
+
+#: templates/options.html:39
+msgid "Translation Interface Configuration"
+msgstr "Nastavitve vmesnika za prevajanje"
+
+#: templates/options.html:44
+msgid "User Interface language"
+msgstr "Jezik uporabniškega vmesnika"
+
+#: templates/options.html:48
+msgid "Input Height (in lines)"
+msgstr "Višina vnosnega polja (v vrsticah)"
+
+#: templates/options.html:52
+msgid "Input Width (in characters)"
+msgstr "Širina vnosnega polja (v znakih)"
+
+#: templates/options.html:56
+msgid "Number of rows in view mode"
+msgstr "Število vrstic v navadnem načinu"
+
+#: templates/options.html:60
+msgid "Number of rows in translate mode"
+msgstr "Število vrstic v prevajalnem načinu"
+
+#: templates/options.html:64
+#: templates/admin_languages.html:29
+#: templates/admin_projectedit.html:18
+#: templates/admin_projects.html:32
+#: templates/admin_useredit.html:39
+msgid "Save changes"
+msgstr "Shrani spremembe"
+
+#: templates/about.html:11
+msgid "About Pootle"
+msgstr "O Pootle"
+
+#: templates/about.html:14
+msgid "<strong>Pootle</strong> is a simple web portal that should allow you to <strong>translate</strong>! Since Pootle is <strong>Free Software</strong>, you can download it and run your own copy if you like. You can also help participate in the development in many ways (you don't have to be able to program)."
+msgstr "<strong>Pootle</strong> je preprost spletni portal, ki vam želi omogočiti, da <strong>prevajate</strong>! Ker je Pootle <strong>Prosto Programje</strong>, ga lahko prenese in poganja vsak. Vsak je dobrodošel, da tudi pomaga pri njegovem razvoju (znanje programiranja ni potrebno)."
+
+#: templates/about.html:18
+msgid "The Pootle project itself is hosted at <a href=\"http://translate.sourceforge.net/\">translate.sourceforge.net</a> where you can find the details about source code, mailing lists etc."
+msgstr "Projekt Pootle gostuje na <a href=\"http://translate.sourceforge.net/\">translate.sourceforge.net</a>, kjer lahko najdete podrobnosti o izvorni kodi, poštnih seznamih itd."
+
+#: templates/about.html:22
+msgid "The name stands for <b>PO</b>-based <b>O</b>nline <b>T</b>ranslation / <b>L</b>ocalization <b>E</b>ngine, but you may need to read <a href=\"http://www.thechestnut.com/flumps.htm\">this</a>."
+msgstr "Ime pomeni <b>PO</b>-based <b>O</b>nline <b>T</b>ranslation / <b>L</b>ocalization <b>E</b>ngine, oz. po Slovensko na PO-datotekah osnovan spletni prevajalski oz. lokalizacijski pogon. Morda si boste želeli prebrati <a href=\"http://www.thechestnut.com/flumps.htm\">tole</a>."
+
+#: templates/about.html:25
+msgid "Versions"
+msgstr "Različice"
+
+#: templates/about.html:28
+msgid "This site is running:"
+msgstr "To stran poganja:"
+
+#: templates/login.html:13
+msgid "Username:"
+msgstr "Uporabniško ime:"
+
+#: templates/login.html:19
+msgid "Password:"
+msgstr "Geslo:"
+
+#: templates/login.html:25
+msgid "Language:"
+msgstr "Jezik:"
+
+#: templates/login.html:34
+msgid "Login"
+msgstr "Prijava"
+
+#: templates/admin_languages.html:9
+#: templates/index.html:15
+#: templates/base_admin.html:11
+#: templates/base.html:57
+msgid "Languages"
+msgstr "Jeziki"
+
+#: templates/admin_languages.html:14
+msgid "Enabled"
+msgstr "Omogočeno"
+
+#: templates/admin_languages.html:15
+msgid "ISO Code"
+msgstr "ISO koda"
+
+#: templates/admin_languages.html:16
+#: templates/admin_projectedit.html:13
+#: templates/admin_projects.html:15
+msgid "Full Name"
+msgstr "Polno ime"
+
+#: templates/admin_languages.html:17
+msgid "Special Chars"
+msgstr "Posebni znaki"
+
+#: templates/admin_languages.html:18
+#: templates/language.html:21
+msgid "Number of Plurals"
+msgstr "Število množinskih oblik"
+
+#: templates/admin_projectedit.html:8
+#: templates/admin_projects.html:8
+#: templates/index.html:25
+#: templates/base_admin.html:12
+#: templates/base.html:67
+msgid "Projects"
+msgstr "Projekti"
+
+#: templates/admin_projectedit.html:12
+#: templates/admin_projects.html:14
+msgid "Project Code"
+msgstr "Šifra projekta"
+
+#: templates/admin_projectedit.html:14
+#: templates/admin_projects.html:16
+msgid "Project Description"
+msgstr "Opis projekta"
+
+#: templates/admin_projectedit.html:15
+#: templates/admin_projects.html:17
+msgid "Checker Style"
+msgstr "Način preverjanja"
+
+#: templates/admin_projectedit.html:16
+#: templates/admin_projects.html:18
+msgid "File Type"
+msgstr "Tip datotek"
+
+#: templates/admin_projectedit.html:17
+#: templates/admin_projects.html:19
+msgid "Create MO Files"
+msgstr "Ustvari MO datoteke"
+
+#: templates/admin_projects.html:13
+msgid "Selected"
+msgstr "Označeno"
+
+#: templates/project.html:18
+#: templates/home.html:14
+#: templates/base.html:108
+msgid "Admin"
+msgstr "Administrator"
+
+#: templates/project.html:33
+msgid "You can start translating this project to:"
+msgstr "Ta projekt lahko začnete prevajati v:"
+
+#: templates/project.html:41
+msgid "Language"
+msgstr "Jezik"
+
+#: templates/project.html:42
+#: templates/language.html:30
+msgid "Translated"
+msgstr "Prevedeno"
+
+#: templates/project.html:43
+#: templates/language.html:31
+msgid "Translated percentage"
+msgstr "Prevedeno v odstotkih"
+
+#: templates/project.html:44
+#: templates/language.html:32
+msgid "Fuzzy"
+msgstr "Ohlapno"
+
+#: templates/project.html:45
+#: templates/language.html:33
+msgid "Fuzzy percentage"
+msgstr "Ohlapnih v odstotkih"
+
+#: templates/project.html:46
+#: templates/language.html:34
+msgid "Untranslated"
+msgstr "Neprevedeno"
+
+#: templates/project.html:47
+#: templates/language.html:35
+msgid "Untranslated percentage"
+msgstr "Neprevedeno v odstotkih"
+
+#: templates/project.html:48
+#: templates/language.html:36
+msgid "Total"
+msgstr "Skupno"
+
+#: templates/project.html:49
+#: templates/language.html:37
+msgid "Graph"
+msgstr "Graf"
+
+#: templates/project.html:72
+msgid "This project is not being translated to any language."
+msgstr "Ta projekt se še ne prevaja v noben jezik."
+
+#: templates/base_admin.html:10
+#: templates/admin_users.html:7
+msgid "Users"
+msgstr "Uporabniki"
+
+#: templates/base_admin.html:17
+msgid "You do not have the rights to administer Pootle"
+msgstr "Nimate pravic za urednikovanje v Pootle"
+
+#: templates/admin_useredit.html:7
+msgid "Editing user "
+msgstr "Urejate uporabnika"
+
+#: templates/admin_useredit.html:32
+#: templates/admin_users.html:27
+msgid "Activated"
+msgstr "Aktivirano"
+
+#: templates/admin_useredit.html:36
+msgid "Superuser"
+msgstr "Uporabnik z največ pravicami"
+
+#: templates/admin_users.html:37
+msgid "True"
+msgstr "Da"
+
+#: templates/admin_users.html:37
+msgid "False"
+msgstr "Ne"
+
+#: templates/admin_users.html:40
+msgid "Delete selected"
+msgstr "Izbriši označeno"
+
+#: templates/home.html:7
+msgid "Quick Links"
+msgstr "Hitre povezave"
+
+#: templates/home.html:21
+msgid "Change options"
+msgstr "Spremeni nastavitve"
+
+#: templates/home.html:26
+msgid "Admin page"
+msgstr "Adminstratorska stran"
+
+#: templates/language.html:19
+msgid "Language Code"
+msgstr "Koda jezika"
+
+#: templates/language.html:20
+msgid "Language Name"
+msgstr "Ime jezika"
+
+#: templates/language.html:22
+msgid "Plural Equation"
+msgstr "Množinska enačba"
+
+#: templates/language.html:29
+msgid "Name"
+msgstr "Ime"
+
+#: templates/language.html:64
+msgid "No projects are being translated to this language."
+msgstr "V ta jezik se ne prevaja noben projekt."
+
+#: templates/project_start.html:9
+msgid "Registering new project"
+msgstr "Registracija novega projekta"
+
+#: templates/translate.html:13
+msgid "String number:"
+msgstr "ID niza:"
+
+#: templates/translate.html:16
+msgid "Original:"
+msgstr "Original:"
+
+#: templates/translate.html:19
+msgid "Translation:"
+msgstr "Prevod:"
+
+#: templates/translate.html:23
+msgid "Submit"
+msgstr "Pošlji"
+
+#: templates/translationproject.html:18
+msgid "Show Checks"
+msgstr "Pokaži kontrole"
+
+#: templates/translationproject.html:19
+msgid "Hide Checks"
+msgstr "Skrij kontrole"
+
+#: templates/translationproject.html:35
+msgid "Download:"
+msgstr "Prenesi:"
+
+#: templates/base.html:88
+msgid "Log Out"
+msgstr "Odjava"
+
+#: templates/base.html:92
+msgid "Log In"
+msgstr "Prijava"
+
+#: templates/base.html:93
+msgid "Register"
+msgstr "Registracija"
+
+#: templates/base.html:94
+msgid "Activate"
+msgstr "Aktiviraj"
+
+#: templates/base.html:104
+msgid "Home"
+msgstr "Domov"
+
+#: templates/base.html:105
+msgid "All Projects"
+msgstr "Vsi projekti"
+
+#: templates/base.html:106
+msgid "All Languages"
+msgstr "Vsi jeziki"
+
+#: templates/base.html:107
+msgid "My account"
+msgstr "Moj račun"
+
+#: templates/base.html:109
+msgid "Docs &amp; Help"
+msgstr "Dokumentacija in pomoč"
+
+#: templates/base.html:114
+msgid "About this Pootle server"
+msgstr "O tem Pootle strežniku"
+
+#: web/views.py:87
+msgid "This site requires administrator's approval when creating new translation projects. An email has been sent to administrators, notifying them of your request. When your translation project is approved, you will be notified by email."
+msgstr "Za začetek novega prevajalskega projekta potrebujete dovoljenje administratorja. O vaši zahtevi je bila administratorjem poslana elektronska pošta. Ko odobrijo vaš projekt, boste obveščeni prek elektronske pošte."
+
+#: web/views.py:102
+msgid "Creating new project has failed."
+msgstr "Ustvarjanje novega projekta ni uspelo."
+
+#: web/views.py:115
+#, python-format
+msgid "%(count)d project, average %(average)d%% translated"
+msgid_plural "%(count)d projects, average %(average)d%% translated"
+msgstr[0] "%(count)d projekt, povprečno %(average)d%% prevedeno"
+msgstr[1] "%(count)d projekta, povprečno %(average)d%% prevedena"
+msgstr[2] "%(count)d projekti, povprečno %(average)d%% prevedeni"
+msgstr[3] "%(count)d projektov, povprečno %(average)d%% prevedeni"
+
+#: web/views.py:134
+#, python-format
+msgid "%(count)d file, average %(average)d%% translated"
+msgid_plural "%(count)d files, average %(average)d%% translated"
+msgstr[0] "%(count)d datoteka, povprečno %(average)d%% prevedeno"
+msgstr[1] "%(count)d datoteki, povprečno %(average)d%% prevedeni"
+msgstr[2] "%(count)d datoteke, povprečno %(average)d%% prevedene"
+msgstr[3] "%(count)d datotek, povprečno %(average)d%% prevedene"
+
+#: web/views.py:306
+#: web/views.py:322
+msgid "You do not have sufficient rights."
+msgstr "Nimate zadostnih pravic."
+
