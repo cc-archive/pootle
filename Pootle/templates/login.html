@@ -26,12 +26,12 @@
 
             <td colspan="1" rowspan="1">
               <select name="language">
-                {% for l in languages %}<option {% if lang.selected %}selected="true" {% endif %}value="{{ l.code }}">{{ l.name }}</option>{% endfor %}
+                {% for l in languages %}<option {% ifequal l.0 LANGUAGE_CODE %}selected="true" {% endifequal %}value="{{ l.0 }}">{{ l.1 }}</option>{% endfor %}
               </select>
             </td>
           </tr>
         </table>
-        <input type="submit" name="Login" value="{% trans "Login" %}" />
+        <input type="submit" name="Login" value="{% trans "Log in" %}" />
         <input type="hidden" name="islogin" value="true" />
       </form>
     </div>

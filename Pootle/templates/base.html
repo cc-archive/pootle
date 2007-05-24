@@ -84,7 +84,7 @@
     </div>
     {% if user.is_authenticated %}
     <div class="side">
-      <span>logged in as <b>{{ user }}</b></span> |
+      <span>{% trans "logged in as" %} <b>{{ user }}</b></span> |
       <a href="/?islogout=1">{% trans "Log Out" %}</a>
     </div>
     {% else %}

@@ -8,13 +8,13 @@ from django.contrib.auth import REDIRECT_FIELD_NAME
 from django.shortcuts import render_to_response, get_object_or_404
 from django import forms
 from django.core.mail import send_mail
+from django.views import i18n
 
 from Pootle.web import webforms
 from Pootle.web.models import Project, Language, TranslationProject
 from Pootle.compat import forms as pootleforms 
 from Pootle.compat import pootleauth
 from Pootle.compat.authforms import RegistrationManipulator, ActivationManipulator
-from Pootle import adminpages, users, translatepage
 from Pootle.conf import instance, potree
 from django.utils.translation import gettext_lazy as _
 from django.utils.translation import ngettext
@@ -25,6 +25,16 @@ from Pootle.web.models import Language, Project
 
 from Pootle import __version__ as pootleversion
 from translate import __version__ as toolkitversion
+
+def set_language(req):
+    """Sets proper language code for internationalization and returns True if 
+    language code was changed."""
+    if req.LANGUAGE_CODE == req.POST.get('language', None):
+        return False
+    req.GET._mutable = True
+    req.GET['language'] = req.POST.get('language', None)
+    i18n.set_language(req)
+    return True
 
 def robots(req):
     return HttpResponse(content=generaterobotsfile(["login.html", "register.html", "activate.html"]), mimetype="text/plain")
@@ -170,11 +180,15 @@ def login(req):
         if req.POST:
             # do login here
             errors = manipulator.get_validation_errors(req.POST)
+            locale_changed = set_language(req)
             if not errors:
                 from django.contrib.auth import login
                 login(req, manipulator.get_user())
                 req.session.delete_test_cookie()
                 return HttpResponseRedirect(redirect_to) 
+            if locale_changed:
+                # redirect back to login, but in new language
+                return HttpResponseRedirect(req.path)
             new_data = req.POST.copy()
             del(new_data['password'])
         else:
@@ -183,7 +197,7 @@ def login(req):
         
         form = forms.FormWrapper(manipulator, new_data, errors)
         context = { 
-            'languages': potree().get_language_list(), # FIXME validation
+            'languages': settings.LANGUAGES,
             'form': form,
             }
         return render_to_response("login.html", RequestContext(req, context))
