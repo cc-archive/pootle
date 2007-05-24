@@ -124,17 +124,13 @@ class TranslationProject(models.Model):
                             self.allwords, self.allstrings)
             except ZeroDivisionError:
                 # refresh stats
-                stats = SimpleStats( (0,0,0, 0,0,0, 0,0,0, 0,0) )
-                for s in [i.stats for i in self.list_dir()]:
-                    stats = stats & s
-                stats.recalculate()
-                self._stats = stats
+                return SimpleStats( (0,0,0, 0,0,0, 0,0,0, 0,0) )
         return SimpleStats(self._stats)
     stats = property(_get_stats)
 
     def list_dir(self, subdir=None):
         listing = subdir and path(self.podir / subdir) or path(self.podir)
-        return listing.list_trans()
+        return listing.listdir_remote()
 
     def _get_podir(self):
         if not self._podir:
