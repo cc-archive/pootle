@@ -5,7 +5,7 @@ from Pootle.utils import flatten
 class SimpleStats(list):
     "This implements a new operation of adding stats together for easier calculation."
     def __repr__(self):
-        return "stats: %s" % super(SimpleStats, self).__repr__()
+        return "stats t: %dw %ds %dp f: %dw %ds %dp u: %dw %ds %dp all: %dw %ds" % tuple(self)
 
     def __and__(self, other):
         "vector addition"

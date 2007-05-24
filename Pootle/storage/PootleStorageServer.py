@@ -151,7 +151,6 @@ class PootleHandler(RequestHandler):
         f = StringIO()
 
         displaypath = cgi.escape(urllib.unquote(self.path))
-        f.write("<title>Directory listing for %s</title>\n" % displaypath)
 
         for name in list:
             fullname = os.path.join(path, name)
@@ -163,16 +162,14 @@ class PootleHandler(RequestHandler):
             if os.path.islink(fullname):
                 displayname = name + "@"
                 # Note: a link to a directory displays with @ and links with /
-            f.write('<a href="%s">%s</a><br />'
-                    % (urllib.quote(linkname), cgi.escape(displayname)))
+            f.write('%s %s\n' % (cgi.escape(displayname), (gettext_path(path) / linkname).stats ))
         length = f.tell()
         f.seek(0)
         self.send_response(200)
-        self.send_header("Content-type", "text/html")
+        self.send_header("Content-type", "text/plain")
         self.send_header("Content-Length", str(length))
         self.end_headers()
         return f
-
 
 def set_storage_root(storage_root):
     global STORAGE_ROOT

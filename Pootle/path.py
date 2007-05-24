@@ -41,6 +41,8 @@ from Pootle.conf import instance
 from Pootle.utils.convert import convert_translation_store
 from translate.filters import checks
 from translate.storage import po
+from django.conf import settings
+from urllib import urlopen
 
 __version__ = '2.1'
 __all__ = ['path']
@@ -85,6 +87,8 @@ if hasattr(file, 'newlines'):
     _textmode = 'U'
 
 translatable_file_re = re.compile(".*?\.(po|xli?ff?)$")
+list_remote_re = re.compile("(\w+)/? stats t: (\d+)w (\d+)s (\d+)p f: (\d+)w (\d+)s (\d+)p u: (\d+)w (\d+)s (\d+)p all: (\d+)w (\d+)s\n")
+
 
 class TreeWalkWarning(Warning):
     pass
@@ -978,28 +982,21 @@ class path(_base):
 
     # --- Special stuff for Pootle
 
-    def is_po_file(self):
-        return self.ext == ".po"
+    def listdir_remote(self):
+        url = settings.STORAGE_ROOT_URL + self[1:]
+        urlfd = urlopen(url)
+        data = urlfd.read()
+        urlfd.close()
 
-    def is_xliff_file(self):
-        return self.ext in ['.xlf', '.xlff', '.xliff']
-
-    def list_trans(self):
-        "lists files pootle storage can understand"
-        return self.dirs("[!.]*") + [ i for i in self.files() if translatable_file_re.match(i)]
-
-    def _get_translation_store(self):
-        if not hasattr(self, '_translation_store'):
-            if self.is_po_file():
-                newpo = po.pofile()
-                newpo.parse(self.bytes())
-                self._translation_store = newpo
-            elif self.is_xliff_file():
-                raise NotImplementedException
-            else:
-                self._translation_store = None
-        return self._translation_store
-    translationstore = property(_get_translation_store)
+        dirlist = []
+        cur = 0
+        match = list_remote_re.match(data, cur)
+        while match:
+            direntry = match.groups()
+            dirlist.append( (direntry[0], map(int, direntry[1:])))
+            cur = match.end()
+            match = list_remote_re.match(data, cur)
+        return dirlist
 
     # conveniently convert translation store
     convert = convert_translation_store

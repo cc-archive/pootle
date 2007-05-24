@@ -168,6 +168,13 @@ class gettext_path(path):
             self.merge()
         return self.current.open()
     
+    def is_po_file(self):
+        return self.ext == ".po"
+
+    def list_trans(self):
+        "lists files pootle storage can understand"
+        return self.dirs("[!.]*") + [ i for i in self.files() if translatable_file_re.match(i)]
+
     def _get_classify(self): # FIXME this should probably go to TranslationStore object
         if not hasattr(self,'_classify'):
             if self.is_po_file():
@@ -176,6 +183,14 @@ class gettext_path(path):
                 self._classify = None
         return self._classify
     classify = property(_get_classify)
+
+    def _get_translation_store(self):
+        if not hasattr(self, '_translation_store'):
+            newpo = pofile()
+            newpo.parse(self.current.bytes())
+            self._translation_store = newpo
+        return self._translation_store
+    translationstore = property(_get_translation_store)
 
     def _get_stats(self):
         """_get_stats is a method that retrieves statistics for a file
@@ -225,6 +240,7 @@ class gettext_path(path):
         return data
     stats = property(_get_stats)
 
+    # xattr filesystem tags
     _stats = property(*create_tag('stats'))
 
     
