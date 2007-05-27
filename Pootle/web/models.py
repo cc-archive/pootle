@@ -134,8 +134,8 @@ class TranslationProject(models.Model):
 
     def _get_podir(self):
         if not self._podir:
-            self._podir = storage_client.get_po_dir(self)
-        return self._podir
+            self._podir = path(storage_client.get_po_dir(self))
+        self._podir
     podir = property(_get_podir)
     
     def dir(self):

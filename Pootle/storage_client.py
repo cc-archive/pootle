@@ -5,8 +5,32 @@ from urllib2 import urlopen
 from urllib import urlencode
 from Pootle.settings import STORAGE_ROOT_URL
 from translate.storage.po import pounit
+import re
+
+list_remote_re = re.compile("([\w\./]+?)? stats t: (\d+)w (\d+)s (\d+)p f: (\d+)w (\d+)s (\d+)p u: (\d+)w (\d+)s (\d+)p all: (\d+)w (\d+)s\n")
 
 class ImproperlyConfigured(Exception): pass
+
+
+class StorageFile(object):
+    
+    def __init__(self, content):
+        self.stats = content[1]
+        self.val = content[0]
+        if self.val.endswith("/"): # is a dir
+            self.icon = 'folder'
+            self.href = '%s' % self.val
+            self.isdir = True
+            self.isfile = False
+        else: # is a file
+            self.icon = 'file'
+            self.href = '%s' % self.val
+            self.isdir = False
+            self.isfile = True
+    
+    def basename(self):
+        return str(self.val)
+            
 
 _layout = None
 def get_layout():
@@ -57,5 +81,26 @@ def get_unit(file, id, unit=None):
 
 def post_unit(file, id, unit):
     return get_unit(file, id, unit)
+
+
+def listdir(dirname):
+    if dirname.startswith("/"):
+        url = storage_root + dirname[1:]
+    else:
+        url = storage_root + dirname
+    
+    urlfd = urlopen(url)
+    data = urlfd.read()
+    urlfd.close()
+
+    dirlist = []
+    cur = 0
+    match = list_remote_re.match(data, cur)
+    while match:
+        direntry = match.groups()
+        dirlist.append( StorageFile((direntry[0], map(int, direntry[1:]))))
+        cur = match.end()
+        match = list_remote_re.match(data, cur)
+    return dirlist
 
 

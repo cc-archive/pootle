@@ -156,7 +156,7 @@ class PootleHandler(RequestHandler):
             fullname = os.path.join(path, name)
             displayname = linkname = name
             # Append / for directories or @ for symbolic links
-            if os.path.isdir(fullname):
+            if os.path.isdir(fullname) and not fullname.endswith(".po"):
                 displayname = name + "/"
                 linkname = name + "/"
             if os.path.islink(fullname):

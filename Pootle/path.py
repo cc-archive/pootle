@@ -39,9 +39,9 @@ from Pootle.utils.stats import enumerating_classify, classify_unit, SimpleStats
 from Pootle.utils import NotImplementedException
 from Pootle.conf import instance
 from Pootle.utils.convert import convert_translation_store
+from Pootle import storage_client
 from translate.filters import checks
 from translate.storage import po
-from django.conf import settings
 from urllib import urlopen
 
 __version__ = '2.1'
@@ -87,7 +87,7 @@ if hasattr(file, 'newlines'):
     _textmode = 'U'
 
 translatable_file_re = re.compile(".*?\.(po|xli?ff?)$")
-list_remote_re = re.compile("(\w+)/? stats t: (\d+)w (\d+)s (\d+)p f: (\d+)w (\d+)s (\d+)p u: (\d+)w (\d+)s (\d+)p all: (\d+)w (\d+)s\n")
+
 
 
 class TreeWalkWarning(Warning):
@@ -982,21 +982,10 @@ class path(_base):
 
     # --- Special stuff for Pootle
 
-    def listdir_remote(self):
-        url = settings.STORAGE_ROOT_URL + self[1:]
-        urlfd = urlopen(url)
-        data = urlfd.read()
-        urlfd.close()
-
-        dirlist = []
-        cur = 0
-        match = list_remote_re.match(data, cur)
-        while match:
-            direntry = match.groups()
-            dirlist.append( (direntry[0], map(int, direntry[1:])))
-            cur = match.end()
-            match = list_remote_re.match(data, cur)
-        return dirlist
+    def listdir_remote(self, subdir=None):
+        if subdir != None:
+            return (self / subdir).listdir_remote()
+        return storage_client.listdir(self)
 
     # conveniently convert translation store
     convert = convert_translation_store
