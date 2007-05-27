@@ -179,7 +179,7 @@ def set_storage_root(storage_root):
 def run_storage():
     if STORAGE_ROOT == None:
         raise ValueError('cannot run uninitialized; please call set_storage_root first')
-    a = Server('',8080, PootleHandler)
+    a = Server(settings.IPADDRESS,settings.PORT, PootleHandler)
     # os.chdir(STORAGE_ROOT) # storage root
     print 'Server listening'
     asyncore.loop()

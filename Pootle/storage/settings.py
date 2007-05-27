@@ -4,6 +4,9 @@
 # This is the path to root of repository.
 STORAGE_ROOT_PATH='/var/lib/pootle/storage/'
 
+# IP address and port number to listen on
+IPADDRESS = '127.0.0.1'
+PORT = 8080
 
 # This effects how the directories are mapped to better accomodate 
 # distinct needs of projects and translators.
