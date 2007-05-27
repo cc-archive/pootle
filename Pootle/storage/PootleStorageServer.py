@@ -52,11 +52,14 @@ class PootleHandler(RequestHandler):
             self.send_header("Location", quote(self.path))
             self.end_headers()
         else:
+            try:
+                unit, stats = a[id]
+            except IndexError, e:
+                self.send_error(404, "Unit not found")
+                return None
             self.send_response(200)
             self.send_header("Content-type", 'text/plain')
             self.send_header("Content-charset", 'utf-8')
-        
-            unit, stats = a[id]
             response = str(unit)
             self.send_header("Pootle-checks", str(stats))
             self.send_header("Content-Length", str(len(response)))

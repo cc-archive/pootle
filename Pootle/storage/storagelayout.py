@@ -112,10 +112,16 @@ class gettext_path(path):
         key = int(key)
         if key <= 0:
             raise IndexError("key must be positive integer")
+
+        if not hasattr(self, '_num_units'):
+            self._num_units = int(index_file.readline())
+        if key >= self._num_units:
+            raise IndexError("over end of units")
         
         index_file.seek(32*(key)) # records are 32 chars wide
         line1 = [int(i) for i in index_file.readline().split()]
         line2 = [int(i) for i in index_file.readline().split()]
+        index_file.close()
         if not line1 or not line2:
             # if index is invalid, rebuild it and rerun indexed
             self.update_index()
@@ -242,6 +248,27 @@ class gettext_path(path):
 
     # xattr filesystem tags
     _stats = property(*create_tag('stats'))
+
+    def filter(self, exclude_list, start=None):
+        """Filters translation units and return next one, that doesn't have
+        checks listed in exclude_list."""
+        if start == None:
+            start = 0
+        end = start
+        units = [u for u in self.translationstore.units if not u.isheader() and not u.isobsolete()]
+        for unit in units[start:]:
+            d = classify_unit(self.checker, unit)
+            if sum([int(d.has_key(f)) for f in exclude_list]) == 0:
+                return end, unit
+            end = end + 1
+
+    def iterfilter(self, exclude_list):
+        """Filters translation units and returns a generator yielding the ones,
+        that don't have checks listed in exclude_list."""
+        unit = self.filter(exclude_list)
+        while unit:
+            yield unit
+            unit = self.filter(exclude_list, unit[0]+1)
 
     
 if __name__ == '__main__':
