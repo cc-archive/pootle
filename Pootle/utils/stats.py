@@ -16,9 +16,12 @@ class SimpleStats(list):
         "racalculates percentage for stats"
         assert len(self) == 11
         perc = self[10]/100.0
-        self[2] = int(self[1]/perc)
-        self[5] = int(self[4]/perc)
-        self[8] = int(self[7]/perc)
+        try:
+            self[2] = int(self[1]/perc)
+            self[5] = int(self[4]/perc)
+            self[8] = int(self[7]/perc)
+        except ZeroDivisionError:
+            self[2], self[5], self[8] = 0, 0, 0
 
 def classify_unit(checker, unit):
     '''classifies a translation unit according to translate checks
