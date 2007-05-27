@@ -136,7 +136,10 @@ def translationproject(req, language, project, subdir=None):
     
     files = p.list_dir(subdir)
     numfiles = len(files)
-    average_translated = int(sum([f.stats[2] for f in files])/float(numfiles))
+    try:
+        average_translated = int(sum([f.stats[2] for f in files])/float(numfiles))
+    except ZeroDivisionError:
+        average_translated = 0
 
     context = {
         'project': p,
@@ -146,7 +149,7 @@ def translationproject(req, language, project, subdir=None):
                                 'count': numfiles,
                                 'average': average_translated,
                                 },
-        'items': p.list_dir(subdir),
+        'items': files,
        }
     return render_to_response("translationproject.html", RequestContext(req, context))
 
@@ -264,7 +267,7 @@ def activate(req):
 
 # adminpages.py
 
-def projectadmin(req, project):
+def projectadmin(req, project): # FIXME
     argdict = {}
     return render_to_pootleresponse(adminpages.ProjectAdminPage(potree(), project, pootlesession(req), argdict))
     
@@ -358,7 +361,7 @@ def admin_projectedit(req, project):
                 'errors': errors,}
     return render_to_response("admin_projectedit.html", RequestContext(req, context))
 
-def admintranslationproject(req, language, project):
+def admintranslationproject(req, language, project): # FIXME
     if req.POST and req.user.is_superuser():
         pass
     argdict = {}
