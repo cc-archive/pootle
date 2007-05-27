@@ -997,27 +997,6 @@ class path(_base):
         return self._checker
     checker = property(_get_checker)
 
-    def filter(self, exclude_list, start=None):
-        """Filters translation units and return next one, that doesn't have 
-        checks listed in exclude_list."""
-        if start == None:
-            start = 0
-        end = start
-        units = [u for u in self.translationstore.units if not u.isheader() and not u.isobsolete()]
-        for unit in units[start:]:
-            d = classify_unit(self.checker, unit)
-            if sum([int(d.has_key(f)) for f in exclude_list]) == 0:
-                return end, unit
-            end = end + 1
-
-    def iterfilter(self, exclude_list):
-        """Filters translation units and returns a generator yielding the ones,
-        that don't have checks listed in exclude_list."""
-        unit = self.filter(exclude_list)
-        while unit:
-            yield unit
-            unit = self.filter(exclude_list, unit[0]+1)
-
     def icon(self):
         "returns name of the icon"
         if self.isdir():
