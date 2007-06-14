@@ -151,7 +151,7 @@ if [ $option_ignorecase = 1 ]; then
 	do
 		stripped_name=`dirname $po_file`/`basename $po_file .po`
 		po_lower=${stripped_name}.lower.po
-		msgfilter -i $po_file sed -e "$sed_string" > $po_lower
+		msgfilter --keep-header -i $po_file sed -e "$sed_string" > $po_lower
 		rm $po_file
 	done
 fi
