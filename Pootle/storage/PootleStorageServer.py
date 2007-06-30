@@ -38,6 +38,11 @@ class PootleHandler(RequestHandler):
             return 
         return a
 
+    def send_redirect(self, newpath):
+        self.send_response(302)
+        self.send_header("Location", quote(newpath))
+        self.end_headers()
+
     def serve_unit(self, directory, filename, id):
         a = self.gettext_path_or_404(STORAGE_ROOT / directory / filename)
         id = int(id)
@@ -48,9 +53,7 @@ class PootleHandler(RequestHandler):
             except ValueError:
                 # FIXME, parsing pounit didn't succeed
                 print 'error'
-            self.send_response(302)
-            self.send_header("Location", quote(self.path))
-            self.end_headers()
+            self.send_redirect(self.path)
         else:
             try:
                 unit, stats = a[id]
@@ -137,9 +140,7 @@ class PootleHandler(RequestHandler):
             # FIXME, parsing pounit didn't succeed
             print 'error'
 
-        self.send_response(302)
-        self.send_header("Location", quote(self.path))
-        self.end_headers()
+        self.send_redirect(self.path)
 
     def list_directory(self, path):
         """Taken from SimpleHTTPServer.py and adapted to output
@@ -173,6 +174,17 @@ class PootleHandler(RequestHandler):
         self.send_header("Content-Length", str(length))
         self.end_headers()
         return f
+
+    def send_error(self, errcode, errmsg):
+        """if error is 404, it tries to redirect user to uri 
+        with appended slash, in case it is a directory"""
+        if errcode == 404 and not self.path.endswith("/"):
+            self.send_redirect(self.path + "/")
+            return
+        super(PootleHandler, self).send_error(errcode, errmsg)
+        
+
+           
 
 def set_storage_root(storage_root):
     global STORAGE_ROOT
