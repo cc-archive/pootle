@@ -1048,9 +1048,19 @@ class TranslationProject(object):
     for pofilename in pofilenames:
       if not pofilename or os.path.isdir(pofilename):
         continue
-      postats = self.getpostats(pofilename)
-      for name, items in postats.iteritems():
-        totalstats[name] = totalstats.get(name, []) + [(pofilename, item) for item in items]
+    # Some temporary code that does the summation of the totals, but isn't a
+    # functional replacement for the code that used to give lists with indexes.
+    #-----------------------------------------
+      pototals = self.getpototals(pofilename)
+      for name, value in pototals.iteritems():
+        if not name in totalstats:
+          totalstats[name] = 0
+        totalstats[name] += value
+    #-----------------------------------------
+    # The old code was:
+#      postats = self.getpostats(pofilename)
+#      for name, items in postats.iteritems():
+#        totalstats[name] = totalstats.get(name, []) + [(pofilename, item) for item in items]
     assignstats = self.combineassignstats(pofilenames)
     totalstats.update(assignstats)
     return totalstats
@@ -1073,6 +1083,7 @@ class TranslationProject(object):
       pofile = self.pofiles[pofilename]
       if 0 <= item < len(pofile.statistics.sourcewordcounts):
         wordcount += sum(pofile.statistics.sourcewordcounts[item])
+    print "projects::countwords()"
     return wordcount
 
   def getpomtime(self):
@@ -1103,9 +1114,15 @@ class TranslationProject(object):
     """calculates translation statistics for the given po file"""
     return self.pofiles[pofilename].statistics.getstats()
 
+  def getpototals(self, pofilename):
+    """calculates translation statistics for the given po file"""
+    return self.pofiles[pofilename].statistics.getquickstats()
+
   def getassignstats(self, pofilename, action=None):
     """calculates translation statistics for the given po file (can filter by action if given)"""
-    polen = len(self.getpostats(pofilename)["total"])
+    polen = self.getpototals(pofilename)["total"]
+    # Temporary code to avoid traceback. Was:
+#    polen = len(self.getpostats(pofilename)["total"])
     assigns = self.pofiles[pofilename].assigns.getassigns()
     assignstats = {}
     for username, userassigns in assigns.iteritems():

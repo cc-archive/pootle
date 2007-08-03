@@ -339,7 +339,7 @@ class ProjectIndex(pagelayout.PootleNavPage):
       else:
         # a common case: plain stats table we can take a shortcut
         pofilenames = self.project.browsefiles()
-        projectstats = self.project.getquickstats()
+        projectstats = self.project.getquickstats(pofilenames)
         print "indexpage roep project.getquickstats():" ,projectstats
       if self.editing:
         actionlinks = self.getactionlinks("", projectstats, ["editing", "mine", "review", "check", "assign", "goal", "quick", "all", "zip", "sdf"], dirfilter)
@@ -491,11 +491,11 @@ class ProjectIndex(pagelayout.PootleNavPage):
       if assignwhich == "all":
         pass
       elif assignwhich == "untranslated":
-        search.matchnames = ["fuzzy", "blank"]
+        search.matchnames = ["fuzzy", "untranslated"]
       elif assignwhich == "unassigned":
         search.assignedto = [None]
       elif assignwhich == "unassigneduntranslated":
-        search.matchnames = ["fuzzy", "blank"]
+        search.matchnames = ["fuzzy", "untranslated"]
         search.assignedto = [None]
       else:
         raise ValueError("unexpected assignwhich")
@@ -868,7 +868,7 @@ class ProjectIndex(pagelayout.PootleNavPage):
         mytranslatedstats = [statsitem for statsitem in mystats if statsitem in projectstats.get("translated", [])]
         quickminelink = self.localize("Quick Translate My Strings")
         if len(mytranslatedstats) < len(mystats):
-          quickminelink = {"href": self.makelink(baseactionlink, assignedto=self.session.username, fuzzy=1, blank=1), "text": quickminelink}
+          quickminelink = {"href": self.makelink(baseactionlink, assignedto=self.session.username, fuzzy=1, untranslated=1), "text": quickminelink}
         else:
           quickminelink = {"title": self.localize("No untranslated strings assigned to you"), "text": quickminelink}
         actionlinks.append(quickminelink)
@@ -884,8 +884,8 @@ class ProjectIndex(pagelayout.PootleNavPage):
         quicklink = self.localize("Quick Translate")
       else:
         quicklink = self.localize("View Untranslated")
-      if len(projectstats.get("translated", [])) < len(projectstats.get("total", [])):
-        quicklink = {"href": self.makelink(baseactionlink, fuzzy=1, blank=1), "text": quicklink}
+      if projectstats.get("translated", 0) < projectstats.get("total", 0):
+        quicklink = {"href": self.makelink(baseactionlink, fuzzy=1, untranslated=1), "text": quicklink}
       else:
         quicklink = {"title": self.localize("No untranslated items"), "text": quicklink}
       actionlinks.append(quicklink)
@@ -957,7 +957,9 @@ class ProjectIndex(pagelayout.PootleNavPage):
 
   def getcheckdetails(self, projectstats, linkbase):
     """return a list of strings describing the results of checks"""
-    total = max(len(projectstats.get("total", [])), 1)
+    total = max(len(projectstats.get("total", []), 1)
+    # XXX: Temporary code to avoid traceback. Was:
+#    total = max(len(projectstats.get("total", [])), 1)
     checklinks = []
     keys = projectstats.keys()
     keys.sort()
