@@ -11,7 +11,8 @@ from django.core.mail import send_mail
 from django.views import i18n
 
 from Pootle.web import webforms
-from Pootle.web.models import Project, Language, TranslationProject
+from Pootle.web.models import Project, Language, TranslationProject, Store
+from Pootle.utils.convert import convert_translation_store
 from Pootle.compat import forms as pootleforms 
 from Pootle.compat import pootleauth
 from Pootle.compat.authforms import RegistrationManipulator, ActivationManipulator
@@ -137,7 +138,7 @@ def translationproject(req, language, project, subdir=None):
     files = p.list_dir(subdir)
     numfiles = len(files)
     try:
-        average_translated = int(sum([f.stats[2] for f in files])/float(numfiles))
+        average_translated = int(sum([f.translatedstrings for f in files])/float(numfiles))
     except ZeroDivisionError:
         average_translated = 0
 
@@ -416,10 +417,10 @@ def translate(req, language, project, subdir, filename):
 def downloadfile(req, project, language, subdir, filename):
     format = req.GET.get('format', 'po')
     translationproject = TranslationProject.objects.get(project__code=project, language__code=language)
-    fullpath = translationproject.podir / (subdir + filename)
     buffer = StringIO()
-    fullpath.convert(buffer, format)
-    contents = buffer.getvalue()
+    f = Store.objects.get(name=filename)
+    buffer.write(f.dump_to_postring().encode("utf-8"))
+    contents = convert_translation_store(buffer, format)
     buffer.close()    
     return HttpResponse(contents,mimetype="text/plain")
 
