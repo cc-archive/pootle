@@ -10,6 +10,7 @@ if settings.DEBUG:
         (r'^test/$', 'Pootle.web.views.test'),
         # js, images, pootle.css, /favicon.ico
         (r'^static/(?P<path>.*)$', 'django.views.static.serve', { 'document_root': settings.MEDIA_ROOT} ),
+        (r'^dadmin/', include('django.contrib.admin.urls')),
     )
 else:
     urlpatterns = patterns('', )
