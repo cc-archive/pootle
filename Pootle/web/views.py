@@ -420,6 +420,7 @@ def downloadfile(req, project, language, subdir, filename):
     buffer = StringIO()
     f = Store.objects.get(name=filename)
     buffer.write(f.dump_to_postring().encode("utf-8"))
+    buffer.seek(0)
     contents = convert_translation_store(buffer, format)
     buffer.close()    
     return HttpResponse(contents,mimetype="text/plain")

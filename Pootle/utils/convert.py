@@ -52,9 +52,6 @@ def convert_translation_store(input, format):
     format -- target format to convert into
     """
 
-    print input
-    input.seek(0)
     po_file = pofile(inputfile=input)
-    print str(po_file)
     return str(_po_converters[format](po_file))
 
