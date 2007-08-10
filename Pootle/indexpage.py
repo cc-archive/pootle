@@ -957,7 +957,7 @@ class ProjectIndex(pagelayout.PootleNavPage):
 
   def getcheckdetails(self, projectstats, linkbase):
     """return a list of strings describing the results of checks"""
-    total = max(len(projectstats.get("total", []), 1)
+    total = max(projectstats.get("total", 0), 1)
     # XXX: Temporary code to avoid traceback. Was:
 #    total = max(len(projectstats.get("total", [])), 1)
     checklinks = []
