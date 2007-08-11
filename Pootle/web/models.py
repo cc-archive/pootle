@@ -94,9 +94,9 @@ class Language(models.Model):
             return (0,0,0, 0,0,0, 0,0,0, 0,0)
     stats = property(_get_stats)
 
-class Folder(models.Model):
-    parent = models.ForeignKey("self", null=True)
-    name = models.SlugField(maxlength=200, unique=True)
+class Store(models.Model):
+    parent = models.ForeignKey('self', null=True, related_name="child")
+    name = models.CharField(maxlength=512)
     translatedwords = models.IntegerField(default=0)
     translatedstrings = models.IntegerField(default=0)
     fuzzywords = models.IntegerField(default=0)
@@ -104,17 +104,24 @@ class Folder(models.Model):
     allwords = models.IntegerField(default=0)
     allstrings = models.IntegerField(default=0)
 
-    isdir = True
-    icon = 'folder'
-
-    class Admin:
+    class Admin:    
         pass
 
-    def __str__(self):
-        return "Folder: %s" % self.name
+    def type(self):
+        '''Returns a type of store, which can be either file or folder.
+        It's used for icons and deciding if this is a dir or file.'''
+        if not hasattr(self, '_type'):
+            # only call DB once
+            self._type = self.unit_set.count()
+        if self._type:
+            return 'file'
+        return 'folder'
 
     def __repr__(self):
-        return "<Folder: %s>" % self.name
+        return "<Store: %s>" % self.name
+
+    def __str__(self):
+        return "Store: %s" % self.name
 
     def _get_untrans_strings(self):
         return self.allstrings - self.translatedstrings - self.fuzzystrings
@@ -125,28 +132,57 @@ class Folder(models.Model):
     untranslatedstrings = property(_get_untrans_strings)
     untranslatedwords = property(_get_untrans_words)
 
-    def _get_stats(self):
-        # t: %dw %ds %dp f:%dw %ds %dp u: %dw %ds %dp all: %dw %ds
-        untranslatedstrings = self.allstrings - self.translatedstrings - self.fuzzystrings
-        try:
-            return (
-                self.translatedwords, 
-                self.translatedstrings,
-                int(float(self.translatedstrings / self.allstrings)),
-                self.fuzzywords,
-                self.fuzzystrings,
-                int(float(self.fuzzystrings / self.allstrings)),
-                self.allwords - self.translatedwords - self.fuzzywords,
-                untranslatedstrings,
-                int(float(untranslatedstrings / self.allstrings)),
-                self.allwords,
-                self.allstrings)
-        except ZeroDivisionError:
-            # FIXME: fill stats here
-            return (0,0,0, 0,0,0, 0,0,0, 0,0)
+    @transaction.commit_on_success
+    def load_from_pofile(self, infile):
+        c = po.pofile(inputfile=infile)
 
-    stats = property(_get_stats)
-            
+        # FIXME add header, language
+        lang = Language.objects.get(code='sl')
+        for num, x in enumerate(c.units):
+            if x.isobsolete():
+                continue
+            u = Unit(store=self, index=num, state=0)
+            u.save()
+            def addcomments(commtype):
+                for comm_string in [b[2:].rstrip() for b in getattr(x, commtype + "comments")]:
+                    comm = Comment(value=comm_string, type=COMMENT_TYPES[commtype], unit=u)
+                    comm.save()
+            for comtyp in ['automatic', 'source', 'type', 'visible']:
+                addcomments(comtyp)
+            aa = x.getsource()
+            for mmm in range(len(aa.strings)):
+                ss = SourceString(source=unicode(aa.strings[mmm]), plural_id=mmm, unit=u)
+                ss.save()
+            aa = x.gettarget()
+            for mmm in range(len(aa.strings)):
+                ts = TargetString(sourcestring=ss, target=unicode(aa.strings[mmm]), plural_id=mmm, lang=lang)
+                ts.save()
+
+
+    def dump_to_postring(self):
+        # quoting shortcut
+        def quotedunit(x):
+            y = "\n".join(po.quoteforpo(x))
+            if y == '':
+                return unicode('""')
+            else:
+                return y
+        dumped = []
+        units = Unit.objects.filter(store=self)
+        for u in units:
+            for c in u.comment_set.all():
+                dumped.append(str(c))
+            for ss in u.sourcestring_set.all():
+                if not ss.plural_id:
+                    dumped.append(u'msgid %s\n' % quotedunit(ss.source))
+                    for ts in ss.targetstring_set.all():
+                        dumped.append(u"msgstr %s\n" % quotedunit(ts.target))
+                else:
+                    dumped.append(u'msgid_plural %s\n' % quotedunit(ss.source))
+                    for ts in ss.targetstring_set.all():
+                        dumped.append(u"msgstr[%d] %s\n" % (ts.plural_id, quotedunit(ts.target)))
+            dumped.append(u'\n')
+        return "".join(dumped)
 
 class TranslationProject(models.Model):
     language = models.ForeignKey(Language)
@@ -157,7 +193,7 @@ class TranslationProject(models.Model):
     fuzzystrings = models.IntegerField(default=0)
     allwords = models.IntegerField(default=0)
     allstrings = models.IntegerField(default=0)
-    root = models.ForeignKey(Folder)
+    root = models.ForeignKey(Store)
     
     _stats = None
 
@@ -188,8 +224,8 @@ class TranslationProject(models.Model):
             parent = self.root
         else:
             subdir2 = subdir.split("/")[-2]
-            parent = Folder.objects.get(name=subdir2)
-        return list(Folder.objects.filter(parent=parent)) + list(Store.objects.filter(parent=parent))
+            parent = Store.objects.get(name=subdir2)
+        return Store.objects.filter(parent=parent)
 
     def _get_podir(self):
         return "/%s/%s/" % (self.language.code, self.project.code)
@@ -262,7 +298,7 @@ class UserProfile(models.Model):
 class Module(models.Model):
     name = models.CharField(maxlength=200, unique=True)
     description = models.TextField(null=True, blank=True)
-    parent = models.ForeignKey(Folder)
+    parent = models.ForeignKey(Store)
     translatedwords = models.IntegerField(default=0)
     translatedstrings = models.IntegerField(default=0)
     fuzzywords = models.IntegerField(default=0)
@@ -270,88 +306,6 @@ class Module(models.Model):
     allwords = models.IntegerField(default=0)
     allstrings = models.IntegerField(default=0)
 
-class Store(models.Model):
-    parent = models.ForeignKey(Folder)
-    name = models.CharField(maxlength=512, unique=True)
-    translatedwords = models.IntegerField(default=0)
-    translatedstrings = models.IntegerField(default=0)
-    fuzzywords = models.IntegerField(default=0)
-    fuzzystrings = models.IntegerField(default=0)
-    allwords = models.IntegerField(default=0)
-    allstrings = models.IntegerField(default=0)
-
-    isfile = True
-    icon = 'file'
-
-    class Admin:    
-        pass
-
-    def __repr__(self):
-        return "<Store: %s>" % self.name
-
-    def __str__(self):
-        return "Store: %s" % self.name
-
-    def _get_untrans_strings(self):
-        return self.allstrings - self.translatedstrings - self.fuzzystrings
-
-    def _get_untrans_words(self):
-        return self.allwords - self.translatedwords - self.fuzzywords
-
-    untranslatedstrings = property(_get_untrans_strings)
-    untranslatedwords = property(_get_untrans_words)
-
-    @transaction.commit_on_success
-    def load_from_pofile(self, infile):
-        c = po.pofile(inputfile=infile)
-
-        # FIXME add header, language
-        lang = Language.objects.get(code='sl')
-        for num, x in enumerate(c.units):
-            if x.isobsolete():
-                continue
-            u = Unit(store=self, index=num, state=0)
-            u.save()
-            def addcomments(commtype):
-                for comm_string in [b[2:].rstrip() for b in getattr(x, commtype + "comments")]:
-                    comm = Comment(value=comm_string, type=COMMENT_TYPES[commtype], unit=u)
-                    comm.save()
-            for comtyp in ['automatic', 'source', 'type', 'visible']:
-                addcomments(comtyp)
-            aa = x.getsource()
-            for mmm in range(len(aa.strings)):
-                ss = SourceString(source=unicode(aa.strings[mmm]), plural_id=mmm, unit=u)
-                ss.save()
-            aa = x.gettarget()
-            for mmm in range(len(aa.strings)):
-                ts = TargetString(sourcestring=ss, target=unicode(aa.strings[mmm]), plural_id=mmm, lang=lang)
-                ts.save()
-
-
-    def dump_to_postring(self):
-        # quoting shortcut
-        def quotedunit(x):
-            y = "\n".join(po.quoteforpo(x))
-            if y == '':
-                return unicode('""')
-            else:
-                return y
-        dumped = []
-        units = Unit.objects.filter(store=self)
-        for u in units:
-            for c in u.comment_set.all():
-                dumped.append(str(c))
-            for ss in u.sourcestring_set.all():
-                if not ss.plural_id:
-                    dumped.append(u'msgid %s\n' % quotedunit(ss.source))
-                    for ts in ss.targetstring_set.all():
-                        dumped.append(u"msgstr %s\n" % quotedunit(ts.target))
-                else:
-                    dumped.append(u'msgid_plural %s\n' % quotedunit(ss.source))
-                    for ts in ss.targetstring_set.all():
-                        dumped.append(u"msgstr[%d] %s\n" % (ts.plural_id, quotedunit(ts.target)))
-            dumped.append(u'\n')
-        return "".join(dumped)
 
 class Header(models.Model):
     store = models.ForeignKey(Store)
@@ -366,14 +320,18 @@ UNIT_STATES = (
 
 class Unit(models.Model):
     store = models.ForeignKey(Store)
-    index = models.IntegerField()
+    index = models.IntegerField(unique=True)
     state = models.IntegerField()
 
     def __repr__(self):
         return "<Unit %d of %s>" % (self.index, self.store.name)
 
     def __str__(self):
-        return "%s\n%s" % (self.index, self.store.name)
+        source = str(self.sourcestring_set.all()[0])
+        if len(source) > 40:
+            source = source[:40] + "..."
+        print source
+        return "%s:%s:%s" % (self.store.name, self.index, source)
 
     def tostring(self):
         print self.sourcestring_set.all
@@ -383,6 +341,40 @@ class Unit(models.Model):
 
     class Meta:
         ordering = ('index',)
+
+    def _is_plural(self):
+        return self.sourcestring_set.count() == 2
+    is_plural = property(_is_plural)
+
+    def _get_source(self):
+        return self.sourcestring_set.all()
+    source = property(_get_source)
+
+    def _get_target(self):
+        if self.is_plural:
+            return self.source[1].targetstring_set.all()
+        else:
+            return self.source[0].targetstring_set.all()
+
+    def set_target(self, values, lang):
+        if self.is_plural:
+            assert len(values) == lang.nplurals
+            for k, v in values:
+                try:
+                    ts = TargetString.objects.get(sourcestring=self.source[1], lang=lang, plural_id=k)
+                    ts.target = v
+                except TargetString.DoesNotExist:
+                    ts = TargetString(sourcestring=self.source[1], lang=lang, plural_id=k, target=v)
+                ts.save()
+        else:
+            try:
+                ts = TargetString.objects.get(sourcestring=self.source[0], lang=lang, plural_id=0)
+            except TargetString.DoesNotExist:
+                ts = TargetString.objects.get(sourcestring=self.source[0], lang=lang, plural_id=0, target=values[0])
+            ts.save()
+
+
+    target = property(_get_target)
 
 class StoreAnnotation(models.Model):
     store = models.ForeignKey(Store)
@@ -399,12 +391,24 @@ class SourceString(models.Model):
     source = models.TextField()
     unit = models.ForeignKey(Unit)
 
+    def __str__(self):
+        return self.source
+
 class TargetString(models.Model):
     plural_id = models.IntegerField()
     sourcestring = models.ForeignKey(SourceString)
     target = models.TextField()
     lang = models.ForeignKey(Language)
 
+    def __str__(self):
+        return self.target.encode("utf-8")
+
+    def __repr__(self):
+        return "<TargetString: %s>" % str(self)
+
+    class Meta:
+        ordering = ('plural_id',)
+        unique_together = (('plural_id','sourcestring','lang'),)
 
 COMMENT_DEFINITION = (
     (0, 'Automatic',    '#.'),
