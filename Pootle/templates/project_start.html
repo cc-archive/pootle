@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load pootle %}
+
+{% block title %}Pootle{% endblock %}
+
+{% block content %}
+    <div class="navbar">
+      <h3 class="title">{% trans "Registering new project" %}</h3>
+    </div>
+    <div class="intro">
+      {{ message }}
+    </div>
+{% endblock %}
