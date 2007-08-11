@@ -30,6 +30,11 @@ TEMPLATE_DIRS = (
     next_to_this_file(__file__,'templates/'),
 )
 
+# Set this to a valid email host and port, otherwise users will not be able to 
+# register at this server.
+EMAIL_HOST="localhost"
+EMAIL_PORT=25
+
 POOTLE_INSTANCE = 'Pootle'
 
 # If you have old Pootle installation, this setting will keep using 
