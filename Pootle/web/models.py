@@ -27,6 +27,9 @@ class Project(models.Model):
     
     icon = 'folder'
     _checker_cache = None
+
+    class Admin:
+        pass
     
     def __str__(self):
         return self.name
