@@ -295,6 +295,7 @@ class UserProfile(models.Model):
     viewrows = models.SmallIntegerField(blank=True, null=True)
     translaterows = models.SmallIntegerField(blank=True, null=True)
     languages = models.ManyToManyField(Language, related_name='joined_languages', blank=True, null=True)
+    activation_code = models.CharField(maxlength=32, db_index=True, null=True, blank=True)
 
 
 

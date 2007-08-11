@@ -10,66 +10,9 @@
 
     <form action="" enctype="multipart/form-data" method="post" name="register" id="register">
       <table cellpadding="1" width="100%" border="0" cellspacing="1">
-        <tr>
-          <td colspan="1" style="width: 33%" rowspan="1" valign="top">
-            <span title="{% trans "Your requested username" %}">{% trans "Username" %}</span>
-          </td>
-
-          <td colspan="1" style="width: 66%" rowspan="1" valign="top">
-            {{ form.username }}
-          </td>
-        </tr>
-
-        <tr>
-          <td colspan="1" style="width: 33%" rowspan="1" valign="top">
-            <span title="{% trans "Your desired password" %}">{% trans "Password" %}</span>
-          </td>
-
-          <td colspan="1" style="width: 66%" rowspan="1" valign="top">
-            {{ form.password }}
-          </td>
-        </tr>
-
-        <tr>
-          <td colspan="1" style="width: 33%" rowspan="1" valign="top">
-            <span title="{% trans "Type your password again to ensure it is entered correctly" %}">{% trans "Password (Confirm)" %}</span>
-          </td>
-
-          <td colspan="1" style="width: 66%" rowspan="1" valign="top">
-            {{ form.passwordconfirm }}
-          </td>
-        </tr>
-
-        <tr>
-          <td colspan="1" style="width: 33%" rowspan="1" valign="top">
-            <span title="{% trans "Your first name" %}">{% trans "First Name" %}</span>
-          </td>
-
-          <td colspan="1" style="width: 66%" rowspan="1" valign="top">
-            {{ form.first_name }}
-          </td>
-        </tr>
-
-        <tr>
-          <td colspan="1" style="width: 33%" rowspan="1" valign="top">
-            <span title="{% trans "Your last name" %}">{% trans "Last Name" %}</span>
-          </td>
-
-          <td colspan="1" style="width: 66%" rowspan="1" valign="top">
-            {{ form.last_name }}
-          </td>
-        </tr>
-
-        <tr>
-          <td colspan="1" style="width: 33%" rowspan="1" valign="top">
-            <span title="{% trans "You must supply a valid email address" %}">{% trans "Email Address" %}</span>
-          </td>
-
-          <td colspan="1" style="width: 66%" rowspan="1" valign="top">
-            {{ form.email }}
-          </td>
-        </tr>
-      </table><input type="submit" name="register" value="{% trans "Register Account" %}" />
+        {{ form }}
+        <tr><td></td><td><input type="submit" name="register" value="{% trans "Register Account" %}" /></td></tr>
+      </table>
     </form>
   </div>
 {% endblock %}

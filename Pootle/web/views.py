@@ -11,12 +11,12 @@ from django.core.mail import send_mail
 from django.views import i18n
 
 from Pootle.web import webforms
-from Pootle.web.forms import translation_form_factory
+from Pootle.web.forms import translation_form_factory, RegistrationForm
 from Pootle.web.models import Project, Language, TranslationProject, Store, Unit, SourceString
 from Pootle.utils.convert import convert_translation_store
 from Pootle.compat import forms as pootleforms 
 from Pootle.compat import pootleauth
-from Pootle.compat.authforms import RegistrationManipulator, ActivationManipulator
+from Pootle.compat.authforms import ActivationManipulator
 from Pootle.conf import instance, potree
 from django.utils.translation import gettext_lazy as _
 from django.utils.translation import ngettext
@@ -214,36 +214,34 @@ def login(req):
 
 def register(req):
     message = _("Please enter your registration details")
-    manipulator = RegistrationManipulator() 
-    if req.POST:
-        new_data = req.POST.copy()
-        errors = manipulator.get_validation_errors(new_data)
-        if errors:
-            message = errorlist_from_errors(errors)
-        else:
-            manipulator.do_html2python(new_data)
-            activation_code = "".join(["%02x" % int(random.random()*0x100) for i in range(16)])
-            new_data['activationcode'] = activation_code
-            new_user = manipulator.save(new_data)
-            
-            # and email the activation details
-            email_contents = loader.get_template("email_register.txt")
-            context = Context({
-                'activationlink': '',
-                'activationcode': activation_code,
-                'username': new_data['username'],
-                'password': new_data['password'],
-                'email': new_data['email'],
-                })
-            send_mail("Pootle registration", email_contents.render(context), settings.DEFAULT_FROM_EMAIL, [new_data['email']],
-                fail_silently=False)
 
-            return render_to_response("register_sent.html", RequestContext(req))
+    if req.POST:
+        form = RegistrationForm(req.POST)
+        if not form.errors:
+            user = form.save()
+            
+            profile = user.get_profile()
+            profile.activation_code = "".join(["%02x" % int(random.random()*0x100) for i in range(16)])
+            profile.save()
+            email_contents = loader.get_template("email_register.txt")
+            email_context = Context({
+                'activationlink': '/activate.html?username=%s&activation_code=%s' % (user.username, profile.activation_code),
+                'activationcode': profile.activation_code,
+                'username': user.username,
+                'password': form.cleaned_data['password'],
+                'email': user.email,
+                })
+
+            context = {}
+            try:
+                send_mail("Pootle registration", email_contents.render(email_context), 
+                    settings.DEFAULT_FROM_EMAIL, [user.email], fail_silently=False)
+            except Exception, e:
+                context['message'] = _("There was an error sending email. Please contact site administrator.")
+            return render_to_response("register_sent.html", RequestContext(req, context))
     else:
-        new_data = {}
-        errors = {}
+        form = RegistrationForm()
     
-    form = forms.FormWrapper(manipulator, new_data, errors)
     context = {
         'register_message' : message, 
         'form' : form,

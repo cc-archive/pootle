@@ -1,8 +1,9 @@
 from django import newforms as forms
+from django.newforms import Widget, Textarea, Field
 from django.newforms.forms import SortedDictFromList
-from django.newforms.widgets import Widget, Textarea
-from django.newforms.fields import Field
 from django.utils.encoding import force_unicode
+from django.contrib.auth.models import User
+from Pootle.web.models import UserProfile
 
 class TranslationFormBase(forms.Form):
     id = forms.IntegerField(widget=forms.HiddenInput())
@@ -52,3 +53,35 @@ class StaticField(Field):
         self.help_text = help_text
         self.widget = self.widget()
 
+class RegistrationForm(forms.Form):
+    username = forms.CharField()
+    first_name = forms.CharField()
+    last_name = forms.CharField()
+    email = forms.EmailField()
+    password = forms.CharField(widget=forms.PasswordInput)
+    passwordconfirm = forms.CharField(label=_("Password (confirm)"), widget=forms.PasswordInput)
+
+    def clean_username(self):
+        username = self.cleaned_data['username']
+        try:
+            User.objects.get(username=username)
+            raise forms.ValidationError(_("User with that username already exists. Please choose another username."))
+        except User.DoesNotExist:
+            return username
+
+    def clean(self):
+        if self.cleaned_data['password'] != self.cleaned_data['passwordconfirm']:
+            raise forms.ValidationError(_("The two password fields didn't match."))
+        return self.cleaned_data
+
+    def save(self):
+        if self.errors:
+            raise ValueError(_("User info is not valid."))
+        user_dict = self.cleaned_data.copy()
+        del user_dict['passwordconfirm']
+        u = User(**user_dict)
+        u.set_password(user_dict['password'])
+        u.save()
+        profile = UserProfile(user=u)
+        profile.save()
+        return u
