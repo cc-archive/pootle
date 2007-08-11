@@ -11,7 +11,8 @@ from django.core.mail import send_mail
 from django.views import i18n
 
 from Pootle.web import webforms
-from Pootle.web.models import Project, Language, TranslationProject, Store
+from Pootle.web.forms import translation_form_factory
+from Pootle.web.models import Project, Language, TranslationProject, Store, Unit, SourceString
 from Pootle.utils.convert import convert_translation_store
 from Pootle.compat import forms as pootleforms 
 from Pootle.compat import pootleauth
@@ -105,7 +106,9 @@ def project_start(req, project, language):
         except Language.DoesNotExist:
             pass
         else:
-            newproject = TranslationProject(project=p, language=lang)
+            root_folder = Store(name="root_%s_%s" % (p.code, lang.code))
+            root_folder.save()
+            newproject = TranslationProject(project=p, language=lang, root=root_folder)
             newproject.save()
             # FIXME join req.user to group as admin
             return HttpResponseRedirect("/%s/%s/" % (language, project) )
@@ -151,6 +154,7 @@ def translationproject(req, language, project, subdir=None):
                                 'average': average_translated,
                                 },
         'items': files,
+        'curdir': subdir,
        }
     return render_to_response("translationproject.html", RequestContext(req, context))
 
@@ -371,46 +375,45 @@ def admintranslationproject(req, language, project): # FIXME
 
 def translate(req, language, project, subdir, filename):
     translationproject = TranslationProject.objects.get(project__code=project, language__code=language)
-    file = translationproject.podir / (subdir + filename)
     
-    errors = {}
-    if req.POST:
-        if req.POST.has_key('id'):
-            try:
-                id = int(req.POST['id'])
-            except ValueError:
-                return HttpResponseRedirect(req.path)
-            num, unit = file.filter([], id)
-            manipulator = webforms.TranslationManipulator(unit)
+    if subdir:
+        curdir = str(subdir).rstrip("/").split("/")[-1]
+    else:
+        curdir = translationproject.root.name or ''
 
-            new_data = req.POST.copy()
-            errors = manipulator.get_validation_errors(new_data)
-            if not errors:
-                manipulator.do_html2python(new_data)
-                unit.target = new_data['translation']
-                print unit.__repr__()
-                return HttpResponseRedirect("%s?id=%d" % (req.path, int(req.POST['id'])+1))
     try:
-        stringnumber = int(req['id'])
+        id = int(req.REQUEST.get('id', 0))
     except ValueError:
-        stringnumber = 0
-    except KeyError:
-        stringnumber = 0
+        id = 0
+    unit = Unit.objects.get(store__name=filename, store__parent__name=curdir, index=id)
+    num_plural = unit.is_plural and translationproject.language.nplurals or 1
 
-    stringnumber, unit = file.filter([], stringnumber)
+    if req.POST:
+        if req.REQUEST.get('id',None) != None:
+            form = translation_form_factory(num_plural)(req.POST)
+            if not form.errors:
+                unit.set_target(form.get_target_list(), translationproject.language)
+                return HttpResponseRedirect(req.path + "?id=%d" % (id + 1))
+        
+    source = list(unit.source)
 
-    print "This", unit.__repr__()
-    manipulator = webforms.TranslationManipulator()
-    new_data = { 
-        'translation': unit.target,
-        'id': stringnumber
-        } 
-    form = forms.FormWrapper(manipulator, new_data, errors)
+    if len(source) > 1:
+        data = [("plural_%d" % num, targetstring) for num, targetstring in enumerate(unit.target)]
+        data = dict(data + [('id', unit.index), ('source', source[0]), ('source_plural', source[1])])
+    else:
+        data = {
+            'id': unit.index,
+            'translation': unit.target[0].target,
+            'source': str(source[0]),
+            }
+
+    # calculate textarea size
+    rows = max(3, len(str(source[0]))/50 + 2)
+    form = translation_form_factory(num_plural, rows=rows)(data)
 
     context = {
         'form' : form,
-        'originalstring': unit.source,
-        'stringnumber': stringnumber,
+        'index': unit.index,
         }
     return render_to_response("translate.html", RequestContext(req, context))
 
