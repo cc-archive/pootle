@@ -1,31 +1,27 @@
-from django.http import HttpResponse, HttpResponseRedirect, Http404
-from django.template import Context, RequestContext, loader
-from django.conf import settings
-from django.contrib.auth.forms import AuthenticationForm
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import User
-from django.contrib.auth import REDIRECT_FIELD_NAME
-from django.shortcuts import render_to_response, get_object_or_404
-from django import forms
-from django.core.mail import send_mail
-from django.views import i18n
-
-from Pootle.web import webforms
-from Pootle.web.forms import translation_form_factory, RegistrationForm, ActivationForm
-from Pootle.web.models import Project, Language, TranslationProject, Store, Unit, SourceString
-from Pootle.utils.convert import convert_translation_store
+from Pootle import __version__ as pootleversion
 from Pootle.compat import forms as pootleforms 
 from Pootle.compat import pootleauth
 from Pootle.conf import instance, potree
+from Pootle.utils.convert import convert_translation_store
+from Pootle.web import webforms
+from Pootle.web.forms import translation_form_factory, RegistrationForm, ActivationForm
+from Pootle.web.models import Project, Language, TranslationProject, Store, Unit, SourceString
+from cStringIO import StringIO
+from django import forms
+from django.conf import settings
+from django.contrib.auth import REDIRECT_FIELD_NAME
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.models import User
+from django.core.mail import send_mail
+from django.http import HttpResponse, HttpResponseRedirect, Http404
+from django.shortcuts import render_to_response, get_object_or_404
+from django.template import Context, RequestContext, loader
 from django.utils.translation import gettext_lazy as _
 from django.utils.translation import ngettext
-import random
-from cStringIO import StringIO
-
-from Pootle.web.models import Language, Project
-
-from Pootle import __version__ as pootleversion
+from django.views import i18n
 from translate import __version__ as toolkitversion
+import random
 
 def set_language(req):
     """Sets proper language code for internationalization and returns True if 
