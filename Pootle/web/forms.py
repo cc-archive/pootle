@@ -85,3 +85,27 @@ class RegistrationForm(forms.Form):
         profile = UserProfile(user=u)
         profile.save()
         return u
+
+
+class ActivationForm(forms.Form):
+    username = forms.CharField()
+    activationcode = forms.CharField()
+
+    def save(self):
+        try:
+            u = User.objects.get(username=self.cleaned_data['username'])
+        except User.DoesNotExist:
+            pass
+
+        code = u.get_profile().activation_code
+        # empty activation code disables activation
+        if code and code == self.cleaned_data['activationcode']:
+            u.is_active = True
+            u.save()
+            profile = u.get_profile()
+            profile.activation_code = ''
+            profile.save()
+            return u
+        else:
+            return None
+

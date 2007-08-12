@@ -11,12 +11,11 @@ from django.core.mail import send_mail
 from django.views import i18n
 
 from Pootle.web import webforms
-from Pootle.web.forms import translation_form_factory, RegistrationForm
+from Pootle.web.forms import translation_form_factory, RegistrationForm, ActivationForm
 from Pootle.web.models import Project, Language, TranslationProject, Store, Unit, SourceString
 from Pootle.utils.convert import convert_translation_store
 from Pootle.compat import forms as pootleforms 
 from Pootle.compat import pootleauth
-from Pootle.compat.authforms import ActivationManipulator
 from Pootle.conf import instance, potree
 from django.utils.translation import gettext_lazy as _
 from django.utils.translation import ngettext
@@ -249,22 +248,17 @@ def register(req):
     return render_to_response("register.html", RequestContext(req, context)) 
 
 def activate(req):
-    manipulator = ActivationManipulator()
+    form = ActivationForm(req.POST)
     context = {}
-    if 'activationcode' in req.REQUEST and 'username' in req.REQUEST:
-        # FIXME: validation
-        errors = manipulator.get_validation_errors(req.REQUEST)
-        if not errors:
-            if manipulator.save(req.REQUEST):
-                context = { 'activationmessage': _("Your account has been activated!"), }
+    if req.POST:
+        if not form.errors:
+            user = form.save()
+            if not user:
+                context['activationmessage'] = _("User account was not activated.")
+            else:
+                context['activationmessage'] = _("Your account was successfuly activated.")
+                return render_to_response("activate.html", RequestContext(req, context))
 
-    if 'username' in req.REQUEST:
-        new_data = {'username': req.REQUEST['username']} 
-    else:
-        new_data = {}
-    errors = {}
-    
-    form = forms.FormWrapper(manipulator, new_data, errors)
     context['form'] = form
     return render_to_response("activate.html", RequestContext(req, context))
 
