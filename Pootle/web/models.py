@@ -27,10 +27,10 @@ class Project(models.Model):
     
     icon = 'folder'
     _checker_cache = None
-
+    
     class Admin:
         pass
-    
+
     def __str__(self):
         return self.name
 
@@ -76,6 +76,9 @@ class Language(models.Model):
     unfiltered = models.Manager()
 
     icon = 'language'
+
+    class Admin:
+        pass
 
     def __str__(self):
         return self.name
@@ -200,6 +203,9 @@ class TranslationProject(models.Model):
     
     _stats = None
 
+    class Admin:
+        pass
+
     class Meta:
         unique_together = ( ('language','project'),) 
 
@@ -297,6 +303,8 @@ class UserProfile(models.Model):
     languages = models.ManyToManyField(Language, related_name='joined_languages', blank=True, null=True)
     activation_code = models.CharField(maxlength=32, db_index=True, null=True, blank=True)
 
+    class Admin:
+        pass
 
 
 class Module(models.Model):
@@ -310,6 +318,8 @@ class Module(models.Model):
     allwords = models.IntegerField(default=0)
     allstrings = models.IntegerField(default=0)
 
+    class Admin:
+        pass
 
 class Header(models.Model):
     store = models.ForeignKey(Store)
