@@ -1048,19 +1048,9 @@ class TranslationProject(object):
     for pofilename in pofilenames:
       if not pofilename or os.path.isdir(pofilename):
         continue
-    # Some temporary code that does the summation of the totals, but isn't a
-    # functional replacement for the code that used to give lists with indexes.
-    #-----------------------------------------
-      pototals = self.getpototals(pofilename)
-      for name, value in pototals.iteritems():
-        if not name in totalstats:
-          totalstats[name] = 0
-        totalstats[name] += value
-    #-----------------------------------------
-    # The old code was:
-#      postats = self.getpostats(pofilename)
-#      for name, items in postats.iteritems():
-#        totalstats[name] = totalstats.get(name, []) + [(pofilename, item) for item in items]
+      postats = self.getpostats(pofilename)
+      for name, items in postats.iteritems():
+        totalstats[name] = totalstats.get(name, []) + [(pofilename, item) for item in items]
     assignstats = self.combineassignstats(pofilenames)
     totalstats.update(assignstats)
     return totalstats
