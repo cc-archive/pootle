@@ -835,7 +835,7 @@ class TranslationProject(object):
       postats = self.getpostats(pofilename)
       matches = False
       for name in search.matchnames:
-        if postats[name]:
+        if postats.get(name):
           matches = True
       if not matches:
         return False
