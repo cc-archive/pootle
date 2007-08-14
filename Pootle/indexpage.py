@@ -332,21 +332,20 @@ class ProjectIndex(pagelayout.PootleNavPage):
       mainstats = ""
       mainicon = "file"
     else:
-      if dirfilter or self.editing or self.showassigns or self.showchecks:
+      pofilenames = self.project.browsefiles(dirfilter)
+      projecttotals = self.project.getquickstats(pofilenames)
+      if self.editing or self.showassigns or self.showchecks:
         # we need the complete stats
-        pofilenames = self.project.browsefiles(dirfilter)
         projectstats = self.project.combinestats(pofilenames)
       else:
-        # a common case: plain stats table we can take a shortcut
-        pofilenames = self.project.browsefiles()
-        projectstats = self.project.getquickstats(pofilenames)
-        print "indexpage roep project.getquickstats():" ,projectstats
+        projectstats = projecttotals
       if self.editing:
         actionlinks = self.getactionlinks("", projectstats, ["editing", "mine", "review", "check", "assign", "goal", "quick", "all", "zip", "sdf"], dirfilter)
       else: 
         actionlinks = self.getactionlinks("", projectstats, ["editing", "goal", "zip", "sdf"])
       mainstats = self.getitemstats("", projectstats, len(pofilenames))
-      maindata = self.getstats(self.project, projectstats)
+      mainstats["summary"] = self.describestats(self.project, self.project.getquickstats(pofilenames), len(pofilenames))
+      maindata = self.getstats(self.project, projecttotals)
       mainicon = "folder"
     if self.showgoals:
       childitems = self.getgoalitems(dirfilter)
@@ -685,6 +684,7 @@ class ProjectIndex(pagelayout.PootleNavPage):
         goal["goal"]["otherusers"] = unassignedusers
         goal["goal"]["adduser_title"] = self.localize("Add User")
     goal["stats"] = self.getitemstats("", projectstats, len(pofilenames))
+    projectstats = self.project.getquickstats(pofilenames)
     goal["data"] = self.getstats(self.project, projectstats)
     return goal
 
@@ -704,9 +704,11 @@ class ProjectIndex(pagelayout.PootleNavPage):
     diritem["actions"] = actionlinks
     if self.showgoals and "goal" in self.argdict:
       diritem["stats"] = self.getitemstats(basename, projectstats, (len(goalfilenames), len(pofilenames)))
+      projectstats = self.project.getquickstats(goalfilenames)
       diritem["data"] = self.getstats(self.projects, projectstats)
     else:
       diritem["stats"] = self.getitemstats(basename, projectstats, len(pofilenames))
+      projectstats = self.project.getquickstats(pofilenames)
       diritem["data"] = self.getstats(self.project, projectstats)
     return diritem
 
@@ -762,6 +764,7 @@ class ProjectIndex(pagelayout.PootleNavPage):
         actionlink["sep"] = ""
     fileitem["actions"] = actions
     fileitem["stats"] = self.getitemstats(basename, projectstats, None)
+    projectstats = self.project.getquickstats([fileentry])
     fileitem["data"] = self.getstats(self.project, projectstats)
     return fileitem
 
@@ -929,8 +932,7 @@ class ProjectIndex(pagelayout.PootleNavPage):
 
   def getitemstats(self, basename, projectstats, numfiles):
     """returns a widget summarizing item statistics"""
-    statssummary = self.describestats(self.project, projectstats, numfiles)
-    stats = {"summary": statssummary, "checks": [], "tracks": [], "assigns": []}
+    stats = {"checks": [], "tracks": [], "assigns": []}
     if not basename or basename.endswith("/"):
       linkbase = basename + "translate.html?"
     else:
@@ -957,9 +959,7 @@ class ProjectIndex(pagelayout.PootleNavPage):
 
   def getcheckdetails(self, projectstats, linkbase):
     """return a list of strings describing the results of checks"""
-    total = max(projectstats.get("total", 0), 1)
-    # XXX: Temporary code to avoid traceback. Was:
-#    total = max(len(projectstats.get("total", [])), 1)
+    total = max(len(projectstats.get("total", [])), 1)
     checklinks = []
     keys = projectstats.keys()
     keys.sort()
