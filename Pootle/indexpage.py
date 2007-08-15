@@ -970,7 +970,7 @@ class ProjectIndex(pagelayout.PootleNavPage):
       checkname = checkname.replace("check-", "", 1)
       if total and checkcount:
         stats = self.nlocalize("%d string (%d%%) failed", "%d strings (%d%%) failed", checkcount, checkcount, (checkcount * 100 / total))
-        checklink = {"href": self.makelink(linkbase, **{checkname:1}), "text": checkname, "stats": stats}
+        checklink = {"href": self.makelink(linkbase, **{str(checkname):1}), "text": checkname, "stats": stats}
         checklinks += [checklink]
     return checklinks
 
