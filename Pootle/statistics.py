@@ -71,13 +71,14 @@ class pootlestatistics:
       self.stats = statscache.filestats(self.basefile.filename, self.basefile.checker)
     return self.stats
 
-  def updatequickstats(self):
+  def updatequickstats(self, save=True):
     """updates the project's quick stats on this file"""
     totals = self.getquickstats()
     self.basefile.project.updatequickstats(self.basefile.pofilename, 
         totals["translatedsourcewords"], totals["translated"], 
         totals["fuzzysourcewords"], totals["fuzzy"],
-        totals["totalsourcewords"], totals["total"])
+        totals["totalsourcewords"], totals["total"],
+        save)
 
   def classifyunit(self, unit):
     """returns all classify keys that the unit should match"""
