@@ -338,7 +338,7 @@ class TranslatePage(pagelayout.PootleNavPage):
     """returns any checker filters the user has asked to match..."""
     matchnames = []
     for checkname in self.argdict:
-      if checkname in ["fuzzy", "untranslated", "translated", "has-suggestion"]:
+      if checkname in ["fuzzy", "untranslated", "translated"]:
         matchnames.append(checkname)
       elif checkname in checker.getfilters():
         matchnames.append("check-" + checkname)
