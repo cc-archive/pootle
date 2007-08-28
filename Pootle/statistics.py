@@ -103,14 +103,11 @@ class pootlestatistics:
     self.classify["fuzzy"] = []
     self.classify["blank"] = []
     self.classify["translated"] = []
-    self.classify["has-suggestion"] = []
     self.classify["total"] = []
     for checkname in self.basefile.checker.getfilters().keys():
       self.classify["check-" + checkname] = []
     for item, unit in enumerate(self.basefile.transunits):
       classes = self.classifyunit(unit)
-      if self.basefile.getsuggestions(item):
-        classes.append("has-suggestion")
       for classname in classes:
         if classname in self.classify:
           self.classify[classname].append(item)
@@ -133,8 +130,6 @@ class pootlestatistics:
     self.sourcewordcounts[item] = [statsdb.wordcount(text) for text in unit.source.strings]
     self.targetwordcounts[item] = [statsdb.wordcount(text) for text in unit.target.strings]
     classes = self.classifyunit(unit)
-    if self.basefile.getsuggestions(item):
-      classes.append("has-suggestion")
     for classname, matchingitems in self.classify.items():
       if (classname in classes) != (item in matchingitems):
         if classname in classes:
