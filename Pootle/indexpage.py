@@ -875,12 +875,12 @@ class ProjectIndex(pagelayout.PootleNavPage):
         else:
           quickminelink = {"title": self.localize("No untranslated strings assigned to you"), "text": quickminelink}
         actionlinks.append(quickminelink)
-    if "review" in linksrequired and projectstats.get("has-suggestion", []):
+    if "review" in linksrequired and projectstats.get("check-hassuggestion", []):
       if "review" in self.rights:
         reviewlink = self.localize("Review Suggestions")
       else:
         reviewlink = self.localize("View Suggestions")
-      reviewlink = {"href": self.makelink(baseactionlink, review=1, **{"has-suggestion": 1}), "text": reviewlink}
+      reviewlink = {"href": self.makelink(baseactionlink, review=1, **{"hassuggestion": 1}), "text": reviewlink}
       actionlinks.append(reviewlink)
     if "quick" in linksrequired:
       if "translate" in self.rights:
