@@ -353,26 +353,9 @@ class pootlefile(Wrapper):
     else:
       self.tmfile = po.pofile()
 
-  def reclassifysuggestions(self):
-    """shortcut to only update classification of hassuggestion for all items"""
-    suggitems = []
-    sugglocations = {}
-    for thesugg in self.pendingfile.units:
-      locations = tuple(thesugg.getlocations())
-      sugglocations[locations] = thesugg
-    suggitems = [item for item in self.transunits if tuple(item.getlocations()) in sugglocations]
-    havesuggestions = self.statistics.stats["check-hassuggestion"]
-    for item, poel in enumerate(self.transunits):
-      if (poel in suggitems) != (item in havesuggestions):
-        if poel in suggitems:
-          havesuggestions.append(item)
-        else:
-          havesuggestions.remove(item)
-        havesuggestions.sort()
-
   def getsuggestions(self, item):
     """find all the suggestion items submitted for the given item"""
-    unit = self.transunits[item]
+    unit = self.getitem(item)
     if isinstance(unit, xliff.xliffunit):
       return unit.getalttrans()
 
@@ -384,7 +367,7 @@ class pootlefile(Wrapper):
 
   def addsuggestion(self, item, suggtarget, username):
     """adds a new suggestion for the given item"""
-    unit = self.transunits[item]
+    unit = self.getitem(item)
     if isinstance(unit, xliff.xliffunit):
       if isinstance(suggtarget, list) and (len(suggtarget) > 0):
         suggtarget = suggtarget[0]
@@ -405,7 +388,7 @@ class pootlefile(Wrapper):
 
   def deletesuggestion(self, item, suggitem):
     """removes the suggestion from the pending file"""
-    unit = self.transunits[item]
+    unit = self.getitem(item)
     if hasattr(unit, "xmlelement"):
       suggestions = self.getsuggestions(item)
       unit.delalttrans(suggestions[suggitem])
@@ -435,7 +418,7 @@ class pootlefile(Wrapper):
   def gettmsuggestions(self, item):
     """find all the tmsuggestion items submitted for the given item"""
     self.readtmfile()
-    unit = self.transunits[item]
+    unit = self.getitem(item)
     locations = unit.getlocations()
     # TODO: review the matching method
     # Can't simply use the location index, because we want multiple matches
@@ -454,9 +437,6 @@ class pootlefile(Wrapper):
     pomtime, filecontents = self.lockedfile.getcontents()
     # note: we rely on this not resetting the filename, which we set earlier, when given a string
     self.parse(filecontents)
-    # we ignore all the headers by using this filtered set
-    self.transunits = [poel for poel in self.units if not (poel.isheader() or poel.isblank())]
-    self.statistics.classifyunits()
     self.pomtime = pomtime
 
   def savepofile(self):
@@ -480,7 +460,7 @@ class pootlefile(Wrapper):
   def updateunit(self, item, newvalues, userprefs, languageprefs):
     """updates a translation with a new target value"""
     self.pofreshen()
-    unit = self.transunits[item]
+    unit = self.getitem(item)
 
     if newvalues.has_key("target"):
       unit.target = newvalues["target"]
@@ -505,15 +485,19 @@ class pootlefile(Wrapper):
     self.savepofile()
     self.statistics.reclassifyunit(item)
 
+  def getitem(self, item):
+    """Returns a single unit based on the item number."""
+    return self.units[self.statistics.getstats()["total"][item]]
+
   def iteritems(self, search, lastitem=None):
     """iterates through the items in this pofile starting after the given lastitem, using the given search"""
     # update stats if required
-    self.statistics.getstats()
+    translatables = self.statistics.getstats()["total"]
     if lastitem is None:
       minitem = 0
     else:
       minitem = lastitem + 1
-    maxitem = len(self.transunits) # XXX: doesn't work because indices differ from .units
+    maxitem = len(translatables)
     validitems = range(minitem, maxitem)
     if search.assignedto or search.assignedaction:
       assignitems = self.assigns.finditems(search)
@@ -523,7 +507,7 @@ class pootlefile(Wrapper):
       if not search.matchnames:
         yield item
       for name in search.matchnames:
-        if item in self.statistics.stats[name]:
+        if translatables[item] in self.statistics.stats[name]:
           yield item
 
   def matchitems(self, newfile, uselocations=False):
@@ -573,7 +557,8 @@ class pootlefile(Wrapper):
     if not oldpo.target or not newpo.target or oldpo.isheader() or newpo.isheader() or unchanged:
       oldpo.merge(newpo)
     else:
-      for item, matchpo in enumerate(self.transunits):
+      for item in self.statistics.getstats()["total"]:
+        matchpo = self.units[item]
         if matchpo == oldpo:
           strings = getattr(newpo.target, "strings", [newpo.target])
           self.addsuggestion(item, strings, username)

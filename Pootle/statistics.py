@@ -97,56 +97,6 @@ class pootlestatistics:
       classes.append("check-" + checkname)
     return classes
 
-  def classifyunits(self):
-    """makes a dictionary of which units fall into which classifications"""
-    self.classify = {}
-    self.classify["fuzzy"] = []
-    self.classify["blank"] = []
-    self.classify["translated"] = []
-    self.classify["total"] = []
-    for checkname in self.basefile.checker.getfilters().keys():
-      self.classify["check-" + checkname] = []
-    for item, unit in enumerate(self.basefile.transunits):
-      classes = self.classifyunit(unit)
-      for classname in classes:
-        if classname in self.classify:
-          self.classify[classname].append(item)
-        else:
-          self.classify[classname] = item
-    self.countwords()
-
-  def countwords(self):
-    """counts the words in each of the units"""
-    self.sourcewordcounts = []
-    self.targetwordcounts = []
-    for unit in self.basefile.transunits:
-      self.sourcewordcounts.append([statsdb.wordcount(text) for text in unit.source.strings])
-      self.targetwordcounts.append([statsdb.wordcount(text) for text in unit.target.strings])
-
-  def reclassifyunit(self, item):
-    """updates the classification of a unit in self.classify"""
-    # TODO: Actually update database
-    unit = self.basefile.transunits[item]
-    self.sourcewordcounts[item] = [statsdb.wordcount(text) for text in unit.source.strings]
-    self.targetwordcounts[item] = [statsdb.wordcount(text) for text in unit.target.strings]
-    classes = self.classifyunit(unit)
-    for classname, matchingitems in self.classify.items():
-      if (classname in classes) != (item in matchingitems):
-        if classname in classes:
-          self.classify[classname].append(item)
-        else:
-          self.classify[classname].remove(item)
-        self.classify[classname].sort()
-
   def getitemslen(self):
     """gets the number of items in the file"""
-    # TODO: simplify this, and use wherever its needed
-    if hasattr(self.basefile, "transunits"):
-      return len(self.basefile.transunits)
-    elif hasattr(self, "stats") and "total" in self.stats:
-      return len(self.stats["total"])
-    elif hasattr(self, "classify") and "total" in self.classify:
-      return len(self.classify["total"])
-    else:
-      # we hadn't read stats...
-      return len(self.getstats()["total"])
+    return self.getquickstats()["total"]
