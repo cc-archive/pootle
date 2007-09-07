@@ -1,0 +1,58 @@
+A short set of instructions for working with cPo
+================================================
+
+What is it?
+-----------
+Gettext offers a public interface for working with PO files called
+libgettextpo.  cPo is an attempt to:
+
+1) Create a Python wrapper for libgettextpo using SWIG
+2) Convert the current po.py class to use the wrapper
+
+What are the benefits?
+----------------------
+
+1) Speed - being in C it should be faster then we are at parsing
+2) Conformance - since PO is defined by Gettext out PO files will 
+   always be correct
+3) Maintainability - we won't need to implement new features in our
+   parser as the PO format advances
+
+Getting involved
+================
+
+I assume you are going to help code and test as that is what we need 
+at the moment.
+
+Building the Python wrapper
+---------------------------
+
+You will need:
+
+ - sources for Gettext
+ - swig
+ - gcc
+
+I run the following in the gettext libgettexpo directory
+
+cp $TOOLKITSRC/storage/gettext-po.i $GETTEXTSOURCE/..../libgettextpo
+swig -python gettext-po.i
+gcc -g -DHAVE_CONFIG_H -I. -I.. -I. -I. -I.. -I.. -I../src -I../src -I../intl -I../../gettext-runtime/intl -I/usr/include/python2.5 -c gettext-po.c gettext-po_wrap.c
+ld -shared gettext-po.o gettext-po_wrap.o xmalloc.o message.o po-xerror.o po-lex.o read-po.o read-catalog.o po-error.o xerror.o write-po.o write-catalog.o xstrdup.o str-list.o msgl-check.o format.o fstrcmp.o hash.o allocsa.o xallocsa.o error-progname.o xasprintf.o progname.o po-charset.o linebreak.o po-gram-gen.o read-catalog-abstract.o open-catalog.o mbswidth.o c-strstr.o msgl-ascii.o fwriteerror.o plural-table.o plural-eval.o plural-exp.o lock.o xvasprintf.o c-strcasecmp.o dir-list.o concatpath.o format-*.o gcd.o -o _gettextpo.so
+
+You'll now have _gettextpo.so and gettextpo.py - this is the libgettextpo wrapper and is used in cpo.py
+
+I'm sure there is a better way to do this against libgettextpo.so from the gettext-devel package.
+
+
+And now?
+--------
+
+Run pocount and it should count your PO files using cPo.
+Check out test_cpo.py it has tests simply carried over from test_po.py, some are failing see if you can fix them
+Look at any of the convertors and change 'import po' to import cpo as po'.  They should fail and will point out some unimplemented functions
+
+Notes
+-----
+We don't want to duplicate all missing po.py methods.  Some need to go into the base class or be cleaned up to use base class methods.
+Eg. ismsgstrblank() shouldn't be reimplemented it should go away.

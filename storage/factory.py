@@ -22,7 +22,8 @@
 """factory methods to build real storage objects that conform to base.py"""
 
 from translate.storage import base
-from translate.storage import po
+#from translate.storage import po
+from translate.storage import cpo as po
 from translate.storage import mo
 from translate.storage import csvl10n
 from translate.storage import qm

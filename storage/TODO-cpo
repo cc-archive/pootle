@@ -1,0 +1,23 @@
+The following are tasks that need to happen in cPo.
+
+libgettextpo
+------------
+* The wrapper assumes PO files come from files.  It would be nice if 
+  it could accept PO strings.  This would remove our need to write 
+  strings to files before parsing
+
+Wrapper
+-------
+* Solve the problem with xerror handler
+* Build using the .so for libgettextpo based on gettext-devel file 
+  instead of using the checked out sources
+* Integrate the building i.e. integrates running swig and compiling 
+  the wrapper into the toolkit build system ./setup.py
+
+cPo
+---
+* Reenable currently disabled tests and fix any issues
+
+Users
+-----
+* Convert user of po.py to cpo.py and solve problems as they occur
