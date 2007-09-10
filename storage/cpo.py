@@ -350,10 +350,10 @@ class pofile(po.pofile):
         return outputstring
 
     def parse(self, input):
-        #if hasattr(input, 'name'):
-        #    self.filename = input.name
-        #elif not getattr(self, 'filename', ''):
-        #    self.filename = ''
+        if hasattr(input, 'name'):
+            self.filename = input.name
+        elif not getattr(self, 'filename', ''):
+            self.filename = ''
         if hasattr(input, "read"):
             posrc = input.read()
             input.close()
