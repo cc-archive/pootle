@@ -311,17 +311,15 @@ class pounit(base.TranslationUnit):
         locations = []
         i = 0
         location = gpo.po_message_filepos(self._gpo_message, i)
-        while location is not None:
+        while location:
             locname = gpo.po_filepos_file(location)
             locline = gpo.po_filepos_start_line(location)
-            print "Dwayne %i" % locline
-            # XXX this should be (size_t)(-1)
-            if locline == 4294967295:
+            if locline == -1:
                 locstring = locname
             else:
                 locstring = locname + ":" + str(locline)
             locations.append(locstring)
-            i =+ 1
+            i += 1
             location = gpo.po_message_filepos(self._gpo_message, i)
         return locations
 
