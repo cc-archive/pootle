@@ -176,7 +176,7 @@ class TestPOUnit(test_base.TestTranslationUnit):
         unit = self.UnitClass("test source")
 
         kdetext = "_: Simple comment\nsimple text"
-        assert unit.extract_msgidcomments(kdetext) == "Simple comment"
+        assert unit._extract_msgidcomments(kdetext) == "Simple comment"
 
 class TestPO(test_base.TestTranslationStore):
     StoreClass = po.pofile

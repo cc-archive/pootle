@@ -295,7 +295,7 @@ class pounit(base.TranslationUnit):
     def hasplural(self):
         return gpo.po_message_msgid_plural(self._gpo_message) is not None
 
-    def extract_msgidcomments(self, text=None):
+    def _extract_msgidcomments(self, text=None):
         """Extract KDE style msgid comments from the unit.
         
         @rtype: String
