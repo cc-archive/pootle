@@ -320,32 +320,32 @@ msgstr "omskakel"
         assert unit.getcontext() == 'Verb.\nConverting from "something" to "something else".'
         assert unit.getnotes() == 'Test quotes, newlines and multiline.'
  
-#    def test_kde_context(self):
-#        """Tests that kde-style msgid comments can be retrieved via getcontext()."""
-#        posource = '''# Test comment
-##: source1
-#msgid ""
-#"_: Noun\n"
-#"convert"
-#msgstr "bekeerling"
-#
-## Test comment 2
-##: source2
-#msgid ""
-#"_: Verb. _: "
-#"The action of changing.\n"
-#"convert"
-#msgstr "omskakel"
-#'''
-#        pofile = self.poparse(posource)
-#        unit = pofile.units[0]
-#
-#        assert unit.getcontext() == 'Noun'
-#        assert unit.getnotes() == 'Test comment'
-#
-#        unit = pofile.units[1]
-#        assert unit.getcontext() == 'Verb. _: The action of changing.'
-#        assert unit.getnotes() == 'Test comment 2'
+    def test_kde_context(self):
+        """Tests that kde-style msgid comments can be retrieved via getcontext()."""
+        posource = '''# Test comment
+#: source1
+msgid ""
+"_: Noun\\n"
+"convert"
+msgstr "bekeerling"
+
+# Test comment 2
+#: source2
+msgid ""
+"_: Verb. _: "
+"The action of changing.\\n"
+"convert"
+msgstr "omskakel"
+'''
+        pofile = self.poparse(posource)
+        unit = pofile.units[0]
+
+        assert unit.getcontext() == 'Noun'
+        assert unit.getnotes() == ' Test comment'
+
+        unit = pofile.units[1]
+        assert unit.getcontext() == 'Verb. _: The action of changing.'
+        assert unit.getnotes() == ' Test comment 2'
 
 #    def test_merge_mixed_sources(self):
 #        """checks that merging works with different source location styles"""
@@ -423,24 +423,24 @@ msgstr "omskakel"
         print pofile
         assert len(pofile.units) == 2
 
-#    def test_output_str_unicode(self):
-#        """checks that we can str(element) which is in unicode"""
-#        posource = u'''#: nb\nmsgid "Norwegian Bokm\xe5l"\nmsgstr ""\n'''
-#        pofile = po.pofile(wStringIO.StringIO(posource.encode("UTF-8")), encoding="UTF-8")
-#        assert len(pofile.units) == 1
-#        print str(pofile)
-#        thepo = pofile.units[0]
+    def test_output_str_unicode(self):
+        """checks that we can str(pofile) which is in unicode"""
+        posource = u'''#: nb\nmsgid "Norwegian Bokm\xe5l"\nmsgstr ""\n'''
+        pofile = po.pofile(wStringIO.StringIO(posource.encode("UTF-8")), encoding="UTF-8")
+        assert len(pofile.units) == 1
+        print str(pofile)
+        thepo = pofile.units[0]
+#        assert str(pofile) == posource.encode("UTF-8")
+        # extra test: what if we set the msgid to a unicode? this happens in prop2po etc
+        thepo.source = u"Norwegian Bokm\xe5l"
 #        assert str(thepo) == posource.encode("UTF-8")
-#        # extra test: what if we set the msgid to a unicode? this happens in prop2po etc
-#        thepo.source = u"Norwegian Bokm\xe5l"
-#        assert str(thepo) == posource.encode("UTF-8")
-#        # Now if we set the msgstr to Unicode
-#        # this is an escaped half character (1/2)
-#        halfstr = "\xbd ...".decode("latin-1")
-#        thepo.target = halfstr
-#        assert halfstr in str(thepo).decode("UTF-8")
-#        thepo.target = halfstr.encode("UTF-8")
-#        assert halfstr.encode("UTF-8") in thepo.getoutput()
+        # Now if we set the msgstr to Unicode
+        # this is an escaped half character (1/2)
+        halfstr = "\xbd ...".decode("latin-1")
+        thepo.target = halfstr
+#        assert halfstr in str(pofile).decode("UTF-8")
+        thepo.target = halfstr.encode("UTF-8")
+#        assert halfstr.encode("UTF-8") in str(pofile)
 
     def test_plurals(self):
         posource = r'''msgid "Cow"
@@ -509,23 +509,19 @@ msgstr "Een\n"
         print pofile
         assert len(pofile.units) == 1
         assert str(pofile) == posource
-        assert pofile.units[0].othercomments == ["# other comment\n"]
-        assert pofile.units[0].automaticcomments == ["#. automatic comment\n"]
-        assert pofile.units[0].sourcecomments == ["#: source comment\n"]
-        assert pofile.units[0].typecomments == ["#, fuzzy\n"]
 
-#    def test_empty_lines_notes(self):
-#        """Tests that empty comment lines are preserved"""
-#        posource = r'''# License name
-##
-## license line 1
-## license line 2
-## license line 3
-#msgid ""
-#msgstr "POT-Creation-Date: 2006-03-08 17:30+0200\n"
-#'''
-#        pofile = self.poparse(posource)
-#        assert str(pofile) == posource
+    def test_empty_lines_notes(self):
+        """Tests that empty comment lines are preserved"""
+        posource = r'''# License name
+#
+# license line 1
+# license line 2
+# license line 3
+msgid ""
+msgstr "POT-Creation-Date: 2006-03-08 17:30+0200\n"
+'''
+        pofile = self.poparse(posource)
+        assert str(pofile) == posource
 
     def test_fuzzy(self):
         """checks that fuzzy functionality works as expected"""
@@ -653,24 +649,24 @@ msgstr[1] "Koeie"
         assert len(oldfile.units) == 1
         assert str(oldfile).find("# old lonesome comment\nmsgid") >= 0
     
-#    def test_malformed_units(self):
-#        """Test that we handle malformed units reasonably."""
-#        posource = 'msgid "thing\nmsgstr "ding"\nmsgid "Second thing"\nmsgstr "Tweede ding"\n'
-#        pofile = self.poparse(posource)
-#        assert len(pofile.units) == 2
+    def test_malformed_units(self):
+        """Test that we handle malformed units reasonably."""
+        posource = 'msgid "thing\nmsgstr "ding"\nmsgid "Second thing"\nmsgstr "Tweede ding"\n'
+        pofile = self.poparse(posource)
+        assert len(pofile.units) == 2
 
-#    def test_malformed_obsolete_units(self):
-#        """Test that we handle malformed obsolete units reasonably."""
-#        posource = '''msgid "thing
-#msgstr "ding"
-#
-##~ msgid "Second thing"
-##~ msgstr "Tweede ding"
-##~ msgid "Third thing"
-##~ msgstr "Derde ding"
-#'''
-#        pofile = self.poparse(posource)
-#        assert len(pofile.units) == 3
+    def test_malformed_obsolete_units(self):
+        """Test that we handle malformed obsolete units reasonably."""
+        posource = '''msgid "thing
+msgstr "ding"
+
+#~ msgid "Second thing"
+#~ msgstr "Tweede ding"
+#~ msgid "Third thing"
+#~ msgstr "Derde ding"
+'''
+        pofile = self.poparse(posource)
+        assert len(pofile.units) == 3
 
     def test_uniforum_po(self):
         """Test that we handle Uniforum PO files."""
