@@ -249,7 +249,7 @@ class pounit(base.TranslationUnit):
         return self.source == "" and self.target != ""
 
     def isblank(self):
-        return len(self.source) == 0 and len(self.target == 0)
+        return len(self.source) == 0 and len(self.target) == 0
 
     def hasmarkedcomment(self, commentmarker):
         commentmarker = "(%s)" % commentmarker
