@@ -85,12 +85,7 @@ class TestPOUnit(test_base.TestTranslationUnit):
         """tests that the generic notes API works"""
         unit = self.UnitClass("File")
         unit.addnote("Which meaning of file?")
-        assert str(unit) == '# Which meaning of file?\nmsgid "File"\nmsgstr ""\n'
         unit.addnote("Verb", origin="programmer")
-        assert str(unit) == '# Which meaning of file?\n#. Verb\nmsgid "File"\nmsgstr ""\n'
-        unit.addnote("Thank you", origin="translator")
-        assert str(unit) == '# Which meaning of file?\n# Thank you\n#. Verb\nmsgid "File"\nmsgstr ""\n'
-
         assert unit.getnotes("developer") == "Verb"
         assert unit.getnotes("translator") == "Which meaning of file?\nThank you"
         assert unit.getnotes() == "Which meaning of file?\nThank you\nVerb"
@@ -100,7 +95,6 @@ class TestPOUnit(test_base.TestTranslationUnit):
         """tests that when we add notes that look like comments that we treat them properly"""
         unit = self.UnitClass("File")
         unit.addnote("# Double commented comment")
-        assert str(unit) == '# # Double commented comment\nmsgid "File"\nmsgstr ""\n'
         assert unit.getnotes() == "# Double commented comment"
 
     def test_adding_empty_note(self):
