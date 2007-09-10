@@ -374,9 +374,9 @@ class pofile(po.pofile):
         self._header = gpo.po_file_domain_header(self._gpo_memory_file, None)
         if self._header:
             charset = gpo.po_header_field(self._header, "Content-Type")
-            charset = re.search("charset=([^\\s]+)", charset)
             if charset:
-                self._encoding = encodingToUse(charset.group(1))
+                charset = re.search("charset=([^\\s]+)", charset).group(1)
+            self._encoding = encodingToUse(charset)
         self._gpo_message_iterator = gpo.po_message_iterator(self._gpo_memory_file, None)
         newmessage = gpo.po_next_message(self._gpo_message_iterator)
         while newmessage:
