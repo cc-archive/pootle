@@ -233,15 +233,17 @@ msgstr "TRANSLATED-STRING"'''
         newunit = oldunit.copy()
         assert newunit == oldunit
 
-    def test_combine_msgidcomments(self):
-        """checks that we don't get duplicate msgid comments"""
+    def test_msgidcomments(self):
+        """checks that we handle msgid comments"""
         posource = 'msgid "test me"\nmsgstr ""'
         pofile = self.poparse(posource)
         thepo = pofile.units[0]
-        thepo.msgidcomments.append('"_: first comment\\n"')
-        thepo.msgidcomments.append('"_: second comment\\n"')
-        regenposource = str(pofile)
-        assert regenposource.count("_:") == 1
+        thepo.msgidcomment = "first comment"
+        print pofile
+        print "Blah", thepo.source
+        assert thepo.source == "test me"
+        thepo.msgidcomment = "second comment"
+        assert str(pofile).count("_:") == 1
 
 #    def test_merge_duplicates(self):
 #        """checks that merging duplicates works"""

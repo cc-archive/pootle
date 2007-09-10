@@ -126,7 +126,11 @@ class pounit(base.TranslationUnit):
             self.source = source
         elif gpo_message:
             self._gpo_message = gpo_message
-        self.msgidcomments = []
+
+    def setmsgidcomment(self, msgidcomment):
+        newsource = "_: " + msgidcomment + "\n" + self.source
+        self.source = newsource
+    msgidcomment = property(None, setmsgidcomment)
 
     def setmsgid_plural(self, msgid_plural): 
         if isinstance(msgid_plural, list):
@@ -136,10 +140,14 @@ class pounit(base.TranslationUnit):
 
     def getsource(self):
         def remove_msgid_comments(text):
-            if text.startswith('_:'):
-                return text.split('\n')[1:]
-            return text
-        singular = remove_msgid_comments(gpo.po_message_msgid(self._gpo_message))
+            if not text:
+                return text
+            remainder = re.search(r"_: .*\n(.*)", text)
+            if remainder:
+                return remainder.group(1)
+            else:
+                return text
+        multi = multistring(remove_msgid_comments(gpo.po_message_msgid(self._gpo_message)), self._encoding)
         if self.hasplural():
             pluralform = gpo.po_message_msgid_plural(self._gpo_message)
             if isinstance(pluralform, str):
@@ -330,8 +338,12 @@ class pounit(base.TranslationUnit):
         """
     
         if not text:
-            text = unquotefrompo(self.msgidcomments)
-        return text.split('\n')[0].replace('_: ', '', 1)
+            text = gpo.po_message_msgid(self._gpo_message)
+        msgidcomment = re.search("_: (.*)\n", text)
+        if msgidcomment:
+            return msgidcomment.group(1)
+        else:
+            return ""
 
     def getlocations(self):
         locations = []
