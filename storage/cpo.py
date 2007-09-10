@@ -325,6 +325,14 @@ class pounit(base.TranslationUnit):
             location = gpo.po_message_filepos(self._gpo_message, i)
         return locations
 
+    def getcontext(self):
+        msgctxt = gpo.po_message_msgctxt(self._gpo_message)
+        msgidcomment = self._extract_msgidcomments()
+        if msgctxt:
+            return msgctxt + msgidcomment
+        else:
+            return msgidcomment
+
 class pofile(po.pofile):
     UnitClass = pounit
     def __init__(self, inputfile=None, encoding=None, unitclass=pounit):
