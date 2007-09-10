@@ -337,9 +337,7 @@ class pofile(po.pofile):
         if self._gpo_memory_file:
             outputfile = os.tmpnam()
             f = open(outputfile, "w")
-            xerror = gpo.po_xerror_handler()
-	    gpo.po_xerror_handler_swigregister(xerror)
-            self._gpo_memory_file = gpo.po_file_write(self._gpo_memory_file, outputfile, xerror)
+            self._gpo_memory_file = gpo.po_file_write_v2(self._gpo_memory_file, outputfile, xerror_handler)
             f.close()
             f = open(outputfile, "r")
             outputstring = f.read()
@@ -363,8 +361,7 @@ class pofile(po.pofile):
             f.write(input)
             f.close()
             input = tmpfile
-        xerror = gpo.po_xerror_handler()
-        self._gpo_memory_file = gpo.po_file_read(input, xerror)
+        self._gpo_memory_file = gpo.po_file_read_v3(input, xerror_handler)
         if self._gpo_memory_file is None:
             print "Error:"
         if tmpfile:
