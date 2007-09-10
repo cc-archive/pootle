@@ -24,7 +24,8 @@ gettext-style .po (or .pot) files are used in translations for KDE et al (see kb
 
 from translate.misc.multistring import multistring
 from translate.storage import base
-from translate.storage import gettextpo as gpo
+from ctypes import *
+import ctypes.util
 try:
     import cStringIO as StringIO
 except ImportError:
@@ -32,6 +33,81 @@ except ImportError:
 import os
 import po
 import re
+
+STRING = c_char_p
+
+# Structures
+class po_message(Structure):
+    _fields_ = []
+
+# Function prototypes
+xerror_prototype = CFUNCTYPE(None, c_int, POINTER(po_message), STRING, c_uint, c_uint, c_int, STRING)
+xerror2_prototype = CFUNCTYPE(None, c_int, POINTER(po_message), STRING, c_uint, c_uint, c_int, STRING, POINTER(po_message), STRING, c_uint, c_uint, c_int, STRING)
+
+
+# Structures (error handler)
+class po_xerror_handler(Structure):
+    _fields_ = [('xerror', xerror_prototype),
+                ('xerror2', xerror2_prototype)]
+
+class po_error_handler(Structure):
+    _fields_ = [
+    ('error', CFUNCTYPE(None, c_int, c_int, STRING)),
+    ('error_at_line', CFUNCTYPE(None, c_int, c_int, STRING, c_uint, STRING)),
+    ('multiline_warning', CFUNCTYPE(None, STRING, STRING)),
+    ('multiline_error', CFUNCTYPE(None, STRING, STRING)),
+]
+
+# Callback functions for po_xerror_handler
+def xerror_cb(severity, message, filename, lineno, column, multilint_p, message_text):
+    print "xerror_cb", severity, message, filename, lineno, column, multilint_p, message_text
+
+def xerror2_cb(severity, message1, filename1, lineno1, column1, nultiline_p1, message_text1, message2, filename2, lineno2, column2, multiline_p2, message_text2):
+    print "xerror2_cb", severity, message1, filename1, lineno1, column1, nultiline_p1, message_text1, message2, filename2, lineno2, column2, multiline_p2, message_text2
+
+
+
+# Load libgettextpo
+lib_location = ctypes.util.find_library('gettextpo')
+gpo = cdll.LoadLibrary(lib_location)
+
+
+# Setup return and paramater types
+# File access
+gpo.po_file_read_v3.argtypes = [STRING, POINTER(po_xerror_handler)]
+gpo.po_file_write_v2.argtypes = [c_int, STRING, POINTER(po_xerror_handler)]
+gpo.po_file_write_v2.retype = c_int
+
+# Header
+gpo.po_file_domain_header.restype = STRING
+gpo.po_header_field.restype = STRING
+gpo.po_header_field.argtypes = [STRING, STRING]
+
+# Locations (filepos)
+gpo.po_filepos_file.restype = STRING
+gpo.po_message_filepos.restype = c_int
+gpo.po_message_filepos.argtypes = [c_int, c_int]
+
+# Message (get methods)
+gpo.po_message_comments.restype = STRING
+gpo.po_message_extracted_comments.restype = STRING
+gpo.po_message_prev_msgctxt.restype = STRING
+gpo.po_message_prev_msgid.restype = STRING
+gpo.po_message_prev_msgid_plural.restype = STRING
+gpo.po_message_msgctxt.restype = STRING
+gpo.po_message_msgid.restype = STRING
+gpo.po_message_msgid_plural.restype = STRING
+gpo.po_message_msgstr.restype = STRING
+gpo.po_message_msgstr_plural.restype = STRING
+
+# Message (set methods)
+gpo.po_message_set_comments.argtypes = [c_int, STRING]
+gpo.po_message_set_extracted_comments.argtypes = [c_int, STRING]
+
+# Setup the po_xerror_handler
+xerror_handler = po_xerror_handler()
+xerror_handler.xerror = xerror_prototype(xerror_cb)
+xerror_handler.xerror2 = xerror2_prototype(xerror2_cb)
 
 def quoteforpo(text):
     return po.quoteforpo(text)
