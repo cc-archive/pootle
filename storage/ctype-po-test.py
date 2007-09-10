@@ -24,8 +24,8 @@ xerror2 = xerror2_prototype(xerror2_cb)
 
 class po_xerror_handler(Structure):
     _fields_ = [
-        ('xerror', CFUNCTYPE(None, c_int, POINTER(po_message), STRING, c_uint, c_uint, c_int, STRING)),
-        ('xerror2', CFUNCTYPE(None, c_int, POINTER(po_message), STRING, c_uint, c_uint, c_int, STRING, POINTER(po_message), STRING, c_uint, c_uint, c_int, STRING)), ]
+        ('xerror', xerror_prototype),
+        ('xerror2', xerror2_prototype), ]
 
 class po_error_handler(Structure):
     _fields_ = [
