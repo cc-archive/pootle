@@ -42,7 +42,7 @@ class TestPOUnit(test_base.TestTranslationUnit):
     def test_plurals(self):
         """Tests that plurals are handled correctly."""
         unit = self.UnitClass("Cow")
-        unit.msgid_plural = ['"Cows"']
+        unit.msgid_plural = ["Cows"]
         assert isinstance(unit.source, multistring)
         assert unit.source.strings == ["Cow", "Cows"]
         assert unit.source == "Cow"
@@ -66,7 +66,7 @@ class TestPOUnit(test_base.TestTranslationUnit):
     def test_plural_reduction(self):
         """checks that reducing the number of plurals supplied works"""
         unit = self.UnitClass("Tree")
-        unit.msgid_plural = ['"Trees"']
+        unit.msgid_plural = ["Trees"]
         assert isinstance(unit.source, multistring)
         assert unit.source.strings == ["Tree", "Trees"]
         unit.target = multistring(["Boom", "Bome", "Baie Bome"])
