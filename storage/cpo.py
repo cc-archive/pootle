@@ -158,6 +158,7 @@ class pounit(base.TranslationUnit):
                 gpo.po_message_set_msgid_plural(self._gpo_message, source[1])
         else:
             gpo.po_message_set_msgid(self._gpo_message, source)
+            gpo.po_message_set_msgid_plural(self._gpo_message, None)
             
     source = property(getsource, setsource)
 
@@ -186,6 +187,13 @@ class pounit(base.TranslationUnit):
                 target = target[0]
             else:
                 raise ValueError("po msgid element has no plural but msgstr has %d elements (%s)" % (len(target), target))
+        if isinstance(target, (dict, list)):
+            i = 0
+            message = gpo.po_message_msgstr_plural(self._gpo_message, i)
+            while message is not None:
+                gpo.po_message_set_msgstr_plural(self._gpo_message, i, None)
+                i += 1
+                message = gpo.po_message_msgstr_plural(self._gpo_message, i)
         if isinstance(target, list):
             for i in range(len(target)):
                 targetstring = target[i]
