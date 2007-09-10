@@ -238,8 +238,6 @@ class pounit(base.TranslationUnit):
             newnotes = oldnotes + "\n" + text
         else:
             newnotes = text
-        print type(oldnotes)
-        print type(newnotes)
         if origin in ["programmer", "developer", "source code"]:
             gpo.po_message_set_extracted_comments(self._gpo_message, newnotes)
         else:
