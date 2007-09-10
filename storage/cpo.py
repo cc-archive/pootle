@@ -240,6 +240,24 @@ class pounit(base.TranslationUnit):
     def removenotes(self):
         gpo.po_message_set_comments(self._gpo_message, "")
 
+    def adderror(self, errorname, errortext):
+        """Adds an error message to this unit."""
+        text = u'(pofilter) %s: %s' % (errorname, errortext)
+        # Don't add the same error twice:
+        if text not in self.getnotes(origin='translator'):
+            self.addnote(text, origin="translator")
+
+    def geterrors(self):
+        """Get all error messages."""
+        notes = self.getnotes(origin="translator").split('\n')
+        errordict = {}
+        for note in notes:
+            if '(pofilter) ' in note:
+                error = note.replace('(pofilter) ', '')
+                errorname, errortext = error.split(': ')
+                errordict[errorname] = errortext
+        return errordict
+
     def copy(self):
         newpo = self.__class__()
         newpo._gpo_message = self._gpo_message
