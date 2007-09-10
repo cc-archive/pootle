@@ -141,10 +141,10 @@ class pounit(base.TranslationUnit):
             return text
         singular = remove_msgid_comments(gpo.po_message_msgid(self._gpo_message))
         if self.hasplural():
-            plural = gpo.po_message_msgid_plural(self._gpo_message)
-            multi = multistring([singular, plural], encoding=self._encoding)
-        else:
-            multi = multistring(singular, encoding=self._encoding)
+            pluralform = gpo.po_message_msgid_plural(self._gpo_message)
+            if isinstance(pluralform, str):
+                pluralform = pluralform.decode(self._encoding)
+            multi.strings.append(pluralform)
         return multi
 
     def setsource(self, source):
