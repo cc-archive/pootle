@@ -109,6 +109,9 @@ xerror_handler = po_xerror_handler()
 xerror_handler.xerror = xerror_prototype(xerror_cb)
 xerror_handler.xerror2 = xerror2_prototype(xerror2_cb)
 
+def escapeforpo(text):
+    return po.escapeforpo(text)
+
 def quoteforpo(text):
     return po.quoteforpo(text)
 
