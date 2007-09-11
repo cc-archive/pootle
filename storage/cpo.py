@@ -24,6 +24,7 @@ gettext-style .po (or .pot) files are used in translations for KDE et al (see kb
 
 from translate.misc.multistring import multistring
 from translate.storage import base
+from translate.misc import quote
 from ctypes import *
 import ctypes.util
 try:
@@ -124,8 +125,9 @@ def encodingToUse(encoding):
 class pounit(base.TranslationUnit):
     def __init__(self, source=None, encoding='utf-8', gpo_message=None):
         self._encoding = encoding
-        if source or source == "":
+        if not gpo_message:
             self._gpo_message = gpo.po_message_create()
+        if source or source == "":
             self.source = source
         elif gpo_message:
             self._gpo_message = gpo_message
@@ -380,6 +382,20 @@ class pofile(po.pofile):
         self._encoding = encoding
         if inputfile is not None:
             self.parse(inputfile)
+
+    def makeheader(self, **kwargs):
+        """create a header for the given filename. arguments are specially handled, kwargs added as key: value
+        pot_creation_date can be None (current date) or a value (datetime or string)
+        po_revision_date can be None (form), False (=pot_creation_date), True (=now), or a value (datetime or string)"""
+    
+        headerpo = self.UnitClass(encoding=self._encoding)
+        headerpo.markfuzzy()
+        headerpo.msgid = ['""']
+        headeritems = self.makeheaderdict(**kwargs)
+        headerpo.msgstr = ['""']
+        for (key, value) in headeritems.items():
+            headerpo.msgstr.append(quote.quotestr("%s: %s\\n" % (key, value)))
+        return headerpo
 
     def __str__(self):
         outputstring = ""
