@@ -1,0 +1,3244 @@
+2007-09-13 01:55  titvirak
+
+	* ui/Preference.ui, ui/Ui_Preference.py: Correct tabstops.
+
+2007-09-12 08:23  hokkakada
+
+	* modules/AboutEditor.py: small commit
+
+2007-09-12 08:19  hokkakada
+
+	* __version__.py: change version to 0.2 for full release
+
+2007-09-12 04:21  titvirak
+
+	* modules/Catalog.py, modules/TUview.py: Call updateRecentProject()
+	  each time after open project. Fix textChanged signal.
+
+2007-09-12 03:42  titvirak
+
+	* images/projectOpen.png, modules/Catalog.py,
+	  modules/MainEditor.py, modules/NewProject.py: Auto show Catalog
+	  window after created new project. Fix show properties from
+	  MainEditor. Improve icon.
+
+2007-09-11 10:04  titvirak
+
+	* modules/Catalog.py, modules/MainEditor.py, modules/NewProject.py:
+	  Move code to NewProject, keep codes relevant.
+
+2007-09-11 09:02  hokkakada
+
+	* TODO: update
+
+2007-09-11 09:01  hokkakada
+
+	* modules/Catalog.py, modules/CatalogSetting.py: just change the
+	  object name
+
+2007-09-11 08:49  hokkakada
+
+	* ui/TUview.ui, ui/Ui_TUview.py: allow tab in txttarget
+
+2007-09-11 07:58  hokkakada
+
+	* ui/Catalog.ui, ui/Ui_Catalog.py: change icons for project
+
+2007-09-11 07:47  hokkakada
+
+	* ui/MainEditor.ui, ui/Ui_MainEditor.py: uniform docstrings
+
+2007-09-11 07:18  hokkakada
+
+	* images/projectNew.png, images/projectOpen.png: new icons for
+	  projects
+
+2007-09-11 04:21  hokkakada
+
+	* ui/CatalogSetting.ui, ui/Ui_CatalogSetting.py: change title from
+	  Setting Catalog Manager to Catalog Manager Preferences
+
+2007-09-11 04:19  hokkakada
+
+	* ui/Catalog.ui, ui/Ui_Catalog.py: move Build TM to Project Menu
+
+2007-09-10 10:22  titvirak
+
+	* modules/TUview.py: Avoid targetChanged signal to enable save.
+
+2007-09-10 10:19  titvirak
+
+	* modules/Catalog.py, modules/MainEditor.py: Enable/disable
+	  properties action in MainEditor.
+
+2007-09-10 09:33  hokkakada
+
+	* ui/NewProject.ui, ui/Ui_NewProject.py: add whatsthis for New
+	  project dialog
+
+2007-09-10 08:05  titvirak
+
+	* modules/Catalog.py, ui/Catalog.ui, ui/Ui_Catalog.py: Fix set
+	  title. Update to use properties icon.
+
+2007-09-10 07:55  hokkakada
+
+	* images/editor.png, images/properties.png: add icons for editor
+	  and project properties
+
+2007-09-10 06:45  hokkakada
+
+	* ui/Ui_Catalog.py: update tooltips and whatsthis
+
+2007-09-10 03:34  titvirak
+
+	* modules/Catalog.py, modules/FindInCatalog.py: Add status when
+	  string not found. Mark string not found until it change to
+	  improve speed.
+
+2007-09-07 10:46  titvirak
+
+	* modules/NewProject.py: Fix get filename for save, and open
+	  project after save.
+
+2007-09-07 10:29  titvirak
+
+	* ui/Ui_CatalogSetting.py: Recompile ui.
+
+2007-09-07 10:13  sethchanratha
+
+	* ui/MainEditor.ui, ui/Ui_MainEditor.py: add properties sub menu
+	  under project
+
+2007-09-07 10:13  titvirak
+
+	* modules/Catalog.py, modules/CatalogSetting.py,
+	  modules/MainEditor.py, modules/NewProject.py, modules/World.py,
+	  ui/Catalog.ui, ui/CatalogSetting.ui, ui/NewProject.ui,
+	  ui/Ui_Catalog.py, ui/Ui_NewProject.py: Move code from
+	  CatalogSetting to NewProject. Add project properties (which use
+	  to be catalog setting). Recode and rename object's name in
+	  NewProject.
+
+2007-09-07 09:03  hokkakada
+
+	* modules/Operator.py: emit unit[0] to invoke undo if there is
+	  textChanged soon after setNewStore
+
+2007-09-07 03:48  hokkakada
+
+	* modules/pickleTM.py: change docstring style
+
+2007-09-07 03:46  hokkakada
+
+	* modules/Test_TUview.py: - Update docstring
+	  - fix testTextChanged because the function name was changed to
+	  emitTextChanged
+	  - remove unused code.
+
+2007-09-07 02:39  hokkakada
+
+	* modules/TUview.py: - Add docstring
+	  - Enable copy in source
+	  - Cleanup unused code
+
+2007-09-07 02:24  titvirak
+
+	* modules/Catalog.py, modules/NewProject.py: Adapt new project
+	  interface.
+
+2007-09-07 02:15  sethchanratha
+
+	* ui/NewProject.ui, ui/Ui_NewProject.py: update Newproject
+	  interface
+
+2007-09-06 11:03  titvirak
+
+	* modules/Catalog.py, modules/CatalogSetting.py, ui/Catalog.ui,
+	  ui/Ui_Catalog.py: Change catalog content to base on ini file. Add
+	  Save & Save As. Open last catalog file if it was not close
+	  previously.
+
+2007-09-06 11:02  sethchanratha
+
+	* modules/MainEditor.py: Clear and disable tableTM lookup after
+	  closing file
+
+2007-09-06 10:56  sethchanratha
+
+	* modules/FindInCatalog.py: press enter to find string in catalog
+
+2007-09-06 09:08  hokkakada
+
+	* modules/Test_tableTM.py, modules/tableTM.py: change docstrings
+	  style
+
+2007-09-06 09:05  hokkakada
+
+	* modules/Status.py, modules/Test_Status.py: add docstrings
+
+2007-09-06 08:55  hokkakada
+
+	* modules/Test_tmSettings.py, modules/tmSetting.py: change
+	  docstrings style
+
+2007-09-05 08:41  titvirak
+
+	* modules/Status.py, modules/Test_Status.py: Fix test cases for
+	  status.
+
+2007-09-05 08:28  titvirak
+
+	* modules/Operator.py, modules/Test_Operator.py: Fix test cases for
+	  operator.
+
+2007-09-05 02:40  titvirak
+
+	* modules/MainEditor.py: Shorten temporary message to 3 sec. and
+	  clear message immediately when 'found' signal is received.
+
+2007-09-05 02:17  hokkakada
+
+	* modules/Catalog.py: change docstrings style
+
+2007-09-04 08:36  sethchanratha
+
+	* modules/Catalog.py, modules/NewProject.py: fix Qsetting variable
+	  for new project configuration
+
+2007-09-04 07:41  hokkakada
+
+	* ui/Catalog.ui, ui/Ui_Catalog.py: set whatsThis back in Ui
+
+2007-09-04 05:16  hokkakada
+
+	* modules/Catalog.py: take out the whatsThis message and update
+	  docstring.
+
+2007-09-04 01:31  sethchanratha
+
+	* modules/Catalog.py, modules/FindInCatalog.py: set focus on
+	  lineEdit of FindInCatalog file
+
+2007-09-04 01:22  titvirak
+
+	* modules/Comment.py, modules/MainEditor.py: Use the way comment
+	  changed as in TUView.
+
+2007-09-03 10:15  sethchanratha
+
+	* modules/Catalog.py: change QMessage.question to QMessage.critical
+	  in Catalog
+
+2007-09-03 10:14  titvirak
+
+	* modules/Overview.py: Fix when press filter button, lost target
+	  text in overview.
+
+2007-08-30 10:00  sethchanratha
+
+	* ui/StatisticsDialog.ui, ui/Ui_StatisticsDialog.py: move
+	  untraslated to translate row and translate go back untranslated
+	  row in StatisticsDialog
+
+2007-08-30 09:36  titvirak
+
+	* modules/Operator.py: Select first unit after autotranslate.
+
+2007-08-30 09:24  sethchanratha
+
+	* modules/Catalog.py: keep catalog content when No is choose from
+	  dialog asking for deleting non existing openrecent project file
+
+2007-08-30 07:32  sethchanratha
+
+	* modules/MainEditor.py: connect signal for changing font and color
+	  in tableTM and tableGlossary lookup
+
+2007-08-30 05:00  sethchanratha
+
+	* modules/Catalog.py: fix keyboard selection and press enter to
+	  open file from catalog
+
+2007-08-30 04:18  titvirak
+
+	* modules/Catalog.py, modules/FindInCatalog.py,
+	  modules/MainEditor.py: Recode searchin catalog, now start search
+	  from seleted item to the rest.
+
+2007-08-30 04:13  hokkakada
+
+	* modules/Preference.py, modules/TableGlossary.py,
+	  modules/tableTM.py, ui/Preference.ui, ui/Ui_Preference.py: add
+	  the feature changing font and color for TM lookup table and
+	  glossary lookup table
+
+2007-08-29 08:26  sethchanratha
+
+	* ui/StatisticsDialog.ui, ui/Ui_StatisticsDialog.py: move
+	  untraslated to translate row and translate go back untranslated
+	  row in StatisticsDialog
+
+2007-08-29 04:59  titvirak
+
+	* modules/Find.py, modules/Operator.py: Search is interupt when
+	  reached file, colorize the search text box in search widget.
+
+2007-08-29 04:58  titvirak
+
+	* modules/MainEditor.py: Search is interupt when reached file,
+	  colorize the search text box in search widget.
+
+2007-08-29 02:20  sethchanratha
+
+	* modules/MainEditor.py, modules/tableTM.py: newunit only have
+	  candidate to fill in tableTM
+
+2007-08-23 07:06  sethchanratha
+
+	* modules/MainEditor.py: fix the always asking for save when open
+	  file in Catalog after closing MainEditor
+
+2007-08-23 06:57  hokkakada
+
+	* modules/Catalog.py: protect if no catalog path
+
+2007-08-22 05:01  sethchanratha
+
+	* modules/Catalog.py, modules/NewProject.py: disable contextmenu of
+	  catalog after click on non-existing project file
+
+2007-08-22 02:48  hokkakada
+
+	* modules/Catalog.py: improve the sort of other fields in Catalog
+
+2007-08-21 10:37  titvirak
+
+	* modules/Operator.py: Recode in search next/previous, code not
+	  fully work yet.
+
+2007-08-21 03:47  sethchanratha
+
+	* modules/Operator.py: improve code and enable save after clear all
+	  fuzzies
+
+2007-08-20 07:50  sethchanratha
+
+	* modules/TUview.py: add option for bringing cursor to begining of
+	  the first line
+
+2007-08-17 08:13  sethchanratha
+
+	* modules/NewProject.py: clear text in New Project Dialog when
+	  creating new project.
+
+2007-08-17 08:09  hokkakada
+
+	* modules/Preference.py: Add option for bringing cursor to the
+	  beginning of the first line
+
+2007-08-17 07:55  hokkakada
+
+	* ui/Preference.ui, ui/Ui_Preference.py: Add option for bringing
+	  cursor to the beginning of the first line
+
+2007-08-17 03:40  hokkakada
+
+	* modules/CatalogSetting.py, modules/NewProject.py,
+	  modules/tmSetting.py: Remember last directory for all file
+	  dialogs
+
+2007-08-17 02:56  sethchanratha
+
+	* modules/MainEditor.py: Disable Auto Translation if no file is
+	  opened
+
+2007-08-17 02:18  hokkakada
+
+	* modules/tmSetting.py: set the selection on the first row in TM
+	  and Glossary settings dialog
+
+2007-08-16 09:15  sethchanratha
+
+	* modules/Catalog.py: exchange catalog header order
+
+2007-08-16 07:02  sethchanratha
+
+	* modules/Operator.py: add messages and progress bar to clear all
+	  fuzzies
+
+2007-08-16 06:35  sethchanratha
+
+	* modules/TUview.py: move cursor to home txtTarget
+
+2007-08-15 03:24  sethchanratha
+
+	* modules/Catalog.py: improve the code of clear project path from
+	  openrecentproject in catalog and clear catalog tree view when
+	  project file doesn't exit
+
+2007-08-15 02:32  sethchanratha
+
+	* modules/Catalog.py, modules/MainEditor.py: improve the code of
+	  file status in catalog after save from mainEditor
+
+2007-08-14 10:39  sethchanratha
+
+	* modules/Catalog.py: enable sort in catalog
+
+2007-08-14 09:04  hokkakada
+
+	* modules/Catalog.py: set the selection on the first item soon
+	  after loading the items to the Catalog treeview and improve the
+	  moveup and movedown code.
+
+2007-08-13 10:32  sethchanratha
+
+	* ui/Catalog.ui, ui/Ui_Catalog.py: close project
+
+2007-08-13 10:31  sethchanratha
+
+	* modules/Catalog.py: Close project
+
+2007-08-13 04:40  sethchanratha
+
+	* modules/Catalog.py: Unable using keyboard to selete item in
+	  catalog list
+
+2007-08-10 09:07  titvirak
+
+	* modules/FileDialog.py, modules/highlighter.py: small fix.
+
+2007-08-10 08:36  titvirak
+
+	* modules/highlighter.py, ui/FileDialog.ui, ui/Ui_FileDialog.py,
+	  ui/Ui_MainEditor.py: Remove FileDialog ui, which no longer use.
+
+2007-08-10 08:32  titvirak
+
+	* modules/CatalogSetting.py, modules/FileAction.py,
+	  modules/FileDialog.py, modules/NewProject.py, modules/World.py,
+	  modules/tmSetting.py: Change to use FileDialog.py which get
+	  directory or filenames.
+
+2007-08-07 07:38  sethchanratha
+
+	* modules/MainEditor.py, modules/Operator.py: add current index at
+	  status bar
+
+2007-08-06 09:50  sethchanratha
+
+	* modules/Catalog.py, modules/MainEditor.py, modules/Operator.py,
+	  modules/Status.py: Save file in mainEditor then update statistic
+	  of catalog manager
+
+2007-08-03 05:02  titvirak
+
+	* modules/Find.py, modules/MainEditor.py, modules/Operator.py:
+	  Improve find to ignore & (acceleration key).
+
+2007-08-02 10:21  sethchanratha
+
+	* modules/Catalog.py: Disable a message box when open recent
+	  project file is deleted or moved to elsewhere
+
+2007-08-02 08:58  sethchanratha
+
+	* ui/Catalog.ui, ui/Ui_Catalog.py: stop timer of progressbar
+
+2007-08-02 08:13  sethchanratha
+
+	* modules/Catalog.py: Disable context menu of Catalog when there is
+	  no items in treeview
+
+2007-07-31 09:55  sethchanratha
+
+	* modules/NewProject.py: Fix the setting project path signal
+
+2007-07-31 09:54  titvirak
+
+	* modules/TUview.py: Simiply the updateView().
+
+2007-07-31 08:45  sethchanratha
+
+	* ui/Preference.ui, ui/Ui_Preference.py: adding adjust all fonts
+	  button in preference
+
+2007-07-31 08:44  sethchanratha
+
+	* modules/Preference.py: adding adjust all fonts button in
+	  preference
+
+2007-07-30 04:34  titvirak
+
+	* modules/MainEditor.py, modules/Operator.py: Improve code of
+	  toggle fuzzy and save.
+
+2007-07-30 03:21  titvirak
+
+	* modules/CatalogSetting.py: Fix wrong use of argument in
+	  QFileDialog.
+
+2007-07-27 10:16  hokkakada
+
+	* modules/MainEditor.py, modules/Operator.py, modules/TUview.py,
+	  modules/tableTM.py: Enable undo/redo after copy translation to
+	  target
+
+2007-07-27 09:46  titvirak
+
+	* modules/MainEditor.py: Set content modified to False when file
+	  has closed.
+
+2007-07-27 09:29  titvirak
+
+	* modules/MainEditor.py, modules/Operator.py, modules/Overview.py,
+	  modules/TUview.py: Fix save file, do not have to switch in and
+	  out.
+
+2007-07-27 08:50  titvirak
+
+	* modules/Catalog.py, modules/CatalogSetting.py, ui/Catalog.ui,
+	  ui/CatalogSetting.ui, ui/Ui_Catalog.py, ui/Ui_CatalogSetting.py:
+	  Improve layout. Use QFileDialog instead of FileDialog.py
+
+2007-07-27 08:35  titvirak
+
+	* pootling-editor.py: fix open filename path.
+
+2007-07-27 08:32  hokkakada
+
+	* modules/TUview.py: add an entry to context menu of source in
+	  Detail view: Copy term definition to the cursor position in
+	  target
+
+2007-07-19 09:50  hokkakada
+
+	* modules/MainEditor.py, modules/Operator.py: Add Clear All Fuzzies
+	  under Edit menu.
+
+2007-07-19 09:49  hokkakada
+
+	* ui/MainEditor.ui, ui/Ui_MainEditor.py: Add Clear All Fuzzies
+	  under Edit menu.
+
+2007-07-16 04:17  hokkakada
+
+	* ui/FindInCatalog.ui, ui/Preference.ui, ui/Ui_FindInCatalog.py,
+	  ui/Ui_Preference.py: update UI
+
+2007-07-16 03:26  hokkakada
+
+	* modules/AboutEditor.py, modules/CatalogSetting.py,
+	  modules/FileAction.py, modules/FileDialog.py, modules/Find.py,
+	  modules/Header.py, modules/MainEditor.py, modules/NewProject.py,
+	  modules/Overview.py, modules/Preference.py,
+	  modules/StatisticsDialog.py, modules/Status.py,
+	  modules/TableGlossary.py, modules/Test_Comment.py,
+	  modules/Test_Status.py, modules/Test_TUview.py,
+	  modules/buildpootling.py, modules/pickleTM.py,
+	  modules/tableTM.py, modules/tmSetting.py: change header of each
+	  file to the correct utf-8.
+
+2007-07-10 03:16  hokkakada
+
+	* modules/MainEditor.py, pootling-editor.py: the idea of using -p
+	  is confusing the user. This commit, Pootling will find the
+	  Pootling directory by its own.
+
+2007-07-09 10:00  hokkakada
+
+	* modules/MainEditor.py, pootling-editor.py: fix icons display if
+	  pootling is installed in /usr/lib and not /usr/local/lib.
+
+2007-07-09 08:03  hokkakada
+
+	* __version__.py, modules/AboutEditor.py, modules/Catalog.py,
+	  modules/Header.py, modules/MainEditor.py, modules/Operator.py,
+	  modules/Test_Operator.py: fixed import __version__ and the
+	  version number with a space [Thanks to Nekral]
+
+2007-07-09 07:19  hokkakada
+
+	* __version__.py: change the version number for the Release
+	  Candidate.
+
+2007-07-09 07:14  hokkakada
+
+	* modules/AboutEditor.py, modules/Catalog.py, modules/Comment.py,
+	  modules/FileAction.py, modules/FileDialog.py, modules/Find.py,
+	  modules/FindInCatalog.py, modules/Header.py,
+	  modules/MainEditor.py, modules/NewProject.py,
+	  modules/Operator.py, modules/Overview.py, modules/Preference.py,
+	  modules/Status.py, modules/TUview.py, modules/TableGlossary.py,
+	  modules/Test_Comment.py, modules/Test_FileAction.py,
+	  modules/Test_Find.py, modules/Test_Header.py,
+	  modules/Test_Operator.py, modules/Test_Status.py,
+	  modules/Test_TUview.py, modules/Test_catalogSettings.py,
+	  modules/Test_pickleTM.py, modules/Test_tableTM.py,
+	  modules/Test_tmSettings.py, modules/World.py,
+	  modules/buildpootling.py, modules/highlighter.py,
+	  modules/pickleTM.py, modules/tableTM.py, modules/tmSetting.py:
+	  Change the copyright of each file
+
+2007-07-09 06:51  hokkakada
+
+	* pootling-editor.py: update version number
+
+2007-07-09 06:50  hokkakada
+
+	* README.TXT: update before release [Thanks Friedel for helping
+	  reviewing]
+
+2007-07-09 01:42  hokkakada
+
+	* modules/Preference.py: remove the line that is introduced in
+	  Qt4.2 only.
+
+2007-07-06 10:15  titvirak
+
+	* modules/CatalogSetting.py: Small cleanup.
+
+2007-07-06 09:56  titvirak
+
+	* modules/Catalog.py, modules/CatalogSetting.py: Fix open ini file,
+	  remember settings.
+
+2007-07-06 09:30  hokkakada
+
+	* TODO: more tasks
+
+2007-07-06 09:22  sethchanratha
+
+	* modules/NewProject.py: clean up code and change file of type
+
+2007-07-06 09:20  hokkakada
+
+	* modules/Preference.py: temporary hide add translation to TM. we
+	  cannot finish it for this release
+
+2007-07-06 08:55  hokkakada
+
+	* modules/Test_Comment.py: fix testTextChange and
+	  testEmitCommentChange
+
+2007-07-06 08:43  titvirak
+
+	* modules/TUview.py: Fix set number of target's strings according
+	  to plural form.
+
+2007-07-06 07:12  titvirak
+
+	* modules/Overview.py: Unmark unit's state while keeping plural
+	  mark.
+
+2007-07-06 07:05  hokkakada
+
+	* modules/pickleTM.py: protect if filename is None.
+
+2007-07-06 05:47  hokkakada
+
+	* modules/Test_Comment.py: correct misspell
+
+2007-07-06 05:46  hokkakada
+
+	* modules/Operator.py: make header comment work with unicode
+	  string.
+
+2007-07-06 05:45  hokkakada
+
+	* modules/Test_catalogSettings.py: change comment and take out the
+	  unused import statement
+
+2007-07-06 05:37  hokkakada
+
+	* modules/CatalogSetting.py, modules/NewProject.py: remove version
+	  from here
+
+2007-07-06 05:36  hokkakada
+
+	* modules/Catalog.py: update docstrings
+
+2007-07-06 04:34  titvirak
+
+	* modules/Overview.py: Fix double click on item which clear fuzzy
+	  mark.
+
+2007-07-06 04:30  titvirak
+
+	* modules/TUview.py: Fix text changed signal.
+
+2007-07-06 04:25  titvirak
+
+	* modules/TUview.py: Fix set number of tab according to plural
+	  form.
+
+2007-07-06 04:17  titvirak
+
+	* modules/Overview.py: Mark plural strings, handle strings only the
+	  first plural form.
+
+2007-07-06 04:02  titvirak
+
+	* images/note.png, images/plural.png, images/pluralfuzzy.png:
+	  Modified note, add plural and plural fuzzy icons.
+
+2007-07-06 03:53  titvirak
+
+	* modules/Status.py, modules/TUview.py, modules/World.py: Add
+	  plural to x_unitState.
+
+2007-07-06 01:57  titvirak
+
+	* modules/TUview.py: Recode of showing singular/plural strings.
+
+2007-07-05 09:12  sethchanratha
+
+	* modules/Catalog.py: Fix set enabled on action BuildTM when
+	  treewidget have item
+
+2007-07-05 08:24  sethchanratha
+
+	* modules/Catalog.py: Fix signal of catalogPath is empty. icons on
+	  treewidget of toolbar is disabled
+
+2007-07-05 04:08  sethchanratha
+
+	* ui/CatalogSetting.ui, ui/Ui_CatalogSetting.py: change what's this
+	  and tooltip
+
+2007-07-05 02:12  hokkakada
+
+	* TODO: update the TODO
+
+2007-07-04 03:00  titvirak
+
+	* modules/Overview.py: Fix focus in and out on fuzzy string.
+
+2007-07-04 02:07  titvirak
+
+	* modules/FileAction.py: Convert QString to unicode in
+	  setFileProperty to avoid error.
+
+2007-07-03 11:33  hokkakada
+
+	* ui/MainEditor.ui, ui/Ui_MainEditor.py: Take out TM toolbar
+
+2007-07-03 11:32  hokkakada
+
+	* ui/Preference.ui, ui/Ui_Preference.py: Change terminology
+
+2007-07-03 11:31  hokkakada
+
+	* ui/Header.ui, ui/Ui_Header.py: Add spliter
+
+2007-07-03 07:26  titvirak
+
+	* modules/tableTM.py: Change text to be consistance to main menu.
+
+2007-07-03 07:06  titvirak
+
+	* modules/FileAction.py, modules/MainEditor.py: Show correct file
+	  extension when save, file is open by command or dialog or from
+	  recent menu.
+
+2007-07-03 01:45  titvirak
+
+	* modules/FileAction.py: Remember last open file's directory.
+
+2007-07-03 01:44  titvirak
+
+	* modules/Comment.py: Fix set cursor position out of range.
+
+2007-07-02 08:18  hokkakada
+
+	* pootling-editor.py: fix to be able to run from command line with
+	  the absolute path of the filename
+
+2007-07-02 01:40  titvirak
+
+	* modules/tableTM.py: Display only percentage of similarity,
+	  unit.getnotes() return unwanted string for similarity.
+
+2007-06-29 10:05  hokkakada
+
+	* modules/tableTM.py: Fix not always go to the first strings.
+
+2007-06-29 09:43  titvirak
+
+	* modules/Comment.py, modules/TUview.py: Avoid send TargetChanged
+	  unnecessary.
+
+2007-06-29 09:20  titvirak
+
+	* modules/Operator.py, modules/tmSetting.py: tmSetting.py: save
+	  pickle filename to settings. Operator.py: protect error when
+	  tmMatcher is None.
+
+2007-06-29 08:36  hokkakada
+
+	* CHANGELOG.TXT: update changelog for the release version 0.2 rc1.
+
+2007-06-29 07:30  titvirak
+
+	* modules/MainEditor.py: Remove print statement.
+
+2007-06-29 05:38  hokkakada
+
+	* README.TXT: update for the release 0.2 rc1 (draft)
+
+2007-06-29 04:27  titvirak
+
+	* modules/MainEditor.py: Fix syntax error (editor not self).
+
+2007-06-29 04:11  titvirak
+
+	* modules/FileAction.py, modules/MainEditor.py,
+	  modules/Operator.py: Fix save when close file.
+
+2007-06-29 02:16  titvirak
+
+	* modules/FileAction.py, modules/MainEditor.py,
+	  modules/Operator.py: Fix close file, changing function names.
+	  Save file still error.
+
+2007-06-28 10:02  hokkakada
+
+	* modules/CatalogSetting.py, modules/Test_catalogSettings.py: add
+	  new testcase and update docstrings
+
+2007-06-28 09:20  titvirak
+
+	* modules/MainEditor.py, modules/Operator.py,
+	  modules/Test_Operator.py: change getModified to isModified.
+
+2007-06-28 08:33  hokkakada
+
+	* modules/tableTM.py: fix docstrings
+
+2007-06-28 08:29  titvirak
+
+	* modules/tmSetting.py: Fix save setting.
+
+2007-06-28 08:27  hokkakada
+
+	* modules/Test_tableTM.py: more testcases
+
+2007-06-28 08:13  titvirak
+
+	* modules/tmSetting.py: Recode to support build tm from catalog.
+
+2007-06-28 07:39  titvirak
+
+	* modules/pickleTM.py: remove pickle file if dump None object.
+
+2007-06-28 05:12  hokkakada
+
+	* modules/Test_tableTM.py: Add new test
+
+2007-06-28 03:47  hokkakada
+
+	* modules/Comment.py, modules/Overview.py: fix to handle bad xliff
+	  file, no <target>
+
+2007-06-28 03:46  hokkakada
+
+	* modules/CatalogSetting.py, modules/highlighter.py: update
+	  docstrings
+
+2007-06-28 03:45  hokkakada
+
+	* modules/MainEditor.py: Update code for openRecent
+
+2007-06-28 03:22  hokkakada
+
+	* modules/tmSetting.py: Update docstrings
+
+2007-06-28 03:05  hokkakada
+
+	* modules/Test_tmSettings.py: Fix and add testBuildMatcher
+
+2007-06-27 10:57  hokkakada
+
+	* modules/Test_tmSettings.py: add more tests
+
+2007-06-27 08:58  hokkakada
+
+	* modules/Test_pickleTM.py: use the correct class to creat xliff
+	  store
+
+2007-06-27 05:08  titvirak
+
+	* modules/MainEditor.py, modules/tableTM.py: Recode of how
+	  translations is displayed, remove unused signals and functions in
+	  tableTM, adjust in MainEditor.
+
+2007-06-27 05:03  titvirak
+
+	* modules/tmSetting.py: Fix load or add tm of files that can't be
+	  opened.
+
+2007-06-27 03:57  titvirak
+
+	* modules/TUview.py: Fix iteration on None.
+
+2007-06-26 04:52  hokkakada
+
+	* modules/Test_pickleTM.py: New testcase
+
+2007-06-26 03:53  hokkakada
+
+	* modules/Test_Operator.py: fix more testcases
+
+2007-06-26 03:51  hokkakada
+
+	* ui/Ui_tmSetting.py, ui/tmSetting.ui: Fixed tooltips not to show
+	  jumble of HTML formatting
+
+2007-06-25 11:46  hokkakada
+
+	* modules/Operator.py: emit newUnits only have units.
+
+2007-06-25 11:45  hokkakada
+
+	* modules/Test_Operator.py: Fixed and add more Testcase
+
+2007-06-25 10:27  sethchanratha
+
+	* ui/Catalog.ui, ui/Ui_Catalog.py: set tooltip and what's this
+
+2007-06-25 09:27  dwaynebailey
+
+	* po, po/pootling.pot, po/pootling.ts: First draft translation
+	  files commited. Seems lupdate has
+	  problems with the .py files probably need a newer pylupdate.
+	  There are some strings that need fixing, joining, etc.
+	  This now makes it easier to achieve that.
+
+2007-06-25 09:21  dwaynebailey
+
+	* pootling.pro: Put the translations into the po/ directory
+
+2007-06-25 07:58  hokkakada
+
+	* modules/FileAction.py: Update docstrings and Fixed emitFileSaved
+	  signal
+
+2007-06-25 07:50  hokkakada
+
+	* modules/Test_FileAction.py: fixed testcase and update docstring
+
+2007-06-25 05:44  hokkakada
+
+	* modules/TUview.py, modules/Test_TUview.py: Fixed testcase and
+	  docstrings
+
+2007-06-25 04:06  titvirak
+
+	* modules/Catalog.py: Fix attribute error, signal connect to
+	  Catalog updateProgress.
+
+2007-06-25 04:00  titvirak
+
+	* modules/Catalog.py, modules/MainEditor.py, modules/tmSetting.py:
+	  Update progress bar in catalog when use build tm from catalog.
+
+2007-06-25 03:39  sethchanratha
+
+	* modules/MainEditor.py: change unit index to string number of goto
+	  dialog
+
+2007-06-25 02:45  sethchanratha
+
+	* modules/Catalog.py: fix error when open file of project menu
+
+2007-06-23 12:10  dwaynebailey
+
+	* createpootlingpot: Adapt to run on platforms with versions of
+	  lupdate for Qt3
+
+2007-06-23 11:48  dwaynebailey
+
+	* modules/AboutEditor.py: Nobody should have to translate the GNU
+	  GPL here.
+
+2007-06-22 10:38  titvirak
+
+	* modules/MainEditor.py, modules/Operator.py, modules/tableTM.py:
+	  Search in tm only if tmTable is shown.
+
+2007-06-22 10:15  sethchanratha
+
+	* modules/Catalog.py, modules/MainEditor.py, modules/tmSetting.py:
+	  build TM in Catalog and fix set window title of catalog
+
+2007-06-22 10:02  titvirak
+
+	* modules/MainEditor.py, modules/Operator.py, modules/TUview.py,
+	  modules/tableTM.py: Move code that trigger search TM from TUview
+	  to Operator, change many signals.
+
+2007-06-22 09:44  hokkakada
+
+	* modules/tableTM.py: change tooltips style
+
+2007-06-22 09:41  hokkakada
+
+	* modules/Operator.py: valid xliff file can has no <target>
+
+2007-06-22 09:18  hokkakada
+
+	* modules/FileAction.py: Fix file extension
+
+2007-06-22 09:06  titvirak
+
+	* modules/Overview.py, modules/TUview.py: add self.tr() to enable
+	  translation.
+
+2007-06-22 04:10  hokkakada
+
+	* modules/Comment.py: Forget to change varible.
+
+2007-06-22 04:02  hokkakada
+
+	* modules/Comment.py, modules/Test_Comment.py: update docstrings
+	  and add more tests
+
+2007-06-22 03:39  sethchanratha
+
+	* ui/MainEditor.ui, ui/Ui_MainEditor.py: Change title, tooltip,
+	  what's this strings.
+
+2007-06-22 01:57  sethchanratha
+
+	* modules/tmSetting.py: Able to save setting when file name is
+	  empty.
+
+2007-06-21 10:10  titvirak
+
+	* modules/Overview.py: Fix edit string on target field, reset
+	  textBeforeEdit.
+
+2007-06-21 09:47  titvirak
+
+	* modules/Overview.py: Fix edit string on target field.
+
+2007-06-21 09:37  titvirak
+
+	* modules/Comment.py: Add argument to setSearchString() to fix
+	  error.
+
+2007-06-21 09:06  sethchanratha
+
+	* modules/NewProject.py: fix code that unable to set path
+
+2007-06-21 08:17  titvirak
+
+	* modules/TUview.py: Fix replace translation if source and target
+	  is the same.
+
+2007-06-21 08:01  titvirak
+
+	* modules/highlighter.py: Improve variable highlight.
+
+2007-06-21 07:51  titvirak
+
+	* modules/Overview.py: Display string only one line in overview,
+	  more line will display with three dots. Immediate edit on
+	  overview target not work yet.
+
+2007-06-21 01:59  titvirak
+
+	* modules/Overview.py: use locolizable string for context menu.
+
+2007-06-20 10:36  sethchanratha
+
+	* modules/Catalog.py: set window title of catalog
+
+2007-06-20 10:11  sethchanratha
+
+	* ui/Catalog.ui, ui/Ui_Catalog.py: take out quit icon from toolbar
+
+2007-06-20 10:05  sethchanratha
+
+	* modules/Catalog.py: set location of filename to list Widget of
+	  Catalog Setting when click open recent project both Catalog and
+	  MainEditor.
+
+2007-06-20 09:06  hokkakada
+
+	* modules/Operator.py: handle not well formed .xlf file
+
+2007-06-20 04:02  titvirak
+
+	* modules/TUview.py: add setTargetText() and make undo works when
+	  replace string in target.
+
+2007-06-20 03:21  titvirak
+
+	* modules/TUview.py: use locolizable string for context menu, make
+	  undo works when copy source to target.
+
+2007-06-19 12:13  hokkakada
+
+	* modules/Operator.py: forget to remove the import statement that
+	  no longer used
+
+2007-06-19 11:53  hokkakada
+
+	* modules/Operator.py, modules/pickleTM.py, modules/tmSetting.py:
+	  change Pootling because toolkit in trunk or 1.0.1 is able to
+	  handle pickling problem
+
+2007-06-19 10:38  sethchanratha
+
+	* ui/MainEditor.ui, ui/Ui_MainEditor.py: move open recent on
+	  project menu
+
+2007-06-19 10:36  sethchanratha
+
+	* modules/MainEditor.py: remove open recent on project menu
+
+2007-06-19 09:12  hokkakada
+
+	* modules/tableTM.py: change to use tooltip for TM info: such as
+	  Found in, translator, date
+
+2007-06-19 09:10  hokkakada
+
+	* images/TM_info.png: an icon for TM info
+
+2007-06-19 07:09  hokkakada
+
+	* ui/Header.ui, ui/Ui_Header.py: making the Header dialog bigger
+	  enough
+
+2007-06-19 07:08  hokkakada
+
+	* ui/TableTM.ui, ui/Ui_TableTM.py: takeout the extra info of TM
+	  because it takes a lot of space. Consider having a tooltip
+	  instead.[Suggested by Javier]
+
+2007-06-19 06:47  hokkakada
+
+	* modules/Header.py: takeout %z because it doesn't work on
+	  Windows.[contributed by Dwayne and Andreas
+
+2007-06-19 02:49  sethchanratha
+
+	* ui/Catalog.ui, ui/Ui_Catalog.py: add open recent on project menu
+
+2007-06-19 02:40  hokkakada
+
+	* modules/FileAction.py: Fix Terminology.(Thank Dwayne)
+
+2007-06-15 10:18  sethchanratha
+
+	* ui/MainEditor.ui, ui/Ui_MainEditor.py: fixed terminologies to
+	  usestring, reorder show/hide strings buttons and take out
+	  selectAll action from edit menu
+
+2007-06-15 10:16  sethchanratha
+
+	* modules/MainEditor.py: fixed terminologies to usestring, reorder
+	  show/hide strings buttons and take out selectAll action from edit
+	  menu
+
+2007-06-15 10:03  titvirak
+
+	* modules/TUview.py: Improve copy TM context menu text, can replace
+	  term.
+
+2007-06-15 09:07  sethchanratha
+
+	* ui/MainEditor.ui, ui/Ui_MainEditor.py: take out exit icon from
+	  toolbar
+
+2007-06-15 08:57  hokkakada
+
+	* modules/MainEditor.py: Fix the title bar to display the fullpath
+	  after save as and fix bookmark
+
+2007-06-15 08:37  titvirak
+
+	* modules/Overview.py: Improve copy TM context menu text.
+
+2007-06-15 08:34  hokkakada
+
+	* modules/FileAction.py: stop hard coding for file extension and
+	  show only supported filetype for Save As
+
+2007-06-15 03:32  sethchanratha
+
+	* modules/Catalog.py, modules/NewProject.py: fixed open recent
+	  project of catalog
+
+2007-06-14 09:33  hokkakada
+
+	* modules/MainEditor.py: set preference soon after open the program
+	  instead.
+
+2007-06-14 09:18  hokkakada
+
+	* modules/Header.py: protect if otherComments is not string type.
+
+2007-06-14 08:35  titvirak
+
+	* modules/Overview.py, modules/TUview.py: Add separator for context
+	  menu.
+
+2007-06-14 08:32  titvirak
+
+	* modules/tableTM.py: Improve similarity field.
+
+2007-06-14 08:09  titvirak
+
+	* modules/Operator.py: Fix lookup the right unit when open from
+	  table TM.
+
+2007-06-14 07:47  titvirak
+
+	* modules/tableTM.py: Fix sort TM table.
+
+2007-06-14 07:46  hokkakada
+
+	* modules/Header.py: make sure that it'ss not error while saving
+	  (with the option Update header on save) and Open Header dialog
+	  wasn't opened.
+
+2007-06-14 06:01  hokkakada
+
+	* modules/Header.py: Append last translator to header's comment to
+	  keep track of translator.
+
+2007-06-14 05:41  hokkakada
+
+	* modules/MainEditor.py, modules/tableTM.py: If tableTM is closed,
+	  dont search, though the option Lookup in TM is checked.
+
+2007-06-14 04:37  hokkakada
+
+	* modules/pickleTM.py: use cPickle faster than Pickle
+
+2007-06-14 04:36  hokkakada
+
+	* modules/Header.py: Fix the cancel button of dialog asking to fill
+	  the personal info.
+
+2007-06-14 04:08  titvirak
+
+	* modules/MainEditor.py, modules/Operator.py, modules/Overview.py:
+	  Create menu to copy translation to target.
+
+2007-06-14 04:00  titvirak
+
+	* modules/TUview.py: recode create menu.
+
+2007-06-14 03:26  titvirak
+
+	* modules/highlighter.py: improve variables highlight, whitespace
+	  changed.
+
+2007-06-14 02:59  titvirak
+
+	* modules/highlighter.py: add new variable: MyExample,
+	  HelloWorld...
+
+2007-06-14 02:17  titvirak
+
+	* modules/TUview.py: create setCursorToEnd() to make cursor show at
+	  the end of text.
+
+2007-06-14 01:48  titvirak
+
+	* modules/Catalog.py, modules/MainEditor.py: Make search function
+	  work. Connect signal & slot to operator.
+
+2007-06-13 10:29  sethchanratha
+
+	* modules/Catalog.py, modules/NewProject.py: Open recent project
+
+2007-06-13 09:40  titvirak
+
+	* modules/Operator.py: fix index out of range, and none type error.
+
+2007-06-13 09:31  hokkakada
+
+	* modules/Operator.py: set LevenshteinComparer back for seaching in
+	  TM
+
+2007-06-13 09:30  hokkakada
+
+	* modules/tmSetting.py: Set the default max_string_len to 100. Set
+	  TerminologyComparer to matcher as the benefit of pickling. Change
+	  to the correct order:dump first then emit signal.
+
+2007-06-13 09:00  titvirak
+
+	* modules/TableGlossary.py: fix fill table when no candidate.
+
+2007-06-13 08:08  titvirak
+
+	* modules/Operator.py: Load tmMatcher only option is checked, clean
+	  up.
+
+2007-06-13 07:51  sethchanratha
+
+	* modules/Operator.py: fixed error when know TM matcher
+
+2007-06-13 07:33  hokkakada
+
+	* modules/Header.py: fix header to handle unicode string
+
+2007-06-13 07:24  titvirak
+
+	* modules/MainEditor.py: fix wrong slot names.
+
+2007-06-13 07:10  titvirak
+
+	* modules/Operator.py: emit tmCandidates even no candidate, so
+	  tableTm will handle it corretct.
+
+2007-06-13 05:22  titvirak
+
+	* modules/MainEditor.py, modules/Operator.py, modules/TUview.py,
+	  modules/tableTM.py: Major recode of getting, display TM &
+	  Glossary. Rename signal and slots.
+
+2007-06-13 01:55  titvirak
+
+	* modules/MainEditor.py, modules/Operator.py: Request targetChanged
+	  before toggle fuzzy.
+
+2007-06-12 04:58  titvirak
+
+	* modules/Catalog.py: setHidden() not support in qt4.1, use
+	  parent().takeChild(0) instead.
+
+2007-06-12 04:08  titvirak
+
+	* modules/Catalog.py, modules/FindInCatalog.py: fix show findbar.
+
+2007-06-12 01:54  titvirak
+
+	* modules/TUview.py: fix emit targetChanged when target not
+	  changed.
+
+2007-06-11 10:42  sethchanratha
+
+	* modules/Catalog.py, modules/MainEditor.py: add new project tool
+	  on MainEditor
+
+2007-06-11 09:48  hokkakada
+
+	* ui/Ui_Preference.py: Fix terminologies and add what'sthis text.
+
+2007-06-11 09:42  titvirak
+
+	* modules/highlighter.py: fix search (clear search when text
+	  changed), improve variable expression.
+
+2007-06-11 09:39  sethchanratha
+
+	* modules/NewProject.py: cleanup and fixed some code not use
+
+2007-06-11 08:30  titvirak
+
+	* modules/Operator.py: Fix replaceText().
+
+2007-06-11 08:06  titvirak
+
+	* modules/Operator.py: Cleanup comments.
+
+2007-06-11 05:22  titvirak
+
+	* modules/Operator.py: show exact glossary word.
+
+2007-06-11 05:17  titvirak
+
+	* modules/Comment.py, modules/MainEditor.py, modules/Overview.py,
+	  modules/TUview.py: update overview while typing in tuview or
+	  change comment.
+
+2007-06-11 04:17  sethchanratha
+
+	* modules/Catalog.py: Add new project and cleanup custom menu
+
+2007-06-11 03:25  hokkakada
+
+	* modules/tableTM.py: update docstring
+
+2007-06-11 03:02  hokkakada
+
+	* modules/MainEditor.py, modules/Operator.py,
+	  modules/Preference.py: Set GlossaryPreferences and TMPreference
+	  only when the OK button is clicked. Hide/Show TMlookup view based
+	  on TMPreferences. Fixed some terminologies.
+
+2007-06-11 02:34  titvirak
+
+	* modules/Overview.py: Unmark item fuzzy when textchanged.
+
+2007-06-11 01:53  titvirak
+
+	* modules/TUview.py: cleanup.
+
+2007-06-11 01:42  titvirak
+
+	* modules/TUview.py: Popup tooltip for glossary word.
+
+2007-06-11 01:40  titvirak
+
+	* modules/MainEditor.py: fix cancel also close program.
+
+2007-06-11 00:47  titvirak
+
+	* modules/TUview.py: fix attribute error when close.
+
+2007-06-08 11:10  sethchanratha
+
+	* modules/NewProject.py: add new project to catalog manager
+
+2007-06-08 11:09  sethchanratha
+
+	* ui/NewProject.ui, ui/Ui_NewProject.py: add new project to catalog
+	  manager
+
+2007-06-08 10:41  titvirak
+
+	* modules/Operator.py: make setComment perform similar to
+	  setTarget.
+
+2007-06-08 10:39  titvirak
+
+	* modules/Comment.py, modules/TUview.py: cleanup
+
+2007-06-08 08:47  titvirak
+
+	* modules/Comment.py: Recode of send signal to update comment.
+
+2007-06-08 04:20  titvirak
+
+	* modules/TUview.py: Enable copy of popup translation. Emit
+	  targetChange when txtTarget focus out.
+
+2007-06-08 04:05  titvirak
+
+	* modules/MainEditor.py: check if target changed of tuview before
+	  close program.
+
+2007-06-08 02:32  hokkakada
+
+	* modules/Operator.py: use TMchache to improve TM search speed.
+
+2007-06-07 10:24  hokkakada
+
+	* modules/MainEditor.py: show glossary term in TableGlossary when
+	  show the table again and add toggle action under Window
+
+2007-06-07 09:46  hokkakada
+
+	* modules/TableGlossary.py: avoid duplicated items in the Table -
+	  part II
+
+2007-06-07 08:01  hokkakada
+
+	* modules/MainEditor.py, modules/TableGlossary.py: toggle TUview
+	  Term Signal-Part II
+
+2007-06-07 07:11  titvirak
+
+	* modules/TUview.py: small cleanup.
+
+2007-06-07 06:45  sethchanratha
+
+	* ui/MainEditor.ui, ui/Ui_MainEditor.py: add project on MainEditor
+
+2007-06-07 05:39  hokkakada
+
+	* modules/MainEditor.py: toggle TUview Term Signal
+
+2007-06-07 04:31  titvirak
+
+	* modules/MainEditor.py, modules/Operator.py, modules/TUview.py:
+	  move code popup glossary word from operator to TUView, add two
+	  emit..() for TableGlossary and TUView.
+
+2007-06-07 04:30  hokkakada
+
+	* modules/TableGlossary.py: avoid duplicated items in the Table
+
+2007-06-07 04:16  hokkakada
+
+	* modules/Operator.py: use cache to improve glossary search speed.
+
+2007-06-07 03:58  titvirak
+
+	* modules/TUview.py: popup better with glossary word with space.
+
+2007-06-07 03:08  titvirak
+
+	* modules/TUview.py: show glossary term in TableGlossary when first
+	  open file.
+
+2007-06-06 10:04  titvirak
+
+	* modules/Operator.py: fix load glossary on start.
+
+2007-06-06 09:26  hokkakada
+
+	* modules/TableGlossary.py: Glossary Lookup view
+
+2007-06-06 09:24  hokkakada
+
+	* modules/MainEditor.py, modules/Operator.py, modules/TUview.py:
+	  Glossary Lookup
+
+2007-06-06 09:08  hokkakada
+
+	* ui/TableGlossary.ui, ui/Ui_TableGlossary.py: add Glossary Lookup
+	  view
+
+2007-06-06 07:52  titvirak
+
+	* modules/CatalogSetting.py: cleanup.
+
+2007-06-06 07:51  titvirak
+
+	* modules/Operator.py, modules/TUview.py, modules/highlighter.py:
+	  recode highlight search, emit searchResult with also found
+	  position.
+
+2007-06-06 03:58  titvirak
+
+	* modules/MainEditor.py, modules/Operator.py, modules/TUview.py:
+	  popup glossary.
+
+2007-06-06 02:44  titvirak
+
+	* modules/TUview.py: refresh on set highlight glossary.
+
+2007-06-06 02:41  titvirak
+
+	* modules/highlighter.py: add refresh(), fix glossaryWord from
+	  whole text (not by block).
+
+2007-06-06 01:05  titvirak
+
+	* modules/highlighter.py: fix stall when not highlight glossay.
+
+2007-06-06 00:28  hokkakada
+
+	* modules/buildpootling.py: a script to build pootling back from
+	  translated file. (60%)
+
+2007-06-05 10:01  sethchanratha
+
+	* modules/Catalog.py: install custom menu event for treeCatalog
+
+2007-06-05 09:48  hokkakada
+
+	* modules/tmSetting.py: some files might not have the header.
+
+2007-06-05 09:47  titvirak
+
+	* modules/highlighter.py: add glossary word list
+
+2007-06-05 09:46  titvirak
+
+	* modules/TUview.py: cleanup, and add right click to identify
+	  glossary word.
+
+2007-06-05 08:13  hokkakada
+
+	* modules/FileAction.py: default save as path should be at the same
+	  directory of the currently openned file
+
+2007-06-04 09:07  hokkakada
+
+	* modules/MainEditor.py: put the delimitter in a constant
+
+2007-06-04 07:08  titvirak
+
+	* modules/highlighter.py: fix highlight glossary word, add variable
+	  highlight.
+
+2007-06-04 07:06  titvirak
+
+	* modules/MainEditor.py: connection for setMatcher.
+
+2007-06-04 05:27  hokkakada
+
+	* modules/Catalog.py: fixed if the folder doesn't contain supported
+	  file, skip it
+
+2007-06-01 12:01  titvirak
+
+	* modules/MainEditor.py, modules/Operator.py, modules/TUview.py,
+	  modules/highlighter.py, modules/tmSetting.py: enable/disable
+	  glossay highlight.
+
+2007-06-01 10:54  titvirak
+
+	* modules/Operator.py: fix no pickle file.
+
+2007-06-01 10:44  titvirak
+
+	* modules/Comment.py, modules/Operator.py, modules/TUview.py:
+	  highligh search according to field.
+
+2007-06-01 10:26  titvirak
+
+	* modules/Comment.py, modules/MainEditor.py, modules/Operator.py,
+	  modules/TUview.py, modules/highlighter.py: search function not
+	  work 100%, only highligh first found, and not highligh one by one
+	  yer.
+
+2007-06-01 07:49  titvirak
+
+	* modules/MainEditor.py, modules/Operator.py, modules/TUview.py,
+	  modules/highlighter.py: recode class highligher. adjust signal
+	  and slot of search, glossary.
+
+2007-06-01 06:49  hokkakada
+
+	* createpootlingpot, pootling.pro: a script and project file for
+	  creating a pootling.pot for international localization.
+
+2007-06-01 02:54  sethchanratha
+
+	* ui/StatisticsDialog.ui, ui/Ui_StatisticsDialog.py: Create new a
+	  statistics dialog
+
+2007-06-01 02:53  sethchanratha
+
+	* modules/StatisticsDialog.py: Create new a statistics dialog
+
+2007-06-01 02:45  sethchanratha
+
+	* modules/Catalog.py: The statistics messagebox is not well
+	  layouted, just fixed new one
+
+2007-05-31 11:12  titvirak
+
+	* modules/pickleTM.py: fix filename=None
+
+2007-05-31 10:51  titvirak
+
+	* modules/Operator.py, modules/pickleTM.py, modules/tmSetting.py:
+	  cleanup in pickleTM.py move relevant codes to tmSetting.py,
+	  adjust Operator.py
+
+2007-05-31 07:31  sethchanratha
+
+	* ui/Catalog.ui, ui/Ui_Catalog.py: move Configure and buildTM to
+	  setting menu and create new and open in project menu
+
+2007-05-31 07:08  sethchanratha
+
+	* modules/Catalog.py: skip folders without files that pootling can
+
+2007-05-31 05:14  sethchanratha
+
+	* modules/Catalog.py: When treewidget is empty, disabled find,
+	  statistic, reload and hide cvs/svn column of treewidget
+
+2007-05-31 03:03  titvirak
+
+	* modules/tmSetting.py: cleanup
+
+2007-05-30 08:35  sethchanratha
+
+	* modules/MainEditor.py: short bookmark and edit value
+
+2007-05-30 07:18  titvirak
+
+	* modules/tmSetting.py: fix include sub folders.
+
+2007-05-30 02:39  hokkakada
+
+	* modules/Preference.py: tempory hide some features that will be
+	  included in the next version.
+
+2007-05-29 10:51  hokkakada
+
+	* modules/tmSetting.py, ui/Ui_tmSetting.py, ui/tmSetting.ui: make
+	  what'sthis of TM and Glossary neutral.
+
+2007-05-28 09:17  hokkakada
+
+	* ui/TableTM.ui, ui/Ui_TableTM.py: make lookup view nicer
+
+2007-05-28 08:36  hokkakada
+
+	* modules/Find.py, modules/MainEditor.py, modules/Operator.py:
+	  Disable Find Next/Previous button or submenu instead of showing
+	  message at status bar
+
+2007-05-28 04:29  hokkakada
+
+	* modules/Header.py: Under Settings/Preference/Personalize, all
+	  info are required. Pootling will complain if a single field is
+	  blank. And Fix to show Header labels of Header dialog correctly
+
+2007-05-24 10:42  hokkakada
+
+	* modules/Header.py, modules/MainEditor.py: Complain if no plural
+	  equation is not provided
+
+2007-05-24 09:36  hokkakada
+
+	* modules/Preference.py: Forgot committing Preference.py related to
+	  timezone
+
+2007-05-24 02:04  hokkakada
+
+	* modules/FileAction.py: set the current dir of open dialog to the
+	  home of user at the first time starting Pootling insteat of
+	  pointing the place where pootling installed
+
+2007-05-23 10:00  hokkakada
+
+	* modules/Header.py, ui/Preference.ui, ui/Ui_Preference.py: remove
+	  timezone coz it's not important and as the benefit to translator
+
+2007-05-23 08:42  titvirak
+
+	* modules/tmSetting.py: use pickleTM to get store instead of
+	  factory
+
+2007-05-23 08:02  hokkakada
+
+	* modules/Header.py: avoid showing blank <> if emailAddress or
+	  supportTeam doesn't exist and set UTF-8 to charset field directly
+	  from Pootling
+
+2007-05-23 07:52  titvirak
+
+	* modules/tmSetting.py: pickle matcher when finish extentm.
+
+2007-05-23 07:35  titvirak
+
+	* modules/tmSetting.py: use extentm to extend one by one file,
+	  enable progress bar.
+
+2007-05-22 10:07  hokkakada
+
+	* modules/Header.py: Pootling has noting to do with msgid-bugs
+
+2007-05-22 07:52  hokkakada
+
+	* modules/MainEditor.py, modules/Operator.py: take out the annoying
+	  'noTM' signal and show or hide table lookup based on TMPreference
+
+2007-05-22 03:13  hokkakada
+
+	* ui/Ui_Preference.py: hide some options of TM and Glossary that
+	  cannot be completed for the release 0.2
+
+2007-05-21 09:54  titvirak
+
+	* ui/Ui_tmSetting.py, ui/tmSetting.ui: Change tooltips and
+	  what-this.
+
+2007-05-21 07:46  titvirak
+
+	* ui/Ui_tmSetting.py, ui/tmSetting.ui: Organize layout (expand the
+	  "location" vertical size).
+
+2007-05-21 06:56  titvirak
+
+	* ui/Ui_tmSetting.py, ui/tmSetting.ui: Organize layout and tab
+	  order.
+
+2007-05-21 04:01  hokkakada
+
+	* modules/tableTM.py: add close event
+
+2007-05-10 10:20  titvirak
+
+	* modules/MainEditor.py, modules/Operator.py, modules/Overview.py:
+	  Force TUView to emit targetChanged on save, connect TUView
+	  'textChanged' to set enabled save button action.
+
+2007-05-10 07:53  hokkakada
+
+	* ui/TableTM.ui, ui/Ui_TableTM.py: The three fields on top(Found
+	  in, Translator and Date) should go below the table coz they are
+	  details of one table row. Follow the same design rule as in the
+	  whole app: the overview on top, the details below.
+
+2007-05-10 07:48  hokkakada
+
+	* ui/MainEditor.ui, ui/Ui_MainEditor.py: Moved Build TM and Build
+	  Glossary to Settings menu. Add status tip for each sub menu. Add
+	  Icon to Copy search result to target.
+
+2007-05-10 04:42  titvirak
+
+	* modules/MainEditor.py, modules/Operator.py, modules/Overview.py,
+	  modules/TUview.py: TUView: emit 'targetChange' when user modified
+	  and change to new unit. Operator: setTarget() with optional
+	  parameter. Connect TUView 'textChanged' to Overview.setText(),
+	  reduce too many works when only user press a key.
+
+2007-05-08 10:32  hokkakada
+
+	* modules/MainEditor.py, modules/Operator.py, modules/tableTM.py:
+	  Make goto found unit not relied on unitindex anymore.
+
+2007-05-08 03:06  hokkakada
+
+	* modules/Test_Comment.py, modules/highlighter.py: make
+	  highligtRange global and fix the test of comment
+
+2007-05-08 02:26  hokkakada
+
+	* modules/Test_Operator.py: fix tests related to the changes of
+	  statistic.py and fix terminologies that was changed in
+	  Operator.py
+
+2007-05-04 03:28  hokkakada
+
+	* modules/MainEditor.py: using imagedir variable
+
+2007-05-03 09:22  titvirak
+
+	* modules/Preference.py, ui/Preference.ui, ui/Ui_Preference.py:
+	  Rearrange tab stops. Avoid press Enter to accept the form. Set
+	  forus to listWidget when show the form.
+
+2007-05-03 03:29  titvirak
+
+	* modules/Catalog.py: Fix set value (name, translated,..) to
+	  settings, it was resersed before.
+
+2007-05-03 03:23  titvirak
+
+	* modules/Catalog.py: set catalog headers to be visible if setting
+	  is not available yet (on first run of program).
+
+2007-05-02 07:30  titvirak
+
+	* modules/CatalogSetting.py: Regenerate catalog only after it has
+	  modified.
+
+2007-05-02 04:22  hokkakada
+
+	* ui/TableTM.ui, ui/Ui_TableTM.py: make TMtable expandable
+
+2007-04-27 09:26  hokkakada
+
+	* modules/World.py: create setttings object with an ini format in
+	  favor of not storing setting in system registry of Windows
+	  platform
+
+2007-04-27 08:36  titvirak
+
+	* modules/TUview.py: move the target box's cursor to the end of
+	  sentence.
+
+2007-04-27 08:18  titvirak
+
+	* modules/MainEditor.py: Recheck fuzzy, translated, and
+	  untranslated buttons each time when opening file.
+
+2007-04-27 08:05  titvirak
+
+	* modules/Status.py: Fix unitState(). One unit has only one
+	  attribute, fuzzy or translated or untranslated.
+
+2007-04-27 07:45  titvirak
+
+	* modules/Overview.py, modules/TUview.py: Fix TUView's scrollbar,
+	  and overview's scrollToRow().
+
+2007-04-26 10:53  hokkakada
+
+	* modules/Comment.py, modules/Overview.py: remove what'sthis from
+	  code
+
+2007-04-26 10:46  hokkakada
+
+	* ui/Comment.ui, ui/Overview.ui, ui/Ui_Comment.py,
+	  ui/Ui_Overview.py: move what'sthis to ui
+
+2007-04-26 09:32  sethchanratha
+
+	* modules/Catalog.py: show messages of statistic number
+
+2007-04-26 04:55  titvirak
+
+	* modules/Catalog.py, modules/Operator.py, modules/Status.py:
+	  change statistic to use statistic.py. Some clean up.
+
+2007-04-24 08:33  titvirak
+
+	* modules/Catalog.py, modules/Operator.py, modules/Status.py:
+	  change statistic to use Status.py for handling number such as
+	  fuzzy, translated.
+
+2007-04-20 03:07  hokkakada
+
+	* modules/Preference.py: Sort language code in the list and set the
+	  language name corresponding to langCode.
+
+2007-04-20 02:22  hokkakada
+
+	* ui/Preference.ui, ui/Ui_Preference.py: change cboFullLanguage to
+	  use lineEdit widget.
+
+2007-04-19 04:56  keosophon
+
+	* modules/Comment.py, modules/Operator.py, modules/TUview.py,
+	  modules/highlighter.py: improve higlight terms which are in
+	  glossary
+
+2007-04-19 04:37  titvirak
+
+	* modules/Catalog.py: fix reference befor assignment error.
+
+2007-04-18 10:09  hokkakada
+
+	* modules/Status.py: classify units first before counting
+
+2007-04-18 08:53  sethchanratha
+
+	* modules/CatalogSetting.py: Avoid duplicated path in Catalog list
+	  view
+
+2007-04-12 10:25  sethchanratha
+
+	* modules/MainEditor.py: changed variable and create new constant
+	  value
+
+2007-04-12 08:28  hokkakada
+
+	* modules/tableTM.py: Add icon to context menu
+
+2007-04-12 08:26  hokkakada
+
+	* images/source.png: add new image for copy search result to target
+
+2007-04-12 03:56  hokkakada
+
+	* ui/Preference.ui, ui/Ui_Preference.py: fixing term
+
+2007-04-12 03:40  hokkakada
+
+	* modules/Preference.py, ui/Preference.ui, ui/Ui_Preference.py:
+	  extract and improve what'sthis from Preference.py to
+	  Preference.ui
+
+2007-04-11 10:31  keosophon
+
+	* modules/Comment.py, modules/MainEditor.py, modules/Operator.py,
+	  modules/TUview.py, modules/World.py, modules/highlighter.py:
+	  improve highlight glossary, search
+
+2007-04-10 10:15  hokkakada
+
+	* modules/FileAction.py: Add more formats to openfile dialog
+
+2007-04-10 09:24  titvirak
+
+	* modules/Catalog.py: recode show statistic, calculate directory
+	  and subs. Adjust item column, move translated to 3rd column.
+
+2007-04-10 08:54  sethchanratha
+
+	* modules/CatalogSetting.py: Clear content from catalog view if no
+	  path in setting
+
+2007-04-10 04:26  titvirak
+
+	* modules/Catalog.py: Highligh item when search string found.
+
+2007-04-10 03:49  titvirak
+
+	* modules/Catalog.py: add context menu
+
+2007-04-09 04:05  titvirak
+
+	* modules/Catalog.py: Update next item only after finish the
+	  current one (timer is used in background).
+
+2007-04-06 08:42  titvirak
+
+	* modules/Catalog.py: add progress bar
+
+2007-04-05 09:59  sethchanratha
+
+	* modules/Catalog.py: set what's this of statistic and approve find
+	  code
+
+2007-04-05 09:30  titvirak
+
+	* modules/Catalog.py: use timer to update statistic one by one,
+	  improve usuability... user don't have to wait long.
+
+2007-04-04 10:08  sethchanratha
+
+	* modules/MainEditor.py: fixed error of selectAll, paste, cut and
+	  copy
+
+2007-04-03 10:38  keosophon
+
+	* modules/Comment.py, modules/MainEditor.py, modules/Operator.py,
+	  modules/TUview.py, modules/highlighter.py: highlight unit
+	  source's terminonlogy which has glossary, not completed
+
+2007-04-03 07:24  titvirak
+
+	* modules/Catalog.py: improve handling with catalog path, same file
+	  and directory will not add more than once.
+
+2007-04-03 05:10  keosophon
+
+	* modules/Comment.py, modules/TUview.py: use module highlighter to
+	  highlight search found
+
+2007-04-03 05:00  keosophon
+
+	* modules/highlighter.py: add modules highlighter
+
+2007-04-03 03:00  hokkakada
+
+	* ui/Preference.ui, ui/Ui_Preference.py: Named the objects properly
+
+2007-04-02 03:40  hokkakada
+
+	* modules/Catalog.py: BuildTM from Catalog
+
+2007-04-02 03:37  hokkakada
+
+	* modules/MainEditor.py, modules/Operator.py, modules/pickleTM.py,
+	  modules/tableTM.py: Add context menu to tableTM for Copy Search
+	  Result to target, Edit translation in found file. Show additional
+	  info (filepath, translator, date) in the labels above tableTM.
+	  Clear everything from info labels and tableTM if no translation
+	  candidate is found.
+
+2007-03-30 10:56  sethchanratha
+
+	* modules/Catalog.py: resolved conflict the last commit
+
+2007-03-30 10:27  sethchanratha
+
+	* ui/Catalog.ui, ui/Ui_Catalog.py: changed the name of
+	  action_Build_TM to actionBuildTM
+
+2007-03-30 10:17  sethchanratha
+
+	* modules/Catalog.py: fixed error and round down to number ater
+	  decimal points
+
+2007-03-30 04:49  titvirak
+
+	* modules/Catalog.py: Fix error when single is selected as catalog.
+
+2007-03-30 04:39  titvirak
+
+	* modules/Catalog.py: Fix dispalying directories and files,
+	  directory endwidth .svn is not shown, and empty item is not
+	  shown.
+
+2007-03-29 10:03  keosophon
+
+	* modules/MainEditor.py, modules/Operator.py,
+	  modules/Preference.py, modules/tmSetting.py: enable lookup
+	  glossary
+
+2007-03-29 09:57  keosophon
+
+	* modules/Overview.py: remove commented code
+
+2007-03-29 08:45  sethchanratha
+
+	* modules/Catalog.py: Editing as default view of catalog title
+
+2007-03-28 09:01  keosophon
+
+	* modules/Operator.py: enable auto lookup when startup depending on
+	  setting in Preference - TM
+
+2007-03-28 07:43  keosophon
+
+	* modules/Operator.py, modules/tmSetting.py: get application auto
+	  config file without hard coding
+
+2007-03-28 05:17  hokkakada
+
+	* ui/MainEditor.ui, ui/Ui_MainEditor.py: add Copy Search Result to
+	  Target submenu of Edit menu
+
+2007-03-28 04:14  keosophon
+
+	* modules/MainEditor.py, modules/pickleTM.py, modules/tmSetting.py:
+	  improve pickleTM and add glossary setting
+
+2007-03-28 04:10  keosophon
+
+	* ui/MainEditor.ui, ui/Ui_MainEditor.py, ui/Ui_tmSetting.py,
+	  ui/tmSetting.ui: improve interface
+
+2007-03-28 03:49  hokkakada
+
+	* ui/TableTM.ui, ui/Ui_TableTM.py: better interface for tableTM
+
+2007-03-27 10:41  sethchanratha
+
+	* modules/Catalog.py: fixed error of statistic
+
+2007-03-27 04:10  sethchanratha
+
+	* modules/Catalog.py: show status of statistic files
+
+2007-03-27 04:08  sethchanratha
+
+	* ui/Catalog.ui, ui/Ui_Catalog.py: Add action Build TM on toolMenu
+	  and Statistic
+
+2007-03-27 04:01  sethchanratha
+
+	* images/statistic.png: picture of catalog
+
+2007-03-26 05:01  hokkakada
+
+	* ui/TableTM.ui, ui/Ui_TableTM.py: add more info to tableTM
+
+2007-03-26 02:48  sethchanratha
+
+	* modules/Catalog.py: set Status tip on toolbar and fix error of
+	  finding string
+
+2007-03-26 02:46  hokkakada
+
+	* ui/Preference.ui, ui/Ui_Preference.py: separate save feature in
+	  another tab
+
+2007-03-23 04:22  keosophon
+
+	* modules/Preference.py, ui/Preference.ui, ui/Ui_Preference.py: add
+	  glossary setting to preference dialog
+
+2007-03-21 08:58  hokkakada
+
+	* modules/pickleTM.py: write option to config file
+
+2007-03-21 05:13  keosophon
+
+	* modules/Operator.py, modules/Preference.py, ui/Preference.ui,
+	  ui/Ui_Preference.py: code of remember TM options in preference
+	  dialog
+
+2007-03-21 04:27  hokkakada
+
+	* modules/Operator.py, modules/tmSetting.py: fix Operator.py and
+	  tmSetting.py to use object of a pickleTM class.
+
+2007-03-21 04:21  hokkakada
+
+	* modules/pickleTM.py: Change from Qsetting to use ConfigParser in
+	  order to make it independent from pyQT, also rewrite pickleTM to
+	  be a class.
+
+2007-03-21 04:11  hokkakada
+
+	* ui/Ui_tmSetting.py, ui/tmSetting.ui: add Glossary option and some
+	  what'sthis text
+
+2007-03-21 01:21  keosophon
+
+	* modules/MainEditor.py, modules/Operator.py,
+	  modules/Preference.py: code of setting TM preference options
+
+2007-03-20 04:57  keosophon
+
+	* modules/Preference.py: additem TM configure to Preference dialog
+
+2007-03-20 04:53  keosophon
+
+	* ui/MainEditor.ui, ui/Preference.ui, ui/Ui_MainEditor.py,
+	  ui/Ui_Preference.py, ui/Ui_tmSetting.py, ui/tmSetting.ui: Improve
+	  interface of Preferece dialog, MainEditor, and tmSetting
+
+2007-03-19 11:39  keosophon
+
+	* modules/Preference.py: add code of clicking item in list, display
+	  page of stackedWidget according to list index
+
+2007-03-19 11:37  keosophon
+
+	* ui/Preference.ui, ui/Ui_Preference.py: change Preference
+	  interface
+
+2007-03-19 11:36  keosophon
+
+	* images/colorize.png, images/identity.png: add identity and
+	  colorize images
+
+2007-03-16 03:41  keosophon
+
+	* modules/MainEditor.py: on toolbar, switch menu Open_Recent action
+	  to Open action if it is not enabled, and vice versa
+
+2007-03-16 02:32  hokkakada
+
+	* modules/tmSetting.py: Decorate tmSetting window by adding
+	  WhatsThis text.
+
+2007-03-15 10:07  hokkakada
+
+	* TODO: more tasks
+
+2007-03-15 09:57  sethchanratha
+
+	* modules/Catalog.py: add message dialog when find string in file
+	  not found
+
+2007-03-15 09:51  keosophon
+
+	* modules/MainEditor.py, modules/Operator.py, modules/tmSetting.py:
+	  remove file which stores Matcher if clearing or no usable memory;
+	  use message box instead of signal
+
+2007-03-15 09:44  keosophon
+
+	* modules/pickleTM.py: remove file which stores Matcher
+
+2007-03-15 07:44  hokkakada
+
+	* TODO: update taskes
+
+2007-03-15 04:39  sethchanratha
+
+	* ui/Catalog.ui, ui/Ui_Catalog.py: take replace in file and stop
+	  find out from edit menu of catalog
+
+2007-03-15 04:34  sethchanratha
+
+	* modules/Catalog.py, modules/FindInCatalog.py: adding what's this
+	  and erase some code that not used
+
+2007-03-15 02:06  hokkakada
+
+	* modules/MainEditor.py: fix the problem that pootlingsettup
+	  doesn't show icons
+
+2007-03-14 08:54  keosophon
+
+	* modules/MainEditor.py, modules/Operator.py: display info at
+	  status bar if file stores pickled TM deleted
+
+2007-03-14 08:45  keosophon
+
+	* modules/pickleTM.py: add condition to see if real file which
+	  store pickled matcher exists
+
+2007-03-14 04:44  keosophon
+
+	* modules/Operator.py: add alternative translations to unit of
+	  xlifffile instance when autotranslating from TM
+
+2007-03-14 03:00  keosophon
+
+	* modules/FileAction.py, modules/MainEditor.py: better code of not
+	  saving file when clicking no
+
+2007-03-14 02:56  keosophon
+
+	* modules/MainEditor.py: removes JIT compilter code
+
+2007-03-14 02:23  keosophon
+
+	* modules/Operator.py: removes worse code, add bette one
+
+2007-03-13 09:53  keosophon
+
+	* modules/FileAction.py, modules/MainEditor.py,
+	  modules/Operator.py: fix error which saves file though no button
+	  is clicked
+
+2007-03-13 09:50  keosophon
+
+	* modules/tmSetting.py: code of resetting ui's stuff value to
+	  original value when clicking cancle
+
+2007-03-09 10:46  sethchanratha
+
+	* modules/FindInCatalog.py: Find string Dialog in Catalog
+
+2007-03-09 10:05  keosophon
+
+	* modules/FileDialog.py: expanding or collapsing treeview item by
+	  pressing Enter or Space
+
+2007-03-09 10:04  sethchanratha
+
+	* modules/Catalog.py, modules/MainEditor.py: find string in file of
+	  Catalog
+
+2007-03-09 09:53  sethchanratha
+
+	* ui/FindInCatalog.ui, ui/Ui_FindInCatalog.py: find string in
+	  Catalog
+
+2007-03-09 09:25  sethchanratha
+
+	* modules/CatalogSetting.py: changed filename of ui
+
+2007-03-07 10:04  keosophon
+
+	* ui/FileDialog.ui, ui/TUview.ui, ui/Ui_FileDialog.py,
+	  ui/Ui_TUview.py: improve UI
+
+2007-03-07 10:02  keosophon
+
+	* modules/FileDialog.py: add location to box when location has
+	  focus by moving key
+
+2007-03-06 09:55  keosophon
+
+	* modules/Overview.py: fix enable/disable when closing file
+
+2007-03-05 10:40  keosophon
+
+	* modules/Comment.py, modules/MainEditor.py, modules/Operator.py,
+	  modules/Overview.py, modules/TUview.py: fix showing/hiding view
+	  when opening/closing file
+
+2007-03-05 09:16  keosophon
+
+	* modules/TUview.py: coding of enable/disable TUView
+
+2007-03-05 08:08  keosophon
+
+	* modules/Operator.py: make thought-useless codes as comment
+
+2007-03-05 04:06  keosophon
+
+	* modules/TUview.py: make copy source2target available with plural
+	  units
+
+2007-03-05 01:55  keosophon
+
+	* modules/Overview.py: fix twice settarget
+
+2007-03-02 11:19  keosophon
+
+	* modules/Header.py, modules/Operator.py, modules/Preference.py,
+	  modules/TUview.py: improve code of displaying a plural unit
+
+2007-03-02 10:34  sethchanratha
+
+	* ui/Catalog.ui, ui/Ui_Catalog.py: add Find in Files, Replace in
+	  file and Stop Find
+
+2007-03-02 08:58  sethchanratha
+
+	* ui/CatalogSetting.ui, ui/Ui_CatalogSetting.py: what's this and
+	  changed name of checkbx
+
+2007-03-02 05:14  keosophon
+
+	* modules/TUview.py: update code of displaying a plural unit
+
+2007-03-02 02:43  keosophon
+
+	* ui/TUview.ui, ui/Ui_TUview.py: Improve UI interface
+
+2007-03-01 11:31  hokkakada
+
+	* modules/Preference.py: fill in a list of code and language
+	  retrieving form data.py
+
+2007-03-01 10:54  keosophon
+
+	* modules/TUview.py, ui/Preference.ui, ui/TUview.ui,
+	  ui/Ui_Preference.py, ui/Ui_TUview.py: update code of displaying
+	  plural unit
+
+2007-03-01 10:49  hokkakada
+
+	* modules/Preference.py: fix nplural to reuse code in toolkit
+
+2007-03-01 07:41  sethchanratha
+
+	* modules/Header.py: Set 2 as default of nPlural
+
+2007-03-01 06:50  titvirak
+
+	* ui/CatalogSetting.ui, ui/Ui_CatalogSetting.py: Reorganize
+	  tabstops of gui.
+
+2007-03-01 05:19  sethchanratha
+
+	* modules/Catalog.py: add translated on treewidget and add what's
+	  this
+
+2007-03-01 05:16  sethchanratha
+
+	* ui/CatalogSetting.ui, ui/Ui_CatalogSetting.py: add translated on
+	  Catalog View tap
+
+2007-03-01 03:17  hokkakada
+
+	* modules/FileDialog.py: chang from Quit to ok button
+
+2007-03-01 03:15  hokkakada
+
+	* ui/FileDialog.ui, ui/Ui_FileDialog.py: chang from Quit to ok
+	  button
+
+2007-02-28 11:08  keosophon
+
+	* modules/MainEditor.py, modules/TUview.py, ui/TUview.ui,
+	  ui/Ui_TUview.py: recode plural show in TUView, remove useless
+	  code
+
+2007-02-28 04:11  keosophon
+
+	* modules/Comment.py, modules/MainEditor.py, modules/Operator.py,
+	  modules/Overview.py, modules/Status.py: fix toggle fuzzy error,
+	  remove useless code
+
+2007-02-28 01:24  keosophon
+
+	* modules/MainEditor.py, modules/Operator.py: remove useless code
+
+2007-02-28 00:34  keosophon
+
+	* modules/MainEditor.py, modules/Operator.py: don't touch class's
+	  attribute directly
+
+2007-02-28 00:23  keosophon
+
+	* modules/Operator.py, modules/Status.py: show status in user-easy
+	  understanding
+
+2007-02-27 10:49  titvirak
+
+	* modules/Operator.py, modules/Status.py: Move calculation of
+	  statusString from Status.py to Operator.py.
+
+2007-02-27 10:02  titvirak
+
+	* modules/Catalog.py: Fix double click to open file for sub
+	  directories.
+
+2007-02-27 09:59  keosophon
+
+	* modules/MainEditor.py, modules/World.py, ui/MainEditor.ui,
+	  ui/Ui_MainEditor.py: improve clear recent action, move to buttom
+
+2007-02-27 09:39  titvirak
+
+	* modules/Catalog.py: Handle sub directories.
+
+2007-02-27 05:47  hokkakada
+
+	* modules/Preference.py: use normal string instead of Qstring
+	  because toolkit doesn't suppor Qstring.
+
+2007-02-26 10:17  sethchanratha
+
+	* modules/Test_Comment.py: fix Test_Comment when save error
+
+2007-02-26 10:08  titvirak
+
+	* modules/Catalog.py: Add addItem() and reenable progress bar.
+
+2007-02-26 09:43  keosophon
+
+	* modules/MainEditor.py: remove updateunit signal
+
+2007-02-26 09:40  keosophon
+
+	* modules/Operator.py: return if not filteredlist, remove unneeded
+	  codes
+
+2007-02-26 09:22  keosophon
+
+	* modules/Comment.py, modules/Header.py, modules/MainEditor.py,
+	  modules/Operator.py, modules/Overview.py, modules/TUview.py: fix
+	  save error
+
+2007-02-26 08:22  titvirak
+
+	* modules/Catalog.py: Double click to open file in catalog.
+
+2007-02-26 01:49  keosophon
+
+	* modules/Status.py: fix show unstranslate (which is not fuzzy)
+	  status
+
+2007-02-24 04:48  keosophon
+
+	* modules/MainEditor.py, modules/Status.py, ui/MainEditor.ui,
+	  ui/Ui_MainEditor.py: eliminate unneeded code - add tooltip,
+	  statustip
+
+2007-02-24 02:04  keosophon
+
+	* modules/Status.py: fix status of units total
+
+2007-02-23 11:06  keosophon
+
+	* modules/MainEditor.py, modules/Status.py, modules/tableTM.py,
+	  ui/MainEditor.ui, ui/Ui_MainEditor.py, ui/Ui_tmSetting.py,
+	  ui/tmSetting.ui: add tooltip, statustip, and what's this to
+	  interface
+
+2007-02-23 10:39  titvirak
+
+	* modules/Catalog.py, ui/Catalog.ui, ui/Ui_Catalog.py: Major change
+	  from table widget to tree widget for future extension.
+
+2007-02-23 09:50  sethchanratha
+
+	* modules/Catalog.py: set timer when refresh file
+
+2007-02-23 02:56  keosophon
+
+	* modules/tmSetting.py: getItemlist according item checked or
+	  unchecked
+
+2007-02-22 11:22  hokkakada
+
+	* modules/tmSetting.py: add getPathList() to get a list of checked
+	  path and unchecked path.Doing so avoid duplicated code.
+
+2007-02-22 10:18  sethchanratha
+
+	* modules/Catalog.py: refresh files
+
+2007-02-22 10:15  sethchanratha
+
+	* images/reload.png: reload picture
+
+2007-02-22 09:46  keosophon
+
+	* modules/tmSetting.py, ui/Ui_tmSetting.py, ui/tmSetting.ui:
+	  remember disabled TM and reload it into list as its remember
+
+2007-02-22 09:42  keosophon
+
+	* modules/pickleTM.py: pass matcher options when build new matcher
+
+2007-02-22 09:23  hokkakada
+
+	* modules/tmSetting.py: Reformat docstring
+
+2007-02-22 08:11  hokkakada
+
+	* modules/pickleTM.py: reformat docstring
+
+2007-02-22 07:37  titvirak
+
+	* modules/Catalog.py, modules/MainEditor.py: Double click to open
+	  file in catalog manager.
+
+2007-02-22 06:32  hokkakada
+
+	* modules/Test_Operator.py: update test for testUpdatNewHeader and
+	  testMakeNewHeader( add docstring and not hard code x_generator
+
+2007-02-22 04:09  hokkakada
+
+	* modules/Operator.py: Update two docstrings
+
+2007-02-22 04:06  hokkakada
+
+	* modules/Header.py: - Update docstring of most functions.
+	  - Add more comments to the code.
+	  - Rewrite code for reset button. Nonetheless, it doesn't work. I
+	  don't know why.
+	  - Move addItemToTable() next to the function that call it.(easy
+	  to read)
+	  - Display nplural/plural that retrieve from Preference to table
+	  and save to the file.
+	  - use 'translate-editor@translate.sourceforge.net' list as
+	  'Report_msgid_bugs_to'
+
+2007-02-21 11:03  hokkakada
+
+	* modules/Preference.py: make plural eqaution change based on
+	  specific language
+
+2007-02-21 10:52  hokkakada
+
+	* ui/Preference.ui, ui/Ui_Preference.py: Add Plural equaltion to
+	  the form
+
+2007-02-21 10:39  keosophon
+
+	* modules/MainEditor.py, modules/Operator.py, modules/pickleTM.py,
+	  modules/tmSetting.py, ui/Ui_FileDialog.py, ui/Ui_tmSetting.py,
+	  ui/tmSetting.ui: create a matcher from many TM locations and dump
+	  it into a file
+
+2007-02-21 09:44  titvirak
+
+	* modules/Catalog.py: Remember checkboxes.
+
+2007-02-21 08:52  keosophon
+
+	* modules/Operator.py, modules/pickleTM.py, modules/tmSetting.py,
+	  ui/MainEditor.ui, ui/Ui_MainEditor.py, ui/Ui_tmSetting.py: create
+	  matcher for each location
+
+2007-02-21 07:32  titvirak
+
+	* modules/Operator.py: Fix calling status function error.
+
+2007-02-21 07:25  titvirak
+
+	* modules/Operator.py, modules/Status.py: Use statistic code
+	  instead of pocount.
+
+2007-02-21 07:01  titvirak
+
+	* modules/Catalog.py: Add progress bar and change to use statistic
+	  instead of local status.
+
+2007-02-21 03:34  hokkakada
+
+	* modules/Preference.py: change to use better signal
+
+2007-02-21 03:02  keosophon
+
+	* modules/Comment.py, modules/MainEditor.py, modules/Overview.py,
+	  modules/TUview.py, modules/tableTM.py, ui/MainEditor.ui,
+	  ui/Ui_MainEditor.py: add accelerator to actoins
+
+2007-02-21 03:02  hokkakada
+
+	* modules/Preference.py: update docstring. Add setNPlural(langcode)
+	  to adapt plural form according to languague code (use lang module
+	  in toolkit)
+
+2007-02-20 09:53  keosophon
+
+	* images/add.png, images/back.png, images/forward.png,
+	  images/replace.png, images/replaceAll.png: add replace, back,
+	  forward and add images
+
+2007-02-20 09:43  keosophon
+
+	* images/minus.png, images/next.png, images/previous.png,
+	  modules/AboutEditor.py, modules/Comment.py, modules/Find.py,
+	  modules/Overview.py, modules/TUview.py, modules/tableTM.py,
+	  pootling-editor.py, ui/Find.ui, ui/Header.ui, ui/MainEditor.ui,
+	  ui/Preference.ui, ui/Ui_Comment.py, ui/Ui_FileDialog.py,
+	  ui/Ui_Find.py, ui/Ui_Header.py, ui/Ui_MainEditor.py,
+	  ui/Ui_Overview.py, ui/Ui_Preference.py, ui/Ui_TUview.py,
+	  ui/Ui_tmSetting.py, ui/tmSetting.ui: add shortcuts, add icons,
+	  change tab orders in UI
+
+2007-02-20 08:46  titvirak
+
+	* modules/Catalog.py, ui/CatalogSetting.ui,
+	  ui/Ui_CatalogSetting.py: Show/hide catalog element.
+
+2007-02-20 07:13  hokkakada
+
+	* modules/TUview.py: nplurals will be adapted to the language set
+	  in preference.
+
+2007-02-20 07:11  hokkakada
+
+	* modules/Preference.py: Add spinbox for plural form
+
+2007-02-20 04:44  hokkakada
+
+	* modules/Operator.py: Update docstring of setTarget(). Make it
+	  works with plural unit.
+
+2007-02-20 04:43  hokkakada
+
+	* modules/TUview.py: Update docstring of unitPlural() and
+	  UnitSingle(). Add more comment to code. Emit targetChanged signal
+	  with target as unicode string for single unit or list of unicode
+	  string for plural unit
+
+2007-02-20 03:16  hokkakada
+
+	* ui/Preference.ui, ui/Ui_Preference.py: change the position of
+	  Plural Form
+
+2007-02-20 02:29  sethchanratha
+
+	* modules/Catalog.py: The Catalog Manager which holds the
+	  toolviews.
+
+2007-02-16 04:26  keosophon
+
+	* modules/pickleTM.py, modules/tmSetting.py, ui/Ui_tmSetting.py,
+	  ui/tmSetting.ui: add refreshAllTMs to tmsetting and pickle
+
+2007-02-15 10:56  sethchanratha
+
+	* ui/CatalogSetting.ui, ui/Ui_CatalogSetting.py: Show/hide header
+	  of CalalogSetting
+
+2007-02-15 10:54  sethchanratha
+
+	* modules/Catalog.py, modules/CatalogSetting.py: Show/hide header
+	  of CalatogSettings and changed ui of Calalog
+
+2007-02-14 16:06  andreaspauley
+
+	* __init__.py: New distutils setup script for Pootling.
+
+2007-02-14 09:14  friedelwolff
+
+	* modules/FileAction.py, modules/MainEditor.py,
+	  modules/Operator.py: Use empty filename for filesSaved signal if
+	  saving to the same file. Support for compressed file saving.
+	  setTitle only if there's string.
+
+2007-02-14 08:04  andreaspauley
+
+	* modules/TUview.py: Remove isinstance check, getcontext() has been
+	  defined in base.
+
+2007-02-14 07:01  andreaspauley
+
+	* modules/Status.py: Remove the format-specific check for
+	  marktranslated, this has been done in the toolkit.
+
+2007-02-12 10:59  keosophon
+
+	* modules/MainEditor.py, modules/Operator.py, modules/pickleTM.py,
+	  modules/tmSetting.py, ui/Ui_tmSetting.py, ui/tmSetting.ui: remove
+	  createTM button from TMsetting.ui, add code of enable and disable
+	  TM, get matcher from pickleTM module
+
+2007-02-09 10:20  keosophon
+
+	* modules/Operator.py, modules/pickleTM.py, modules/tmSetting.py,
+	  ui/Ui_tmSetting.py, ui/tmSetting.ui: add progress bar to
+	  tmsetting, enable lookup process to get matcher from pickleTM
+
+2007-02-09 05:05  keosophon
+
+	* modules/Operator.py, modules/tmSetting.py: get storelist from
+	  pickleTM instead
+
+2007-02-09 05:04  keosophon
+
+	* modules/pickleTM.py: Add pickleTM module, which un/pickle TM file
+
+2007-02-08 03:32  keosophon
+
+	* modules/FileDialog.py: add scrollto currentindex when clicking
+	  shortcut(home, desktop, document)
+
+2007-02-08 02:48  sethchanratha
+
+	* modules/MainEditor.py: tool of Catalog Manager
+
+2007-02-08 02:42  sethchanratha
+
+	* ui/Catalog.ui, ui/CatalogSetting.ui, ui/Ui_Catalog.py,
+	  ui/Ui_CatalogSetting.py: ui of Catalog Manager
+
+2007-02-08 02:36  sethchanratha
+
+	* modules/Catalog.py, modules/CatalogSetting.py: Tool of Catalog
+	  Manager
+
+2007-02-08 01:41  keosophon
+
+	* images/document.png: image of document
+
+2007-02-07 10:22  keosophon
+
+	* modules/FileDialog.py, modules/MainEditor.py,
+	  modules/Operator.py, modules/tableTM.py, modules/tmSetting.py,
+	  ui/FileDialog.ui, ui/MainEditor.ui, ui/Ui_FileDialog.py,
+	  ui/Ui_MainEditor.py, ui/Ui_tmSetting.py, ui/tmSetting.ui: make
+	  icon in FileDialog bigger, add Document button to FileDialog,
+	  improve code of lookup unit in TM, and auto translate
+
+2007-02-06 10:13  keosophon
+
+	* modules/Operator.py: code of lookup TM - not complete
+
+2007-02-06 09:01  keosophon
+
+	* images/desktop.png, images/folder_home.png, images/memory.png:
+	  add icons
+
+2007-02-06 08:24  keosophon
+
+	* modules/FileDialog.py, modules/Operator.py, modules/tmSetting.py,
+	  ui/FileDialog.ui, ui/MainEditor.ui, ui/Ui_FileDialog.py,
+	  ui/Ui_MainEditor.py, ui/Ui_tmSetting.py, ui/tmSetting.ui: update
+	  choosing a file or a directory
+
+2007-02-06 04:04  hokkakada
+
+	* modules/TUview.py: make fileScrollbar show correctly when
+	  detecting plural unit. Other code is still in messy.
+
+2007-02-06 04:01  hokkakada
+
+	* modules/MainEditor.py: make clearOpenRecent work
+
+2007-02-05 10:26  keosophon
+
+	* modules/FileDialog.py, modules/Operator.py, modules/tmSetting.py,
+	  ui/FileDialog.ui, ui/Header.ui, ui/Ui_FileDialog.py,
+	  ui/Ui_Header.py, ui/Ui_tmSetting.py, ui/tmSetting.ui: add
+	  Choosing file or folder dialog, edit icon
+
+2007-02-05 10:23  keosophon
+
+	* images/addTM.png, images/eraser.png, images/minus.png,
+	  images/plus.png, images/removeTM.png: add image
+
+2007-02-05 09:24  sethchanratha
+
+	* modules/MainEditor.py: limit input number according to total
+	  string number of each file
+
+2007-02-02 05:17  sethchanratha
+
+	* ui/MainEditor.ui, ui/Ui_MainEditor.py: dissabled addbookmark and
+	  add Catalog Manager
+
+2007-02-02 05:14  sethchanratha
+
+	* modules/MainEditor.py: add goto.png and actionbookmark
+
+2007-02-02 05:08  sethchanratha
+
+	* images/goto.png: add goto picture
+
+2007-02-01 10:39  keosophon
+
+	* modules/FileDialog.py, modules/tmSetting.py, ui/FileDialog.ui,
+	  ui/Ui_FileDialog.py, ui/Ui_tmSetting.py, ui/tmSetting.ui: change
+	  TM setting interface, add choose file or dir dialog
+
+2007-02-01 08:34  titvirak
+
+	* modules/TUview.py: - Recode syntax highlight.
+
+2007-02-01 03:49  titvirak
+
+	* modules/TUview.py: improve highlight syntax.
+
+2007-01-31 11:07  keosophon
+
+	* modules/Header.py, modules/MainEditor.py, modules/Operator.py,
+	  modules/Overview.py, modules/tmSetting.py, ui/Ui_tmSetting.py,
+	  ui/tmSetting.ui: improve TM setting interface
+
+2007-01-31 11:01  titvirak
+
+	* modules/TUview.py: Colorize tag and other stuff, not complete
+	  working yet.
+
+2007-01-31 09:32  hokkakada
+
+	* ui/Ui_tmSetting.py, ui/tmSetting.ui: more options & compiled form
+
+2007-01-31 08:48  hokkakada
+
+	* modules/tmSetting.py: change some terminologies
+
+2007-01-31 08:46  hokkakada
+
+	* ui/Ui_tmSetting.py, ui/tmSetting.ui: compiled form
+
+2007-01-31 08:14  keosophon
+
+	* modules/Operator.py, modules/tableTM.py: improve process of
+	  lookup translation in TM
+
+2007-01-31 04:59  hokkakada
+
+	* ui/tmSetting.ui: add more options for setting TM
+
+2007-01-31 02:49  keosophon
+
+	* modules/MainEditor.py, modules/Operator.py, modules/tableTM.py,
+	  modules/tmSetting.py: remove exceeding tableTM, mark unit
+	  translated
+
+2007-01-30 04:59  keosophon
+
+	* modules/MainEditor.py, modules/Operator.py, modules/Overview.py,
+	  modules/TUview.py, modules/tableTM.py, modules/tmSetting.py, tm,
+	  ui/MainEditor.ui, ui/TableTM.ui, ui/Ui_MainEditor.py,
+	  ui/Ui_TableTM.py, ui/Ui_tmSetting.py, ui/tmSetting.ui: improve
+	  code of auto translation and lookup translation from TM
+
+2007-01-29 03:43  titvirak
+
+	* modules/MainEditor.py, modules/Operator.py, modules/Overview.py:
+	  - TM
+	  - Raise error when saving file not permitted.
+
+2007-01-26 05:15  keosophon
+
+	* modules/MainEditor.py, modules/Operator.py, modules/tableTM.py:
+	  fix some bugs of auto translate and lookuptext
+
+2007-01-26 04:34  titvirak
+
+	* modules/MainEditor.py, modules/Overview.py: Add TM context menu
+	  for overview.
+
+2007-01-25 10:31  hokkakada
+
+	* modules/TUview.py: update code for plural forms and withdraw
+	  focus from txtTarget
+
+2007-01-25 08:27  hokkakada
+
+	* ui/TUview.ui, ui/Ui_TUview.py: add slitter, set margin to 0, add
+	  color to lblcomment back
+
+2007-01-25 07:55  hokkakada
+
+	* modules/TUview.py: code for plural forms: only source is working
+	  correctly, target not yet. Target tab need to followed language
+	  role.the translation of plural unit cannot save to store yet
+
+2007-01-25 07:48  hokkakada
+
+	* ui/TUview.ui, ui/Ui_TUview.py: remove tabWidget from ui
+
+2007-01-25 05:15  keosophon
+
+	* modules/Operator.py, modules/tmSetting.py, ui/Ui_tmSetting.py,
+	  ui/tmSetting.ui: fix some bugs of auto translate and lookuptext
+
+2007-01-25 03:35  keosophon
+
+	* modules/MainEditor.py, modules/Operator.py, modules/TUview.py,
+	  modules/World.py, modules/tableTM.py, modules/tmSetting.py,
+	  pootlingdic, tm, tm/__init__.py, tm/modules, tm/modules/tm.py,
+	  tm/ui, tm/ui/TM.ui, tm/ui/TableTM.ui, tm/ui/Ui_TM.py,
+	  tm/ui/Ui_TableTM.py, ui/MainEditor.ui, ui/TableTM.ui,
+	  ui/Ui_Comment.py, ui/Ui_Find.py, ui/Ui_Header.py,
+	  ui/Ui_MainEditor.py, ui/Ui_Overview.py, ui/Ui_Preference.py,
+	  ui/Ui_TUview.py, ui/Ui_TableTM.py, ui/Ui_tmSetting.py,
+	  ui/tmSetting.ui: autotranslate, lookuptext from TM under
+	  development
+
+2007-01-24 08:06  titvirak
+
+	* modules/MainEditor.py, modules/Operator.py, modules/Overview.py:
+	  - Fix filter changed.
+
+2007-01-24 07:14  sethchanratha
+
+	* images/bookmarkadd.png: add bookmark
+
+2007-01-24 06:59  sethchanratha
+
+	* ui/MainEditor.ui, ui/Ui_MainEditor.py: add bookmarks
+
+2007-01-24 06:54  sethchanratha
+
+	* modules/MainEditor.py, modules/Operator.py: add bookmarks
+	  function on MainEditor and recode in operator to suit.
+
+2007-01-24 06:46  titvirak
+
+	* modules/Overview.py: add getCurrentIndex(0 for using in
+	  bookmarking.
+
+2007-01-24 04:44  titvirak
+
+	* modules/MainEditor.py, modules/Overview.py, modules/TUview.py:
+	  Add gotoRow in overview, and fix goto in mainEditor.
+	  Remove #.
+
+2007-01-24 03:49  hokkakada
+
+	* TODO: update status
+
+2007-01-24 03:11  titvirak
+
+	* modules/MainEditor.py, modules/Operator.py: - Bring save/cancel
+	  dialog when file is modified and open another file.
+
+2007-01-23 10:34  titvirak
+
+	* modules/Overview.py: improve code of emit targetChanged and
+	  emitFilterIndex.
+
+2007-01-23 08:07  titvirak
+
+	* modules/Overview.py: - Fixed unmark fuzzy when toggle filter many
+	  times.
+
+2007-01-23 02:20  hokkakada
+
+	* modules/AboutEditor.py, modules/FileAction.py, modules/Find.py,
+	  modules/Header.py, modules/MainEditor.py, modules/Operator.py,
+	  modules/Overview.py, modules/Preference.py, modules/Status.py,
+	  modules/Test_Comment.py, modules/Test_FileAction.py,
+	  modules/Test_Find.py, modules/Test_Header.py,
+	  modules/Test_Operator.py, modules/Test_Status.py,
+	  modules/Test_TUview.py, modules/World.py: delete version from all
+	  files, because we have __version__.py already
+
+2007-01-19 10:23  sethchanratha
+
+	* modules/TUview.py: change txtComment to lblComment
+
+2007-01-19 10:22  sethchanratha
+
+	* ui/TUview.ui, ui/Ui_TUview.py: add tab for displaying plural form
+	  and change txtComment to lblComment
+
+2007-01-19 08:42  hokkakada
+
+	* modules/Operator.py: add translator comment to note
+
+2007-01-19 08:12  sethchanratha
+
+	* TODO: update task
+
+2007-01-19 08:06  sethchanratha
+
+	* modules/MainEditor.py, ui/MainEditor.ui, ui/Ui_MainEditor.py: add
+	  Goto line to MainEditor
+
+2007-01-19 07:54  sethchanratha
+
+	* modules/Preference.py, ui/Preference.ui, ui/Ui_Preference.py:
+	  merge color tab to font color and adding number of single/plural
+	  form
+
+2007-01-19 07:28  hokkakada
+
+	* modules/TUview.py: update code to reuse getcontext() in po.py
+
+2007-01-19 04:05  titvirak
+
+	* modules/MainEditor.py, modules/Overview.py: - Add fuzzy color to
+	  overview.
+	  - Fix progressbar.
+
+2007-01-19 03:31  hokkakada
+
+	* TODO: update status
+
+2007-01-19 03:06  hokkakada
+
+	* modules/MainEditor.py: add Clear function to openrecent submenu.
+	  It will be moved to below.
+
+2007-01-19 02:59  hokkakada
+
+	* ui/MainEditor.ui, ui/Ui_MainEditor.py: adding Clear function as
+	  submenu of openrecent and remove the misplaced status string:
+	  database of translated strings
+
+2007-01-19 02:20  titvirak
+
+	* modules/MainEditor.py, modules/Overview.py: Add prgress bar to
+	  status bar.
+
+2007-01-19 02:08  hokkakada
+
+	* modules/TUview.py: show developer comment in the correct view as
+	  po does
+
+2007-01-19 01:24  hokkakada
+
+	* modules/Comment.py: there is no difference between po and xliff
+	  of getting location.
+
+2007-01-18 09:18  hokkakada
+
+	* __version__.py: add __version__.py file to make it easier for the
+	  next release.
+
+2007-01-18 08:31  hokkakada
+
+	* modules/Comment.py: update code to reuse getlocations(self) code.
+
+2007-01-18 04:50  hokkakada
+
+	* modules/Comment.py: make translator comment and location show
+	  properly for xliff file.
+
+2007-01-17 09:29  keosophon
+
+	* modules/MainEditor.py, pootlingdic/modules/tm.py,
+	  pootlingdic/ui/TM.ui, pootlingdic/ui/Ui_TM.py, ui/MainEditor.ui,
+	  ui/Ui_MainEditor.py: code of translation memory - generate tmx
+	  compendium from xliff/po. part2
+
+2007-01-17 03:13  keosophon
+
+	* pootlingdic/modules/tm.py, pootlingdic/ui/TM.ui,
+	  pootlingdic/ui/Ui_TM.py: code of translation memory - part2
+
+2007-01-16 10:49  keosophon
+
+	* pootlingdic/__init__.py: add __init__.py
+
+2007-01-16 10:45  keosophon
+
+	* pootlingdic/modules, pootlingdic/modules/__init__.py,
+	  pootlingdic/modules/tm.py, pootlingdic/ui, pootlingdic/ui/TM.ui,
+	  pootlingdic/ui/TableTM.ui, pootlingdic/ui/Ui_TM.py,
+	  pootlingdic/ui/Ui_TableTM.py, pootlingdic/ui/__init__.py: add
+	  pootlingdic module and ui
+
+2007-01-16 10:40  keosophon
+
+	* pootlingdic/modules: del pootlingdic/module
+
+2007-01-16 10:39  keosophon
+
+	* pootlingdic/ui: del pootlingdic/module and ui.
+
+2007-01-15 10:06  titvirak
+
+	* modules/Overview.py: Delete function which does not work yet.
+
+2007-01-15 10:03  titvirak
+
+	* modules/Overview.py: Resize heigh the target when string has one
+	  line or multi-line.
+
+2007-01-15 02:59  hokkakada
+
+	* TODO: add more tasks for milestoneII
+
+2007-01-12 11:16  friedelwolff
+
+	* README.TXT: Fix mistake with the name of README in translate
+	  toolkit. Minor change in line layout
+
+2007-01-12 11:02  friedelwolff
+
+	* README.TXT: Update with reformatting and rewording
+
+2007-01-12 10:21  hokkakada
+
+	* CHANGELOG.TXT: add more changes features
+
+2007-01-12 10:04  hokkakada
+
+	* README.TXT: update for pootling v.0.1.1
+
+2007-01-12 10:02  titvirak
+
+	* modules/MainEditor.py, modules/Operator.py, modules/Overview.py:
+	  - Fix bug: unmark fuzzy when filter changed.
+	  - When toggle fuzzy, enable save button.
+
+2007-01-12 09:46  hokkakada
+
+	* CHANGELOG.TXT: add changelog for pootling.v.0.1.1
+
+2007-01-11 02:21  hokkakada
+
+	* modules/TUview.py: visible tabulation
+
+2007-01-11 02:16  keosophon
+
+	* pootlingdic, pootlingdic/modules, pootlingdic/modules/tm.py,
+	  pootlingdic/ui, pootlingdic/ui/TM.ui, pootlingdic/ui/TUview.ui,
+	  pootlingdic/ui/Ui_TM.py, pootlingdic/ui/Ui_TableTM.py: add
+	  pootling translation memory interface
+
+2007-01-11 02:15  keosophon
+
+	* ui/MainEditor.ui, ui/TM.ui, ui/TableTM.ui, ui/Ui_MainEditor.py,
+	  ui/Ui_TM.py, ui/Ui_TUview.py, ui/Ui_TableTM.py: del TM, and Table
+	  interface
+
+2007-01-10 09:29  keosophon
+
+	* modules/Operator.py, modules/TUview.py: fix copy source2target.
+	  improve close file
+
+2007-01-10 08:17  hokkakada
+
+	* pootling.py: delet pootling.py
+
+2007-01-10 08:15  hokkakada
+
+	* pootling-editor.py: rename pootling to pootling-editor to avoid
+	  the same name as pootling folder
+
+2007-01-10 07:05  hokkakada
+
+	* modules/Header.py: forgot change in Header.py :-)
+
+2007-01-10 06:58  hokkakada
+
+	* modules/Comment.py, modules/FileAction.py, modules/Find.py,
+	  modules/Header.py, modules/MainEditor.py, modules/Operator.py,
+	  modules/Overview.py, modules/Preference.py, modules/Status.py,
+	  modules/TUview.py: changing from editor to pootling to adopt up
+	  level folder
+
+2007-01-10 06:49  keosophon
+
+	* modules/Comment.py, modules/FileAction.py, modules/MainEditor.py,
+	  modules/Operator.py, modules/Overview.py, modules/TUview.py:
+	  changed code of close file.
+
+2007-01-10 05:09  hokkakada
+
+	* ui/TM.ui, ui/TableTM.ui, ui/Ui_TM.py, ui/Ui_TableTM.py: add
+	  Translation memeory interface
+
+2007-01-09 06:57  hokkakada
+
+	* CHANGELOG.TXT, LICENSE.TXT, README.TXT, TODO, __init__.py, doc,
+	  doc/milestone, pootling.py: add to pootling
+
+2007-01-09 04:59  hokkakada
+
+	* ui, ui/Comment.ui, ui/Find.ui, ui/Header.ui, ui/MainEditor.ui,
+	  ui/Overview.ui, ui/Preference.ui, ui/TUview.ui, ui/Ui_Comment.py,
+	  ui/Ui_Find.py, ui/Ui_Header.py, ui/Ui_MainEditor.py,
+	  ui/Ui_Overview.py, ui/Ui_Preference.py, ui/Ui_TUview.py,
+	  ui/__init__.py: add ui to pootling
+
+2007-01-09 04:57  hokkakada
+
+	* modules, modules/AboutEditor.py, modules/Comment.py,
+	  modules/FileAction.py, modules/Find.py, modules/Header.py,
+	  modules/MainEditor.py, modules/Operator.py, modules/Overview.py,
+	  modules/Preference.py, modules/Status.py, modules/TUview.py,
+	  modules/Test_Comment.py, modules/Test_FileAction.py,
+	  modules/Test_Find.py, modules/Test_Header.py,
+	  modules/Test_Operator.py, modules/Test_Status.py,
+	  modules/Test_TUview.py, modules/World.py, modules/__init__.py:
+	  add modules to pootling
+
+2007-01-09 04:46  hokkakada
+
+	* images, images/approved.png, images/configure.png,
+	  images/contents.png, images/copy.png, images/cut.png,
+	  images/down.png, images/exit.png, images/fileclose.png,
+	  images/filesaveas.png, images/filter.png, images/find.png,
+	  images/first.png, images/fuzzy.png, images/help.png,
+	  images/last.png, images/new.png, images/next.png,
+	  images/note.png, images/open.png, images/openrecent.png,
+	  images/paste.png, images/pootling.png, images/previous.png,
+	  images/print.png, images/redo.png, images/save.png,
+	  images/saveAs.png, images/stop.png, images/translated.png,
+	  images/undo.png, images/untranslated.png, images/up.png,
+	  images/window_new.png: add image to pootling
+
+2007-01-09 04:42  hokkakada
+
+	* .: add pootling for removing editor
+
