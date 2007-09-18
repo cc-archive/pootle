@@ -51,10 +51,10 @@ class dtd2po:
         thepo.addnote(comment, origin="developer")
       # handle normal comments
       else:
-        thepo.othercomments.append("# " + quote.stripcomment(comment) + "\n")
+        thepo.addnote(quote.stripcomment(comment), origin="translator")
     # handle group stuff
     if self.currentgroup is not None:
-      thepo.othercomments.append("# " + quote.stripcomment(self.currentgroup) + "\n")
+      thepo.addnote(quote.stripcomment(self.currentgroup), origin="translator")
     if entity.endswith(".height") or entity.endswith(".width") or entity.endswith(".size"):
       thepo.addnote("Do not translate this.  Only change the numeric values if you need this dialogue box to appear bigger", origin="developer")
 

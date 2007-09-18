@@ -197,15 +197,12 @@ class po2dtd:
       types.append(quote.unstripcomment(typecomment[2:]))
     for typedescr in types:
       dtdunit.comments.append(("potype", typedescr+'\n'))
-    # othercomments are normal e.g. # another comment
-    others = []
-    for othercomment in inputunit.othercomments:
-      # otherstr, instring = quote.extract(othercomment,"#","\n",None)
-      others.append(quote.unstripcomment(othercomment[2:]))
-    for other in others:
-      # don't put in localization note group comments as they are artificially added
-      if (other.find('LOCALIZATION NOTE') == -1) or (other.find('GROUP') == -1):
-        dtdunit.comments.append(("comment", other))
+    for note in inputunit.getnotes("translator").split("\n"):
+      if not note:
+        continue
+      note = quote.unstripcomment(note)
+      if (note.find('LOCALIZATION NOTE') == -1) or (note.find('GROUP') == -1):
+        dtdunit.comments.append(("comment", note))
     # msgidcomments are special - they're actually localization notes
     for msgidcomment in inputunit.msgidcomments:
       unquotedmsgidcomment = quote.extractwithoutquotes(msgidcomment,'"','"','\\',includeescapes=0)[0]
