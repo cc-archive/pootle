@@ -88,6 +88,7 @@ gpo.po_header_field.argtypes = [STRING, STRING]
 gpo.po_filepos_file.restype = STRING
 gpo.po_message_filepos.restype = c_int
 gpo.po_message_filepos.argtypes = [c_int, c_int]
+gpo.po_message_add_filepos.argtypes = [c_int, STRING, c_int]
 
 # Message (get methods)
 gpo.po_message_comments.restype = STRING
@@ -368,6 +369,16 @@ class pounit(base.TranslationUnit):
             i += 1
             location = gpo.po_message_filepos(self._gpo_message, i)
         return locations
+
+    def addlocation(self, location):
+        for loc in location.split():
+            parts = loc.split(":")
+            file = parts[0]
+            if len(parts) == 2:
+                line = int(parts[1])
+            else:
+                line = -1
+            gpo.po_message_add_filepos(self._gpo_message, file, line)
 
     def getcontext(self):
         msgctxt = gpo.po_message_msgctxt(self._gpo_message)
