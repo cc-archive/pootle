@@ -223,7 +223,10 @@ class pounit(pocommon.pounit):
         else:
             if isinstance(target, unicode):
                 target = target.encode(self._encoding)
-            gpo.po_message_set_msgstr(self._gpo_message, target)
+            if target is None:
+                gpo.po_message_set_msgstr(self._gpo_message, "")
+            else:
+                gpo.po_message_set_msgstr(self._gpo_message, target)
     target = property(gettarget, settarget)
 
     def getnotes(self, origin=None):
@@ -379,11 +382,12 @@ class pofile(pocommon.pofile):
     
         headerpo = self.UnitClass(encoding=self._encoding)
         headerpo.markfuzzy()
-        headerpo.msgid = ['""']
+        headerpo.source = ""
         headeritems = self.makeheaderdict(**kwargs)
-        headerpo.msgstr = ['""']
+        headeritemstring = []
         for (key, value) in headeritems.items():
-            headerpo.msgstr.append(quote.quotestr("%s: %s\\n" % (key, value)))
+            headeritemstring.append("%s: %s\n" % (key, value))
+        headerpo.target = "".join(headeritemstring)
         return headerpo
 
     def addunit(self, unit):
