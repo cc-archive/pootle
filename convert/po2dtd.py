@@ -185,11 +185,8 @@ class po2dtd:
       # this produces a blank entity, which doesn't write anything out
       dtdunit.entity = ""
 
-    types = []
-    for typecomment in inputunit.typecomments:  # typecomments are '#, fuzzy'
-      types.append(quote.unstripcomment(typecomment[2:]))
-    for typedescr in types:
-      dtdunit.comments.append(("potype", typedescr+'\n'))
+    if inputunit.isfuzzy():
+       dtdunit.comments.append(("potype", "fuzzy\n"))
     for note in inputunit.getnotes("translator").split("\n"):
       if not note:
         continue
@@ -197,13 +194,11 @@ class po2dtd:
       if (note.find('LOCALIZATION NOTE') == -1) or (note.find('GROUP') == -1):
         dtdunit.comments.append(("comment", note))
     # msgidcomments are special - they're actually localization notes
-    for msgidcomment in inputunit.msgidcomments:
-      unquotedmsgidcomment = quote.extractwithoutquotes(msgidcomment,'"','"','\\',includeescapes=0)[0]
-      actualnote = unquotedmsgidcomment.replace("_:","",1)
-      if actualnote[-2:] == '\\n':
-        actualnote = actualnote[:-2]
-      locnote = quote.unstripcomment("LOCALIZATION NOTE ("+dtdunit.entity+"): "+actualnote)
+    msgidcomment = inputunit._extract_msgidcomments()
+    if msgidcomment:
+      locnote = quote.unstripcomment("LOCALIZATION NOTE ("+dtdunit.entity+"): "+msgidcomment)
       dtdunit.comments.append(("locnote", locnote))
+       
 
   def convertstrings(self, inputunit, dtdunit):
     if inputunit.istranslated():
