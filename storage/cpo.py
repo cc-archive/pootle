@@ -110,6 +110,7 @@ gpo.po_message_msgstr_plural.restype = STRING
 # Message (set methods)
 gpo.po_message_set_comments.argtypes = [c_int, STRING]
 gpo.po_message_set_extracted_comments.argtypes = [c_int, STRING]
+gpo.po_message_set_fuzzy.argtypes = [c_int, c_int]
 gpo.po_message_set_msgctxt.argtypes = [c_int, STRING]
 
 # Setup the po_xerror_handler
