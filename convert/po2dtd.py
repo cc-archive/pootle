@@ -179,11 +179,7 @@ class redtd:
 class po2dtd:
   """this is a convertor class that creates a new dtd file based on a po file without a template"""
   def convertcomments(self, inputunit, dtdunit):
-    # get the entity from sourcecomments
-    entitiesstr = " ".join([sourcecomment[2:].strip() for sourcecomment in inputunit.sourcecomments])
-    #  # entitystr, instring = quote.extract(sourcecomment, "#:","\n",None)
-    #  entitiesstr += sourcecomment[2:].strip()
-    entities = entitiesstr.split()
+    entities = inputunit.getlocations()
     if len(entities) > 1:
       # don't yet handle multiple entities
       dtdunit.comments.append(("conversionnote",'<!-- CONVERSION NOTE - multiple entities -->\n'))
