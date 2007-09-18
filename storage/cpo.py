@@ -165,13 +165,17 @@ class pounit(pocommon.pounit):
                     return ""
             else:
                 return text
-        multi = multistring(remove_msgid_comments(gpo.po_message_msgid(self._gpo_message)), self._encoding)
-        if self.hasplural():
-            pluralform = gpo.po_message_msgid_plural(self._gpo_message)
-            if isinstance(pluralform, str):
-                pluralform = pluralform.decode(self._encoding)
-            multi.strings.append(pluralform)
-        return multi
+        singular = remove_msgid_comments(gpo.po_message_msgid(self._gpo_message))
+        if singular:
+            multi = multistring(singular, self._encoding)
+            if self.hasplural():
+                pluralform = gpo.po_message_msgid_plural(self._gpo_message)
+                if isinstance(pluralform, str):
+                    pluralform = pluralform.decode(self._encoding)
+                multi.strings.append(pluralform)
+            return multi
+        else:
+            return ""
 
     def setsource(self, source):
         if isinstance(source, multistring):
@@ -379,11 +383,11 @@ class pounit(pocommon.pounit):
     
         if not text:
             text = gpo.po_message_msgid(self._gpo_message)
-        msgidcomment = re.search("_: (.*)\n", text)
-        if msgidcomment:
-            return msgidcomment.group(1)
-        else:
-            return ""
+        if text:
+            msgidcomment = re.search("_: (.*)\n", text)
+            if msgidcomment:
+                return msgidcomment.group(1)
+        return ""
 
     def __str__(self):
         pf = pofile()
