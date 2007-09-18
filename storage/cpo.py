@@ -252,7 +252,10 @@ class pounit(pocommon.pounit):
             return
         oldnotes = self.getnotes(origin).encode('utf-8')
         if oldnotes:
-            newnotes = oldnotes + "\n" + text
+            if position == "append":
+                newnotes = oldnotes + "\n" + text
+            else:
+                newnotes = text + '\n' + oldnotes
         else:
             newnotes = text
         if origin in ["programmer", "developer", "source code"]:
