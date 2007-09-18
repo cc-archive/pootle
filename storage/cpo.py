@@ -96,6 +96,7 @@ gpo.po_message_extracted_comments.restype = STRING
 gpo.po_message_prev_msgctxt.restype = STRING
 gpo.po_message_prev_msgid.restype = STRING
 gpo.po_message_prev_msgid_plural.restype = STRING
+gpo.po_message_is_format.restype = c_int
 gpo.po_message_msgctxt.restype = STRING
 gpo.po_message_msgid.restype = STRING
 gpo.po_message_msgid_plural.restype = STRING
@@ -280,6 +281,9 @@ class pounit(base.TranslationUnit):
 
     def isblank(self):
         return len(self.source) == 0 and len(self.target) == 0
+
+    def hastypecomment(self, typecomment):
+        return gpo.po_message_is_format(self._gpo_message, typecomment)
 
     def hasmarkedcomment(self, commentmarker):
         commentmarker = "(%s)" % commentmarker
