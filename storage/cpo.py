@@ -348,6 +348,11 @@ class pounit(base.TranslationUnit):
         else:
             return ""
 
+    def __str__(self):
+        pf = pofile()
+        pf.addunit(self)
+        return str(pf)
+
     def getlocations(self):
         locations = []
         i = 0
