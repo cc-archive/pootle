@@ -23,7 +23,7 @@
 gettext-style .po (or .pot) files are used in translations for KDE et al (see kbabel)"""
 
 from translate.misc.multistring import multistring
-from translate.storage import base
+from translate.storage import pocommon
 from translate.misc import quote
 from ctypes import *
 import ctypes.util
@@ -124,13 +124,14 @@ def unquotefrompo(postr, joinwithlinebreak=False):
 def encodingToUse(encoding):
     return po.encodingToUse(encoding)
 
-class pounit(base.TranslationUnit):
+class pounit(pocommon.pounit):
     def __init__(self, source=None, encoding='utf-8', gpo_message=None):
         self._encoding = encoding
         if not gpo_message:
             self._gpo_message = gpo.po_message_create()
         if source or source == "":
             self.source = source
+            self.target = ""
         elif gpo_message:
             self._gpo_message = gpo_message
 
@@ -253,24 +254,6 @@ class pounit(base.TranslationUnit):
     def removenotes(self):
         gpo.po_message_set_comments(self._gpo_message, "")
 
-    def adderror(self, errorname, errortext):
-        """Adds an error message to this unit."""
-        text = u'(pofilter) %s: %s' % (errorname, errortext)
-        # Don't add the same error twice:
-        if text not in self.getnotes(origin='translator'):
-            self.addnote(text, origin="translator")
-
-    def geterrors(self):
-        """Get all error messages."""
-        notes = self.getnotes(origin="translator").split('\n')
-        errordict = {}
-        for note in notes:
-            if '(pofilter) ' in note:
-                error = note.replace('(pofilter) ', '')
-                errorname, errortext = error.split(': ')
-                errordict[errorname] = errortext
-        return errordict
-
     def copy(self):
         newpo = self.__class__()
         newpo._gpo_message = self._gpo_message
@@ -306,24 +289,6 @@ class pounit(base.TranslationUnit):
 
     def isreview(self):
         return self.hasmarkedcomment("review") or self.hasmarkedcomment("pofilter")
-
-    def markreviewneeded(self, needsreview=True, explanation=None):
-        if needsreview:
-          reviewnote = "(review)"
-          if explanation:
-            reviewnote += " " + explanation
-          self.addnote(reviewnote, origin="translator")
-        else:
-          # Strip (review) notes.
-          notestring = self.getnotes(origin="translator")
-          notes = notestring.split('\n')
-          newnotes = []
-          for note in notes:
-            if not '(review)' in note:
-              newnotes.append(note)
-          newnotes = '\n'.join(newnotes)
-          self.removenotes()
-          self.addnote(newnotes, origin="translator")
 
     def isobsolete(self):
         return gpo.po_message_is_obsolete(self._gpo_message)
@@ -392,11 +357,11 @@ class pounit(base.TranslationUnit):
         else:
             return msgidcomment
 
-class pofile(po.pofile):
+class pofile(pocommon.pofile):
     UnitClass = pounit
     def __init__(self, inputfile=None, encoding=None, unitclass=pounit):
         self.UnitClass = unitclass
-        base.TranslationStore.__init__(self, unitclass=unitclass)
+        pocommon.pofile.__init__(self, unitclass=unitclass)
         self._gpo_memory_file = None
         self._gpo_message_iterator = None
         self._encoding = encoding

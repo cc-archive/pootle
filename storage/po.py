@@ -26,8 +26,7 @@ from __future__ import generators
 from translate.misc.multistring import multistring
 from translate.misc import quote
 from translate.misc import textwrap
-from translate.storage import base
-from translate.storage import poheader
+from translate.storage import pocommon
 import re
 
 # general functions for quoting / unquoting po strings
@@ -137,7 +136,7 @@ From the GNU gettext manual:
      msgstr TRANSLATED-STRING
 """
 
-class pounit(base.TranslationUnit):
+class pounit(pocommon.pounit):
   # othercomments = []      #   # this is another comment
   # automaticcomments = []  #   #. comment extracted from the source code
   # sourcecomments = []     #   #: sourcefile.xxx:35
@@ -282,24 +281,6 @@ class pounit(base.TranslationUnit):
   def removenotes(self):
     """Remove all the translator's notes (other comments)"""
     self.othercomments = []
-
-  def adderror(self, errorname, errortext):
-    """Adds an error message to this unit."""
-    text = u'(pofilter) %s: %s' % (errorname, errortext)
-    # Don't add the same error twice:
-    if text not in self.getnotes(origin='translator'):
-        self.addnote(text, origin="translator")
-
-  def geterrors(self):
-    """Get all error messages."""
-    notes = self.getnotes(origin="translator").split('\n')
-    errordict = {}
-    for note in notes:
-      if '(pofilter) ' in note:
-        error = note.replace('(pofilter) ', '')
-        errorname, errortext = error.split(': ')
-        errordict[errorname] = errortext
-    return errordict
 
   def copy(self):
     newpo = self.__class__()
@@ -475,25 +456,6 @@ class pounit(base.TranslationUnit):
   def isreview(self):
     return self.hastypecomment("review") or self.hasmarkedcomment("review") or self.hasmarkedcomment("pofilter")
 
-  def markreviewneeded(self, needsreview=True, explanation=None):
-    """Marks the unit to indicate whether it needs review. Adds an optional explanation as a note."""
-    if needsreview:
-      reviewnote = "(review)"
-      if explanation:
-        reviewnote += " " + explanation
-      self.addnote(reviewnote, origin="translator")
-    else:
-      # Strip (review) notes.
-      notestring = self.getnotes(origin="translator")
-      notes = notestring.split('\n')
-      newnotes = []
-      for note in notes:
-        if not '(review)' in note:
-          newnotes.append(note)
-      newnotes = '\n'.join(newnotes)
-      self.removenotes()
-      self.addnote(newnotes, origin="translator")
-      
   def isobsolete(self):
     return self.obsolete
 
@@ -780,14 +742,14 @@ class pounit(base.TranslationUnit):
       id = "%s\04%s" % (context, id)
     return id
 
-class pofile(base.TranslationStore, poheader.poheader):
+class pofile(pocommon.pofile):
   """this represents a .po file containing various units"""
   UnitClass = pounit
   def __init__(self, inputfile=None, encoding=None, unitclass=pounit):
     """construct a pofile, optionally reading in from inputfile.
     encoding can be specified but otherwise will be read from the PO header"""
     self.UnitClass = unitclass
-    base.TranslationStore.__init__(self, unitclass=unitclass)
+    pocommon.pofile.__init__(self, unitclass=unitclass)
     self.units = []
     self.filename = ''
     self.encoding = encodingToUse(encoding)
