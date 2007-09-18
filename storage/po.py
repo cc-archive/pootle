@@ -404,7 +404,7 @@ class pounit(base.TranslationUnit):
         mergelists(self.automaticcomments, otherpo.automaticcomments)
         mergelists(self.msgidcomments, otherpo.msgidcomments)
         mergelists(self.sourcecomments, otherpo.sourcecomments, split=True)
-    if self.isblankmsgstr() or overwrite:
+    if not self.istranslated() or overwrite:
       # Remove kde-style comments from the translation (if any).
       if self._extract_msgidcomments(otherpo.target):
         otherpo.target = otherpo.target.replace('_: ' + otherpo._extract_msgidcomments()+ '\n', '')
@@ -413,7 +413,7 @@ class pounit(base.TranslationUnit):
         self.markfuzzy()
       else:
         self.markfuzzy(otherpo.isfuzzy())
-    elif otherpo.isblankmsgstr():
+    elif not otherpo.istranslated():
       if self.source != otherpo.source:
         self.markfuzzy()
     else:
@@ -436,10 +436,6 @@ class pounit(base.TranslationUnit):
     # TODO: remove:
     # Before, the equivalent of the following was the final return statement:
     # return len(self.source.strip()) == 0
-
-  def isblankmsgstr(self):
-    """checks whether the msgstr is blank"""
-    return self.msgstrlen() == 0
 
   def hastypecomment(self, typecomment):
     """check whether the given type comment is present"""
