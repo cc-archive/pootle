@@ -102,11 +102,6 @@ def removeinvalidamps(entity, unquotedstr):
       comp += 1
   return unquotedstr
 
-def dounquotepo(pounit):
-  unquotedid = po.unquotefrompo(pounit.msgid)
-  unquotedstr = po.unquotefrompo(pounit.msgstr)
-  return unquotedid, unquotedstr
-
 def getmixedentities(entities):
   """returns a list of mixed .label and .accesskey entities from a list of entities"""
   mixedentities = []  # those entities which have a .label and .accesskey combined
@@ -125,7 +120,7 @@ def getmixedentities(entities):
 def applytranslation(entity, dtdunit, inputunit, mixedentities):
   """applies the translation for entity in the po unit to the dtd unit"""
   # this converts the po-style string to a dtd-style string
-  unquotedid, unquotedstr = dounquotepo(inputunit)
+  unquotedstr = inputunit.target
   # check there aren't missing entities...
   if len(unquotedstr.strip()) == 0:
     return
@@ -211,14 +206,10 @@ class po2dtd:
       dtdunit.comments.append(("locnote", locnote))
 
   def convertstrings(self, inputunit, dtdunit):
-    # currently let's just get the msgid back
-    unquotedid = po.unquotefrompo(inputunit.msgid)
-    unquotedstr = po.unquotefrompo(inputunit.msgstr)
-    # choose the msgstr unless it's empty, in which case choose the msgid
-    if len(unquotedstr) == 0:
-      unquoted = unquotedid
+    if inputunit.istranslated():
+      unquoted = inputunit.target
     else:
-      unquoted = unquotedstr
+      unquoted = inputunit.source
     unquoted = removeinvalidamps(dtdunit.entity, unquoted)
     dtdunit.definition = dtd.quotefordtd(unquoted)
 
