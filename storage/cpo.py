@@ -106,6 +106,7 @@ gpo.po_message_msgstr_plural.restype = STRING
 # Message (set methods)
 gpo.po_message_set_comments.argtypes = [c_int, STRING]
 gpo.po_message_set_extracted_comments.argtypes = [c_int, STRING]
+gpo.po_message_set_msgctxt.argtypes = [c_int, STRING]
 
 # Setup the po_xerror_handler
 xerror_handler = po_xerror_handler()
@@ -388,6 +389,56 @@ class pofile(pocommon.pofile):
     def addunit(self, unit):
         gpo.po_message_insert(self._gpo_message_iterator, unit._gpo_message)
         self.units.append(unit)
+
+    def removeduplicates(self, duplicatestyle="merge"):
+        """make sure each msgid is unique ; merge comments etc from duplicates into original"""
+        msgiddict = {}
+        uniqueelements = []
+        # we sometimes need to keep track of what has been marked
+        # TODO: this is using a list as the pos aren't hashable, but this is slow...
+        markedpos = []
+        def addcomment(thepo):
+            thepo.msgidcomment = " ".join(thepo.getlocations())
+            markedpos.append(thepo)
+        for thepo in self.units:
+            if thepo.isheader():
+                uniqueelements.append(thepo)
+                continue
+            if duplicatestyle.startswith("msgid_comment"):
+                msgid = thepo._extract_msgidcomments() + thepo.source
+            else:
+                msgid = thepo.source
+            if duplicatestyle == "msgid_comment_all":
+                addcomment(thepo)
+                uniqueelements.append(thepo)
+            elif msgid in msgiddict:
+                if duplicatestyle == "merge":
+                    if msgid:
+                        msgiddict[msgid].merge(thepo)
+                    else:
+                        addcomment(thepo)
+                        uniqueelements.append(thepo)
+                elif duplicatestyle == "keep":
+                    uniqueelements.append(thepo)
+                elif duplicatestyle == "msgid_comment":
+                    origpo = msgiddict[msgid]
+                    if origpo not in markedpos:
+                        addcomment(origpo)
+                    addcomment(thepo)
+                    uniqueelements.append(thepo)
+                elif duplicatestyle == "msgctxt":
+                    origpo = msgiddict[msgid]
+                    if origpo not in markedpos:
+                        gpo.po_message_set_msgctxt(origpo._gpo_message, " ".join(origpo.getlocations()))
+                        markedpos.append(thepo)
+                    gpo.po_message_set_msgctxt(thepo._gpo_message, " ".join(thepo.getlocations()))
+                    uniqueelements.append(thepo)
+            else:
+                if not msgid and duplicatestyle != "keep":
+                    addcomment(thepo)
+                msgiddict[msgid] = thepo
+                uniqueelements.append(thepo)
+        self.units = uniqueelements
 
     def __str__(self):
         outputstring = ""
