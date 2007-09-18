@@ -222,7 +222,7 @@ class pounit(pocommon.pounit):
                 gpo.po_message_set_msgstr_plural(self._gpo_message, i, targetstring)
         else:
             if isinstance(target, unicode):
-               target = target.encode(self._encoding)
+                target = target.encode(self._encoding)
             gpo.po_message_set_msgstr(self._gpo_message, target)
     target = property(gettarget, settarget)
 
