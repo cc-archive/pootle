@@ -32,7 +32,7 @@ try:
 except ImportError:
     import StringIO
 import os
-import po
+import pypo
 import re
 
 STRING = c_char_p
@@ -119,16 +119,16 @@ xerror_handler.xerror = xerror_prototype(xerror_cb)
 xerror_handler.xerror2 = xerror2_prototype(xerror2_cb)
 
 def escapeforpo(text):
-    return po.escapeforpo(text)
+    return pypo.escapeforpo(text)
 
 def quoteforpo(text):
-    return po.quoteforpo(text)
+    return pypo.quoteforpo(text)
 
 def unquotefrompo(postr, joinwithlinebreak=False):
-    return po.unquotefrompo(postr, joinwithlinebreak)
+    return pypo.unquotefrompo(postr, joinwithlinebreak)
 
 def encodingToUse(encoding):
-    return po.encodingToUse(encoding)
+    return pypo.encodingToUse(encoding)
 
 class pounit(pocommon.pounit):
     def __init__(self, source=None, encoding='utf-8', gpo_message=None):
