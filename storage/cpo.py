@@ -373,7 +373,7 @@ class pofile(pocommon.pofile):
         pocommon.pofile.__init__(self, unitclass=unitclass)
         self._gpo_memory_file = None
         self._gpo_message_iterator = None
-        self._encoding = encoding
+        self._encoding = encodingToUse(encoding)
         if inputfile is not None:
             self.parse(inputfile)
         else:
