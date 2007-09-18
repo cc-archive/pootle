@@ -398,6 +398,9 @@ class pofile(po.pofile):
         self._encoding = encoding
         if inputfile is not None:
             self.parse(inputfile)
+        else:
+            self._gpo_memory_file = gpo.po_file_create()
+            self._gpo_message_iterator = gpo.po_message_iterator(self._gpo_memory_file, None)
 
     def makeheader(self, **kwargs):
         """create a header for the given filename. arguments are specially handled, kwargs added as key: value
@@ -412,6 +415,10 @@ class pofile(po.pofile):
         for (key, value) in headeritems.items():
             headerpo.msgstr.append(quote.quotestr("%s: %s\\n" % (key, value)))
         return headerpo
+
+    def addunit(self, unit):
+        gpo.po_message_insert(self._gpo_message_iterator, unit._gpo_message)
+        self.units.append(unit)
 
     def __str__(self):
         outputstring = ""
@@ -458,7 +465,7 @@ class pofile(po.pofile):
         newmessage = gpo.po_next_message(self._gpo_message_iterator)
         while newmessage:
             newunit = pounit(gpo_message=newmessage)
-            self.addunit(newunit)
+            self.units.append(newunit)
             newmessage = gpo.po_next_message(self._gpo_message_iterator)
 #        self._free_iterator()
 
