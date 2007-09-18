@@ -190,10 +190,8 @@ class po2dtd:
       # this produces a blank entity, which doesn't write anything out
       dtdunit.entity = ""
 
-     # typecomments are for example #, fuzzy
     types = []
-    for typecomment in inputunit.typecomments:
-      # typestr, instring = quote.extract(typecomment, "#,","\n",None)
+    for typecomment in inputunit.typecomments:  # typecomments are '#, fuzzy'
       types.append(quote.unstripcomment(typecomment[2:]))
     for typedescr in types:
       dtdunit.comments.append(("potype", typedescr+'\n'))
