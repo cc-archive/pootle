@@ -196,7 +196,10 @@ class pounit(pocommon.pounit):
                 plurals.append(plural)
                 nplural += 1
                 plural = gpo.po_message_msgstr_plural(self._gpo_message, nplural)
-            multi = multistring(plurals, encoding=self._encoding)
+            if plurals:
+                multi = multistring(plurals, encoding=self._encoding)
+            else:
+                multi = multistring("")
         else:
             multi = multistring(gpo.po_message_msgstr(self._gpo_message) or "", encoding=self._encoding)
         return multi
