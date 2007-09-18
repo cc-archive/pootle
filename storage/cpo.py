@@ -156,9 +156,12 @@ class pounit(pocommon.pounit):
         def remove_msgid_comments(text):
             if not text:
                 return text
-            remainder = re.search(r"_: .*\n(.*)", text)
-            if remainder:
-                return remainder.group(1)
+            if text.startswith("_:"):
+                remainder = re.search(r"_: .*\n(.*)", text)
+                if remainder:
+                    return remainder.group(1)
+                else:
+                    return ""
             else:
                 return text
         multi = multistring(remove_msgid_comments(gpo.po_message_msgid(self._gpo_message)), self._encoding)
