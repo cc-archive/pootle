@@ -24,6 +24,9 @@ depending on the use_implementation variable"""
 
 #use_implementation = "python"
 use_implementation = "c"
+"""Choose which PO implementation to use.  'c' uses Gettext libgettextpo for 
+high parsing speed.  'python' uses the local Python based parser (slower
+but very well tested)"""
 
 if use_implementation == "c":
     from cpo import *
