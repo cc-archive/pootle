@@ -142,8 +142,9 @@ class pounit(pocommon.pounit):
             self._gpo_message = gpo_message
 
     def setmsgidcomment(self, msgidcomment):
-        newsource = "_: " + msgidcomment + "\n" + self.source
-        self.source = newsource
+        if msgidcomment:
+            newsource = "_: " + msgidcomment + "\n" + self.source
+            self.source = newsource
     msgidcomment = property(None, setmsgidcomment)
 
     def setmsgid_plural(self, msgid_plural): 
@@ -257,17 +258,29 @@ class pounit(pocommon.pounit):
         if not text:
             return
         oldnotes = self.getnotes(origin).encode('utf-8')
+        newnotes = None
         if oldnotes:
             if position == "append":
                 newnotes = oldnotes + "\n" + text
+            elif position == "merge":
+                if oldnotes != text:
+                    oldnoteslist = oldnotes.split("\n")
+                    for newline in text.split("\n"):
+                        newline = newline.rstrip()
+                        # avoid duplicate comment lines (this might cause some problems)
+                        if newline not in oldnotes or len(newline) < 5:
+                            oldnoteslist.append(newline)
+                    newnotes = "\n".join(oldnoteslist)
             else:
                 newnotes = text + '\n' + oldnotes
         else:
-            newnotes = text
-        if origin in ["programmer", "developer", "source code"]:
-            gpo.po_message_set_extracted_comments(self._gpo_message, newnotes)
-        else:
-            gpo.po_message_set_comments(self._gpo_message, newnotes)
+            newnotes = "\n".join(line.rstrip() for line in text.split("\n"))
+        if newnotes:
+            print "newnotes", repr(newnotes)
+            if origin in ["programmer", "developer", "source code"]:
+                gpo.po_message_set_extracted_comments(self._gpo_message, newnotes)
+            else:
+                gpo.po_message_set_comments(self._gpo_message, newnotes)
 
     def removenotes(self):
         gpo.po_message_set_comments(self._gpo_message, "")
@@ -276,6 +289,42 @@ class pounit(pocommon.pounit):
         newpo = self.__class__()
         newpo._gpo_message = self._gpo_message
         return newpo
+
+    def merge(self, otherpo, overwrite=False, comments=True, authoritative=False):
+        """Merges the otherpo (with the same msgid) into this one.
+
+        Overwrite non-blank self.msgstr only if overwrite is True
+        merge comments only if comments is True
+        
+        """
+
+        if not isinstance(otherpo, pounit):
+          super(pounit, self).merge(otherpo, overwrite, comments)
+          return
+        if comments:
+          self.addnote(otherpo.getnotes("translator"), origin="translator", position="merge")
+          # FIXME mergelists(self.typecomments, otherpo.typecomments)
+          if not authoritative:
+            # We don't bring across otherpo.automaticcomments as we consider ourself
+            # to be the the authority.  Same applies to otherpo.msgidcomments
+            self.addnote(otherpo.getnotes("developer"), origin="developer", position="merge")
+            self.msgidcomment = otherpo._extract_msgidcomments() or None
+            self.addlocations(otherpo.getlocations())
+        if not self.istranslated() or overwrite:
+          # Remove kde-style comments from the translation (if any).
+          if self._extract_msgidcomments(otherpo.target):
+            otherpo.target = otherpo.target.replace('_: ' + otherpo._extract_msgidcomments()+ '\n', '')
+          self.target = otherpo.target
+          if self.source != otherpo.source:
+            self.markfuzzy()
+          else:
+            self.markfuzzy(otherpo.isfuzzy())
+        elif not otherpo.istranslated():
+          if self.source != otherpo.source:
+            self.markfuzzy()
+        else:
+          if self.target != otherpo.target:
+            self.markfuzzy()
 
     def isheader(self):
         return self.source == "" and self.target != ""
