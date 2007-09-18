@@ -165,14 +165,14 @@ class pounit(pocommon.pounit):
         return multi
 
     def setsource(self, source):
-        if isinstance(source, unicode):
-            source = source.encode(self._encoding)
         if isinstance(source, multistring):
             source = source.strings
+        if isinstance(source, unicode):
+            source = source.encode(self._encoding)
         if isinstance(source, list):
-            gpo.po_message_set_msgid(self._gpo_message, source[0])
+            gpo.po_message_set_msgid(self._gpo_message, str(source[0]))
             if len(source) > 1:
-                gpo.po_message_set_msgid_plural(self._gpo_message, source[1])
+                gpo.po_message_set_msgid_plural(self._gpo_message, str(source[1]))
         else:
             gpo.po_message_set_msgid(self._gpo_message, source)
             gpo.po_message_set_msgid_plural(self._gpo_message, None)
