@@ -100,7 +100,6 @@ garbage</note>
         assert pofile.translate("bla") is None
         unit = pofile.units[0]
         assert unit.getnotes("developer") == "Note that this is\ngarbage"
-        assert unit.automaticcomments == ["#. Note that this is\n", "#. garbage\n"]
         potext = str(pofile)
         assert potext.index("#. Note that this is\n#. garbage\n") >= 0
 
