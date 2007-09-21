@@ -7,11 +7,12 @@
 
 {% block content %}
 
-<div class="navbar" style="margin:0; padding:0; " >
+<div class="navbar" style="margin-bottom: 0;">
   <img src="/static/images/folder.png" class="icon" alt="" dir="{{ uidir }}" lang="{{ uilanguage }}" />
   <h3 class="title">[ <a href="/{{ project.language.code }}/">{{ project.language.name }}</a> ] [ <a href="/projects/{{ project.project.code }}/">{{ project.project.name }}</a> ]</h3>
-  <div class="item-description" id="actionlinks">
-  </div>
+  {% trans "File" %} <a href="/{{ project.language.code }}/{{ project.project.code }}/">/{{ project.language.code }}/{{ project.project.code }}/</a>{% if subdir %}<a href="{{ subdir }}">{{ subdir }}</a>&#47;{% endif %}{{ filename }}
+</div>
+<div class="navbar" style="margin: 0; padding:1px;">
   <div id="tab1">
     <ul id="tabnav">
       <li class="tab1"><a href="#">{% trans "Overview" %}</a></li>

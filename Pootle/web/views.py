@@ -149,7 +149,7 @@ def translationproject(req, language, project, subdir=None):
                                 'average': average_translated,
                                 },
         'items': files,
-        'curdir': subdir,
+        'curdir': subdir or '',
        }
     return render_to_response("translationproject.html", RequestContext(req, context))
 
@@ -402,6 +402,9 @@ def translate(req, language, project, subdir, filename):
     context = {
         'form' : form,
         'index': unit.index,
+        'project': translationproject,
+        'subdir': subdir,
+        'filename': filename,
         }
     return render_to_response("file_translate.html", RequestContext(req, context))
 
