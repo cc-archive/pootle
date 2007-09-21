@@ -1,0 +1,12 @@
+{% extends "file_overview.html" %}
+{% load i18n %}
+
+
+{% block file %}
+    <form class="translateform" action="" method="post">
+      <table>
+        {{ form }}
+        <tr><td></td><td><input type="submit" name="{% trans "Submit" %}" /></td></tr>
+      </table>
+    </form>
+{% endblock %}
