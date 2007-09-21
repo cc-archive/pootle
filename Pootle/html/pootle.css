@@ -533,3 +533,60 @@ table.sortable img.sortarrow {
 .sortkey {
   display: none;
 }
+
+/* begin css tabs */
+/* CSS Tabs 2.0 by Joshua Kaufman, License: CC-BY-2.5 */
+/* See http://unraveled.com/projects/html/css_tabs/ */
+
+ul#tabnav { /* general settings */
+text-align: left; /* set to left, right or center */
+margin: 1em 0 1em 0; /* set margins as desired */
+font: bold 11px verdana, arial, sans-serif; /* set font as desired */
+border-bottom: 1px solid #aaa; /* set border COLOR as desired */
+list-style-type: none;
+padding: 3px 0 3px 1em; /* THIRD number must change with respect to padding-top (X) below */
+margin-bottom: 0;
+}
+
+ul#tabnav li { /* do not change */
+display: inline;
+}
+
+div#tab1 li.tab1, div#tab2 li.tab2, div#tab3 li.tab3, div#tab4 li.tab4 { /* settings for selected tab */
+border-bottom: 1px solid #cfd1d3; /* set border color to page background color */
+background-color: #cfd1d3; /* set background color to match above border color */
+}
+
+div#tab1 li.tab1 a, div#tab2 li.tab2 a, div#tab3 li.tab3 a, div#tab4 li.tab4 a { /* settings for selected tab link */
+background-color: #eee; /* set selected tab background color as desired */
+color: #000; /* set selected tab link color as desired */
+position: relative;
+top: 1px;
+padding-top: 4px; /* must change with respect to padding (X) above and below */
+}
+
+ul#tabnav li a { /* settings for all tab links */
+padding: 3px 12px; /* set padding (tab size) as desired; FIRST number must change with respect to padding-top (X) above */
+border: 1px solid #aaa; /* set border COLOR as desired; usually matches border color specified in #tabnav */
+background-color: #bbbabb; /* set unselected tab background color as desired */
+color: #222; /* set unselected tab link color as desired */
+margin-right: 0; /* set additional spacing between tabs as desired */
+text-decoration: none;
+border-bottom: none;
+}
+
+ul#tabnav a:hover { /* settings for hover effect */
+background: #eee; /* set desired hover color */
+}
+
+/* end css tabs */
+
+.tabcontents {
+    padding-top: 10px;
+    background: #eee;
+}
+
+.translateform th {
+    vertical-align: top;
+}
+
