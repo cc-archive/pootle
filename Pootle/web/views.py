@@ -403,7 +403,7 @@ def translate(req, language, project, subdir, filename):
         'form' : form,
         'index': unit.index,
         }
-    return render_to_response("translate.html", RequestContext(req, context))
+    return render_to_response("file_translate.html", RequestContext(req, context))
 
 def downloadfile(req, project, language, subdir, filename):
     format = req.GET.get('format', 'po')
