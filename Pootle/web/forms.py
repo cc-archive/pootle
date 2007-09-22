@@ -1,9 +1,10 @@
+from Pootle.web.models import UserProfile
 from django import newforms as forms
+from django.contrib.auth.models import User
 from django.newforms import Widget, Textarea, Field
 from django.newforms.forms import SortedDictFromList
 from django.utils.encoding import force_unicode
-from django.contrib.auth.models import User
-from Pootle.web.models import UserProfile
+from django.utils.html import escape
 
 class TranslationFormBase(forms.Form):
     id = forms.IntegerField(widget=forms.HiddenInput())
@@ -18,6 +19,7 @@ def translation_form_factory(num_plural=1, rows=3):
     """
     class TranslationForm(TranslationFormBase):
         pass
+
     textfield = lambda x: forms.CharField(label=x, widget=Textarea(attrs={'cols':'50', 'rows': str(rows)}))
     
     base = TranslationForm.base_fields.items()
@@ -42,7 +44,7 @@ class StaticWidget(Widget):
 
     def render(self, name, value, attrs=None):
         if value is None: value = ''
-        return '<div class="foo" style="width: 30em">%s<br /><br /></div>' % force_unicode(value)
+        return '<div class="foo" style="width: 30em">%s<br /><br /></div>' % force_unicode(escape(value))
 
 class StaticField(Field):
     widget = StaticWidget
