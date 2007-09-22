@@ -1,10 +1,11 @@
-from Pootle.web.models import UserProfile
+from Pootle.web.models import UserProfile, Language
 from django import newforms as forms
 from django.contrib.auth.models import User
 from django.newforms import Widget, Textarea, Field
 from django.newforms.forms import SortedDictFromList
 from django.utils.encoding import force_unicode
 from django.utils.html import escape
+from django.conf import settings
 
 class TranslationFormBase(forms.Form):
     id = forms.IntegerField(widget=forms.HiddenInput())
@@ -111,3 +112,55 @@ class ActivationForm(forms.Form):
         else:
             return None
 
+UILANGUAGE_CHOICES = list([ (lang[0], _(lang[1])) for lang in settings.LANGUAGES])
+LANGUAGES_CHOICES = list([ (lang.id, lang.name) for lang in Language.objects.all()])
+
+class UserProfileForm(forms.Form):
+    first_name = forms.CharField(_("First name"))
+    last_name = forms.CharField(_("Last name"))
+    email = forms.EmailField(_("Email"))
+    password = forms.CharField(widget=forms.PasswordInput, label=_("Password"), required=False)
+    password_confirm = forms.CharField(widget=forms.PasswordInput, label=_("Password confirmation"), required=False)
+    uilanguage = forms.ChoiceField(label=_("Interface language"), choices=UILANGUAGE_CHOICES, required=False)
+    languages = forms.MultipleChoiceField(label=_("Participating languages"), required=False, widget=forms.SelectMultiple(attrs={'size':min(5, max(15, len(LANGUAGES_CHOICES)))}), choices=LANGUAGES_CHOICES)
+
+    def __init__(self, request):
+        self.user = request.user
+        profile, created = UserProfile.objects.get_or_create(user=request.user)
+        if created:
+            profile.save()
+        if request.POST:
+            data = request.POST
+        else:
+            data = {
+                'first_name': request.user.first_name,
+                'last_name': request.user.last_name,
+                'email': request.user.email,
+                'languages': list([lang.id for lang in profile.languages.all()]),
+                'uilanguage': request.LANGUAGE_CODE,
+                }
+        super(UserProfileForm, self).__init__(data)
+
+    def clean(self):
+        if self.cleaned_data['password'] != self.cleaned_data['password_confirm']:
+            raise forms.ValidationError(_("The two password fields didn't match."))
+        return self.cleaned_data
+
+    def save(self):
+        u = self.user
+        u.first_name = self.cleaned_data['first_name']
+        u.last_name = self.cleaned_data['last_name']
+        u.email = self.cleaned_data['email']
+
+        if self.cleaned_data['password']:
+            u.set_password(self.cleaned_data['password'])
+
+        profile, created = UserProfile.objects.get_or_create(user=self.user)
+        for lang in Language.objects.all():
+            if str(lang.id) in self.cleaned_data.get('languages'):
+                profile.languages.add(Language.objects.get(pk=lang.id))
+            else:
+                profile.languages.remove(Language.objects.get(pk=lang.id))
+        profile.save()
+
+        return u

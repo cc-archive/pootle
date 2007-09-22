@@ -4,7 +4,7 @@ from Pootle.compat import pootleauth
 from Pootle.conf import instance, potree
 from Pootle.utils.convert import convert_translation_store
 from Pootle.web import webforms
-from Pootle.web.forms import translation_form_factory, RegistrationForm, ActivationForm
+from Pootle.web.forms import translation_form_factory, RegistrationForm, ActivationForm, UserProfileForm
 from Pootle.web.models import Project, Language, TranslationProject, Store, Unit, SourceString
 from cStringIO import StringIO
 from django import forms
@@ -153,21 +153,14 @@ def translationproject(req, language, project, subdir=None):
        }
     return render_to_response("translationproject.html", RequestContext(req, context))
 
+@login_required
 def options(req):
-    manipulator = webforms.UserProfileManipulator(req.user)
+    form = UserProfileForm(req)
     if req.POST:
-        new_data = req.POST.copy()
-        errors = manipulator.get_validation_errors(new_data)
-        if not errors:
-            manipulator.do_html2python(new_data)
-            manipulator.save(new_data)
+        if not form.errors:
+            form.save()
             return HttpResponseRedirect(req.path)
-    else:
-        errors = {}
-        new_data = manipulator.old_data()
-    form = forms.FormWrapper(manipulator, new_data, errors)
-    context = { 'form' : form, 'errors': errors }
-    return render_to_response("options.html", RequestContext(req, context))
+    return render_to_response("options.html", RequestContext(req, { 'form':form }))
 
 def login(req):
     message = None
@@ -365,18 +358,32 @@ def admintranslationproject(req, language, project): # FIXME
     project_obj = potree().getproject(language, project)
     return render_to_pootleresponse(adminpages.TranslationProjectAdminPage(potree(), project_obj, pootlesession(req), argdict))
 
-def file_translate(req, language, project, subdir, filename):
-    translationproject = TranslationProject.objects.get(project__code=project, language__code=language)
-    
-    if subdir:
-        curdir = str(subdir).rstrip("/").split("/")[-1]
-    else:
-        curdir = translationproject.root.name or ''
+def file_view_setup(func):
+    def inner(req, language, project, subdir, filename):
+        tp = get_object_or_404(TranslationProject, project__code=project, language__code=language)
 
-    try:
-        id = int(req.REQUEST.get('id', 0))
-    except ValueError:
-        id = 0
+        if subdir:
+            curdir = str(subdir).rstrip("/").split("/")[-1]
+        else:
+            curdir = tp.root.name or ''
+        try:
+            id = int(req.REQUEST.get('id', 0))
+        except ValueError:
+            id = 0
+        kwargs = {
+            'translationproject': tp,
+            'curdir':curdir,
+            'id':id,
+            }
+           
+        return func(req, language, project, subdir, filename, **kwargs)
+    return inner
+
+
+@login_required
+@file_view_setup
+def file_translate(req, language, project, subdir, filename, curdir, translationproject, id):
+    
     unit = Unit.objects.get(store__name=filename, store__parent__name=curdir, index=id)
     num_plural = unit.is_plural and translationproject.language.nplurals or 1
 
@@ -435,20 +442,11 @@ def file_overview(req, project, language, subdir, filename):
 
     return render_to_response("file_overview.html", RequestContext(req, context))
 
-def file_review(req, project, language, subdir, filename):
-    translationproject = TranslationProject.objects.get(project__code=project, language__code=language)
-    try:
-        id = int(req.REQUEST.get('id', 0))
-    except ValueError:
-        id = 0
-
-    if subdir:
-        curdir = str(subdir).rstrip("/").split("/")[-1]
-    else:
-        curdir = translationproject.root.name or ''
+@login_required
+@file_view_setup
+def file_review(req, project, language, subdir, filename, translationproject, curdir, id):
 
     units = Unit.objects.filter(store__name=filename, store__parent__name=curdir, index__gte=id, index__lt=id+10)
-    
     context = {
         'project': translationproject,
         'subdir': subdir,

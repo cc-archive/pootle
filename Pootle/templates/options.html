@@ -14,53 +14,8 @@
             <td colspan="1" rowspan="1"><h3 class="title">{% trans "Option" %}</h3></td>
             <td colspan="1" rowspan="1"><h3 class="title">{% trans "Current value" %}</h3></td>
           </tr>
+            {{ form }}
           <tr>
-            <td colspan="1" rowspan="1">{% trans "First Name" %}</td>
-            <td colspan="1" rowspan="1">{{ form.first_name }} {{ errors.first_name|join:" " }}</td>
-          </tr>
-          <tr>
-            <td colspan="1" rowspan="1">{% trans "Last Name" %}</td>
-            <td colspan="1" rowspan="1">{{ form.last_name }} {{ errors.last_name|join:" " }}</td>
-          </tr>
-          <tr>
-            <td colspan="1" rowspan="1">{% trans "Email" %}</td>
-            <td colspan="1" rowspan="1">{{ form.email }} {{ errors.email|join:" " }}</td>
-          </tr>
-          <tr>
-            <td colspan="1" rowspan="1">{% trans "Password" %}</td>
-            <td colspan="1" rowspan="1">{{ form.password }} {{ errors.password|join:" " }}</td>
-          </tr>
-          <tr>
-            <td colspan="1" rowspan="1">{% trans "Confirm password" %}</td>
-            <td colspan="1" rowspan="1">{{ form.password_confirm }} {{ errors.password_confirm|join:" " }}</td>
-          </tr>
-          <tr><td></td><td><h3 class="title">{% trans "My Languages" %}</h3></td></tr>
-          <tr><td></td><td>{{ form.languages }}</td></tr>
-          <tr><td colspan="2"><h3 class="title">{% trans "Translation Interface Configuration" %}</h3></td></tr>
-          <tr>
-            <td colspan="1" rowspan="1"><h3 class="title">{% trans "Option" %}</h3></td>
-            <td colspan="1" rowspan="1"><h3 class="title">{% trans "Current value" %}</h3></td>
-          </tr>
-            <td colspan="1" rowspan="1">{% trans "User Interface language" %}</td>
-            <td colspan="1" rowspan="1">{{ form.uilanguage }} {{ errors.uilanguage|join:" " }}</td>
-          </tr>
-          <tr>
-            <td colspan="1" rowspan="1">{% trans "Input Height (in lines)" %}</td>
-            <td colspan="1" rowspan="1">{{ form.inputheight }} {{ errors.inputheight|join:" " }}</td>
-          </tr>
-          <tr>
-            <td colspan="1" rowspan="1">{% trans "Input Width (in characters)" %}</td>
-            <td colspan="1" rowspan="1">{{ form.inputwidth }} {{ errors.inputwidth|join:" " }}</td>
-          </tr>
-          <tr>
-            <td colspan="1" rowspan="1">{% trans "Number of rows in view mode" %}</td>
-            <td colspan="1" rowspan="1">{{ form.viewrows }} {{ errors.viewrows|join:" " }}</td>
-          </tr>
-          <tr>
-            <td colspan="1" rowspan="1">{% trans "Number of rows in translate mode" %}</td>
-            <td colspan="1" rowspan="1">{{ form.translaterows }} {{ errors.translaterows|join:" " }}</td>
-          </tr>
-
           <tr><td></td><td><br /><input type="submit" name="changepersonal" value="{% trans "Save changes" %}" /></td></tr>
         </table>
       </form>
