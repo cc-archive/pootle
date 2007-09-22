@@ -73,7 +73,7 @@ def project(req, project):
         start_translating = []
     
     if len(languages):
-        average_translated = sum([x.stats[2] for x in languages])/len(languages)
+        average_translated = sum([x.translatedstrings for x in languages])/len(languages)
     else:
         average_translated = 0
     context = {
@@ -115,7 +115,7 @@ def language(req, language):
     projects = TranslationProject.objects.filter(language=lang)
 
     if len(projects):
-        average_translated = sum([x.stats[2] for x in projects])/len(projects)
+        average_translated = sum([x.translatedperc for x in projects])/len(projects)
     else:
         average_translated = 0
     context = {
@@ -302,7 +302,7 @@ def admin_users(req):
             for u in selected:
                 u.delete()
     
-    return render_to_response("admin_users.html", RequestContext(req, { 'users': User.objects.all() } ))
+    return render_to_response("admin_users.html", RequestContext(req, { 'users': User.objects.all(), 'active_tab': 1 } ))
 
 def admin_languages(req):
     error = None
@@ -316,7 +316,9 @@ def admin_languages(req):
     context = { 
         'languages': Language.unfiltered.all(), 
         'error':error, 
-        'selected': [ lang.code for lang in Language.unfiltered.all()] }
+        'selected': [ lang.code for lang in Language.unfiltered.all()],
+        'active_tab':2, 
+        }
     return render_to_response("admin_languages.html", RequestContext(req, context))
 
 def admin_projects(req):
@@ -331,7 +333,9 @@ def admin_projects(req):
             error = _("You do not have sufficient rights.")
     context = { 
         'error': error,
-        'projects' : Project.objects.all() }
+        'projects' : Project.objects.all(),
+        'active_tab': 3,
+        }
     return render_to_response("admin_projects.html", RequestContext(req, context))
 
 def admin_projectedit(req, project):
@@ -361,7 +365,7 @@ def admintranslationproject(req, language, project): # FIXME
     project_obj = potree().getproject(language, project)
     return render_to_pootleresponse(adminpages.TranslationProjectAdminPage(potree(), project_obj, pootlesession(req), argdict))
 
-def translate(req, language, project, subdir, filename):
+def file_translate(req, language, project, subdir, filename):
     translationproject = TranslationProject.objects.get(project__code=project, language__code=language)
     
     if subdir:
@@ -405,10 +409,11 @@ def translate(req, language, project, subdir, filename):
         'project': translationproject,
         'subdir': subdir,
         'filename': filename,
+        'active_tab': 2,
         }
     return render_to_response("file_translate.html", RequestContext(req, context))
 
-def downloadfile(req, project, language, subdir, filename):
+def file_download(req, project, language, subdir, filename):
     format = req.GET.get('format', 'po')
     translationproject = TranslationProject.objects.get(project__code=project, language__code=language)
     buffer = StringIO()
@@ -418,6 +423,40 @@ def downloadfile(req, project, language, subdir, filename):
     contents = convert_translation_store(buffer, format)
     buffer.close()    
     return HttpResponse(contents,mimetype="text/plain")
+
+def file_overview(req, project, language, subdir, filename):
+    translationproject = TranslationProject.objects.get(project__code=project, language__code=language)
+    context = {
+        'project': translationproject,
+        'subdir': subdir,
+        'filename': filename,
+        'active_tab': 1,
+        }
+
+    return render_to_response("file_overview.html", RequestContext(req, context))
+
+def file_review(req, project, language, subdir, filename):
+    translationproject = TranslationProject.objects.get(project__code=project, language__code=language)
+    try:
+        id = int(req.REQUEST.get('id', 0))
+    except ValueError:
+        id = 0
+
+    if subdir:
+        curdir = str(subdir).rstrip("/").split("/")[-1]
+    else:
+        curdir = translationproject.root.name or ''
+
+    units = Unit.objects.filter(store__name=filename, store__parent__name=curdir, index__gte=id, index__lt=id+10)
+    
+    context = {
+        'project': translationproject,
+        'subdir': subdir,
+        'filename': filename,
+        'active_tab': 3,
+        'units': units,
+        }
+    return render_to_response("file_review.html", RequestContext(req, context))
 
 # spellui.py
 

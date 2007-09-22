@@ -7,9 +7,26 @@ from Pootle import storage_client
 from Pootle.utils.stats import SimpleStats
 import Pootle.instance
 from translate.storage import po
+from datetime import datetime
 
 CHECKSTYLES = [ (ch, ch) for ch in checks.projectcheckers.keys()]
 FILETYPES = (   ('po', 'po'),  ('xliff','xliff'), )
+
+def _get_perc(which):
+    def inner(self):
+        numstrings = getattr(self, which + 'strings')
+        if numstrings == 0:
+            # returns 100% translated on empty strings
+            if which == 'translated':
+                if self.allstrings == 0:
+                    return 100
+            return 0
+        # else return at least 1 if numstrings is not 0
+        try:
+            return int(numstrings*100/float(self.allstrings)) or 1
+        except ZeroDivisionError:
+            return 0
+    return inner
 
 class Project(models.Model):
     code = models.SlugField(maxlength=32,unique=True)
@@ -138,6 +155,17 @@ class Store(models.Model):
     untranslatedstrings = property(_get_untrans_strings)
     untranslatedwords = property(_get_untrans_words)
 
+    translatedperc = property(_get_perc('translated'))
+    fuzzyperc = property(_get_perc('fuzzy'))
+    untranslatedperc = property(_get_perc('untranslated'))
+
+
+    def update_stats(self):
+        self.translatedstrings = Unit.objects.filter(store=self, fuzzy=False, translated=True, obsolete=False).count()
+        self.fuzzystrings = Unit.objects.filter(store=self, fuzzy=True, translated=False, obsolete=False).count()
+        print 'kolk jih je', self.fuzzystrings
+        self.allstrings = Unit.objects.filter(store=self, obsolete=False).count()
+
     @transaction.commit_on_success
     def load_from_pofile(self, infile):
         c = po.pofile(inputfile=infile)
@@ -147,7 +175,7 @@ class Store(models.Model):
         for num, x in enumerate(c.units):
             if x.isobsolete():
                 continue
-            u = Unit(store=self, index=num, state=0)
+            u = Unit(store=self, index=num, fuzzy=x.isfuzzy(), state=0, obsolete=False)
             u.save()
             def addcomments(commtype):
                 for comm_string in [b[2:].rstrip() for b in getattr(x, commtype + "comments")]:
@@ -161,7 +189,7 @@ class Store(models.Model):
                 ss.save()
             aa = x.gettarget()
             for mmm in range(len(aa.strings)):
-                ts = TargetString(sourcestring=ss, target=unicode(aa.strings[mmm]), plural_id=mmm, lang=lang)
+                ts = TargetString(sourcestring=ss, target=unicode(aa.strings[mmm]), plural_id=mmm, lang=lang, timestamp=datetime.now())
                 ts.save()
 
 
@@ -201,8 +229,6 @@ class TranslationProject(models.Model):
     allstrings = models.IntegerField(default=0)
     root = models.ForeignKey(Store)
     
-    _stats = None
-
     class Admin:
         pass
 
@@ -211,22 +237,6 @@ class TranslationProject(models.Model):
 
     def __repr__(self):
         return "<TranslationProject: /%s/%s/>" % (self.project.code, self.language.code)
-
-    def _get_stats(self):
-        if not self._stats:
-            perc = self.allstrings/100.0
-            untransw = self.allwords - self.translatedwords - self.fuzzywords
-            untranss = self.allstrings - self.translatedstrings - self.fuzzystrings
-            try:    
-                self._stats = (self.translatedwords, self.translatedstrings, int(self.translatedstrings/perc), 
-                            self.fuzzywords, self.fuzzystrings, int(self.fuzzystrings/perc),
-                            untransw, untranss, int(untranss/perc), 
-                            self.allwords, self.allstrings)
-            except ZeroDivisionError:
-                # refresh stats
-                return SimpleStats( (0,0,0, 0,0,0, 0,0,0, 0,0) )
-        return SimpleStats(self._stats)
-    stats = property(_get_stats)
 
     def list_dir(self, subdir=None):
         if not subdir:
@@ -239,9 +249,18 @@ class TranslationProject(models.Model):
     def _get_podir(self):
         return "/%s/%s/" % (self.language.code, self.project.code)
     podir = property(_get_podir)
+
+    def update_stats(self):
+        for x in self.root.child.all():
+            print x
+            x.update_stats()
     
     def dir(self):
         return '/%s/%s/' % (self.language.code, self.project.code)
+
+    translatedperc = property(_get_perc('translated'))
+    fuzzyperc = property(_get_perc('fuzzy'))
+    untranslatedperc = property(_get_perc('untranslated'))
 
 class PootlePermission(models.Model):
     tproject = models.ForeignKey(TranslationProject)
@@ -336,6 +355,10 @@ class Unit(models.Model):
     store = models.ForeignKey(Store)
     index = models.IntegerField(unique=True)
     state = models.IntegerField()
+    fuzzy = models.BooleanField(default=True)
+    translated = models.BooleanField(default=False)
+    reviewed = models.BooleanField(default=False)
+    obsolete = models.BooleanField(default=False)
 
     def __repr__(self):
         return "<Unit %d of %s>" % (self.index, self.store.name)
@@ -413,6 +436,8 @@ class TargetString(models.Model):
     sourcestring = models.ForeignKey(SourceString)
     target = models.TextField()
     lang = models.ForeignKey(Language)
+    timestamp = models.DateTimeField()
+
 
     def __str__(self):
         return self.target.encode("utf-8")
