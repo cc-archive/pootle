@@ -582,11 +582,17 @@ background: #eee; /* set desired hover color */
 /* end css tabs */
 
 .tabcontents {
-    padding-top: 10px;
     background: #eee;
+    padding: 10px;
+    border: 1px solid #aaa;
+    border-top: none;
 }
 
 .translateform th {
     vertical-align: top;
+}
+
+.light {
+    background: #fff;
 }
 

@@ -5,11 +5,11 @@
 
 {% block adminpanel %}
 {% if error %}<div class="message">{{ error }}</div>{% endif %}
-    <div class="fullwidthcontents">
+    <div class="tabcontents">
       <h3 class="title">{% trans "Languages" %}</h3>
 
       <form action="" method="post" name="languages" id="languages">
-        <table cellpadding="1" cellspacing="1">
+        <table cellpadding="1" cellspacing="0">
           <tr>
             <td colspan="1" rowspan="1"><h3 class="title">{% trans "Enabled" %}</h3></td>
             <td colspan="1" rowspan="1"><h3 class="title">{% trans "ISO Code" %}</h3></td>
@@ -18,7 +18,7 @@
             <td colspan="1" rowspan="1"><h3 class="title">{% trans "Number of Plurals" %}</h3></td>
           </tr>
 {% for lang in languages %}
-          <tr>
+          <tr class="{% cycle light,dark %}">
             <td colspan="1" rowspan="1"><input type="checkbox" name="{{ lang.code }}"{% if lang.enabled %} checked="on"{% endif%} /></td>
             <td colspan="1" rowspan="1">{{ lang.code }}</td>
             <td colspan="1" rowspan="1">{{ lang.name }}</td>

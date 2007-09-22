@@ -15,12 +15,6 @@
 
       </div>
         
-      <div class="item-description" id="hiddenchecks">{% trans "Show Checks" %}</div>
-      <div class="item-description" id="shownchecks" style="display:none;">{% trans "Hide Checks" %}
-      <div>FIXME: Checks go here!
-      </div>
-      </div>
-
       <div class="item-statistics">
         {{ stats }}
       </div>
@@ -29,21 +23,21 @@
 <table class="sortable stats" width="100%">
 {% for item in items %}
 <tr><td>
-<img src="/static/images/{{ item.icon }}.png" class="icon" alt="" dir="{{ uidir }}" lang="{{ uilanguage }}" /></td><td>
-<b><a href="{{ project.dir }}{% if item.isdir %}browse{% else %}translate{% endif %}/{{ item.href }}">{{ item.basename }}</a></b>
-{% if item.isfile %}
-<br />{% trans "Download:" %}&nbsp;<a href="{{ project.dir }}download/{{ item.href }}">PO</a>&nbsp;<a href="{{ project.dir }}download/{{ item.href }}?format=ts">.ts</a>&nbsp;<a href="{{ project.dir }}download/{{ item.href }}?format=xliff">XLIFF</a>&nbsp;<a href="{{ project.dir }}download/{{ item.basename }}?format=csv">CSV</a>
-{% endif %}
+<img src="/static/images/{{ item.type }}.png" class="icon" alt="" dir="{{ uidir }}" lang="{{ uilanguage }}" /></td><td>
+<b><a href="{{ project.dir }}{% ifequal item.type "folder" %}browse{% else %}translate{% endifequal %}/{{ curdir }}{{ item.name }}">{{ item.name }}</a></b>
+{% ifequal item.type "file" %}
+<br />{% trans "Download:" %}&nbsp;<a href="{{ project.dir }}download/{{ curdir}}{{ item.name }}">PO</a>&nbsp;<a href="{{ project.dir }}download/{{ curdir }}{{ item.name }}?format=ts">.ts</a>&nbsp;<a href="{{ project.dir }}download/{{ curdir }}{{ item.name }}?format=xliff">XLIFF</a>&nbsp;<a href="{{ project.dir }}download/{{ curdir }}{{ item.name }}?format=csv">CSV</a>
+{% endifequal %}
 </td><td>
 &nbsp;
 </td><td align="right">
-{{ item.stats.1 }}t, 
-{{ item.stats.4 }}f,
-{{ item.stats.7 }}u of 
-{{ item.stats.10 }} total
+{{ item.translatedstrings }}t, 
+{{ item.fuzzystrings }}f,
+{{ item.untranslatedstrings }}u of 
+{{ item.allstrings }} total
 <br />
-<span class="sortkey">{{ item.stats.2 }}</span>
-<img src="/static/images/green.png" class="data" height="20" width="{{ item.stats.2 }}" alt="{{ item.stats.2 }}%" /><img src="/static/images/blue.png" class="data" height="20" width="{{ item.stats.5 }}" alt="{{ item.stats.5 }}%" /><img src="/static/images/red.png" class="data" height="20" width="{{ item.stats.8 }}" alt="{{ item.stats.8 }}%" />
+<span class="sortkey">{{ item.translatedperc }}</span>
+{% if item.translatedperc %}<img src="/static/images/green.png" class="data" height="20" width="{{ item.translatedperc }}" alt="{{ item.translatedperc }}%" />{% endif %}{% if item.fuzzyperc %}<img src="/static/images/blue.png" class="data" height="20" width="{{ item.fuzzyperc }}" alt="{{ item.fuzzyperc }}%" />{% endif %}{% if item.untranslatedperc %}<img src="/static/images/red.png" class="data" height="20" width="{{ item.untranslatedperc }}" alt="{{ item.untranslatedperc }}%" />{% endif %}
 </td></tr>
 {% endfor %}
 </table>

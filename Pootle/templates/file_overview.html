@@ -6,24 +6,22 @@
 {% endblock %}
 
 {% block content %}
-
 <div class="navbar" style="margin-bottom: 0;">
   <img src="/static/images/folder.png" class="icon" alt="" dir="{{ uidir }}" lang="{{ uilanguage }}" />
   <h3 class="title">[ <a href="/{{ project.language.code }}/">{{ project.language.name }}</a> ] [ <a href="/projects/{{ project.project.code }}/">{{ project.project.name }}</a> ]</h3>
   {% trans "File" %} <a href="/{{ project.language.code }}/{{ project.project.code }}/">/{{ project.language.code }}/{{ project.project.code }}/</a>{% if subdir %}<a href="{{ subdir }}">{{ subdir }}</a>&#47;{% endif %}{{ filename }}
 </div>
 <div class="navbar" style="margin: 0; padding:1px;">
-  <div id="tab1">
+  <div id="tab{{ active_tab }}">
     <ul id="tabnav">
-      <li class="tab1"><a href="#">{% trans "Overview" %}</a></li>
-      <li class="tab2"><a href="#">{% trans "Translate" %}</a></li>
-      <li class="tab3"><a href="#">{% trans "Review" %}</a></li>
+      <li class="tab1"><a href="/{{ project.language.code }}/{{ project.project.code }}/overview/{% if subdir %}{{ subdir }}{% endif %}{{ filename }}">{% trans "Overview" %}</a></li>
+      <li class="tab2"><a href="/{{ project.language.code }}/{{ project.project.code }}/translate/{% if subdir %}{{ subdir }}{% endif %}{{ filename }}">{% trans "Translate" %}</a></li>
+      <li class="tab3"><a href="/{{ project.language.code }}/{{ project.project.code }}/review/{% if subdir %}{{ subdir }}{% endif %}{{ filename }}">{% trans "Review" %}</a></li>
     </ul>
   </div>
   <div class="tabcontents">
-{% block file %}
+{% block tabcontents %}
 {% endblock %}
   </div>
 </div>
-
 {% endblock %}
