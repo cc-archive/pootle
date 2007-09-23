@@ -6,6 +6,9 @@ from django.newforms.forms import SortedDictFromList
 from django.utils.encoding import force_unicode
 from django.utils.html import escape
 from django.conf import settings
+from django.core.validators import slug_re
+
+from translate.filters import checks
 
 class TranslationFormBase(forms.Form):
     id = forms.IntegerField(widget=forms.HiddenInput())
@@ -194,4 +197,27 @@ class UserEditForm(forms.Form):
             self.user.set_password(self.cleaned_data['password'])
         self.user.save()
         return self.user
+
+CHECKS = [ (ch, ch) for ch in checks.projectcheckers.keys()]
+
+class ProjectAdminForm(forms.Form):
+    code = forms.CharField(label=_("Project Code"))
+    name = forms.CharField(label=_("Full Name"))
+    description = forms.CharField(label=_("Project Description"), widget=forms.Textarea)
+    checkstyle = forms.ChoiceField(label=_("Checker Style"), choices=CHECKS)
+
+    def __init__(self, project, *args, **kwargs):
+        self.project = project
+        super(ProjectAdminForm, self).__init__(*args, **kwargs)
+
+    def clean_code(self):
+        value = self.cleaned_data['code']
+        if not slug_re.search(value):
+            raise forms.ValidationError('Project code is not a valid slug.')
+        return value
+
+    def save(self):
+        for attr in ('code', 'name', 'description', 'checkstyle'):
+            setattr(self.project, attr, self.cleaned_data[attr])
+        self.project.save()
 

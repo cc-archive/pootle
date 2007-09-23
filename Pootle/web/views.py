@@ -3,8 +3,7 @@ from Pootle.compat import forms as pootleforms
 from Pootle.compat import pootleauth
 from Pootle.conf import instance, potree
 from Pootle.utils.convert import convert_translation_store
-from Pootle.web import webforms
-from Pootle.web.forms import translation_form_factory, RegistrationForm, ActivationForm, UserProfileForm, UserEditForm
+from Pootle.web.forms import translation_form_factory, RegistrationForm, ActivationForm, UserProfileForm, UserEditForm, ProjectAdminForm
 from Pootle.web.models import Project, Language, TranslationProject, Store, Unit, SourceString
 from cStringIO import StringIO
 from django import forms
@@ -278,7 +277,10 @@ def admin_useredit(req, user):
         del user_values['password']
         form = UserEditForm(userobj, user_values)
 
-    return render_to_response("admin_useredit.html", RequestContext(req, { 'form': form, 'u': user } ))
+    context = { 'form': form, 
+                'u': user,
+                'active_tab': 1, }
+    return render_to_response("admin_useredit.html", RequestContext(req, context ))
 
 def admin_users(req):
     if req.POST and req.user.is_superuser:
@@ -325,27 +327,21 @@ def admin_projects(req):
 
 def admin_projectedit(req, project):
     p = get_object_or_404(Project, code=project)
-    manipulator = webforms.ProjectAdminManipulator(p)
-    if req.POST:
-        if req.user.is_superuser:
-            new_data = req.POST.copy()
-            errors = manipulator.get_validation_errors(new_data)
-            if not errors:
-                manipulator.do_html2python(new_data)
-                manipulator.save(new_data)
-                return HttpResponseRedirect('/'.join(req.path.split("/")[:-2]) + '/')
+    if req.POST and req.user.is_superuser:
+        form = ProjectAdminForm(p, req.POST)
+        if not form.errors:
+            form.save()
+            return HttpResponseRedirect('/'.join(req.path.split("/")[:-2]) + '/')
     else:
-        errors = {}
-        new_data = manipulator.old_data()
-    form = forms.FormWrapper(manipulator, new_data, errors)
-    context = { 'project' : Project.objects.get(code=project),
-                'form': form,
-                'errors': errors,}
+        form = ProjectAdminForm(p, p.__dict__)
+    context = { 'project' : p,
+                'active_tab': 3,
+                'form': form, }
     return render_to_response("admin_projectedit.html", RequestContext(req, context))
 
 def admintranslationproject(req, language, project): # FIXME
     if req.POST and req.user.is_superuser():
-        pass
+        pass # FIXME
     argdict = {}
     project_obj = potree().getproject(language, project)
     return render_to_pootleresponse(adminpages.TranslationProjectAdminPage(potree(), project_obj, pootlesession(req), argdict))
