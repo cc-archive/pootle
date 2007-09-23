@@ -4,38 +4,15 @@
 
 {% block adminpanel %}
     <div class="fullwidthcontents">
-      <h3 class="title">{% trans "Editing user " %}</h3>
+      <h3 class="title">{% trans "Editing user" %} {{ u }}</h3>
 
       <form action="" method="post" name="users" id="users">
         <table cellpadding="1" cellspacing="1">
           <tr>
-            <td colspan="1" rowspan="1"><h3 class="title">{% trans "Username" %}</h3></td>
+            <th colspan="1" rowspan="1"><label>{% trans "Username:" %}</label></th>
             <td colspan="1" rowspan="1">{{ u }}</td>
           </tr>
-          <tr>
-            <td colspan="1" rowspan="1"><h3 class="title">{% trans "First Name" %}</h3></td>
-            <td colspan="1" rowspan="1">{{ form.first_name }}</td>
-          </tr>
-          <tr>
-            <td colspan="1" rowspan="1"><h3 class="title">{% trans "Last Name" %}</h3></td>
-            <td colspan="1" rowspan="1">{{ form.last_name }}</td>
-          </tr>
-          <tr>
-            <td colspan="1" rowspan="1"><h3 class="title">{% trans "Email Address" %}</h3></td>
-            <td colspan="1" rowspan="1">{{ form.email }} {{ errors.email|join:" " }}</td>
-          </tr>
-          <tr>
-            <td colspan="1" rowspan="1"><h3 class="title">{% trans "Password" %}</h3></td>
-            <td colspan="1" rowspan="1">{{ form.password }}</td>
-          </tr>
-          <tr>
-            <td colspan="1" rowspan="1"><h3 class="title">{% trans "Activated" %}</h3></td>
-            <td colspan="1" rowspan="1">{{ form.is_active }}</td>
-          </tr>
-          <tr>
-            <td colspan="1" rowspan="1"><h3 class="title">{% trans "Superuser" %}</h3></td>
-            <td colspan="1" rowspan="1">{{ form.is_superuser }}</td>
-          </tr>
+          {{ form }}
         </table><input type="submit" name="changeusers" value="{% trans "Save changes" %}" />
       </form>
     </div>

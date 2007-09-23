@@ -4,7 +4,7 @@ from Pootle.compat import pootleauth
 from Pootle.conf import instance, potree
 from Pootle.utils.convert import convert_translation_store
 from Pootle.web import webforms
-from Pootle.web.forms import translation_form_factory, RegistrationForm, ActivationForm, UserProfileForm
+from Pootle.web.forms import translation_form_factory, RegistrationForm, ActivationForm, UserProfileForm, UserEditForm
 from Pootle.web.models import Project, Language, TranslationProject, Store, Unit, SourceString
 from cStringIO import StringIO
 from django import forms
@@ -19,19 +19,10 @@ from django.shortcuts import render_to_response, get_object_or_404
 from django.template import Context, RequestContext, loader
 from django.utils.translation import gettext_lazy as _
 from django.utils.translation import ngettext
+from django.views.i18n import set_language
 from django.views import i18n
 from translate import __version__ as toolkitversion
 import random
-
-def set_language(req):
-    """Sets proper language code for internationalization and returns True if 
-    language code was changed."""
-    if req.LANGUAGE_CODE == req.POST.get('language', None):
-        return False
-    req.GET._mutable = True
-    req.GET['language'] = req.POST.get('language', None)
-    i18n.set_language(req)
-    return True
 
 def robots(req):
     return HttpResponse(content=generaterobotsfile(["login.html", "register.html", "activate.html"]), mimetype="text/plain")
@@ -159,6 +150,8 @@ def options(req):
     if req.POST:
         if not form.errors:
             form.save()
+            if req.LANGUAGE_CODE != form.cleaned_data['language']:
+                return set_language(req)
             return HttpResponseRedirect(req.path)
     return render_to_response("options.html", RequestContext(req, { 'form':form }))
 
@@ -273,25 +266,24 @@ def admin(req):
     return render_to_response("adminindex.html", RequestContext(req, { 'form': form, 'errors': errors } ))
 
 def admin_useredit(req, user):
-    manipulator = webforms.UserAdminManipulator(user)
+    userobj = get_object_or_404(User, username=user)
+    
     if req.POST and req.user.is_superuser:
-        new_data = req.POST.copy()
-        new_data['username'] = user
-        errors = manipulator.get_validation_errors(new_data)
-        if not errors:
-            manipulator.do_html2python(new_data)
-            manipulator.save(new_data)
+        form = UserEditForm(userobj, req.POST)
+        if not form.errors:
+            form.save()
             return HttpResponseRedirect('/'.join(req.path.split("/")[:-2]) + '/')
     else:
-        errors = {}
-        new_data = manipulator.old_data()
-    form = forms.FormWrapper(manipulator, new_data, errors)
-    return render_to_response("admin_useredit.html", RequestContext(req, { 'form': form, 'u': user, 'errors':errors} ))
+        user_values = userobj.__dict__.copy()
+        del user_values['password']
+        form = UserEditForm(userobj, user_values)
+
+    return render_to_response("admin_useredit.html", RequestContext(req, { 'form': form, 'u': user } ))
 
 def admin_users(req):
     if req.POST and req.user.is_superuser:
-        selected = [ u for u in User.objects.all() if "select-%s" % u.username in req.POST]
         if 'delete-selected' in req.POST:
+            selected = [ u for u in User.objects.all() if "select-%s" % u.username in req.POST]
             for u in selected:
                 u.delete()
     

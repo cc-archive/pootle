@@ -1,7 +1,7 @@
 from Pootle.web.models import UserProfile, Language
 from django import newforms as forms
 from django.contrib.auth.models import User
-from django.newforms import Widget, Textarea, Field
+from django.newforms import Widget, Textarea, Field, form_for_model
 from django.newforms.forms import SortedDictFromList
 from django.utils.encoding import force_unicode
 from django.utils.html import escape
@@ -121,7 +121,7 @@ class UserProfileForm(forms.Form):
     email = forms.EmailField(_("Email"))
     password = forms.CharField(widget=forms.PasswordInput, label=_("Password"), required=False)
     password_confirm = forms.CharField(widget=forms.PasswordInput, label=_("Password confirmation"), required=False)
-    uilanguage = forms.ChoiceField(label=_("Interface language"), choices=UILANGUAGE_CHOICES, required=False)
+    language = forms.ChoiceField(label=_("Interface language"), choices=UILANGUAGE_CHOICES, required=False)
     languages = forms.MultipleChoiceField(label=_("Participating languages"), required=False, widget=forms.SelectMultiple(attrs={'size':min(5, max(15, len(LANGUAGES_CHOICES)))}), choices=LANGUAGES_CHOICES)
 
     def __init__(self, request):
@@ -137,7 +137,7 @@ class UserProfileForm(forms.Form):
                 'last_name': request.user.last_name,
                 'email': request.user.email,
                 'languages': list([lang.id for lang in profile.languages.all()]),
-                'uilanguage': request.LANGUAGE_CODE,
+                'language': request.LANGUAGE_CODE,
                 }
         super(UserProfileForm, self).__init__(data)
 
@@ -164,3 +164,34 @@ class UserProfileForm(forms.Form):
         profile.save()
 
         return u
+
+class UserEditForm(forms.Form):
+    first_name = forms.CharField(_("First name"))
+    last_name = forms.CharField(_("Last name"))
+    email = forms.EmailField(_("Email"))
+    password = forms.CharField(widget=forms.PasswordInput, label=_("Password"), required=False)
+    password_confirm = forms.CharField(widget=forms.PasswordInput, label=_("Password confirmation"), required=False)
+    is_active = forms.BooleanField(label=_("User is active"), required=False)
+    is_superuser = forms.BooleanField(label=_("User is superuser"), required=False)
+
+    def __init__(self, user, *args, **kwargs):
+        self.user = user
+        super(UserEditForm, self).__init__(*args, **kwargs)
+
+    def clean(self):
+        if self.cleaned_data['password'] != self.cleaned_data['password_confirm']:
+            raise forms.ValidationError(_("The two password fields didn't match."))
+        return self.cleaned_data
+
+    def save(self):
+        for k in ['first_name', 'last_name', 'email' ]:
+            setattr(self.user, k, self.cleaned_data[k])
+        print self.cleaned_data
+        self.user.is_active = self.cleaned_data.get('is_active', False) 
+        self.user.is_superuser = self.cleaned_data.get('is_superuser', False) 
+        
+        if self.cleaned_data['password']:
+            self.user.set_password(self.cleaned_data['password'])
+        self.user.save()
+        return self.user
+
