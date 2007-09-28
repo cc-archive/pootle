@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from translate.storage import po
+from translate.storage import pypo as po
 from translate.storage import test_base
 from translate.misc.multistring import multistring
 from translate.misc import wStringIO
