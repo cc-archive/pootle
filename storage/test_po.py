@@ -333,3 +333,14 @@ msgstr "tweede"
         # FIXME we still need to handle this correctly for proper Uniforum support if required
         #assert pofile.units[0].getlocations() == "File: somefile, line: 300"
         #assert pofile.units[1].getlocations() == "File: anotherfile, line: 200"
+
+    def test_obsolete(self):
+        """Tests that obsolete messages work"""
+        posource = '#~ msgid "Old thing"\n#~ msgstr "Ou ding"\n'
+        pofile = self.poparse(posource)
+        assert pofile.isempty()
+        assert len(pofile.units) == 1
+        unit = pofile.units[0]
+        assert unit.isobsolete()
+        assert str(pofile) == posource
+

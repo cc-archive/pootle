@@ -278,15 +278,6 @@ msgstr "omskakel"
         assert len(pofile.units) == 1
         assert str(pofile) == posource
 
-    def test_obsolete(self):
-        """Tests that obsolete messages work"""
-        posource = '#~ msgid "Old thing"\n#~ msgstr "Ou ding"\n'
-        pofile = self.poparse(posource)
-        #assert pofile.isempty()
-        assert len(pofile.units) == 1
-        assert pofile.units[0].isobsolete()
-        assert str(pofile) == posource
-
     def test_makeobsolete(self):
         """Tests making a unit obsolete"""
         posource = '#. The automatic one\n#: test.c\nmsgid "test"\nmsgstr "rest"\n'

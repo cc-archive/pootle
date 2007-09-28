@@ -349,16 +349,6 @@ msgstr ""
         assert pofile.units[0].sourcecomments == ["#: source comment\n"]
         assert pofile.units[0].typecomments == ["#, fuzzy\n"]
 
-    def test_obsolete(self):
-        """Tests that obsolete messages work"""
-        posource = '#~ msgid "Old thing"\n#~ msgstr "Ou ding"\n'
-        pofile = self.poparse(posource)
-        assert pofile.isempty()
-        assert len(pofile.units) == 1
-        unit = pofile.units[0]
-        assert unit.isobsolete()
-        assert str(pofile) == posource
-
     def test_makeobsolete(self):
         """Tests making a unit obsolete"""
         posource = '#. The automatic one\n#: test.c\nmsgid "test"\nmsgstr "rest"\n'
