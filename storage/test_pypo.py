@@ -260,7 +260,7 @@ class TestPYPOFile(test_po.TestPOFile):
           newpofile = self.StoreClass(dummyfile2)
           newunit = newpofile.units[0]
         else:
-          newunit = po.pounit()
+          newunit = oldpofile.UnitClass()
         oldunit.merge(newunit, authoritative=authoritative)
         print oldunit
         return str(oldunit)
