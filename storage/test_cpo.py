@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from translate.storage import cpo as po
-from translate.storage import test_base
+from translate.storage import test_po
 from translate.misc.multistring import multistring
 from translate.misc import wStringIO
 from py.test import raises
@@ -19,7 +19,7 @@ def test_roundtrip_quoting():
         print "special: %r\nquoted: %r\nunquoted: %r\n" % (special, quoted_special, unquoted_special)
         assert special == unquoted_special
 
-class TestPOUnit(test_base.TestTranslationUnit):
+class TestCPOUnit(test_po.TestPOUnit):
     UnitClass = po.pounit
 
     def test_istranslatable(self):
@@ -182,7 +182,7 @@ class TestPOUnit(test_base.TestTranslationUnit):
         kdetext = "_: Simple comment\nsimple text"
         assert unit._extract_msgidcomments(kdetext) == "Simple comment"
 
-class TestPO(test_base.TestTranslationStore):
+class TestCPOFile(test_po.TestPOFile):
     StoreClass = po.pofile
     def poparse(self, posource):
         """helper that parses po source without requiring files"""
