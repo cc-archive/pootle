@@ -172,31 +172,6 @@ class TestCPOUnit(test_po.TestPOUnit):
 
 class TestCPOFile(test_po.TestPOFile):
     StoreClass = po.pofile
-    def poparse(self, posource):
-        """helper that parses po source without requiring files"""
-        dummyfile = wStringIO.StringIO(posource)
-        pofile = self.StoreClass(dummyfile)
-        return pofile
-
-    def poregen(self, posource):
-        """helper that converts po source to pofile object and back"""
-        return str(self.poparse(posource))
-
-    def pomerge(self, oldmessage, newmessage, authoritative):
-        """helper that merges two messages"""
-        dummyfile = wStringIO.StringIO(oldmessage)
-        oldpofile = self.StoreClass(dummyfile)
-        oldunit = oldpofile.units[0]
-        dummyfile2 = wStringIO.StringIO(newmessage)
-        if newmessage:
-          newpofile = self.StoreClass(dummyfile2)
-          newunit = newpofile.units[0]
-        else:
-          newunit = oldpofile.UnitClass()
-        oldunit.merge(newunit, authoritative=authoritative)
-        print oldunit
-        return str(oldunit)
-
     def test_simpleentry(self):
         """checks that a simple po entry is parsed correctly"""
         posource = '#: test.c:100 test.c:101\nmsgid "test"\nmsgstr "rest"\n'
