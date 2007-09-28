@@ -146,6 +146,16 @@ class TestPOFile(test_base.TestTranslationStore):
         print oldunit
         return str(oldunit)
 
+    def test_simpleentry(self):
+        """checks that a simple po entry is parsed correctly"""
+        posource = '#: test.c:100 test.c:101\nmsgid "test"\nmsgstr "rest"\n'
+        pofile = self.poparse(posource)
+        assert len(pofile.units) == 1
+        thepo = pofile.units[0]
+        assert thepo.getlocations() == ["test.c:100", "test.c:101"]
+        assert thepo.source == "test"
+        assert thepo.target == "rest"
+
     def test_copy(self):
         """checks that we can copy all the needed PO fields"""
         posource = '''# TRANSLATOR-COMMENTS

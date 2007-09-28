@@ -143,16 +143,6 @@ msgstr ""
 
 class TestPYPOFile(test_po.TestPOFile):
     StoreClass = po.pofile
-    def test_simpleentry(self):
-        """checks that a simple po entry is parsed correctly"""
-        posource = '#: test.c\nmsgid "test"\nmsgstr "rest"\n'
-        pofile = self.poparse(posource)
-        assert len(pofile.units) == 1
-        thepo = pofile.units[0]
-        assert thepo.getlocations() == ["test.c"]
-        assert thepo.source == "test"
-        assert thepo.target == "rest"
-
     def test_combine_msgidcomments(self):
         """checks that we don't get duplicate msgid comments"""
         posource = 'msgid "test me"\nmsgstr ""'
