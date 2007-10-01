@@ -280,7 +280,6 @@ class pounit(pocommon.pounit):
         else:
             newnotes = "\n".join(line.rstrip() for line in text.split("\n"))
         if newnotes:
-            print "newnotes", repr(newnotes)
             if origin in ["programmer", "developer", "source code"]:
                 gpo.po_message_set_extracted_comments(self._gpo_message, newnotes)
             else:
@@ -523,6 +522,21 @@ class pofile(pocommon.pofile):
             f.close()
             os.remove(outputfile)
         return outputstring
+
+    def isempty(self):
+        """Returns True if the object doesn't contain any translation units."""
+        if len(self.units) == 0:
+            return True
+        # Skip the first unit if it is a header.
+        if self.units[0].isheader():
+            units = self.units[1:]
+        else:
+            units = self.units
+
+        for unit in units:
+            if not unit.isblank() and not unit.isobsolete():
+                return False
+        return True
 
     def parse(self, input):
         if hasattr(input, 'name'):
