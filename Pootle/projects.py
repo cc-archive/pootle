@@ -1113,7 +1113,7 @@ class TranslationProject(object):
 
   def getassignstats(self, pofilename, action=None):
     """calculates translation statistics for the given po file (can filter by action if given)"""
-    polen = self.getpototals(pofilename)["total"]
+    polen = self.getpototals(pofilename).get("total", 0)
     # Temporary code to avoid traceback. Was:
 #    polen = len(self.getpostats(pofilename)["total"])
     assigns = self.pofiles[pofilename].assigns.getassigns()
