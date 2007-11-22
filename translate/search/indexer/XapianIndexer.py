@@ -35,23 +35,24 @@ class XapianDatabase(CommonIndexer.CommonDatabase):
         """
         # call the __init__ function of our parent
         super(XapianDatabase, self).__init__(location)
+        self.location = location
         if os.path.exists(location):
             # try to open an existing database
             try:
-                self.database = xapian.WritableDatabase(location,
+                self.database = xapian.WritableDatabase(self.location,
                     xapian.DB_OPEN)
             except xapian.DatabaseOpeningError, err_msg:
                 raise ValueError("Indexer: failed to open xapian database " \
                         + "(%s) - maybe it is not a xapian database: %s" \
-                        % (location, err_msg))
+                        % (self.location, err_msg))
         else:
             # create a new database
             try:
-                self.database = xapian.WritableDatabase(location,
+                self.database = xapian.WritableDatabase(self.location,
                         xapian.DB_CREATE_OR_OPEN)
             except xapian.DatabaseOpeningError, err_msg:
                 raise OSError("Indexer: failed to open or create a xapian " \
-                        + "database (%s): %s" % (location, err_msg))
+                        + "database (%s): %s" % (self.location, err_msg))
 
     def flush(self, optimize=False):
         """force to write the current changes to disk immediately
@@ -59,7 +60,13 @@ class XapianDatabase(CommonIndexer.CommonDatabase):
         @param optimize: ignored for xapian
         @type optimize: bool
         """
-        self.database.flush()
+        # write changes to disk (only if database is read-write)
+        if (isinstance(self.database, xapian.WritableDatabase)):
+            self.database.flush()
+        # free the database to remove locks - this is a xapian-specific issue
+        self.database = None
+        # reopen it as read-only
+        self._prepare_database()
 
     def make_query(self, args, requireall=True, match_text_partial=None):
         """create simple queries (strings or field searches) or
@@ -158,6 +165,8 @@ class XapianDatabase(CommonIndexer.CommonDatabase):
         @param data: the data to be indexed
         @type data: dict | list of tuples
         """
+        # open the database for writing
+        self._prepare_database(writable=True)
         # for lists: call this function for each element in the list
         if isinstance(data, list) and isinstance(data[0], dict):
             for one_doc in data:
@@ -198,6 +207,8 @@ class XapianDatabase(CommonIndexer.CommonDatabase):
         @param docid: the document ID to be deleted
         @type docid: int
         """
+        # open the database for writing
+        self._prepare_database(writable=True)
         try:
             self.database.delete_document(docid)
             return True
@@ -229,6 +240,22 @@ class XapianDatabase(CommonIndexer.CommonDatabase):
             result.append(item_fields)
         self._walk_matches(query, extract_fieldvalue)
         return result
+
+    def _prepare_database(self, writable=False):
+        """reopen the database as read-only or as writable if necessary
+
+        this fixes a xapian specific issue regarding open locks for
+        writable databases
+
+        @param writable: True for opening a writable database
+        @type writable: bool
+        """
+        if writable and (not isinstance(self.database,
+                xapian.WritableDatabase)):
+            self.database = xapian.WritableDatabase(self.location,
+                    xapian.DB_OPEN)
+        elif not writable and (not isinstance(self.database, xapian.Database)):
+            self.database = xapian.Database(self.location)
 
 
 class XapianEnquire(CommonIndexer.CommonEnquire):
