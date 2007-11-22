@@ -769,8 +769,6 @@ class TranslationProject(object):
     for pofilename in pofilenames:
       self.updateindex(pofilename, optimize=False)
     self.indexer.flush()
-    # TODO: move it away - it is used for xapian cleanup
-    self.indexer.database.__swig_destroy__(self.indexer.database)
 
   def updateindex(self, pofilename, items=None, optimize=True):
     """updates the index with the contents of pofilename (limit to items if given)"""
