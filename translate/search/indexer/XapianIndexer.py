@@ -189,6 +189,31 @@ class XapianDatabase(CommonIndexer.CommonDatabase):
                             % str(type(data)))
             self.database.add_document(doc)
 
+    def begin_transaction(self):
+        """begin a transaction
+
+        Xapian supports transactions to group multiple database modifications.
+        This avoids intermediate flushing and therefore increases performance.
+        """
+        self._prepare_database(writable=True)
+        self.database.begin_transaction()
+
+    def cancel_transaction(self):
+        """cancel an ongoing transaction
+
+        no changes since the last execution of 'begin_transcation' are written
+        """
+        self._prepare_database(writable=True)
+        self.database.cancel_transaction()
+
+    def commit_transaction(self):
+        """submit the changes of an ongoing transaction
+
+        all changes since the last execution of 'begin_transaction' are written
+        """
+        self._prepare_database(writable=True)
+        self.database.commit_transaction()
+
     def get_query_result(self, query):
         """return an object containing the results of a query
         

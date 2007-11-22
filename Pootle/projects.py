@@ -805,9 +805,11 @@ class TranslationProject(object):
       doc["msgstr"] = trans
       addlist.append(doc)
     if addlist:
+      self.indexer.begin_transaction()
       try:
         self.indexer.index_data(addlist)
       finally:
+        self.indexer.commit_transaction()
         self.indexer.flush(optimize=optimize)
 
   def matchessearch(self, pofilename, search):

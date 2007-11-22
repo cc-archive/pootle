@@ -11,14 +11,15 @@ class CommonDatabase(object):
     any real implementation must override most methods of this class
     """
 
-    """mapping of field names and analyzers - see 'set_field_analyzers'"""
     field_analyzers = {}
+    """mapping of field names and analyzers - see 'set_field_analyzers'"""
 
-    """exact matching: the query string must equal the whole term string"""
     ANALYZER_EXACT = 0
+    """exact matching: the query string must equal the whole term string"""
+
+    ANALYZER_PARTIAL = 1
     """partial matching: a document matches, even if the query string only
     matches the beginning of the term value"""
-    ANALYZER_PARTIAL = 1
 
     def __init__(self, location):
         """initialize or open an indexing database
@@ -85,6 +86,36 @@ class CommonDatabase(object):
         """
         raise NotImplementedError("Incomplete indexer implementation: " \
                 + "'index_data' is missing")
+
+    def begin_transaction(self):
+        """begin a transaction
+
+        You can group multiple modifications of a database as a transaction.
+        This prevents time-consuming database flushing and helps, if you want
+        that a changeset is committed either completely or not at all.
+        No changes will be written to disk until 'commit_transaction'.
+        'cancel_transaction' can be used to revert an ongoing transaction.
+
+        Database types that do not support transactions may silently ignore it.
+        """
+        raise NotImplementedError("Incomplete indexer implementation: " \
+                + "'begin_transaction' is missing")
+
+    def cancel_transaction(self):
+        """cancel an ongoing transaction
+
+        See 'start_transaction' for details.
+        """
+        raise NotImplementedError("Incomplete indexer implementation: " \
+                + "'cancel_transaction' is missing")
+
+    def commit_transaction(self):
+        """submit the currently ongoing transaction and write changes to disk
+
+        See 'start_transaction' for details.
+        """
+        raise NotImplementedError("Incomplete indexer implementation: " \
+                + "'commit_transaction' is missing")
 
     def get_query_result(self, query):
         """return an object containing the results of a query
