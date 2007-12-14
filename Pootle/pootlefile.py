@@ -553,7 +553,6 @@ class pootlefile(Wrapper):
   def mergeitem(self, oldpo, newpo, username):
     """merges any changes from newpo into oldpo"""
     unchanged = oldpo.target == newpo.target
-#    if oldpo.isblankmsgstr() or newpo.isblankmsgstr() or oldpo.isheader() or newpo.isheader() or unchanged:
     if not oldpo.target or not newpo.target or oldpo.isheader() or newpo.isheader() or unchanged:
       oldpo.merge(newpo)
     else:
