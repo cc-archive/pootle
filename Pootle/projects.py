@@ -454,13 +454,14 @@ class TranslationProject(object):
   def scanpofiles(self):
     """sets the list of pofilenames by scanning the project directory"""
     self.pofilenames = self.potree.getpofiles(self.languagecode, self.projectcode, poext=self.fileext)
-    for pofilename in self.pofilenames:
-      if not pofilename in self.pofiles:
-        self.pofiles[pofilename] = pootlefile.pootlefile(self, pofilename)
+    filename_set = set(self.pofilenames)
+    pootlefile_set = set(self.pofiles.keys())
+    # add any files that we don't have yet
+    for filename in filename_set.difference(pootlefile_set):
+        self.pofiles[filename] = pootlefile.pootlefile(self, filename)
     # remove any files that have been deleted since initialization
-    for pofilename in self.pofiles.keys():
-      if not pofilename in self.pofilenames:
-        del self.pofiles[pofilename]
+    for filename in pootlefile_set.difference(filename_set):
+        del self.pofiles[filename]
 
   def getuploadpath(self, dirname, localfilename):
     """gets the path of a translation file being uploaded securely, creating directories as neccessary"""
