@@ -11,7 +11,7 @@ def getmodtime(filename, default=None):
 
 class pootlestatistics:
   """this represents the statistics known about a file"""
-  def __init__(self, basefile, generatestats=True):
+  def __init__(self, basefile, generatestats=False):
     """constructs statistic object for the given file"""
     # TODO: try and remove circular references between basefile and this class
     self.basefile = basefile
