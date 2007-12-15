@@ -274,7 +274,7 @@ class pootlefile(Wrapper):
     self.lockedfile = LockedFile(self.filename)
     # we delay parsing until it is required
     self.pomtime = None
-    self.assigns = pootleassigns(self)
+    self.assigns = None
 
     self.pendingfilename = self.filename + os.extsep + "pending"
     self.pendingfile = None
@@ -500,7 +500,7 @@ class pootlefile(Wrapper):
     maxitem = len(translatables)
     validitems = range(minitem, maxitem)
     if search.assignedto or search.assignedaction:
-      assignitems = self.assigns.finditems(search)
+      assignitems = self.getassigns().finditems(search)
       validitems = [item for item in validitems if item in assignitems]
     # loop through, filtering on matchnames if required
     for item in validitems:
@@ -549,6 +549,11 @@ class pootlefile(Wrapper):
       if not oldpo in matcheditems:
         matches.append((oldpo, None))
     return matches
+
+  def getassigns(self):
+    if self.assigns is None:
+        self.assigns = pootleassigns(self)
+    return self.assigns
 
   def mergeitem(self, oldpo, newpo, username):
     """merges any changes from newpo into oldpo"""

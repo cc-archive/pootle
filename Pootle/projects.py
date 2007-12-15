@@ -821,9 +821,9 @@ class TranslationProject(object):
     # search.assignedto == [None] means assigned to nobody
     if search.assignedto or search.assignedaction:
       if search.assignedto == [None]:
-        assigns = self.pofiles[pofilename].assigns.getunassigned(search.assignedaction)
+        assigns = self.pofiles[pofilename].getassigns().getunassigned(search.assignedaction)
       else:
-        assigns = self.pofiles[pofilename].assigns.getassigns()
+        assigns = self.pofiles[pofilename].getassigns().getassigns()
         if search.assignedto is not None:
           if search.assignedto not in assigns:
             return False
@@ -953,7 +953,7 @@ class TranslationProject(object):
           usernum = min(usernum+1, len(assignto)-1)
           userwords = 0
         userwords += itemwordcount
-        pofile.assigns.assignto(item, assignto[usernum], action)
+        pofile.getassigns().assignto(item, assignto[usernum], action)
         assigncount += 1
     return assigncount
 
@@ -971,10 +971,10 @@ class TranslationProject(object):
         if search.searchtext:
           unit = pofile.getitem(item)
           if grepfilter.filterunit(unit):
-            pofile.assigns.unassign(item, assignedto, action)
+            pofile.getassigns().unassign(item, assignedto, action)
             assigncount += 1
         else:
-          pofile.assigns.unassign(item, assignedto, action)
+          pofile.getassigns().unassign(item, assignedto, action)
           assigncount += 1
     return assigncount
 
@@ -1118,7 +1118,7 @@ class TranslationProject(object):
     polen = self.getpototals(pofilename).get("total", 0)
     # Temporary code to avoid traceback. Was:
 #    polen = len(self.getpostats(pofilename)["total"])
-    assigns = self.pofiles[pofilename].assigns.getassigns()
+    assigns = self.pofiles[pofilename].getassigns().getassigns()
     assignstats = {}
     for username, userassigns in assigns.iteritems():
       allitems = []
