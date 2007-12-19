@@ -1,27 +1,36 @@
 %{!?python_sitelib: %define python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib()")}
 
 Name:           translate-toolkit
-Version:        0.10.1
-Release:        4%{?dist}
-Summary:        A collection of tools to assist software localization
+Version:        1.0.1
+Release:        1%{?dist}
+Summary:        Tools to assist with localization
 
 Group:          Development/Tools
 License:        GPL
 URL:            http://translate.sourceforge.net/
-Source0:        http://dl.sourceforge.net/sourceforge/translate/translate-toolkit-%{version}.tar.bz2
+Source0:        http://downloads.sourceforge.net/translate/%{name}-%{version}.tar.bz2
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-Patch1:         translate-toolkit-0.10.1-python25.patch
+Patch1:         translate-toolkit-1.0.1-python25.patch
 
 BuildArch:      noarch
 BuildRequires:  python-devel
 Requires:       python-enchant
+Requires:       python-Levenshtein
+Requires:       python-psyco
 
 %description
-The Translate Toolkit includes programs to convert various localization
-formats to the common gettext PO format and vice versa, and programs to
-check and manage PO files. Also part of the package are programs to create
-word counts, merge translations, and perform various checks on PO files.
+A set of tools for managing localization via Gettext PO or XLIFF format files.
+
+Including:
+  * Convertors: convert from various formats to PO or XLIFF
+  * Formats:
+    * Core localization formats - XLIFF and Gettext PO
+    * Other localization formats - TMX, TBX, Qt Linguist (.ts)
+    * Other formats - Java .properties, text, HTML, CSV
+    * Specialised - OpenOffice.org GSI/SDF, Mozilla (.dtd, .properties, etc)
+  * Tools: count, search and debug localization files
+  * Checkers: validate translations with over 40 checks
 
 
 %prep
@@ -37,8 +46,16 @@ word counts, merge translations, and perform various checks on PO files.
 rm -rf $RPM_BUILD_ROOT
 %{__python} setup.py install -O1 --skip-build --root $RPM_BUILD_ROOT
 
-# This removes the documentation files that were installed in site-packages
-find $RPM_BUILD_ROOT%{python_sitelib}/translate -type f -name "[[:upper:]]*" | xargs rm -fv
+# We will take docs from the tarball
+rm -rf $RPM_BUILD_ROOT/%{python_sitelib}/translate/doc
+rm -rf $RPM_BUILD_ROOT/%{python_sitelib}/translate/COPYING
+rm -rf $RPM_BUILD_ROOT/%{python_sitelib}/translate/ChangeLog
+rm -rf $RPM_BUILD_ROOT/%{python_sitelib}/translate/LICENSE
+rm -rf $RPM_BUILD_ROOT/%{python_sitelib}/translate/README
+rm -rf $RPM_BUILD_ROOT/%{python_sitelib}/translate/convert/TODO
+rm -rf $RPM_BUILD_ROOT/%{python_sitelib}/translate/filters/TODO
+rm -rf $RPM_BUILD_ROOT/%{python_sitelib}/translate/misc/README
+rm -rf $RPM_BUILD_ROOT/%{python_sitelib}/translate/tools/TODO
 
 
 %clean
@@ -47,6 +64,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root,-)
+%doc translate/doc/user/toolkit-[a-z]*
 %doc translate/ChangeLog translate/COPYING translate/README
 %dir %{python_sitelib}/translate
 %dir %{python_sitelib}/translate/tools
@@ -62,6 +80,11 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Dec 19 2007 Dwayne Bailey <dwayne@translate.org.za> - 1.0.1-1
+- Update to upstream 1.0.1
+- Update patch for Python 2.5 ElementTree
+- Cleanup the doc installation
+
 * Tue Jan 09 2007 Roozbeh Pournader <roozbeh@farsiweb.info> - 0.10.1-4
 - Patch to use Python 2.5's built-in ElementTree
 
