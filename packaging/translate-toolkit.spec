@@ -2,7 +2,7 @@
 
 Name:           translate-toolkit
 Version:        1.0.1
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Tools to assist with localization
 
 Group:          Development/Tools
@@ -46,6 +46,21 @@ Including:
 rm -rf $RPM_BUILD_ROOT
 %{__python} setup.py install -O1 --skip-build --root $RPM_BUILD_ROOT
 
+# Create the manpages
+mkdir -p $RPM_BUILD_ROOT/%{_mandir}/man1
+for program in $RPM_BUILD_ROOT/%{_bindir}/*;
+do
+	case $(basename $program) in
+	pocompendium|poen|pomigrate2|popuretext|poreencode|posplit|pocount|poglossary|lookupclient.py)
+	  ;;
+	*)
+		LC_ALL=C PYTHONPATH=. $program --manpage \
+		>  $RPM_BUILD_ROOT/%{_mandir}/man1/$(basename $program).1 \
+		|| rm -f $RPM_BUILD_ROOT/%{_mandir}/man1/$(basename $program).1
+	  ;;
+	esac
+done
+
 # We will take docs from the tarball
 rm -rf $RPM_BUILD_ROOT/%{python_sitelib}/translate/doc
 rm -rf $RPM_BUILD_ROOT/%{python_sitelib}/translate/COPYING
@@ -56,6 +71,7 @@ rm -rf $RPM_BUILD_ROOT/%{python_sitelib}/translate/convert/TODO
 rm -rf $RPM_BUILD_ROOT/%{python_sitelib}/translate/filters/TODO
 rm -rf $RPM_BUILD_ROOT/%{python_sitelib}/translate/misc/README
 rm -rf $RPM_BUILD_ROOT/%{python_sitelib}/translate/tools/TODO
+
 
 
 %clean
@@ -75,11 +91,15 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitelib}/translate/*.py*
 %{python_sitelib}/translate/*/*.py*
 %{_bindir}/*
+%{_mandir}/*
 %exclude %{_bindir}/*.pyc
 %exclude %{_bindir}/*.pyo
 
 
 %changelog
+* Thu Dec 20 2007 Dwayne Bailey <dwayne@translate.org.za> - 1.0.1-2
+- Create man pages
+
 * Thu Dec 19 2007 Dwayne Bailey <dwayne@translate.org.za> - 1.0.1-1
 - Update to upstream 1.0.1
 - Update patch for Python 2.5 ElementTree
