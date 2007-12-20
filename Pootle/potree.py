@@ -481,12 +481,16 @@ class POTree:
   def getpofiles(self, languagecode, projectcode, poext="po"):
     """returns a list of po files for the project and language"""
     pofilenames = []
+    prefix = os.curdir + os.sep
 
     def addfiles(podir, dirname, fnames):
       """adds the files to the set of files for this project"""
-      basedirname = dirname.replace(os.curdir+os.sep, "", 1)
+      if dirname == os.curdir:
+        basedirname = ""
+      else:
+        basedirname = dirname.replace(prefix, "", 1)
       for fname in fnames:
-        #check that it actually exists (to avoid problems with broken symbolic 
+        # check that it actually exists (to avoid problems with broken symbolic 
         # links, for example)
         fpath = os.path.join(basedirname, fname)
         if not os.path.exists(fpath):
@@ -510,7 +514,7 @@ class POTree:
     else:
       pwd = os.path.abspath(os.curdir)
       os.chdir(podir)
-      os.path.walk(os.curdir, addfiles, os.curdir)
+      os.path.walk(os.curdir, addfiles, None)
       os.chdir(pwd)
     return pofilenames
 
