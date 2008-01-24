@@ -34,6 +34,6 @@ po_dir=$2
 
 for po_file in `find $po_dir -name "*.po"`
 do
-	tmp=`mktemp`
+	tmp=`mktemp tmp.XXXXXXXXXX`
 	msgconv -o $tmp $po_file && mv $tmp $po_file
 done

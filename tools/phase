@@ -349,7 +349,7 @@ function checkpo {
 	shift 3
 	otheroptions=$*
 	files=$(getphasefiles $filelist $phase)
-	tempdir=`mktemp -d`
+	tempdir=`mktemp -d tmp.XXXXXXXXXX`
 	copy_po_to_temp_dir $language $tempdir $files
 	pofilter --excludefilter=untranslated $otheroptions $tempdir $language-$phase-check
         rm -rf $tempdir
@@ -363,7 +363,7 @@ function greppo {
 	shift 3
 	otheroptions=$*
 	files=$(getphasefiles $filelist $phase)
-	tempdir=`mktemp -d`
+	tempdir=`mktemp -d tmp.XXXXXXXXXX`
 	copy_po_to_temp_dir $language $tempdir $files
 	pogrep $otheroptions $tempdir $language-$phase-grep
         rm -rf $tempdir
@@ -377,7 +377,7 @@ function conflictpo {
 	shift 3
 	otheroptions=$*
 	files=$(getphasefiles $filelist $phase)
-	tempdir=`mktemp -d`
+	tempdir=`mktemp -d tmp.XXXXXXXXXX`
 	copy_po_to_temp_dir $language $tempdir $files
         rm -rf $language-$phase-conflicts
 	(curdir=$(pwd); cd $tempdir ; poconflicts $otheroptions . $curdir/$language-$phase-conflicts)
@@ -416,7 +416,7 @@ function reviewpo {
 	shift 3
 	otheroptions=$*
 	files=$(getphasefiles $filelist $phase)
-	tempdir=`mktemp -d`
+	tempdir=`mktemp -d tmp.XXXXXXXXXX`
 	copy_po_to_temp_dir $language $tempdir $files
 	review_dir=$language-$phase-review
         rm -rf $review_dir
@@ -496,8 +496,8 @@ function reviewsinout {
 	phase=$2
 	reviewdir=$language-$phase-review
 	returndir=$language-$phase-review-returned
-	reviewlist=`mktemp`
-	returnlist=`mktemp`
+	reviewlist=`mktemp tmp.XXXXXXXXXX`
+	returnlist=`mktemp tmp.XXXXXXXXXX`
 	(cd $reviewdir; find . -type f -name "*.po" | sort ) > $reviewlist
 	(cd $returndir; find . -type f -name "*.po" | sort ) > $returnlist
 	echo "Reviews out: `cat $reviewlist | wc -l`"
@@ -517,8 +517,8 @@ function checkphaselist {
 	# Checks the files against the phase-list to see wich are in and which are out
 	language=$1
 	phaselist=$2
-	currentlist=`mktemp`
-	tempphaselist=`mktemp`
+	currentlist=`mktemp tmp.XXXXXXXXXX`
+	tempphaselist=`mktemp tmp.XXXXXXXXXX`
 	(cd $language; find . -name "*.po" | sort ) > $currentlist
 	cat $phaselist | cut -f2- | sort > $tempphaselist
 	echo "+ new files that are not in your phaselist (you need to add these)"

@@ -30,7 +30,7 @@ fi
 potdir=$1
 textfile=$2
 accelerator=$3
-tempdir=`mktemp -d`
+tempdir=`mktemp -d tmp.XXXXXXXXXX`
 
 for pot in `cd $potdir; find . -name "*.pot"`
 do
