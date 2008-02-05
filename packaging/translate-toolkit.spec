@@ -2,11 +2,11 @@
 
 Name:           translate-toolkit
 Version:        1.0.1
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Tools to assist with localization
 
 Group:          Development/Tools
-License:        GPL
+License:        GPLv2+
 URL:            http://translate.sourceforge.net/
 Source0:        http://downloads.sourceforge.net/translate/%{name}-%{version}.tar.bz2
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -19,9 +19,10 @@ Requires:       python-enchant
 Requires:       python-Levenshtein
 Requires:       python-psyco
 
+
 %description
 A set of tools for managing localization via Gettext PO or XLIFF format files.
-
+ 
 Including:
   * Convertors: convert from various formats to PO or XLIFF
   * Formats:
@@ -61,17 +62,11 @@ do
 	esac
 done
 
-# We will take docs from the tarball
-rm -rf $RPM_BUILD_ROOT/%{python_sitelib}/translate/doc
-rm -rf $RPM_BUILD_ROOT/%{python_sitelib}/translate/COPYING
-rm -rf $RPM_BUILD_ROOT/%{python_sitelib}/translate/ChangeLog
-rm -rf $RPM_BUILD_ROOT/%{python_sitelib}/translate/LICENSE
-rm -rf $RPM_BUILD_ROOT/%{python_sitelib}/translate/README
-rm -rf $RPM_BUILD_ROOT/%{python_sitelib}/translate/convert/TODO
-rm -rf $RPM_BUILD_ROOT/%{python_sitelib}/translate/filters/TODO
-rm -rf $RPM_BUILD_ROOT/%{python_sitelib}/translate/misc/README
-rm -rf $RPM_BUILD_ROOT/%{python_sitelib}/translate/tools/TODO
-
+# remove documentation files from site-packages
+rm -r $RPM_BUILD_ROOT/%{python_sitelib}/translate/doc
+rm $RPM_BUILD_ROOT/%{python_sitelib}/translate/{COPYING,ChangeLog,LICENSE,README}
+rm $RPM_BUILD_ROOT/%{python_sitelib}/translate/{convert,filters,tools}/TODO
+rm $RPM_BUILD_ROOT/%{python_sitelib}/translate/misc/README
 
 
 %clean
@@ -82,21 +77,19 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root,-)
 %doc translate/doc/user/toolkit-[a-z]*
 %doc translate/ChangeLog translate/COPYING translate/README
-%dir %{python_sitelib}/translate
-%dir %{python_sitelib}/translate/tools
-%dir %{python_sitelib}/translate/filters
-%dir %{python_sitelib}/translate/storage
-%dir %{python_sitelib}/translate/misc
-%dir %{python_sitelib}/translate/convert
-%{python_sitelib}/translate/*.py*
-%{python_sitelib}/translate/*/*.py*
 %{_bindir}/*
-%{_mandir}/*
+%{_mandir}/man1/*
+%{python_sitelib}/translate*
 %exclude %{_bindir}/*.pyc
 %exclude %{_bindir}/*.pyo
 
 
 %changelog
+* Tue Jan 22 2008 Caius Chance <cchance@redhat.com> - 1.0.1-3.fc8
+- Resolves: rhbz#315021
+ - Update license field to GPLv2+.
+ - Update to 1.0.1 with changes from Dwayne Bailey.
+
 * Thu Dec 20 2007 Dwayne Bailey <dwayne@translate.org.za> - 1.0.1-2
 - Create man pages
 
@@ -104,6 +97,9 @@ rm -rf $RPM_BUILD_ROOT
 - Update to upstream 1.0.1
 - Update patch for Python 2.5 ElementTree
 - Cleanup the doc installation
+
+* Sat May 05 2007 Roozbeh Pournader <roozbeh@farsiweb.info> - 0.11-1
+- Update to upstream 0.11, adding HTML documentation
 
 * Tue Jan 09 2007 Roozbeh Pournader <roozbeh@farsiweb.info> - 0.10.1-4
 - Patch to use Python 2.5's built-in ElementTree
