@@ -1,14 +1,15 @@
 %{!?python_sitelib: %define python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib()")}
 
 Name:           translate-toolkit
-Version:        1.1.0
-Release:        1%{?dist}
+Version:        1.1.1
+Release:        0.1.rc2%{?dist}
 Summary:        Tools to assist with localization
 
 Group:          Development/Tools
 License:        GPLv2+
 URL:            http://translate.sourceforge.net/wiki/toolkit/index
-Source0:        http://downloads.sourceforge.net/translate/%{name}-%{version}.tar.bz2
+#Source0:        http://downloads.sourceforge.net/translate/%{name}-%{version}.tar.bz2
+Source0:        http://translate.sourceforge.net/snapshots/%{name}-%{version}rc2/%{name}-%{version}rc2.tar.bz2
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 Patch1:         translate-toolkit-1.1.0-ini2po.patch
@@ -37,11 +38,11 @@ Including:
     * Specialised - OpenOffice.org GSI/SDF, PHP,
             Mozilla (.dtd, .properties, etc)
   * Tools: count, search, debug and segment localization files
-  * Checkers: validate translations with over 40 checks
+  * Checkers: validate translations with over 45 checks
 
 
 %prep
-%setup -q
+%setup -q -n %{name}-%{version}rc2
 %patch1 -p0 -b .ini2po
 
 
@@ -91,7 +92,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Tue Feb 14 2008 Dwayne Bailey <dwayne@translate.org.za> - 1.1.0-1.fc8
+* Thu Feb 14 2008 Dwayne Bailey <dwayne@translate.org.za> - 1.1.1-0.1.rc2.fc8
+- Update to 1.1.1rc2
+
+* Thu Feb 14 2008 Dwayne Bailey <dwayne@translate.org.za> - 1.1.0-1.fc8
 - Update to 1.1.0
 - Remove old ElementTree patch
 - Add dependencies: python-Levenshtein, python-lxml, python-iniparse, 
