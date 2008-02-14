@@ -1,22 +1,26 @@
 %{!?python_sitelib: %define python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib()")}
 
 Name:           translate-toolkit
-Version:        1.0.1
-Release:        4%{?dist}
+Version:        1.1.0
+Release:        1%{?dist}
 Summary:        Tools to assist with localization
 
 Group:          Development/Tools
 License:        GPLv2+
-URL:            http://translate.sourceforge.net/
+URL:            http://translate.sourceforge.net/wiki/toolkit/index
 Source0:        http://downloads.sourceforge.net/translate/%{name}-%{version}.tar.bz2
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-Patch1:         translate-toolkit-1.0.1-python25.patch
+Patch1:         translate-toolkit-1.1.0-ini2po.patch
 
 BuildArch:      noarch
 BuildRequires:  python-devel
 Requires:       python-enchant
 Requires:       python-psyco
+Requires:       python-Levenshtein
+Requires:       python-lxml
+Requires:       python-iniparse
+Requires:       gettext-devel
 
 
 %description
@@ -26,16 +30,19 @@ Including:
   * Convertors: convert from various formats to PO or XLIFF
   * Formats:
     * Core localization formats - XLIFF and Gettext PO
-    * Other localization formats - TMX, TBX, Qt Linguist (.ts)
-    * Other formats - Java .properties, text, HTML, CSV
-    * Specialised - OpenOffice.org GSI/SDF, Mozilla (.dtd, .properties, etc)
-  * Tools: count, search and debug localization files
+    * Other localization formats - TMX, TBX, Qt Linguist (.ts), 
+           Java .properties, Wordfast TM
+    * Compiled formats: Gettext MO, Qt .qm
+    * Other formats - text, HTML, CSV, INI, wiki (MediaWiki, DokuWiki)
+    * Specialised - OpenOffice.org GSI/SDF, PHP,
+            Mozilla (.dtd, .properties, etc)
+  * Tools: count, search, debug and segment localization files
   * Checkers: validate translations with over 40 checks
 
 
 %prep
 %setup -q
-%patch1 -p1 -b .python25
+%patch1 -p0 -b .ini2po
 
 
 %build
@@ -84,6 +91,13 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Feb 14 2008 Dwayne Bailey <dwayne@translate.org.za> - 1.1.0-1.fc8
+- Update to 1.1.0
+- Remove old ElementTree patch
+- Add dependencies: python-Levenshtein, python-lxml, python-iniparse, 
+  gettext-devel
+- Package ini2po
+
 * Tue Jan 22 2008 Dwayne Bailey <dwayne@translate.org.za> - 1.0.1-4.fc8
 - Remove python-Levenshtein dependency: rhbz#429882 and rhbz#430887
 
