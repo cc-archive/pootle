@@ -2,7 +2,7 @@
 
 Name:           translate-toolkit
 Version:        1.0.1
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Tools to assist with localization
 
 Group:          Development/Tools
@@ -16,7 +16,6 @@ Patch1:         translate-toolkit-1.0.1-python25.patch
 BuildArch:      noarch
 BuildRequires:  python-devel
 Requires:       python-enchant
-Requires:       python-Levenshtein
 Requires:       python-psyco
 
 
@@ -85,6 +84,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Jan 22 2008 Dwayne Bailey <dwayne@translate.org.za> - 1.0.1-4.fc8
+- Remove python-Levenshtein dependency: rhbz#429882 and rhbz#430887
+
 * Tue Jan 22 2008 Caius Chance <cchance@redhat.com> - 1.0.1-3.fc8
 - Resolves: rhbz#315021
  - Update license field to GPLv2+.
