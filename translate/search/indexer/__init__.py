@@ -107,62 +107,7 @@ def get_indexer(location):
 
 
 if __name__ == "__main__":
-    # TODO: turn the following code into unittests
-    print "Testing database initialization:"
-    indexer = get_indexer(os.path.join(os.getcwd(), "tmp-xapian"))
-    print " -> Initialization successful"
-    print
-    print "Testing queries: "
-    aquery = indexer.make_query("hello", True)
-    print aquery
-    aquery = indexer.make_query({"site":"hello"}, True)
-    print aquery
-    aquery = indexer.make_query([("nope","hola"), aquery], True)
-    print aquery
-    aquery = indexer.make_query([("nope","hola"), aquery], False)
-    print aquery
-    print " -> query building successful"
-    print
-    print "Testing indexing:"
-    example_data = { "pomtime":"1243", "msgid": "hello me",
-            "msgstr": "telling you" }
-    indexer.index_data(example_data)
-    print " -> Indexing successful"
-    print
-    """
-    print "Showing the database:"
-    print "\tNumbers of entries: %d" % indexer.db.get_doccount()
-    for i in range(1, int(indexer.db.get_doccount()) + 1):
-        doc = indexer.db.get_document(i)
-        print "\tdata of doc(%d):" % i
-        for term in doc.termlist():
-            print "\t\t%s" % term.term
-    print
-    """
-    print "Testing a search:"
-    aquery = indexer.make_query({"msgid":"hello!me"}, requireall=False,
-            match_text_partial=True)
-    print aquery
-    (m_num, available, results) = \
-            indexer.get_query_result(aquery).get_matches(0,10)
-    print "\tAnzahl der Ergebnisse: %d/%d" % (m_num, available)
-    for amatch in results:
-        print "\t\t%d: %d" % (amatch["rank"], amatch["percent"])
-    print " -> search testing successful"
-    print
-    print "Showing the database:"
-    print "\tNumbers of entries: %d" % indexer.database.get_doccount()
-    print
-    print "Results (msgid): %s" \
-            % str(indexer.search(aquery, ("msgid", "msgstr")))
-    print
-    """
-    print "Deleting documents:"
-    print "\tDeleted documents: %d" % indexer.delete_doc(aquery)
-    print " -> ok"
-    print
-    print "Showing the database:"
-    print "\tNumbers of entries: %d" % indexer.db.get_doccount()
-    print
-    """
+    # show all supported indexing engines (with fulfilled requirements)
+    for ONE_INDEX in _AVAILABLE_INDEXERS:
+        print ONE_INDEX
 
