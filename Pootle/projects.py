@@ -807,7 +807,8 @@ class TranslationProject(object):
     if addlist:
       self.indexer.begin_transaction()
       try:
-        self.indexer.index_data(addlist)
+        for add_item in addlist:
+            self.indexer.index_document(add_item)
       finally:
         self.indexer.commit_transaction()
         self.indexer.flush(optimize=optimize)
