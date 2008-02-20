@@ -78,14 +78,17 @@ class CommonDatabase(object):
         raise NotImplementedError("Incomplete indexer implementation: " \
                 + "'make_query' is missing")
 
-    def index_data(self, data):
+    def index_document(self, data):
         """add the given data to the database
 
-        @param data: the data to be indexed
-        @type data: dict | list of tuples
+        @param data: the data to be indexed. A dictionary will be treated
+            as fieldname:value combinations. A keyword is treated as a
+            non-field term if the value has the type None.
+            Lists of strings are treated as non-field terms.
+        @type data: dict | list of str
         """
         raise NotImplementedError("Incomplete indexer implementation: " \
-                + "'index_data' is missing")
+                + "'index_document' is missing")
 
     def begin_transaction(self):
         """begin a transaction

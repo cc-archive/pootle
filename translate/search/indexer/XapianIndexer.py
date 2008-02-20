@@ -108,6 +108,7 @@ class XapianDatabase(CommonIndexer.CommonDatabase):
         # e.g. for partial string matching
         qp = xapian.QueryParser()
         qp.set_database(self.database)
+        qp.set_default_op(query_op)
         # combine all given queries
         result = []
         for query in args:
@@ -159,35 +160,35 @@ class XapianDatabase(CommonIndexer.CommonDatabase):
         # return the combined query
         return xapian.Query(query_op, result)
 
-    def index_data(self, data):
+    def index_document(self, data):
         """add the given data to the database
 
-        @param data: the data to be indexed
-        @type data: dict | list of tuples
+        @param data: the data to be indexed. A dictionary will be treated
+            as fieldname:value combinations. A keyword is treated as a
+            non-field term if the value has the type None.
+            Lists of strings are treated as non-field terms.
+        @type data: dict | list of str
         """
         # open the database for writing
         self._prepare_database(writable=True)
-        # for lists: call this function for each element in the list
-        if isinstance(data, list) and isinstance(data[0], dict):
-            for one_doc in data:
-                self.index_data(one_doc)
-        else:
-            # turn a dictionary into a list of tuples, if necessary
-            if isinstance(data, dict):
-                data = data.items()
-            doc = xapian.Document()
-            # add all data
-            for dataset in data:
-                if isinstance(dataset, tuple):
-                    # the dataset tuple consists of '(key, value)'
-                    key, value = dataset
-                    # cut the length if necessary
-                    doc.add_term(_truncate_term_length("%s:%s" % \
-                            (key, _escape_term_value(value))))
-                else:
-                    raise ValueError("Invalid data type to be indexed: %s" \
-                            % str(type(data)))
-            self.database.add_document(doc)
+        doc = xapian.Document()
+        if isinstance(data, dict):
+            data = data.items()
+        # add all data
+        for dataset in data:
+            if isinstance(dataset, tuple):
+                # the dataset tuple consists of '(key, value)'
+                key, value = dataset
+                # cut the length if necessary
+                doc.add_term(_truncate_term_length("%s:%s" % \
+                        (key, _escape_term_value(value))))
+            elif isinstance(dataset, str):
+                doc.add_term(_truncate_term_length(_escape_term_value(
+                        dataset)))
+            else:
+                raise ValueError("Invalid data type to be indexed: %s" \
+                        % str(type(data)))
+        self.database.add_document(doc)
 
     def begin_transaction(self):
         """begin a transaction
@@ -342,5 +343,6 @@ def _escape_term_value(term):
     @rtype: str
     """
     # replace non-alphanumeric characters with an underscore
-    return re.sub(u"\W", "_", term)
+    # only lower case - queries are turned to lower case, too
+    return re.sub(u"\W", "_", term).lower()
 
