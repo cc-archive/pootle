@@ -164,9 +164,9 @@ class XapianDatabase(CommonIndexer.CommonDatabase):
         """add the given data to the database
 
         @param data: the data to be indexed. A dictionary will be treated
-            as fieldname:value combinations. A keyword is treated as a
-            non-field term if the value has the type None.
-            Lists of strings are treated as non-field terms.
+            as fieldname:value combinations. A fieldname is treated as a
+            plain term if the value has the type None.
+            Lists of strings are treated as plain terms.
         @type data: dict | list of str
         """
         # open the database for writing

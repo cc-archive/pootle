@@ -42,7 +42,7 @@ class CommonDatabase(object):
         """flush the content of the database - to force changes to be written
         to disk
 
-        some databases also support index optmization
+        some databases also support index optimization
 
         @param optimize: should the index be optimized if possible?
         @type optimize: bool
@@ -82,9 +82,9 @@ class CommonDatabase(object):
         """add the given data to the database
 
         @param data: the data to be indexed. A dictionary will be treated
-            as fieldname:value combinations. A keyword is treated as a
-            non-field term if the value has the type None.
-            Lists of strings are treated as non-field terms.
+            as fieldname:value combinations. A fieldname is treated as a
+            plain term if the value has the type None.
+            Lists of strings are treated as plain terms.
         @type data: dict | list of str
         """
         raise NotImplementedError("Incomplete indexer implementation: " \
