@@ -213,7 +213,15 @@ def test_lower_upper_case():
     # use lower case search terms for upper case indexed terms
     q_case2 = new_db.make_query("helo")
     r_case2 = new_db.get_query_result(q_case2).get_matches(0,10)
-    assert r_case1[0] == 2
+    assert r_case2[0] == 2
+    # use lower case search terms for lower case indexed terms
+    q_case3 = new_db.make_query("bar")
+    r_case3 = new_db.get_query_result(q_case3).get_matches(0,10)
+    assert r_case3[0] == 2
+    # use upper case search terms for upper case indexed terms
+    q_case4 = new_db.make_query("HELO")
+    r_case4 = new_db.get_query_result(q_case4).get_matches(0,10)
+    assert r_case4[0] == 2
     # clean up
     clean_database()
 
