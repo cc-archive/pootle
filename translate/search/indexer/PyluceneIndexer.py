@@ -1,0 +1,342 @@
+"""
+interface for the pylucene indexing engine
+"""
+
+__revision__ = "$Id$"
+
+import CommonIndexer
+import PyLucene
+# TODO: replace this dependency on the jToolkit
+import jToolkit.glock
+import tempfile
+import re
+
+
+class PyluceneDatabase(object):
+    """manage and use a pylucene indexing database"""
+
+
+    def __init__(self, location):
+        """initialize or open an indexing database
+
+        Any derived class must override __init__.
+
+        The following exceptions can be raised:
+            ValueError: the given location exists, but the database type
+                is incompatible (e.g. created by a different indexing engine)
+            OSError: the database failed to initialize
+
+        @param location: the path to the database (usually a directory)
+        @type location: str
+        @throws: OSError, ValueError
+        """
+        super(PyluceneDatabase, self).__init__(location)
+        self.location = location
+        self.analyzer = PyLucene.StandardAnalyzer()
+        if os.path.exists(location):
+            try:
+                # try to open an existing database
+                tempreader = PyLucene.IndexReader.open(self.location)
+                tempreader.close()
+                self.createdIndex = False
+            except PyLucene.exceptions.Exception, e:
+                # Write an error out, in case this is a real problem instead of an absence of an index
+                # TODO: turn the following two lines into debug output
+                #errorstr = str(e).strip() + "\n" + self.errorhandler.traceback_str()
+                #DEBUG_FOO("could not open index, so going to create: " + errorstr)
+                # Create the index, so we can open cached readers on it
+                try:
+                    tempwriter = PyLucene.IndexWriter(self.location,
+                            self.analyzer, True)
+                    tempwriter.close()
+                    self.createdIndex = True
+                except PyLucene.exceptons.Exception, err_msg:
+                    raise OSError("Indexer: failed to open or create a Lucene" \
+                            + " database (%s): %s" % (self.location, err_msg))
+        # the indexer is initialized - now we prepare the searcher
+        # create a lock for the database directory - to be used later
+        lockname = os.path.join(tempfile.gettempdir(),
+                re.sub("\W", "_", self.location))
+        self.dir_lock = jToolkit.glock.GlobalLock(lockname)
+		# windows file locking seems inconsistent, so we try 10 times
+		numtries = 0
+        # read "self.indexReader", "self.indexVersion" and "self.indexSearcher"
+		try:
+			while numtries < 10:
+				try:
+					self.indexReader = indexer.IndexReader.open(self.location)
+					self.indexVersion = self.indexReader.getCurrentVersion(
+                            self.location)
+					self.indexSearcher = indexer.IndexSearcher(self.indexReader)
+					break
+                # TODO: replace this with a specific exception
+				except Exception, e:
+                    # store error message for possible later re-raise (below)
+                    lock_error_msg = e
+					time.sleep(0.01)
+				numtries += 1
+            else:
+                # locking failed for 10 times
+                raise OSError("Indexer: failed to lock index database" \
+                        + " (%s)" % lock_error_msg)
+		finally:
+			self.dir_lock.release()
+
+    def flush(self, optimize=False):
+        """flush the content of the database - to force changes to be written
+        to disk
+
+        some databases also support index optimization
+
+        @param optimize: should the index be optimized if possible?
+        @type optimize: bool
+        """
+        if self.writer is None:
+            # the indexer is closed - no need to do something
+            return
+        try:
+            if optimize:
+                self.writer.optimize()
+        finally:
+            # close the database even if optimizing failed
+            self.writer.close()
+            self.writer = None
+            self.dir_lock.release()
+
+    def make_query(self, args, requireall=True, match_text_partial=False):
+        """create simple queries (strings or field searches) or
+        combine multiple queries (AND/OR)
+
+        To specifiy rules for field searches, you may want to take a look at
+        'set_field_analyzers'. The parameter 'match_text_partial' can override
+        the previously defined default setting.
+
+        @param args: queries or search string or description of field query
+            examples:
+                [xapian.Query("foo"), xapian.Query("bar")]
+                xapian.Query("foo")
+                "bar"
+                {"foo": "bar", "foobar": "foo"}
+        @type args: list of queries | single query | str | dict
+        @param requireall: boolean operator
+            (True -> AND (default) / False -> OR)
+        @type requireall: boolean
+        @param match_partial_text: (only applicable for 'dict' or 'str')
+            even partial (truncated at the end) string matches are accepted
+            this can override previously defined field analyzer settings
+        @type match_partial_text: bool
+        @return: the combined query
+        @rtype: query type of the specific implemention
+        """
+        raise NotImplementedError("Incomplete indexer implementation: " \
+                + "'make_query' is missing")
+
+    def index_document(self, data):
+        """add the given data to the database
+
+        @param data: the data to be indexed. A dictionary will be treated
+            as fieldname:value combinations. A fieldname is treated as a
+            plain term if the value has the type None.
+            Lists of strings are treated as plain terms.
+        @type data: dict | list of str
+        """
+        raise NotImplementedError("Incomplete indexer implementation: " \
+                + "'index_document' is missing")
+
+    def begin_transaction(self):
+        """begin a transaction
+
+        You can group multiple modifications of a database as a transaction.
+        This prevents time-consuming database flushing and helps, if you want
+        that a changeset is committed either completely or not at all.
+        No changes will be written to disk until 'commit_transaction'.
+        'cancel_transaction' can be used to revert an ongoing transaction.
+
+        Database types that do not support transactions may silently ignore it.
+        """
+        raise NotImplementedError("Incomplete indexer implementation: " \
+                + "'begin_transaction' is missing")
+
+    def cancel_transaction(self):
+        """cancel an ongoing transaction
+
+        See 'start_transaction' for details.
+        """
+        raise NotImplementedError("Incomplete indexer implementation: " \
+                + "'cancel_transaction' is missing")
+
+    def commit_transaction(self):
+        """submit the currently ongoing transaction and write changes to disk
+
+        See 'start_transaction' for details.
+        """
+        raise NotImplementedError("Incomplete indexer implementation: " \
+                + "'commit_transaction' is missing")
+
+    def get_query_result(self, query):
+        """return an object containing the results of a query
+        
+        @param query: a pre-compiled query
+        @type query: a query object of the real implementation
+        @return: an object that allows access to the results
+        @rtype: subclass of CommonEnquire
+        """
+        raise NotImplementedError("Incomplete indexer implementation: " \
+                + "'get_query_result' is missing")
+
+    def delete_document_by_id(self, docid):
+        """delete a specified document
+
+        @param docid: the document ID to be deleted
+        @type docid: int
+        """
+        raise NotImplementedError("Incomplete indexer implementation: " \
+                + "'delete_document_by_id' is missing")
+
+    def search(self, query, fieldnames):
+        """return a list of the contents of specified fields for all matches of
+        a query
+
+        @param query: the query to be issued
+        @type query: a query object of the real implementation
+        @param fieldnames: the name(s) of a field of the document content
+        @type fieldnames: string | list of strings | tuple of strings
+        @return: a list of dicts containing the specified field(s)
+        @rtype: list of dicts
+        """
+        raise NotImplementedError("Incomplete indexer implementation: " \
+                + "'search' is missing")
+
+    def delete_doc(self, ident):
+        """delete the documents returned by a query
+
+        @param ident: [list of] document IDs | dict describing a query | query
+        @type ident: int | list of tuples | dict | list of dicts |
+            query (e.g. xapian.Query) | list of queries
+        """
+        # turn a doc-ID into a list of doc-IDs
+        if isinstance(ident, list):
+            # it is already a list
+            ident_list = ident
+        else:
+            ident_list = [ident]
+        if len(ident_list) == 0:
+            # no matching items
+            return 0
+        if isinstance(ident_list[0], int):
+            # create a list of IDs of all successfully removed documents
+            success_delete = [match for match in ident_list
+                    if self.delete_document_by_id(match)]
+            return len(success_delete)
+        if isinstance(ident_list[0], dict):
+            # something like: { "msgid": "foobar" }
+            # assemble all queries
+            query = self.make_query([self.make_query(query_dict, True)
+                    for query_dict in ident_list], True)
+        elif isinstance(ident_list[0], object):
+            # assume a query object (with 'AND')
+            query = self.make_query(ident_list, True)
+        else:
+            # invalid element type in list (not necessarily caught in the 
+            # lines above)
+            raise TypeError("description of documents to-be-deleted is not " \
+                    + "supported: list of %s" % type(ident_list[0]))
+        # we successfully created a query - now iterate through the result
+        # no documents deleted so far ...
+        remove_list = []
+        # delete all resulting documents step by step
+        def add_docid_to_list(match):
+            """collect every document ID"""
+            remove_list.append(match["docid"])
+        self._walk_matches(query, add_docid_to_list)
+        return self.delete_doc(remove_list)
+
+    def _walk_matches(self, query, function):
+        """use this function if you want to do something with every single match
+        of a query
+
+        example: self._walk_matches(query, function_for_match)
+            'function_for_match' expects only one argument: the matched object
+        @param query: a query object of the real implementation
+        """
+        # execute the query
+        enquire = self.get_query_result(query)
+        # start with the first element
+        start = 0
+        # do the loop at least once
+        size, avail = (0, 1)
+        # how many results per 'get_matches'?
+        steps = 2
+        while start < avail:
+            (size, avail, matches) = enquire.get_matches(start, steps)
+            for match in matches:
+                function(match)
+            start += size
+
+    def set_field_analyzers(self, field_analyzers):
+        """set the analyzers for different fields of the database documents
+
+        possible analyzers are:
+            CommonDatabase.ANALYZER_EXACT (default)
+                the field value must excactly match the query string
+            CommonDatabase.ANALYZER_PARTIAL
+                the field value must start with the query string
+
+        @param field_analyzers: mapping of field names and analyzers
+        @type field_analyzers: dict containing field names and analyzers
+        @throws: TypeError for invalid values in 'field_analyzers'
+        """
+        for field, analyzer in field_analyzers.items():
+            # check for invald input types
+            if not isinstance(field, str):
+                raise TypeError("field name must be a string")
+            if not isinstance(analyzer, int):
+                raise TypeError("the analyzer must be a whole number (int)")
+            # map the analyzer to the field name
+            self.field_analyzers[field] = analyzer
+
+    def get_field_analyzer(self, fieldname):
+        """return the analyzer that was mapped to a specific field
+
+        see 'set_field_analyzers' for details
+
+        The default analyzer is CommonDatabase.ANALYZER_EXACT
+
+        @param fieldname: the analyzer of this field is requested
+        @type fieldname: str
+        @return: the analyzer of the field - e.g. CommonDatabase.ANALYZER_EXACT
+        @rtype: int
+        """
+        try:
+            return self.field_analyzers[fieldname]
+        except KeyError:
+            return self.ANALYZER_EXACT
+
+
+class CommonEnquire(object):
+    """an enquire object contains the information about the result of a request
+    """
+
+    def __init__(self, enquire):
+        """intialization of a wrapper around enquires of different backends
+
+        @param enquire: a previous enquire
+        @type enquire: xapian.Enquire | pylucene-enquire
+        """
+        self.enquire = enquire
+
+    def get_matches(self, start, number):
+        """return a specified number of qualified matches of a previous query
+
+        @param start: the index of the first match to return
+        @type start: int
+        @param number: the number of matching entries to return
+        @type number: int
+        @return: a set of matching entries and some statistics
+        @rtype: tuple of (returned number, available number, matches)
+                "matches" is a dictionary of
+                    ["rank", "percent", "document", "docid"]
+        """
+        raise NotImplementedError("Incomplete indexing implementation: " \
+                + "'get_matches' for the 'Enquire' class is missing")
+
