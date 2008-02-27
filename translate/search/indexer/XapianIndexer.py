@@ -163,9 +163,10 @@ class XapianDatabase(CommonIndexer.CommonDatabase):
     def index_document(self, data):
         """add the given data to the database
 
-        @param data: the data to be indexed. A dictionary will be treated
-            as fieldname:value combinations. A fieldname is treated as a
-            plain term if the value has the type None.
+        @param data: the data to be indexed.
+            A dictionary will be treated as fieldname:value combinations.
+            If the fieldname is None then the value will be interpreted as a
+            plain term or as a list of plain terms.
             Lists of strings are treated as plain terms.
         @type data: dict | list of str
         """
@@ -179,9 +180,21 @@ class XapianDatabase(CommonIndexer.CommonDatabase):
             if isinstance(dataset, tuple):
                 # the dataset tuple consists of '(key, value)'
                 key, value = dataset
-                # cut the length if necessary
-                doc.add_term(_truncate_term_length("%s:%s" % \
-                        (key, _escape_term_value(value))))
+                if key is None:
+                    if isinstance(value, list):
+                        terms = value[:]
+                    elif isinstance(value, str):
+                        terms = [value]
+                    else:
+                        raise ValueError("Invalid data type to be indexed: %s" \
+                                % str(type(data)))
+                    for one_term in terms:
+                        doc.add_term(_truncate_term_length(_escape_term_value(
+                            one_term)))
+                else:
+                    # cut the length if necessary
+                    doc.add_term(_truncate_term_length("%s:%s" % \
+                            (key, _escape_term_value(value))))
             elif isinstance(dataset, str):
                 doc.add_term(_truncate_term_length(_escape_term_value(
                         dataset)))

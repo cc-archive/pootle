@@ -33,7 +33,9 @@ def create_example_content(database):
     database.index_document(["foo", "barr", "med", "HELO"])
     # some field indexed document data
     database.index_document({"fname1": "foo_field1", "fname2": "foo_field2"})
-    database.index_document({"fname1": "bar_field1", "fname2": "foo_field2"})
+    database.index_document({"fname1": "bar_field1", "fname2": "foo_field2",
+            None: ["HELO", "foo"]})
+    database.index_document({ None: "med" })
 
 def test_create_database():
     """create a new database from scratch"""
@@ -187,15 +189,15 @@ def test_or_queries():
     # do an OR query
     q_or1 = new_db.make_query("foo bar", requireall=False)
     r_or1 = new_db.get_query_result(q_or1).get_matches(0,10)
-    assert r_or1[0] == 3
+    assert r_or1[0] == 4
     # do the same AND query in a different way
     q_or2 = new_db.make_query(["HELO", "barr"], requireall=False)
     r_or2 = new_db.get_query_result(q_or2).get_matches(0,10)
-    assert r_or2[0] == 2
+    assert r_or2[0] == 3
     # do an AND query without results
     q_or3 = new_db.make_query(["HELO", "bar", "med"], requireall=False)
     r_or3 = new_db.get_query_result(q_or3).get_matches(0,10)
-    assert r_or3[0] == 3
+    assert r_or3[0] == 5
     # clean up
     clean_database()
 
@@ -213,7 +215,7 @@ def test_lower_upper_case():
     # use lower case search terms for upper case indexed terms
     q_case2 = new_db.make_query("helo")
     r_case2 = new_db.get_query_result(q_case2).get_matches(0,10)
-    assert r_case2[0] == 2
+    assert r_case2[0] == 3
     # use lower case search terms for lower case indexed terms
     q_case3 = new_db.make_query("bar")
     r_case3 = new_db.get_query_result(q_case3).get_matches(0,10)
@@ -221,7 +223,7 @@ def test_lower_upper_case():
     # use upper case search terms for upper case indexed terms
     q_case4 = new_db.make_query("HELO")
     r_case4 = new_db.get_query_result(q_case4).get_matches(0,10)
-    assert r_case4[0] == 2
+    assert r_case4[0] == 3
     # clean up
     clean_database()
 

@@ -12,7 +12,7 @@ import tempfile
 import re
 
 
-class PyluceneDatabase(object):
+class PyluceneDatabase(CommonIndexer.CommonDatabase):
     """manage and use a pylucene indexing database"""
 
 
@@ -134,9 +134,10 @@ class PyluceneDatabase(object):
     def index_document(self, data):
         """add the given data to the database
 
-        @param data: the data to be indexed. A dictionary will be treated
-            as fieldname:value combinations. A fieldname is treated as a
-            plain term if the value has the type None.
+        @param data: the data to be indexed.
+            A dictionary will be treated as fieldname:value combinations.
+            If the fieldname is None then the value will be interpreted as a
+            plain term or as a list of plain terms.
             Lists of strings are treated as plain terms.
         @type data: dict | list of str
         """
@@ -260,7 +261,7 @@ class PyluceneDatabase(object):
 		self.dir_lock.release()
 
 
-class PyLuceneHits(object):
+class PyLuceneHits(CommonIndexer.CommonEnquire):
     """an enquire object contains the information about the result of a request
     """
 
