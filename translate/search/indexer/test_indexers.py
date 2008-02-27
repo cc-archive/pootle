@@ -190,11 +190,11 @@ def test_or_queries():
     q_or1 = new_db.make_query("foo bar", requireall=False)
     r_or1 = new_db.get_query_result(q_or1).get_matches(0,10)
     assert r_or1[0] == 4
-    # do the same AND query in a different way
-    q_or2 = new_db.make_query(["HELO", "barr"], requireall=False)
+    # do the same or query in a different way
+    q_or2 = new_db.make_query(["foo", "bar"], requireall=False)
     r_or2 = new_db.get_query_result(q_or2).get_matches(0,10)
-    assert r_or2[0] == 3
-    # do an AND query without results
+    assert r_or2[0] == r_or1[0]
+    # do an OR query with lots of results
     q_or3 = new_db.make_query(["HELO", "bar", "med"], requireall=False)
     r_or3 = new_db.get_query_result(q_or3).get_matches(0,10)
     assert r_or3[0] == 5
