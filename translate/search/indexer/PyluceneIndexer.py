@@ -58,29 +58,29 @@ class PyluceneDatabase(CommonIndexer.CommonDatabase):
         lockname = os.path.join(tempfile.gettempdir(),
                 re.sub("\W", "_", self.location))
         self.dir_lock = jToolkit.glock.GlobalLock(lockname)
-		# windows file locking seems inconsistent, so we try 10 times
-		numtries = 0
+        # windows file locking seems inconsistent, so we try 10 times
+        numtries = 0
         # read "self.indexReader", "self.indexVersion" and "self.indexSearcher"
-		try:
-			while numtries < 10:
-				try:
-					self.indexReader = indexer.IndexReader.open(self.location)
-					self.indexVersion = self.indexReader.getCurrentVersion(
+        try:
+            while numtries < 10:
+                try:
+                    self.indexReader = indexer.IndexReader.open(self.location)
+                    self.indexVersion = self.indexReader.getCurrentVersion(
                             self.location)
-					self.indexSearcher = indexer.IndexSearcher(self.indexReader)
-					break
+                    self.indexSearcher = indexer.IndexSearcher(self.indexReader)
+                    break
                 # TODO: replace this with a specific exception
-				except Exception, e:
+                except Exception, e:
                     # store error message for possible later re-raise (below)
                     lock_error_msg = e
-					time.sleep(0.01)
-				numtries += 1
+                    time.sleep(0.01)
+                numtries += 1
             else:
                 # locking failed for 10 times
                 raise OSError("Indexer: failed to lock index database" \
                         + " (%s)" % lock_error_msg)
-		finally:
-			self.dir_lock.release()
+        finally:
+            self.dir_lock.release()
         # initialize the searcher and the reader
         self._index_refresh()
 
@@ -93,7 +93,7 @@ class PyluceneDatabase(CommonIndexer.CommonDatabase):
         @param optimize: should the index be optimized if possible?
         @type optimize: bool
         """
-        if not self._writer_is_open()
+        if not self._writer_is_open():
             # the indexer is closed - no need to do something
             return
         try:
@@ -236,29 +236,29 @@ class PyluceneDatabase(CommonIndexer.CommonDatabase):
 
     def _index_refresh(self):
         """re-read the indexer database"""
-		try:
-			self.dir_lock.acquire(blocking=False)
-		except jToolkit.glock.GlobalLockError, e:
-			# if this fails the index is being rewritten, so we continue with
+        try:
+            self.dir_lock.acquire(blocking=False)
+        except jToolkit.glock.GlobalLockError, e:
+            # if this fails the index is being rewritten, so we continue with
             # our old version
-			return
-		try:
-			if self.reader is None or self.searcher is None:
-				self.reader = PyLucene.IndexReader.open(self.location)
-				self.searcher = PyLucene.IndexSearcher(self.reader)
-			elif self.index_version != self.reader.getCurrentVersion( \
+            return
+        try:
+            if self.reader is None or self.searcher is None:
+                self.reader = PyLucene.IndexReader.open(self.location)
+                self.searcher = PyLucene.IndexSearcher(self.reader)
+            elif self.index_version != self.reader.getCurrentVersion( \
                     self.location):
-				self.searcher.close()
-				self.reader.close()
-				self.reader = PyLucene.IndexReader.open(self.location)
-				self.searcher = PyLucene.IndexSearcher(self.reader)
-				self.index_version = self.reader.getCurrentVersion(self.location)
+                self.searcher.close()
+                self.reader.close()
+                self.reader = PyLucene.IndexReader.open(self.location)
+                self.searcher = PyLucene.IndexSearcher(self.reader)
+                self.index_version = self.reader.getCurrentVersion(self.location)
         # TODO: use a more specific exception
-		except Exception,e:
+        except Exception,e:
             # TODO: add some debugging output?
-			#self.errorhandler.logerror("Error attempting to read index - try reindexing: "+str(e))
+            #self.errorhandler.logerror("Error attempting to read index - try reindexing: "+str(e))
             pass
-		self.dir_lock.release()
+        self.dir_lock.release()
 
 
 class PyLuceneHits(CommonIndexer.CommonEnquire):
@@ -285,8 +285,6 @@ class PyLuceneHits(CommonIndexer.CommonEnquire):
         # invalid request range
         if stop <= start:
             return []
-        docs = [ (index, self.enquire.doc(index), self.enquire.id(index), self.enquire.)
-                for index in range(start, stop) ]
         result = []
         for index in range(start, stop):
             item = {}
