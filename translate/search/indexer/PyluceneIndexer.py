@@ -81,6 +81,8 @@ class PyluceneDatabase(object):
                         + " (%s)" % lock_error_msg)
 		finally:
 			self.dir_lock.release()
+        # initialize the searcher and the reader
+        self._index_refresh()
 
     def flush(self, optimize=False):
         """flush the content of the database - to force changes to be written
@@ -91,7 +93,7 @@ class PyluceneDatabase(object):
         @param optimize: should the index be optimized if possible?
         @type optimize: bool
         """
-        if self.writer is None:
+        if not self._writer_is_open()
             # the indexer is closed - no need to do something
             return
         try:
@@ -99,9 +101,7 @@ class PyluceneDatabase(object):
                 self.writer.optimize()
         finally:
             # close the database even if optimizing failed
-            self.writer.close()
-            self.writer = None
-            self.dir_lock.release()
+            self._writer_close()
 
     def make_query(self, args, requireall=True, match_text_partial=False):
         """create simple queries (strings or field searches) or
@@ -144,34 +144,34 @@ class PyluceneDatabase(object):
                 + "'index_document' is missing")
 
     def begin_transaction(self):
-        """begin a transaction
+        """PyLucene does not support transactions
 
-        You can group multiple modifications of a database as a transaction.
-        This prevents time-consuming database flushing and helps, if you want
-        that a changeset is committed either completely or not at all.
-        No changes will be written to disk until 'commit_transaction'.
-        'cancel_transaction' can be used to revert an ongoing transaction.
-
-        Database types that do not support transactions may silently ignore it.
+        Thus this function just opens the database for write access.
+        Call "cancel_transaction" or "commit_transaction" to close write
+        access in order to remove the exclusive lock from the database
+        directory.
         """
-        raise NotImplementedError("Incomplete indexer implementation: " \
-                + "'begin_transaction' is missing")
+        self._writer_open()
 
     def cancel_transaction(self):
-        """cancel an ongoing transaction
+        """PyLucene does not support transactions
+
+        Thus this function just closes the database write access and removes
+        the exclusive lock.
 
         See 'start_transaction' for details.
         """
-        raise NotImplementedError("Incomplete indexer implementation: " \
-                + "'cancel_transaction' is missing")
+        self._writer_close()
 
     def commit_transaction(self):
-        """submit the currently ongoing transaction and write changes to disk
+        """PyLucene does not support transactions
+
+        Thus this function just closes the database write access and removes
+        the exclusive lock.
 
         See 'start_transaction' for details.
         """
-        raise NotImplementedError("Incomplete indexer implementation: " \
-                + "'commit_transaction' is missing")
+        self._writer_close()
 
     def get_query_result(self, query):
         """return an object containing the results of a query
@@ -190,8 +190,9 @@ class PyluceneDatabase(object):
         @param docid: the document ID to be deleted
         @type docid: int
         """
-        raise NotImplementedError("Incomplete indexer implementation: " \
-                + "'delete_document_by_id' is missing")
+        self.reader.deleteDocument(docid)
+        # TODO: check the performance impact of calling "refresh" for each id
+        self._index_refresh()
 
     def search(self, query, fieldnames):
         """return a list of the contents of specified fields for all matches of
@@ -207,123 +208,61 @@ class PyluceneDatabase(object):
         raise NotImplementedError("Incomplete indexer implementation: " \
                 + "'search' is missing")
 
-    def delete_doc(self, ident):
-        """delete the documents returned by a query
-
-        @param ident: [list of] document IDs | dict describing a query | query
-        @type ident: int | list of tuples | dict | list of dicts |
-            query (e.g. xapian.Query) | list of queries
+    def _writer_open(self):
+        """open write access for the indexing database and acquire an
+        exclusive lock
         """
-        # turn a doc-ID into a list of doc-IDs
-        if isinstance(ident, list):
-            # it is already a list
-            ident_list = ident
-        else:
-            ident_list = [ident]
-        if len(ident_list) == 0:
-            # no matching items
-            return 0
-        if isinstance(ident_list[0], int):
-            # create a list of IDs of all successfully removed documents
-            success_delete = [match for match in ident_list
-                    if self.delete_document_by_id(match)]
-            return len(success_delete)
-        if isinstance(ident_list[0], dict):
-            # something like: { "msgid": "foobar" }
-            # assemble all queries
-            query = self.make_query([self.make_query(query_dict, True)
-                    for query_dict in ident_list], True)
-        elif isinstance(ident_list[0], object):
-            # assume a query object (with 'AND')
-            query = self.make_query(ident_list, True)
-        else:
-            # invalid element type in list (not necessarily caught in the 
-            # lines above)
-            raise TypeError("description of documents to-be-deleted is not " \
-                    + "supported: list of %s" % type(ident_list[0]))
-        # we successfully created a query - now iterate through the result
-        # no documents deleted so far ...
-        remove_list = []
-        # delete all resulting documents step by step
-        def add_docid_to_list(match):
-            """collect every document ID"""
-            remove_list.append(match["docid"])
-        self._walk_matches(query, add_docid_to_list)
-        return self.delete_doc(remove_list)
+        if self.writer is None:
+            self.dir_lock.acquire()
+            self.writer = PyLucene.IndexWriter(self.location, self.analyzer,
+                    False)
+        # do nothing, if it is already open
 
-    def _walk_matches(self, query, function):
-        """use this function if you want to do something with every single match
-        of a query
+    def _writer_close(self):
+        """close indexing write access and remove the database lock"""
+        if self.writer is None:
+            # do nothing, if it is already closed
+            return
+        self.writer.close()
+        self.writer = None
+        self.dir_lock.release()
+        # just to make sure that the lock is removed
+        self.dir_lock.forcerelease()
 
-        example: self._walk_matches(query, function_for_match)
-            'function_for_match' expects only one argument: the matched object
-        @param query: a query object of the real implementation
-        """
-        # execute the query
-        enquire = self.get_query_result(query)
-        # start with the first element
-        start = 0
-        # do the loop at least once
-        size, avail = (0, 1)
-        # how many results per 'get_matches'?
-        steps = 2
-        while start < avail:
-            (size, avail, matches) = enquire.get_matches(start, steps)
-            for match in matches:
-                function(match)
-            start += size
+    def _writer_is_open(self):
+        """check if the indexing write access is currently open"""
+        return not self.writer is None
 
-    def set_field_analyzers(self, field_analyzers):
-        """set the analyzers for different fields of the database documents
-
-        possible analyzers are:
-            CommonDatabase.ANALYZER_EXACT (default)
-                the field value must excactly match the query string
-            CommonDatabase.ANALYZER_PARTIAL
-                the field value must start with the query string
-
-        @param field_analyzers: mapping of field names and analyzers
-        @type field_analyzers: dict containing field names and analyzers
-        @throws: TypeError for invalid values in 'field_analyzers'
-        """
-        for field, analyzer in field_analyzers.items():
-            # check for invald input types
-            if not isinstance(field, str):
-                raise TypeError("field name must be a string")
-            if not isinstance(analyzer, int):
-                raise TypeError("the analyzer must be a whole number (int)")
-            # map the analyzer to the field name
-            self.field_analyzers[field] = analyzer
-
-    def get_field_analyzer(self, fieldname):
-        """return the analyzer that was mapped to a specific field
-
-        see 'set_field_analyzers' for details
-
-        The default analyzer is CommonDatabase.ANALYZER_EXACT
-
-        @param fieldname: the analyzer of this field is requested
-        @type fieldname: str
-        @return: the analyzer of the field - e.g. CommonDatabase.ANALYZER_EXACT
-        @rtype: int
-        """
-        try:
-            return self.field_analyzers[fieldname]
-        except KeyError:
-            return self.ANALYZER_EXACT
+    def _index_refresh(self):
+        """re-read the indexer database"""
+		try:
+			self.dir_lock.acquire(blocking=False)
+		except jToolkit.glock.GlobalLockError, e:
+			# if this fails the index is being rewritten, so we continue with
+            # our old version
+			return
+		try:
+			if self.reader is None or self.searcher is None:
+				self.reader = PyLucene.IndexReader.open(self.location)
+				self.searcher = PyLucene.IndexSearcher(self.reader)
+			elif self.index_version != self.reader.getCurrentVersion( \
+                    self.location):
+				self.searcher.close()
+				self.reader.close()
+				self.reader = PyLucene.IndexReader.open(self.location)
+				self.searcher = PyLucene.IndexSearcher(self.reader)
+				self.index_version = self.reader.getCurrentVersion(self.location)
+        # TODO: use a more specific exception
+		except Exception,e:
+            # TODO: add some debugging output?
+			#self.errorhandler.logerror("Error attempting to read index - try reindexing: "+str(e))
+            pass
+		self.dir_lock.release()
 
 
-class CommonEnquire(object):
+class PyLuceneHits(object):
     """an enquire object contains the information about the result of a request
     """
-
-    def __init__(self, enquire):
-        """intialization of a wrapper around enquires of different backends
-
-        @param enquire: a previous enquire
-        @type enquire: xapian.Enquire | pylucene-enquire
-        """
-        self.enquire = enquire
 
     def get_matches(self, start, number):
         """return a specified number of qualified matches of a previous query
@@ -337,6 +276,23 @@ class CommonEnquire(object):
                 "matches" is a dictionary of
                     ["rank", "percent", "document", "docid"]
         """
-        raise NotImplementedError("Incomplete indexing implementation: " \
-                + "'get_matches' for the 'Enquire' class is missing")
+        # check if requested results do not exist
+        # stop is the lowest index number to be ommitted
+        stop = start + number
+        if stop > self.enquire.length():
+            stop = self.enquire.length()
+        # invalid request range
+        if stop <= start:
+            return []
+        docs = [ (index, self.enquire.doc(index), self.enquire.id(index), self.enquire.)
+                for index in range(start, stop) ]
+        result = []
+        for index in range(start, stop):
+            item = {}
+            item["rank"] = index
+            item["docid"] = self.enquire.id(index)
+            item["percent"] = self.enquire.score(index)
+            item["document"] = self.enquire.doc(index)
+            result.append(item)
+        return (stop-start, self.enquire.length(), result)
 
