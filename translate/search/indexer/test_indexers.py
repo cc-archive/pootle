@@ -6,6 +6,26 @@ import sys
 
 DATABASE = "tmp-index"
 
+# overwrite this value to change the preferred indexing engine
+default_engine = "" 
+
+# order of tests to be done
+ORDER_OF_TESTS = [ "XapianIndexer", "PyLuceneIndexer" ]
+
+
+def _get_indexer(location):
+    """wrapper around "indexer.get_indexer" to enable a globally preferred
+    indexing engine selection
+
+    create an indexer based on the preference order 'default_engine'
+
+    @param location: the path of the database to be created/opened
+    @type location: str
+    @return: the resulting indexing engine instance
+    @rtype: CommonIndexer.CommonDatabase
+    """
+    return indexer.get_indexer(location, [default_engine])
+
 def clean_database():
     """remove an existing database"""
     dbase_dir = os.path.abspath(DATABASE)
@@ -41,7 +61,7 @@ def test_create_database():
     """create a new database from scratch"""
     # clean up everything first
     clean_database()
-    new_db = indexer.get_indexer(DATABASE)
+    new_db = _get_indexer(DATABASE)
     assert isinstance(new_db, CommonIndexer.CommonDatabase)
     assert os.path.exists(DATABASE)
     # clean up
@@ -53,9 +73,9 @@ def test_open_database():
     clean_database()
     # create a new database - it will be closed immediately afterwards
     # since the reference is lost again
-    indexer.get_indexer(DATABASE)
+    _get_indexer(DATABASE)
     # open the existing database again
-    opened_db = indexer.get_indexer(DATABASE)
+    opened_db = _get_indexer(DATABASE)
     assert isinstance(opened_db, CommonIndexer.CommonDatabase)
     # clean up
     clean_database()
@@ -65,7 +85,7 @@ def test_make_queries():
     # clean up everything first
     clean_database()
     # initialize the database with example content
-    new_db = indexer.get_indexer(DATABASE)
+    new_db = _get_indexer(DATABASE)
     create_example_content(new_db)
     # plaintext queries
     q_plain1 = new_db.make_query("foo")
@@ -83,7 +103,7 @@ def test_partial_text_matching():
     # clean up everything first
     clean_database()
     # initialize the database with example content
-    new_db = indexer.get_indexer(DATABASE)
+    new_db = _get_indexer(DATABASE)
     create_example_content(new_db)
     # this query should return two matches (no wildcard by default)
     q_plain_partial1 = new_db.make_query("bar")
@@ -106,7 +126,7 @@ def test_field_matching():
     # clean up everything first
     clean_database()
     # initialize the database with example content
-    new_db = indexer.get_indexer(DATABASE)
+    new_db = _get_indexer(DATABASE)
     create_example_content(new_db)
     # do a field search with a tuple argument
     q_field1 = new_db.make_query(("fname1", "foo_field1"))
@@ -140,7 +160,7 @@ def test_field_analyzers():
     # clean up everything first
     clean_database()
     # initialize the database with example content
-    new_db = indexer.get_indexer(DATABASE)
+    new_db = _get_indexer(DATABASE)
     create_example_content(new_db)
     # do an incomplete field search with (default) exact analyzer
     q_field1 = new_db.make_query({"fname1":"bar_field"})
@@ -162,7 +182,7 @@ def test_and_queries():
     # clean up everything first
     clean_database()
     # initialize the database with example content
-    new_db = indexer.get_indexer(DATABASE)
+    new_db = _get_indexer(DATABASE)
     create_example_content(new_db)
     # do an AND query
     q_and1 = new_db.make_query("foo bar")
@@ -184,7 +204,7 @@ def test_or_queries():
     # clean up everything first
     clean_database()
     # initialize the database with example content
-    new_db = indexer.get_indexer(DATABASE)
+    new_db = _get_indexer(DATABASE)
     create_example_content(new_db)
     # do an OR query
     q_or1 = new_db.make_query("foo bar", require_all=False)
@@ -206,7 +226,7 @@ def test_lower_upper_case():
     # clean up everything first
     clean_database()
     # initialize the database with example content
-    new_db = indexer.get_indexer(DATABASE)
+    new_db = _get_indexer(DATABASE)
     create_example_content(new_db)
     # use upper case search terms for lower case indexed terms
     q_case1 = new_db.make_query("BAR")
@@ -243,15 +263,18 @@ def show_database(database=None):
 
 
 if __name__ == "__main__":
-    test_create_database()
-    test_open_database()
-    test_make_queries()
-    test_partial_text_matching()
-    test_field_matching()
-    test_field_analyzers()
-    test_and_queries()
-    test_or_queries()
-    test_lower_upper_case()
-    # TODO: add test for document deletion
-    # TODO: add test for transaction handling
+    for engine in ORDER_OF_TESTS:
+        print "************ running tests for '%s' *****************" % engine
+        default_engine = engine
+        test_create_database()
+        test_open_database()
+        test_make_queries()
+        test_partial_text_matching()
+        test_field_matching()
+        test_field_analyzers()
+        test_and_queries()
+        test_or_queries()
+        test_lower_upper_case()
+        # TODO: add test for document deletion
+        # TODO: add test for transaction handling
 

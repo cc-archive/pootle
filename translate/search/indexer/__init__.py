@@ -3,10 +3,6 @@ interface for differrent indexing engines for pootle
 
 """
 
-# TODO:
-#   unittests
-#   interface for PyLucene
-
 __revision__ = "$Id$"
 
 import CommonIndexer
@@ -60,6 +56,38 @@ def _get_available_indexers():
                 continue
     return result
 
+def _sort_indexers_by_preference(indexer_classes, pref_order):
+    """sort a given list of indexer classes according to the given order
+
+    the list of preferred indexers are strings that should match the filenames
+    (without suppix ".py") of the respective modules (e.g.: XapianIndexer or
+    PyLuceneIndexer)
+
+    @param indexer_classes: the list of all available indexer classes
+    @type indexer_classes: list of CommonIndexer.CommonDatabase objects
+    @param pref_order: list of preferred indexer names
+    @type pref_order: str
+    @return: sorted list of indexer classes
+    @rtype: list of CommonIndexer.CommonDatabase objects
+    """
+    # define useful function for readability
+    get_indexer_name = lambda indexer_class: \
+            os.path.basename(indexer_class.__module__).split(".")[-1]
+    # use a copy to avoid side effects
+    avail_indexers = indexer_classes[:]
+    result = []
+    # go through all preferred items and move the matching indexers to 'result'
+    for choice in pref_order:
+        # find matching indexers
+        matches = [ indexer for indexer in avail_indexers
+                if get_indexer_name(indexer) == choice ]
+        # move all matching items to the 'result' queue
+        for match_item in matches:
+            result.append(match_item)
+            avail_indexers.remove(match_item)
+    # append the remaining indexers to the result
+    return result + avail_indexers
+
 
 # store the available indexers - this is done only once during the first import
 _AVAILABLE_INDEXERS = _get_available_indexers()
@@ -69,7 +97,7 @@ _AVAILABLE_INDEXERS = _get_available_indexers()
 HAVE_INDEXER = bool(_AVAILABLE_INDEXERS)
 
 
-def get_indexer(location):
+def get_indexer(location, preference=None):
     """return an appropriate indexer for the given directory
 
     If the directory already exists, then we check, if one of the available
@@ -87,12 +115,15 @@ def get_indexer(location):
     @type location: string
     @return: the class of the most appropriate indexer
     @rtype: subclass of CommonIndexer.CommonDatabase
-    @throws: ValueError, OSError
+    @throws: IndexError
     """
     if not _AVAILABLE_INDEXERS:
         raise IndexError("Indexer: no indexing engines are available")
+    # sort available indexers by preference
+    preferred_indexers = _sort_indexers_by_preference(_AVAILABLE_INDEXERS,
+            preference)
     if os.path.exists(location):
-        for index_class in _AVAILABLE_INDEXERS:
+        for index_class in preferred_indexers:
             try:
                 # the first match is sufficient
                 return index_class(location)
@@ -103,7 +134,7 @@ def get_indexer(location):
     # class that can handle it - so we just take the first available
     # indexing engine
     # this may result in a ValueError or an OSError
-    return _AVAILABLE_INDEXERS[0](location)
+    return preferred_indexers[0](location)
 
 
 if __name__ == "__main__":
