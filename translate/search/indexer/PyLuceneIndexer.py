@@ -11,6 +11,7 @@ import jToolkit.glock
 import tempfile
 import re
 import os
+import time
 
 UNNAMED_FIELD_NAME = "FieldWithoutAName"
 
@@ -36,26 +37,25 @@ class PyluceneDatabase(CommonIndexer.CommonDatabase):
         super(PyluceneDatabase, self).__init__(location)
         self.location = location
         self.analyzer = PyLucene.StandardAnalyzer()
-        if os.path.exists(location):
+        self.writer = None
+        self.reader = None
+        try:
+            # try to open an existing database
+            tempreader = PyLucene.IndexReader.open(self.location)
+            tempreader.close()
+        except PyLucene.JavaError, err_msg:
+            # Write an error out, in case this is a real problem instead of an absence of an index
+            # TODO: turn the following two lines into debug output
+            #errorstr = str(e).strip() + "\n" + self.errorhandler.traceback_str()
+            #DEBUG_FOO("could not open index, so going to create: " + errorstr)
+            # Create the index, so we can open cached readers on it
             try:
-                # try to open an existing database
-                tempreader = PyLucene.IndexReader.open(self.location)
-                tempreader.close()
-                self.createdIndex = False
-            except PyLucene.exceptions.Exception, e:
-                # Write an error out, in case this is a real problem instead of an absence of an index
-                # TODO: turn the following two lines into debug output
-                #errorstr = str(e).strip() + "\n" + self.errorhandler.traceback_str()
-                #DEBUG_FOO("could not open index, so going to create: " + errorstr)
-                # Create the index, so we can open cached readers on it
-                try:
-                    tempwriter = PyLucene.IndexWriter(self.location,
-                            self.analyzer, True)
-                    tempwriter.close()
-                    self.createdIndex = True
-                except PyLucene.exceptons.Exception, err_msg:
-                    raise OSError("Indexer: failed to open or create a Lucene" \
-                            + " database (%s): %s" % (self.location, err_msg))
+                tempwriter = PyLucene.IndexWriter(self.location,
+                        self.analyzer, True)
+                tempwriter.close()
+            except PyLucene.JavaError, err_msg:
+                raise OSError("Indexer: failed to open or create a Lucene" \
+                        + " database (%s): %s" % (self.location, err_msg))
         # the indexer is initialized - now we prepare the searcher
         # create a lock for the database directory - to be used later
         lockname = os.path.join(tempfile.gettempdir(),
@@ -63,17 +63,17 @@ class PyluceneDatabase(CommonIndexer.CommonDatabase):
         self.dir_lock = jToolkit.glock.GlobalLock(lockname)
         # windows file locking seems inconsistent, so we try 10 times
         numtries = 0
+        self.dir_lock.acquire(blocking=True)
         # read "self.indexReader", "self.indexVersion" and "self.indexSearcher"
         try:
             while numtries < 10:
                 try:
-                    self.indexReader = indexer.IndexReader.open(self.location)
+                    self.indexReader = PyLucene.IndexReader.open(self.location)
                     self.indexVersion = self.indexReader.getCurrentVersion(
                             self.location)
-                    self.indexSearcher = indexer.IndexSearcher(self.indexReader)
+                    self.indexSearcher = PyLucene.IndexSearcher(self.indexReader)
                     break
-                # TODO: replace this with a specific exception
-                except Exception, e:
+                except PyLucene.JavaError, e:
                     # store error message for possible later re-raise (below)
                     lock_error_msg = e
                     time.sleep(0.01)
@@ -86,6 +86,10 @@ class PyluceneDatabase(CommonIndexer.CommonDatabase):
             self.dir_lock.release()
         # initialize the searcher and the reader
         self._index_refresh()
+
+    def __del__(self):
+        """remove lock and close writer after loosing the last reference"""
+        self._writer_close()
 
     def flush(self, optimize=False):
         """flush the content of the database - to force changes to be written
@@ -270,8 +274,7 @@ class PyluceneDatabase(CommonIndexer.CommonDatabase):
         @return: an object that allows access to the results
         @rtype: subclass of CommonEnquire
         """
-        raise NotImplementedError("Incomplete indexer implementation: " \
-                + "'get_query_result' is missing")
+        return PyLucene.indexSearcher.search(query)
 
     def delete_document_by_id(self, docid):
         """delete a specified document
@@ -290,12 +293,22 @@ class PyluceneDatabase(CommonIndexer.CommonDatabase):
         @param query: the query to be issued
         @type query: a query object of the real implementation
         @param fieldnames: the name(s) of a field of the document content
-        @type fieldnames: string | list of strings | tuple of strings
+        @type fieldnames: string | list of strings
         @return: a list of dicts containing the specified field(s)
         @rtype: list of dicts
         """
-        raise NotImplementedError("Incomplete indexer implementation: " \
-                + "'search' is missing")
+        if isinstance(fieldnames, str):
+            fieldnames = [fieldnames]
+        hits = PyLucene.indexSearcher.search(query)
+        result = []
+        for hit, doc in hits:
+            fields = {}
+            for fieldname in fieldnames:
+                content = doc.get(fieldname)
+                if not content is None:
+                    fields[fieldname] = content
+            result.append(fields)
+        return result
 
     def _writer_open(self):
         """open write access for the indexing database and acquire an
@@ -341,8 +354,7 @@ class PyluceneDatabase(CommonIndexer.CommonDatabase):
                 self.reader = PyLucene.IndexReader.open(self.location)
                 self.searcher = PyLucene.IndexSearcher(self.reader)
                 self.index_version = self.reader.getCurrentVersion(self.location)
-        # TODO: use a more specific exception
-        except Exception,e:
+        except PyLucene.JavaError,e:
             # TODO: add some debugging output?
             #self.errorhandler.logerror("Error attempting to read index - try reindexing: "+str(e))
             pass
