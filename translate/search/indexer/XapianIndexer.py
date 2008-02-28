@@ -21,6 +21,8 @@ class XapianDatabase(CommonIndexer.CommonDatabase):
     """interface to the xapian (http://xapian.org) indexer
     """
 
+    QUERY_TYPE = xapian.Query
+
     def __init__(self, location):
         """initialize or open a xapian database
 
@@ -68,97 +70,110 @@ class XapianDatabase(CommonIndexer.CommonDatabase):
         # reopen it as read-only
         self._prepare_database()
 
-    def make_query(self, args, requireall=True, match_text_partial=None):
-        """create simple queries (strings or field searches) or
-        combine multiple queries (AND/OR)
+    def _create_query_for_query(self, query):
+        """generate a query based on an existing query object
 
-        To specifiy rules for field searches, you may want to take a look at
-        'set_field_analyzers'. The parameter 'match_text_partial' can override
-        the previously defined default.
-
-        @param args: queries or search string or description of field query
-            examples:
-                [xapian.Query("foo"), xapian.Query("bar")]
-                xapian.Query("foo")
-                "bar"
-                {"foo": "bar", "foobar": "foo"}
-        @type args: list of queries | single query | str | dict
-        @param requireall: boolean operator
-            (True -> AND (default) / False -> OR)
-        @type requireall: boolean
-        @param match_partial_text: (only applicable for 'dict' or 'str')
-            even partial (truncated at the end) string matches are accepted
-            this can override previously defined field analyzer settings
-        @type match_partial_text: bool
-        @return: the combined query
+        basically this function should just create a copy of the original
+        
+        @param query: the original query object
+        @type query: xapian.Query
+        @return: the resulting query object
         @rtype: xapian.Query
         """
-        # evaluate the 'requireall' setting
-        if requireall:
+        # create a copy of the original query
+        return xapian.Query(query)
+
+    def _create_query_for_string(self, text, require_all=None,
+            analyzer=None):
+        """generate a query for a plain term of a string query
+
+        basically this function parses the string and returns the resulting
+        query
+
+        @param text: the query string
+        @type text: str
+        @param require_all: boolean operator
+            (True -> AND (default) / False -> OR)
+        @type require_all: bool
+        @param analyzer: the analyzer to be used
+            possible analyzers are:
+                CommonDatabase.ANALYZER_EXACT (default)
+                    the field value must excactly match the query string
+                CommonDatabase.ANALYZER_PARTIAL
+                    the field value must start with the query string
+        @type analyzer: bool
+        @return: resulting query object
+        @rtype: xapian.Query
+        """
+        qp = xapian.QueryParser()
+        qp.set_database(self.database)
+        if require_all:
+            qp.set_default_op(xapian.Query.OP_AND)
+        else:
+            qp.set_default_op(xapian.Query.OP_OR)
+        if (analyzer == self.ANALYZER_EXACT) or (analyzer is None):
+            match_flags = 0
+        elif analyzer == self.ANALYZER_PARTIAL:
+            match_flags = xapian.QueryParser.FLAG_PARTIAL
+        else:
+            # invalid matching returned - maybe the field's default
+            # analyzer is broken?
+            raise ValueError("unknown analyzer: %d" % analyzer)
+        return qp.parse_query(text, match_flags)
+
+    def _create_query_for_field(self, field, value, analyzer=None):
+        """generate a field query
+
+        this functions creates a field->value query
+
+
+        @param field: the fieldname to be used
+        @type field: str
+        @param value: the wanted value of the field
+        @type value: str
+        @param analyzer: the analyzer to be used
+            possible analyzers are:
+                CommonDatabase.ANALYZER_EXACT (default)
+                    the field value must excactly match the query string
+                CommonDatabase.ANALYZER_PARTIAL
+                    the field value must start with the query string
+        @type analyzer: bool
+        @return: the resulting query object
+        @rtype: xapian.Query
+        """
+        qp = xapian.QueryParser()
+        qp.set_database(self.database)
+        if analyzer == self.ANALYZER_EXACT:
+            match_flags = 0
+        elif analyzer == self.ANALYZER_PARTIAL:
+            match_flags = xapian.QueryParser.FLAG_PARTIAL
+        else:
+            # invalid matching returned - maybe the field's default
+            # analyzer is broken?
+            raise ValueError("unknown analyzer selected (%d) " % analyzer \
+                    + "for field '%s'" % field)
+        # escape the query string and truncate if necessary
+        match_string = _escape_term_value(value)
+        match_string = _truncate_term_length(match_string, len(field)+1)
+        # we search for a string with "field:" as default prefix
+        return qp.parse_query(match_string, match_flags, "%s:" % field)
+
+    def _create_query_combined(self, queries, require_all=False):
+        """generate a combined query
+
+        @param queries: list of the original queries
+        @type queries: list of xapian.Query
+        @param require_all: boolean operator
+            (True -> AND (default) / False -> OR)
+        @type require_all: bool
+        @return: the resulting combined query object
+        @rtype: xapian.Query
+        """
+        if require_all:
             query_op = xapian.Query.OP_AND
         else:
             query_op = xapian.Query.OP_OR
-        # turn a dict into a list if necessary
-        if isinstance(args, dict):
-            args = args.items()
-        # turn 'args' into a list if necessary
-        if not isinstance(args, list):
-            args = [args]
-        # for some cases we need a parser - sometimes even bound to a database
-        # e.g. for partial string matching
-        qp = xapian.QueryParser()
-        qp.set_database(self.database)
-        qp.set_default_op(query_op)
-        # combine all given queries
-        result = []
-        for query in args:
-            # just add precompiled queries
-            if isinstance(query, xapian.Query):
-                result.append(query)
-            # create field/value queries out of a tuple
-            elif isinstance(query, tuple):
-                field, value = query
-                # check for the choosen match type ('exact' or 'partial')
-                match_type = None
-                if (match_text_partial is True):
-                    match_type = self.ANALYZER_PARTIAL
-                elif (match_text_partial is False):
-                    match_type = self.ANALYZER_EXACT
-                else:
-                    match_type = self.get_field_analyzer(field)
-                # escape the query string and truncate if necessary
-                match_string = _truncate_term_length(_escape_term_value(value),
-                        len(field)+1)
-                # determine necessary options for parsing
-                if match_type == self.ANALYZER_EXACT:
-                    # no special flags are necessary
-                    match_flags = 0
-                elif match_type == self.ANALYZER_PARTIAL:
-                    # me need the flag for partial matches
-                    match_flags = xapian.QueryParser.FLAG_PARTIAL
-                else:
-                    # invalid matching returned - maybe the field's default
-                    # analyzer is broken?
-                    raise ValueError("unknown analyzer selected (%d) " \
-                            % match_type + "for field '%s'" % field)
-                # add the new query to the list of to-be-combined queries
-                result.append(qp.parse_query(match_string, match_flags,
-                    "%s:" % field))
-            # parse plaintext queries
-            elif isinstance(query, str):
-                if match_text_partial is True:
-                    # partial string matching
-                    result.append(qp.parse_query(query,
-                            xapian.QueryParser.FLAG_PARTIAL))
-                else:
-                    # exact string matching
-                    result.append(qp.parse_query(query))
-            else:
-                # other types of queries are not supported
-                raise ValueError("Unable to handle query type: %s" \
-                        % str(type(query)))
-        # return the combined query
-        return xapian.Query(query_op, result)
+        return xapian.Query(query_op, queries)
 
     def index_document(self, data):
         """add the given data to the database

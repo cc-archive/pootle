@@ -75,7 +75,7 @@ def test_make_queries():
     q_combined_and = new_db.make_query([new_db.make_query("foo"),
         new_db.make_query("bar")])
     q_combined_or = new_db.make_query([new_db.make_query("foo"),
-        new_db.make_query("bar")], requireall=False)
+        new_db.make_query("bar")], require_all=False)
     assert str(q_combined_or) != str(q_combined_and)
 
 def test_partial_text_matching():
@@ -121,11 +121,11 @@ def test_field_matching():
     r_field3 = new_db.get_query_result(q_field3).get_matches(0,10)
     assert r_field3[0] == 0
     # do an AND field search with a dict argument
-    q_field4 = new_db.make_query({"fname1":"foo_field1", "fname2":"foo_field2"}, requireall=True)
+    q_field4 = new_db.make_query({"fname1":"foo_field1", "fname2":"foo_field2"}, require_all=True)
     r_field4 = new_db.get_query_result(q_field4).get_matches(0,10)
     assert r_field4[0] == 1
     # do an OR field search with a dict argument
-    q_field5 = new_db.make_query({"fname1":"foo_field1", "fname2":"foo_field2"}, requireall=False)
+    q_field5 = new_db.make_query({"fname1":"foo_field1", "fname2":"foo_field2"}, require_all=False)
     r_field5 = new_db.get_query_result(q_field5).get_matches(0,10)
     assert r_field5[0] == 2
     # do an incomplete field search with a partial field analyzer
@@ -187,15 +187,15 @@ def test_or_queries():
     new_db = indexer.get_indexer(DATABASE)
     create_example_content(new_db)
     # do an OR query
-    q_or1 = new_db.make_query("foo bar", requireall=False)
+    q_or1 = new_db.make_query("foo bar", require_all=False)
     r_or1 = new_db.get_query_result(q_or1).get_matches(0,10)
     assert r_or1[0] == 4
     # do the same or query in a different way
-    q_or2 = new_db.make_query(["foo", "bar"], requireall=False)
+    q_or2 = new_db.make_query(["foo", "bar"], require_all=False)
     r_or2 = new_db.get_query_result(q_or2).get_matches(0,10)
     assert r_or2[0] == r_or1[0]
     # do an OR query with lots of results
-    q_or3 = new_db.make_query(["HELO", "bar", "med"], requireall=False)
+    q_or3 = new_db.make_query(["HELO", "bar", "med"], require_all=False)
     r_or3 = new_db.get_query_result(q_or3).get_matches(0,10)
     assert r_or3[0] == 5
     # clean up

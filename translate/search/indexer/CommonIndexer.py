@@ -21,6 +21,8 @@ class CommonDatabase(object):
     """partial matching: a document matches, even if the query string only
     matches the beginning of the term value"""
 
+    QUERY_TYPE = None
+
     def __init__(self, location):
         """initialize or open an indexing database
 
@@ -35,8 +37,10 @@ class CommonDatabase(object):
         @type location: str
         @throws: OSError, ValueError
         """
-        # do nothing - the derived class should do everything
-        pass
+        # just do some checks
+        if self.QUERY_TYPE is None:
+            raise NotImplementedError("Incomplete indexer implementation: " \
+                    + "'QUERY_TYPE' is undefined")
 
     def flush(self, optimize=False):
         """flush the content of the database - to force changes to be written
@@ -50,7 +54,7 @@ class CommonDatabase(object):
         raise NotImplementedError("Incomplete indexer implementation: " \
                 + "'flush' is missing")
 
-    def make_query(self, args, requireall=True, match_text_partial=False):
+    def make_query(self, args, require_all=True, match_text_partial=None):
         """create simple queries (strings or field searches) or
         combine multiple queries (AND/OR)
 
@@ -65,9 +69,9 @@ class CommonDatabase(object):
                 "bar"
                 {"foo": "bar", "foobar": "foo"}
         @type args: list of queries | single query | str | dict
-        @param requireall: boolean operator
+        @param require_all: boolean operator
             (True -> AND (default) / False -> OR)
-        @type requireall: boolean
+        @type require_all: boolean
         @param match_partial_text: (only applicable for 'dict' or 'str')
             even partial (truncated at the end) string matches are accepted
             this can override previously defined field analyzer settings
@@ -75,8 +79,93 @@ class CommonDatabase(object):
         @return: the combined query
         @rtype: query type of the specific implemention
         """
+        # turn a dict into a list if necessary
+        if isinstance(args, dict):
+            args = args.items()
+        # turn 'args' into a list if necessary
+        if not isinstance(args, list):
+            args = [args]
+        # combine all given queries
+        result = []
+        for query in args:
+            # just add precompiled queries
+            if isinstance(query, self.QUERY_TYPE):
+                result.append(self._create_query_for_query(query))
+            # create field/value queries out of a tuple
+            elif isinstance(query, tuple):
+                field, value = query
+                # check for the choosen match type ('exact' or 'partial')
+                match_type = None
+                if match_text_partial is True:
+                    analyzer = self.ANALYZER_PARTIAL
+                elif match_text_partial is False:
+                    analyzer = self.ANALYZER_EXACT
+                else:
+                    analyzer = self.get_field_analyzer(field)
+                result.append(self._create_query_for_field(field, value,
+                        analyzer=analyzer))
+            # parse plaintext queries
+            elif isinstance(query, str):
+                if match_text_partial is True:
+                    analyzer = self.ANALYZER_PARTIAL
+                else:
+                    analyzer = self.ANALYZER_EXACT
+                result.append(self._create_query_for_string(query,
+                        require_all=require_all, analyzer=analyzer))
+            else:
+                # other types of queries are not supported
+                raise ValueError("Unable to handle query type: %s" \
+                        % str(type(query)))
+        # return the combined query
+        return self._create_query_combined(result, require_all)
+
+    def _create_query_for_query(self, query):
+        """generate a query based on an existing query object
+
+        basically this function should just create a copy of the original
+        
+        @param query: the original query object
+        @type query: xapian.Query
+        @return: the resulting query object
+        @rtype: xapian.Query | PyLucene.Query
+        """
         raise NotImplementedError("Incomplete indexer implementation: " \
-                + "'make_query' is missing")
+                + "'_create_query_for_query' is missing")
+
+    def _create_query_for_string(self, text, require_all=None,
+            match_text_partial=None):
+        """generate a query for a plain term of a string query
+
+        basically this function parses the string and returns the resulting
+        query
+
+        @param text: the query string
+        @type text: str
+        @param require_all: boolean operator
+            (True -> AND (default) / False -> OR)
+        @type require_all: bool
+        @return: resulting query object
+        @rtype: xapian.Query
+        """
+        raise NotImplementedError("Incomplete indexer implementation: " \
+                + "'_create_query_for_string' is missing")
+
+    def _create_query_for_field(self, field, value, match_text_partial=None):
+        """generate a field query
+
+        this functions creates a field->value query
+
+        @param field: the fieldname to be used
+        @type field: str
+        @param value: the wanted value of the field
+        @type value: str
+        @param match_text_partial: even partial (truncated at the end) string
+            matches are accepted; this may override previously defined field
+            analyzer settings (None/undefined -> use field analyzer setting)
+        @type match_text_partial: bool
+        """
+        raise NotImplementedError("Incomplete indexer implementation: " \
+                + "'_create_query_for_field' is missing")
 
     def index_document(self, data):
         """add the given data to the database
