@@ -196,8 +196,76 @@ class CommonDatabase(object):
             Lists of strings are treated as plain terms.
         @type data: dict | list of str
         """
+        # open the database for writing
+        self._prepare_database(writable=True)
+        doc = self._create_empty_document()
+        if isinstance(data, dict):
+            data = data.items()
+        # add all data
+        for dataset in data:
+            if isinstance(dataset, tuple):
+                # the dataset tuple consists of '(key, value)'
+                key, value = dataset
+                if key is None:
+                    if isinstance(value, list):
+                        terms = value[:]
+                    elif isinstance(value, str):
+                        terms = [value]
+                    else:
+                        raise ValueError("Invalid data type to be indexed: %s" \
+                                % str(type(data)))
+                    for one_term in terms:
+                        self._add_plain_term(doc, one_term)
+                else:
+                    self._add_field_term(doc, key, value)
+            elif isinstance(dataset, str):
+                self._add_plain_term(doc, dataset)
+            else:
+                raise ValueError("Invalid data type to be indexed: %s" \
+                        % str(type(data)))
+        self._add_document_to_index(doc)
+
+    def _create_empty_document(self):
+        """create an empty document to be filled and added to the index later
+
+        @return: the new document object
+        @rtype: xapian.Document | PyLucene.Document
+        """
         raise NotImplementedError("Incomplete indexer implementation: " \
-                + "'index_document' is missing")
+                + "'_create_empty_document' is missing")
+    
+    def _add_plain_term(self, document, term):
+        """add a term to a document
+
+        @param document: the document to be changed
+        @type document: xapian.Document | PyLucene.Document
+        @param term: a single term to be added
+        @type term: str
+        """
+        raise NotImplementedError("Incomplete indexer implementation: " \
+                + "'_add_plain_term' is missing")
+
+    def _add_field_term(self, document, field, term):
+        """add a field term to a document
+
+        @param document: the document to be changed
+        @type document: xapian.Document | PyLucene.Document
+        @param field: name of the field
+        @type field: str
+        @param term: term to be associated to the field
+        @type term: str
+        """
+        raise NotImplementedError("Incomplete indexer implementation: " \
+                + "'_add_field_term' is missing")
+
+    def _add_document_to_index(self, document):
+        """add a prepared document to the index database
+
+        @param document: the document to be added
+        @type document: xapian.Document | PyLucene.Document
+        """
+        raise NotImplementedError("Incomplete indexer implementation: " \
+                + "'_add_document_to_index' is missing")
 
     def begin_transaction(self):
         """begin a transaction

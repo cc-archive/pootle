@@ -175,48 +175,44 @@ class XapianDatabase(CommonIndexer.CommonDatabase):
             query_op = xapian.Query.OP_OR
         return xapian.Query(query_op, queries)
 
-    def index_document(self, data):
-        """add the given data to the database
+    def _create_empty_document(self):
+        """create an empty document to be filled and added to the index later
 
-        @param data: the data to be indexed.
-            A dictionary will be treated as fieldname:value combinations.
-            If the fieldname is None then the value will be interpreted as a
-            plain term or as a list of plain terms.
-            Lists of strings are treated as plain terms.
-        @type data: dict | list of str
+        @return: the new document object
+        @rtype: xapian.Document
         """
-        # open the database for writing
-        self._prepare_database(writable=True)
-        doc = xapian.Document()
-        if isinstance(data, dict):
-            data = data.items()
-        # add all data
-        for dataset in data:
-            if isinstance(dataset, tuple):
-                # the dataset tuple consists of '(key, value)'
-                key, value = dataset
-                if key is None:
-                    if isinstance(value, list):
-                        terms = value[:]
-                    elif isinstance(value, str):
-                        terms = [value]
-                    else:
-                        raise ValueError("Invalid data type to be indexed: %s" \
-                                % str(type(data)))
-                    for one_term in terms:
-                        doc.add_term(_truncate_term_length(_escape_term_value(
-                            one_term)))
-                else:
-                    # cut the length if necessary
-                    doc.add_term(_truncate_term_length("%s:%s" % \
-                            (key, _escape_term_value(value))))
-            elif isinstance(dataset, str):
-                doc.add_term(_truncate_term_length(_escape_term_value(
-                        dataset)))
-            else:
-                raise ValueError("Invalid data type to be indexed: %s" \
-                        % str(type(data)))
-        self.database.add_document(doc)
+        return xapian.Document()
+    
+    def _add_plain_term(self, document, term):
+        """add a term to a document
+
+        @param document: the document to be changed
+        @type document: xapian.Document
+        @param term: a single term to be added
+        @type term: str
+        """
+        document.add_term(_truncate_term_length(_escape_term_value(term)))
+
+    def _add_field_term(self, document, field, term):
+        """add a field term to a document
+
+        @param document: the document to be changed
+        @type document: xapian.Document
+        @param field: name of the field
+        @type field: str
+        @param term: term to be associated to the field
+        @type term: str
+        """
+        document.add_term(_truncate_term_length("%s:%s" % \
+                        (field, _escape_term_value(term))))
+
+    def _add_document_to_index(self, document):
+        """add a prepared document to the index database
+
+        @param document: the document to be added
+        @type document: xapian.Document
+        """
+        self.database.add_document(document)
 
     def begin_transaction(self):
         """begin a transaction
