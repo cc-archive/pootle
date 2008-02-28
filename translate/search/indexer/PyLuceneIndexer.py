@@ -12,6 +12,7 @@ import tempfile
 import re
 import os
 
+UNNAMED_FIELD_NAME = "FieldWithoutAName"
 
 class PyluceneDatabase(CommonIndexer.CommonDatabase):
     """manage and use a pylucene indexing database"""
@@ -190,18 +191,46 @@ class PyluceneDatabase(CommonIndexer.CommonDatabase):
                     PyLucene.BooleanClause(query, require_all, False))
         return combined_query
 
-    def index_document(self, data):
-        """add the given data to the database
+    def _create_empty_document(self):
+        """create an empty document to be filled and added to the index later
 
-        @param data: the data to be indexed.
-            A dictionary will be treated as fieldname:value combinations.
-            If the fieldname is None then the value will be interpreted as a
-            plain term or as a list of plain terms.
-            Lists of strings are treated as plain terms.
-        @type data: dict | list of str
+        @return: the new document object
+        @rtype: PyLucene.Document
         """
-        raise NotImplementedError("Incomplete indexer implementation: " \
-                + "'index_document' is missing")
+        return PyLucene.Document()
+    
+    def _add_plain_term(self, document, term):
+        """add a term to a document
+
+        @param document: the document to be changed
+        @type document: xapian.Document | PyLucene.Document
+        @param term: a single term to be added
+        @type term: str
+        """
+        document.add(PyLucene.Field(str(UNNAMED_FIELD_NAME), term,
+                True, True, True))
+
+    def _add_field_term(self, document, field, term):
+        """add a field term to a document
+
+        @param document: the document to be changed
+        @type document: xapian.Document | PyLucene.Document
+        @param field: name of the field
+        @type field: str
+        @param term: term to be associated to the field
+        @type term: str
+        """
+        # TODO: decoding (utf-8) is missing
+        document.add(PyLucene.Field(str(field), str(term), True, True, True))
+
+    def _add_document_to_index(self, document):
+        """add a prepared document to the index database
+
+        @param document: the document to be added
+        @type document: xapian.Document | PyLucene.Document
+        """
+        self._writer_open()
+        self.writer.addDocument()
 
     def begin_transaction(self):
         """PyLucene does not support transactions
