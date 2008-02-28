@@ -196,8 +196,6 @@ class CommonDatabase(object):
             Lists of strings are treated as plain terms.
         @type data: dict | list of str
         """
-        # open the database for writing
-        self._prepare_database(writable=True)
         doc = self._create_empty_document()
         if isinstance(data, dict):
             data = data.items()
@@ -324,7 +322,7 @@ class CommonDatabase(object):
         @param query: the query to be issued
         @type query: a query object of the real implementation
         @param fieldnames: the name(s) of a field of the document content
-        @type fieldnames: string | list of strings | tuple of strings
+        @type fieldnames: string | list of strings
         @return: a list of dicts containing the specified field(s)
         @rtype: list of dicts
         """

@@ -212,6 +212,8 @@ class XapianDatabase(CommonIndexer.CommonDatabase):
         @param document: the document to be added
         @type document: xapian.Document
         """
+        # open the database for writing
+        self._prepare_database(writable=True)
         self.database.add_document(document)
 
     def begin_transaction(self):
@@ -272,7 +274,7 @@ class XapianDatabase(CommonIndexer.CommonDatabase):
         @param query: the query to be issued
         @type query: xapian.Query
         @param fieldnames: the name(s) of a field of the document content
-        @type fieldnames: string | list of strings | tuple of strings
+        @type fieldnames: string | list of strings
         @return: a list of dicts containing the specified field(s)
         @rtype: list of dicts
         """
