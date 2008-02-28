@@ -83,7 +83,7 @@ class XapianDatabase(CommonIndexer.CommonDatabase):
         # create a copy of the original query
         return xapian.Query(query)
 
-    def _create_query_for_string(self, text, require_all=None,
+    def _create_query_for_string(self, text, require_all=True,
             analyzer=None):
         """generate a query for a plain term of a string query
 
@@ -158,7 +158,7 @@ class XapianDatabase(CommonIndexer.CommonDatabase):
         # we search for a string with "field:" as default prefix
         return qp.parse_query(match_string, match_flags, "%s:" % field)
 
-    def _create_query_combined(self, queries, require_all=False):
+    def _create_query_combined(self, queries, require_all=True):
         """generate a combined query
 
         @param queries: list of the original queries

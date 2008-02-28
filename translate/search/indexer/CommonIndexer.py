@@ -132,7 +132,7 @@ class CommonDatabase(object):
         raise NotImplementedError("Incomplete indexer implementation: " \
                 + "'_create_query_for_query' is missing")
 
-    def _create_query_for_string(self, text, require_all=None,
+    def _create_query_for_string(self, text, require_all=True,
             match_text_partial=None):
         """generate a query for a plain term of a string query
 
@@ -145,12 +145,12 @@ class CommonDatabase(object):
             (True -> AND (default) / False -> OR)
         @type require_all: bool
         @return: resulting query object
-        @rtype: xapian.Query
+        @rtype: xapian.Query | PyLucene.Query
         """
         raise NotImplementedError("Incomplete indexer implementation: " \
                 + "'_create_query_for_string' is missing")
 
-    def _create_query_for_field(self, field, value, match_text_partial=None):
+    def _create_query_for_field(self, field, value, analyzer=None):
         """generate a field query
 
         this functions creates a field->value query
@@ -159,13 +159,32 @@ class CommonDatabase(object):
         @type field: str
         @param value: the wanted value of the field
         @type value: str
-        @param match_text_partial: even partial (truncated at the end) string
-            matches are accepted; this may override previously defined field
-            analyzer settings (None/undefined -> use field analyzer setting)
-        @type match_text_partial: bool
+        @param analyzer: the analyzer to be used
+            possible analyzers are:
+                CommonDatabase.ANALYZER_EXACT (default)
+                    the field value must excactly match the query string
+                CommonDatabase.ANALYZER_PARTIAL
+                    the field value must start with the query string
+        @type analyzer: bool
+        @return: resulting query object
+        @rtype: xapian.Query | PyLucene.Query
         """
         raise NotImplementedError("Incomplete indexer implementation: " \
                 + "'_create_query_for_field' is missing")
+
+    def _create_query_combined(self, queries, require_all=True):
+        """generate a combined query
+
+        @param queries: list of the original queries
+        @type queries: list of xapian.Query
+        @param require_all: boolean operator
+            (True -> AND (default) / False -> OR)
+        @type require_all: bool
+        @return: the resulting combined query object
+        @rtype: xapian.Query | PyLucene.Query
+        """
+        raise NotImplementedError("Incomplete indexer implementation: " \
+                + "'_create_query_combined' is missing")
 
     def index_document(self, data):
         """add the given data to the database

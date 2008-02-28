@@ -10,11 +10,13 @@ import PyLucene
 import jToolkit.glock
 import tempfile
 import re
+import os
 
 
 class PyluceneDatabase(CommonIndexer.CommonDatabase):
     """manage and use a pylucene indexing database"""
 
+    QUERY_TYPE = PyLucene.Query
 
     def __init__(self, location):
         """initialize or open an indexing database
@@ -103,33 +105,90 @@ class PyluceneDatabase(CommonIndexer.CommonDatabase):
             # close the database even if optimizing failed
             self._writer_close()
 
-    def make_query(self, args, requireall=True, match_text_partial=False):
-        """create simple queries (strings or field searches) or
-        combine multiple queries (AND/OR)
+    def _create_query_for_query(self, query):
+        """generate a query based on an existing query object
 
-        To specifiy rules for field searches, you may want to take a look at
-        'set_field_analyzers'. The parameter 'match_text_partial' can override
-        the previously defined default setting.
-
-        @param args: queries or search string or description of field query
-            examples:
-                [xapian.Query("foo"), xapian.Query("bar")]
-                xapian.Query("foo")
-                "bar"
-                {"foo": "bar", "foobar": "foo"}
-        @type args: list of queries | single query | str | dict
-        @param requireall: boolean operator
-            (True -> AND (default) / False -> OR)
-        @type requireall: boolean
-        @param match_partial_text: (only applicable for 'dict' or 'str')
-            even partial (truncated at the end) string matches are accepted
-            this can override previously defined field analyzer settings
-        @type match_partial_text: bool
-        @return: the combined query
-        @rtype: query type of the specific implemention
+        basically this function should just create a copy of the original
+        
+        @param query: the original query object
+        @type query: xapian.Query
+        @return: resulting query object
+        @rtype: PyLucene.Query
         """
-        raise NotImplementedError("Incomplete indexer implementation: " \
-                + "'make_query' is missing")
+        return PyLucene.Query(query)
+
+    def _create_query_for_string(self, text, require_all=True,
+            match_text_partial=None):
+        """generate a query for a plain term of a string query
+
+        basically this function parses the string and returns the resulting
+        query
+
+        @param text: the query string
+        @type text: str
+        @param require_all: boolean operator
+            (True -> AND (default) / False -> OR)
+        @type require_all: bool
+        @return: resulting query object
+        @rtype: PyLucene.Query
+        """
+        qp = PyLucene.QueryParser()
+        if require_all:
+            qp.setDefaultOperator(PyLucene.QueryParser.AND_OPERATOR)
+        else:
+            qp.setDefaultOperator(PyLucene.QueryParser.OR_OPERATOR)
+        # PyLucene needs explicit wildcards for partial text matching
+        if match_text_partial:
+            text += "*"
+        return qp.parse(text)
+
+    def _create_query_for_field(self, field, value, analyzer=None):
+        """generate a field query
+
+        this functions creates a field->value query
+
+        @param field: the fieldname to be used
+        @type field: str
+        @param value: the wanted value of the field
+        @type value: str
+        @param analyzer: the analyzer to be used
+            possible analyzers are:
+                CommonDatabase.ANALYZER_EXACT (default)
+                    the field value must excactly match the query string
+                CommonDatabase.ANALYZER_PARTIAL
+                    the field value must start with the query string
+        @type analyzer: bool
+        @return: resulting query object
+        @rtype: PyLucene.Query
+        """
+        if analyzer == self.ANALYZER_EXACT:
+            pass
+        elif analyzer == self.ANALYZER_PARTIAL:
+            # PyLucene uses explicit wildcards for partial matching
+            value += "*"
+        else:
+            # invalid matching returned - maybe the field's default
+            # analyzer is broken?
+            raise ValueError("unknown analyzer selected (%d) " % analyzer \
+                    + "for field '%s'" % field)
+        return PyLucene.QueryParser.parse(value, field)
+
+    def _create_query_combined(self, queries, require_all=True):
+        """generate a combined query
+
+        @param queries: list of the original queries
+        @type queries: list of xapian.Query
+        @param require_all: boolean operator
+            (True -> AND (default) / False -> OR)
+        @type require_all: bool
+        @return: the resulting combined query object
+        @rtype: PyLucene.Query
+        """
+        combined_query = PyLucene.BooleanQuery()
+        for query in queries:
+            combined_query.add(
+                    PyLucene.BooleanClause(query, require_all, False))
+        return combined_query
 
     def index_document(self, data):
         """add the given data to the database
