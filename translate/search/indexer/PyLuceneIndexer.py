@@ -1,5 +1,7 @@
 """
-interface for the pylucene indexing engine
+interface for the PyLucene (v2.x) indexing engine
+
+take a look at PyLuceneIndexer1.py for the PyLucene v1.x interface
 """
 
 __revision__ = "$Id$"
@@ -13,9 +15,12 @@ import re
 import os
 import time
 
-UNNAMED_FIELD_NAME = "FieldWithoutAName"
 
-class PyluceneDatabase(CommonIndexer.CommonDatabase):
+UNNAMED_FIELD_NAME = "FieldWithoutAName"
+MAX_FIELD_SIZE = 1048576
+
+
+class PyLuceneDatabase(CommonIndexer.CommonDatabase):
     """manage and use a pylucene indexing database"""
 
     QUERY_TYPE = PyLucene.Query
@@ -34,11 +39,12 @@ class PyluceneDatabase(CommonIndexer.CommonDatabase):
         @type location: str
         @throws: OSError, ValueError
         """
-        super(PyluceneDatabase, self).__init__(location)
+        super(PyLuceneDatabase, self).__init__(location)
         self.location = location
         self.analyzer = PyLucene.StandardAnalyzer()
         self.writer = None
         self.reader = None
+        self.index_version = None
         try:
             # try to open an existing database
             tempreader = PyLucene.IndexReader.open(self.location)
@@ -64,14 +70,14 @@ class PyluceneDatabase(CommonIndexer.CommonDatabase):
         # windows file locking seems inconsistent, so we try 10 times
         numtries = 0
         self.dir_lock.acquire(blocking=True)
-        # read "self.indexReader", "self.indexVersion" and "self.indexSearcher"
+        # read "self.reader", "self.indexVersion" and "self.searcher"
         try:
             while numtries < 10:
                 try:
-                    self.indexReader = PyLucene.IndexReader.open(self.location)
-                    self.indexVersion = self.indexReader.getCurrentVersion(
+                    self.reader = PyLucene.IndexReader.open(self.location)
+                    self.indexVersion = self.reader.getCurrentVersion(
                             self.location)
-                    self.indexSearcher = PyLucene.IndexSearcher(self.indexReader)
+                    self.searcher = PyLucene.IndexSearcher(self.reader)
                     break
                 except PyLucene.JavaError, e:
                     # store error message for possible later re-raise (below)
@@ -109,6 +115,8 @@ class PyluceneDatabase(CommonIndexer.CommonDatabase):
         finally:
             # close the database even if optimizing failed
             self._writer_close()
+            # the reader/searcher needs an update, too
+            self._index_refresh()
 
     def _create_query_for_query(self, query):
         """generate a query based on an existing query object
@@ -116,14 +124,16 @@ class PyluceneDatabase(CommonIndexer.CommonDatabase):
         basically this function should just create a copy of the original
         
         @param query: the original query object
-        @type query: xapian.Query
+        @type query: PyLucene.Query
         @return: resulting query object
         @rtype: PyLucene.Query
         """
-        return PyLucene.Query(query)
+        # TODO: a deep copy or a clone would be safer
+        # somehow not working (returns "null"): copy.deepcopy(query)
+        return query
 
     def _create_query_for_string(self, text, require_all=True,
-            match_text_partial=None):
+            analyzer=None):
         """generate a query for a plain term of a string query
 
         basically this function parses the string and returns the resulting
@@ -137,14 +147,17 @@ class PyluceneDatabase(CommonIndexer.CommonDatabase):
         @return: resulting query object
         @rtype: PyLucene.Query
         """
-        qp = PyLucene.QueryParser()
-        if require_all:
-            qp.setDefaultOperator(PyLucene.QueryParser.AND_OPERATOR)
-        else:
-            qp.setDefaultOperator(PyLucene.QueryParser.OR_OPERATOR)
-        # PyLucene needs explicit wildcards for partial text matching
-        if match_text_partial:
+        qp = PyLucene.QueryParser(UNNAMED_FIELD_NAME,
+                PyLucene.StandardAnalyzer())
+        if analyzer == self.ANALYZER_EXACT:
+            pass
+        elif analyzer == self.ANALYZER_PARTIAL:
+            # PyLucene uses explicit wildcards for partial matching
             text += "*"
+        if require_all:
+            qp.setDefaultOperator(qp.Operator.AND)
+        else:
+            qp.setDefaultOperator(qp.Operator.OR)
         return qp.parse(text)
 
     def _create_query_for_field(self, field, value, analyzer=None):
@@ -176,13 +189,14 @@ class PyluceneDatabase(CommonIndexer.CommonDatabase):
             # analyzer is broken?
             raise ValueError("unknown analyzer selected (%d) " % analyzer \
                     + "for field '%s'" % field)
-        return PyLucene.QueryParser.parse(value, field)
+        return PyLucene.QueryParser(field,
+                PyLucene.StandardAnalyzer()).parse(value)
 
     def _create_query_combined(self, queries, require_all=True):
         """generate a combined query
 
         @param queries: list of the original queries
-        @type queries: list of xapian.Query
+        @type queries: list of PyLucene.Query
         @param require_all: boolean operator
             (True -> AND (default) / False -> OR)
         @type require_all: bool
@@ -192,7 +206,7 @@ class PyluceneDatabase(CommonIndexer.CommonDatabase):
         combined_query = PyLucene.BooleanQuery()
         for query in queries:
             combined_query.add(
-                    PyLucene.BooleanClause(query, require_all, False))
+                    PyLucene.BooleanClause(query, _occur(require_all, False)))
         return combined_query
 
     def _create_empty_document(self):
@@ -207,34 +221,35 @@ class PyluceneDatabase(CommonIndexer.CommonDatabase):
         """add a term to a document
 
         @param document: the document to be changed
-        @type document: xapian.Document | PyLucene.Document
+        @type document: PyLucene.Document
         @param term: a single term to be added
         @type term: str
         """
         document.add(PyLucene.Field(str(UNNAMED_FIELD_NAME), term,
-                True, True, True))
+                PyLucene.Field.Store.YES, PyLucene.Field.Index.TOKENIZED))
 
     def _add_field_term(self, document, field, term):
         """add a field term to a document
 
         @param document: the document to be changed
-        @type document: xapian.Document | PyLucene.Document
+        @type document: PyLucene.Document
         @param field: name of the field
         @type field: str
         @param term: term to be associated to the field
         @type term: str
         """
         # TODO: decoding (utf-8) is missing
-        document.add(PyLucene.Field(str(field), str(term), True, True, True))
+        document.add(PyLucene.Field(str(field), str(term),
+                PyLucene.Field.Store.YES, PyLucene.Field.Index.TOKENIZED))
 
     def _add_document_to_index(self, document):
         """add a prepared document to the index database
 
         @param document: the document to be added
-        @type document: xapian.Document | PyLucene.Document
+        @type document: PyLucene.Document
         """
         self._writer_open()
-        self.writer.addDocument()
+        self.writer.addDocument(document)
 
     def begin_transaction(self):
         """PyLucene does not support transactions
@@ -265,6 +280,7 @@ class PyluceneDatabase(CommonIndexer.CommonDatabase):
         See 'start_transaction' for details.
         """
         self._writer_close()
+        self.flush()
 
     def get_query_result(self, query):
         """return an object containing the results of a query
@@ -274,7 +290,7 @@ class PyluceneDatabase(CommonIndexer.CommonDatabase):
         @return: an object that allows access to the results
         @rtype: subclass of CommonEnquire
         """
-        return PyLucene.indexSearcher.search(query)
+        return PyLuceneHits(self.searcher.search(query))
 
     def delete_document_by_id(self, docid):
         """delete a specified document
@@ -299,7 +315,7 @@ class PyluceneDatabase(CommonIndexer.CommonDatabase):
         """
         if isinstance(fieldnames, str):
             fieldnames = [fieldnames]
-        hits = PyLucene.indexSearcher.search(query)
+        hits = PyLucene.searcher.search(query)
         result = []
         for hit, doc in hits:
             fields = {}
@@ -318,6 +334,11 @@ class PyluceneDatabase(CommonIndexer.CommonDatabase):
             self.dir_lock.acquire()
             self.writer = PyLucene.IndexWriter(self.location, self.analyzer,
                     False)
+            # "setMaxFieldLength" is available since PyLucene v2
+            # we must stay compatible to v1 for the derived class
+            # (PyLuceneIndexer1) - thus we make this step optional
+            if hasattr(self.writer, "setMaxFieldLength"):
+                self.writer.setMaxFieldLength(MAX_FIELD_SIZE)
         # do nothing, if it is already open
 
     def _writer_close(self):
@@ -394,4 +415,16 @@ class PyLuceneHits(CommonIndexer.CommonEnquire):
             item["document"] = self.enquire.doc(index)
             result.append(item)
         return (stop-start, self.enquire.length(), result)
+
+def _occur(required, prohibited):
+       if required == True and prohibited == False:
+           return PyLucene.BooleanClause.Occur.MUST
+       elif required == False and prohibited == False:
+           return PyLucene.BooleanClause.Occur.SHOULD
+       elif required == False and prohibited == True:
+           return PyLucene.BooleanClause.Occur.MUST_NOT
+       else:
+           # It is an error to specify a clause as both required
+           # and prohibited
+           return None
 
