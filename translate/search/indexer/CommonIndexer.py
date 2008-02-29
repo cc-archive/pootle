@@ -49,6 +49,7 @@ class CommonDatabase(object):
         @type location: str
         @throws: OSError, ValueError
         """
+        self.field_analyzers = {}
         # just do some checks
         if self.QUERY_TYPE is None:
             raise NotImplementedError("Incomplete indexer implementation: " \
@@ -113,7 +114,7 @@ class CommonDatabase(object):
                 elif match_text_partial is False:
                     analyzer = self.ANALYZER_EXACT
                 else:
-                    analyzer = self.get_field_analyzer(field)
+                    analyzer = self.get_field_analyzers(field)
                 result.append(self._create_query_for_field(field, value,
                         analyzer=analyzer))
             # parse plaintext queries
@@ -429,22 +430,38 @@ class CommonDatabase(object):
             # map the analyzer to the field name
             self.field_analyzers[field] = analyzer
 
-    def get_field_analyzer(self, fieldname):
+    def get_field_analyzers(self, fieldnames=None):
         """return the analyzer that was mapped to a specific field
 
         see 'set_field_analyzers' for details
 
         The default analyzer is CommonDatabase.ANALYZER_EXACT
 
-        @param fieldname: the analyzer of this field is requested
-        @type fieldname: str
+        @param fieldnames: the analyzer of this field (or all/multiple fields)
+            is requested; leave empty (or "None") to request all fields
+        @type fieldnames: str | list of str | None
         @return: the analyzer of the field - e.g. CommonDatabase.ANALYZER_EXACT
-        @rtype: int
+            or a dict of field names and analyzers
+        @rtype: int | dict
         """
-        try:
-            return self.field_analyzers[fieldname]
-        except KeyError:
-            return self.ANALYZER_EXACT
+        default = self.ANALYZER_EXACT
+        # all field analyzers are requested
+        if fieldnames is None:
+            # return a copy
+            return dict(self.field_analyzers)
+        # one field is requested
+        if isinstance(fieldnames, str):
+            if self.field_analyzers.has_key(fieldnames):
+                return self.field_analyzers[fieldnames]
+            else:
+                return default
+        # a list of fields is requested
+        if isinstance(fieldnames, list):
+            result = {}
+            for field in fieldnames:
+                result[field] = self.get_field_analyzers(field)
+            return result
+        return default
 
 
 class CommonEnquire(object):
