@@ -10,7 +10,7 @@ DATABASE = "tmp-index"
 default_engine = "" 
 
 # order of tests to be done
-ORDER_OF_TESTS = [ "XapianIndexer", "PyLuceneIndexer" ]
+ORDER_OF_TESTS = [ "XapianIndexer", "PyLuceneIndexer", "PyLuceneIndexer1" ]
 
 
 def _get_indexer(location):
@@ -168,9 +168,9 @@ def test_field_analyzers():
     r_field1 = new_db.get_query_result(q_field1).get_matches(0,10)
     assert r_field1[0] == 0
     # check the get/set field analyzer functions
-    assert new_db.get_field_analyzer("fname1") == new_db.ANALYZER_EXACT
+    assert new_db.get_field_analyzers("fname1") == new_db.ANALYZER_EXACT
     new_db.set_field_analyzers({"fname1":new_db.ANALYZER_PARTIAL})
-    assert new_db.get_field_analyzer("fname1") == new_db.ANALYZER_PARTIAL
+    assert new_db.get_field_analyzers("fname1") == new_db.ANALYZER_PARTIAL
     # do an incomplete field search - now we use the partial analyzer
     q_field2 = new_db.make_query({"fname1":"bar_field"})
     r_field2 = new_db.get_query_result(q_field2).get_matches(0,10)
@@ -287,8 +287,16 @@ def _get_number_of_docs(database):
 
 if __name__ == "__main__":
     for engine in ORDER_OF_TESTS:
-        print "************ running tests for '%s' *****************" % engine
         default_engine = engine
+        engine_name = _get_indexer(DATABASE).__module__
+        if engine_name == default_engine:
+            print "************ running tests for '%s' *****************" \
+                    % engine_name
+        else:
+            print "************ SKIPPING tests for '%s' *****************" \
+                    % default_engine
+            print "(%s/%s)" % (engine_name, default_engine)
+            continue
         test_create_database()
         test_open_database()
         test_make_queries()
