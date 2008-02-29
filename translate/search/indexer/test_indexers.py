@@ -56,6 +56,7 @@ def create_example_content(database):
     database.index_document({"fname1": "bar_field1", "fname2": "foo_field2",
             None: ["HELO", "foo"]})
     database.index_document({ None: "med" })
+    assert _get_number_of_docs(database) == 6
 
 def test_create_database():
     """create a new database from scratch"""
@@ -249,6 +250,18 @@ def test_lower_upper_case():
 
 def show_database(database=None):
     """print the complete database - for debugging purposes"""
+    if hasattr(database, "database"):
+        _show_database_xapian(database)
+    else:
+        _show_database_pylucene(database)
+
+
+def _show_database_pylucene(database=None):
+    reader = database.reader
+    for index in range(reader.maxDoc()):
+        print reader.document(index)
+
+def _show_database_xapian(database=None):
     import xapian
     doccount = database.database.get_doccount()
     max_doc_index = database.database.get_lastdocid()
@@ -260,6 +273,16 @@ def show_database(database=None):
             continue
         print "\tDocument [%d]: %s" % (index,
                 str([one_term.term for one_term in document.termlist()]))
+
+
+def _get_number_of_docs(database):
+    if hasattr(database, "database"):
+        # xapian
+        return database.database.get_lastdocid()
+    else:
+        # pylucene
+        database.flush()
+        return database.reader.numDocs()
 
 
 if __name__ == "__main__":
