@@ -151,6 +151,7 @@ class PyLuceneDatabase(CommonIndexer.CommonDatabase):
         @return: resulting query object
         @rtype: PyLucene.Query
         """
+        text = _escape_term_value(text)
         qp = PyLucene.QueryParser(UNNAMED_FIELD_NAME,
                 PyLucene.StandardAnalyzer())
         if analyzer == self.ANALYZER_EXACT:
@@ -183,6 +184,7 @@ class PyLuceneDatabase(CommonIndexer.CommonDatabase):
         @return: resulting query object
         @rtype: PyLucene.Query
         """
+        value = _escape_term_value(value)
         if analyzer == self.ANALYZER_EXACT:
             pass
         elif analyzer == self.ANALYZER_PARTIAL:
@@ -409,7 +411,7 @@ class PyLuceneHits(CommonIndexer.CommonEnquire):
             stop = self.enquire.length()
         # invalid request range
         if stop <= start:
-            return []
+            return (0, self.enquire.length(), [])
         result = []
         for index in range(start, stop):
             item = {}
@@ -445,4 +447,8 @@ def _get_pylucene_version():
         return 2
     else:
         return 0
+
+
+def _escape_term_value(text):
+    return re.sub("\*", "", text)
 
