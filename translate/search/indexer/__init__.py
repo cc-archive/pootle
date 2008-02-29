@@ -39,6 +39,11 @@ def _get_available_indexers():
         except ImportError:
             # maybe it is unusable or dependencies are missing
             continue
+        # the module function "is_available" must return "True"
+        if not (hasattr(module, "is_available") and \
+                callable(module.is_available) and \
+                module.is_available()):
+            continue
         for item in dir(module):
             try:
                 element = getattr(module, item)
@@ -50,6 +55,7 @@ def _get_available_indexers():
                 if issubclass(element, CommonIndexer.CommonDatabase) \
                         and not element is CommonIndexer.CommonDatabase:
                     # TODO: debug - "[Indexer]: indexing engine found in '%s': %s" % (mod_path, element)
+                    # the interface is ok
                     result.append(element)
             except TypeError:
                 # 'element' is not a class

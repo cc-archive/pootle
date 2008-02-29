@@ -5,6 +5,18 @@ base class for interfaces to indexing engines for pootle
 __revision__ = "$Id$"
 
 
+def is_available():
+    """check if this indexing engine interface is usable
+
+    this function must exist in every module that contains indexing engine
+    interfaces
+
+    @return: is this interface usable?
+    @rtype: bool
+    """
+    return False
+
+
 class CommonDatabase(object):
     """base class for indexing support
 

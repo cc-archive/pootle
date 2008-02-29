@@ -11,6 +11,10 @@ import os
 import re
 
 
+def is_available():
+    return True
+
+
 # in xapian there is a length restriction for term strings
 # see http://osdir.com/ml/search.xapian.general/2006-11/msg00210.html
 # a maximum length of around 240 is described there - but we need less anyway

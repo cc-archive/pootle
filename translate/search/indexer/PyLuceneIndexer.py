@@ -20,6 +20,10 @@ UNNAMED_FIELD_NAME = "FieldWithoutAName"
 MAX_FIELD_SIZE = 1048576
 
 
+def is_available():
+    return _get_pylucene_version() == 2
+
+
 class PyLuceneDatabase(CommonIndexer.CommonDatabase):
     """manage and use a pylucene indexing database"""
 
@@ -427,4 +431,18 @@ def _occur(required, prohibited):
            # It is an error to specify a clause as both required
            # and prohibited
            return None
+
+def _get_pylucene_version():
+    """get the installed pylucene version
+
+    @return: 1 -> PyLucene v1.x / 2 -> PyLucene v2.x / 0 -> unknown
+    @rtype: int
+    """
+    version = PyLucene.LUCENE_VERSION
+    if version.startswith("1."):
+        return 1
+    elif version.startswith("2."):
+        return 2
+    else:
+        return 0
 

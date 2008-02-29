@@ -11,6 +11,10 @@ import PyLuceneIndexer
 import PyLucene
 
 
+def is_available():
+    return PyLuceneIndexer._get_pylucene_version() == 1
+
+
 class PyLuceneDatabase(PyLuceneIndexer.PyLuceneDatabase):
     """manage and use a pylucene indexing database"""
 
