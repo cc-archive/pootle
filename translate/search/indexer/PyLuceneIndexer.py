@@ -256,8 +256,7 @@ class PyLuceneDatabase(CommonIndexer.CommonDatabase):
             token_flag = PyLucene.Field.Index.TOKENIZED
         else:
             token_flag = PyLucene.Field.Index.UN_TOKENIZED
-        # TODO: decoding (utf-8) is missing
-        document.add(PyLucene.Field(str(field), str(term),
+        document.add(PyLucene.Field(str(field), term,
                 PyLucene.Field.Store.YES, token_flag))
 
     def _add_document_to_index(self, document):
@@ -333,7 +332,7 @@ class PyLuceneDatabase(CommonIndexer.CommonDatabase):
         """
         if isinstance(fieldnames, str):
             fieldnames = [fieldnames]
-        hits = PyLucene.searcher.search(query)
+        hits = self.searcher.search(query)
         result = []
         for hit, doc in hits:
             fields = {}

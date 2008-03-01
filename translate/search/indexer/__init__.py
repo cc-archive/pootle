@@ -103,7 +103,7 @@ _AVAILABLE_INDEXERS = _get_available_indexers()
 HAVE_INDEXER = bool(_AVAILABLE_INDEXERS)
 
 
-def get_indexer(location, preference=None):
+def get_indexer(location, preference=[]):
     """return an appropriate indexer for the given directory
 
     If the directory already exists, then we check, if one of the available

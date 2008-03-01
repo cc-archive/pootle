@@ -228,11 +228,13 @@ class CommonDatabase(object):
                         raise ValueError("Invalid data type to be indexed: %s" \
                                 % str(type(data)))
                     for one_term in terms:
-                        self._add_plain_term(doc, one_term, tokenize)
+                        self._add_plain_term(doc, self._decode(one_term),
+                                tokenize)
                 else:
-                    self._add_field_term(doc, key, value, tokenize)
+                    self._add_field_term(doc, key, self._decode(value),
+                            tokenize)
             elif isinstance(dataset, str):
-                self._add_plain_term(doc, dataset, tokenize)
+                self._add_plain_term(doc, self._decode(dataset), tokenize)
             else:
                 raise ValueError("Invalid data type to be indexed: %s" \
                         % str(type(data)))
@@ -468,6 +470,18 @@ class CommonDatabase(object):
                 result[field] = self.get_field_analyzers(field)
             return result
         return default
+
+    def _decode(self, text):
+        """decode the string from utf-8 or charmap"""
+        if isinstance(text, str):
+            try:
+                return text.decode("UTF-8")
+            except UnicodeEncodeError, e:
+                return text.decode("charmap")
+        elif not isinstance(text, (str, unicode)):
+            return str(text)
+        else:
+            return text
 
 
 class CommonEnquire(object):

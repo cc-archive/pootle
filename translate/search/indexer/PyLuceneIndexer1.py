@@ -121,7 +121,7 @@ class PyLuceneDatabase(PyLuceneIndexer.PyLuceneDatabase):
         """
         # TODO: decoding (utf-8) is missing
         # Field parameters: name, string, store, index, token
-        document.add(PyLucene.Field(str(field), str(term),
+        document.add(PyLucene.Field(str(field), term,
                 True, True, tokenize))
 
     def get_query_result(self, query):
