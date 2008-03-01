@@ -199,7 +199,7 @@ class CommonDatabase(object):
         raise NotImplementedError("Incomplete indexer implementation: " \
                 + "'_create_query_combined' is missing")
 
-    def index_document(self, data):
+    def index_document(self, data, tokenize=True):
         """add the given data to the database
 
         @param data: the data to be indexed.
@@ -208,6 +208,8 @@ class CommonDatabase(object):
             plain term or as a list of plain terms.
             Lists of strings are treated as plain terms.
         @type data: dict | list of str
+        @param tokenize: should the term be tokenized automatically
+        @type tokenize: bool
         """
         doc = self._create_empty_document()
         if isinstance(data, dict):
@@ -226,11 +228,11 @@ class CommonDatabase(object):
                         raise ValueError("Invalid data type to be indexed: %s" \
                                 % str(type(data)))
                     for one_term in terms:
-                        self._add_plain_term(doc, one_term)
+                        self._add_plain_term(doc, one_term, tokenize)
                 else:
-                    self._add_field_term(doc, key, value)
+                    self._add_field_term(doc, key, value, tokenize)
             elif isinstance(dataset, str):
-                self._add_plain_term(doc, dataset)
+                self._add_plain_term(doc, dataset, tokenize)
             else:
                 raise ValueError("Invalid data type to be indexed: %s" \
                         % str(type(data)))
@@ -245,18 +247,20 @@ class CommonDatabase(object):
         raise NotImplementedError("Incomplete indexer implementation: " \
                 + "'_create_empty_document' is missing")
     
-    def _add_plain_term(self, document, term):
+    def _add_plain_term(self, document, term, tokenize=True):
         """add a term to a document
 
         @param document: the document to be changed
         @type document: xapian.Document | PyLucene.Document
         @param term: a single term to be added
         @type term: str
+        @param tokenize: should the term be tokenized automatically
+        @type tokenize: bool
         """
         raise NotImplementedError("Incomplete indexer implementation: " \
                 + "'_add_plain_term' is missing")
 
-    def _add_field_term(self, document, field, term):
+    def _add_field_term(self, document, field, term, tokenize=True):
         """add a field term to a document
 
         @param document: the document to be changed
@@ -265,6 +269,8 @@ class CommonDatabase(object):
         @type field: str
         @param term: term to be associated to the field
         @type term: str
+        @param tokenize: should the term be tokenized automatically
+        @type tokenize: bool
         """
         raise NotImplementedError("Incomplete indexer implementation: " \
                 + "'_add_field_term' is missing")

@@ -157,10 +157,9 @@ class XapianDatabase(CommonIndexer.CommonDatabase):
             raise ValueError("unknown analyzer selected (%d) " % analyzer \
                     + "for field '%s'" % field)
         # escape the query string and truncate if necessary
-        match_string = _escape_term_value(value)
-        match_string = _truncate_term_length(match_string, len(field)+1)
+        value = _truncate_term_length(value, len(field)+1)
         # we search for a string with "field:" as default prefix
-        return qp.parse_query(match_string, match_flags, "%s:" % field)
+        return qp.parse_query(value, match_flags, "%s:" % field)
 
     def _create_query_combined(self, queries, require_all=True):
         """generate a combined query
@@ -187,17 +186,24 @@ class XapianDatabase(CommonIndexer.CommonDatabase):
         """
         return xapian.Document()
     
-    def _add_plain_term(self, document, term):
+    def _add_plain_term(self, document, term, tokenize=True):
         """add a term to a document
 
         @param document: the document to be changed
         @type document: xapian.Document
         @param term: a single term to be added
         @type term: str
+        @param tokenize: should the term be tokenized automatically
+        @type tokenize: bool
         """
-        document.add_term(_truncate_term_length(_escape_term_value(term)))
+        if tokenize:
+            term_gen = xapian.TermGenerator()
+            term_gen.set_document(document)
+            term_gen.index_text(term)
+        else:
+            document.add_term(_truncate_term_length(term))
 
-    def _add_field_term(self, document, field, term):
+    def _add_field_term(self, document, field, term, tokenize=True):
         """add a field term to a document
 
         @param document: the document to be changed
@@ -206,9 +212,16 @@ class XapianDatabase(CommonIndexer.CommonDatabase):
         @type field: str
         @param term: term to be associated to the field
         @type term: str
+        @param tokenize: should the term be tokenized automatically
+        @type tokenize: bool
         """
-        document.add_term(_truncate_term_length("%s:%s" % \
-                        (field, _escape_term_value(term))))
+        if tokenize:
+            term_gen = xapian.TermGenerator()
+            term_gen.set_document(document)
+            term_gen.index_text(term, 1, "%s:" % field)
+        else:
+            document.add_term(_truncate_term_length("%s:%s" % \
+                        (field, term)))
 
     def _add_document_to_index(self, document):
         """add a prepared document to the index database
@@ -374,5 +387,5 @@ def _escape_term_value(term):
     """
     # replace non-alphanumeric characters with an underscore
     # only lower case - queries are turned to lower case, too
-    return re.sub(u"\W", "_", term).lower()
+    return re.sub(u"[^\w\s]", "_", term).lower()
 

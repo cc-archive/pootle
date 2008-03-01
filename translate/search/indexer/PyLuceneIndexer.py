@@ -223,18 +223,24 @@ class PyLuceneDatabase(CommonIndexer.CommonDatabase):
         """
         return PyLucene.Document()
     
-    def _add_plain_term(self, document, term):
+    def _add_plain_term(self, document, term, tokenize=True):
         """add a term to a document
 
         @param document: the document to be changed
         @type document: PyLucene.Document
         @param term: a single term to be added
         @type term: str
+        @param tokenize: should the term be tokenized automatically
+        @type tokenize: bool
         """
+        if tokenize:
+            token_flag = PyLucene.Field.Index.TOKENIZED
+        else:
+            token_flag = PyLucene.Field.Index.UN_TOKENIZED
         document.add(PyLucene.Field(str(UNNAMED_FIELD_NAME), term,
-                PyLucene.Field.Store.YES, PyLucene.Field.Index.TOKENIZED))
+                PyLucene.Field.Store.YES, token_flag))
 
-    def _add_field_term(self, document, field, term):
+    def _add_field_term(self, document, field, term, tokenize=True):
         """add a field term to a document
 
         @param document: the document to be changed
@@ -243,10 +249,16 @@ class PyLuceneDatabase(CommonIndexer.CommonDatabase):
         @type field: str
         @param term: term to be associated to the field
         @type term: str
+        @param tokenize: should the term be tokenized automatically
+        @type tokenize: bool
         """
+        if tokenize:
+            token_flag = PyLucene.Field.Index.TOKENIZED
+        else:
+            token_flag = PyLucene.Field.Index.UN_TOKENIZED
         # TODO: decoding (utf-8) is missing
         document.add(PyLucene.Field(str(field), str(term),
-                PyLucene.Field.Store.YES, PyLucene.Field.Index.TOKENIZED))
+                PyLucene.Field.Store.YES, token_flag))
 
     def _add_document_to_index(self, document):
         """add a prepared document to the index database

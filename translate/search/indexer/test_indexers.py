@@ -56,8 +56,10 @@ def create_example_content(database):
     database.index_document({"fname1": "bar_field1", "fname2": "foo_field2",
             None: ["HELO", "foo"]})
     database.index_document({ None: "med" })
+    # for tokenizing tests
     database.index_document({"fname1": "qaz wsx", None: "edc rfv"})
-    assert _get_number_of_docs(database) == 7
+    database.index_document({"fname2": "qaz wsx", None: "edc rfv"}, tokenize=False)
+    assert _get_number_of_docs(database) == 8
 
 def test_create_database():
     """create a new database from scratch"""
@@ -259,7 +261,6 @@ def test_tokenizing():
     # check if the plain term was tokenized
     q_token1 = new_db.make_query("rfv")
     r_token1 = new_db.get_query_result(q_token1).get_matches(0,10)
-    show_database(new_db)
     assert r_token1[0] == 1
     # check if the field term was tokenized
     q_token2 = new_db.make_query({"fname1":"wsx"})
@@ -268,7 +269,7 @@ def test_tokenizing():
     # clean up
     clean_database()
 
-def show_database(database=None):
+def show_database(database):
     """print the complete database - for debugging purposes"""
     if hasattr(database, "database"):
         _show_database_xapian(database)
@@ -276,13 +277,13 @@ def show_database(database=None):
         _show_database_pylucene(database)
 
 
-def _show_database_pylucene(database=None):
+def _show_database_pylucene(database):
     database.flush()
     reader = database.reader
     for index in range(reader.maxDoc()):
         print reader.document(index)
 
-def _show_database_xapian(database=None):
+def _show_database_xapian(database):
     import xapian
     doccount = database.database.get_doccount()
     max_doc_index = database.database.get_lastdocid()
@@ -309,6 +310,8 @@ def _get_number_of_docs(database):
 if __name__ == "__main__":
     for engine in ORDER_OF_TESTS:
         default_engine = engine
+        # cleanup the database after interrupted tests
+        clean_database()
         engine_name = _get_indexer(DATABASE).__module__
         if engine_name == default_engine:
             print "************ running tests for '%s' *****************" \

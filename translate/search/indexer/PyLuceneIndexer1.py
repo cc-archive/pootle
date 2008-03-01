@@ -93,18 +93,21 @@ class PyLuceneDatabase(PyLuceneIndexer.PyLuceneDatabase):
                     PyLucene.BooleanClause(query, require_all, False))
         return combined_query
 
-    def _add_plain_term(self, document, term):
+    def _add_plain_term(self, document, term, tokenize=True):
         """add a term to a document
 
         @param document: the document to be changed
         @type document: xapian.Document | PyLucene.Document
         @param term: a single term to be added
         @type term: str
+        @param tokenize: should the term be tokenized automatically
+        @type tokenize: bool
         """
+        # Field parameters: name, string, store, index, token
         document.add(PyLucene.Field(str(PyLuceneIndex.UNNAMED_FIELD_NAME), term,
-                True, True, True))
+                True, True, tokenize))
 
-    def _add_field_term(self, document, field, term):
+    def _add_field_term(self, document, field, term, tokenize=True):
         """add a field term to a document
 
         @param document: the document to be changed
@@ -113,9 +116,13 @@ class PyLuceneDatabase(PyLuceneIndexer.PyLuceneDatabase):
         @type field: str
         @param term: term to be associated to the field
         @type term: str
+        @param tokenize: should the term be tokenized automatically
+        @type tokenize: bool
         """
         # TODO: decoding (utf-8) is missing
-        document.add(PyLucene.Field(str(field), str(term), True, True, True))
+        # Field parameters: name, string, store, index, token
+        document.add(PyLucene.Field(str(field), str(term),
+                True, True, tokenize))
 
     def get_query_result(self, query):
         """return an object containing the results of a query
