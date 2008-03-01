@@ -281,7 +281,7 @@ def _show_database_pylucene(database):
     database.flush()
     reader = database.reader
     for index in range(reader.maxDoc()):
-        print reader.document(index)
+        print reader.document(index).toString().encode("charmap")
 
 def _show_database_xapian(database):
     import xapian
@@ -308,6 +308,11 @@ def _get_number_of_docs(database):
 
 
 if __name__ == "__main__":
+    # if an argument is given: use it as a database directory and show it
+    if len(sys.argv) > 1:
+        db = _get_indexer(sys.argv[1])
+        show_database(db)
+        sys.exit(0)
     for engine in ORDER_OF_TESTS:
         default_engine = engine
         # cleanup the database after interrupted tests
