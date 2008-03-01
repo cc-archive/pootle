@@ -56,7 +56,8 @@ def create_example_content(database):
     database.index_document({"fname1": "bar_field1", "fname2": "foo_field2",
             None: ["HELO", "foo"]})
     database.index_document({ None: "med" })
-    assert _get_number_of_docs(database) == 6
+    database.index_document({"fname1": "qaz wsx", None: "edc rfv"})
+    assert _get_number_of_docs(database) == 7
 
 def test_create_database():
     """create a new database from scratch"""
@@ -248,6 +249,25 @@ def test_lower_upper_case():
     # clean up
     clean_database()
 
+def test_tokenizing():
+    """test if case is ignored for queries and for indexed terms"""
+    # clean up everything first
+    clean_database()
+    # initialize the database with example content
+    new_db = _get_indexer(DATABASE)
+    create_example_content(new_db)
+    # check if the plain term was tokenized
+    q_token1 = new_db.make_query("rfv")
+    r_token1 = new_db.get_query_result(q_token1).get_matches(0,10)
+    show_database(new_db)
+    assert r_token1[0] == 1
+    # check if the field term was tokenized
+    q_token2 = new_db.make_query({"fname1":"wsx"})
+    r_token2 = new_db.get_query_result(q_token1).get_matches(0,10)
+    assert r_token2[0] == 1
+    # clean up
+    clean_database()
+
 def show_database(database=None):
     """print the complete database - for debugging purposes"""
     if hasattr(database, "database"):
@@ -257,6 +277,7 @@ def show_database(database=None):
 
 
 def _show_database_pylucene(database=None):
+    database.flush()
     reader = database.reader
     for index in range(reader.maxDoc()):
         print reader.document(index)
@@ -295,7 +316,6 @@ if __name__ == "__main__":
         else:
             print "************ SKIPPING tests for '%s' *****************" \
                     % default_engine
-            print "(%s/%s)" % (engine_name, default_engine)
             continue
         test_create_database()
         test_open_database()
@@ -306,6 +326,7 @@ if __name__ == "__main__":
         test_and_queries()
         test_or_queries()
         test_lower_upper_case()
+        test_tokenizing()
         # TODO: add test for document deletion
         # TODO: add test for transaction handling
 
