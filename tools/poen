@@ -22,22 +22,27 @@
 # poen - initialises a directory English PO files by taking POT files and
 # copying the msgid to the msgstr.
 
+ext="pot"
+
 case $1 in
 	--no-wrap)	nowrap="--no-wrap"
+			shift
+			;;
+	--po)		ext="po"
 			shift
 			;;
 esac
 
 if [ $# -ne 2 ]; then
-	echo "Usage: poen [--no-wrap] pot-dir en-dir"
+	echo "Usage: poen [--no-wrap] [--po] pot-dir en-dir"
 	exit 1
 fi
 
 potdir=$1
 endir=$2
 
-for pot in `cd $potdir; find . -name "*.pot"`
+for pot in `cd $potdir; find . -name "*.$ext"`
 do
 	mkdir -p $endir/$(dirname $pot)
-	msgen $nowrap $potdir/$pot -o $endir/$(dirname $pot)/$(basename $pot .pot).po
+	msgen $nowrap $potdir/$pot -o $endir/$(dirname $pot)/$(basename $pot .$ext).po
 done
