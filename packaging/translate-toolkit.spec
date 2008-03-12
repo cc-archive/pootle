@@ -2,17 +2,15 @@
 
 Name:           translate-toolkit
 Version:        1.1.1
-Release:        0.1.rc2%{?dist}
+Release:        0.3.rc3%{?dist}
 Summary:        Tools to assist with localization
 
 Group:          Development/Tools
 License:        GPLv2+
 URL:            http://translate.sourceforge.net/wiki/toolkit/index
 #Source0:        http://downloads.sourceforge.net/translate/%{name}-%{version}.tar.bz2
-Source0:        http://translate.sourceforge.net/snapshots/%{name}-%{version}rc2/%{name}-%{version}rc2.tar.bz2
+Source0:        http://translate.sourceforge.net/snapshots/%{name}-%{version}rc3/%{name}-%{version}rc3.tar.bz2
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-
-Patch1:         translate-toolkit-1.1.0-ini2po.patch
 
 BuildArch:      noarch
 BuildRequires:  python-devel
@@ -40,14 +38,24 @@ Including:
   * Tools: count, search, debug and segment localization files
   * Checkers: validate translations with over 45 checks
 
+%package devel
+Summary:        Development API for %{name}
+Group:          Development/Tools
+License:        GPLv2+
+BuildRequires: 	epydoc
+Requires:       %{name} = %{version}-%{release}
+
+%description devel
+Translate Toolkit API documentation for localization classes and tools
+
 
 %prep
-%setup -q -n %{name}-%{version}rc2
-%patch1 -p0 -b .ini2po
+%setup -q -n %{name}-%{version}rc3
 
 
 %build
 %{__python} setup.py build
+(cd translate; epydoc --debug --html --output ../html --name "Translate Toolkit" --url "http://translate.sourceforge.net" convert/ filters/ misc/ search/*.py services/ storage/ tools/)
 
 
 %install
@@ -90,8 +98,18 @@ rm -rf $RPM_BUILD_ROOT
 %exclude %{_bindir}/*.pyc
 %exclude %{_bindir}/*.pyo
 
+%files devel
+%doc html/*
+
 
 %changelog
+* Wed Mar 5 2008 Dwayne Bailey <dwayne@translate.org.za> - 1.1.1-0.3.rc3.fc8
+- Add devel packafe to include generated Translate Toolkit API documentation
+
+* Mon Feb 25 2008 Dwayne Bailey <dwayne@translate.org.za> - 1.1.1-0.2.rc3.fc8
+- Update to 1.1.1rc3
+- Remove ini2po patch
+
 * Thu Feb 14 2008 Dwayne Bailey <dwayne@translate.org.za> - 1.1.1-0.1.rc2.fc8
 - Update to 1.1.1rc2
 
