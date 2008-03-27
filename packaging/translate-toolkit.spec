@@ -2,14 +2,14 @@
 
 Name:           translate-toolkit
 Version:        1.1.1
-Release:        0.3.rc3%{?dist}
+Release:        0.4.rc4%{?dist}
 Summary:        Tools to assist with localization
 
 Group:          Development/Tools
 License:        GPLv2+
 URL:            http://translate.sourceforge.net/wiki/toolkit/index
 #Source0:        http://downloads.sourceforge.net/translate/%{name}-%{version}.tar.bz2
-Source0:        http://translate.sourceforge.net/snapshots/%{name}-%{version}rc3/%{name}-%{version}rc3.tar.bz2
+Source0:        http://translate.sourceforge.net/snapshots/%{name}-%{version}rc4/%{name}-%{version}rc4.tar.bz2
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildArch:      noarch
@@ -50,7 +50,7 @@ Translate Toolkit API documentation for localization classes and tools
 
 
 %prep
-%setup -q -n %{name}-%{version}rc3
+%setup -q -n %{name}-%{version}rc4
 
 
 %build
@@ -103,8 +103,11 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Mar 12 2008 Dwayne Bailey <dwayne@translate.org.za> - 1.1.1-0.4.rc4.fc8
+- Update to 1.1.1rc4
+
 * Wed Mar 5 2008 Dwayne Bailey <dwayne@translate.org.za> - 1.1.1-0.3.rc3.fc8
-- Add devel packafe to include generated Translate Toolkit API documentation
+- Add devel package to include generated Translate Toolkit API documentation
 
 * Mon Feb 25 2008 Dwayne Bailey <dwayne@translate.org.za> - 1.1.1-0.2.rc3.fc8
 - Update to 1.1.1rc3
