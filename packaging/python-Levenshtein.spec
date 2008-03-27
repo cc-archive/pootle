@@ -3,16 +3,17 @@
 Name:         python-Levenshtein
 Summary:      Python extension computing string distances and similarities
 Version:      0.10.1
-Release:      4%{?dist}
+Release:      5%{?dist}
 
 Group:        Development/Libraries
 License:      GPLv2+
 URL:          http://trific.ath.cx/python/levenshtein/
-Source:       http://downloads.sourceforge.net/translate/python-Levenshtein-0.10.1.tar.bz2
+Source:       http://downloads.sourceforge.net/translate/python-Levenshtein-%{version}.tar.bz2
 Source1:      genextdoc.py
 BuildRoot:    %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires: python-devel
+BuildRequires: python-setuptools-devel
 
 %description
 Levenshtein computes Levenshtein distances, similarity ratios, generalized
@@ -23,14 +24,14 @@ methods.
 
 %prep
 %setup -q
-cp $RPM_SOURCE_DIR/genextdoc.py .
+cp %{SOURCE1} .
 
 %build
-%{__python} setup.py build
+CFLAGS="$RPM_OPT_FLAGS" %{__python} -c 'import setuptools; execfile("setup.py")' build
  
 %install
 rm -rf $RPM_BUILD_ROOT
-%{__python} setup.py install -O1 --skip-build --root $RPM_BUILD_ROOT
+%{__python} -c 'import setuptools; execfile("setup.py")' install --skip-build --root $RPM_BUILD_ROOT
 PYTHONPATH=$PYTHONPATH:$RPM_BUILD_ROOT/%{python_sitearch} %{__python} genextdoc.py Levenshtein
 
 %clean
@@ -39,9 +40,14 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(-,root,root,-)
 %doc README COPYING NEWS StringMatcher.py Levenshtein.html
+%{python_sitearch}/*egg-info
 %{python_sitearch}/Levenshtein.so
 
 %changelog
+* Thu Mar 27 2008 Dwayne Bailey <dwayne@translate.org.za> - 0.10.1-5
+- Build and package *egg-info
+- Fix some rpmlint issues
+
 * Thu Feb 14 2008 Dwayne Bailey <dwayne@translate.org.za> - 0.10.1-4
 - Add genextdoc.py as Source not Patch
 
