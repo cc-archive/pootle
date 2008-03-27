@@ -2,15 +2,17 @@
 
 Name:           translate-toolkit
 Version:        1.1.1
-Release:        0.4.rc4%{?dist}
+Release:        1%{?dist}
 Summary:        Tools to assist with localization
 
 Group:          Development/Tools
 License:        GPLv2+
 URL:            http://translate.sourceforge.net/wiki/toolkit/index
-#Source0:        http://downloads.sourceforge.net/translate/%{name}-%{version}.tar.bz2
-Source0:        http://translate.sourceforge.net/snapshots/%{name}-%{version}rc4/%{name}-%{version}rc4.tar.bz2
+Source0:        http://downloads.sourceforge.net/translate/%{name}-%{version}.tar.bz2
+#Source0:        http://translate.sourceforge.net/snapshots/%{name}-%{version}rc4/%{name}-%{version}rc4.tar.bz2
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+
+Patch1:         translate-toolkit-1.1.1-locamotion.patch
 
 BuildArch:      noarch
 BuildRequires:  python-devel
@@ -36,26 +38,26 @@ Including:
     * Specialised - OpenOffice.org GSI/SDF, PHP,
             Mozilla (.dtd, .properties, etc)
   * Tools: count, search, debug and segment localization files
-  * Checkers: validate translations with over 45 checks
+  * Checkers: validate translations with over 46 checks
 
 %package devel
-Summary:        Development API for %{name}
+Summary:        Development API for %{name} applications
 Group:          Development/Tools
 License:        GPLv2+
-BuildRequires: 	epydoc
 Requires:       %{name} = %{version}-%{release}
 
 %description devel
-Translate Toolkit API documentation for localization classes and tools
+The %{name}-devel package contains Translate Toolkit API documentation for 
+developers wishing to build new tools or reuse the libraries in other tools.
 
 
 %prep
-%setup -q -n %{name}-%{version}rc4
+%setup -q -n %{name}-%{version}
+%patch1 -p1
 
 
 %build
 %{__python} setup.py build
-(cd translate; epydoc --debug --html --output ../html --name "Translate Toolkit" --url "http://translate.sourceforge.net" convert/ filters/ misc/ search/*.py services/ storage/ tools/)
 
 
 %install
@@ -66,15 +68,15 @@ rm -rf $RPM_BUILD_ROOT
 mkdir -p $RPM_BUILD_ROOT/%{_mandir}/man1
 for program in $RPM_BUILD_ROOT/%{_bindir}/*;
 do
-	case $(basename $program) in
-	pocompendium|poen|pomigrate2|popuretext|poreencode|posplit|pocount|poglossary|lookupclient.py)
-	  ;;
-	*)
-		LC_ALL=C PYTHONPATH=. $program --manpage \
-		>  $RPM_BUILD_ROOT/%{_mandir}/man1/$(basename $program).1 \
-		|| rm -f $RPM_BUILD_ROOT/%{_mandir}/man1/$(basename $program).1
-	  ;;
-	esac
+    case $(basename $program) in
+    pocompendium|poen|pomigrate2|popuretext|poreencode|posplit|pocount|poglossary|lookupclient.py)
+        ;;
+    *)
+        LC_ALL=C PYTHONPATH=. $program --manpage \
+        >  $RPM_BUILD_ROOT/%{_mandir}/man1/$(basename $program).1 \
+        || rm -f $RPM_BUILD_ROOT/%{_mandir}/man1/$(basename $program).1
+        ;;
+    esac
 done
 
 # remove documentation files from site-packages
@@ -99,10 +101,15 @@ rm -rf $RPM_BUILD_ROOT
 %exclude %{_bindir}/*.pyo
 
 %files devel
-%doc html/*
+%doc translate/doc/api/*
 
 
 %changelog
+* Thu Mar 27 2008 Dwayne Bailey <dwayne@translate.org.za> - 1.1.1-1.fc8
+- Update to official 1.1.1 release
+- Patches to fix internal project rename wordforge -> locamotion
+- Use included API documentation
+
 * Wed Mar 12 2008 Dwayne Bailey <dwayne@translate.org.za> - 1.1.1-0.4.rc4.fc8
 - Update to 1.1.1rc4
 
