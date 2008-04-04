@@ -30,17 +30,36 @@ class PyLuceneDatabase(PyLuceneIndexer.PyLuceneDatabase):
         @param require_all: boolean operator
             (True -> AND (default) / False -> OR)
         @type require_all: bool
+        @param analyzer: the analyzer to be used
+            possible analyzers are:
+                CommonDatabase.ANALYZER_TOKENIZE
+                    the field value is splitted to be matched word-wise
+                CommonDatabase.ANALYZER_PARTIAL
+                    the field value must start with the query string
+                CommonDatabase.ANALYZER_EXACT
+                    keep special characters and the like
+        @type analyzer: bool
         @return: resulting query object
         @rtype: PyLucene.Query
         """
-        qp = PyLucene.QueryParser()
+        if analyzer is None:
+            analyzer = self.analyzer
+        if analyzer == self.ANALYZER_EXACT:
+            # exact matching - no substitution ...
+            # for PyLucene: nothing special is necessary
+            pass
+        # don't care about special characters ...
+        if analyzer == self.ANALYZER_EXACT:
+            analyzer_obj = self.self.ExactAnalyzer()
+        else:
+            text = _escape_term_value(text)
+            analyzer_obj = PyLucene.StandardAnalyzer()
+        qp = PyLucene.QueryParser(analyzer=analyzer_obj)
         if require_all:
             qp.setDefaultOperator(qp.Operator.AND)
         else:
             qp.setDefaultOperator(qp.Operator.OR)
-        if analyzer == self.ANALYZER_EXACT:
-            pass
-        elif analyzer == self.ANALYZER_PARTIAL:
+        if (analyzer & self.ANALYZER_PARTIAL) > 0:
             # PyLucene uses explicit wildcards for partial matching
             text += "*"
         return qp.parse(text)
@@ -56,25 +75,27 @@ class PyLuceneDatabase(PyLuceneIndexer.PyLuceneDatabase):
         @type value: str
         @param analyzer: the analyzer to be used
             possible analyzers are:
-                CommonDatabase.ANALYZER_EXACT (default)
-                    the field value must excactly match the query string
+                CommonDatabase.ANALYZER_TOKENIZE
+                    the field value is splitted to be matched word-wise
                 CommonDatabase.ANALYZER_PARTIAL
                     the field value must start with the query string
+                CommonDatabase.ANALYZER_EXACT
+                    keep special characters and the like
         @type analyzer: bool
         @return: resulting query object
         @rtype: PyLucene.Query
         """
+        if analyzer is None:
+            analyzer = self.analyzer
         if analyzer == self.ANALYZER_EXACT:
-            pass
-        elif analyzer == self.ANALYZER_PARTIAL:
+            analyzer_obj = self.ExactAnalyzer()
+        else:
+            value = _escape_term_value(value)
+            analyzer_obj = PyLucene.StandardAnalyzer()
+        if (analyzer & self.ANALYZER_PARTIAL) > 0:
             # PyLucene uses explicit wildcards for partial matching
             value += "*"
-        else:
-            # invalid matching returned - maybe the field's default
-            # analyzer is broken?
-            raise ValueError("unknown analyzer selected (%d) " % analyzer \
-                    + "for field '%s'" % field)
-        return PyLucene.QueryParser.parse(value, field)
+        return PyLucene.QueryParser.parse(value, field, analyzer_obj)
 
     def _create_query_combined(self, queries, require_all=True):
         """generate a combined query
@@ -162,6 +183,6 @@ class PyLuceneDatabase(PyLuceneIndexer.PyLuceneDatabase):
         """open write access for the indexing database and acquire an
         exclusive lock
         """
-        super(PyLuceneIndexer1, self).__init__()
+        super(PyLuceneIndexer1, self)._writer_open_()
         self.writer.maxFieldLength = PyLuceneIndexer.MAX_FIELD_SIZE
 

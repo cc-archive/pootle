@@ -27,7 +27,7 @@ class XapianDatabase(CommonIndexer.CommonDatabase):
 
     QUERY_TYPE = xapian.Query
 
-    def __init__(self, location):
+    def __init__(self, location, analyzer=None):
         """initialize or open a xapian database
 
         The following exceptions can be raised:
@@ -37,10 +37,15 @@ class XapianDatabase(CommonIndexer.CommonDatabase):
 
         @param location: the path to the database (usually a directory)
         @type location: str
+        @param analyzer: bitwise combination of possible analyzer flags
+            to be used as the default analyzer for this database. Leave it empty
+            to use the system default analyzer (self.ANALYZER_DEFAULT).
+            see self.ANALYZER_TOKENIZE, self.ANALYZER_PARTIAL, ...
+        @type analyzer: int
         @throws: OSError, ValueError
         """
         # call the __init__ function of our parent
-        super(XapianDatabase, self).__init__(location)
+        super(XapianDatabase, self).__init__(location, analyzer)
         self.location = location
         if os.path.exists(location):
             # try to open an existing database
@@ -99,13 +104,13 @@ class XapianDatabase(CommonIndexer.CommonDatabase):
         @param require_all: boolean operator
             (True -> AND (default) / False -> OR)
         @type require_all: bool
-        @param analyzer: the analyzer to be used
-            possible analyzers are:
-                CommonDatabase.ANALYZER_EXACT (default)
-                    the field value must excactly match the query string
-                CommonDatabase.ANALYZER_PARTIAL
-                    the field value must start with the query string
-        @type analyzer: bool
+        @param analyzer: Define query options (partial matching, exact matching,
+            tokenizing, ...) as bitwise combinations of
+            CommonIndexer.ANALYZER_???.
+            This can override previously defined field analyzer settings.
+            If analyzer is None (default), then the configured analyzer for the
+            field is used.
+        @type analyzer: int
         @return: resulting query object
         @rtype: xapian.Query
         """
@@ -115,51 +120,54 @@ class XapianDatabase(CommonIndexer.CommonDatabase):
             qp.set_default_op(xapian.Query.OP_AND)
         else:
             qp.set_default_op(xapian.Query.OP_OR)
-        if (analyzer == self.ANALYZER_EXACT) or (analyzer is None):
-            match_flags = 0
-        elif analyzer == self.ANALYZER_PARTIAL:
+        if analyzer is None:
+            analyzer = self.analyzer
+        if analyzer & self.ANALYZER_PARTIAL > 0:
             match_flags = xapian.QueryParser.FLAG_PARTIAL
+            return qp.parse_query(text, match_flags)
+        elif analyzer == self.ANALYZER_EXACT:
+            # exact matching - 
+            return xapian.Query(text)
         else:
-            # invalid matching returned - maybe the field's default
-            # analyzer is broken?
-            raise ValueError("unknown analyzer: %d" % analyzer)
-        return qp.parse_query(text, match_flags)
+            # everything else (not partial and not exact)
+            match_flags = 0
+            return qp.parse_query(text, match_flags)
 
     def _create_query_for_field(self, field, value, analyzer=None):
         """generate a field query
 
         this functions creates a field->value query
 
-
         @param field: the fieldname to be used
         @type field: str
         @param value: the wanted value of the field
         @type value: str
-        @param analyzer: the analyzer to be used
-            possible analyzers are:
-                CommonDatabase.ANALYZER_EXACT (default)
-                    the field value must excactly match the query string
-                CommonDatabase.ANALYZER_PARTIAL
-                    the field value must start with the query string
-        @type analyzer: bool
+        @param analyzer: Define query options (partial matching, exact matching,
+            tokenizing, ...) as bitwise combinations of
+            CommonIndexer.ANALYZER_???.
+            This can override previously defined field analyzer settings.
+            If analyzer is None (default), then the configured analyzer for the
+            field is used.
+        @type analyzer: int
         @return: the resulting query object
         @rtype: xapian.Query
         """
+        if analyzer is None:
+            analyzer = self.analyzer
+        if analyzer == self.ANALYZER_EXACT:
+            # exact matching -> keep special characters
+            return xapian.Query("%s%s" % (field.upper(), value))
+        # other queries need a parser object
         qp = xapian.QueryParser()
         qp.set_database(self.database)
-        if analyzer == self.ANALYZER_EXACT:
-            match_flags = 0
-        elif analyzer == self.ANALYZER_PARTIAL:
+        if (analyzer & self.ANALYZER_PARTIAL > 0):
+            # partial matching
             match_flags = xapian.QueryParser.FLAG_PARTIAL
+            return qp.parse_query(value, match_flags, field.upper())
         else:
-            # invalid matching returned - maybe the field's default
-            # analyzer is broken?
-            raise ValueError("unknown analyzer selected (%d) " % analyzer \
-                    + "for field '%s'" % field)
-        # escape the query string and truncate if necessary
-        value = _truncate_term_length(value, len(field)+1)
-        # we search for a string with "field:" as default prefix
-        return qp.parse_query(value, match_flags, "%s:" % field)
+            # everything else (not partial and not exact)
+            match_flags = 0
+            return qp.parse_query(value, match_flags, field.upper())
 
     def _create_query_combined(self, queries, require_all=True):
         """generate a combined query
@@ -218,10 +226,10 @@ class XapianDatabase(CommonIndexer.CommonDatabase):
         if tokenize:
             term_gen = xapian.TermGenerator()
             term_gen.set_document(document)
-            term_gen.index_text(term, 1, "%s:" % field)
+            term_gen.index_text(term, 1, field.upper())
         else:
-            document.add_term(_truncate_term_length("%s:%s" % \
-                        (field, term)))
+            document.add_term(_truncate_term_length("%s%s" % \
+                        (field.upper(), term)))
 
     def _add_document_to_index(self, document):
         """add a prepared document to the index database
@@ -300,12 +308,22 @@ class XapianDatabase(CommonIndexer.CommonDatabase):
             fieldnames = [fieldnames]
         def extract_fieldvalue(match):
             """return lists of dicts of field values"""
+            # prepare empty dict
             item_fields = {}
+            # fill the dict
             for term in match["document"].termlist():
                 for fname in fieldnames:
-                    if term.term.startswith("%s:" % fname):
-                        # extract the remaining string
-                        item_fields[fname] = term.term[len(fname)+1:]
+                    if ((fname is None) and re.match("[^A-Z]", term.term)):
+                        value = term.term
+                    elif re.match("%s[^A-Z]" % str(fname).upper(), term.term):
+                        value = term.term[len(fname):]
+                    else:
+                        continue
+                    # we found a matching field/term
+                    if item_fields.has_key(fname):
+                        item_fields[fname].append(value)
+                    else:
+                        item_fields[fname] = [value]
             result.append(item_fields)
         self._walk_matches(query, extract_fieldvalue)
         return result
@@ -334,7 +352,7 @@ class XapianEnquire(CommonIndexer.CommonEnquire):
     def get_matches(self, start, number):
         """return a specified number of qualified matches of a previous query
 
-        @param start: the index of the first match to return
+        @param start: index of the first match to return (starting from zero)
         @type start: int
         @param number: the number of matching entries to return
         @type number: int
@@ -372,20 +390,4 @@ def _truncate_term_length(term, taken=0):
         return term[0:_MAX_TERM_LENGTH - taken - 1]
     else:
         return term
-
-def _escape_term_value(term):
-    """replace invalid characters of a term value with a safe character
-
-    This escaping is not reversible, thus it could possibly lead to collisions.
-    Since these collisions do not seem to be relevant, it should be safe to
-    ignore them.
-    
-    @param term: the term value to be escaped
-    @type term: str
-    @return: the escaped term string
-    @rtype: str
-    """
-    # replace non-alphanumeric characters with an underscore
-    # only lower case - queries are turned to lower case, too
-    return re.sub(u"[^\w\s]", "_", term).lower()
 

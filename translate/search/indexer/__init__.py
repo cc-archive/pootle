@@ -8,6 +8,14 @@ __revision__ = "$Id$"
 import CommonIndexer
 import os
 
+""" TODO for indexing engines:
+    * get rid of jToolkit.glock dependency
+    * add partial matching at the beginning of a term
+    * decide how to handle migration from database directory style A to B
+        (e.g.: pylucene was removed, so xapian is now used instead)
+    * do a proper cleanup - e.g.: the pylucene lockfiles remain in /tmp/
+    * do unittests for PyLucene v1.x
+    """
 
 def _get_available_indexers():
     """get a list of the available supported indexing engines

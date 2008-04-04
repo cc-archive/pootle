@@ -29,13 +29,19 @@ class CommonDatabase(object):
     ANALYZER_EXACT = 0
     """exact matching: the query string must equal the whole term string"""
 
-    ANALYZER_PARTIAL = 1
+    ANALYZER_PARTIAL = 1<<1
     """partial matching: a document matches, even if the query string only
-    matches the beginning of the term value"""
+    matches the beginning of the term value."""
+
+    ANALYZER_TOKENIZE = 1<<2
+    """tokenize terms and queries automatically"""
+
+    ANALYZER_DEFAULT = ANALYZER_TOKENIZE | ANALYZER_PARTIAL
+    """the default analyzer to be used if nothing is configured"""
 
     QUERY_TYPE = None
 
-    def __init__(self, location):
+    def __init__(self, location, analyzer=None):
         """initialize or open an indexing database
 
         Any derived class must override __init__.
@@ -47,8 +53,17 @@ class CommonDatabase(object):
 
         @param location: the path to the database (usually a directory)
         @type location: str
+        @param analyzer: bitwise combination of possible analyzer flags
+            to be used as the default analyzer for this database. Leave it empty
+            to use the system default analyzer (self.ANALYZER_DEFAULT).
+            see self.ANALYZER_TOKENIZE, self.ANALYZER_PARTIAL, ...
+        @type analyzer: int
         @throws: OSError, ValueError
         """
+        if analyzer is None:
+            self.analyzer = self.ANALYZER_DEFAULT
+        else:
+            self.analyzer = analyzer
         self.field_analyzers = {}
         # just do some checks
         if self.QUERY_TYPE is None:
@@ -67,7 +82,7 @@ class CommonDatabase(object):
         raise NotImplementedError("Incomplete indexer implementation: " \
                 + "'flush' is missing")
 
-    def make_query(self, args, require_all=True, match_text_partial=None):
+    def make_query(self, args, require_all=True, analyzer=None):
         """create simple queries (strings or field searches) or
         combine multiple queries (AND/OR)
 
@@ -85,10 +100,13 @@ class CommonDatabase(object):
         @param require_all: boolean operator
             (True -> AND (default) / False -> OR)
         @type require_all: boolean
-        @param match_partial_text: (only applicable for 'dict' or 'str')
-            even partial (truncated at the end) string matches are accepted
-            this can override previously defined field analyzer settings
-        @type match_partial_text: bool
+        @param analyzer: (only applicable for 'dict' or 'str')
+            Define query options (partial matching, exact matching, tokenizing,
+            ...) as bitwise combinations of CommonIndexer.ANALYZER_???.
+            This can override previously defined field analyzer settings.
+            If analyzer is None (default), then the configured analyzer for the
+            field is used.
+        @type analyzer: int
         @return: the combined query
         @rtype: query type of the specific implemention
         """
@@ -107,22 +125,15 @@ class CommonDatabase(object):
             # create field/value queries out of a tuple
             elif isinstance(query, tuple):
                 field, value = query
-                # check for the choosen match type ('exact' or 'partial')
-                match_type = None
-                if match_text_partial is True:
-                    analyzer = self.ANALYZER_PARTIAL
-                elif match_text_partial is False:
-                    analyzer = self.ANALYZER_EXACT
-                else:
+                # check for the choosen match type
+                if analyzer is None:
                     analyzer = self.get_field_analyzers(field)
                 result.append(self._create_query_for_field(field, value,
                         analyzer=analyzer))
             # parse plaintext queries
             elif isinstance(query, str):
-                if match_text_partial is True:
-                    analyzer = self.ANALYZER_PARTIAL
-                else:
-                    analyzer = self.ANALYZER_EXACT
+                if analyzer is None:
+                    analyzer = self.analyzer
                 result.append(self._create_query_for_string(query,
                         require_all=require_all, analyzer=analyzer))
             else:
@@ -146,7 +157,7 @@ class CommonDatabase(object):
                 + "'_create_query_for_query' is missing")
 
     def _create_query_for_string(self, text, require_all=True,
-            match_text_partial=None):
+            analyzer=None):
         """generate a query for a plain term of a string query
 
         basically this function parses the string and returns the resulting
@@ -157,6 +168,13 @@ class CommonDatabase(object):
         @param require_all: boolean operator
             (True -> AND (default) / False -> OR)
         @type require_all: bool
+        @param analyzer: Define query options (partial matching, exact matching,
+            tokenizing, ...) as bitwise combinations of
+            CommonIndexer.ANALYZER_???.
+            This can override previously defined field analyzer settings.
+            If analyzer is None (default), then the configured analyzer for the
+            field is used.
+        @type analyzer: int
         @return: resulting query object
         @rtype: xapian.Query | PyLucene.Query
         """
@@ -172,13 +190,13 @@ class CommonDatabase(object):
         @type field: str
         @param value: the wanted value of the field
         @type value: str
-        @param analyzer: the analyzer to be used
-            possible analyzers are:
-                CommonDatabase.ANALYZER_EXACT (default)
-                    the field value must excactly match the query string
-                CommonDatabase.ANALYZER_PARTIAL
-                    the field value must start with the query string
-        @type analyzer: bool
+        @param analyzer: Define query options (partial matching, exact matching,
+            tokenizing, ...) as bitwise combinations of
+            CommonIndexer.ANALYZER_???.
+            This can override previously defined field analyzer settings.
+            If analyzer is None (default), then the configured analyzer for the
+            field is used.
+        @type analyzer: int
         @return: resulting query object
         @rtype: xapian.Query | PyLucene.Query
         """
@@ -199,7 +217,7 @@ class CommonDatabase(object):
         raise NotImplementedError("Incomplete indexer implementation: " \
                 + "'_create_query_combined' is missing")
 
-    def index_document(self, data, tokenize=True):
+    def index_document(self, data):
         """add the given data to the database
 
         @param data: the data to be indexed.
@@ -208,8 +226,6 @@ class CommonDatabase(object):
             plain term or as a list of plain terms.
             Lists of strings are treated as plain terms.
         @type data: dict | list of str
-        @param tokenize: should the term be tokenized automatically
-        @type tokenize: bool
         """
         doc = self._create_empty_document()
         if isinstance(data, dict):
@@ -229,12 +245,14 @@ class CommonDatabase(object):
                                 % str(type(data)))
                     for one_term in terms:
                         self._add_plain_term(doc, self._decode(one_term),
-                                tokenize)
+                                (self.ANALYZER_DEFAULT & self.ANALYZER_TOKENIZE > 0))
                 else:
+                    analyze_settings = self.get_field_analyzers(key)
                     self._add_field_term(doc, key, self._decode(value),
-                            tokenize)
+                            (analyze_settings & self.ANALYZER_TOKENIZE > 0))
             elif isinstance(dataset, str):
-                self._add_plain_term(doc, self._decode(dataset), tokenize)
+                self._add_plain_term(doc, self._decode(dataset),
+                        (self.ANALYZER_DEFAULT & self.ANALYZER_TOKENIZE > 0))
             else:
                 raise ValueError("Invalid data type to be indexed: %s" \
                         % str(type(data)))
@@ -374,11 +392,12 @@ class CommonDatabase(object):
         if isinstance(ident_list[0], dict):
             # something like: { "msgid": "foobar" }
             # assemble all queries
-            query = self.make_query([self.make_query(query_dict, True)
-                    for query_dict in ident_list], True)
+            query = self.make_query([self.make_query(query_dict,
+                    require_all=True) for query_dict in ident_list],
+                    require_all=True)
         elif isinstance(ident_list[0], object):
             # assume a query object (with 'AND')
-            query = self.make_query(ident_list, True)
+            query = self.make_query(ident_list, require_all=True)
         else:
             # invalid element type in list (not necessarily caught in the 
             # lines above)
@@ -419,11 +438,7 @@ class CommonDatabase(object):
     def set_field_analyzers(self, field_analyzers):
         """set the analyzers for different fields of the database documents
 
-        possible analyzers are:
-            CommonDatabase.ANALYZER_EXACT (default)
-                the field value must excactly match the query string
-            CommonDatabase.ANALYZER_PARTIAL
-                the field value must start with the query string
+        All bitwise combinations of CommonIndexer.ANALYZER_??? are possible.
 
         @param field_analyzers: mapping of field names and analyzers
         @type field_analyzers: dict containing field names and analyzers
@@ -443,16 +458,13 @@ class CommonDatabase(object):
 
         see 'set_field_analyzers' for details
 
-        The default analyzer is CommonDatabase.ANALYZER_EXACT
-
         @param fieldnames: the analyzer of this field (or all/multiple fields)
             is requested; leave empty (or "None") to request all fields
         @type fieldnames: str | list of str | None
-        @return: the analyzer of the field - e.g. CommonDatabase.ANALYZER_EXACT
-            or a dict of field names and analyzers
+        @return: the analyzer setting of the field - see
+            CommonDatabase.ANALYZER_??? or a dict of field names and analyzers
         @rtype: int | dict
         """
-        default = self.ANALYZER_EXACT
         # all field analyzers are requested
         if fieldnames is None:
             # return a copy
@@ -462,14 +474,14 @@ class CommonDatabase(object):
             if self.field_analyzers.has_key(fieldnames):
                 return self.field_analyzers[fieldnames]
             else:
-                return default
+                return self.analyzer
         # a list of fields is requested
         if isinstance(fieldnames, list):
             result = {}
             for field in fieldnames:
                 result[field] = self.get_field_analyzers(field)
             return result
-        return default
+        return self.analyzer
 
     def _decode(self, text):
         """decode the string from utf-8 or charmap"""
@@ -499,7 +511,7 @@ class CommonEnquire(object):
     def get_matches(self, start, number):
         """return a specified number of qualified matches of a previous query
 
-        @param start: the index of the first match to return
+        @param start: index of the first match to return (starting from zero)
         @type start: int
         @param number: the number of matching entries to return
         @type number: int

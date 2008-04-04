@@ -57,9 +57,14 @@ def create_example_content(database):
             None: ["HELO", "foo"]})
     database.index_document({ None: "med" })
     # for tokenizing tests
+    database.set_field_analyzers({
+            "fname1": database.ANALYZER_PARTIAL | database.ANALYZER_TOKENIZE,
+            "fname2": database.ANALYZER_EXACT})
     database.index_document({"fname1": "qaz wsx", None: "edc rfv"})
-    database.index_document({"fname2": "qaz wsx", None: "edc rfv"}, tokenize=False)
-    assert _get_number_of_docs(database) == 8
+    database.index_document({"fname2": "qaz wsx", None: "edc rfv"})
+    # check a filename with the exact analyzer
+    database.index_document({"fname2": "foo-bar.po"})
+    assert _get_number_of_docs(database) == 9
 
 def test_create_database():
     """create a new database from scratch"""
@@ -109,16 +114,18 @@ def test_partial_text_matching():
     # initialize the database with example content
     new_db = _get_indexer(DATABASE)
     create_example_content(new_db)
-    # this query should return two matches (no wildcard by default)
-    q_plain_partial1 = new_db.make_query("bar")
+    # this query should return three matches (disabled partial matching)
+    q_plain_partial1 = new_db.make_query("bar",
+            analyzer=(new_db.analyzer ^ new_db.ANALYZER_PARTIAL))
     r_plain_partial1 = new_db.get_query_result(q_plain_partial1).get_matches(0,10)
     assert r_plain_partial1[0] == 2
     # this query should return three matches (wildcard works)
-    q_plain_partial2 = new_db.make_query("bar", match_text_partial=True)
+    q_plain_partial2 = new_db.make_query("bar", analyzer=new_db.ANALYZER_PARTIAL)
     r_plain_partial2 = new_db.get_query_result(q_plain_partial2).get_matches(0,10)
     assert r_plain_partial2[0] == 3
-    # this query should return two matches (the wildcard is ignored by default)
-    q_plain_partial3 = new_db.make_query("bar*")
+    # return two matches (the wildcard is ignored without PARTIAL)
+    q_plain_partial3 = new_db.make_query("bar*",
+            analyzer=(new_db.analyzer ^ new_db.ANALYZER_PARTIAL))
     r_plain_partial3 = new_db.get_query_result(q_plain_partial3).get_matches(0,10)
     assert r_plain_partial3[0] == 2
     # clean up
@@ -141,7 +148,7 @@ def test_field_matching():
     r_field2 = new_db.get_query_result(q_field2).get_matches(0,10)
     assert r_field2[0] == 1
     # do an incomplete field search with a dict argument - should fail
-    q_field3 = new_db.make_query({"fname1":"foo_field"})
+    q_field3 = new_db.make_query({"fname2":"foo_field"})
     r_field3 = new_db.get_query_result(q_field3).get_matches(0,10)
     assert r_field3[0] == 0
     # do an AND field search with a dict argument
@@ -153,7 +160,7 @@ def test_field_matching():
     r_field5 = new_db.get_query_result(q_field5).get_matches(0,10)
     assert r_field5[0] == 2
     # do an incomplete field search with a partial field analyzer
-    q_field6 = new_db.make_query({"fname1":"foo_field"}, match_text_partial=True)
+    q_field6 = new_db.make_query({"fname1":"foo_field"}, analyzer=new_db.ANALYZER_PARTIAL)
     r_field6 = new_db.get_query_result(q_field6).get_matches(0,10)
     assert r_field6[0] == 1
     # clean up
@@ -166,16 +173,22 @@ def test_field_analyzers():
     # initialize the database with example content
     new_db = _get_indexer(DATABASE)
     create_example_content(new_db)
-    # do an incomplete field search with (default) exact analyzer
+    # do an incomplete field search with partial analyzer (configured for this field)
     q_field1 = new_db.make_query({"fname1":"bar_field"})
     r_field1 = new_db.get_query_result(q_field1).get_matches(0,10)
-    assert r_field1[0] == 0
+    assert r_field1[0] == 1
     # check the get/set field analyzer functions
+    old_analyzer = new_db.get_field_analyzers("fname1")
+    new_db.set_field_analyzers({"fname1":new_db.ANALYZER_EXACT})
     assert new_db.get_field_analyzers("fname1") == new_db.ANALYZER_EXACT
     new_db.set_field_analyzers({"fname1":new_db.ANALYZER_PARTIAL})
     assert new_db.get_field_analyzers("fname1") == new_db.ANALYZER_PARTIAL
+    # restore previous setting
+    new_db.set_field_analyzers({"fname1":old_analyzer})
+    # check if ANALYZER_TOKENIZE is the default
+    assert (new_db.get_field_analyzers("thisFieldDoesNotExist") & new_db.ANALYZER_TOKENIZE) > 0
     # do an incomplete field search - now we use the partial analyzer
-    q_field2 = new_db.make_query({"fname1":"bar_field"})
+    q_field2 = new_db.make_query({"fname1":"bar_field"}, analyzer=new_db.ANALYZER_PARTIAL)
     r_field2 = new_db.get_query_result(q_field2).get_matches(0,10)
     assert r_field2[0] == 1
     # clean up
@@ -188,16 +201,19 @@ def test_and_queries():
     # initialize the database with example content
     new_db = _get_indexer(DATABASE)
     create_example_content(new_db)
-    # do an AND query
-    q_and1 = new_db.make_query("foo bar")
+    # do an AND query (partial matching disabled)
+    q_and1 = new_db.make_query("foo bar",
+            analyzer=(new_db.analyzer ^ new_db.ANALYZER_PARTIAL))
     r_and1 = new_db.get_query_result(q_and1).get_matches(0,10)
     assert r_and1[0] == 2
     # do the same AND query in a different way
-    q_and2 = new_db.make_query(["foo", "bar"])
+    q_and2 = new_db.make_query(["foo", "bar"],
+            analyzer=(new_db.analyzer ^ new_db.ANALYZER_PARTIAL))
     r_and2 = new_db.get_query_result(q_and2).get_matches(0,10)
     assert r_and2[0] == 2
     # do an AND query without results
-    q_and3 = new_db.make_query(["HELO", "bar", "med"])
+    q_and3 = new_db.make_query(["HELO", "bar", "med"],
+            analyzer=(new_db.analyzer ^ new_db.ANALYZER_PARTIAL))
     r_and3 = new_db.get_query_result(q_and3).get_matches(0,10)
     assert r_and3[0] == 0
     # clean up
@@ -233,7 +249,8 @@ def test_lower_upper_case():
     new_db = _get_indexer(DATABASE)
     create_example_content(new_db)
     # use upper case search terms for lower case indexed terms
-    q_case1 = new_db.make_query("BAR")
+    q_case1 = new_db.make_query("BAR",
+            analyzer=(new_db.analyzer ^ new_db.ANALYZER_PARTIAL))
     r_case1 = new_db.get_query_result(q_case1).get_matches(0,10)
     assert r_case1[0] == 2
     # use lower case search terms for upper case indexed terms
@@ -241,7 +258,8 @@ def test_lower_upper_case():
     r_case2 = new_db.get_query_result(q_case2).get_matches(0,10)
     assert r_case2[0] == 3
     # use lower case search terms for lower case indexed terms
-    q_case3 = new_db.make_query("bar")
+    q_case3 = new_db.make_query("bar",
+            analyzer=(new_db.analyzer ^ new_db.ANALYZER_PARTIAL))
     r_case3 = new_db.get_query_result(q_case3).get_matches(0,10)
     assert r_case3[0] == 2
     # use upper case search terms for upper case indexed terms
@@ -252,7 +270,7 @@ def test_lower_upper_case():
     clean_database()
 
 def test_tokenizing():
-    """test if case is ignored for queries and for indexed terms"""
+    """test if the TOKENIZE analyzer field setting is honoured"""
     # clean up everything first
     clean_database()
     # initialize the database with example content
@@ -261,11 +279,44 @@ def test_tokenizing():
     # check if the plain term was tokenized
     q_token1 = new_db.make_query("rfv")
     r_token1 = new_db.get_query_result(q_token1).get_matches(0,10)
-    assert r_token1[0] == 1
+    assert r_token1[0] == 2
     # check if the field term was tokenized
     q_token2 = new_db.make_query({"fname1":"wsx"})
-    r_token2 = new_db.get_query_result(q_token1).get_matches(0,10)
+    r_token2 = new_db.get_query_result(q_token2).get_matches(0,10)
     assert r_token2[0] == 1
+    # check that the other field term was not tokenized
+    q_token3 = new_db.make_query({"fname2":"wsx"})
+    r_token3 = new_db.get_query_result(q_token3).get_matches(0,10)
+    assert r_token3[0] == 0
+    # check that the other field term was not tokenized
+    q_token4 = new_db.make_query({"fname2":"foo-bar.po"})
+    #q_token4 = new_db.make_query("poo-foo.po")
+    r_token4 = new_db.get_query_result(q_token4).get_matches(0,10)
+    # problem can be fixed by adding "TOKENIZE" to the field before populating the database -> this essentially splits the document term into pieces
+    assert r_token4[0] == 1
+    # clean up
+    clean_database()
+
+def test_searching():
+    """test if searching (retrieving specified field values) works"""
+    # clean up everything first
+    clean_database()
+    # initialize the database with example content
+    new_db = _get_indexer(DATABASE)
+    create_example_content(new_db)
+    q_search1 = new_db.make_query({"fname1": "bar_field1"})
+    r_search1 = new_db.search(q_search1, ["fname2", None])
+    assert len(r_search1) == 1
+    dict_search1 = r_search1[0]
+    assert dict_search1.has_key("fname2") and \
+            (dict_search1["fname2"] == ["foo_field2"])
+    # a stupid way for checking, if the second field list is also correct
+    # (without caring for the order of the list)
+    assert dict_search1.has_key(None)
+    # TODO: for now PyLucene cares for case, while xapian doesn't - FIXME
+    list_search1_sorted = [item.lower() for item in dict_search1[None]]
+    list_search1_sorted.sort()
+    assert list_search1_sorted == ["foo", "helo"]
     # clean up
     clean_database()
 
@@ -293,8 +344,10 @@ def _show_database_xapian(database):
             document = database.database.get_document(index)
         except xapian.DocNotFoundError:
             continue
+        # print the document's terms and their positions
         print "\tDocument [%d]: %s" % (index,
-                str([one_term.term for one_term in document.termlist()]))
+                str([(one_term.term, [posi for posi in one_term.positer])
+                for one_term in document.termlist()]))
 
 
 def _get_number_of_docs(database):
@@ -335,6 +388,8 @@ if __name__ == "__main__":
         test_or_queries()
         test_lower_upper_case()
         test_tokenizing()
+        test_searching()
         # TODO: add test for document deletion
         # TODO: add test for transaction handling
+    clean_database()
 

@@ -29,7 +29,7 @@ class PyLuceneDatabase(CommonIndexer.CommonDatabase):
 
     QUERY_TYPE = PyLucene.Query
 
-    def __init__(self, location):
+    def __init__(self, location, analyzer=None):
         """initialize or open an indexing database
 
         Any derived class must override __init__.
@@ -41,11 +41,16 @@ class PyLuceneDatabase(CommonIndexer.CommonDatabase):
 
         @param location: the path to the database (usually a directory)
         @type location: str
+        @param analyzer: bitwise combination of possible analyzer flags
+            to be used as the default analyzer for this database. Leave it empty
+            to use the system default analyzer (self.ANALYZER_DEFAULT).
+            see self.ANALYZER_TOKENIZE, self.ANALYZER_PARTIAL, ...
+        @type analyzer: int
         @throws: OSError, ValueError
         """
-        super(PyLuceneDatabase, self).__init__(location)
+        super(PyLuceneDatabase, self).__init__(location, analyzer)
         self.location = location
-        self.analyzer = PyLucene.StandardAnalyzer()
+        self.pyl_analyzer = PyLucene.StandardAnalyzer()
         self.writer = None
         self.reader = None
         self.index_version = None
@@ -61,7 +66,7 @@ class PyLuceneDatabase(CommonIndexer.CommonDatabase):
             # Create the index, so we can open cached readers on it
             try:
                 tempwriter = PyLucene.IndexWriter(self.location,
-                        self.analyzer, True)
+                        self.pyl_analyzer, True)
                 tempwriter.close()
             except PyLucene.JavaError, err_msg:
                 raise OSError("Indexer: failed to open or create a Lucene" \
@@ -110,17 +115,15 @@ class PyLuceneDatabase(CommonIndexer.CommonDatabase):
         @param optimize: should the index be optimized if possible?
         @type optimize: bool
         """
-        if not self._writer_is_open():
-            # the indexer is closed - no need to do something
-            return
-        try:
-            if optimize:
-                self.writer.optimize()
-        finally:
-            # close the database even if optimizing failed
-            self._writer_close()
-            # the reader/searcher needs an update, too
-            self._index_refresh()
+        if self._writer_is_open():
+            try:
+                if optimize:
+                    self.writer.optimize()
+            finally:
+                # close the database even if optimizing failed
+                self._writer_close()
+        # the reader/searcher needs an update, too
+        self._index_refresh()
 
     def _create_query_for_query(self, query):
         """generate a query based on an existing query object
@@ -148,15 +151,27 @@ class PyLuceneDatabase(CommonIndexer.CommonDatabase):
         @param require_all: boolean operator
             (True -> AND (default) / False -> OR)
         @type require_all: bool
+        @param analyzer: the analyzer to be used
+            possible analyzers are:
+                CommonDatabase.ANALYZER_TOKENIZE
+                    the field value is splitted to be matched word-wise
+                CommonDatabase.ANALYZER_PARTIAL
+                    the field value must start with the query string
+                CommonDatabase.ANALYZER_EXACT
+                    keep special characters and the like
+        @type analyzer: bool
         @return: resulting query object
         @rtype: PyLucene.Query
         """
-        text = _escape_term_value(text)
-        qp = PyLucene.QueryParser(UNNAMED_FIELD_NAME,
-                PyLucene.StandardAnalyzer())
+        if analyzer is None:
+            analyzer = self.analyzer
         if analyzer == self.ANALYZER_EXACT:
-            pass
-        elif analyzer == self.ANALYZER_PARTIAL:
+            analyzer_obj = self.self.ExactAnalyzer()
+        else:
+            text = _escape_term_value(text)
+            analyzer_obj = PyLucene.StandardAnalyzer()
+        qp = PyLucene.QueryParser(UNNAMED_FIELD_NAME, analyzer_obj)
+        if (analyzer & self.ANALYZER_PARTIAL > 0):
             # PyLucene uses explicit wildcards for partial matching
             text += "*"
         if require_all:
@@ -176,27 +191,28 @@ class PyLuceneDatabase(CommonIndexer.CommonDatabase):
         @type value: str
         @param analyzer: the analyzer to be used
             possible analyzers are:
-                CommonDatabase.ANALYZER_EXACT (default)
-                    the field value must excactly match the query string
+                CommonDatabase.ANALYZER_TOKENIZE
+                    the field value is splitted to be matched word-wise
                 CommonDatabase.ANALYZER_PARTIAL
                     the field value must start with the query string
+                CommonDatabase.ANALYZER_EXACT
+                    keep special characters and the like
         @type analyzer: bool
         @return: resulting query object
         @rtype: PyLucene.Query
         """
-        value = _escape_term_value(value)
+        if analyzer is None:
+            analyzer = self.analyzer
         if analyzer == self.ANALYZER_EXACT:
-            pass
-        elif analyzer == self.ANALYZER_PARTIAL:
+            analyzer_obj = self.ExactAnalyzer()
+        else:
+            value = _escape_term_value(value)
+            analyzer_obj = PyLucene.StandardAnalyzer()
+        qp = PyLucene.QueryParser(field, analyzer_obj)
+        if (analyzer & self.ANALYZER_PARTIAL > 0):
             # PyLucene uses explicit wildcards for partial matching
             value += "*"
-        else:
-            # invalid matching returned - maybe the field's default
-            # analyzer is broken?
-            raise ValueError("unknown analyzer selected (%d) " % analyzer \
-                    + "for field '%s'" % field)
-        return PyLucene.QueryParser(field,
-                PyLucene.StandardAnalyzer()).parse(value)
+        return qp.parse(value)
 
     def _create_query_combined(self, queries, require_all=True):
         """generate a combined query
@@ -297,7 +313,7 @@ class PyLuceneDatabase(CommonIndexer.CommonDatabase):
         See 'start_transaction' for details.
         """
         self._writer_close()
-        self.flush()
+        self._index_refresh()
 
     def get_query_result(self, query):
         """return an object containing the results of a query
@@ -337,9 +353,12 @@ class PyLuceneDatabase(CommonIndexer.CommonDatabase):
         for hit, doc in hits:
             fields = {}
             for fieldname in fieldnames:
-                content = doc.get(fieldname)
-                if not content is None:
-                    fields[fieldname] = content
+                # take care for the special field "None"
+                if fieldname is None:
+                    pyl_fieldname = UNNAMED_FIELD_NAME
+                else:
+                    pyl_fieldname = fieldname
+                fields[fieldname] = doc.getValues(pyl_fieldname)
             result.append(fields)
         return result
 
@@ -347,9 +366,9 @@ class PyLuceneDatabase(CommonIndexer.CommonDatabase):
         """open write access for the indexing database and acquire an
         exclusive lock
         """
-        if self.writer is None:
+        if not self._writer_is_open():
             self.dir_lock.acquire()
-            self.writer = PyLucene.IndexWriter(self.location, self.analyzer,
+            self.writer = PyLucene.IndexWriter(self.location, self.pyl_analyzer,
                     False)
             # "setMaxFieldLength" is available since PyLucene v2
             # we must stay compatible to v1 for the derived class
@@ -360,13 +379,10 @@ class PyLuceneDatabase(CommonIndexer.CommonDatabase):
 
     def _writer_close(self):
         """close indexing write access and remove the database lock"""
-        if self.writer is None:
-            # do nothing, if it is already closed
-            return
-        self.writer.close()
-        self.writer = None
-        self.dir_lock.release()
-        # just to make sure that the lock is removed
+        if self._writer_is_open():
+            self.writer.close()
+            self.writer = None
+        # make sure that the lock is removed
         self.dir_lock.forcerelease()
 
     def _writer_is_open(self):
@@ -399,6 +415,21 @@ class PyLuceneDatabase(CommonIndexer.CommonDatabase):
         self.dir_lock.release()
 
 
+    class ExactAnalyzer(object):
+        """a basic class that implements an exact analyzer -> special characters
+        stay untouched
+        """
+
+        def tokenStream(self, fieldName, reader):
+            """tokenStream method for PyLucene"""
+            input = reader.read()
+            return iter([PyLucene.Token(input, 0, len(input)), None])
+
+        def __call__(self, string):
+            """call method for Lupy"""
+            return [string]
+
+
 class PyLuceneHits(CommonIndexer.CommonEnquire):
     """an enquire object contains the information about the result of a request
     """
@@ -406,7 +437,7 @@ class PyLuceneHits(CommonIndexer.CommonEnquire):
     def get_matches(self, start, number):
         """return a specified number of qualified matches of a previous query
 
-        @param start: the index of the first match to return
+        @param start: index of the first match to return (starting from zero)
         @type start: int
         @param number: the number of matching entries to return
         @type number: int
