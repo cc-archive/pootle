@@ -50,7 +50,7 @@ class PyLuceneDatabase(PyLuceneIndexer.PyLuceneDatabase):
             pass
         # don't care about special characters ...
         if analyzer == self.ANALYZER_EXACT:
-            analyzer_obj = self.self.ExactAnalyzer()
+            analyzer_obj = self.ExactAnalyzer()
         else:
             text = _escape_term_value(text)
             analyzer_obj = PyLucene.StandardAnalyzer()

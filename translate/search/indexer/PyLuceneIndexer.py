@@ -166,7 +166,7 @@ class PyLuceneDatabase(CommonIndexer.CommonDatabase):
         if analyzer is None:
             analyzer = self.analyzer
         if analyzer == self.ANALYZER_EXACT:
-            analyzer_obj = self.self.ExactAnalyzer()
+            analyzer_obj = self.ExactAnalyzer()
         else:
             text = _escape_term_value(text)
             analyzer_obj = PyLucene.StandardAnalyzer()

@@ -128,6 +128,13 @@ def test_partial_text_matching():
             analyzer=(new_db.analyzer ^ new_db.ANALYZER_PARTIAL))
     r_plain_partial3 = new_db.get_query_result(q_plain_partial3).get_matches(0,10)
     assert r_plain_partial3[0] == 2
+    # partial matching at the start of the string
+    # TODO: enable this as soon, as partial matching works at the beginning of text
+    #q_plain_partial4 = new_db.make_query("*ar",
+    #        analyzer=new_db.ANALYZER_EXACT)
+    #        analyzer=(new_db.analyzer ^ new_db.ANALYZER_PARTIAL))
+    #r_plain_partial4 = new_db.get_query_result(q_plain_partial4).get_matches(0,10)
+    #assert r_plain_partial4[0] == 2
     # clean up
     clean_database()
 
