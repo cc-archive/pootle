@@ -61,6 +61,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/*
 %{_datadir}/*
 %{python_sitelib}/virtaal*
+%{python_sitelib}/*egg-info
 %exclude %{_bindir}/*.pyc
 %exclude %{_bindir}/*.pyo
 
