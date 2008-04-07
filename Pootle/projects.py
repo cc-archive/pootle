@@ -763,6 +763,12 @@ class TranslationProject(object):
     class indexconfig:
       indexdir = self.indexdir
     self.indexer = indexer.get_indexer(self.indexdir)
+    """
+    self.indexer.set_field_analyzers({
+            "pofilename": self.indexer.ANALYZER_EXACT,
+            "itemno": self.indexer.ANALYZER_EXACT,
+            "pomtime": self.indexer.ANALYZER_EXACT})
+    """
     self.indexer.set_field_analyzers({"pofilename": self.indexer.ANALYZER_EXACT})
     pofilenames = self.pofiles.keys()
     pofilenames.sort()
@@ -867,7 +873,9 @@ class TranslationProject(object):
     if indexer.HAVE_INDEXER and search.searchtext:
       # TODO: move this up a level, use index to manage whole search, so we don't do this twice
       hits = self.indexsearch(search, "pofilename")
-      searchpofilenames = dict.fromkeys([hit["pofilename"] for hit in hits])
+      # there will be only result for the field "pofilename" - so we just
+      # pick the first
+      searchpofilenames = dict.fromkeys([hit["pofilename"][0] for hit in hits])
     else:
       searchpofilenames = None
     for pofilename in self.iterpofilenames(lastpofilename, includelast):
@@ -887,7 +895,9 @@ class TranslationProject(object):
         filesearch = search.copy()
         filesearch.dirfilter = pofilename
         hits = self.indexsearch(filesearch, "itemno")
-        items = [int(doc["itemno"]) for doc in hits]
+        # there will be only result for the field "itemno" - so we just
+        # pick the first
+        items = [int(doc["itemno"][0]) for doc in hits]
         items = [searchitem for searchitem in items if searchitem > item]
         items.sort()
         notextsearch = search.copy()
