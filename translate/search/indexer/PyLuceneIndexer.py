@@ -7,13 +7,20 @@ take a look at PyLuceneIndexer1.py for the PyLucene v1.x interface
 __revision__ = "$Id$"
 
 import CommonIndexer
-import PyLucene
 # TODO: replace this dependency on the jToolkit
 import jToolkit.glock
 import tempfile
 import re
 import os
 import time
+
+# try to import the PyLucene package (with the two possible names)
+try:
+	import PyLucene
+except ImportError:
+	# if this fails, then there is no pylucene installed
+	import lucene
+	PyLucene = lucene
 
 
 UNNAMED_FIELD_NAME = "FieldWithoutAName"
@@ -482,7 +489,7 @@ def _get_pylucene_version():
     @return: 1 -> PyLucene v1.x / 2 -> PyLucene v2.x / 0 -> unknown
     @rtype: int
     """
-    version = PyLucene.LUCENE_VERSION
+    version = PyLucene.VERSION
     if version.startswith("1."):
         return 1
     elif version.startswith("2."):
