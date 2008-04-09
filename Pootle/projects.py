@@ -763,13 +763,10 @@ class TranslationProject(object):
     class indexconfig:
       indexdir = self.indexdir
     self.indexer = indexer.get_indexer(self.indexdir)
-    """
     self.indexer.set_field_analyzers({
             "pofilename": self.indexer.ANALYZER_EXACT,
             "itemno": self.indexer.ANALYZER_EXACT,
             "pomtime": self.indexer.ANALYZER_EXACT})
-    """
-    self.indexer.set_field_analyzers({"pofilename": self.indexer.ANALYZER_EXACT})
     pofilenames = self.pofiles.keys()
     pofilenames.sort()
     for pofilename in pofilenames:
