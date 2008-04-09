@@ -15,12 +15,17 @@ import os
 import time
 
 # try to import the PyLucene package (with the two possible names)
+# remember the type of the detected package (compiled with jcc (>=v2.3) or
+# with gcj (<=v2.2)
 try:
 	import PyLucene
+        _COMPILER = 'gcj'
 except ImportError:
 	# if this fails, then there is no pylucene installed
 	import lucene
 	PyLucene = lucene
+	PyLucene.initVM(PyLucene.CLASSPATH)
+        _COMPILER = 'jcc'
 
 
 UNNAMED_FIELD_NAME = "FieldWithoutAName"
@@ -173,7 +178,7 @@ class PyLuceneDatabase(CommonIndexer.CommonDatabase):
         if analyzer is None:
             analyzer = self.analyzer
         if analyzer == self.ANALYZER_EXACT:
-            analyzer_obj = self.ExactAnalyzer()
+            analyzer_obj = PyLucene.KeywordAnalyzer()
         else:
             text = _escape_term_value(text)
             analyzer_obj = PyLucene.StandardAnalyzer()
@@ -211,7 +216,7 @@ class PyLuceneDatabase(CommonIndexer.CommonDatabase):
         if analyzer is None:
             analyzer = self.analyzer
         if analyzer == self.ANALYZER_EXACT:
-            analyzer_obj = self.ExactAnalyzer()
+            analyzer_obj = PyLucene.KeywordAnalyzer()
         else:
             value = _escape_term_value(value)
             analyzer_obj = PyLucene.StandardAnalyzer()
@@ -356,6 +361,9 @@ class PyLuceneDatabase(CommonIndexer.CommonDatabase):
         if isinstance(fieldnames, str):
             fieldnames = [fieldnames]
         hits = self.searcher.search(query)
+        if _COMPILER == 'jcc':
+            # add the ranking number and the retrieved document to the array
+            hits = [(hit, hits.doc(hit)) for hit in range(hits.length())]
         result = []
         for hit, doc in hits:
             fields = {}
@@ -421,20 +429,6 @@ class PyLuceneDatabase(CommonIndexer.CommonDatabase):
             pass
         self.dir_lock.release()
 
-
-    class ExactAnalyzer(object):
-        """a basic class that implements an exact analyzer -> special characters
-        stay untouched
-        """
-
-        def tokenStream(self, fieldName, reader):
-            """tokenStream method for PyLucene"""
-            input = reader.read()
-            return iter([PyLucene.Token(input, 0, len(input)), None])
-
-        def __call__(self, string):
-            """call method for Lupy"""
-            return [string]
 
 
 class PyLuceneHits(CommonIndexer.CommonEnquire):
