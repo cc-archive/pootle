@@ -16,6 +16,7 @@ Patch0:         virtaal-glade-location.patch
 
 BuildArch:      noarch
 BuildRequires:  python-devel
+BuildRequires:  desktop-file-utils
 Requires:       translate-toolkit
 Requires:       pygtk2
 Requires:       gnome-python2-gtkspell
@@ -48,6 +49,7 @@ rm -rf $RPM_BUILD_ROOT
 %{__python} setup.py install -O1 --skip-build --install-data=/usr/share --root $RPM_BUILD_ROOT
 mv $RPM_BUILD_ROOT/usr/share/%{name}/data/virtaal.glade $RPM_BUILD_ROOT/usr/share/%{name}
 rmdir $RPM_BUILD_ROOT/usr/share/%{name}/data
+desktop-file-install --vendor="fedora" --dir=%{buildroot}%{_datadir}/applications virtaal.desktop
 
 
 %clean
