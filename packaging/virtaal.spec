@@ -2,7 +2,7 @@
 
 Name:           virtaal
 Version:        0.1
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Localization and translation editor
 
 Group:          Development/Tools
@@ -47,9 +47,19 @@ OpenOffice.org SDF, Java (and Mozilla) .properties, Qt .ts and Mozilla DTD.
 %install
 rm -rf $RPM_BUILD_ROOT
 %{__python} setup.py install -O1 --skip-build --install-data=/usr/share --root $RPM_BUILD_ROOT
-mv $RPM_BUILD_ROOT/usr/share/%{name}/data/virtaal.glade $RPM_BUILD_ROOT/usr/share/%{name}
-rmdir $RPM_BUILD_ROOT/usr/share/%{name}/data
-desktop-file-install --vendor="fedora" --dir=%{buildroot}%{_datadir}/applications virtaal.desktop
+mv %{buildroot}%{_bindir}/run_virtaal.py %{buildroot}%{_bindir}/virtaal
+desktop-file-install --vendor="fedora" --delete-original \
+   --dir=%{buildroot}%{_datadir}/applications            \
+   %{buildroot}%{_datadir}/applications/%{name}.desktop
+
+
+%post
+update-desktop-database &> /dev/null || :
+update-mime-database %{_datadir}/mime &> /dev/null || :
+
+%postun
+update-desktop-database &> /dev/null || :
+update-mime-database %{_datadir}/mime &> /dev/null || :
 
 
 %clean
@@ -64,10 +74,14 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/*
 %{python_sitelib}/virtaal*
 %{python_sitelib}/*egg-info
-%exclude %{_bindir}/*.pyc
-%exclude %{_bindir}/*.pyo
 
 
 %changelog
+* Sat Apr 12 2008 Dwayne Bailey <dwayne@translate.org.za> - 0.1-2.fc8
+- Executable s/run_virtaal.py/virtaal/
+- Remove .glade movement, ./setup.py install it correctly now
+- Install .desktop, locale, mime files
+- Update desktop- and mime-database
+
 * Sat Apr 5 2008 Dwayne Bailey <dwayne@translate.org.za> - 0.1-1.fc8
 - Initial packaging
