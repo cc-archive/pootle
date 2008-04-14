@@ -60,6 +60,7 @@ desktop-file-install --vendor="fedora" --delete-original \
    --dir=%{buildroot}%{_datadir}/applications            \
    %{buildroot}%{_datadir}/applications/%{name}.desktop
 cp -rp po/locale %{buildroot}%{_datadir}/
+%find_lang %{name}
 
 
 %post
@@ -75,12 +76,13 @@ update-mime-database %{_datadir}/mime &> /dev/null || :
 rm -rf $RPM_BUILD_ROOT
 
 
-%files
+%files -f %{name}.lang
 %defattr(-,root,root,-)
-# Need macro that creates all the translations
 %doc README
 %{_bindir}/*
-%{_datadir}/*
+%{_datadir}/applications/*
+%{_datadir}/mime/packages/*
+%{_datadir}/virtaal
 %{python_sitelib}/virtaal*
 %{python_sitelib}/*egg-info
 
