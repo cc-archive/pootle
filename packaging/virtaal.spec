@@ -2,7 +2,7 @@
 
 Name:           virtaal
 Version:        0.1
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Localization and translation editor
 
 Group:          Development/Tools
@@ -17,6 +17,7 @@ Patch0:         virtaal-glade-location.patch
 BuildArch:      noarch
 BuildRequires:  python-devel
 BuildRequires:  desktop-file-utils
+BuildRequires:  gettext
 Requires:       translate-toolkit
 Requires:       pygtk2
 Requires:       gnome-python2-gtkspell
@@ -42,6 +43,13 @@ OpenOffice.org SDF, Java (and Mozilla) .properties, Qt .ts and Mozilla DTD.
 
 %build
 %{__python} setup.py build
+pushd po
+for po in $(ls *.po)
+do
+    mkdir -p locale/$(basename $po .po)/LC_MESSAGES/
+    msgfmt $po --output-file=locale/$(basename $po .po)/LC_MESSAGES/%{name}.mo
+done
+popd
 
 
 %install
@@ -51,6 +59,7 @@ mv %{buildroot}%{_bindir}/run_virtaal.py %{buildroot}%{_bindir}/virtaal
 desktop-file-install --vendor="fedora" --delete-original \
    --dir=%{buildroot}%{_datadir}/applications            \
    %{buildroot}%{_datadir}/applications/%{name}.desktop
+cp -rp po/locale %{buildroot}%{_datadir}/
 
 
 %post
@@ -77,6 +86,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon  Apr 14 2008 Dwayne Bailey <dwayne@translate.org.za> - 0.1-3.fc8
+- Install translations
+
 * Sat Apr 12 2008 Dwayne Bailey <dwayne@translate.org.za> - 0.1-2.fc8
 - Executable s/run_virtaal.py/virtaal/
 - Remove .glade movement, ./setup.py install it correctly now
