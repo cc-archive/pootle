@@ -2,7 +2,7 @@
 
 Name:           virtaal
 Version:        0.1
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        Localization and translation editor
 
 Group:          Development/Tools
@@ -68,10 +68,19 @@ cp -rp po/locale %{buildroot}%{_datadir}/
 %post
 update-desktop-database &> /dev/null || :
 update-mime-database %{_datadir}/mime &> /dev/null || :
+touch --no-create %{_datadir}/icons/hicolor
+if [ -x %{_bindir}/gtk-update-icon-cache ]; then
+  %{_bindir}/gtk-update-icon-cache --quiet %{_datadir}/icons/hicolor || :
+fi
+
 
 %postun
 update-desktop-database &> /dev/null || :
 update-mime-database %{_datadir}/mime &> /dev/null || :
+touch --no-create %{_datadir}/icons/hicolor
+if [ -x %{_bindir}/gtk-update-icon-cache ]; then
+  %{_bindir}/gtk-update-icon-cache --quiet %{_datadir}/icons/hicolor || :
+fi
 
 
 %clean
@@ -85,11 +94,15 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/applications/*
 %{_datadir}/mime/packages/*
 %{_datadir}/virtaal
+%{_datadir}/icons
 %{python_sitelib}/virtaal*
 %{python_sitelib}/*egg-info
 
 
 %changelog
+* Thu Apr 17 2008 Dwayne Bailey <dwayne@translate.org.za> - 0.1-5.fc8
+- Install icon
+
 * Thu Apr 17 2008 Dwayne Bailey <dwayne@translate.org.za> - 0.1-4.fc8
 - Build translatable files using intltool
 
