@@ -1,8 +1,6 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Copyright 2007, 2008 Zuza Software Foundation
-# Copyright 2002, 2003 St James Software
+# Copyright 2008 Zuza Software Foundation
 # 
 # This file is part of translate.
 #
@@ -21,6 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
+
 """
 interface for differrent indexing engines for the translate toolkit
 
@@ -38,6 +37,7 @@ import os
         (e.g.: pylucene was removed, so xapian is now used instead)
     * do a proper cleanup - e.g.: the pylucene lockfiles remain in /tmp/
     * do unittests for PyLucene v1.x
+    * add compatibility for xapian before v1.0 (TermGenerator is missing)
     """
 
 def _get_available_indexers():
