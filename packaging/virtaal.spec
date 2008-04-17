@@ -2,7 +2,7 @@
 
 Name:           virtaal
 Version:        0.1
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Localization and translation editor
 
 Group:          Development/Tools
@@ -18,6 +18,7 @@ BuildArch:      noarch
 BuildRequires:  python-devel
 BuildRequires:  desktop-file-utils
 BuildRequires:  gettext
+BuildRequires:  intltool
 Requires:       translate-toolkit
 Requires:       pygtk2
 Requires:       gnome-python2-gtkspell
@@ -43,6 +44,7 @@ OpenOffice.org SDF, Java (and Mozilla) .properties, Qt .ts and Mozilla DTD.
 
 %build
 %{__python} setup.py build
+./maketranslations
 pushd po
 for po in $(ls *.po)
 do
@@ -88,7 +90,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Mon  Apr 14 2008 Dwayne Bailey <dwayne@translate.org.za> - 0.1-3.fc8
+* Thu Apr 17 2008 Dwayne Bailey <dwayne@translate.org.za> - 0.1-4.fc8
+- Build translatable files using intltool
+
+* Mon Apr 14 2008 Dwayne Bailey <dwayne@translate.org.za> - 0.1-3.fc8
 - Install translations
 
 * Sat Apr 12 2008 Dwayne Bailey <dwayne@translate.org.za> - 0.1-2.fc8
