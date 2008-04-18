@@ -117,8 +117,10 @@ class Xapian0Query(xapian.Query):
         super(Xapian0Query, self).__init__(param1, param2)
 
 
-xapian.TermGenerator = Xapian0TermGenerator
-xapian.Document = Xapian0Document
-xapian.QueryParser = Xapian0QueryParser
-xapian.Query = Xapian0Query
+# don't overwrite the xapian v1.x interface while trying to load xapian0
+if is_available():
+    xapian.TermGenerator = Xapian0TermGenerator
+    xapian.Document = Xapian0Document
+    xapian.QueryParser = Xapian0QueryParser
+    xapian.Query = Xapian0Query
 
