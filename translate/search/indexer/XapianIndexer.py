@@ -21,7 +21,10 @@
 #
 
 """
-interface to the xapian indexing engine for pootle
+interface to the xapian indexing engine for the translate toolkit
+
+Xapian v1.0 or higher is supported.
+See XapianIndexer0.py for an interface for Xapian v0.x.
 """
 
 __revision__ = "$Id$"
@@ -34,7 +37,7 @@ import re
 
 
 def is_available():
-    return True
+    return xapian.major_version() > 0
 
 
 # in xapian there is a length restriction for term strings
