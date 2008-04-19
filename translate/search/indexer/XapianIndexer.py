@@ -331,26 +331,7 @@ class XapianDatabase(CommonIndexer.CommonDatabase):
         result = []
         if isinstance(fieldnames, str):
             fieldnames = [fieldnames]
-        def extract_fieldvalue(match):
-            """return lists of dicts of field values"""
-            # prepare empty dict
-            item_fields = {}
-            # fill the dict
-            for term in match["document"].termlist():
-                for fname in fieldnames:
-                    if ((fname is None) and re.match("[^A-Z]", term.term)):
-                        value = term.term
-                    elif re.match("%s[^A-Z]" % str(fname).upper(), term.term):
-                        value = term.term[len(fname):]
-                    else:
-                        continue
-                    # we found a matching field/term
-                    if item_fields.has_key(fname):
-                        item_fields[fname].append(value)
-                    else:
-                        item_fields[fname] = [value]
-            result.append(item_fields)
-        self._walk_matches(query, extract_fieldvalue)
+        self._walk_matches(query, _extract_fieldvalues, (result, fieldnames))
         return result
 
     def _prepare_database(self, writable=False):
@@ -415,4 +396,34 @@ def _truncate_term_length(term, taken=0):
         return term[0:_MAX_TERM_LENGTH - taken - 1]
     else:
         return term
+
+def _extract_fieldvalues(match, (result, fieldnames)):
+    """add a dict of field values to a list
+    
+    usually this function should be used together with '_walk_matches'
+    for traversing a list of matches
+    @param match: a single match object
+    @type match: xapian.MSet
+    @param result: the resulting dict will be added to this list
+    @type result: list of dict
+    @param fieldnames: the names of the fields to be added to the dict
+    @type result: list of str
+    """
+    # prepare empty dict
+    item_fields = {}
+    # fill the dict
+    for term in match["document"].termlist():
+        for fname in fieldnames:
+            if ((fname is None) and re.match("[^A-Z]", term.term)):
+                value = term.term
+            elif re.match("%s[^A-Z]" % str(fname).upper(), term.term):
+                value = term.term[len(fname):]
+            else:
+                continue
+            # we found a matching field/term
+            if item_fields.has_key(fname):
+                item_fields[fname].append(value)
+            else:
+                item_fields[fname] = [value]
+    result.append(item_fields)
 

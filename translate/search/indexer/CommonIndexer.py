@@ -435,13 +435,18 @@ class CommonDatabase(object):
         self._walk_matches(query, add_docid_to_list)
         return self.delete_doc(remove_list)
 
-    def _walk_matches(self, query, function):
+    def _walk_matches(self, query, function, arg_for_function=None):
         """use this function if you want to do something with every single match
         of a query
 
-        example: self._walk_matches(query, function_for_match)
+        example: self._walk_matches(query, function_for_match, arg_for_func)
             'function_for_match' expects only one argument: the matched object
         @param query: a query object of the real implementation
+        @type query: xapian.Query | PyLucene.Query
+        @param function: the function to execute with every match
+        @type function: function
+        @param arg_for_function: an optional argument for the function
+        @type arg_for_function: anything
         """
         # execute the query
         enquire = self.get_query_result(query)
@@ -454,7 +459,10 @@ class CommonDatabase(object):
         while start < avail:
             (size, avail, matches) = enquire.get_matches(start, steps)
             for match in matches:
-                function(match)
+                if arg_for_function is None:
+                    function(match)
+                else:
+                    function(match, arg_for_function)
             start += size
 
     def set_field_analyzers(self, field_analyzers):

@@ -25,6 +25,12 @@ interface to the xapian indexing engine for the translate toolkit
 
 Xapian v0.x is supported.
 See XapianIndexer.py for an interface for Xapian v1.0 and higher.
+
+BEWARE: this implementation is BROKEN
+    Take a look at "query_parse" below, if you want to fix it.
+    As Xapian v0.x is not important for Pootle (as of April 02008), this
+    is not likely to be fixed, if _you_ don't do it on your own!
+    (sumpfralle)
 """
 
 __revision__ = "$Id$"
@@ -36,7 +42,9 @@ import re
 
 
 def is_available():
-    return xapian.major_version() == 0
+    #return xapian.major_version() == 0
+    # always return False, since the interface is not working
+    return False
 
 
 from XapianIndexer import _truncate_term_length 
@@ -101,8 +109,11 @@ class Xapian0QueryParser(xapian.QueryParser):
         if prefix is None:
             return super(Xapian0QueryParser, self).parse_query(text, flags)
         else:
+            # TODO: invalid for xapian v0.9
+            # a query for "FIELDcontent*" is always empty - this is the
+            # show stopper for the xapian v0.9 interface
             return super(Xapian0QueryParser, self).parse_query(
-                "%s%s" % (prefix, text), flags)
+                    str("%s%s" % (prefix, text)), flags)
 
 class Xapian0Query(xapian.Query):
     """ overwrite the __init__ function to allow unicode strings as parameters
@@ -114,8 +125,34 @@ class Xapian0Query(xapian.Query):
             return
         if isinstance(param2, unicode):
             param2 = str(param2)
+        # TODO: this just removes invalid queries - but it makes any search fail
+        # see 'parse_query' above for details
+        if isinstance(param2, list):
+            param2 = [ q for q in param2 if not q.is_empty() ]
         super(Xapian0Query, self).__init__(param1, param2)
 
+
+def _xapian0_extract_fieldvalues(match, (result, fieldnames)):
+    """ the original '_extract_fieldvalues' function in 'XapianIndexer.py'
+    uses 'term.term' instead of 'term[0]'
+    """
+    # prepare empty dict
+    item_fields = {}
+    # fill the dict
+    for term in match["document"].termlist():
+        for fname in fieldnames:
+            if ((fname is None) and re.match("[^A-Z]", term[0])):
+                value = term[0]
+            elif re.match("%s[^A-Z]" % str(fname).upper(), term[0]):
+                value = term[0][len(fname):]
+            else:
+                continue
+            # we found a matching field/term
+            if item_fields.has_key(fname):
+                item_fields[fname].append(value)
+            else:
+                item_fields[fname] = [value]
+    result.append(item_fields)
 
 # don't overwrite the xapian v1.x interface while trying to load xapian0
 if is_available():
@@ -123,4 +160,6 @@ if is_available():
     xapian.Document = Xapian0Document
     xapian.QueryParser = Xapian0QueryParser
     xapian.Query = Xapian0Query
+    xapian.DatabaseOpeningError = Exception
+    XapianIndexer._extract_fieldvalues = _xapian0_extract_fieldvalues
 
