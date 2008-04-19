@@ -171,25 +171,13 @@ def test_field_matching():
     # do a field search with a tuple argument
     q_field1 = new_db.make_query(("fname1", "foo_field1"))
     r_field1 = new_db.get_query_result(q_field1).get_matches(0,10)
-    if get_engine_name(new_db) == "XapianIndexer0":
-        try:
-            assert r_field1[0] == 1
-            report_whitelisted_success(new_db, "test_field_matching: q_field1")
-        except AssertionError:
-            report_whitelisted_failure(new_db, "test_field_matching: q_field1")
-    else:
-        assert r_field1[0] == 1
+    assert_whitelisted(new_db, r_field1[0] == 1, ["XapianIndexer0"],
+            "test_field_matching: q_field1")
     # do a field search with a dict argument
     q_field2 = new_db.make_query({"fname1":"bar_field1"})
     r_field2 = new_db.get_query_result(q_field2).get_matches(0,10)
-    if get_engine_name(new_db) == "XapianIndexer0":
-        try:
-            assert r_field2[0] == 1
-            report_whitelisted_success(new_db, "test_field_matching: q_field2")
-        except AssertionError:
-            report_whitelisted_failure(new_db, "test_field_matching: q_field2")
-    else:
-        assert r_field2[0] == 1
+    assert_whitelisted(new_db, r_field2[0] == 1, ["XapianIndexer0"],
+            "test_field_matching: q_field2")
     # do an incomplete field search with a dict argument - should fail
     q_field3 = new_db.make_query({"fname2":"foo_field"})
     r_field3 = new_db.get_query_result(q_field3).get_matches(0,10)
@@ -226,7 +214,8 @@ def test_field_analyzers():
     # do an incomplete field search with partial analyzer (configured for this field)
     q_field1 = new_db.make_query({"fname1":"bar_field"})
     r_field1 = new_db.get_query_result(q_field1).get_matches(0,10)
-    assert r_field1[0] == 1
+    assert_whitelisted(new_db, r_field1[0] == 1, ["XapianIndexer0"],
+            "test_field_analyzers: q_field1")
     # check the get/set field analyzer functions
     old_analyzer = new_db.get_field_analyzers("fname1")
     new_db.set_field_analyzers({"fname1":new_db.ANALYZER_EXACT})
@@ -240,7 +229,8 @@ def test_field_analyzers():
     # do an incomplete field search - now we use the partial analyzer
     q_field2 = new_db.make_query({"fname1":"bar_field"}, analyzer=new_db.ANALYZER_PARTIAL)
     r_field2 = new_db.get_query_result(q_field2).get_matches(0,10)
-    assert r_field2[0] == 1
+    assert_whitelisted(new_db, r_field2[0] == 1, ["XapianIndexer0"],
+            "test_field_analyzers: q_field2")
     # clean up
     clean_database()
 
@@ -413,12 +403,36 @@ def get_engine_name(database):
     return database.__module__
 
 def report_whitelisted_success(db, name):
+    """ Output a warning message regarding a successful unittest, that was
+    supposed to fail for a specific indexing engine.
+    As this test works now for the engine, the whitelisting should be removed.
+    """
     print "the test '%s' works again for '%s' - please remove the exception" \
             % (name, get_engine_name(db))
 
 def report_whitelisted_failure(db, name):
+    """ Output a warning message regarding a unittest, that was supposed to fail
+    for a specific indexing engine.
+    Since the test behaves as expected (it fails), this is just for reminding
+    developers on these open issues of the indexing engine support.
+    """
     print "the test '%s' fails - as expected for '%s'" % (name,
             get_engine_name(db))
+
+def assert_whitelisted(db, assert_value, white_list_engines, name_of_check):
+    """ Do an assertion, but ignoring failure for specific indexing engines.
+    This can be used for almost-complete implementations, that just need
+    a little bit of improvement for full compliance.
+    """
+    try:
+        assert assert_value
+        if get_engine_name(db) in white_list_engines:
+            report_whitelisted_success(db, name_of_check)
+    except AssertionError:
+        if get_engine_name(db) in white_list_engines:
+            report_whitelisted_failure(db, name_of_check)
+        else:
+            raise
 
 
 if __name__ == "__main__":
