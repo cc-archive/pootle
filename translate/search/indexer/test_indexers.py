@@ -171,13 +171,11 @@ def test_field_matching():
     # do a field search with a tuple argument
     q_field1 = new_db.make_query(("fname1", "foo_field1"))
     r_field1 = new_db.get_query_result(q_field1).get_matches(0,10)
-    assert_whitelisted(new_db, r_field1[0] == 1, ["XapianIndexer0"],
-            "test_field_matching: q_field1")
+    assert r_field1[0] == 1
     # do a field search with a dict argument
     q_field2 = new_db.make_query({"fname1":"bar_field1"})
     r_field2 = new_db.get_query_result(q_field2).get_matches(0,10)
-    assert_whitelisted(new_db, r_field2[0] == 1, ["XapianIndexer0"],
-            "test_field_matching: q_field2")
+    assert r_field2[0] == 1
     # do an incomplete field search with a dict argument - should fail
     q_field3 = new_db.make_query({"fname2":"foo_field"})
     r_field3 = new_db.get_query_result(q_field3).get_matches(0,10)
@@ -193,14 +191,7 @@ def test_field_matching():
     # do an incomplete field search with a partial field analyzer
     q_field6 = new_db.make_query({"fname1":"foo_field"}, analyzer=new_db.ANALYZER_PARTIAL)
     r_field6 = new_db.get_query_result(q_field6).get_matches(0,10)
-    if get_engine_name(new_db) == "XapianIndexer0":
-        try:
-            assert r_field6[0] == 1
-            report_whitelisted_success(new_db, "test_field_matching: q_field6")
-        except AssertionError:
-            report_whitelisted_failure(new_db, "test_field_matching: q_field6")
-    else:
-        assert r_field6[0] == 1
+    assert r_field6[0] == 1
     # clean up
     clean_database()
 
@@ -214,8 +205,7 @@ def test_field_analyzers():
     # do an incomplete field search with partial analyzer (configured for this field)
     q_field1 = new_db.make_query({"fname1":"bar_field"})
     r_field1 = new_db.get_query_result(q_field1).get_matches(0,10)
-    assert_whitelisted(new_db, r_field1[0] == 1, ["XapianIndexer0"],
-            "test_field_analyzers: q_field1")
+    assert r_field1[0] == 1
     # check the get/set field analyzer functions
     old_analyzer = new_db.get_field_analyzers("fname1")
     new_db.set_field_analyzers({"fname1":new_db.ANALYZER_EXACT})
@@ -229,8 +219,7 @@ def test_field_analyzers():
     # do an incomplete field search - now we use the partial analyzer
     q_field2 = new_db.make_query({"fname1":"bar_field"}, analyzer=new_db.ANALYZER_PARTIAL)
     r_field2 = new_db.get_query_result(q_field2).get_matches(0,10)
-    assert_whitelisted(new_db, r_field2[0] == 1, ["XapianIndexer0"],
-            "test_field_analyzers: q_field2")
+    assert r_field2[0] == 1
     # clean up
     clean_database()
 
