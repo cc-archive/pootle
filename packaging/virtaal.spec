@@ -2,7 +2,7 @@
 
 Name:           virtaal
 Version:        0.1
-Release:        5%{?dist}
+Release:        6%{?dist}
 Summary:        Localization and translation editor
 
 Group:          Development/Tools
@@ -27,7 +27,7 @@ Requires:       gnome-python2-gtkspell
 %description
 A Computer Aided Translation (CAT) tool built on the Translate Toolkit.
 
-It includes features that allow a localizer to work effecively including:
+VirTaal includes features that allow a localizer to work effecively including:
 syntax highlighting, Translation Memory and glossaries.  Showing only 
 the data that is needed.  A simple and effective user interface ensures 
 that you can focus on the translation task straight away.
@@ -40,7 +40,7 @@ OpenOffice.org SDF, Java (and Mozilla) .properties, Qt .ts and Mozilla DTD.
 
 %prep
 %setup -q -n %{name}-%{version}
-%patch0 -p2 -b .glade
+%patch0 -p1 -b .glade
 
 %build
 %{__python} setup.py build
@@ -100,6 +100,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Apr 30 2008 Dwayne Bailey <dwayne@translate.org.za> - 0.1-6.fc8
+- Adjust to changes in source package
+
 * Thu Apr 17 2008 Dwayne Bailey <dwayne@translate.org.za> - 0.1-5.fc8
 - Install icon
 
