@@ -1,8 +1,10 @@
-#!/usr/bin/env python
+#!/usr/bin/python
 # -*- coding: utf-8 -*-
 # 
-# Copyright 2007 Zuza Software Foundation
+# Copyright 2007 The authors of Jokosher
+# Copyright 2008 Zuza Software Foundation
 # 
+# This file was part of Jokosher.
 # This file is part of virtaal.
 #
 # virtaal is free software; you can redistribute it and/or modify
@@ -19,17 +21,21 @@
 # along with translate; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-"""These are some tips that are displayed to the user."""
+"""This module is meant for testing and profiling the code only. It should not 
+be included in any release."""
 
-import gettext
+import hotshot
+from hotshot import stats
 
-_ = gettext.gettext
+import main_window
+prog = main_window.VirTaal()
 
-tips = [
-_("At the end of a translation, simply press <Enter> to continue with the next one."),
-# l10n: Refer to the translation of "Copy to target" to find the appropriate shortcut key to recommend
-_("To copy the original string into the target field, simply press <Alt+C>."),
-_("When editing a fuzzy translation, the fuzzy marker will automatically be removed."),
-# l10n: Refer to the translation of "Fuzzy" to find the appropriate shortcut key to recommend
-_("To mark the current translation as fuzzy, simply press <Alt+U>."),
-]
+profile = hotshot.Profile("Virtaal.profile", lineevents=1)
+profile.runcall(prog.run)
+
+s = stats.load("Virtaal.profile")
+
+s.strip_dirs()
+s.sort_stats("cumulative", "calls").print_stats()
+s.sort_stats("time", "calls").print_stats()
+
