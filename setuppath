@@ -10,8 +10,10 @@ pathstr = ['"$PATH"']
 for translatesubdir in ("convert", "tools", "filters"):
   pathstr.append('"%s"' % os.path.join(translatedir, "translate", translatesubdir))
 pathstr.append('"%s"' % os.path.join(translatedir, "tools"))
+pathstr.append('"%s"' % os.path.join(translatedir, "Pootle"))
+pathstr.append('"%s"' % os.path.join(translatedir, "virtaal"))
 pythonpathstr.append('"%s"' % translatedir)
-pythonpathstr.append('"%s"' % os.path.join(translatedir, "pootling"))
+pythonpathstr.append('"%s"' % os.path.join(translatedir, "virtaal"))
 
 setpathfile = open(os.path.join(translatedir, "setpath"), "w")
 setpathfile.write("#!/bin/bash\n")
