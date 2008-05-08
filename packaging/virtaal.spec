@@ -2,7 +2,7 @@
 
 Name:           virtaal
 Version:        0.1
-Release:        6%{?dist}
+Release:        7%{?dist}
 Summary:        Localization and translation editor
 
 Group:          Development/Tools
@@ -12,7 +12,7 @@ Source0:        http://downloads.sourceforge.net/translate/%{name}-%{version}.ta
 #Source0:        http://translate.sourceforge.net/snapshots/%{name}-%{version}rc4/%{name}-%{version}rc4.tar.bz2
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-Patch0:         virtaal-glade-location.patch
+#Patch0:         virtaal-glade-location.patch
 
 BuildArch:      noarch
 BuildRequires:  python-devel
@@ -40,7 +40,7 @@ OpenOffice.org SDF, Java (and Mozilla) .properties, Qt .ts and Mozilla DTD.
 
 %prep
 %setup -q -n %{name}-%{version}
-%patch0 -p1 -b .glade
+#%patch0 -p1 -b .glade
 
 %build
 %{__python} setup.py build
@@ -56,8 +56,17 @@ popd
 
 %install
 rm -rf $RPM_BUILD_ROOT
-%{__python} setup.py install -O1 --skip-build --install-data=/usr/share --root $RPM_BUILD_ROOT
+%{__python} setup.py install -O1 --skip-build --install-data=/usr --root $RPM_BUILD_ROOT
+
+# Cleanup horrid ./setup.py installs
 mv %{buildroot}%{_bindir}/run_virtaal.py %{buildroot}%{_bindir}/virtaal
+pushd  %{buildroot}%{_datadir}
+mkdir -p mime/packages applications icons
+mv virtaal/virtaal-mimetype.xml mime/packages
+mv virtaal/virtaal.desktop applications
+mv virtaal/virtaal.{png,ico} icons
+popd
+
 desktop-file-install --vendor="fedora" --delete-original \
    --dir=%{buildroot}%{_datadir}/applications            \
    %{buildroot}%{_datadir}/applications/%{name}.desktop
@@ -93,13 +102,17 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/*
 %{_datadir}/applications/*
 %{_datadir}/mime/packages/*
+%exclude %{_datadir}/virtaal/*.in
 %{_datadir}/virtaal
-%{_datadir}/icons
+%{_datadir}/icons/*
 %{python_sitelib}/virtaal*
 %{python_sitelib}/*egg-info
 
 
 %changelog
+* Wed May 7 2008 Dwayne Bailey <dwayne@translate.org.za> - 0.1-7.fc8
+- Adjust to changes in source package
+
 * Wed Apr 30 2008 Dwayne Bailey <dwayne@translate.org.za> - 0.1-6.fc8
 - Adjust to changes in source package
 
