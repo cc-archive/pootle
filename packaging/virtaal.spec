@@ -2,7 +2,7 @@
 
 Name:           virtaal
 Version:        0.1
-Release:        7%{?dist}
+Release:        8%{?dist}
 Summary:        Localization and translation editor
 
 Group:          Development/Tools
@@ -22,6 +22,7 @@ BuildRequires:  intltool
 Requires:       translate-toolkit
 Requires:       pygtk2
 Requires:       gnome-python2-gtkspell
+Requires:       xdg-utils
 
 
 %description
@@ -110,6 +111,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri May 9 2008 Dwayne Bailey <dwayne@translate.org.za> - 0.1-8.fc8
+- Add xdg-utils as a requirement as we are using xdg-open
+
 * Wed May 7 2008 Dwayne Bailey <dwayne@translate.org.za> - 0.1-7.fc8
 - Adjust to changes in source package
 
