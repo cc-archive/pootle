@@ -18,8 +18,7 @@
 #
 # You should have received a copy of the GNU General Public License along with
 # Translate.  If not, see <http://www.gnu.org/licenses/>.
-from virtaal import unit_editor
-from virtaal.unit_editor import get_layout, get_widget, height, get_cached_height
+from virtaal.unit_editor import get_layout, get_widget
 
 """Cell renderer for multiline text data."""
 
@@ -116,18 +115,17 @@ class UnitRenderer(gtk.GenericCellRenderer):
 
         #XXX - plurals?
         text = text or ""
-#        layout.set_text(text)
         layout.set_markup(markup.markuptext(text))
         return layout
 
     def compute_cell_height(self, widget, width):
         self.source_layout = self.get_pango_layout(widget, self.unit.source, width / 2)
         self.target_layout = self.get_pango_layout(widget, self.unit.target, width / 2)
-	# This makes no sense, but has the desired effect to align things correctly for
+        # This makes no sense, but has the desired effect to align things correctly for
         # both LTR and RTL languages:
         if widget.get_direction() == gtk.TEXT_DIR_RTL:
-	    self.source_layout.set_alignment(pango.ALIGN_RIGHT)
-	    self.target_layout.set_alignment(pango.ALIGN_RIGHT)
+            self.source_layout.set_alignment(pango.ALIGN_RIGHT)
+            self.target_layout.set_alignment(pango.ALIGN_RIGHT)
         _layout_width, source_height = self.source_layout.get_pixel_size()
         _layout_width, target_height = self.target_layout.get_pixel_size()
         return max(source_height, target_height)
@@ -140,7 +138,7 @@ class UnitRenderer(gtk.GenericCellRenderer):
         width = widget.get_toplevel().get_allocation().width - 32
 
         if self.editable:
-            height = unit_editor.height(unit_layout.get_blueprints(self.unit, get_document(widget).nplurals), widget, width)
+            height = unit_layout.get_blueprints(self.unit, get_document(widget).nplurals).height(widget, width)
         else:
             height = self.compute_cell_height(widget, width)
 
@@ -171,7 +169,7 @@ class UnitRenderer(gtk.GenericCellRenderer):
         def set_heights(layout):
             for child in layout.children:
                 set_heights(child)
-            get_widget(layout).set_size_request(-1, get_cached_height(layout))
+            get_widget(layout).set_size_request(-1, layout.cached_height)
 
         editor = getattr(self.unit, '__editor')
         set_heights(get_layout(editor.layout))

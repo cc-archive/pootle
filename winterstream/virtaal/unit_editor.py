@@ -24,7 +24,6 @@ import re
 import logging
 
 import gobject
-import pango
 import gtk
 try:
     import gtkspell
@@ -38,135 +37,13 @@ import unit_layout
 import pan_app
 from pan_app import _
 import widgets.label_expander as label_expander
-from widgets import style
 from support.simplegeneric import generic
-from support.partial import post, compose
 
 def on_key_press_event(widget, event, *_args):
     if event.keyval == gtk.keysyms.Return or event.keyval == gtk.keysyms.KP_Enter:
         widget.parent.emit('key-press-event', event)
         return True
     return False
-
-@generic
-def spacing(layout):
-    raise NotImplementedError()
-
-@spacing.when_type(unit_layout.VList)
-def spacing_v_list(_layout):
-    return 2
-
-
-@generic
-def v_padding(layout):
-    raise NotImplementedError()
-
-@v_padding.when_type(unit_layout.VList)
-def v_padding_v_list(_v_list):
-    return 0
-
-@v_padding.when_type(unit_layout.HList)
-def v_padding_h_list(_h_list):
-    return 0
-
-@v_padding.when_type(unit_layout.TextBox)
-def v_padding_text_box(_text_box):
-    # A TextBox in Virtaal is composed of a ScrolledWindow which contains a TextView.
-    # See gtkscrolledwindow.c:gtk_scrolled_window_size_request and
-    # gtktextview.c:gtk_text_view_size_request in the GTK source for the source of this
-    # calculation.
-    return 2*style.style[gtk.Widget]['focus-line-width'] + 2*style.style[gtk.Container]['border-width']
-
-@v_padding.when_type(unit_layout.Option)
-def v_padding_comment(_option):
-    return 2
-
-
-@generic
-def h_padding(_layout):
-    raise NotImplementedError()
-
-@h_padding.when_type(unit_layout.VList)
-def h_padding_v_list(_v_list):
-    return 2
-
-@h_padding.when_type(unit_layout.HList)
-def h_padding_h_list(_h_list):
-    return 2
-
-@h_padding.when_type(unit_layout.TextBox)
-def h_padding_text_box(_text_box):
-    # A TextBox in Virtaal is composed of a ScrolledWindow which contains a TextView.
-    # See gtkscrolledwindow.c:gtk_scrolled_window_size_request and
-    # gtktextview.c:gtk_text_view_size_request in the GTK source for the source of this
-    # calculation.
-    return style.style[gtk.TextView]['left-margin'] + style.style[gtk.TextView]['right-margin'] + \
-           2*style.style[gtk.Container]['border-width']
-
-@h_padding.when_type(unit_layout.Option)
-def h_padding_option(_text_box):
-    # See gtkcheckbutton.c
-    # requisition->width += (indicator_size + indicator_spacing * 3 + 2 * (focus_width + focus_pad));
-    return style.style[gtk.CheckButton]['indicator-size'] + style.style[gtk.CheckButton]['indicator-spacing'] * 3 + \
-           2 * (style.style[gtk.Widget]['focus-line-width'] + style.style[gtk.Widget]['focus-padding'])
-
-
-def cache_height(layout, h):
-    layout.__height = h
-    return h
-
-def get_cached_height(layout):
-    return layout.__height
-
-@generic
-def height(layout, widget, width):
-    raise NotImplementedError()
-
-@height.when_type(unit_layout.Layout)
-def height_layout(layout, widget, width):
-    return cache_height(layout, height(layout.child, widget, width / 2))
-
-@height.when_type(unit_layout.HList)
-def height_h_list(h_list, widget, width):
-    item_width = (width - len(h_list.children) * (h_padding(h_list) + 1)) / len(h_list.children)
-    h = 2*v_padding(h_list) + max(height(child, widget, item_width) for child in h_list.children)
-    return cache_height(h_list, h)
-
-@height.when_type(unit_layout.VList)
-def height_v_list(v_list, widget, width):
-    h = sum(height(child, widget, width) for child in v_list.children) + \
-        v_padding(v_list) * (len(v_list.children) - 1)
-    return cache_height(v_list, h)
-
-def make_pango_layout(layout, text, widget, width):
-    pango_layout = pango.Layout(widget.get_pango_context())
-    pango_layout.set_width((width - h_padding(layout)) * pango.SCALE)
-    pango_layout.set_wrap(pango.WRAP_WORD)
-    pango_layout.set_text(text or "")
-    return pango_layout
-
-@height.when_type(unit_layout.TextBox)
-def height_text_box(text_box, widget, width):
-    # TODO: Look at GTK C Source to get precise height calculations
-    _w, h = make_pango_layout(text_box, markup.escape(text_box.get_text()), widget, width).get_pixel_size()
-
-    return cache_height(text_box, h + v_padding(text_box))
-
-@height.when_type(unit_layout.Comment)
-def height_comment(comment, widget, width):
-    # TODO: The calculations here yield incorrect results. We'll have to look at this.
-    text = comment.get_text()
-    if text == "":     # If we have an empty string, we squash the comment box
-        return cache_height(comment, 0)
-    _w, h = make_pango_layout(comment, text[0], widget, width).get_pixel_size()
-    return cache_height(comment, h + v_padding(comment))
-    #return height_text_box(comment, widget, 100000)
-
-@height.when_type(unit_layout.Option)
-def height_option(option, widget, width):
-    _w, h = make_pango_layout(option, option.label, widget, width).get_pixel_size()
-    return cache_height(option, h + v_padding(option))
-
 
 @generic
 def make_widget(layout):
@@ -206,7 +83,7 @@ def fill_list(lst, box):
 
 @make_widget.when_type(unit_layout.VList)
 def make_vlist(layout):
-    box, names = fill_list(layout, gtk.VBox(v_padding(layout)))
+    box, names = fill_list(layout, gtk.VBox(layout.v_padding()))
     return post_make_widget(box, names, layout)
 
 @make_widget.when_type(unit_layout.HList)
