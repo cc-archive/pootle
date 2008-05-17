@@ -170,7 +170,7 @@ class UnitRenderer(gtk.GenericCellRenderer):
             layout.widget.set_size_request(-1, layout.cached_height)
 
         editor = getattr(self.unit, '__editor')
-        set_heights(unit_layout.get_layout(editor.layout))
+        set_heights(unit_layout.get_layout(editor.edit_area))
         editor.set_size_request(cell_area.width, cell_area.height)
         self._editor = editor
         return editor

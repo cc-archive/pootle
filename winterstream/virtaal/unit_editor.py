@@ -40,10 +40,10 @@ class UnitEditor(gtk.EventBox, gtk.CellEditable):
         gtk.EventBox.__init__(self)
 #        self.modify_bg(gtk.STATE_NORMAL, gtk.gdk.Color(0, 0, 50000))
 
-        self.layout, widget_dict = unit_layout.get_blueprints(unit, parent).make_widget()
-        self.add(self.layout)
+        self.edit_area, widget_dict = unit_layout.get_blueprints(unit, parent).make_widget()
+        self.add(self.edit_area)
 
-        for target_widget in (s.widget for s in unit_layout.get_targets(unit_layout.get_layout(self.layout))):
+        for target_widget in (s.widget for s in unit_layout.get_targets(unit_layout.get_layout(self.edit_area))):
             target_widget.child.get_buffer().connect("changed", self._on_modify)
 
         #blueprints['copy_button'].connect("activate", self._on_copy_original)
@@ -69,7 +69,7 @@ class UnitEditor(gtk.EventBox, gtk.CellEditable):
 
     def do_start_editing(self, *_args):
         """Start editing."""
-        unit_layout.focus_text_view(get_targets(unit_layout.get_layout(self.layout))[0].widget.child)
+        unit_layout.focus_text_view(get_targets(unit_layout.get_layout(self.edit_area))[0].widget.child)
 
     def _on_focus(self, widget, _direction):
         # TODO: Check whether we do need to refocus the last edited text_view when
