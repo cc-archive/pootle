@@ -18,6 +18,7 @@
 # You should have received a copy of the GNU General Public License
 # along with translate; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+from virtaal.unit_layout import get_targets
 import gobject
 import gtk
 
@@ -68,7 +69,7 @@ class UnitEditor(gtk.EventBox, gtk.CellEditable):
 
     def do_start_editing(self, *_args):
         """Start editing."""
-        unit_layout.focus_text_view(self._widget_dict['target-0'].child)
+        unit_layout.focus_text_view(get_targets(unit_layout.get_layout(self.layout))[0].widget.child)
 
     def _on_focus(self, widget, _direction):
         # TODO: Check whether we do need to refocus the last edited text_view when
