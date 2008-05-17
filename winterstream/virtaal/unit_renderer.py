@@ -18,8 +18,6 @@
 #
 # You should have received a copy of the GNU General Public License along with
 # Translate.  If not, see <http://www.gnu.org/licenses/>.
-from virtaal.unit_editor import get_layout, get_widget
-
 """Cell renderer for multiline text data."""
 
 import gobject
@@ -169,10 +167,10 @@ class UnitRenderer(gtk.GenericCellRenderer):
         def set_heights(layout):
             for child in layout.children:
                 set_heights(child)
-            get_widget(layout).set_size_request(-1, layout.cached_height)
+            layout.widget.set_size_request(-1, layout.cached_height)
 
         editor = getattr(self.unit, '__editor')
-        set_heights(get_layout(editor.layout))
+        set_heights(unit_layout.get_layout(editor.layout))
         editor.set_size_request(cell_area.width, cell_area.height)
         self._editor = editor
         return editor

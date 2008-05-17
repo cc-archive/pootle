@@ -20,14 +20,33 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 from itertools import chain
+import logging
+import re
 
 import pango
 import gtk
+try:
+    import gtkspell
+except ImportError, e:
+    gtkspell = None
 
 from support.partial import partial
+import pan_app
 from pan_app import _
 import markup
 from widgets import style
+import undo_buffer
+from widgets import label_expander
+
+#A regular expression to help us find a meaningful place to position the
+#cursor initially.
+FIRST_WORD_RE = re.compile("(?m)(?u)^(<[^>]+>|\\\\[nt]|[\W$^\n])*(\\b|\\Z)")
+
+def on_key_press_event(widget, event, *_args):
+    if event.keyval == gtk.keysyms.Return or event.keyval == gtk.keysyms.KP_Enter:
+        widget.parent.emit('key-press-event', event)
+        return True
+    return False
 
 class Widget(object):
     def __init__(self, name):
@@ -35,6 +54,7 @@ class Widget(object):
         self.parent = None
         self.children = []
         self._height = 0
+        self._widget = None
 
     def v_padding(self):
         raise NotImplementedError()
@@ -57,6 +77,21 @@ class Widget(object):
         pango_layout.set_wrap(pango.WRAP_WORD)
         pango_layout.set_text(text or "")
         return pango_layout
+    
+    widget = property(lambda self: self._widget)
+    
+    def post_make_widget(self, widget, names):
+        self._widget = widget
+        widget._layout = self
+        # Skip Enter key processing
+        widget.connect('key-press-event', on_key_press_event)
+        return widget, names
+    
+    def make_widget(self):
+        raise NotImplementedError()
+
+def get_layout(widget):
+    return widget._layout
 
 class Layout(Widget):
     def __init__(self, name, child):
@@ -68,6 +103,15 @@ class Layout(Widget):
     def height(self, widget, width):
         return self.cache_height(self.child.height(widget, width / 2))
 
+    def make_widget(self):
+        table = gtk.Table(rows=1, columns=4, homogeneous=True)
+        names = {self.name: table}
+        child, child_names = self.child.make_widget()
+        table.attach(child, 1, 3, 0, 1, xoptions=gtk.FILL|gtk.EXPAND, yoptions=gtk.FILL|gtk.EXPAND)
+        names.update(child_names)
+    
+        return self.post_make_widget(table, names)
+        
 class List(Widget):
     def __init__(self, name, children=None):
         super(List, self).__init__(name)
@@ -81,6 +125,15 @@ class List(Widget):
     def add(self, widget):
         self.children.append(widget)
 
+    def fill_list(self, box):
+        names = {self.name: box}
+        for child in self.children:
+            child_widget, child_names = child.make_widget()
+            box.pack_start(child_widget, fill=True, expand=True)
+            names.update(child_names)
+        #box.connect('key-press-event', on_key_press_event)
+        return box, names
+
 class VList(List):
     def height(self, widget, width):
         h = sum(child.height(widget, width) for child in self.children) + \
@@ -92,6 +145,10 @@ class VList(List):
 
     def h_padding(self):
         return 0
+    
+    def make_widget(self):
+        box, names = self.fill_list(gtk.VBox(self.v_padding()))
+        return self.post_make_widget(box, names)
 
 class HList(List):
     def height(self, widget, width):
@@ -104,6 +161,10 @@ class HList(List):
 
     def h_padding(self):
         return 0
+
+    def make_widget(self):
+        box, names = self.fill_list(gtk.HBox())
+        return self.post_make_widget(box, names)
 
 class TextBox(Widget):
     def __init__(self, name, get_text, set_text, editable):
@@ -130,17 +191,105 @@ class TextBox(Widget):
     
         return self.cache_height(h + self.v_padding())
 
+def add_spell_checking(text_view, language):
+    global gtkspell
+    if gtkspell:
+        try:
+            spell = gtkspell.Spell(text_view)
+            spell.set_language(language)
+        except:
+            logging.info(_("Could not initialize spell checking"))
+            gtkspell = None
+
 class SourceTextBox(TextBox):
     def __init__(self, name, get_text, set_text):
         super(SourceTextBox, self).__init__(name, get_text, set_text, False)
+
+    def make_widget(self):
+        text_view = gtk.TextView()
+    
+        add_spell_checking(text_view, pan_app.settings.language["sourcelang"])
+    
+        text_view.get_buffer().set_text(markup.escape(self.get_text()))
+        text_view.set_editable(self.editable)
+        text_view.set_wrap_mode(gtk.WRAP_WORD)
+        text_view.set_border_window_size(gtk.TEXT_WINDOW_TOP, 1)
+    
+        scrolled_window = gtk.ScrolledWindow()
+        scrolled_window.set_policy(gtk.POLICY_NEVER, gtk.POLICY_NEVER)
+        scrolled_window.add(text_view)
+    
+        return self.post_make_widget(scrolled_window, {self.name: scrolled_window})
+
+def focus_text_view(text_view):
+    text_view.grab_focus()
+
+    buf = text_view.get_buffer()
+    text = buf.get_text(buf.get_start_iter(), buf.get_end_iter())
+
+    translation_start = FIRST_WORD_RE.match(text).span()[1]
+    buf.place_cursor(buf.get_iter_at_offset(translation_start))
 
 class TargetTextBox(TextBox):
     def __init__(self, name, get_text, set_text):
         super(TargetTextBox, self).__init__(name, get_text, set_text, True)
 
-class Comment(TextBox):
+    def make_widget(self):
+        text_view = gtk.TextView()
+    
+        add_spell_checking(text_view, pan_app.settings.language["contentlang"])
+    
+        def get_range(buf, left_offset, right_offset):
+            return buf.get_text(buf.get_iter_at_offset(left_offset),
+                                buf.get_iter_at_offset(right_offset))
+    
+        def on_text_view_key_press_event(text_view, event):
+            """Handle special keypresses in the textarea."""
+            # Automatically move to the next line if \n is entered
+    
+            if event.keyval == gtk.keysyms.n:
+                buf = text_view.get_buffer()
+                if get_range(buf, buf.props.cursor_position-1, buf.props.cursor_position) == "\\":
+                    buf.insert_at_cursor('n\n')
+                    text_view.scroll_mark_onscreen(buf.get_insert())
+                    return True
+            return False
+    
+        def on_text_view_n_press_event(text_view, event, *_args):
+            if event.keyval == gtk.keysyms.Return or event.keyval == gtk.keysyms.KP_Enter:
+                self = get_layout(text_view.parent)
+                if self.next != None:
+                    next_text_view = self.next.widget.child
+                    focus_text_view(next_text_view)
+    
+                else:
+                    #self.must_advance = True
+                    text_view.parent.emit('key-press-event', event)
+                return True
+            return False
+    
+        def on_change(buf):
+            self.set_text(markup.unescape(buf.get_text(buf.get_start_iter(), buf.get_end_iter())))
+    
+        buf = undo_buffer.add_undo_to_buffer(text_view.get_buffer())
+        undo_buffer.execute_without_signals(buf, lambda: buf.set_text(markup.escape(self.get_text())))
+        buf.connect('changed', on_change)
+    
+        text_view.set_editable(self.editable)
+        text_view.set_wrap_mode(gtk.WRAP_WORD)
+        text_view.set_border_window_size(gtk.TEXT_WINDOW_TOP, 1)
+        text_view.connect('key-press-event', on_text_view_n_press_event)
+        text_view.connect('key-press-event', on_text_view_key_press_event)
+    
+        scrolled_window = gtk.ScrolledWindow()
+        scrolled_window.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
+        scrolled_window.add(text_view)
+    
+        return self.post_make_widget(scrolled_window, {self.name: scrolled_window})
+
+class Comment(SourceTextBox):
     def __init__(self, name, get_text, set_text=lambda value: None):
-        super(Comment, self).__init__(name, get_text, set_text, False)
+        super(Comment, self).__init__(name, get_text, set_text)
 
     def v_padding(self):
         return 2
@@ -152,6 +301,11 @@ class Comment(TextBox):
             return self.cache_height(0)
         _w, h = self.make_pango_layout(text[0], widget, width).get_pixel_size()
         return self.cache_height(h + self.v_padding())
+
+    def make_widget(self):
+        text_box, names = SourceTextBox.make_widget(self)
+        expander = label_expander.LabelExpander(text_box, self.get_text)
+        return self.post_make_widget(expander, names)
 
 class Option(Widget):
     def __init__(self, name, label, get_option, set_option):
@@ -172,6 +326,19 @@ class Option(Widget):
     def height(self, widget, width):
         _w, h = self.make_pango_layout(self.label, widget, width).get_pixel_size()
         return self.cache_height(h + self.v_padding())
+
+    def make_widget(self):
+        def on_toggled(widget, *_args):
+            if widget.get_active():
+                self.set_option(True)
+            else:
+                self.set_option(False)
+    
+        check_button = gtk.CheckButton(label=self.label)
+        check_button.connect('toggled', on_toggled)
+        if self.get_option():
+            check_button.set_active(True)
+        return self.post_make_widget(check_button, {'self-%s' % self.name: check_button})
 
 def get_source(unit, index):
     if unit.hasplural():
