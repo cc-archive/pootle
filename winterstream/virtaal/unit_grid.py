@@ -70,7 +70,6 @@ class UnitGrid(gtk.TreeView):
         self.document.connect("mode-changed", self._on_mode_changed)
 
         self.connect('key-press-event', self.on_key_press)
-        self.connect("cursor-changed", self.on_cursor_changed)
         self.connect("button-press-event", self.on_button_press)
 
         self.accel_group = gtk.AccelGroup()
@@ -89,7 +88,7 @@ class UnitGrid(gtk.TreeView):
         path = self.get_model().store_index_to_path(self.document.mode_cursor.deref())
         self._activate_editing_path(path)
 
-    def _activate_editing_path(self, new_path):
+    def _activate_editing_path(self, new_path, scroll=True):
         """Activates the given path for editing."""
         # get the index of the translation unit in the translation store
         #self.get_model().set(self.get_model().get_iter(new_path), COLUMN_EDITABLE, True)
@@ -97,6 +96,8 @@ class UnitGrid(gtk.TreeView):
         def change_cursor():
             self.set_cursor(new_path, self.get_columns()[0], start_editing=True)
             self._waiting_for_row_change -= 1
+            if scroll:
+                self.scroll_to_cell(new_path, self.targetcolumn, True, 0.5, 0.0)
         self._waiting_for_row_change += 1
         gobject.idle_add(change_cursor, priority=gobject.PRIORITY_DEFAULT_IDLE)
 
@@ -145,7 +146,7 @@ class UnitGrid(gtk.TreeView):
                 self.document.set_mode('Default')
 
             self.document.mode_cursor = self.document.mode.cursor_from_element(index)
-            self._activate_editing_path(path)
+            self._activate_editing_path(path, scroll=False)
         return True
 
     def on_configure_event(self, _event, *_user_args):
@@ -172,22 +173,6 @@ class UnitGrid(gtk.TreeView):
     def on_cell_edited(self, _cell, _path_string, must_advance, _modified, _model):
         if must_advance:
             return self._keyboard_move(1)
-        return True
-
-    def on_cursor_changed(self, _treeview):
-        path, _column = self.get_cursor()
-
-        # We defer the scrolling until GTK has finished all its current drawing
-        # tasks, hence the gobject.idle_add. If we don't wait, then the TreeView
-        # draws the editor widget in the wrong position. Presumably GTK issues
-        # a redraw event for the editor widget at a given x-y position and then also
-        # issues a TreeView scroll; thus, the editor widget gets drawn at the wrong
-        # position.
-        def do_scroll():
-            self.scroll_to_cell(path, self.targetcolumn, True, 0.5, 0.0)
-            return False
-
-        gobject.idle_add(do_scroll)
         return True
 
     def on_key_press(self, _widget, _event, _data=None):
