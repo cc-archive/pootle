@@ -134,7 +134,7 @@ def h_padding_option(_text_box):
            2 * (STYLE[gtk.Widget]['focus-line-width'] + STYLE[gtk.Widget]['focus-padding'])
 
 
-def cache_height(h, layout, _widget, _width):
+def cache_height(layout, h):
     layout.__height = h
     return h
 
@@ -145,24 +145,21 @@ def get_cached_height(layout):
 def height(layout, widget, width):
     raise NotImplementedError()
 
-def specialize_height(type):
-    # Create a composite decorator which first applies the decorator post(cache_height)
-    # and then the decorator height.when_type(type).
-    return compose(height.when_type(type), post(cache_height))
-
-@specialize_height(unit_layout.Layout)
+@height.when_type(unit_layout.Layout)
 def height_layout(layout, widget, width):
-    return height(layout.child, widget, width / 2)
+    return cache_height(layout, height(layout.child, widget, width / 2))
 
-@specialize_height(unit_layout.HList)
-def height_h_list(v_list, widget, width):
-    item_width = (width - len(v_list.children) * (h_padding(v_list) + 1)) / len(v_list.children)
-    return 2*v_padding(v_list) + max(height(child, widget, item_width) for child in v_list.children)
+@height.when_type(unit_layout.HList)
+def height_h_list(h_list, widget, width):
+    item_width = (width - len(h_list.children) * (h_padding(h_list) + 1)) / len(h_list.children)
+    h = 2*v_padding(h_list) + max(height(child, widget, item_width) for child in h_list.children)
+    return cache_height(h_list, h)
 
-@specialize_height(unit_layout.VList)
+@height.when_type(unit_layout.VList)
 def height_v_list(v_list, widget, width):
-    return sum(height(child, widget, width) for child in v_list.children) + \
-           v_padding(v_list) * (len(v_list.children) - 1)
+    h = sum(height(child, widget, width) for child in v_list.children) + \
+        v_padding(v_list) * (len(v_list.children) - 1)
+    return cache_height(v_list, h)
 
 def make_pango_layout(layout, text, widget, width):
     pango_layout = pango.Layout(widget.get_pango_context())
@@ -171,27 +168,27 @@ def make_pango_layout(layout, text, widget, width):
     pango_layout.set_text(text or "")
     return pango_layout
 
-@specialize_height(unit_layout.TextBox)
+@height.when_type(unit_layout.TextBox)
 def height_text_box(text_box, widget, width):
     # TODO: Look at GTK C Source to get precise height calculations
     _w, h = make_pango_layout(text_box, markup.escape(text_box.get_text()), widget, width).get_pixel_size()
 
-    return h + v_padding(text_box)
+    return cache_height(text_box, h + v_padding(text_box))
 
-@specialize_height(unit_layout.Comment)
+@height.when_type(unit_layout.Comment)
 def height_comment(comment, widget, width):
     # TODO: The calculations here yield incorrect results. We'll have to look at this.
     text = comment.get_text()
     if text == "":     # If we have an empty string, we squash the comment box
-        return 0
+        return cache_height(comment, 0)
     _w, h = make_pango_layout(comment, text[0], widget, width).get_pixel_size()
-    return h + v_padding(comment)
+    return cache_height(comment, h + v_padding(comment))
     #return height_text_box(comment, widget, 100000)
 
-@specialize_height(unit_layout.Option)
+@height.when_type(unit_layout.Option)
 def height_option(option, widget, width):
     _w, h = make_pango_layout(option, option.label, widget, width).get_pixel_size()
-    return h + v_padding(option)
+    return cache_height(option, h + v_padding(option))
 
 
 @generic
