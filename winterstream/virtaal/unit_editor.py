@@ -38,32 +38,9 @@ import unit_layout
 import pan_app
 from pan_app import _
 import widgets.label_expander as label_expander
+from widgets import style
 from support.simplegeneric import generic
 from support.partial import post, compose
-
-def properties_generator(widget, *prop_list):
-    for prop in prop_list:
-        try:
-            yield (prop, widget.get_property(prop))
-        except TypeError:
-            try:
-                yield (prop, widget.style_get_property(prop))
-            except TypeError:
-                yield (prop, getattr(widget, prop))
-
-def properties(*spec):
-    return dict(properties_generator(*spec))
-
-def make_style():
-    return {
-        gtk.TextView:       properties(gtk.TextView(),       'left-margin', 'right-margin'),
-        gtk.ScrolledWindow: properties(gtk.ScrolledWindow(), 'scrollbar-spacing'),
-        gtk.Container:      properties(gtk.TextView(),       'border-width'),
-        gtk.CheckButton:    properties(gtk.CheckButton(),    'indicator-size', 'indicator-spacing'),
-        gtk.Widget:         properties(gtk.Button(),         'focus-line-width', 'focus-padding')
-    }
-
-STYLE = make_style()
 
 def on_key_press_event(widget, event, *_args):
     if event.keyval == gtk.keysyms.Return or event.keyval == gtk.keysyms.KP_Enter:
@@ -98,7 +75,7 @@ def v_padding_text_box(_text_box):
     # See gtkscrolledwindow.c:gtk_scrolled_window_size_request and
     # gtktextview.c:gtk_text_view_size_request in the GTK source for the source of this
     # calculation.
-    return 2*STYLE[gtk.Widget]['focus-line-width'] + 2*STYLE[gtk.Container]['border-width']
+    return 2*style.style[gtk.Widget]['focus-line-width'] + 2*style.style[gtk.Container]['border-width']
 
 @v_padding.when_type(unit_layout.Option)
 def v_padding_comment(_option):
@@ -123,15 +100,15 @@ def h_padding_text_box(_text_box):
     # See gtkscrolledwindow.c:gtk_scrolled_window_size_request and
     # gtktextview.c:gtk_text_view_size_request in the GTK source for the source of this
     # calculation.
-    return STYLE[gtk.TextView]['left-margin'] + STYLE[gtk.TextView]['right-margin'] + \
-           2*STYLE[gtk.Container]['border-width']
+    return style.style[gtk.TextView]['left-margin'] + style.style[gtk.TextView]['right-margin'] + \
+           2*style.style[gtk.Container]['border-width']
 
 @h_padding.when_type(unit_layout.Option)
 def h_padding_option(_text_box):
     # See gtkcheckbutton.c
     # requisition->width += (indicator_size + indicator_spacing * 3 + 2 * (focus_width + focus_pad));
-    return STYLE[gtk.CheckButton]['indicator-size'] + STYLE[gtk.CheckButton]['indicator-spacing'] * 3 + \
-           2 * (STYLE[gtk.Widget]['focus-line-width'] + STYLE[gtk.Widget]['focus-padding'])
+    return style.style[gtk.CheckButton]['indicator-size'] + style.style[gtk.CheckButton]['indicator-spacing'] * 3 + \
+           2 * (style.style[gtk.Widget]['focus-line-width'] + style.style[gtk.Widget]['focus-padding'])
 
 
 def cache_height(layout, h):
