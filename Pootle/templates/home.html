@@ -17,7 +17,7 @@
   <div id="abovefooter">
   <div id="banner" over:include="pootlepage#banner"/>
 
-  <div id="content" dir="$uidir" lang="$uilanguage">
+  <div id="fullwidthcontent" dir="$uidir" lang="$uilanguage">
     <div class="contents"><h3 class="title" py:content="quicklinkstitle">Quick Links</h3>
       <div py:for="language in quicklinks" py:strip="True">
         <h3 class="title">
@@ -38,11 +38,11 @@
       </div>
     </div>
     
-    <div class="intro">
+    <div class="info">
       <a href="options.html" py:content="optionslink">Change options</a>
     </div>
 
-    <div class="intro" py:if="session.issiteadmin">
+    <div class="info" py:if="session.issiteadmin">
       <a href="../admin/" py:content="adminlink">Admin page</a>
     </div>
   </div>

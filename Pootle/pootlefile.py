@@ -382,7 +382,7 @@ class pootlefile(Wrapper):
       newpo.msgidcomments.append('"_: suggested by %s\\n"' % username)
     newpo.target = suggtarget
     newpo.markfuzzy(False)
-    self.pendingfile.units.append(newpo)
+    self.pendingfile.addunit(newpo)
     self.savependingfile()
     self.statistics.reclassifyunit(item)
 
@@ -476,6 +476,12 @@ class pootlefile(Wrapper):
     if userprefs:
       if getattr(userprefs, "name", None) and getattr(userprefs, "email", None):
         headerupdates["Last_Translator"] = "%s <%s>" % (userprefs.name, userprefs.email)
+    # XXX: If we needed to add a header, the index value in item will be one out after
+    # adding the header.
+    # TODO: remove once we force the PO class to always output headers
+    force_recache = False 
+    if not self.header():
+      force_recache = True
     self.updateheader(add=True, **headerupdates)
     if languageprefs:
       nplurals = getattr(languageprefs, "nplurals", None)
@@ -483,6 +489,8 @@ class pootlefile(Wrapper):
       if nplurals and pluralequation:
         self.updateheaderplural(nplurals, pluralequation)
     self.savepofile()
+    if force_recache:
+      self.statistics.purge_totals()
     self.statistics.reclassifyunit(item)
 
   def getitem(self, item):
@@ -555,10 +563,10 @@ class pootlefile(Wrapper):
         self.assigns = pootleassigns(self)
     return self.assigns
 
-  def mergeitem(self, oldpo, newpo, username):
+  def mergeitem(self, oldpo, newpo, username, suggest=False):
     """merges any changes from newpo into oldpo"""
     unchanged = oldpo.target == newpo.target
-    if not oldpo.target or not newpo.target or oldpo.isheader() or newpo.isheader() or unchanged:
+    if not suggest and (not oldpo.target or not newpo.target or oldpo.isheader() or newpo.isheader() or unchanged):
       oldpo.merge(newpo)
     else:
       for item in self.statistics.getstats()["total"]:
@@ -569,17 +577,22 @@ class pootlefile(Wrapper):
           return
       raise KeyError("Could not find item for merge")
 
-  def mergefile(self, newfile, username, allownewstrings=True):
+  def mergefile(self, newfile, username, allownewstrings=True, suggestions=False):
     """make sure each msgid is unique ; merge comments etc from duplicates into original"""
     self.makeindex()
     matches = self.matchitems(newfile)
     for oldpo, newpo in matches:
+      if suggestions:
+        if oldpo and newpo:
+            self.mergeitem(oldpo, newpo, username, suggest=True)
+        continue
+
       if oldpo is None:
         if allownewstrings:
           if isinstance(newpo, po.pounit):
-            self.units.append(newpo)
+            self.addunit(newpo)
           else:
-            self.units.append(self.UnitClass.buildfromunit(newpo))
+            self.addunit(self.UnitClass.buildfromunit(newpo))
       elif newpo is None:
         # TODO: mark the old one as obsolete
         pass
@@ -589,7 +602,7 @@ class pootlefile(Wrapper):
         if hasattr(newpo, "sourcecomments"):
           oldpo.sourcecomments = newpo.sourcecomments
 
-    if not isinstance(newfile, po.pofile):
+    if not isinstance(newfile, po.pofile) or suggestions:
       #TODO: We don't support updating the header yet.
       self.savepofile()
       # the easiest way to recalculate everything
@@ -619,7 +632,7 @@ class pootlefile(Wrapper):
       header = self.UnitClass("", encoding=self.encoding)
       header.target = ""
     if header:
-      header.initallcomments(blankall=True)
+      header._initallcomments(blankall=True)
       if newheader:
         for i in range(len(header.allcomments)):
           header.allcomments[i].extend(newheader.allcomments[i])

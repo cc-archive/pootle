@@ -1,6 +1,7 @@
 import os
 from translate.storage import statsdb
 from translate.filters import checks
+from translate.misc.multistring import multistring
 
 def getmodtime(filename, default=None):
   """gets the modificationtime of the given file"""
@@ -17,6 +18,7 @@ class pootlestatistics:
     self.basefile = basefile
     self.stats = {}
     self.totals = {}
+    self.unitstats = {}
     self.statscache = statsdb.StatsCache()
     if generatestats:
       self.getstats()
@@ -32,6 +34,16 @@ class pootlestatistics:
     if not self.stats:
       self.stats = self.statscache.filestats(self.basefile.filename, self.basefile.checker)
     return self.stats
+  
+  def purge_totals(self):
+    """Temporary helper to clean up where needed. We might be able to remove 
+    this after the move to cpo."""
+    self.stats = {}
+
+  def getunitstats(self):
+    if not self.unitstats:
+      self.unitstats = self.statscache.unitstats(self.basefile.filename)
+    return self.unitstats
 
   def updatequickstats(self, save=True):
     """updates the project's quick stats on this file"""

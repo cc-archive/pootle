@@ -22,7 +22,7 @@
 from Pootle import pagelayout
 from Pootle import projects
 from Pootle import pootlefile
-from Pootle import versioncontrol
+from translate.storage import versioncontrol
 # Versioning information
 from Pootle import __version__ as pootleversion
 from translate import __version__ as toolkitversion
@@ -211,7 +211,7 @@ class LanguageIndex(pagelayout.PootleNavPage):
         "projects": languageprojects, 
         "statsheadings": self.getstatsheadings(),
         "session": sessionvars, "instancetitle": instancetitle}
-    pagelayout.PootleNavPage.__init__(self, templatename, templatevars, session, bannerheight=81)
+    pagelayout.PootleNavPage.__init__(self, templatename, templatevars, session, bannerheight=80)
 
   def getlanguageinfo(self):
     """returns information defined for the language"""
@@ -277,7 +277,7 @@ class ProjectLanguageIndex(pagelayout.PootleNavPage):
         "adminlink": adminlink, "languages": languages,
         "session": sessionvars, "instancetitle": instancetitle, 
         "statsheadings": statsheadings}
-    pagelayout.PootleNavPage.__init__(self, templatename, templatevars, session, bannerheight=81)
+    pagelayout.PootleNavPage.__init__(self, templatename, templatevars, session, bannerheight=80)
 
   def getlanguages(self):
     """gets the stats etc of the languages"""
@@ -372,13 +372,13 @@ class ProjectIndex(pagelayout.PootleNavPage):
         "statsheadings": self.getstatsheadings(), 
         # general vars
         "session": sessionvars, "instancetitle": instancetitle}
-    pagelayout.PootleNavPage.__init__(self, templatename, templatevars, session, bannerheight=81)
+    pagelayout.PootleNavPage.__init__(self, templatename, templatevars, session, bannerheight=80)
     if self.showassigns and "assign" in self.rights:
       self.templatevars["assign"] = self.getassignbox()
     if "admin" in self.rights:
       if self.showgoals:
         self.templatevars["goals"] = self.getgoalbox()
-    if "admin" in self.rights or "translate" in self.rights:
+    if "admin" in self.rights or "translate" in self.rights or "suggest" in self.rights:
       self.templatevars["upload"] = self.getuploadbox()
 
   def handleactions(self):
@@ -747,12 +747,14 @@ class ProjectIndex(pagelayout.PootleNavPage):
         molink = {"href": moname, "text": self.localize('MO file')}
         actionlinks.append(molink)
     if "update" in linksrequired and "admin" in self.rights:
-      if versioncontrol.hasversioning(os.path.join(self.project.podir, self.dirname)):
+      if versioncontrol.hasversioning(os.path.join(self.project.podir,
+              self.dirname, basename)):
         # l10n: Update from version control (like CVS or Subversion)
         updatelink = {"href": "index.html?editing=1&doupdate=1&updatefile=%s" % (basename), "text": self.localize('Update')}
         actionlinks.append(updatelink)
     if "commit" in linksrequired and "commit" in self.rights:
-      if versioncontrol.hasversioning(os.path.join(self.project.podir, self.dirname)):
+      if versioncontrol.hasversioning(os.path.join(self.project.podir,
+              self.dirname, basename)):
         # l10n: Commit to version control (like CVS or Subversion)
         commitlink = {"href": "index.html?editing=1&docommit=1&commitfile=%s" % (basename), "text": self.localize('Commit')}
         actionlinks.append(commitlink)

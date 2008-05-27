@@ -25,8 +25,11 @@ from Pootle import pagelayout
 from Pootle import projects
 from Pootle import pootlefile
 from translate.storage import po
+from translate.misc.multistring import multistring
 import difflib
 import urllib
+
+xml_re = re.compile("&lt;.*?&gt;")
 
 def oddoreven(polarity):
   if polarity % 2 == 0:
@@ -425,8 +428,14 @@ class TranslatePage(pagelayout.PootleNavPage):
       suggestions = {self.item: self.project.getsuggestions(self.pofilename, self.item)}
     for row, unit in enumerate(self.translations):
       tmsuggestions = []
-      orig = unit.source.strings
-      trans = unit.target.strings
+      if isinstance(unit.source, multistring):
+        orig = unit.source.strings
+      else:
+        orig = [unit.source]
+      if isinstance(unit.target, multistring):
+        trans = unit.target.strings
+      else:
+        trans = [unit.target]
       nplurals, plurals = self.project.getpofile(self.pofilename).getheaderplural()
       try:
         if len(orig) > 1:
@@ -520,6 +529,9 @@ class TranslatePage(pagelayout.PootleNavPage):
     else:
       fancyescape = lambda escape: \
           '<span class="translation-highlight-escape">%s</span>' % escape
+      fancy_xml = lambda escape: \
+            '<span class="translation-highlight-html">%s</span>' % escape.group()
+      text = xml_re.sub(fancy_xml, text)
 
       text = text.replace("\r\n", fancyescape('\\r\\n') + '<br />')
       text = text.replace("\n", fancyescape('\\n') + '<br />')

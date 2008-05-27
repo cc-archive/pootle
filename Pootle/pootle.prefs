@@ -33,14 +33,14 @@ Pootle:
   # test it well, as incorrect markup (like unbalanced quotes or HTML tags) 
   # could prevent the page from displaying at all. The text up to the first 
   # "br" tag is also displayed in the meta description tags of these pages.
-  # Consider adding <span dir="ltr"> ... </span> around any text in a left-to-
+  # Consider adding <div dir="ltr"> ... </div> around any text in a left-to-
   # right language to guarantee good rendering for users of right-to-left 
   # languages and vice versa if you put a message in a right-to-left language.
   # For multilingual servers, you might also want to indicate the language of
   # your description to ensure proper rendering and for better accessibility.
   # Be sure to include all contact information that users would need to contact 
   # you for support (adding languages or projects).
-  description = "<span dir='ltr'>This is a demo installation of Pootle.<br /> Also visit the official <a href='http://pootle.wordforge.org'>Pootle server of WordForge</a>. The server administrator has not provided a description or contact information. If you are the administrator for this server, edit this description in your preference file or in the administration interface.</span>"
+  description = "<div dir='ltr' lang='en'>This is a demo installation of Pootle.<br /> You can also visit the official <a href='http://pootle.locamotion.org'>Pootle server</a>. The server administrator has not provided contact information or a description of this server. If you are the administrator for this server, edit this description in your preference file or in the administration interface.</div>"
 
   # Pootle.defaultlanguage
   # 
@@ -63,14 +63,6 @@ Pootle:
     fromaddress = "pootle-registration@localhost"
     smtpserver = "localhost"
   # supportaddress = "pootle-admin@yourdomain.org"
-
-  # logo URLs
-  # Use either a complete URL, or a URL relative to the pootle server's
-  # root directory.
-  logos:
-    medium = "images/pootle-medium.png"
-    normal = "images/pootle.png"
-    banner = "images/WordForge-white.png"
 
   # Where users are directed by default when they login
   homepage = "home/"
@@ -95,7 +87,9 @@ Pootle:
   # All projects are stored in this directory in this layout:
   #   $podirectory/$project/$language
   # Projects can also be stored according to the GNU convention with one PO file
-  # per language, and all files in one directory. 
+  # per language, and all files in one directory. If you change this from the 
+  # default, remember to copy the project called "pootle" to your new directory
+  # to provide the localised interface for Pootle.
   podirectory = "po"
 
   # pootle.projects
@@ -119,7 +113,7 @@ Pootle:
   # for tooltips in some Pootle pages.  Be sure to test it well, as incorrect 
   # markup (like unbalanced quotes or HTML tags) could prevent the page from 
   # displaying at all.
-  # Consider adding <span dir="ltr"> ... </span> around any text in a left-to-
+  # Consider adding <div dir="ltr"> ... </div> around any text in a left-to-
   # right language to guarantee good rendering for users of right-to-left 
   # languages and vice versa if you put a message in a right-to-left language.
   # For multilingual servers, you might also want to indicate the language of
@@ -137,6 +131,15 @@ Pootle:
   #
   # NOTE: Once a file type is selected for localfiletype, files not matching
   #       the type selected will not be displayed within pootle.
+  #
+  #   treestyle = "nongnu"
+  # The treestyle attribute is used to force Pootle to follow the specified
+  # directory tree layout, without trying to determine it (this can be slow
+  # for projects with lots of files and directories. Possible choices: "gnu"
+  # (one file per language in a directory) or "nongnu" (each language has a 
+  # separate direcotory with its own tree structure. This attribute does not
+  # need to be specified. If it is not specified, Pootle will try to determine
+  # the layout that the project uses.
 
   projects:
   # The project called "pootle" is necessary for Pootle to be localised.  The 
@@ -146,7 +149,7 @@ Pootle:
   # interface.
     pootle:
       fullname = "Pootle"
-      description = "<span dir='ltr'>Web translation software of <a href='http://wordforge.org'>WordForge</a>. <br /> See the <a href='http://pootle.wordforge.org'>official Pootle server</a> for the translations of Pootle.</span>"
+      description = "<div dir='ltr' lang='en'>Interface translations for Pootle. <br /> See the <a href='http://pootle.locamotion.org'>official Pootle server</a> for the translations of Pootle.</div>"
       checkstyle = "standard"
       localfiletype = "po"
 
@@ -157,7 +160,7 @@ Pootle:
   # use that file for terminology matching for that project.
     terminology:
       fullname = "Terminology"
-      description = "Terminology project that Pootle should use to suggest terms"
+      description = "<div dir='ltr' lang='en'>Terminology project that Pootle should use to suggest terms.<br />There might be useful terminology files on the <a href='http://pootle.locamotion.org/projects/terminology/'>official Pootle server</a>.</div>"
       checkstyle = "standard"
       localfiletype = "po"
 
@@ -176,7 +179,14 @@ Pootle:
   #
   #   fullname = "Afrikaans"
   # The fullname of the language, also from ISO639 but can be the name of the
-  # language in your language not necessarily in English.
+  # language in your language not necessarily in English. When the iso-codes
+  # package is installed, translated language names can be provided to 
+  # correspond to the interface language. The exact English names used in the 
+  # iso-codes package has to be used for translation to be successful. The 
+  # language name can also contain a country name in brackets at the back, in 
+  # which case a translation for the country name will similarly be attempted 
+  # using the iso-codes package. For example:
+  #   fullname = "Portuguese (Brazil)"
   #
   #   specialchars = "ÄËÏÖÜäëïöü ÂÊÎÔÛâêîôû"
   # Special characters used by the language that you wish users to be able to
@@ -207,13 +217,14 @@ Pootle:
 # Akan
 #    ak.fullname = u'Akan'
 #    ak.pluralequation = u'(n > 1)'
+#    ak.specialchars = "ɛɔƐƆ"
 #    ak.nplurals = u'2'
 
 # العربية
 # Arabic
     ar.fullname = u'Arabic'
     ar.nplurals = '6'
-    ar.pluralequation ='n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n>=3 && n<=10 ? 3 : n>=11 && n<=99 ? 4 : 5'
+    ar.pluralequation ='n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5'
 
 # Azərbaycan
 # Azerbaijani
@@ -252,7 +263,7 @@ Pootle:
 
 # Català
 # Catalan
-    ca.fullname = u'Catalan'
+    ca.fullname = u'Catalan; Valencian'
     ca.nplurals = '2'
     ca.pluralequation ='(n != 1)'
 
@@ -297,13 +308,13 @@ Pootle:
     en.nplurals = '2'
     en.pluralequation ='(n != 1)'
 
-# English (British)
-#    en_GB.fullname = u'English (British)'
+# English (United Kingdom)
+#    en_GB.fullname = u'English (United Kingdom)'
 #    en_GB.nplurals = '2'
 #    en_GB.pluralequation ='(n != 1)'
 
-# English (South African)
-    en_ZA.fullname = u'English (South African)'
+# English (South Africa)
+    en_ZA.fullname = u'English (South Africa)'
     en_ZA.nplurals = '2'
     en_ZA.pluralequation ='(n != 1)'
 
@@ -314,7 +325,7 @@ Pootle:
 
 # Español
 # Spanish
-    es.fullname = u'Spanish'
+    es.fullname = u'Spanish; Castilian'
     es.nplurals = '2'
     es.pluralequation ='(n != 1)'
 
@@ -362,7 +373,7 @@ Pootle:
 
 # Frysk
 # Frisian
-#    fy.fullname = u'Frisian'
+#    fy.fullname = u'Western Frisian'
 #    fy.nplurals = '2'
 #    fy.pluralequation ='(n != 1)'
 
@@ -404,15 +415,15 @@ Pootle:
 
 # Magyar
 # Hungarian
-#    hu.fullname = u'Hungarian'
-#    hu.nplurals = '1'
-#    hu.pluralequation ='0'
+    hu.fullname = u'Hungarian'
+    hu.nplurals = '2'
+    hu.pluralequation ='(n !=1)'
 
 # Bahasa Indonesia
 # Indonesian
-#    id.fullname = u'Indonesian'
-#    id.nplurals = '1'
-#    id.pluralequation ='0'
+    id.fullname = u'Indonesian'
+    id.nplurals = '1'
+    id.pluralequation ='0'
 
 # Icelandic
     is.fullname = u'Icelandic'
@@ -440,8 +451,8 @@ Pootle:
 # ភាសា
 # Khmer
 #    km.fullname = u'Khmer'
-#    ka.nplurals = '1'
-#    ka.pluralequation ='0'
+#    km.nplurals = '1'
+#    km.pluralequation ='0'
 
 # 한국어
 # Korean
@@ -472,6 +483,11 @@ Pootle:
 #    lv.fullname = u'Latvian'
 #    lv.nplurals = '3'
 #    lv.pluralequation ='(n%10==1 && n%100!=11 ? 0 : n != 0 ? 1 : 2)'
+
+# Malayalam
+    ml.fullname = u'Malayalam'
+    ml.nplurals = '2'
+    ml.pluralequation = '(n != 1)'
 
 # Malagasy
 #    mg.fullname = u'Malagasy'
@@ -518,7 +534,7 @@ Pootle:
 
 # Nederlands
 # Dutch
-    nl.fullname = u'Dutch'
+    nl.fullname = u'Dutch; Flemish'
     nl.nplurals = '2'
     nl.pluralequation ='(n != 1)'
 
@@ -533,6 +549,7 @@ Pootle:
 #    nso.fullname = u'Northern Sotho'
 #    nso.nplurals = '2'
 #    nso.pluralequation ='(n > 1)'
+#    nso.specialchars = "šŠ"
 
 # Oriya
 #    or.fullname = u'Oriya'
@@ -540,7 +557,7 @@ Pootle:
 #    or.pluralequation ='(n != 1)'
 
 # Punjabi
-#    pa.fullname = u'Punjabi'
+#    pa.fullname = u'Panjabi; Punjabi'
 #    pa.nplurals = '2'
 #    pa.pluralequation ='(n != 1)'
 
@@ -563,7 +580,7 @@ Pootle:
 
 # Português do Brasil
 # Brazilian Portuguese
-    pt_BR.fullname = u'Brazilian Portuguese'
+    pt_BR.fullname = u'Portuguese (Brazil)'
     pt_BR.nplurals = '2'
     pt_BR.pluralequation ='(n > 1)'
 
@@ -605,9 +622,9 @@ Pootle:
 
 # Sesotho
 # Sotho
-    st.fullname = u'Sotho'
+    st.fullname = u'Sotho, Southern'
     st.nplurals = '2'
-    st.pluralequation ='(n != 1'
+    st.pluralequation ='(n != 1)'
 
 # Svenska
 # Swedish

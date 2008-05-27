@@ -211,7 +211,7 @@ class UsersAdminPage(pagelayout.PootlePage):
     return text
     
   def getoptions(self):
-    options = [{"name": "name", "title": self.localize("Login"), "newvalue": "", "size": 6},
+    options = [{"name": "name", "title": self.localize("Username"), "newvalue": "", "size": 6},
                {"name": "fullname", "title": self.localize("Full Name"), 
                                     "newvalue": self.localize("(add full name here)")},
                {"name": "email", "title": self.localize("Email Address"), "newvalue": self.localize("(add email here)")},
@@ -280,6 +280,8 @@ class ProjectAdminPage(pagelayout.PootlePage):
     update_button = self.localize("Update Languages")
     pagetitle = self.localize("Pootle Admin: %s", projectname)
     norights_text = self.localize("You do not have the rights to administer this project.")
+    iso_code = self.localize("ISO Code")
+    full_name = self.localize("Full Name")
     # l10n: This refers to updating the translation files from the templates like with .pot files
     update_link = self.localize("Update from templates")
     templatename = "projectadmin"
@@ -287,12 +289,13 @@ class ProjectAdminPage(pagelayout.PootlePage):
     instancetitle = getattr(self.session.instance, "title", session.localize("Pootle Demo"))
     templatevars = {"pagetitle": pagetitle, "norights_text": norights_text,
         "project": {"code": projectcode, "name": projectname},
+        "iso_code": iso_code, "full_name": full_name,
         "existing_title": existing_title, "existing_languages": existing_languages,
         "new_languages": new_languages,
         "update_button": update_button, "add_button": self.localize("Add Language"),
         "main_link": main_link, "update_link": update_link,
         "session": sessionvars, "instancetitle": instancetitle}
-    pagelayout.PootlePage.__init__(self, templatename, templatevars, session, bannerheight=81)
+    pagelayout.PootlePage.__init__(self, templatename, templatevars, session, bannerheight=80)
 
   def getexistinglanguages(self):
     """gets the info on existing languages"""
@@ -357,7 +360,7 @@ class TranslationProjectAdminPage(pagelayout.PootlePage):
         "main_link": main_link,
         "session": sessionvars, "instancetitle": instancetitle}
     templatevars.update(self.getoptions())
-    pagelayout.PootlePage.__init__(self, templatename, templatevars, session, bannerheight=81)
+    pagelayout.PootlePage.__init__(self, templatename, templatevars, session, bannerheight=80)
 
   def getoptions(self):
     """returns a box that describes the options"""

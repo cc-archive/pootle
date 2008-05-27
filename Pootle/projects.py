@@ -32,10 +32,11 @@ from translate.convert import po2oo
 from translate.tools import pocompile
 from translate.tools import pogrep
 from translate.search import match
+from translate.search import indexer
 from translate.storage import statsdb
 from Pootle import statistics
 from Pootle import pootlefile
-from Pootle import versioncontrol
+from translate.storage import versioncontrol
 from jToolkit import timecache
 from jToolkit import prefs
 import time
@@ -43,7 +44,6 @@ import os
 import cStringIO
 import traceback
 import gettext
-from jToolkit.data import indexer
 
 class RightsError(ValueError):
   pass
@@ -502,6 +502,8 @@ class TranslationProject(object):
         origpofile.mergefile(newfile, session.username)
       elif "translate" in rights:
         origpofile.mergefile(newfile, session.username, allownewstrings=False)
+      elif "suggest" in rights:
+        origpofile.mergefile(newfile, session.username, suggestions=True)
       else:
         raise RightsError(session.localize("You do not have rights to upload files here"))
     else:
@@ -633,8 +635,10 @@ class TranslationProject(object):
       else:
         origpofile = None
       pot2po.convertpot(inputfile, outputfile, origpofile)
-      dirname, potfilename = os.path.dirname(potfilename), os.path.basename(potfilename)
-      self.uploadfile(session, dirname, pofilename, outputfile.getvalue())
+      outfile = open(origpofilename, "wb")
+      outfile.write(outputfile.getvalue())
+      outfile.close()
+      self.scanpofiles()
 
   def filtererrorhandler(self, functionname, str1, str2, e):
     print "error in filter %s: %r, %r, %s" % (functionname, str1, str2, e)
@@ -816,6 +820,7 @@ class TranslationProject(object):
 
   def matchessearch(self, pofilename, search):
     """returns whether any items in the pofilename match the search (based on collected stats etc)"""
+    # wrong file location in a "dirfilter" search?
     if search.dirfilter is not None and not pofilename.startswith(search.dirfilter):
       return False
     # search.assignedto == [None] means assigned to nobody
@@ -938,6 +943,7 @@ class TranslationProject(object):
     userwords = 0
     for pofilename, wordcount in wordcounts:
       pofile = self.getpofile(pofilename)
+      sourcewordcount = pofile.statistics.getunitstats()['sourcewordcount']
       for item in pofile.iteritems(search, None):
         # TODO: move this to iteritems
         if search.searchtext:
@@ -947,7 +953,8 @@ class TranslationProject(object):
             validitem = True
           if not validitem:
             continue
-        itemwordcount = statsdb.wordcount(str(pofile.getitem(item).source))
+        itemwordcount = sourcewordcount[item]
+        #itemwordcount = statsdb.wordcount(str(pofile.getitem(item).source))
         if userwords + itemwordcount > wordsperuser:
           usernum = min(usernum+1, len(assignto)-1)
           userwords = 0
@@ -1287,7 +1294,7 @@ class TranslationProject(object):
     converterclass = converters.get(destformat, None)
     if converterclass is None:
       raise ValueError("No converter available for %s" % destfilename)
-    contents = converterclass().convertfile(pofile)
+    contents = converterclass().convertstore(pofile)
     if not isinstance(contents, basestring):
       contents = str(contents)
     try:
