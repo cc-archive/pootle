@@ -70,5 +70,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Feb 14 2008 Dwayne Bailey <dwayne@translate.org.za> - 1.0.2-1.fc9
+- Rebuild for fc9
+
 * Thu Feb 14 2008 Dwayne Bailey <dwayne@translate.org.za> - 1.0.2-1.fc8
 - Initial packaging
