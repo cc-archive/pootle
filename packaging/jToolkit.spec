@@ -49,10 +49,14 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(-,root,root,-)
 %doc ChangeLog COPYING
-%{python_sitelib}/jToolkit/*
+%{python_sitelib}/jToolkit*
 
 
 %changelog
+* Tue Jun 3 2008 Dwayne Bailey <dwayne@translate.org.za> - 0.7.8-2.fc9
+- Rebuild for fc9
+- Package Python egg
+
 * Wed May 07 2008 Dwayne Bailey <dwayne@translate.org.za> - 0.7.8-2
 - Remove imports of deprecated sre module
 
