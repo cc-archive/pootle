@@ -105,6 +105,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Jun 3 2008 Dwayne Bailey <dwayne@translate.org.za> - 1.1.1-1.fc9
+- Rebuild for fc9
+
 * Thu Mar 27 2008 Dwayne Bailey <dwayne@translate.org.za> - 1.1.1-1.fc8
 - Update to official 1.1.1 release
 - Patches to fix internal project rename wordforge -> locamotion
