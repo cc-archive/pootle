@@ -111,6 +111,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Jun 3 2008 Dwayne Bailey <dwayne@translate.org.za> - 0.1-8.fc9
+- Rebuild for fc9
+
 * Fri May 9 2008 Dwayne Bailey <dwayne@translate.org.za> - 0.1-8.fc8
 - Add xdg-utils as a requirement as we are using xdg-open
 
