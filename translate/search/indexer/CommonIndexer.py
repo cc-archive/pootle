@@ -24,6 +24,8 @@
 base class for interfaces to indexing engines for pootle
 """
 
+import translate.lang.data
+
 __revision__ = "$Id$"
 
 
@@ -147,6 +149,9 @@ class CommonDatabase(object):
             # create field/value queries out of a tuple
             elif isinstance(query, tuple):
                 field, value = query
+                # perform unicode normalization
+                field = translate.lang.data.normalize(unicode(field))
+                value = translate.lang.data.normalize(unicode(value))
                 # check for the choosen match type
                 if analyzer is None:
                     analyzer = self.get_field_analyzers(field)
@@ -156,6 +161,8 @@ class CommonDatabase(object):
             elif isinstance(query, str):
                 if analyzer is None:
                     analyzer = self.analyzer
+                # perform unicode normalization
+                query = translate.lang.data.normalize(unicode(query))
                 result.append(self._create_query_for_string(query,
                         require_all=require_all, analyzer=analyzer))
             else:
@@ -476,7 +483,7 @@ class CommonDatabase(object):
         """
         for field, analyzer in field_analyzers.items():
             # check for invald input types
-            if not isinstance(field, str):
+            if not isinstance(field, (str, unicode)):
                 raise TypeError("field name must be a string")
             if not isinstance(analyzer, int):
                 raise TypeError("the analyzer must be a whole number (int)")
@@ -500,7 +507,7 @@ class CommonDatabase(object):
             # return a copy
             return dict(self.field_analyzers)
         # one field is requested
-        if isinstance(fieldnames, str):
+        if isinstance(fieldnames, (str, unicode)):
             if self.field_analyzers.has_key(fieldnames):
                 return self.field_analyzers[fieldnames]
             else:
@@ -514,16 +521,20 @@ class CommonDatabase(object):
         return self.analyzer
 
     def _decode(self, text):
-        """decode the string from utf-8 or charmap"""
+        """decode the string from utf-8 or charmap
+        perform unicde normalization
+        """
         if isinstance(text, str):
             try:
-                return text.decode("UTF-8")
+                result = unicode(text.decode("UTF-8"))
             except UnicodeEncodeError, e:
-                return text.decode("charmap")
-        elif not isinstance(text, (str, unicode)):
-            return str(text)
+                result = unicode(text.decode("charmap"))
+        elif not isinstance(text, unicode):
+            result = unicode(text)
         else:
-            return text
+            result = text
+        # perform unicode normalization
+        return translate.lang.data.normalize(result)
 
 
 class CommonEnquire(object):
