@@ -564,3 +564,13 @@ class CommonEnquire(object):
         raise NotImplementedError("Incomplete indexing implementation: " \
                 + "'get_matches' for the 'Enquire' class is missing")
 
+    def get_matches_count(self):
+        """return the estimated number of matches
+
+        use "CommonIndexer.search" to retrieve the exact number of matches
+        @return: the estimaed number of matches
+        @rtype: int
+        """
+        (returned, estimate_count, matches) = self.get_matches(0, 1)
+        return estimate_count
+
