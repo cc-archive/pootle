@@ -793,25 +793,30 @@ class TranslationProject(object):
     pomtime = statistics.getmodtime(pofile.filename)
     pofilenamequery = index.make_query([("pofilename", pofilename)], True)
     pomtimequery = index.make_query([("pomtime", str(pomtime))], True)
-    if items is not None:
-      itemsquery = index.make_query([("itemno", str(itemno)) for itemno in items], False)
     gooditemsquery = index.make_query([pofilenamequery, pomtimequery], True)
-    # if the number of "gooditems" is greater than zero, then the indexing
-    # database is up-to-date (it was not changed externally)
     gooditemsnum = index.get_query_result(gooditemsquery).get_matches_count()
-    if items is None:
-      if gooditemsnum >0:
-        # the database is up-to-date and there are no items to be added
-        return
-      print "updating", self.projectcode, self.languagecode, "index for", pofilename
-      index.delete_doc({"pofilename": pofilename})
-    else:
+    # if there is at least one up-to-date indexing item, then the po file
+    # was not changed externally -> no need to update the database
+    db_is_updated = gooditemsnum > 0
+    if db_is_updated and (not items):
+      # nothing to be done
+      return
+    if db_is_updated:
+      # the indexing database is up-to-date - but there are items to be added/updated
       print "updating", self.languagecode, "index for", pofilename, "items", items
+      # delete the relevant items from the database
+      itemsquery = index.make_query([("itemno", str(itemno)) for itemno in items], False)
       index.delete_doc([pofilenamequery, itemsquery])
+    else:
+      # the whole indexing database is out-of-date
+      print "updating", self.projectcode, self.languagecode, "index for", pofilename
+      # delete all items of this file
+      index.delete_doc({"pofilename": pofilename})
+      # all items have to be added again
+      items = range(len(pofile.transunits))
+    # 'items' now contains the list of items to be added
     pofile.pofreshen()
     addlist = []
-    if items is None:
-      items = range(len(pofile.transunits))
     for itemno in items:
       unit = pofile.transunits[itemno]
       doc = {"pofilename": pofilename, "pomtime": str(pomtime), "itemno": str(itemno)}
