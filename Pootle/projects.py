@@ -784,7 +784,32 @@ class TranslationProject(object):
       self.updateindex(pofilename, optimize=False)
 
   def updateindex(self, pofilename, items=None, optimize=True):
-    """updates the index with the contents of pofilename (limit to items if given)"""
+    """updates the index with the contents of pofilename (limit to items if given)
+
+    There are three reasons for calling this function:
+      (A) creating a new instance of "TranslationProject" (see "initindex")
+          -> check if the index is up-to-date / rebuild the index if necessary
+      (B) translating a unit via the web interface
+          -> (re)index only the specified unit(s)
+
+    The argument "items" should be None for (A).
+
+    known problems:
+      1) This function should get called, when the po file changes externally.
+         The function "pofreshen" in pootlefile.py would be the natural place
+         for this. But this causes circular calls between the current (r7514)
+         statistics code and "updateindex" leading to indexing database lock
+         issues. 
+         WARNING: You have to stop the pootle server before manually changing
+         po files, if you want to keep the index database in sync.
+
+    @param pofilename: absolute filename of the po file
+    @type pofilename: str
+    @param items: list of unit numbers within the po file OR None (=rebuild all)
+    @type items: [int]
+    @param optimize: should the indexing database be optimized afterwards
+    @type optimize: bool
+    """
     if not indexer.HAVE_INDEXER:
       return
     index = self.getindexer()
@@ -797,25 +822,28 @@ class TranslationProject(object):
     gooditemsnum = index.get_query_result(gooditemsquery).get_matches_count()
     # if there is at least one up-to-date indexing item, then the po file
     # was not changed externally -> no need to update the database
-    db_is_updated = gooditemsnum > 0
-    if db_is_updated and (not items):
+    if (gooditemsnum > 0) and (not items):
       # nothing to be done
       return
-    elif db_is_updated and items:
-      # the indexing database is up-to-date - but there are items to be added/updated
+    elif items:
+      # Update only specific items - usually single translation via the web
+      # interface. All other items should still be up-to-date (even with an 
+      # older pomtime).
       print "updating", self.languagecode, "index for", pofilename, "items", items
       # delete the relevant items from the database
       itemsquery = index.make_query([("itemno", str(itemno)) for itemno in items], False)
       index.delete_doc([pofilenamequery, itemsquery])
     else:
-      # the whole indexing database is out-of-date
+      # (items is None)
+      # The po file is not indexed - or it was changed externally (see
+      # "pofreshen" in pootlefile.py).
       print "updating", self.projectcode, self.languagecode, "index for", pofilename
       # delete all items of this file
       index.delete_doc({"pofilename": pofilename})
-      # all items have to be added again
-      items = range(len(pofile.transunits))
-    # 'items' now contains the list of items to be added
     pofile.pofreshen()
+    if items is None:
+      # rebuild the whole index
+      items = range(len(pofile.transunits))
     addlist = []
     for itemno in items:
       unit = pofile.transunits[itemno]
