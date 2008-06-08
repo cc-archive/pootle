@@ -796,10 +796,12 @@ class TranslationProject(object):
     if items is not None:
       itemsquery = index.make_query([("itemno", str(itemno)) for itemno in items], False)
     gooditemsquery = index.make_query([pofilenamequery, pomtimequery], True)
-    gooditems = index.search(gooditemsquery, "itemno")
-    allitems = index.search(pofilenamequery, "itemno")
+    # if the number of "gooditems" is greater than zero, then the indexing
+    # database is up-to-date (it was not changed externally)
+    gooditemsnum = index.get_query_result(gooditemsquery).get_matches_count()
     if items is None:
-      if len(gooditems) == len(allitems) == pofile.statistics.getitemslen():
+      if gooditemsnum >0:
+        # the database is up-to-date and there are no items to be added
         return
       print "updating", self.projectcode, self.languagecode, "index for", pofilename
       index.delete_doc({"pofilename": pofilename})
