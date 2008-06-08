@@ -801,7 +801,7 @@ class TranslationProject(object):
     if db_is_updated and (not items):
       # nothing to be done
       return
-    if db_is_updated:
+    elif db_is_updated and items:
       # the indexing database is up-to-date - but there are items to be added/updated
       print "updating", self.languagecode, "index for", pofilename, "items", items
       # delete the relevant items from the database
