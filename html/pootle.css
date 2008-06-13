@@ -213,7 +213,7 @@ div.translate-original-focus
 }
 .translate-focus div.translate-original
 {
-	border: 3px solid black;
+	font-weight: bold; 
 }
 td.translate-original
 {
@@ -222,11 +222,12 @@ td.translate-original
 td.translate-focus
 {
 	border-top:2px solid #000000;
-	padding-top: 1px;
+	padding:.5em;
 	vertical-align: top;
 }
 td.comments
 {
+	padding:.5em;
         border-bottom:2px solid #000000;
 }
 textarea.comments
@@ -319,12 +320,14 @@ table.stats
 	border-spacing: 0;
 	padding: 0;
 	font-size: small;
+	border-collapse: collapse;
 }
 th.stats
 {
 	font-weight: bolder;
 	color: #004077;
 	text-align: center;
+	border: 1px dotted #999;
 }
 td.stats
 {
@@ -379,6 +382,28 @@ div.info {
 	padding-right: 80px;
 	padding-left: 0px;
 	text-align: right;
+}
+#banner h1.linked 
+{
+	padding-left: 0px;
+	padding-right: 0px;
+}
+#banner h1 a
+{
+	padding-left: 80px;
+	padding-right: 15px;
+	font-size: xx-large;
+	color: black;
+	padding-bottom: 15px;
+}
+#banner[dir="rtl"] h1 a
+{
+	padding-right: 80px;
+	padding-left: 15px;
+}
+#banner h1 a:hover
+{
+	text-decoration: none;
 }
 #content
 {
@@ -513,10 +538,7 @@ textarea.translation
 }
 a.translation-action
 {
-	display: none;
 	position: absolute;
-	background: white;
-	border: 1px dotted gray;
 	margin: 2px;
 	padding: 2px;
 	z-index: 2;

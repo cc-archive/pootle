@@ -415,7 +415,7 @@ class TranslatePage(pagelayout.PootleNavPage):
     else:
       self.editable = [self.item]
       rows = self.getdisplayrows("translate")
-      before = rows / 2
+      before = 0; 
       fromitem = self.item - before
       self.firstitem = max(self.item - before, 0)
       toitem = self.firstitem + rows
@@ -661,7 +661,7 @@ class TranslatePage(pagelayout.PootleNavPage):
             focusbox = textid
         transdict["forms"] = forms
       elif trans:
-        buttons = self.gettransbuttons(item, ["back", "skip", "copy", "suggest", "translate", "resize"])
+        buttons = self.gettransbuttons(item, ["back", "skip", "copy", "suggest", "translate"])
         transdict["text"] = self.escapefortextarea(trans[0])
         textid = "trans%d" % item
         focusbox = textid

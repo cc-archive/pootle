@@ -63,7 +63,6 @@
 
   <div id="itemdata" py:strip="True">
     <td class="stats-name">
-      <img src="${baseurl}images/${item.icon}.png" class="icon" alt="" dir="$uidir" lang="$uilanguage" />
       <a href="${item.href}" lang="en" dir="ltr">${item.title}</a>
     </td>
     <span py:if="item.data" py:strip="True">
@@ -74,11 +73,11 @@
       <td class="stats-graph">
         <span class="sortkey">${item.data.translatedpercentage}</span>
         <table border="0" cellpadding="0" cellspacing="0"><tr>
-            <td bgcolor="green" class="data" height="20" width="${item.data.translatedpercentage or int(bool(item.data.translatedsourcewords))}" />
-            <td bgcolor="#d3d3d3" class="data" height="20" width="${item.data.fuzzypercentage or int(bool(item.data.fuzzysourcewords))}" py:if="item.data.fuzzysourcewords"/>
-            <td bgcolor="red" class="data" height="20" width="${item.data.untranslatedpercentage or int(bool(item.data.untranslatedsourcewords))}" py:if="item.data.untranslatedsourcewords" />
+            <td bgcolor="green" class="data" height="15" width="${item.data.translatedpercentage or int(bool(item.data.translatedsourcewords))}" />
+            <td bgcolor="#d3d3d3" class="data" height="15" width="${item.data.fuzzypercentage or int(bool(item.data.fuzzysourcewords))}" py:if="item.data.fuzzysourcewords"/>
+            <td bgcolor="red" class="data" height="15" width="${item.data.untranslatedpercentage or int(bool(item.data.untranslatedsourcewords))}" py:if="item.data.untranslatedsourcewords" />
         </tr></table>
-      </td>      
+      </td>
     </span>
   </div>
 </body>
