@@ -933,9 +933,8 @@ class TranslationProject(object):
     assigncount = 0
     if not usercount:
       return assigncount
-    docountwords = lambda pofilename: self.countwords([(pofilename, item) for item in range(self.pofiles[pofilename].statistics.getitemslen())])
     pofilenames = [pofilename for pofilename in self.searchpofilenames(None, search, includelast=True)]
-    wordcounts = [(pofilename, docountwords(pofilename)) for pofilename in pofilenames]
+    wordcounts = [(pofilename, self.getpofile(pofilename).statistics.getquickstats()['totalsourcewords']) for pofilename in pofilenames]
     totalwordcount = sum([wordcount for pofilename, wordcount in wordcounts])
 
     wordsperuser = totalwordcount / usercount
@@ -953,7 +952,7 @@ class TranslationProject(object):
             validitem = True
           if not validitem:
             continue
-        itemwordcount = self.countwords([(pofilename, item)])
+        itemwordcount = statsdb.wordcount(str(pofile.getitem(item).source))
         if userwords + itemwordcount > wordsperuser:
           usernum = min(usernum+1, len(assignto)-1)
           userwords = 0
