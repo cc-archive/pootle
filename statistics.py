@@ -3,6 +3,8 @@ from translate.storage import statsdb
 from translate.filters import checks
 from translate.misc.multistring import multistring
 
+STATS_DB_FILE = None
+
 def getmodtime(filename, default=None):
   """gets the modificationtime of the given file"""
   if os.path.exists(filename):
@@ -19,7 +21,7 @@ class pootlestatistics:
     self.stats = {}
     self.totals = {}
     self.unitstats = {}
-    self.statscache = statsdb.StatsCache()
+    self.statscache = statsdb.StatsCache(STATS_DB_FILE)
     if generatestats:
       self.getstats()
 
