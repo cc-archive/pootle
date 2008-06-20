@@ -20,21 +20,21 @@ echo ${timestamp} ${logfile}
   echo
   echo -n "With "
   python -V
-  echo "cvs branches:"
-  pootlebranch=`[[ -f Pootle/CVS/Tag ]] && cat Pootle/CVS/Tag || echo HEAD`
-  toolkitbranch=`[[ -f translate/CVS/Tag ]] && cat translate/CVS/Tag || echo HEAD`
+  echo "branches:"
+  pootlebranch=`svn info Pootle|grep URL|sed -e 's/URL: //' |sed -e 's/\/\/.*@/\/\//'`
+  toolkitbranch=`svn info translate|grep URL|sed -e 's/URL: //' |sed -e 's/\/\/.*@/\/\//'`
   echo "Pootle is on branch:" $pootlebranch
   echo "Translate Toolkit is on branch:" $toolkitbranch
   echo
   echo "Versions:"
   echo $versions
   echo
-  echo "cvs update:"
-  echo "-----------"
-  cvs -q up translate Pootle | grep -v ^?
+  echo "update:"
+  echo "-------"
+  svn up
   echo "local changes:"
   echo "--------------"
-  cvs -q diff -u translate Pootle | grep -v ^?
+  svn diff
   echo "running tests:"
   echo "--------------"
   py.test translate Pootle
