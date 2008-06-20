@@ -33,6 +33,7 @@ from translate.tools import pocompile
 from translate.tools import pogrep
 from translate.search import match
 from translate.search import indexer
+from translate.storage import statsdb
 from Pootle import statistics
 from Pootle import pootlefile
 from translate.storage import versioncontrol
@@ -1050,15 +1051,15 @@ class TranslationProject(object):
 
   def combinestats(self, pofilenames=None):
     """combines translation statistics for the given po files (or all if None given)"""
-    totalstats = {}
+    totalstats = statsdb.emptystats()
     if pofilenames is None:
       pofilenames = self.pofilenames
     for pofilename in pofilenames:
       if not pofilename or os.path.isdir(pofilename):
         continue
-      postats = self.getpostats(pofilename)
+      postats = self.getpototals(pofilename)
       for name, items in postats.iteritems():
-        totalstats[name] = totalstats.get(name, []) + [(pofilename, item) for item in items]
+        totalstats[name] += postats[name]
     assignstats = self.combineassignstats(pofilenames)
     totalstats.update(assignstats)
     return totalstats
