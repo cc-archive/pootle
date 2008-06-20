@@ -12,13 +12,13 @@ cd "$srcdir"
 mkdir -p testlogs
 
 bugfile=toolkit-bugreport-${timestamp}.html
-wget 'http://bugs.wordforge.org:9880/buglist.cgi?query_format=specific&order=relevance+desc&bug_status=__all__&product=Translate+Toolkit' -O testlogs/${bugfile}
-sed -i 's#href="\([^:]*\)"#href="http://bugs.wordforge.org/\1"#g' testlogs/${bugfile}
+wget 'http://bugs.locamotion.org/buglist.cgi?query_format=specific&order=relevance+desc&bug_status=__all__&product=Translate+Toolkit' -O testlogs/${bugfile}
+sed -i 's#href="\([^:]*\)"#href="http://bugs.locamotion.org/\1"#g' testlogs/${bugfile}
 scp -p testlogs/${bugfile} ${dest}/$bugfile
 
 bugfile=pootle-bugreport-${timestamp}.html
-wget 'http://bugs.wordforge.org:9880/buglist.cgi?query_format=specific&order=relevance+desc&bug_status=__all__&product=Pootle' -O testlogs/${bugfile}
-sed -i 's#href="\([^:]*\)"#href="http://bugs.wordforge.org/\1"#g' testlogs/${bugfile}
+wget 'http://bugs.locamotion.org/buglist.cgi?query_format=specific&order=relevance+desc&bug_status=__all__&product=Pootle' -O testlogs/${bugfile}
+sed -i 's#href="\([^:]*\)"#href="http://bugs.locamotion.org/\1"#g' testlogs/${bugfile}
 scp -p testlogs/${bugfile} ${dest}/$bugfile
 
 for f in ~/.gaim/logs/irc/*@irc.freenode.net/\#pootle.chat/${dateiso}*
