@@ -253,7 +253,7 @@ class pootlefile(Wrapper):
   """this represents a pootle-managed file and its associated files"""
   innerclass = po.pofile
   x_generator = "Pootle %s" % __version__.ver
-  def __init__(self, project=None, pofilename=None, generatestats=True):
+  def __init__(self, project=None, pofilename=None, generatestats=False):
     if pofilename:
       innerclass = factory.getclass(pofilename)
     innerobj = innerclass()
