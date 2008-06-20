@@ -800,9 +800,9 @@ class TranslationProject(object):
     pofile.pofreshen()
     addlist = []
     if items is None:
-      items = range(len(pofile.transunits))
+      items = range(pofile.statistics.getitemslen())
     for itemno in items:
-      unit = pofile.transunits[itemno]
+      unit = pofile.getitem(itemno)
       doc = {"pofilename": pofilename, "pomtime": str(pomtime), "itemno": str(itemno)}
       orig = "\n".join(unit.source.strings)
       trans = "\n".join(unit.target.strings)
@@ -905,8 +905,8 @@ class TranslationProject(object):
             continue
         # TODO: move this to iteritems
         if search.searchtext:
-          unit = pofile.transunits[item]
-          if grepfilter.filterunit(unit):
+          unit = pofile.getitem(item)
+          if grepfilter.filterelement(unit):
             yield pofilename, item
         else:
           yield pofilename, item
@@ -946,8 +946,8 @@ class TranslationProject(object):
         # TODO: move this to iteritems
         if search.searchtext:
           validitem = False
-          unit = pofile.transunits[item]
-          if grepfilter.filterunit(unit):
+          unit = pofile.getitem(item)
+          if grepfilter.filterelement(unit):
             validitem = True
           if not validitem:
             continue
@@ -972,8 +972,8 @@ class TranslationProject(object):
       for item in pofile.iteritems(search, None):
         # TODO: move this to iteritems
         if search.searchtext:
-          unit = pofile.transunits[item]
-          if grepfilter.filterunit(unit):
+          unit = pofile.getitem(item)
+          if grepfilter.filterelement(unit):
             pofile.assigns.unassign(item, assignedto, action)
             assigncount += 1
         else:
@@ -1141,14 +1141,13 @@ class TranslationProject(object):
 
   def getpofilelen(self, pofilename):
     """returns number of items in the given pofilename"""
-    # TODO: needn't parse the file for this ...
     pofile = self.getpofile(pofilename)
-    return len(pofile.transunits)
+    return pofile.statistics.getitemslen()
 
   def getitems(self, pofilename, itemstart, itemstop):
     """returns a set of items from the pofile, converted to original and translation strings"""
     pofile = self.getpofile(pofilename)
-    units = pofile.transunits[max(itemstart,0):itemstop]
+    units = [pofile.units[index] for index in pofile.statistics.getstats()["total"][max(itemstart,0):itemstop]]
     return units
 
   def updatetranslation(self, pofilename, item, newvalues, session):
@@ -1261,7 +1260,7 @@ class TranslationProject(object):
       if isinstance(pofile, (str, unicode)):
         pofilename = pofile
         pofile = self.getpofile(pofilename)
-        return termmatcher.matches(pofile.transunits[item].source)
+        return termmatcher.matches(pofile.getitem(item).source)
     except Exception, e:
       session.server.errorhandler.logerror(traceback.format_exc())
       return []

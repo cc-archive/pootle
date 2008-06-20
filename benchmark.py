@@ -167,9 +167,9 @@ Pootle:
         args = {"pofilename": pofilename, "submit0": "true", "trans0": "changed"}
         page = self.server.getpage(["zxx", "benchmark", "translate.html"], session, args)
         pofile = project.getpofile(pofilename)
-        print str(pofile.transunits[0])
+        print str(pofile.getitem(0))
         # assert fails because of multistring
-        # assert pofile.transunits[0].unquotedmsgstr == "changed"
+        # assert pofile.getitem(0).unquotedmsgstr == "changed"
         print page.templatevars
 
 if __name__ == "__main__":
