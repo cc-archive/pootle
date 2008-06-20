@@ -38,9 +38,9 @@ class pootlestatistics:
     """updates the project's quick stats on this file"""
     totals = self.getquickstats()
     self.basefile.project.updatequickstats(self.basefile.pofilename, 
-        totals["translatedsourcewords"], totals["translated"], 
-        totals["fuzzysourcewords"], totals["fuzzy"],
-        totals["totalsourcewords"], totals["total"],
+        totals.get("translatedsourcewords", 0), totals.get("translated", 0),
+        totals.get("fuzzysourcewords", 0), totals.get("fuzzy", 0),
+        totals.get("totalsourcewords", 0), totals.get("total", 0),
         save)
 
   def reclassifyunit(self, item):
