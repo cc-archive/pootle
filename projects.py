@@ -1110,37 +1110,47 @@ class TranslationProject(object):
 
   def combinestats(self, pofilenames=None):
     """combines translation statistics for the given po files (or all if None given)"""
-    totalstats = statsdb.emptystats()
     if pofilenames is None:
       pofilenames = self.pofilenames
+    pofilenames = [pofilename for pofilename in pofilenames 
+                   if pofilename != None and not os.path.isdir(pofilename)]
+    total_stats = self.combine_totals(pofilenames)
+    total_stats['units'] = self.combine_unit_stats(pofilenames)
+    total_stats['assign'] = self.combineassignstats(pofilenames)
+    return total_stats
+
+  def combine_totals(self, pofilenames):
+    totalstats = {}
     for pofilename in pofilenames:
-      if not pofilename or os.path.isdir(pofilename):
-        continue
-      postats = self.getpototals(pofilename)
-      for name, items in postats.iteritems():
-        totalstats[name] += postats[name]
-    assignstats = self.combineassignstats(pofilenames)
-    totalstats.update(assignstats)
+      pototals = self.getpototals(pofilename)
+      for name, items in pototals.iteritems():
+        totalstats[name] = totalstats.get(name, 0) + pototals[name]
     return totalstats
+
+  def combine_unit_stats(self, pofilenames):
+    unit_stats = {}
+    for pofilename in pofilenames:
+      postats = self.getpostats(pofilename)
+      for name, items in postats.iteritems():
+        unit_stats.setdefault(name, []).extend([(pofilename, item) for item in items])
+    return unit_stats
 
   def combineassignstats(self, pofilenames=None, action=None):
     """combines assign statistics for the given po files (or all if None given)"""
-    totalstats = {}
-    if pofilenames is None:
-      pofilenames = self.pofilenames
+    assign_stats = {}
     for pofilename in pofilenames:
       assignstats = self.getassignstats(pofilename, action)
       for name, items in assignstats.iteritems():
-        totalstats["assign-"+name] = totalstats.get("assign-"+name, []) + [(pofilename, item) for item in items]
-    return totalstats
+        assign_stats.setdefault(name, []).extend([(pofilename, item) for item in items])
+    return assign_stats
 
   def countwords(self, stats):
     """counts the number of words in the items represented by the stats list"""
     wordcount = 0
     for pofilename, item in stats:
       pofile = self.pofiles[pofilename]
-      if 0 <= item < len(pofile.statistics.sourcewordcounts):
-        wordcount += sum(pofile.statistics.sourcewordcounts[item])
+      if 0 <= item < len(pofile.statistics.getunitstats()['sourcewordcount']):
+        wordcount += pofile.statistics.getunitstats()['sourcewordcount'][item]
     print "projects::countwords()"
     return wordcount
 

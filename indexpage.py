@@ -790,7 +790,7 @@ class ProjectIndex(pagelayout.PootleNavPage):
       else:
         action = None
       assignstats = self.project.combineassignstats(assignfilenames, action)
-      assignusers = [username.replace("assign-", "", 1) for username in assignstats.iterkeys()]
+      assignusers = list(assignstats.iterkeys())
       useroptions += [username for username in assignusers if username not in useroptions]
       if len(assignusers) > 1:
         multiusers = "multiple"
@@ -863,7 +863,7 @@ class ProjectIndex(pagelayout.PootleNavPage):
         minelink = self.localize("Translate My Strings")
       else:
         minelink = self.localize("View My Strings")
-      mystats = projectstats.get("assign-%s" % self.session.username, [])
+      mystats = projectstats['assign'].get(self.session.username, [])
       if len(mystats):
         minelink = {"href": self.makelink(baseactionlink, assignedto=self.session.username), "text": minelink}
       else:
@@ -963,12 +963,12 @@ class ProjectIndex(pagelayout.PootleNavPage):
     """return a list of strings describing the results of checks"""
     total = max(projectstats.get("total", 0), 1)
     checklinks = []
-    keys = projectstats.keys()
+    keys = projectstats['units'].keys()
     keys.sort()
     for checkname in keys:
       if not checkname.startswith("check-"):
         continue
-      checkcount = len(projectstats[checkname])
+      checkcount = len(projectstats['units'][checkname])
       checkname = checkname.replace("check-", "", 1)
       if total and checkcount:
         stats = self.nlocalize("%d string (%d%%) failed", "%d strings (%d%%) failed", checkcount, checkcount, (checkcount * 100 / total))
@@ -979,24 +979,20 @@ class ProjectIndex(pagelayout.PootleNavPage):
   def getassigndetails(self, projectstats, linkbase, removelinkbase):
     """return a list of strings describing the assigned strings"""
     # TODO: allow setting of action, so goals can only show the appropriate action assigns
-    total = projectstats.get("total", [])
     # quick lookup of what has been translated
-    translated = dict.fromkeys(projectstats.get("translated", []))
-    totalcount = len(total)
-    totalwords = self.project.countwords(total)
+    totalcount = projectstats.get("total", 0)
+    totalwords = projectstats.get("totalsourcewords", 0)
+    translated = projectstats['units'].get("translated", [])
     assignlinks = []
-    keys = projectstats.keys()
+    keys = projectstats['assign'].keys()
     keys.sort()
     for assignname in keys:
-      if not assignname.startswith("assign-"):
-        continue
-      assigned = projectstats[assignname]
+      assigned = projectstats['assign'][assignname]
       assigncount = len(assigned)
       assignwords = self.project.countwords(assigned)
       complete = [statsitem for statsitem in assigned if statsitem in translated]
       completecount = len(complete)
       completewords = self.project.countwords(complete)
-      assignname = assignname.replace("assign-", "", 1)
       if totalcount and assigncount:
         assignlink = {"href": self.makelink(linkbase, assignedto=assignname), "text": assignname}
         percentassigned = assignwords * 100 / max(totalwords, 1)
