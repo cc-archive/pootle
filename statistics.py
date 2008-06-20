@@ -5,12 +5,7 @@ from translate.misc.multistring import multistring
 
 STATS_DB_FILE = None
 
-def getmodtime(filename, default=None):
-  """gets the modificationtime of the given file"""
-  if os.path.exists(filename):
-    return os.stat(filename)[os.path.stat.ST_MTIME]
-  else:
-    return default
+getmodtime = statsdb.get_mod_info
 
 class pootlestatistics:
   """this represents the statistics known about a file"""

@@ -493,9 +493,6 @@ class POTree:
         # check that it actually exists (to avoid problems with broken symbolic 
         # links, for example)
         fpath = os.path.join(basedirname, fname)
-        if not os.path.exists(fpath):
-          print "file does not exist:", fpath
-          continue
         if fname.endswith(os.extsep+poext):
           pofilenames.append(fpath)
 

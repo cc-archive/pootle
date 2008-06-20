@@ -695,7 +695,7 @@ class ProjectIndex(pagelayout.PootleNavPage):
       goalfilenames = self.project.getgoalfiles(self.currentgoal, dirfilter=direntry, includedirs=False, expanddirs=True)
       projectstats = self.project.combinestats(goalfilenames)
     else:
-      projectstats = self.project.combinestats(pofilenames)
+      projectstats = self.project.combine_totals(pofilenames)
     basename = os.path.basename(direntry)
     browseurl = self.getbrowseurl("%s/" % basename, **newargs)
     diritem = {"href": browseurl, "title": basename, "icon": "folder", "isdir": True}

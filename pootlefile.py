@@ -420,11 +420,17 @@ class pootlefile(pootlebase):
 
   def pofreshen(self):
     """makes sure we have a freshly parsed pofile"""
-    if not os.path.exists(self.filename):
-      # the file has been removed, update the project index (and fail below)
-      self.project.scanpofiles()
-    if self.pomtime != self.lockedfile.readmodtime():
-      self.readpofile()
+    try:
+        if self.pomtime != self.lockedfile.readmodtime():
+          self.readpofile()
+    except OSError, e:
+        # If this exception is not triggered by a bad
+        # symlink, then we have a missing file on our hands...
+        if not os.path.islink(self.filename):
+            # ...and thus we rescan our files to get rid of the missing filename
+            self.project.scanpofiles()
+        else:
+            print "%s is a broken symlink" % (self.filename,)
 
   def getoutput(self):
     """returns pofile output"""

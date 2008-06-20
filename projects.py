@@ -33,7 +33,7 @@ from translate.tools import pocompile
 from translate.tools import pogrep
 from translate.search import match
 from translate.search import indexer
-from translate.storage import statsdb
+from translate.storage import statsdb, base
 from Pootle import statistics
 from Pootle import pootlefile
 from translate.storage import versioncontrol
@@ -825,52 +825,56 @@ class TranslationProject(object):
     index = self.getindexer()
     pofile = self.pofiles[pofilename]
     # check if the pomtime in the index == the latest pomtime
-    pomtime = statistics.getmodtime(pofile.filename)
-    pofilenamequery = index.make_query([("pofilename", pofilename)], True)
-    pomtimequery = index.make_query([("pomtime", str(pomtime))], True)
-    gooditemsquery = index.make_query([pofilenamequery, pomtimequery], True)
-    gooditemsnum = index.get_query_result(gooditemsquery).get_matches_count()
-    # if there is at least one up-to-date indexing item, then the po file
-    # was not changed externally -> no need to update the database
-    if (gooditemsnum > 0) and (not items):
-      # nothing to be done
-      return
-    elif items:
-      # Update only specific items - usually single translation via the web
-      # interface. All other items should still be up-to-date (even with an 
-      # older pomtime).
-      print "updating", self.languagecode, "index for", pofilename, "items", items
-      # delete the relevant items from the database
-      itemsquery = index.make_query([("itemno", str(itemno)) for itemno in items], False)
-      index.delete_doc([pofilenamequery, itemsquery])
-    else:
-      # (items is None)
-      # The po file is not indexed - or it was changed externally (see
-      # "pofreshen" in pootlefile.py).
-      print "updating", self.projectcode, self.languagecode, "index for", pofilename
-      # delete all items of this file
-      index.delete_doc({"pofilename": pofilename})
-    pofile.pofreshen()
-    if items is None:
-      # rebuild the whole index
-      items = range(pofile.statistics.getitemslen())
-    addlist = []
-    for itemno in items:
-      unit = pofile.getitem(itemno)
-      doc = {"pofilename": pofilename, "pomtime": str(pomtime), "itemno": str(itemno)}
-      orig = "\n".join(unit.source.strings)
-      trans = "\n".join(unit.target.strings)
-      doc["msgid"] = orig
-      doc["msgstr"] = trans
-      addlist.append(doc)
-    if addlist:
-      index.begin_transaction()
-      try:
-        for add_item in addlist:
-            index.index_document(add_item)
-      finally:
-        index.commit_transaction()
-        index.flush(optimize=optimize)
+    try:
+        pomtime = statistics.getmodtime(pofile.filename)
+        pofilenamequery = index.make_query([("pofilename", pofilename)], True)
+        pomtimequery = index.make_query([("pomtime", str(pomtime))], True)
+        gooditemsquery = index.make_query([pofilenamequery, pomtimequery], True)
+        gooditemsnum = index.get_query_result(gooditemsquery).get_matches_count()
+        # if there is at least one up-to-date indexing item, then the po file
+        # was not changed externally -> no need to update the database
+        if (gooditemsnum > 0) and (not items):
+          # nothing to be done
+          return
+        elif items:
+          # Update only specific items - usually single translation via the web
+          # interface. All other items should still be up-to-date (even with an 
+          # older pomtime).
+          print "updating", self.languagecode, "index for", pofilename, "items", items
+          # delete the relevant items from the database
+          itemsquery = index.make_query([("itemno", str(itemno)) for itemno in items], False)
+          index.delete_doc([pofilenamequery, itemsquery])
+        else:
+          # (items is None)
+          # The po file is not indexed - or it was changed externally (see
+          # "pofreshen" in pootlefile.py).
+          print "updating", self.projectcode, self.languagecode, "index for", pofilename
+          # delete all items of this file
+          index.delete_doc({"pofilename": pofilename})
+        pofile.pofreshen()
+        if items is None:
+          # rebuild the whole index
+          items = range(pofile.statistics.getitemslen())
+        addlist = []
+        for itemno in items:
+          unit = pofile.getitem(itemno)
+          doc = {"pofilename": pofilename, "pomtime": str(pomtime), "itemno": str(itemno)}
+          orig = "\n".join(unit.source.strings)
+          trans = "\n".join(unit.target.strings)
+          doc["msgid"] = orig
+          doc["msgstr"] = trans
+          addlist.append(doc)
+        if addlist:
+          index.begin_transaction()
+          try:
+            for add_item in addlist:
+                index.index_document(add_item)
+          finally:
+            index.commit_transaction()
+            index.flush(optimize=optimize)
+    except (base.ParseError, IOError, OSError):
+        index.delete_doc({"pofilename": pofilename})
+        print "Not indexing %s, since it is corrupt" % (pofilename,)
 
   def matchessearch(self, pofilename, search):
     """returns whether any items in the pofilename match the search (based on collected stats etc)"""
