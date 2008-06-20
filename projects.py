@@ -943,6 +943,7 @@ class TranslationProject(object):
     userwords = 0
     for pofilename, wordcount in wordcounts:
       pofile = self.getpofile(pofilename)
+      sourcewordcount = pofile.statistics.getunitstats()['sourcewordcount']
       for item in pofile.iteritems(search, None):
         # TODO: move this to iteritems
         if search.searchtext:
@@ -952,7 +953,8 @@ class TranslationProject(object):
             validitem = True
           if not validitem:
             continue
-        itemwordcount = statsdb.wordcount(str(pofile.getitem(item).source))
+        itemwordcount = sourcewordcount[item]
+        #itemwordcount = statsdb.wordcount(str(pofile.getitem(item).source))
         if userwords + itemwordcount > wordsperuser:
           usernum = min(usernum+1, len(assignto)-1)
           userwords = 0

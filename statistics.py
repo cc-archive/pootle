@@ -18,6 +18,7 @@ class pootlestatistics:
     self.basefile = basefile
     self.stats = {}
     self.totals = {}
+    self.unitstats = {}
     self.statscache = statsdb.StatsCache()
     if generatestats:
       self.getstats()
@@ -33,6 +34,11 @@ class pootlestatistics:
     if not self.stats:
       self.stats = self.statscache.filestats(self.basefile.filename, self.basefile.checker)
     return self.stats
+
+  def getunitstats(self):
+    if not self.unitstats:
+      self.unitstats = self.statscache.unitstats(self.basefile.filename)
+    return self.unitstats
 
   def updatequickstats(self, save=True):
     """updates the project's quick stats on this file"""
