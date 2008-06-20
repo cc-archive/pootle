@@ -23,6 +23,7 @@
 
 from translate.storage import base
 from translate.storage import po
+from translate.storage.poheader import tzstring
 from translate.storage import xliff
 from translate.storage import factory
 from translate.misc.multistring import multistring
@@ -451,7 +452,7 @@ class pootlefile(pootlebase):
       if newvalues["translator_comments"]:
         unit.addnote(newvalues["translator_comments"])
       
-    po_revision_date = time.strftime("%F %H:%M%z")
+    po_revision_date = time.strftime("%F %H:%M") + tzstring()
     headerupdates = {"PO_Revision_Date": po_revision_date, "X_Generator": self.x_generator}
     if userprefs:
       if getattr(userprefs, "name", None) and getattr(userprefs, "email", None):
