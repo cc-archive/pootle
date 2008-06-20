@@ -33,29 +33,6 @@ from jToolkit import glock
 import time
 import os
 
-class Wrapper(object):
-  """An object which wraps an inner object, delegating to the encapsulated methods, etc"""
-  def __getattr__(self, attrname, *args):
-    if attrname in self.__dict__:
-      return self.__dict__[attrname]
-    return getattr(self.__dict__["__innerobj__"], attrname, *args)
-
-  def __setattr__(self, attrname, value):
-    if attrname == "__innerobj__":
-      self.__dict__[attrname] = value
-    elif attrname in self.__dict__:
-      if isinstance(self.__dict__[attrname], property):
-        self.__dict__[attrname].fset(value)
-      else:
-        self.__dict__[attrname] = value
-    elif attrname in self.__class__.__dict__:
-      if isinstance(self.__class__.__dict__[attrname], property):
-        self.__class__.__dict__[attrname].fset(self, value)
-      else:
-        self.__dict__[attrname] = value
-    else:
-      return setattr(self.__dict__["__innerobj__"], attrname, value)
-
 class LockedFile:
   """locked interaction with a filesystem file"""
   #Locking is disabled for now since it impacts performance negatively and was
@@ -249,17 +226,16 @@ class pootleassigns:
             assignitems.extend(actionitems)
     return assignitems
 
-class pootlefile(Wrapper):
+class pootlebase(object):
+  pass
+
+class pootlefile(pootlebase):
   """this represents a pootle-managed file and its associated files"""
-  innerclass = po.pofile
   x_generator = "Pootle %s" % __version__.ver
   def __init__(self, project=None, pofilename=None, generatestats=False):
     if pofilename:
-      innerclass = factory.getclass(pofilename)
-    innerobj = innerclass()
-    self.__innerobj__ = innerobj
-    self.UnitClass = innerobj.UnitClass
-    
+      self.__class__.__bases__ = (factory.getclass(pofilename),)
+    super(pootlefile, self).__init__()
     self.pofilename = pofilename
     if project is None:
       from Pootle import projects
@@ -284,9 +260,6 @@ class pootlefile(Wrapper):
     self.pomtime = None
     self.tracker = timecache.timecache(20*60)
 
-  def __str__(self):
-    return self.__innerobj__.__str__()
-
   def parsestring(cls, storestring):
     newstore = cls()
     newstore.parse(storestring)
@@ -307,25 +280,26 @@ class pootlefile(Wrapper):
   def getheaderplural(self):
     """returns values for nplural and plural values.  It tries to see if the 
     file has it specified (in a po header or similar)."""
-    method = getattr(self.__innerobj__, "getheaderplural", None)
-    if method and callable(method):
-      return self.__innerobj__.getheaderplural()
-    else:
+    try:
+      return super(pootlefile, self).getheaderplural()
+    except AttributeError:
       return None, None
 
   def updateheaderplural(self, *args, **kwargs):
     """updates the file header. If there is an updateheader function in the 
     underlying store it will be delegated there."""
-    method = getattr(self.__innerobj__, "updateheaderplural", None)
-    if method and callable(method):
-      self.__innerobj__.updateheaderplural(*args, **kwargs)
+    try:
+      super(pootlefile, self).updateheaderplural(*args, **kwargs)
+    except AttributeError:
+      pass
 
   def updateheader(self, **kwargs):
     """updates the file header. If there is an updateheader function in the 
     underlying store it will be delegated there."""
-    method = getattr(self.__innerobj__, "updateheader", None)
-    if method and callable(method):
-      self.__innerobj__.updateheader(**kwargs)
+    try:
+      super(pootlefile, self).updateheader(**kwargs)
+    except AttributeError:
+      pass
 
   def readpendingfile(self):
     """reads and parses the pending file corresponding to this file"""
