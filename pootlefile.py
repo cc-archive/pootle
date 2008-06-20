@@ -480,7 +480,7 @@ class pootlefile(Wrapper):
     # adding the header.
     # TODO: remove once we force the PO class to always output headers
     force_recache = False 
-    if not self.header:
+    if not self.header():
       force_recache = True
     self.updateheader(add=True, **headerupdates)
     if languageprefs:
