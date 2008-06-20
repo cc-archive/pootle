@@ -1035,7 +1035,6 @@ class TranslationProject(object):
       alltotal += total
     for pofilename in slowfiles:
       self.pofiles[pofilename].statistics.updatequickstats(save=False)
-      self.savequickstats()
       translatedwords, translated, fuzzywords, fuzzy, totalwords, total = self.quickstats[pofilename]
       alltranslatedwords += translatedwords
       alltranslated += translated
@@ -1043,6 +1042,8 @@ class TranslationProject(object):
       allfuzzy += fuzzy
       alltotalwords += totalwords
       alltotal += total
+    if slowfiles:
+      self.savequickstats()
     return {"translatedsourcewords": alltranslatedwords, "translated": alltranslated, 
             "fuzzysourcewords": allfuzzywords, "fuzzy": allfuzzy, 
             "totalsourcewords": alltotalwords, "total": alltotal}
