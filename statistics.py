@@ -5,7 +5,8 @@ from translate.misc.multistring import multistring
 
 STATS_DB_FILE = None
 
-getmodtime = statsdb.get_mod_info
+def getmodtime(filename):
+    return statsdb.get_mod_info(filename, errors_return_empty=True, empty_return=None)
 
 class pootlestatistics:
   """this represents the statistics known about a file"""
@@ -21,13 +22,13 @@ class pootlestatistics:
   def getquickstats(self):
     """returns the quick statistics (totals only)"""
     if not self._totals:
-      self._totals = self.statscache.filetotals(self.basefile.filename)
+      self._totals = self.statscache.filetotals(self.basefile.filename, errors_return_empty=True)
     return self._totals
 
   def getstats(self):
     """reads the stats if neccessary or returns them from the cache"""
     if not self._stats:
-      self._stats = self.statscache.filestats(self.basefile.filename, self.basefile.checker)
+      self._stats = self.statscache.filestats(self.basefile.filename, self.basefile.checker, errors_return_empty=True)
     return self._stats
   
   def purge_totals(self):
@@ -39,7 +40,7 @@ class pootlestatistics:
 
   def getunitstats(self):
     if not self._unitstats:
-      self._unitstats = self.statscache.unitstats(self.basefile.filename)
+      self._unitstats = self.statscache.unitstats(self.basefile.filename, errors_return_empty=True)
     return self._unitstats
 
   def updatequickstats(self, save=True):
