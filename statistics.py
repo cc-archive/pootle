@@ -34,6 +34,11 @@ class pootlestatistics:
     if not self.stats:
       self.stats = self.statscache.filestats(self.basefile.filename, self.basefile.checker)
     return self.stats
+  
+  def purge_totals(self):
+    """Temporary helper to clean up where needed. We might be able to remove 
+    this after the move to cpo."""
+    self.stats = {}
 
   def getunitstats(self):
     if not self.unitstats:

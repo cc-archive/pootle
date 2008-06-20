@@ -476,6 +476,12 @@ class pootlefile(Wrapper):
     if userprefs:
       if getattr(userprefs, "name", None) and getattr(userprefs, "email", None):
         headerupdates["Last_Translator"] = "%s <%s>" % (userprefs.name, userprefs.email)
+    # XXX: If we needed to add a header, the index value in item will be one out after
+    # adding the header.
+    # TODO: remove once we force the PO class to always output headers
+    force_recache = False 
+    if not self.header:
+      force_recache = True
     self.updateheader(add=True, **headerupdates)
     if languageprefs:
       nplurals = getattr(languageprefs, "nplurals", None)
@@ -483,6 +489,8 @@ class pootlefile(Wrapper):
       if nplurals and pluralequation:
         self.updateheaderplural(nplurals, pluralequation)
     self.savepofile()
+    if force_recache:
+      self.statistics.purge_totals()
     self.statistics.reclassifyunit(item)
 
   def getitem(self, item):
