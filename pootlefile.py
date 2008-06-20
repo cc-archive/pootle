@@ -122,7 +122,7 @@ class pootleassigns:
     assignsstring = assignsfile.read()
     assignsfile.close()
     poassigns = {}
-    itemcount = len(getattr(self, "classify", {}).get("total", []))
+    itemcount = len(getattr(self, "stats", {}).get("total", []))
     for line in assignsstring.split("\n"):
       if not line.strip():
         continue
@@ -330,16 +330,10 @@ class pootlefile(Wrapper):
   def readpendingfile(self):
     """reads and parses the pending file corresponding to this file"""
     if os.path.exists(self.pendingfilename):
-      pendingmtime = statistics.getmodtime(self.pendingfilename)
-      if pendingmtime == getattr(self, "pendingmtime", None):
-        return
       inputfile = open(self.pendingfilename, "r")
-      self.pendingmtime, self.pendingfile = pendingmtime, factory.getobject(inputfile, ignore=".pending")
-      if self.pomtime:
-        self.reclassifysuggestions()
+      self.pendingfile = factory.getobject(inputfile, ignore=".pending")
     else:
       self.pendingfile = po.pofile()
-      self.savependingfile()
 
   def savependingfile(self):
     """saves changes to disk..."""
@@ -347,7 +341,6 @@ class pootlefile(Wrapper):
     outputfile = open(self.pendingfilename, "w")
     outputfile.write(output)
     outputfile.close()
-    self.pendingmtime = statistics.getmodtime(self.pendingfilename)
 
   def readtmfile(self):
     """reads and parses the tm file corresponding to this file"""
@@ -361,14 +354,14 @@ class pootlefile(Wrapper):
       self.tmfile = po.pofile()
 
   def reclassifysuggestions(self):
-    """shortcut to only update classification of has-suggestion for all items"""
+    """shortcut to only update classification of hassuggestion for all items"""
     suggitems = []
     sugglocations = {}
     for thesugg in self.pendingfile.units:
       locations = tuple(thesugg.getlocations())
       sugglocations[locations] = thesugg
     suggitems = [item for item in self.transunits if tuple(item.getlocations()) in sugglocations]
-    havesuggestions = self.statistics.classify["has-suggestion"]
+    havesuggestions = self.statistics.stats["check-hassuggestion"]
     for item, poel in enumerate(self.transunits):
       if (poel in suggitems) != (item in havesuggestions):
         if poel in suggitems:
@@ -376,8 +369,6 @@ class pootlefile(Wrapper):
         else:
           havesuggestions.remove(item)
         havesuggestions.sort()
-    self.statistics.calcstats()
-    self.statistics.savestats()
 
   def getsuggestions(self, item):
     """find all the suggestion items submitted for the given item"""
@@ -522,7 +513,7 @@ class pootlefile(Wrapper):
       minitem = 0
     else:
       minitem = lastitem + 1
-    maxitem = len(self.transunits)
+    maxitem = len(self.transunits) # XXX: doesn't work because indices differ from .units
     validitems = range(minitem, maxitem)
     if search.assignedto or search.assignedaction:
       assignitems = self.assigns.finditems(search)
@@ -532,7 +523,7 @@ class pootlefile(Wrapper):
       if not search.matchnames:
         yield item
       for name in search.matchnames:
-        if item in self.statistics.classify[name]:
+        if item in self.statistics.stats[name]:
           yield item
 
   def matchitems(self, newfile, uselocations=False):
