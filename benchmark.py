@@ -123,7 +123,7 @@ Pootle:
         for dirpath, subdirs, filenames in os.walk(self.po_dir, topdown=False):
             for name in filenames:
                 pofilename = os.path.join(dirpath, name)
-                parsedfile = pootlefile.pootlefile(pofilename=pofilename, generatestats=True)
+                parsedfile = pootlefile.pootlefile(pofilename=pofilename)
                 count += len(parsedfile.units)
         print "stats on %d units" % count
 

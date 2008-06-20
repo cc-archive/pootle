@@ -14,38 +14,38 @@ def getmodtime(filename, default=None):
 
 class pootlestatistics:
   """this represents the statistics known about a file"""
-  def __init__(self, basefile, generatestats=False):
+  def __init__(self, basefile):
     """constructs statistic object for the given file"""
     # TODO: try and remove circular references between basefile and this class
     self.basefile = basefile
-    self.stats = {}
-    self.totals = {}
-    self.unitstats = {}
+    self._stats = None
+    self._totals = None
+    self._unitstats = None
     self.statscache = statsdb.StatsCache(STATS_DB_FILE)
-    if generatestats:
-      self.getstats()
 
   def getquickstats(self):
     """returns the quick statistics (totals only)"""
-    if not self.totals:
-      self.totals = self.statscache.filetotals(self.basefile.filename)
-    return self.totals
+    if not self._totals:
+      self._totals = self.statscache.filetotals(self.basefile.filename)
+    return self._totals
 
   def getstats(self):
     """reads the stats if neccessary or returns them from the cache"""
-    if not self.stats:
-      self.stats = self.statscache.filestats(self.basefile.filename, self.basefile.checker)
-    return self.stats
+    if not self._stats:
+      self._stats = self.statscache.filestats(self.basefile.filename, self.basefile.checker)
+    return self._stats
   
   def purge_totals(self):
     """Temporary helper to clean up where needed. We might be able to remove 
     this after the move to cpo."""
-    self.stats = {}
+    self._totals = None
+    self._stats = None
+    self._unitstats = None
 
   def getunitstats(self):
-    if not self.unitstats:
-      self.unitstats = self.statscache.unitstats(self.basefile.filename)
-    return self.unitstats
+    if not self._unitstats:
+      self._unitstats = self.statscache.unitstats(self.basefile.filename)
+    return self._unitstats
 
   def updatequickstats(self, save=True):
     """updates the project's quick stats on this file"""
@@ -57,22 +57,22 @@ class pootlestatistics:
         save)
 
   def reclassifyunit(self, item):
-    """Reclassifies all the information in the database and self.stats about 
+    """Reclassifies all the information in the database and self._stats about 
     the given unit"""
     unit = self.basefile.getitem(item)
-    item = self.stats["total"][item]
+    item = self.getstats()["total"][item]
     
     classes = self.statscache.recacheunit(self.basefile.filename, self.basefile.checker, unit)
-    for classname, matchingitems in self.stats.items():
+    for classname, matchingitems in self.getstats().items():
       if (classname in classes) != (item in matchingitems):
         if classname in classes:
-          self.stats[classname].append(item)
+          self.getstats()[classname].append(item)
         else:
-          self.stats[classname].remove(item)
-        self.stats[classname].sort()
+          self.getstats()[classname].remove(item)
+        self.getstats()[classname].sort()
     # We should be doing better, but for now it is easiet to simply force a 
     # reload from the database
-    self.totals = {}
+    self.purge_totals()
 
   def getitemslen(self):
     """gets the number of items in the file"""

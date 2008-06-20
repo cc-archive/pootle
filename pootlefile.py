@@ -232,7 +232,7 @@ class pootlebase(object):
 class pootlefile(pootlebase):
   """this represents a pootle-managed file and its associated files"""
   x_generator = "Pootle %s" % __version__.ver
-  def __init__(self, project=None, pofilename=None, generatestats=False):
+  def __init__(self, project=None, pofilename=None):
     if pofilename:
       self.__class__.__bases__ = (factory.getclass(pofilename),)
     super(pootlefile, self).__init__()
@@ -254,7 +254,7 @@ class pootlefile(pootlebase):
 
     self.pendingfilename = self.filename + os.extsep + "pending"
     self.pendingfile = None
-    self.statistics = statistics.pootlestatistics(self, generatestats)
+    self.statistics = statistics.pootlestatistics(self)
     self.tmfilename = self.filename + os.extsep + "tm"
     # we delay parsing until it is required
     self.pomtime = None
@@ -489,7 +489,7 @@ class pootlefile(pootlebase):
       if not search.matchnames:
         yield item
       for name in search.matchnames:
-        if translatables[item] in self.statistics.stats[name]:
+        if translatables[item] in self.statistics.getstats()[name]:
           yield item
 
   def matchitems(self, newfile, uselocations=False):
