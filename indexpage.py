@@ -95,12 +95,11 @@ class PootleIndex(pagelayout.PootlePage):
     instancetitle = getattr(session.instance, "title", session.localize("Pootle Demo"))
     pagetitle = instancetitle
     sessionvars = {"status": session.status, "isopen": session.isopen, "issiteadmin": session.issiteadmin()}
-    languages = [{"code": code, "name": self.tr_lang(name), "sep": self.listseperator} for code, name in self.potree.getlanguages()]
+#@todo - need localized dates
+    languages = [{"code": code, "name": self.tr_lang(name), "progress": 65, "lastactivity": "June 24th, 2008"} for code, name in self.potree.getlanguages()]
     # rewritten for compatibility with Python 2.3
     # languages.sort(cmp=locale.strcoll, key=lambda dict: dict["name"])
     languages.sort(lambda x,y: locale.strcoll(x["name"], y["name"]))
-    if languages:
-      languages[-1]["sep"] = ""
     templatevars = {"pagetitle": pagetitle, "description": description, 
         "meta_description": meta_description, "keywords": keywords,
         "languagelink": languagelink, "languages": languages,
@@ -114,9 +113,7 @@ class PootleIndex(pagelayout.PootlePage):
     for projectcode in self.potree.getprojectcodes():
       projectname = self.potree.getprojectname(projectcode)
       description = shortdescription(self.potree.getprojectdescription(projectcode))
-      projects.append({"code": projectcode, "name": projectname, "description": description, "sep": self.listseperator})
-    if projects:
-      projects[-1]["sep"] = ""
+      projects.append({"code": projectcode, "name": projectname, "description": description, "progress": 40, "lastactivity": "June 25th, 2008"})
     return projects
 
   def getprojectnames(self):
