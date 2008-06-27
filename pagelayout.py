@@ -82,7 +82,22 @@ def completetemplatevars(templatevars, session, bannerheight=135):
   templatevars["aboutlink"] = session.localize("About this Pootle server")
   templatevars["uilanguage"] = weblanguage(session.language)
   templatevars["uidir"] = languagedir(session.language)
+  templatevars["username_title"] = session.localize("Username:")
+  try:
+    templatevars["username"] = templatevars["username"]
+  except:
+    templatevars["username"] = "" 
+  templatevars["password_title"] = session.localize("Password:")
+  templatevars["login_text"] = session.localize('Login')
+  templatevars["register_text"] = session.localize('Register')
   templatevars["links"] = localize_links(session)
+  templatevars["current_url"] = session.currenturl
+  if "?" in session.currenturl: 
+    templatevars["logout_link"] = session.currenturl+"&islogout=1"
+  else:
+    templatevars["logout_link"] = session.currenturl+"?islogout=1"
+    
+
   if "search" not in templatevars:
     templatevars["search"] = None
 

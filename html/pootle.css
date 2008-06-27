@@ -106,10 +106,6 @@ h1, h2, h3
 	margin: 0px;
 	padding: 0px;
 }
-.title
-{
-	color: #004077;
-}
 .title a
 {
        unicode-bidi: embed;
@@ -222,7 +218,9 @@ td.translate-original
 td.translate-focus
 {
 	border-top:2px solid #000000;
-	padding:.5em;
+	padding-top:.5em;
+	padding-bottom:.5em;
+	padding-left:.5em;
 	vertical-align: top;
 }
 td.comments
@@ -600,6 +598,10 @@ table.sortable img.sortarrow {
   display: none;
 }
 
+a.loginlink {
+  line-height: 20px;
+}
+
 div#language-list {
     float:left;
     border: 1px solid #111;
@@ -614,13 +616,17 @@ div#project-list {
     width: 45%;
 }
 
+div.logincont form {
+    display: inline;
+}
+
 /* 
     Pretty graphs; from http://applestooranges.com/blog/post/css-for-bar-graphs/?id=55
 */
 .graph { 
     position: relative; /* IE is dumb */
     width: 200px; 
-    border: 1px solid #B1D632; 
+    border: 1px solid #B1D632;
     padding: 2px; 
 }
 .graph .bar { 
@@ -630,7 +636,14 @@ div#project-list {
     text-align: center; 
     color: #333; 
     height: 2em; 
-    line-height: 2em;            
+    line-height: 2em;
 }
 .graph .bar span { position: absolute; left: 1em; }
 
+table.sortable th {
+  cursor: pointer;
+}
+
+table.sortable th.sorttable_nosort {
+  cursor: default;
+}

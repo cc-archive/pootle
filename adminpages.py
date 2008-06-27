@@ -217,6 +217,7 @@ class UsersAdminPage(pagelayout.PootlePage):
                {"name": "email", "title": self.localize("Email Address"), "newvalue": self.localize("(add email here)")},
                {"name": "password", "title": self.localize("Password"), "newvalue": self.localize("(add password here)")},
                {"name": "activated", "title": self.localize("Activated"), "type": "checkbox", "checked": "true", "newvalue": "", "label": self.localize("Activate New User")},
+               {"name": "logintype", "title": self.localize("Login Type"), "newvalue": "hash"},
                {"name": "remove", "title": self.localize("Remove User"), "type": "checkbox"}]
     for option in options:
       if "newvalue" in option:
@@ -232,6 +233,7 @@ class UsersAdminPage(pagelayout.PootlePage):
     for usercode, usernode in self.users.iteritems(sorted=True):
       fullname = getattr(usernode, "name", "")
       email = getattr(usernode, "email", "")
+      logintype = getattr(usernode, "logintype", "")
       activated = getattr(usernode, "activated", 0) == 1
       if activated:
         activatedattr = "checked"
@@ -244,6 +246,7 @@ class UsersAdminPage(pagelayout.PootlePage):
                      {"name": "useremail-%s" % usercode, "value": email, "type": "text"},
                      {"name": "userpassword-%s" % usercode, "value": None, "type": "text"},
                      {"name": "useractivated-%s" % usercode, "type": "checkbox", activatedattr: activatedattr},
+                     {"name": "userlogintype-%s" % usercode, "value": logintype, "type": "text"},
                      {"name": "userremove-%s" % usercode, "value": None, "type": "checkbox", "label": removelabel}]
       users.append({"code": usercode, "options": useroptions})
     return users

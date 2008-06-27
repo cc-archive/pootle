@@ -351,7 +351,9 @@ class TranslatePage(pagelayout.PootleNavPage):
   def getusernode(self):
     """gets the user's prefs node"""
     if self.session.isopen:
-      return getattr(self.session.loginchecker.users, self.session.username.encode("utf-8"), None)
+      import re
+      dsu = re.sub("\.", "D0T", self.session.username.encode("utf-8")) #FIXME
+      return getattr(self.session.loginchecker.users, dsu, None)
     else:
       return None
 

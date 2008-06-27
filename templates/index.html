@@ -34,7 +34,7 @@
           <table class="sortable" description="">
             <tr><th>Language</th><th>Overall Completion</th><th>Last Activity</th></tr>
             <span py:for="l in languages" py:strip="True">
-              <tr><td><a href="${l.code}/" py:content="l.name">Language</a></td><td class="graph"><strong class="bar" style="width: ${l.progress}%;">${l.progress}%</strong></td><td>${l.lastactivity}</td></tr>
+              <tr><td><a href="languages/${l.code}/" py:content="l.name">Language</a></td><td class="graph" title="${l.trans}/${l.total} words"><strong class="bar" style="width: ${l.progress}%;">${l.progress}%</strong></td><td>${l.lastactivity}</td></tr>
             </span>
           </table>
         </div>
@@ -44,7 +44,7 @@
           <table class="sortable" description="">
             <tr><th>Language</th><th>Overall Completion</th><th>Last Activity</th></tr>
             <span py:for="p in projects" py:strip="True">
-                <tr><td><a href="projects/${p.code}/" title="${p.description}" py:content="p.name">Project</a></td><td class="graph"><strong class="bar" style="width: ${p.progress}%;">${p.progress}%</strong></td><td>${p.lastactivity}</td></tr>
+                <tr><td><a href="projects/${p.code}/" title="${p.description}" py:content="p.name">Project</a></td><td class="graph" title="${p.trans}/${p.total} words"><strong class="bar" style="width: ${p.progress}%;">${p.progress}%</strong></td><td>${p.lastactivity}</td></tr>
             </span>
           </table>
         </div>

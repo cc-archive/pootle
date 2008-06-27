@@ -157,6 +157,9 @@ class TranslationProject(object):
       username = session.username
     if username is None:
       username = "nobody"
+    #FIXME
+    import re
+    username = re.sub("\.","D0T",username)
     rights = None
     rightstree = getattr(self.prefs, "rights", None)
     if rightstree is not None:
@@ -455,7 +458,11 @@ class TranslationProject(object):
     self.pofilenames = self.potree.getpofiles(self.languagecode, self.projectcode, poext=self.fileext)
     for pofilename in self.pofilenames:
       if not pofilename in self.pofiles:
-        self.pofiles[pofilename] = pootlefile.pootlefile(self, pofilename)
+        try:
+          self.pofiles[pofilename] = pootlefile.pootlefile(self, pofilename)
+        except UnicodeDecodeError:
+          print "Unicode Error on file %s" % pofilename
+          raise
     # remove any files that have been deleted since initialization
     for pofilename in self.pofiles.keys():
       if not pofilename in self.pofilenames:

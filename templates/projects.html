@@ -8,6 +8,7 @@
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
   <link rel="stylesheet" type="text/css" href="${baseurl}pootle.css" />
   <link rel="shortcut icon" href="${baseurl}favicon.ico" />
+  <script type="text/javascript" src="${baseurl}js/sorttable.js"></script>
   <!--[if lt IE 7.]>
     <script defer type="text/javascript" src="${baseurl}js/correctpng.js"></script>
   <![endif]-->
@@ -22,9 +23,12 @@
       <h3 class="title" py:content="projectlink">Projects</h3>
 
       <div class="item-description">
-        <span py:for="p in projects" py:strip="True">
-          <a href="${p.code}/" title="${p.description}" py:content="p.name">Project</a>${p.sep}
-        </span>
+          <table class="sortable" description="">
+            <tr><th>Language</th><th>Overall Completion</th><th>Last Activity</th></tr>
+            <span py:for="p in projects" py:strip="True">
+                <tr><td><a href="${p.code}/" title="${p.description}" py:content="p.name">Project</a></td><td class="graph"><strong class="bar" style="width: ${p.progress}%;">${p.progress}%</strong></td><td>${p.lastactivity}</td></tr>
+            </span>
+          </table>
       </div>
     </div>
   </div>

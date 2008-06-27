@@ -38,6 +38,10 @@ class RegistrationError(ValueError):
 # changing password
 minpasswordlen = 6
 
+def dotsafe(username):
+  import re
+  return re.sub("\.","D0T",username)
+
 def validatepassword(session, password, passwordconfirm):
   if not password or len(password) < minpasswordlen:
     raise RegistrationError(session.localize("You must supply a valid password of at least %d characters.", minpasswordlen))
@@ -69,6 +73,7 @@ class LoginPage(pagelayout.PootlePage):
         "language_title": self.localize('Language:'),
         "languages": self.getlanguageoptions(session),
         "login_text": self.localize('Login'),
+        "register_text": self.localize('Register'),
         "session": sessionvars, "instancetitle": instancetitle}
     pagelayout.PootlePage.__init__(self, templatename, templatevars, session)
 
@@ -303,23 +308,37 @@ class OptionalLoginAppServer(server.LoginAppServer):
       
   def hasuser(self, users, username):
     """returns whether the user exists in users"""
-    return users.__hasattr__(username)
+    return users.__hasattr__(dotsafe(username))
 
   def getusernode(self, users, username):
     """gets the node for the given user"""
     if not self.hasuser(users, username):
-      usernode = prefs.PrefNode(users, username)
-      users.__setattr__(username, usernode)
+      usernode = prefs.PrefNode(users, dotsafe(username))
+      users.__setattr__(dotsafe(username), usernode)
     else:
-      usernode = users.__getattr__(username)
+      usernode = users.__getattr__(dotsafe(username))
     return usernode
 
-  def adduser(self, users, username, fullname, email, password):
+  def adduser(self, users, username, fullname, email, password, logintype="hash"):
     """adds the user with the given details"""
+    if logintype == "ldap":
+      self.addldapuser(users, username)
+      return
     usernode = self.getusernode(users, username)
     usernode.name = fullname
     usernode.email = email
+    usernode.logintype = logintype 
     usernode.passwdhash = web.session.md5hexdigest(password)
+
+  def addldapuser(self, users, username):
+    email = username
+    import mozldap 
+    c = mozldap.MozillaLdap()
+    fullname = c.getFullName(email)
+    usernode = self.getusernode(users, username)
+    usernode.name = fullname
+    usernode.email = email
+    usernode.logintype = "ldap" 
 
   def makeactivationcode(self, users, username):
     """makes a new activation code for the user and returns it"""
@@ -368,16 +387,17 @@ class OptionalLoginAppServer(server.LoginAppServer):
         self.activate(users, username)
       elif key == "newusername":
         username = value.lower()
+        logintype = argdict.get("logintype","")
         if not username:
           continue
-        if not (username[:1].isalpha() and username.replace("_","").isalnum()):
+        if logintype == "hash" and not (username[:1].isalpha() and username.replace("_","").isalnum()):
           raise ValueError("Login must be alphanumeric and start with an alphabetic character (got %r)" % username)
         if username in ["nobody", "default"]:
           raise ValueError('"%s" is a reserved username.' % username)
         if self.hasuser(users, username):
           raise ValueError("Already have user with the login: %s" % username)
         userpassword = argdict.get("newuserpassword", None)
-        if userpassword is None or userpassword == session.localize("(add password here)"):
+        if logintype == "hash" and (userpassword is None or userpassword == session.localize("(add password here)")):
           raise ValueError("You must specify a password")
         userfullname = argdict.get("newuserfullname", None)
         if userfullname == session.localize("(add full name here)"):
@@ -386,7 +406,7 @@ class OptionalLoginAppServer(server.LoginAppServer):
         if useremail == session.localize("(add email here)"):
           raise ValueError("Please set the users email address or leave it blank")
         useractivate = "newuseractivate" in argdict
-        self.adduser(users, username, userfullname, useremail, userpassword)
+        self.adduser(users, username, userfullname, useremail, userpassword, logintype)
         if useractivate:
           self.activate(users, username)
         else:
@@ -517,13 +537,27 @@ class PootleSession(web.session.LoginSession):
   """a session object that knows about Pootle"""
   def __init__(self, sessioncache, server, sessionstring = None, loginchecker = None):
     """sets up the session and remembers the users prefs"""
+
+    # In LoginSession's __init__, it defaults loginchecker to LoginChecker;
+    # hence, we default it to ProgressiveLoginChecker first, before we call
+    # LoginSession's __init__.
+    if loginchecker == None:
+      import login
+      logindict = {'ldap':login.LDAPLoginChecker(self, server.instance), 'hash':login.HashLoginChecker(self, server.instance)}
+      loginchecker = login.ProgressiveLoginChecker(self, server.instance, logindict)
     super(PootleSession, self).__init__(sessioncache, server, sessionstring, loginchecker)
     self.getprefs()
 
   def getprefs(self):
     """gets the users prefs into self.prefs"""
     if self.isopen:
-      self.prefs = self.loginchecker.users.__getattr__(self.username)
+      # FIXME
+      # PrefNodes treat .s funny; replace them all with the string D0T.
+      # Technically, this is not a good idea; foo@bar.catD0Tdog.com and
+      # foo@bar.cat.dog.com will have the same identifier.  This hack is
+      # here only as a placeholder until we switch to using a database to
+      # store the preferences.
+      self.prefs = self.loginchecker.users.__getattr__(dotsafe(self.username))
       if self.language_set:
         self.setlanguage(self.language_set)
         return
@@ -650,3 +684,53 @@ class PootleSession(web.session.LoginSession):
     """returns whether the user can administer the site"""
     return getattr(self.getrights(), "siteadmin", False)
 
+  def validate(self, password=None):
+    """checks if this session is valid"""
+
+    # From a small amount of testing, this gets called without a password
+    # only from setsessionstring, which is called only on the first loading
+    # of a page by a given user
+    self.isvalid = 0
+    if self.markedinvalid:
+      self.status = self.markedinvalid
+      return self.isvalid
+    if not self.isvalid:
+      self.status = self.localize("invalid username and/or password")
+    if self.loginchecker.userexists():
+      if password != None: #If there's a password, this is called from create
+        self.isvalid = self.loginchecker.iscorrectpass(password)
+      else:
+        #print "Cache is: "+str(self.sessioncache)
+        #print "String is"+str(self.getsessionstring())
+        pass
+        # self.isvalid = (self.getsessionstring() in self.sessioncache)
+        # FIXME FIXME FIXME: MUST BE FIXED BEFORE ANY ACTUAL RELEASE
+        # FIXME: This is where the original validate did its little md5 hash
+        # password magic; we don't have access to the md5 of the password,
+        # so we can't really do that... if something is going to be wrong 
+        # with setsessionstring -> validate, this is where it would be.
+        
+        # I fear the result of this is that any session string with a valid
+        # username might be able to convince the server that it is a valid
+        # login.  A way to fix this might be to check if the sessionid given
+        # is actually in our dictionary of sessionid's; if so, check the
+        # username and if it matches, we verify.  However, this does not
+        # appear to work.
+    elif self.loginchecker.logincheckers["ldap"].userexists():
+      if password != None:
+        passcorrect = self.loginchecker.logincheckers["ldap"].iscorrectpass(password)
+        if passcorrect:
+          self.server.addldapuser(self.loginchecker.users, self.username)
+          self.usercreated = True
+          self.saveprefs()
+          self.isvalid = True
+    return self.isvalid
+
+  def create(self,username,password,timestamp,language):
+    """initializes the session with the parameters"""
+    self.username, password, self.timestamp = username, password, timestamp
+    self.setlanguage(language)
+    self.sessionid = self.getsessionid(password)
+    self.validate(password) # Pass it the password; we need to make sure 
+                            # the password is correct!
+    self.open()

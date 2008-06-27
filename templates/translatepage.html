@@ -8,7 +8,15 @@
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
   <link rel="stylesheet" type="text/css" href="${baseurl}pootle.css" />
   <link rel="shortcut icon" href="${baseurl}favicon.ico" />
-<script src="${baseurl}js/autoexpand.js" type="text/javascript">
+<script src="${baseurl}js/autoexpand.js" type="text/javascript"></script>
+<script src="${baseurl}js/jquery.js" type="text/javascript"></script>
+<script src="${baseurl}js/autogrow.js" type="text/javascript"></script>
+<script type="text/javascript">
+  $(document).ready(function(){
+    $('textarea').autogrow(); // This can't work with the .ready() for logins; they cona't both
+                              // happen at once, but this should be fixed eventually
+  });
+  
 </script>
   <!--[if lt IE 7.]>
     <script defer type="text/javascript" src="${baseurl}js/correctpng.js"></script>
@@ -91,7 +99,9 @@
               <div id="${item.trans.itemid}" class="translate-translation ${item.orig.focus_class}">
                 <!--! Review suggestions -->
                 <span py:if="item.editable and reviewmode" class="translation-text">
-                  <a py:if="item.trans.editlink" href="${item.trans.editlink.href}" class="translation-action" py:content="item.trans.editlink.text" id="${item.trans.editlink.linkid}">Edit</a>
+                  <div class="translation-action">
+                    <a py:if="item.trans.editlink" href="${item.trans.editlink.href}" class="translation-action" py:content="item.trans.editlink.text" id="${item.trans.editlink.linkid}">Edit</a>
+                  </div>
                   <b class="${item.state_class}" py:content="item.trans.current_title">Current Translation:</b><br />
                   <span py:for="form in item.trans.forms" py:strip="True">
                     <span class="translation-text-headers" py:if="form.title" py:content="form.title">Plural Form ${form.n}</span>
@@ -185,7 +195,9 @@
                   </span>
                   <script type="text/javascript">
                     <!--! //We should comment this for old browsers, but then kid doesn't evaluate the expression -->
-                    document.forms.translate['${item.trans.focusbox}'].focus()
+                    $(document).ready(function(){
+                      document.forms.translate['${item.trans.focusbox}'].focus();
+                    });
                     <!--! //-->
                   </script>
                 </span>

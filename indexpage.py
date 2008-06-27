@@ -96,24 +96,55 @@ class PootleIndex(pagelayout.PootlePage):
     pagetitle = instancetitle
     sessionvars = {"status": session.status, "isopen": session.isopen, "issiteadmin": session.issiteadmin()}
 #@todo - need localized dates
-    languages = [{"code": code, "name": self.tr_lang(name), "progress": 65, "lastactivity": "June 24th, 2008"} for code, name in self.potree.getlanguages()]
     # rewritten for compatibility with Python 2.3
     # languages.sort(cmp=locale.strcoll, key=lambda dict: dict["name"])
-    languages.sort(lambda x,y: locale.strcoll(x["name"], y["name"]))
     templatevars = {"pagetitle": pagetitle, "description": description, 
         "meta_description": meta_description, "keywords": keywords,
-        "languagelink": languagelink, "languages": languages,
+        "languagelink": languagelink, "languages": self.getlanguages(),
         "projectlink": projectlink, "projects": self.getprojects(),
         "session": sessionvars, "instancetitle": instancetitle}
     pagelayout.PootlePage.__init__(self, templatename, templatevars, session)
+
+  def getlanguages(self):
+    languages = []
+    for langcode, langname in self.potree.getlanguages():
+      projectcodes = self.potree.getprojectcodes(langcode)
+      trans = 0
+      total = 0
+      for projectcode in projectcodes:
+        project = self.potree.getproject(langcode, projectcode)
+        stats = project.getquickstats()
+        trans += stats['translatedsourcewords']
+        total += stats['totalsourcewords']
+      try:
+        progress = int(100*trans/total)
+      except ZeroDivisionError:
+        progress = 0 
+      lastact = "June 24th, 2008"
+      languages.append({"code": langcode, "name": self.tr_lang(langname), "progress": progress, "lastactivity": lastact, "trans": trans, "total": total})
+    languages.sort(lambda x,y: locale.strcoll(x["name"], y["name"]))
+    return languages
 
   def getprojects(self):
     """gets the options for the projects"""
     projects = []
     for projectcode in self.potree.getprojectcodes():
+      langcodes = self.potree.getlanguagecodes(projectcode)
+      trans = 0
+      total = 0
+      for langcode in langcodes:
+        project = self.potree.getproject(langcode, projectcode)
+        stats = project.getquickstats()
+        trans += stats['translatedsourcewords']
+        total += stats['totalsourcewords']
+      try:
+        progress = int(100*trans/total)
+      except ZeroDivisionError:
+        progress = 0 
       projectname = self.potree.getprojectname(projectcode)
       description = shortdescription(self.potree.getprojectdescription(projectcode))
-      projects.append({"code": projectcode, "name": projectname, "description": description, "progress": 40, "lastactivity": "June 25th, 2008"})
+      lastact = "June 24th, 2008"
+      projects.append({"code": projectcode, "name": projectname, "description": description, "progress": progress, "lastactivity": lastact, "trans": trans, "total": total})
     return projects
 
   def getprojectnames(self):
@@ -290,7 +321,7 @@ class ProjectLanguageIndex(pagelayout.PootleNavPage):
 
   def getlanguageitem(self, languagecode, languagename):
     language = self.potree.getproject(languagecode, self.projectcode)
-    href = "../../%s/%s/" % (languagecode, self.projectcode)
+    href = "../../languages/%s/%s/" % (languagecode, self.projectcode)
     quickstats = language.getquickstats()
     data = self.getstats(language, quickstats)
     self.updatepagestats(data["translatedsourcewords"], data["totalsourcewords"])

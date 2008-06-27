@@ -19,32 +19,28 @@
 
   <div id="fullwidthcontent" dir="$uidir" lang="$uilanguage">
     <div class="contents"><h3 class="title" py:content="quicklinkstitle">Quick Links</h3>
-      <div py:for="language in quicklinks" py:strip="True">
-        <h3 class="title">
-          <a href="../${language.code}/" py:content="language.name">Language</a>
-        </h3>
-        <div py:if="language.projects" class="item-description">
-          <span py:for="project in language.projects" py:strip="True">
-            <a href="../${language.code}/${project.code}/" py:content="project.name">Language Project</a>
-            <span py:if="project.isprojectadmin" py:strip="True">
-              (<a href="../${language.code}/${project.code}/admin.html" py:content="admintext">Admin</a>)
-            </span>
-            <span py:replace="XML(project.sep)"/>
-          </span>
-        </div>
-      </div>
+      <ul>
+        <li class="title" py:for="language in quicklinks">
+          <p><a href="../languages/${language.code}/" py:content="language.name">Language</a></p>
+          <ul py:if="language.projects" class="item-description">
+            <li py:for="project in language.projects">
+              <a href="../languages/${language.code}/${project.code}/" py:content="project.name">Language Project</a>
+              <span py:if="project.isprojectadmin" py:strip="True">
+                (<a href="../languages/${language.code}/${project.code}/admin.html" py:content="admintext">Admin</a>)
+              </span>
+            </li>
+          </ul>
+        </li>
+      </ul>
       <div py:if="not quicklinks" class="item-description" py:content="setoptionstext">
         Please click on 'Change options' and select some languages and projects
       </div>
     </div>
     
-    <div class="info">
-      <a href="options.html" py:content="optionslink">Change options</a>
-    </div>
-
-    <div class="info" py:if="session.issiteadmin">
-      <a href="../admin/" py:content="adminlink">Admin page</a>
-    </div>
+    <ul class="linklist">
+      <li><a href="options.html" py:content="optionslink">Change options</a></li>
+      <li py:if="session.issiteadmin"><a href="../admin/" py:content="adminlink">Admin page</a></li>
+    </ul>
   </div>
 
   </div>

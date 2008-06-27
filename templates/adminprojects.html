@@ -23,13 +23,10 @@
     </div>
   </div>
   <div id="fullwidthcontent" py:if="session.issiteadmin" dir="$uidir" lang="$uilanguage">
-    <div class="info">
-      <a href="../home/" py:content="text.home">Home page</a>
-    </div>
-
-    <div class="info">
-      <a href="index.html" py:content="text.admin">Main Admin page</a>
-    </div>
+    <ul class="linklist">
+      <li><a href="../home/" py:content="text.home">Home page</a></li>
+      <li><a href="index.html" py:content="text.admin">Main Admin page</a></li>
+    </ul>
 
     <div class="fullwidthcontents">
       <h3 class="title" py:content="text.projects">Projects</h3>

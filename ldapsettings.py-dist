@@ -1,0 +1,11 @@
+# File to define LDAP login information
+
+# The ldap server to connect to.  Should start with "ldap://"
+cn = ""
+
+# The distinguished name of the user to bind anonymously with
+dn = ""
+
+# The password for the user with distinguished name dn
+pw = ""
+

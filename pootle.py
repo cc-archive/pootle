@@ -231,6 +231,17 @@ class PootleServer(users.OptionalLoginAppServer, templateserver.TemplateServer):
       basepathwords = basepathwords[1:]
       pathwords = pathwords[1:]
 
+    session.currenturl = self.instance.baseurl + ("/".join(pathwords))
+    if pathwords and "." not in pathwords[-1]:
+      session.currenturl += '/'
+    #FIXME This is a dirty hack; session.currenturl will contain post information 
+    if argdict:
+      safeargdict = argdict.copy()
+      safeargdict.pop('password',None)
+      safeargdict.pop('islogin',None)
+      safeargdict.pop('islogout',None)
+      session.currenturl = session.currenturl + "?" + "&".join(map(lambda (x,y): str(x)+"="+str(y),safeargdict.items()))
+
     if pathwords:
       top = pathwords[0]
     else:
@@ -292,8 +303,14 @@ class PootleServer(users.OptionalLoginAppServer, templateserver.TemplateServer):
     elif top == 'about.html':
       return indexpage.AboutPage(session)
     elif top == "login.html":
+      try:
+        if session.usercreated:
+          session.usercreated = False
+          return server.Redirect('home/')
+      except:
+        pass
       if session.isopen:
-        returnurl = argdict.get('returnurl', None) or getattr(self.instance, 'homepage', 'home/')
+        returnurl = argdict.get('returnurl', None) or getattr(self.instance, 'homepage', 'index.html')
         return server.Redirect(returnurl)
       message = None
       if 'username' in argdict:
@@ -325,14 +342,6 @@ class PootleServer(users.OptionalLoginAppServer, templateserver.TemplateServer):
           return indexpage.ProjectLanguageIndex(self.potree, projectcode, session)
         elif top == "admin.html":
           return adminpages.ProjectAdminPage(self.potree, projectcode, session, argdict)
-    elif top == "languages":
-      pathwords = pathwords[1:]
-      if pathwords:
-        top = pathwords[0]
-      else:
-        top = ""
-      if not top or top == "index.html":
-        return indexpage.LanguagesIndex(self.potree, session)
     elif top == "home":
       pathwords = pathwords[1:]
       if pathwords:
@@ -406,123 +415,131 @@ class PootleServer(users.OptionalLoginAppServer, templateserver.TemplateServer):
         if "changeprojects" in argdict:
           self.potree.changeprojects(argdict)
         return adminpages.ProjectsAdminPage(self.potree, session, self.instance)
-    elif top == "templates" or self.potree.haslanguage(top):
-      languagecode = top
+    elif top == "languages":
       pathwords = pathwords[1:]
       if pathwords:
         top = pathwords[0]
-        bottom = pathwords[-1]
       else:
         top = ""
-        bottom = ""
       if not top or top == "index.html":
-        return indexpage.LanguageIndex(self.potree, languagecode, session)
-      if self.potree.hasproject(languagecode, top):
-        projectcode = top
-        project = self.potree.getproject(languagecode, projectcode)
+        return indexpage.LanguagesIndex(self.potree, session)
+      if top == "templates" or self.potree.haslanguage(top):
+        languagecode = top
         pathwords = pathwords[1:]
         if pathwords:
           top = pathwords[0]
+          bottom = pathwords[-1]
         else:
           top = ""
+          bottom = ""
         if not top or top == "index.html":
-          return indexpage.ProjectIndex(project, session, argdict)
-        elif top == "admin.html":
-          return adminpages.TranslationProjectAdminPage(self.potree, project, session, argdict)
-        elif bottom == "translate.html":
-          if len(pathwords) > 1:
-            dirfilter = os.path.join(*pathwords[:-1])
+          return indexpage.LanguageIndex(self.potree, languagecode, session)
+        if self.potree.hasproject(languagecode, top):
+          projectcode = top
+          project = self.potree.getproject(languagecode, projectcode)
+          pathwords = pathwords[1:]
+          if pathwords:
+            top = pathwords[0]
           else:
-            dirfilter = ""
-          try:
-            return translatepage.TranslatePage(project, session, argdict, dirfilter)
-          except projects.RightsError, stoppedby:
-            argdict["message"] = str(stoppedby)
-            return indexpage.ProjectIndex(project, session, argdict, dirfilter)
-        elif bottom == "spellcheck.html":
-          # the full review page
-          argdict["spellchecklang"] = languagecode
-          return spellui.SpellingReview(session, argdict, js_url="/js/spellui.js")
-        elif bottom == "spellingstandby.html":
-          # a simple 'loading' page
-          return spellui.SpellingStandby()
-        elif bottom.endswith("." + project.fileext):
-          pofilename = os.path.join(*pathwords)
-          if argdict.get("translate", 0):
+            top = ""
+          if not top or top == "index.html":
+            return indexpage.ProjectIndex(project, session, argdict)
+          elif top == "admin.html":
+            return adminpages.TranslationProjectAdminPage(self.potree, project, session, argdict)
+          elif bottom == "translate.html":
+            if len(pathwords) > 1:
+              dirfilter = os.path.join(*pathwords[:-1])
+            else:
+              dirfilter = ""
             try:
-              return translatepage.TranslatePage(project, session, argdict, dirfilter=pofilename)
+              return translatepage.TranslatePage(project, session, argdict, dirfilter)
             except projects.RightsError, stoppedby:
-              if len(pathwords) > 1:
-                dirfilter = os.path.join(*pathwords[:-1])
-              else:
-                dirfilter = ""
               argdict["message"] = str(stoppedby)
-              return indexpage.ProjectIndex(project, session, argdict, dirfilter=dirfilter)
-          elif argdict.get("index", 0):
-            return indexpage.ProjectIndex(project, session, argdict, dirfilter=pofilename)
-          else:
-            pofile = project.getpofile(pofilename, freshen=False)
-            page = widgets.SendFile(pofile.filename)
-            page.etag = str(pofile.pomtime)
-            encoding = getattr(pofile, "encoding", "UTF-8")
-            page.content_type = "text/plain; charset=%s" % encoding
+              return indexpage.ProjectIndex(project, session, argdict, dirfilter)
+          elif bottom == "spellcheck.html":
+            # the full review page
+            argdict["spellchecklang"] = languagecode
+            return spellui.SpellingReview(session, argdict, js_url="/js/spellui.js")
+          elif bottom == "spellingstandby.html":
+            # a simple 'loading' page
+            return spellui.SpellingStandby()
+          elif bottom.endswith("." + project.fileext):
+            pofilename = os.path.join(*pathwords)
+            if argdict.get("translate", 0):
+              try:
+                return translatepage.TranslatePage(project, session, argdict, dirfilter=pofilename)
+              except projects.RightsError, stoppedby:
+                if len(pathwords) > 1:
+                  dirfilter = os.path.join(*pathwords[:-1])
+                else:
+                  dirfilter = ""
+                argdict["message"] = str(stoppedby)
+                return indexpage.ProjectIndex(project, session, argdict, dirfilter=dirfilter)
+            elif argdict.get("index", 0):
+              return indexpage.ProjectIndex(project, session, argdict, dirfilter=pofilename)
+            else:
+              pofile = project.getpofile(pofilename, freshen=False)
+              page = widgets.SendFile(pofile.filename)
+              page.etag = str(pofile.pomtime)
+              encoding = getattr(pofile, "encoding", "UTF-8")
+              page.content_type = "text/plain; charset=%s" % encoding
+              return page
+          elif bottom.endswith(".csv") or bottom.endswith(".xlf") or bottom.endswith(".ts") or bottom.endswith(".po") or bottom.endswith(".mo"):
+            destfilename = os.path.join(*pathwords)
+            basename, extension = os.path.splitext(destfilename)
+            pofilename = basename + os.extsep + project.fileext
+            extension = extension[1:]
+            if extension == "mo":
+              if not "pocompile" in project.getrights(session):
+                return None
+            etag, filepath_or_contents = project.convert(pofilename, extension)
+            if etag:
+              page = widgets.SendFile(filepath_or_contents)
+              page.etag = str(etag)
+            else:
+              page = widgets.PlainContents(filepath_or_contents)
+            if extension == "po" or extension == "csv":
+              page.content_type = "text/plain; charset=UTF-8"
+            elif extension == "xlf" or extension == "ts":
+              page.content_type = "text/xml; charset=UTF-8"
+            elif extension == "mo":
+              page.content_type = "application/octet-stream"
             return page
-        elif bottom.endswith(".csv") or bottom.endswith(".xlf") or bottom.endswith(".ts") or bottom.endswith(".po") or bottom.endswith(".mo"):
-          destfilename = os.path.join(*pathwords)
-          basename, extension = os.path.splitext(destfilename)
-          pofilename = basename + os.extsep + project.fileext
-          extension = extension[1:]
-          if extension == "mo":
+          elif bottom.endswith(".zip"):
+            if not "archive" in project.getrights(session):
+              return None
+            if len(pathwords) > 1:
+              dirfilter = os.path.join(*pathwords[:-1])
+            else:
+              dirfilter = None
+            goal = argdict.get("goal", None)
+            if goal:
+              goalfiles = project.getgoalfiles(goal)
+              pofilenames = []
+              for goalfile in goalfiles:
+                pofilenames.extend(project.browsefiles(goalfile))
+            else:
+              pofilenames = project.browsefiles(dirfilter)
+            archivecontents = project.getarchive(pofilenames)
+            page = widgets.PlainContents(archivecontents)
+            page.content_type = "application/zip"
+            return page
+          elif bottom.endswith(".sdf") or bottom.endswith(".sgi"):
             if not "pocompile" in project.getrights(session):
               return None
-          etag, filepath_or_contents = project.convert(pofilename, extension)
-          if etag:
-            page = widgets.SendFile(filepath_or_contents)
-            page.etag = str(etag)
+            oocontents = project.getoo()
+            page = widgets.PlainContents(oocontents)
+            page.content_type = "text/tab-seperated-values"
+            return page
+          elif bottom == "index.html":
+            if len(pathwords) > 1:
+              dirfilter = os.path.join(*pathwords[:-1])
+            else:
+              dirfilter = None
+            return indexpage.ProjectIndex(project, session, argdict, dirfilter)
           else:
-            page = widgets.PlainContents(filepath_or_contents)
-          if extension == "po" or extension == "csv":
-            page.content_type = "text/plain; charset=UTF-8"
-          elif extension == "xlf" or extension == "ts":
-            page.content_type = "text/xml; charset=UTF-8"
-          elif extension == "mo":
-            page.content_type = "application/octet-stream"
-          return page
-        elif bottom.endswith(".zip"):
-          if not "archive" in project.getrights(session):
-            return None
-          if len(pathwords) > 1:
-            dirfilter = os.path.join(*pathwords[:-1])
-          else:
-            dirfilter = None
-          goal = argdict.get("goal", None)
-          if goal:
-            goalfiles = project.getgoalfiles(goal)
-            pofilenames = []
-            for goalfile in goalfiles:
-              pofilenames.extend(project.browsefiles(goalfile))
-          else:
-            pofilenames = project.browsefiles(dirfilter)
-          archivecontents = project.getarchive(pofilenames)
-          page = widgets.PlainContents(archivecontents)
-          page.content_type = "application/zip"
-          return page
-        elif bottom.endswith(".sdf") or bottom.endswith(".sgi"):
-          if not "pocompile" in project.getrights(session):
-            return None
-          oocontents = project.getoo()
-          page = widgets.PlainContents(oocontents)
-          page.content_type = "text/tab-seperated-values"
-          return page
-        elif bottom == "index.html":
-          if len(pathwords) > 1:
-            dirfilter = os.path.join(*pathwords[:-1])
-          else:
-            dirfilter = None
-          return indexpage.ProjectIndex(project, session, argdict, dirfilter)
-        else:
-          return indexpage.ProjectIndex(project, session, argdict, os.path.join(*pathwords))
-    return None
+            return indexpage.ProjectIndex(project, session, argdict, os.path.join(*pathwords))
+      return None
 
 class PootleOptionParser(simplewebserver.WebOptionParser):
   def __init__(self):
