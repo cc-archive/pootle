@@ -23,12 +23,20 @@
       <h3 class="title" py:content="projectlink">Projects</h3>
 
       <div class="item-description">
-          <table class="sortable" description="">
-            <tr><th>Language</th><th>Overall Completion</th><th>Last Activity</th></tr>
-            <span py:for="p in projects" py:strip="True">
-                <tr><td><a href="${p.code}/" title="${p.description}" py:content="p.name">Project</a></td><td class="graph"><strong class="bar" style="width: ${p.progress}%;">${p.progress}%</strong></td><td>${p.lastactivity}</td></tr>
-            </span>
-          </table>
+        <table class="sortable" description="">
+          <tr><th>Language</th><th>Overall Completion</th><th>Last Activity</th></tr>
+          <tr py:for="zebra, p in enumerate(projects)" class="${zebra%2 and 'item-odd' or 'item-even'}">
+            <td><a href="${p.code}/" title="${p.description}" py:content="p.name">Project</a></td>
+            <td>
+              <span class="graph">
+                <span class="translated" style="width: ${p.progress}px" />
+                <span class="untranslated" style="left: ${p.progress}px; width: ${100-p.progress}px" />
+              </span>
+              <span class="sortkey">${p.progress}%</span>
+            </td>
+            <td>${p.lastactivity}</td>
+          </tr>
+        </table>
       </div>
     </div>
   </div>

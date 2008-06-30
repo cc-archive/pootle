@@ -23,12 +23,20 @@
       <h3 class="title" py:content="languagelink">Languages</h3>
 
       <div class="item-description">
-          <table class="sortable" description="">
-            <tr><th>Language</th><th>Overall Completion</th><th>Last Activity</th></tr>
-            <span py:for="l in languages" py:strip="True">
-              <tr><td><a href="${l.code}/" py:content="l.name">Language</a></td><td class="graph"><strong class="bar" style="width: ${l.progress}%;">${l.progress}%</strong></td><td>${l.lastactivity}</td></tr>
-            </span>
-          </table>
+        <table class="sortable" description="">
+          <tr><th>Language</th><th>Overall Completion</th><th>Last Activity</th></tr>
+          <tr py:for="zebra, l in enumerate(languages)" class="${zebra%2 and 'item-odd' or 'item-even'}">
+            <td><a href="${l.code}/" py:content="l.name">Language</a></td>
+            <td>
+              <span class="graph">
+                <span class="translated" style="width: ${l.progress}px" />
+                <span class="untranslated" style="left: ${l.progress}px; width: ${100-l.progress}px" />
+              </span>
+              <span class="sortkey">${l.progress}%</span>
+            </td> 
+            <td>${l.lastactivity}</td>
+          </tr>
+        </table>
       </div>
     </div>
   </div>
