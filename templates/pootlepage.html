@@ -41,13 +41,14 @@
           $(document).ready(function(){
             $("div.logincont").hide();
           
-            $("a.loginlink").click(function(){
+            $("a.loginlink").click(function(event){
+              event.preventDefault();
               $("div.logincont").slideToggle();
             });
           });
     </script>
 
-      <a href="javascript:;" py:content="links.login" class="loginlink">Login</a>
+      <a href="${baseurl}login.html" py:content="links.login" class="loginlink">Login</a>
 
       <div class="logincont">
       <form action="${baseurl}login.html" method="post" name="loginform" id="loginform">

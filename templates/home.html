@@ -21,7 +21,7 @@
     <div class="contents"><h3 class="title" py:content="quicklinkstitle">Quick Links</h3>
       <ul>
         <li class="title" py:for="language in quicklinks">
-          <p><a href="../languages/${language.code}/" py:content="language.name">Language</a></p>
+          <a href="../languages/${language.code}/" py:content="language.name">Language</a>
           <ul py:if="language.projects" class="item-description">
             <li py:for="project in language.projects">
               <a href="../languages/${language.code}/${project.code}/" py:content="project.name">Language Project</a>
