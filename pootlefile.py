@@ -26,6 +26,7 @@ from translate.storage import po
 from translate.storage.poheader import tzstring
 from translate.storage import xliff
 from translate.storage import factory
+from translate.filters import checks
 from translate.misc.multistring import multistring
 from Pootle import __version__
 from Pootle import statistics
@@ -33,6 +34,8 @@ from jToolkit import timecache
 from jToolkit import glock
 import time
 import os
+
+_UNIT_CHECKER = checks.UnitChecker()
 
 class LockedFile:
   """locked interaction with a filesystem file"""
@@ -476,7 +479,7 @@ class pootlefile(pootlebase):
 
   def getitem(self, item):
     """Returns a single unit based on the item number."""
-    return self.units[self.statistics.getstats()["total"][item]]
+    return self.units[self.statistics.getstats(_UNIT_CHECKER)["total"][item]]
 
   def iteritems(self, search, lastitem=None):
     """iterates through the items in this pofile starting after the given lastitem, using the given search"""

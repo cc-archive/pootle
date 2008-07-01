@@ -25,10 +25,12 @@ class pootlestatistics:
       self._totals = self.statscache.filetotals(self.basefile.filename, errors_return_empty=True)
     return self._totals
 
-  def getstats(self):
+  def getstats(self, checker=None):
     """reads the stats if neccessary or returns them from the cache"""
+    if checker == None:
+        checker = self.basefile.checker
     if not self._stats:
-      self._stats = self.statscache.filestats(self.basefile.filename, self.basefile.checker, errors_return_empty=True)
+      self._stats = self.statscache.filestats(self.basefile.filename, checker, errors_return_empty=True)
     return self._stats
   
   def purge_totals(self):
