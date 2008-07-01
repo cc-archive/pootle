@@ -29,8 +29,8 @@
             <td><a href="${p.code}/" title="${p.description}" py:content="p.name">Project</a></td>
             <td>
               <span class="graph">
-                <span class="translated" style="width: ${p.progress}px" />
-                <span class="untranslated" style="left: ${p.progress}px; width: ${100-p.progress}px" />
+                <span class="translated" style="width: ${p.progress}px" title="${p.trans}/${p.total} words translated" />
+                <span class="untranslated" style="left: ${p.progress}px; width: ${100-p.progress}px" title="${p.trans}/${p.total} words translated" />
               </span>
               <span class="sortkey">${p.progress}%</span>
             </td>
