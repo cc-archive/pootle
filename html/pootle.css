@@ -362,9 +362,6 @@ div.info {
 	margin-right: 15px;
 	padding: 10px;
 }
-#banner
-{
-}
 #banner h1
 {
 	background: url(images/pootle-medium.png) no-repeat scroll left top;
@@ -621,26 +618,6 @@ div#project-list {
 div.logincont form {
     display: inline;
 }
-
-/* 
-    Pretty graphs; from http://applestooranges.com/blog/post/css-for-bar-graphs/?id=55
-*/
-.graph { 
-    position: relative; /* IE is dumb */
-    width: 200px; 
-    border: 1px solid #B1D632;
-    padding: 2px; 
-}
-.graph .bar { 
-    display: block;
-    position: relative;
-    background: #B1D632; 
-    text-align: center; 
-    color: #333; 
-    height: 2em; 
-    line-height: 2em;
-}
-.graph .bar span { position: absolute; left: 1em; }
 
 table.sortable th {
   cursor: pointer;
