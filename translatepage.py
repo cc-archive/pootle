@@ -43,6 +43,17 @@ class TranslatePage(pagelayout.PootleNavPage):
     self.argdict = argdict
     self.dirfilter = dirfilter
     self.project = project
+    self.altproject = None
+    # do we have enabled alternative source language?
+    self.enablealtsrc = getattr(session.instance, "enablealtsrc", "False")
+    if self.enablealtsrc == 'True':
+      # try to get the project if the user has chosen an alternate source language
+      altsrc = session.getaltsrclanguage()
+      if altsrc != '':
+        try:
+          self.altproject = self.project.potree.getproject(altsrc, self.project.projectcode)
+        except IndexError:
+          pass
     self.matchnames = self.getmatchnames(self.project.checker)
     self.searchtext = self.argdict.get("searchtext", "")
     # TODO: fix this in jToolkit
@@ -87,9 +98,9 @@ class TranslatePage(pagelayout.PootleNavPage):
       icon="edit"
     if self.pofilename is not None:
       postats = self.project.getpostats(self.pofilename)
-      blank, fuzzy = postats["blank"], postats["fuzzy"]
+      untranslated, fuzzy = postats["untranslated"], postats["fuzzy"]
       translated, total = postats["translated"], postats["total"]
-      mainstats = self.localize("%d/%d translated\n(%d blank, %d fuzzy)", len(translated), len(total), len(blank), len(fuzzy))
+      mainstats = self.localize("%d/%d translated\n(%d untranslated, %d fuzzy)", len(translated), len(total), len(untranslated), len(fuzzy))
       pagelinks = self.getpagelinks("?translate=1&view=1", rows)
     navbarpath_dict = self.makenavbarpath_dict(self.project, self.session, self.pofilename, dirfilter=self.dirfilter or "")
     # templatising
@@ -136,7 +147,9 @@ class TranslatePage(pagelayout.PootleNavPage):
         "searchtext": self.searchtext,
         "pofilename": givenpofilename,
         # general vars
-        "session": sessionvars, "instancetitle": instancetitle}
+        "session": sessionvars,
+        "instancetitle": instancetitle}
+
     if self.showassigns and "assign" in self.rights:
       templatevars["assign"] = self.getassignbox()
     pagelayout.PootleNavPage.__init__(self, templatename, templatevars, session, bannerheight=81)
@@ -341,7 +354,7 @@ class TranslatePage(pagelayout.PootleNavPage):
     """returns any checker filters the user has asked to match..."""
     matchnames = []
     for checkname in self.argdict:
-      if checkname in ["fuzzy", "blank", "translated", "has-suggestion"]:
+      if checkname in ["fuzzy", "untranslated", "translated"]:
         matchnames.append(checkname)
       elif checkname in checker.getfilters():
         matchnames.append("check-" + checkname)
@@ -494,7 +507,6 @@ class TranslatePage(pagelayout.PootleNavPage):
       if unit.isfuzzy():
         state_class += "translate-translation-fuzzy"
         fuzzy = "checked"
-
       itemdict = {
                  "itemid": item,
                  "orig": origdict,
@@ -510,6 +522,15 @@ class TranslatePage(pagelayout.PootleNavPage):
                  "message_context": message_context,
                  "tm": tmsuggestions,
                  }
+
+      altsrcdict = {"available": False}
+      # do we have enabled alternative source language?
+      if self.enablealtsrc == 'True':
+        # get alternate source project information in a dictionary
+        if item in self.editable:
+          altsrcdict = self.getaltsrcdict(origdict)
+      itemdict["altsrc"] = altsrcdict
+
       items.append(itemdict)
     return items
 
@@ -828,4 +849,19 @@ class TranslatePage(pagelayout.PootleNavPage):
       # Error, problem with plurals perhaps?
       transdict["text"] = ""
     return transdict
+
+  def getaltsrcdict(self, origdict):
+    # TODO: handle plurals !!
+    altsrcdict = {"available": False}
+    if self.altproject is not None:
+      altsrcdict["languagecode"] = pagelayout.weblanguage(self.altproject.languagecode)
+      altsrcdict["languagename"] = self.altproject.potree.getlanguagename(self.altproject.languagecode)
+      altsrcdict["dir"] = pagelayout.languagedir(altsrcdict["languagecode"])
+      altsrcdict["title"] = self.session.tr_lang(altsrcdict["languagename"])
+      if not origdict["isplural"]:
+        altsrctext = self.altproject.ugettext(origdict["text"])
+      if not origdict["isplural"] and altsrctext != origdict["text"] and not self.reviewmode:
+        altsrcdict["text"] = altsrctext
+        altsrcdict["available"] = True
+    return altsrcdict
 

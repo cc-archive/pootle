@@ -42,6 +42,7 @@ from translate.misc import optrecurse
 from Pootle import __version__ as pootleversion
 from translate import __version__ as toolkitversion
 from jToolkit import __version__ as jtoolkitversion
+from Pootle import statistics
 try:
   from xml.etree import ElementTree
 except ImportError:
@@ -91,6 +92,9 @@ class PootleServer(users.OptionalLoginAppServer, templateserver.TemplateServer):
       changed = True
     if not hasattr(self.instance, "baseurl"):
       setattr(self.instance, "baseurl", "/")
+      changed = True
+    if not hasattr(self.instance, "enablealtsrc"):
+      setattr(self.instance, "enablealtsrc", False)
       changed = True
     if changed:
       self.saveprefs()
@@ -498,12 +502,16 @@ class PootleServer(users.OptionalLoginAppServer, templateserver.TemplateServer):
               page.etag = str(etag)
             else:
               page = widgets.PlainContents(filepath_or_contents)
-            if extension == "po" or extension == "csv":
-              page.content_type = "text/plain; charset=UTF-8"
-            elif extension == "xlf" or extension == "ts":
-              page.content_type = "text/xml; charset=UTF-8"
+            if extension == "po":
+              page.content_type = "text/x-gettext-translation; charset=UTF-8"
+            elif extension == "csv":
+              page.content_type = "text/csv; charset=UTF-8"
+            elif extension == "xlf":
+              page.content_type = "application/x-xliff; charset=UTF-8"
+            elif extension == "ts":
+              page.content_type = "application/x-linguist; charset=UTF-8"
             elif extension == "mo":
-              page.content_type = "application/octet-stream"
+              page.content_type = "application/x-gettext-translation"
             return page
           elif bottom.endswith(".zip"):
             if not "archive" in project.getrights(session):
@@ -551,6 +559,8 @@ class PootleOptionParser(simplewebserver.WebOptionParser):
     self.add_option('', "--refreshstats", dest="action", action="store_const", const="refreshstats",
         default="runwebserver", help="refresh the stats files instead of running the webserver")
     psycomodes=["none", "full", "profile"]
+    self.add_option('', "--statsdb_file", action="store", type="string", dest="statsdb_file",
+                    default=None, help="Specifies the location of the SQLite stats db file.")
     try:
       import psyco
       self.add_option('', "--psyco", dest="psyco", default=None, choices=psycomodes, metavar="MODE",
@@ -591,6 +601,7 @@ def main():
   options, args = parser.parse_args()
   options.errorlevel = options.logerrors
   usepsyco(options)
+  statistics.STATS_DB_FILE = options.statsdb_file
   if options.action != "runwebserver":
     options.servertype = "dummy"
   server = parser.getserver(options)
