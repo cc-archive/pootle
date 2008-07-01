@@ -244,7 +244,7 @@ class PootleServer(users.OptionalLoginAppServer, templateserver.TemplateServer):
       safeargdict.pop('password',None)
       safeargdict.pop('islogin',None)
       safeargdict.pop('islogout',None)
-      session.currenturl = session.currenturl + "?" + "&".join(map(lambda (x,y): str(x)+"="+str(y),safeargdict.items()))
+      session.currenturl = session.currenturl + "?" + "&".join(map(lambda (x,y): unicode(x)+"="+unicode(y),safeargdict.items()))
 
     if pathwords:
       top = pathwords[0]
