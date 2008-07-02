@@ -251,7 +251,7 @@ class PootleServer(users.OptionalLoginAppServer, templateserver.TemplateServer):
       safeargdict.pop('password',None)
       safeargdict.pop('islogin',None)
       safeargdict.pop('islogout',None)
-      getsuffix = "&".join(map(lambda (x,y): str(x)+"="+str(y),safeargdict.items()))
+      getsuffix = "&".join(map(lambda (x,y): unicode(x)+"="+unicode(y),safeargdict.items()))
       session.currenturl = session.currenturl+"?"+getsuffix 
 
     if pathwords:
