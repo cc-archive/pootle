@@ -214,8 +214,14 @@ class PootleServer(users.OptionalLoginAppServer, templateserver.TemplateServer):
       content += "Disallow: /%s/\n" % langcode
     return content
 
+  def getuserlanguage(self, session):
+    """gets the language for a user who does not specify one in the URL"""
+    # TODO Add actual language detection here
+    return "en"
+
   def getpage(self, pathwords, session, argdict):
     """return a page that will be sent to the user"""
+
     #Ensure we get unicode from argdict
     #TODO: remove when jToolkit does this
     newargdict = {}
@@ -238,18 +244,35 @@ class PootleServer(users.OptionalLoginAppServer, templateserver.TemplateServer):
     session.currenturl = self.instance.baseurl + ("/".join(pathwords))
     if pathwords and "." not in pathwords[-1]:
       session.currenturl += '/'
-    #FIXME This is a dirty hack; session.currenturl will contain post information 
+      #FIXME This is a dirty hack; session.currenturl will contain post information 
+    getsuffix = ""
     if argdict:
       safeargdict = argdict.copy()
       safeargdict.pop('password',None)
       safeargdict.pop('islogin',None)
       safeargdict.pop('islogout',None)
-      session.currenturl = session.currenturl + "?" + "&".join(map(lambda (x,y): unicode(x)+"="+unicode(y),safeargdict.items()))
+      getsuffix = "&".join(map(lambda (x,y): str(x)+"="+str(y),safeargdict.items()))
+      session.currenturl = session.currenturl+"?"+getsuffix 
 
     if pathwords:
       top = pathwords[0]
     else:
       top = ""
+
+    if not self.potree.haslanguage(top):
+      lang = self.getuserlanguage(session)
+      session.setlanguage(lang)
+      return server.Redirect(self.instance.baseurl+"en/"+"/".join(pathwords)+getsuffix)
+    else:
+      session.setlanguage(top)
+      session.localizedurl = self.instance.baseurl+top+"/"
+
+    pathwords = pathwords[1:]
+    if pathwords:
+      top = pathwords[0]
+    else:
+      top = ""
+
     if top == 'js':
       pathwords = pathwords[1:]
       jsfile = os.path.join(filelocations.htmldir, 'js', *pathwords)

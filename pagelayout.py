@@ -74,8 +74,12 @@ def completetemplatevars(templatevars, session, bannerheight=135):
     templatevars["instancetitle"] = getattr(session.instance, "title", session.localize("Pootle Demo"))
   if not "session" in templatevars:
     templatevars["session"] = {"status": session.status, "isopen": session.isopen, "issiteadmin": session.issiteadmin()}
+  if not "unlocalizedurl" in templatevars:
+    templatevars["unlocalizedurl"] = getattr(session.instance, "baseurl", "/")
+    if not templatevars["unlocalizedurl"].endswith("/"):
+    	templatevars["unlocalizedurl"] += "/"
   if not "baseurl" in templatevars:
-    templatevars["baseurl"] = getattr(session.instance, "baseurl", "/")
+    templatevars["baseurl"] = getattr(session, "localizedurl", "/")
     if not templatevars["baseurl"].endswith("/"):
     	templatevars["baseurl"] += "/"
   if not "enablealtsrc" in templatevars:

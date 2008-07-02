@@ -21,7 +21,7 @@
       | <a href="${baseurl}projects/" py:content="links.projects">All Projects</a> 
       <span py:if="session.isopen" py:strip="True"> | <a href="${baseurl}home/" py:content="links.account">My account</a> </span> 
       <span py:if="session.issiteadmin" py:strip="True"> | <a href="${baseurl}admin/" py:content="links.admin">Admin</a> </span>
-      | <a href="${baseurl}doc/${links.doclang}/index.html" py:content="links.doc">Docs &amp; Help</a>
+      | <a href="${unlocalizedurl}${links.doclang}/doc/index.html" py:content="links.doc">Docs &amp; Help</a>
     </div>
   </div>
 
