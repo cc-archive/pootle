@@ -342,6 +342,7 @@ class TranslationProjectAdminPage(pagelayout.PootlePage):
             key = key.decode("utf-8")
           if key.startswith("rights-"):
             username = key.replace("rights-", "", 1)
+            value.remove("existence")
             self.project.setrights(username, value)
           if key.startswith("rightsremove-"):
             username = key.replace("rightsremove-", "", 1)
