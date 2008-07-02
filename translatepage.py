@@ -65,6 +65,8 @@ class TranslatePage(pagelayout.PootleNavPage):
     self.session = session
     self.localize = session.localize
     self.rights = self.project.getrights(self.session)
+    if "view" not in self.rights:
+      raise projects.Rights404Error(None)
     self.instance = session.instance
     self.lastitem = None
     self.pofilename = self.argdict.pop("pofilename", None)

@@ -100,43 +100,50 @@ class PootleIndex(pagelayout.PootlePage):
     # languages.sort(cmp=locale.strcoll, key=lambda dict: dict["name"])
     templatevars = {"pagetitle": pagetitle, "description": description, 
         "meta_description": meta_description, "keywords": keywords,
-        "languagelink": languagelink, "languages": self.getlanguages(),
-        "projectlink": projectlink, "projects": self.getprojects(),
+        "languagelink": languagelink, "languages": self.getlanguages(session),
+        "projectlink": projectlink, "projects": self.getprojects(session),
         "session": sessionvars, "instancetitle": instancetitle}
     pagelayout.PootlePage.__init__(self, templatename, templatevars, session)
 
-  def getlanguages(self):
+  def getlanguages(self,session):
     languages = []
     for langcode, langname in self.potree.getlanguages():
       projectcodes = self.potree.getprojectcodes(langcode)
       trans = 0
       total = 0
+      viewable = False
       for projectcode in projectcodes:
         project = self.potree.getproject(langcode, projectcode)
         stats = project.getquickstats()
         trans += stats['translatedsourcewords']
         total += stats['totalsourcewords']
+        rights = project.getrights(session)
+        viewable = viewable or ("view" in rights)
       try:
         progress = int(100*trans/total)
       except ZeroDivisionError:
         progress = 0 
       lastact = "June 24th, 2008"
-      languages.append({"code": langcode, "name": self.tr_lang(langname), "progress": progress, "lastactivity": lastact, "trans": trans, "total": total})
+      if viewable:
+        languages.append({"code": langcode, "name": self.tr_lang(langname), "progress": progress, "lastactivity": lastact, "trans": trans, "total": total})
     languages.sort(lambda x,y: locale.strcoll(x["name"], y["name"]))
     return languages
 
-  def getprojects(self):
+  def getprojects(self,session):
     """gets the options for the projects"""
     projects = []
     for projectcode in self.potree.getprojectcodes():
       langcodes = self.potree.getlanguagecodes(projectcode)
       trans = 0
       total = 0
+      viewable = False
       for langcode in langcodes:
         project = self.potree.getproject(langcode, projectcode)
         stats = project.getquickstats()
         trans += stats['translatedsourcewords']
         total += stats['totalsourcewords']
+        rights = project.getrights(session)
+        viewable = viewable or ("view" in rights)
       try:
         progress = int(100*trans/total)
       except ZeroDivisionError:
@@ -144,7 +151,8 @@ class PootleIndex(pagelayout.PootlePage):
       projectname = self.potree.getprojectname(projectcode)
       description = shortdescription(self.potree.getprojectdescription(projectcode))
       lastact = "June 24th, 2008"
-      projects.append({"code": projectcode, "name": projectname, "description": description, "progress": progress, "lastactivity": lastact, "trans": trans, "total": total})
+      if viewable:
+        projects.append({"code": projectcode, "name": projectname, "description": description, "progress": progress, "lastactivity": lastact, "trans": trans, "total": total})
     return projects
 
   def getprojectnames(self):
@@ -221,7 +229,7 @@ class LanguageIndex(pagelayout.PootleNavPage):
     self.tr_lang = session.tr_lang
     self.languagename = self.potree.getlanguagename(self.languagecode)
     self.initpagestats()
-    languageprojects = self.getprojects()
+    languageprojects = self.getprojects(session)
     self.projectcount = len(languageprojects)
     average = self.getpagestats()
     languagestats = self.nlocalize("%d project, average %d%% translated", "%d projects, average %d%% translated", self.projectcount, self.projectcount, average)
@@ -254,11 +262,12 @@ class LanguageIndex(pagelayout.PootleNavPage):
                 ]
     return [{"title": title, "value": value} for title, value in infoparts]
 
-  def getprojects(self):
+  def getprojects(self,session):
     """gets the info on the projects"""
     projectcodes = self.potree.getprojectcodes(self.languagecode)
     self.projectcount = len(projectcodes)
-    projectitems = [self.getprojectitem(projectcode) for projectcode in projectcodes]
+    projectitems = [self.getprojectitem(projectcode) for projectcode in projectcodes 
+          if "view" in (self.potree.getproject(self.languagecode, projectcode).getrights(session))]
     for n, item in enumerate(projectitems):
       item["parity"] = ["even", "odd"][n % 2]
     return projectitems
@@ -283,7 +292,7 @@ class ProjectLanguageIndex(pagelayout.PootleNavPage):
     self.nlocalize = session.nlocalize
     self.tr_lang = session.tr_lang
     self.initpagestats()
-    languages = self.getlanguages()
+    languages = self.getlanguages(session)
     average = self.getpagestats()
     projectstats = self.nlocalize("%d language, average %d%% translated", "%d languages, average %d%% translated", self.languagecount, self.languagecount, average)
     projectname = self.potree.getprojectname(self.projectcode)
@@ -307,11 +316,12 @@ class ProjectLanguageIndex(pagelayout.PootleNavPage):
         "statsheadings": statsheadings}
     pagelayout.PootleNavPage.__init__(self, templatename, templatevars, session, bannerheight=80)
 
-  def getlanguages(self):
+  def getlanguages(self, session):
     """gets the stats etc of the languages"""
     languages = self.potree.getlanguages(self.projectcode)
     self.languagecount = len(languages)
-    languageitems = [self.getlanguageitem(languagecode, languagename) for languagecode, languagename in languages]
+    languageitems = [self.getlanguageitem(languagecode, languagename) for languagecode, languagename in languages
+          if "view" in (self.potree.getproject(languagecode, self.projectcode).getrights(session))]
     # rewritten for compatibility with Python 2.3
     # languageitems.sort(cmp=locale.strcoll, key=lambda dict: dict["title"])
     languageitems.sort(lambda x,y: locale.strcoll(x["title"], y["title"]))
@@ -336,6 +346,8 @@ class ProjectIndex(pagelayout.PootleNavPage):
     self.nlocalize = session.nlocalize
     self.tr_lang = session.tr_lang
     self.rights = self.project.getrights(self.session)
+    if "view" not in self.rights:
+      raise projects.Rights404Error()
     message = argdict.get("message", "")
     if dirfilter == "":
       dirfilter = None

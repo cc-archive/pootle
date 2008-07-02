@@ -48,6 +48,11 @@ import gettext
 class RightsError(ValueError):
   pass
 
+class Rights404Error(RightsError):
+  """A special rights error, throwing this indicates that the user should
+  not know that this page even exists, and hence a 404 should be returned"""
+  pass
+
 class InternalAdminSession:
   """A fake session used for doing internal admin jobs"""
   def __init__(self):

@@ -447,7 +447,13 @@ class PootleServer(users.OptionalLoginAppServer, templateserver.TemplateServer):
           else:
             top = ""
           if not top or top == "index.html":
-            return indexpage.ProjectIndex(project, session, argdict)
+            try:
+              return indexpage.ProjectIndex(project, session, argdict)
+            except projects.Rights404Error:
+              return None 
+            except projects.RightsError, stoppedby:
+              argdict["message"] = str(stoppedby)
+              return indexpage.PootleIndex(self.potree, session)
           elif top == "admin.html":
             return adminpages.TranslationProjectAdminPage(self.potree, project, session, argdict)
           elif bottom == "translate.html":
@@ -457,6 +463,8 @@ class PootleServer(users.OptionalLoginAppServer, templateserver.TemplateServer):
               dirfilter = ""
             try:
               return translatepage.TranslatePage(project, session, argdict, dirfilter)
+            except projects.Rights404Error:
+              return None 
             except projects.RightsError, stoppedby:
               argdict["message"] = str(stoppedby)
               return indexpage.ProjectIndex(project, session, argdict, dirfilter)
@@ -472,6 +480,8 @@ class PootleServer(users.OptionalLoginAppServer, templateserver.TemplateServer):
             if argdict.get("translate", 0):
               try:
                 return translatepage.TranslatePage(project, session, argdict, dirfilter=pofilename)
+              except projects.Rights404Error:
+                return None 
               except projects.RightsError, stoppedby:
                 if len(pathwords) > 1:
                   dirfilter = os.path.join(*pathwords[:-1])
