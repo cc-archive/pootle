@@ -230,6 +230,8 @@ class LanguageIndex(pagelayout.PootleNavPage):
     self.languagename = self.potree.getlanguagename(self.languagecode)
     self.initpagestats()
     languageprojects = self.getprojects(session)
+    if len(languageprojects) == 0:
+      raise projects.Rights404Error
     self.projectcount = len(languageprojects)
     average = self.getpagestats()
     languagestats = self.nlocalize("%d project, average %d%% translated", "%d projects, average %d%% translated", self.projectcount, self.projectcount, average)
@@ -293,6 +295,8 @@ class ProjectLanguageIndex(pagelayout.PootleNavPage):
     self.tr_lang = session.tr_lang
     self.initpagestats()
     languages = self.getlanguages(session)
+    if len(languages) == 0:
+      raise projects.Rights404Error
     average = self.getpagestats()
     projectstats = self.nlocalize("%d language, average %d%% translated", "%d languages, average %d%% translated", self.languagecount, self.languagecount, average)
     projectname = self.potree.getprojectname(self.projectcode)
