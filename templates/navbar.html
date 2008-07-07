@@ -80,6 +80,37 @@
       </td>
     </span>
   </div>
+
+  <div id="itemsummary" py:strip="True">
+    <td class="stats-name">
+      <a href="${item.href}" lang="en" dir="ltr">${item.title}</a>
+    </td>
+    <span py:if="item.data" py:strip="True">
+      <td class="stats-graph">
+        <span class="sortkey">${item.data.translatedpercentage}</span>
+        <span class="graph">
+            <span class="translated" style="width: ${item.data.translatedpercentage or int(bool(item.data.translatedsourcewords))}px" />
+            <span class="fuzzy" style="left: ${item.data.translatedpercentage or int(bool(item.data.translatedsourcewords))}px; width: ${item.data.fuzzypercentage or int(bool(item.data.fuzzysourcewords))}px" py:if="item.data.fuzzysourcewords"/>
+            <span class="untranslated" style="left: ${(item.data.translatedpercentage or int(bool(item.data.translatedsourcewords))) + (item.data.fuzzypercentage or int(bool(item.data.fuzzysourcewords)))}px; width: ${100 - ((item.data.translatedpercentage or int(bool(item.data.translatedsourcewords))) + (item.data.fuzzypercentage or int(bool(item.data.fuzzysourcewords))))}px" py:if="item.data.untranslatedsourcewords" />
+        </span>
+      </td>
+      <td class="stats">
+        <!-- TODO: localize these strings -->
+        <ul>
+        <span py:if="item.data.untranslatedsourcewords" py:strip="True">
+            <li class="todo"><a href="${item.href}translate.html?untranslated=1&amp;editing=1">${item.data.untranslatedsourcewords} untranslated strings</a></li>
+        </span>
+        <span py:if="item.data.fuzzysourcewords" py:strip="True">
+            <li class="todo"><a href="${item.href}translate.html?fuzzy=1&amp;editing=1">${item.data.fuzzysourcewords} fuzzy strings</a></li>
+        </span>
+        <span py:if="item.data.translatedsourcewords == item.data.totalsourcewords" py:strip="True">
+            <li class="complete">Complete</li>
+        </span>
+        </ul>
+      </td>
+      <td class="stats">${item.data.totalsourcewords}</td>
+    </span>
+  </div>
 </body>
 </html>
 

@@ -345,6 +345,18 @@ td.stats-graph
   min-width: 100px;
 }
 
+/* Stats summary */
+td.stats ul {
+    list-style-type: none;
+    margin: 0px 0px 0px 0px;
+}
+td.stats ul li.todo {
+    font-weight:bold;
+}
+td.stats ul li.complete {
+    list-style-image: url('../images/complete.png');
+}
+
 div.intro {
 	color:#000;
 	background: #FFFFDD;

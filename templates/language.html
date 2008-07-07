@@ -24,35 +24,27 @@
     <div class="navbar">
       <img src="${baseurl}images/language.png" class="icon" alt="" dir="$uidir" lang="$uilanguage" />
 
-      <h3 class="title">[ <a href="${baseurl}languages/${language.code}/" py:content="language.name">Language</a> ]</h3>
+      <h3 class="title">[ <a href="${baseurl}languages/${language.code}/" py:content="language.name">Language</a> (<py:content>$language.code</py:content>)]</h3>
 
       <div class="item-statistics" py:content="language.stats">
         0 projects, average 0% translated
       </div>
     </div>
 
-    <div class="intro">
-      <span py:for="i in language.info" py:strip="True"><b>${i.title}</b>: ${i.value}<br/></span>
-    </div>
 
       <table class="sortable stats" id="stats" cellpadding="5" cellspacing="0" width="100%">
         <thead>
           <tr>
             <th class="stats">${statsheadings.name}</th>
-            <th class="stats">${statsheadings.translated}</th>
-            <th class="stats" title="${statsheadings.translatedpercentage}">%</th>
-            <th class="stats">${statsheadings.fuzzy}</th>
-            <th class="stats" title="${statsheadings.fuzzypercentage}">%</th>
-            <th class="stats">${statsheadings.untranslated}</th>
-            <th class="stats" title="${statsheadings.untranslatedpercentage}">%</th>
-            <th class="stats">${statsheadings.total}</th>
-            <th class="stats">${statsheadings.graph}</th>
+            <th class="stats">${statsheadings.progress}</th>
+            <th class="stats">${statsheadings.summary}</th>
+            <th class="stats">${statsheadings.totalwords}</th>
         </tr>
       </thead>
       <tbody class="stats">
         <div py:for="item in projects" py:strip="True">
           <tr class="item item-${item.parity}" title="${item.description}">
-            <div over:include="navbar#itemdata" />
+            <div over:include="navbar#itemsummary" />
           </tr>
         </div>
       </tbody>

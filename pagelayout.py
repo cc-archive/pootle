@@ -271,7 +271,8 @@ class PootleNavPage(PootlePage):
                 "total": self.localize("Total"),
                 "totalwords": self.localize("Total words"),
                 # l10n: noun. The graphical representation of translation status
-                "graph": self.localize("Graph")}
+                "progress": self.localize("Progress"),
+                "summary": self.localize("Summary")}
     return headings
 
   def getstats(self, project, projectstats):
