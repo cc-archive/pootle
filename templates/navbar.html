@@ -98,10 +98,10 @@
         <!-- TODO: localize these strings -->
         <ul>
         <span py:if="item.data.untranslatedsourcewords" py:strip="True">
-            <li class="todo"><a href="${item.href}translate.html?untranslated=1&amp;editing=1">${item.data.untranslatedsourcewords} untranslated strings</a></li>
+            <li class="todo"><a href="${item.href}translate.html?untranslated=1&amp;editing=1">${item.data.untranslatedsourcewords} untranslated words</a></li>
         </span>
         <span py:if="item.data.fuzzysourcewords" py:strip="True">
-            <li class="todo"><a href="${item.href}translate.html?fuzzy=1&amp;editing=1">${item.data.fuzzysourcewords} fuzzy strings</a></li>
+            <li class="todo"><a href="${item.href}translate.html?fuzzy=1&amp;editing=1">${item.data.fuzzysourcewords} fuzzy words</a></li>
         </span>
         <span py:if="item.data.translatedsourcewords == item.data.totalsourcewords" py:strip="True">
             <li class="complete">Complete</li>
