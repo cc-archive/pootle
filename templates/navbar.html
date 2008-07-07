@@ -72,10 +72,10 @@
       <td class="stats">${item.data.totalsourcewords}</td>
       <td class="stats-graph">
         <span class="sortkey">${item.data.translatedpercentage}</span>
-        <span class="graph" title="${item.data.translatedpercentage}% complete">
+        <span class="graph" title="${item.data.translatedpercentage}% complete" dir="$uidir">
             <span class="translated" style="width: ${item.data.translatedpercentage or int(bool(item.data.translatedsourcewords))}px" />
-            <span class="fuzzy" style="left: ${item.data.translatedpercentage or int(bool(item.data.translatedsourcewords))}px; width: ${item.data.fuzzypercentage or int(bool(item.data.fuzzysourcewords))}px" py:if="item.data.fuzzysourcewords"/>
-            <span class="untranslated" style="left: ${(item.data.translatedpercentage or int(bool(item.data.translatedsourcewords))) + (item.data.fuzzypercentage or int(bool(item.data.fuzzysourcewords)))}px; width: ${100 - ((item.data.translatedpercentage or int(bool(item.data.translatedsourcewords))) + (item.data.fuzzypercentage or int(bool(item.data.fuzzysourcewords))))}px" py:if="item.data.untranslatedsourcewords" />
+            <span class="fuzzy" style="${cssaligndir}: ${item.data.translatedpercentage or int(bool(item.data.translatedsourcewords))}px; width: ${item.data.fuzzypercentage or int(bool(item.data.fuzzysourcewords))}px" py:if="item.data.fuzzysourcewords"/>
+            <span class="untranslated" style="${cssaligndir}: ${(item.data.translatedpercentage or int(bool(item.data.translatedsourcewords))) + (item.data.fuzzypercentage or int(bool(item.data.fuzzysourcewords)))}px; width: ${100 - ((item.data.translatedpercentage or int(bool(item.data.translatedsourcewords))) + (item.data.fuzzypercentage or int(bool(item.data.fuzzysourcewords))))}px" py:if="item.data.untranslatedsourcewords" />
         </span>
       </td>
     </span>
@@ -88,10 +88,10 @@
     <span py:if="item.data" py:strip="True">
       <td class="stats-graph">
         <span class="sortkey">${item.data.translatedpercentage}</span>
-        <span class="graph" title="${item.data.translatedpercentage}% complete">
+        <span class="graph" title="${item.data.translatedpercentage}% complete" dir="$uidir">
             <span class="translated" style="width: ${item.data.translatedpercentage or int(bool(item.data.translatedsourcewords))}px" />
-            <span class="fuzzy" style="left: ${item.data.translatedpercentage or int(bool(item.data.translatedsourcewords))}px; width: ${item.data.fuzzypercentage or int(bool(item.data.fuzzysourcewords))}px" py:if="item.data.fuzzysourcewords"/>
-            <span class="untranslated" style="left: ${(item.data.translatedpercentage or int(bool(item.data.translatedsourcewords))) + (item.data.fuzzypercentage or int(bool(item.data.fuzzysourcewords)))}px; width: ${100 - ((item.data.translatedpercentage or int(bool(item.data.translatedsourcewords))) + (item.data.fuzzypercentage or int(bool(item.data.fuzzysourcewords))))}px" py:if="item.data.untranslatedsourcewords" />
+            <span class="fuzzy" style="${cssaligndir}: ${item.data.translatedpercentage or int(bool(item.data.translatedsourcewords))}px; width: ${item.data.fuzzypercentage or int(bool(item.data.fuzzysourcewords))}px" py:if="item.data.fuzzysourcewords"/>
+            <span class="untranslated" style="${cssaligndir}: ${(item.data.translatedpercentage or int(bool(item.data.translatedsourcewords))) + (item.data.fuzzypercentage or int(bool(item.data.fuzzysourcewords)))}px; width: ${100 - ((item.data.translatedpercentage or int(bool(item.data.translatedsourcewords))) + (item.data.fuzzypercentage or int(bool(item.data.fuzzysourcewords))))}px" py:if="item.data.untranslatedsourcewords" />
         </span>
       </td>
       <td class="stats">

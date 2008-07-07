@@ -36,9 +36,9 @@
             <tr py:for="zebra, l in enumerate(languages)" class="${zebra%2 and 'item-odd' or 'item-even'}">
               <td><a href="languages/${l.code}/" py:content="l.name">Language</a></td>
               <td>
-                <span class="graph">
+                <span class="graph" dir="$uidir">
                   <span class="translated" style="width: ${l.progress}px" title="${l.trans}/${l.total} words translated" />
-                  <span class="untranslated" style="left: ${l.progress}px; width: ${100-l.progress}px" title="${l.trans}/${l.total} words translated" />
+                  <span class="untranslated" style="${cssaligndir}: ${l.progress}px; width: ${100-l.progress}px" title="${l.trans}/${l.total} words translated" />
                 </span>
                 <span class="sortkey">${l.progress}%</span>
               </td> 
@@ -54,9 +54,9 @@
             <tr py:for="zebra, p in enumerate(projects)" class="${zebra%2 and 'item-odd' or 'item-even'}">
               <td><a href="projects/${p.code}/" title="${p.description}" py:content="p.name">Project</a></td>
               <td>
-                <span class="graph">
+                <span class="graph" dir="$uidir">
                   <span class="translated" style="width: ${p.progress}px" title="${p.trans}/${p.total} words translated" />
-                  <span class="untranslated" style="left: ${p.progress}px; width: ${100-p.progress}px" title="${p.trans}/${p.total} words translated" />
+                  <span class="untranslated" style="${cssaligndir}: ${p.progress}px; width: ${100-p.progress}px" title="${p.trans}/${p.total} words translated" />
                 </span>
                 <span class="sortkey">${p.progress}%</span>
               </td> 

@@ -653,7 +653,6 @@ span.translated {
   position: absolute; 
   top: 5px;
   height:100%; 
-  left: 0%; 
   background: #448844;
   background: url('images/green-bar.png');
   background-repeat: repeat-x;
@@ -688,4 +687,12 @@ span.untranslated {
   background: url('images/red-bar.png');
   background-repeat: repeat-x;
   color: black;
+}
+
+span.graph[dir="ltr"] span.translated {
+  left: 0%;
+}
+
+span.graph[dir="rtl"] span.translated {
+  right: 0%;
 }

@@ -28,9 +28,9 @@
           <tr py:for="zebra, l in enumerate(languages)" class="${zebra%2 and 'item-odd' or 'item-even'}">
             <td><a href="${l.code}/" py:content="l.name">Language</a></td>
             <td>
-              <span class="graph">
+              <span class="graph" dir="$uidir">
                 <span class="translated" style="width: ${l.progress}px" title="${l.trans}/${l.total} words translated" />
-                <span class="untranslated" style="left: ${l.progress}px; width: ${100-l.progress}px" title="${l.trans}/${l.total} words translated" />
+                <span class="untranslated" style="${cssaligndir}: ${l.progress}px; width: ${100-l.progress}px" title="${l.trans}/${l.total} words translated" />
               </span>
               <span class="sortkey">${l.progress}%</span>
             </td> 

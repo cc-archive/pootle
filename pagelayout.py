@@ -88,6 +88,10 @@ def completetemplatevars(templatevars, session, bannerheight=135):
   templatevars["aboutlink"] = session.localize("About this Pootle server")
   templatevars["uilanguage"] = weblanguage(session.language)
   templatevars["uidir"] = languagedir(session.language)
+  if templatevars["uidir"] == 'ltr':  
+    templatevars["cssaligndir"] = "left"
+  else:
+    templatevars["cssaligndir"] = "right"
   templatevars["username_title"] = session.localize("Username:")
   try:
     templatevars["username"] = templatevars["username"]
