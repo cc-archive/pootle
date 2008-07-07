@@ -324,6 +324,28 @@ class ProjectAdminPage(pagelayout.PootlePage):
     newoptions.sort(lambda x,y: locale.strcoll(x["name"], y["name"]))
     return newoptions
 
+def updaterights(project, session, argdict):
+  if "admin" in project.getrights(session):
+    if "doupdaterights" in argdict:
+      for key, value in argdict.iteritems():
+        if isinstance(key, str):
+          key = key.decode("utf-8")
+        if key.startswith("rights-"):
+          username = key.replace("rights-", "", 1)
+          if isinstance(value, dict):
+            value.pop("existence","")
+          project.setrights(username, value)
+        if key.startswith("rightsremove-"):
+          username = key.replace("rightsremove-", "", 1)
+          project.delrights(session, username)
+      username = argdict.get("rightsnew-username", None)
+      if username:
+        username = username.strip()
+        if session.loginchecker.userexists(username):
+          project.setrights(username, argdict.get("rightsnew", ""))
+        else:
+          raise IndexError(session.localize("Cannot set rights for username %s - user does not exist", username))
+ 
 class TranslationProjectAdminPage(pagelayout.PootlePage):
   """admin page for a translation project (project+language)"""
   def __init__(self, potree, project, session, argdict):
@@ -332,29 +354,10 @@ class TranslationProjectAdminPage(pagelayout.PootlePage):
     self.session = session
     self.localize = session.localize
     self.rightnames = self.project.getrightnames(session)
+    updaterights(project, session, argdict)
     # l10n: This is the page title. The first parameter is the language name, the second parameter is the project name
     pagetitle = self.localize("Pootle Admin: %s %s", self.project.languagename, self.project.projectname)
     main_link = self.localize("Project home page")
-    if "admin" in self.project.getrights(self.session):
-      if "doupdaterights" in argdict:
-        for key, value in argdict.iteritems():
-          if isinstance(key, str):
-            key = key.decode("utf-8")
-          if key.startswith("rights-"):
-            username = key.replace("rights-", "", 1)
-            if isinstance(value, dict):
-              value.pop("existence","")
-            self.project.setrights(username, value)
-          if key.startswith("rightsremove-"):
-            username = key.replace("rightsremove-", "", 1)
-            self.project.delrights(self.session, username)
-        username = argdict.get("rightsnew-username", None)
-        if username:
-          username = username.strip()
-          if self.session.loginchecker.userexists(username):
-            self.project.setrights(username, argdict.get("rightsnew", ""))
-          else:
-            raise IndexError(self.localize("Cannot set rights for username %s - user does not exist", username))
     norights_text = self.localize("You do not have the rights to administer this project.")
     templatename = "projectlangadmin"
     sessionvars = {"status": self.session.status, "isopen": self.session.isopen, "issiteadmin": self.session.issiteadmin()}
