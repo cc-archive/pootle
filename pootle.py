@@ -216,8 +216,7 @@ class PootleServer(users.OptionalLoginAppServer, templateserver.TemplateServer):
 
   def getuserlanguage(self, session):
     """gets the language for a user who does not specify one in the URL"""
-    # TODO Add actual language detection here
-    return "en"
+    return session.language 
 
   def getpage(self, pathwords, session, argdict):
     """return a page that will be sent to the user"""
@@ -262,7 +261,7 @@ class PootleServer(users.OptionalLoginAppServer, templateserver.TemplateServer):
     if not self.potree.haslanguage(top):
       lang = self.getuserlanguage(session)
       session.setlanguage(lang)
-      return server.Redirect(self.instance.baseurl+"en/"+"/".join(pathwords)+getsuffix)
+      return server.Redirect(self.instance.baseurl+lang+"/"+"/".join(pathwords)+getsuffix)
     else:
       session.setlanguage(top)
       session.localizedurl = self.instance.baseurl+top+"/"
