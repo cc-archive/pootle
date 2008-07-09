@@ -21,6 +21,7 @@
 
 from jToolkit import web
 from jToolkit.web import server
+from jToolkit.web import session
 from jToolkit import mailer
 from jToolkit import prefs
 from Pootle import pagelayout
@@ -28,6 +29,9 @@ from translate.lang import data as langdata
 from translate.lang import factory
 from email.Header import Header
 import locale
+import Cookie
+import re
+import time
 
 class RegistrationError(ValueError):
   def __init__(self, message):
@@ -762,3 +766,40 @@ class PootleSession(web.session.LoginSession):
     self.validate(password) # Pass it the password; we need to make sure 
                             # the password is correct!
     self.open()
+
+  def updatecookie(self, req, server):
+    """update session string in cookie in req to reflect whether session is open"""
+    if self.isopen:
+      self.sessioncache.setsessioncookie(req, server, self.getsessionstring(), {'path': '/'})
+    else:
+      self.sessioncache.setsessioncookie(req, server, '', {'path': '/', 'expires': int(-time.time()+1)})
+
+class PootleSessionCache(session.SessionCache):
+  def setcookie(self, req, cookiedict, attributes={}):
+    """Puts the bits from the cookiedict into Morsels, sets the req cookie
+    
+    All of the attributes that are valid will be added to each morsel
+    (see http://docs.python.org/lib/morsel-objects.html)
+    
+    """
+
+    # construct the cookie from the cookiedict
+    cookie = Cookie.SimpleCookie()
+    for key, value in cookiedict.iteritems():
+      if isinstance(value, unicode): value = value.encode('utf8')
+      if isinstance(key, unicode): key = key.encode('utf8')
+      cookie[key] = value
+    # add the cookie headers to req.headers_out
+    for key, morsel in cookie.iteritems():
+      for k,v in attributes.iteritems():
+        try:
+          morsel[k] = v 
+        except Cookie.CookieError:
+          pass
+      req.headers_out.add('Set-Cookie', morsel.OutputString())
+
+  def setsessioncookie(self, req, server, sessionstring, attributes = {}):
+    """sets the session cookie value"""
+    cookiedict = {self.getsessioncookiename(server): sessionstring}
+    self.setcookie(req, cookiedict, attributes)
+
