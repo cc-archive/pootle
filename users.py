@@ -732,22 +732,15 @@ class PootleSession(web.session.LoginSession):
       if password != None: #If there's a password, this is called from create
         self.isvalid = self.loginchecker.iscorrectpass(password)
       else:
-        #print "Cache is: "+str(self.sessioncache)
-        #print "String is"+str(self.getsessionstring())
-        pass
-        # self.isvalid = (self.getsessionstring() in self.sessioncache)
-        # FIXME FIXME FIXME: MUST BE FIXED BEFORE ANY ACTUAL RELEASE
-        # FIXME: This is where the original validate did its little md5 hash
-        # password magic; we don't have access to the md5 of the password,
-        # so we can't really do that... if something is going to be wrong 
-        # with setsessionstring -> validate, this is where it would be.
-        
-        # I fear the result of this is that any session string with a valid
-        # username might be able to convince the server that it is a valid
-        # login.  A way to fix this might be to check if the sessionid given
-        # is actually in our dictionary of sessionid's; if so, check the
-        # username and if it matches, we verify.  However, this does not
-        # appear to work.
+        # It seems the only time validate is called with no password
+        # is when it is called from setsessionstring(); the only
+        # time that seems to be called is in the contructor for a session,
+        # and a session seems to only be constructed if the session string
+        # was not in the cache.  To be safe, we will simply set isvalid to
+        # False; from what I've seen of jToolkit, it really doesn't seem
+        # like we can ever end up here if the sessionstring was valid
+        self.isvalid = False
+        return self.isvalid
     elif self.loginchecker.logincheckers["ldap"].userexists():
       if password != None:
         passcorrect = self.loginchecker.logincheckers["ldap"].iscorrectpass(password)
