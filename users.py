@@ -357,7 +357,7 @@ class OptionalLoginAppServer(server.LoginAppServer):
   def addldapuser(self, users, username):
     email = username
     import mozldap 
-    c = mozldap.MozillaLdap()
+    c = mozldap.MozillaLdap(self.instance.ldap.cn, self.instance.ldap.dn, self.instance.ldap.pw)
     fullname = c.getFullName(email)
     usernode = self.getusernode(users, username)
     usernode.name = fullname
