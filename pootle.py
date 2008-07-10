@@ -126,6 +126,12 @@ class PootleServer(users.OptionalLoginAppServer, templateserver.TemplateServer):
       elif langpref.startswith("en"):
         session.setlanguage(None)
         return
+      dashpos = langpref.find("_"); # Try removing the locale, find the lang
+      if dashpos >= 0:
+        lonelang = langpref[:dashpos]
+        if lonelang in availablelanguages:
+          session.setlanguage(lonelang)
+          return
     session.setlanguage(None)
         
   def inittranslation(self, localedir=None, localedomains=None, defaultlanguage=None):
@@ -258,13 +264,23 @@ class PootleServer(users.OptionalLoginAppServer, templateserver.TemplateServer):
     else:
       top = ""
 
-    if not self.potree.haslanguage(top):
-      lang = self.getuserlanguage(session)
+    lang = top
+    lonelang = top
+    dashpos = lang.find("_"); # Try removing the locale, find the lang
+    if dashpos >= 0:
+      lonelang = top[:dashpos]
+
+    if not self.potree.haslanguage(lang) and not self.potree.haslanguage(lonelang):
+      sessionlang = self.getuserlanguage(session)
+      session.setlanguage(sessionlang)
+      return server.Redirect(self.instance.baseurl+sessionlang+"/"+"/".join(pathwords)+getsuffix)
+    elif self.potree.haslanguage(lang):
       session.setlanguage(lang)
-      return server.Redirect(self.instance.baseurl+lang+"/"+"/".join(pathwords)+getsuffix)
-    else:
-      session.setlanguage(top)
-      session.localizedurl = self.instance.baseurl+top+"/"
+      session.localizedurl = self.instance.baseurl+lang+"/"
+    else: #Must have lonelang
+      session.setlanguage(lonelang)
+      return server.Redirect(self.instance.baseurl+lonelang+"/"+"/".join(pathwords[1:])+getsuffix)
+
 
     pathwords = pathwords[1:]
     if pathwords:
