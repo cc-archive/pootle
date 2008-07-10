@@ -18,6 +18,12 @@ class LDAPLoginChecker(web.session.LoginChecker):
 
   """
 
+  def __init__(self, session, instance):
+    web.session.LoginChecker.__init__(self, session, instance)
+    self.cn = instance.ldap.cn
+    self.dn = instance.ldap.dn
+    self.pw = instance.ldap.pw
+
   def userexists(self, username=None):
     """Checks whether user username exists as a valid LDAP username; note
     that this is not checking if it is a valid distinguished name!  What
@@ -30,7 +36,7 @@ class LDAPLoginChecker(web.session.LoginChecker):
     
     if username is None:
       username = self.session.username
-    c = mozldap.MozillaLdap()
+    c = mozldap.MozillaLdap(self.cn, self.dn, self.pw)
     return c.hasAccount(username)
 
   def iscorrectpass(self, password, username=None):
@@ -45,7 +51,7 @@ class LDAPLoginChecker(web.session.LoginChecker):
     
     if username is None:
       username = self.session.username
-    c = mozldap.MozillaLdap()
+    c = mozldap.MozillaLdap(self.cn, self.dn, self.pw)
     return c.isCorrectCredentials(username, password)
 
   def getmd5password(self, username=None):

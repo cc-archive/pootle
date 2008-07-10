@@ -9,9 +9,6 @@
 # Requires python-ldap module from http://python-ldap.sourceforge.net/
 import ldap
 
-# This file should contain default LDAP binding settings
-import ldapsettings
-
 class MozillaLdap:
   """ LDAP class for connecting to mozilla's LDAP server
   
@@ -31,8 +28,7 @@ class MozillaLdap:
 
   """
 
-  def __init__(self, host=ldapsettings.cn, anon=ldapsettings.dn, \
-               anonpass=ldapsettings.pw):
+  def __init__(self, host, anon, anonpass):
     """Creates the connvection to the server, and binds anonymously"""
     self.LDAP_HOST = host
     self.ANON_BIND = anon
