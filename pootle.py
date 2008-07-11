@@ -346,6 +346,8 @@ class PootleServer(users.OptionalLoginAppServer, templateserver.TemplateServer):
       elif top == 'about.html':
         return indexpage.AboutPage(session)
       elif top == "login.html":
+        if 'doregister' in argdict:
+          return self.registerpage(session, argdict)
         try:
           if session.usercreated:
             session.usercreated = False
