@@ -37,10 +37,11 @@
               <td><a href="languages/${l.code}/" py:content="l.name">Language</a></td>
               <td>
                 <span class="graph" dir="$uidir">
-                  <span class="translated" style="width: ${l.progress}px" title="${l.trans}/${l.total} words translated" />
-                  <span class="untranslated" style="${cssaligndir}: ${l.progress}px; width: ${100-l.progress}px" title="${l.trans}/${l.total} words translated" />
+                  <span class="translated" style="width: ${l.transper}px" title="${l.trans}/${l.total} words translated" />
+                  <span class="fuzzy" style="${cssaligndir}: ${l.transper}px; width: ${l.fuzzyper}px" title="${l.fuzzy}/${l.total} words fuzzy" />
+                  <span class="untranslated" style="${cssaligndir}: ${l.transper+l.fuzzyper}px; width: ${l.untransper}px" title="${l.untrans}/${l.total} words untranslated" />
                 </span>
-                <span class="sortkey">${l.progress}%</span>
+                <span class="sortkey">${l.transper}%</span>
               </td> 
               <td>${l.lastactivity}</td>
             </tr>
@@ -55,10 +56,11 @@
               <td><a href="projects/${p.code}/" title="${p.description}" py:content="p.name">Project</a></td>
               <td>
                 <span class="graph" dir="$uidir">
-                  <span class="translated" style="width: ${p.progress}px" title="${p.trans}/${p.total} words translated" />
-                  <span class="untranslated" style="${cssaligndir}: ${p.progress}px; width: ${100-p.progress}px" title="${p.trans}/${p.total} words translated" />
+                  <span class="translated" style="width: ${p.transper}px" title="${p.trans}/${p.total} words translated" />
+                  <span class="fuzzy" style="${cssaligndir}: ${p.transper}px; width: ${p.fuzzyper}px" title="${p.fuzzy}/${p.total} words fuzzy" />
+                  <span class="untranslated" style="${cssaligndir}: ${p.transper+p.fuzzyper}px; width: ${p.untransper}px" title="${p.untrans}/${p.total} words untranslated" />
                 </span>
-                <span class="sortkey">${p.progress}%</span>
+                <span class="sortkey">${p.transper}%</span>
               </td> 
               <td>${p.lastactivity}</td>
             </tr>

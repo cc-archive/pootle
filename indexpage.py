@@ -110,22 +110,29 @@ class PootleIndex(pagelayout.PootlePage):
     for langcode, langname in self.potree.getlanguages():
       projectcodes = self.potree.getprojectcodes(langcode)
       trans = 0
+      fuzzy = 0
       total = 0
       viewable = False
       for projectcode in projectcodes:
         project = self.potree.getproject(langcode, projectcode)
         stats = project.getquickstats()
         trans += stats['translatedsourcewords']
+        fuzzy += stats['fuzzysourcewords']
         total += stats['totalsourcewords']
         rights = project.getrights(session)
         viewable = viewable or ("view" in rights)
+      untrans = total-trans-fuzzy
       try:
-        progress = int(100*trans/total)
+        transper = int(100*trans/total)
+        fuzzyper = int(100*fuzzy/total)
+        untransper = 100-transper-fuzzyper
       except ZeroDivisionError:
-        progress = 0 
+        transper = 100
+        fuzzyper = 0 
+        untransper = 0 
       lastact = "June 24th, 2008"
       if viewable:
-        languages.append({"code": langcode, "name": self.tr_lang(langname), "progress": progress, "lastactivity": lastact, "trans": trans, "total": total})
+        languages.append({"code": langcode, "name": self.tr_lang(langname), "lastactivity": lastact, "trans": trans, "fuzzy": fuzzy, "untrans": untrans, "total": total, "transper": transper, "fuzzyper": fuzzyper, "untransper": untransper}) 
     languages.sort(lambda x,y: locale.strcoll(x["name"], y["name"]))
     return languages
 
@@ -135,24 +142,31 @@ class PootleIndex(pagelayout.PootlePage):
     for projectcode in self.potree.getprojectcodes():
       langcodes = self.potree.getlanguagecodes(projectcode)
       trans = 0
+      fuzzy = 0
       total = 0
       viewable = False
       for langcode in langcodes:
         project = self.potree.getproject(langcode, projectcode)
         stats = project.getquickstats()
         trans += stats['translatedsourcewords']
+        fuzzy += stats['fuzzysourcewords']
         total += stats['totalsourcewords']
         rights = project.getrights(session)
         viewable = viewable or ("view" in rights)
+      untrans = total-trans-fuzzy
       try:
-        progress = int(100*trans/total)
+        transper = int(100*trans/total)
+        fuzzyper = int(100*fuzzy/total)
+        untransper = 100-transper-fuzzyper
       except ZeroDivisionError:
-        progress = 0 
+        transper = 100
+        fuzzyper = 0 
+        untransper = 0 
       projectname = self.potree.getprojectname(projectcode)
       description = shortdescription(self.potree.getprojectdescription(projectcode))
       lastact = "June 24th, 2008"
       if viewable:
-        projects.append({"code": projectcode, "name": projectname, "description": description, "progress": progress, "lastactivity": lastact, "trans": trans, "total": total})
+        projects.append({"code": projectcode, "name": projectname, "description": description, "lastactivity": lastact, "trans": trans, "fuzzy": fuzzy, "untrans": untrans, "total": total, "transper": transper, "fuzzyper": fuzzyper, "untransper": untransper})
     return projects
 
   def getprojectnames(self):
