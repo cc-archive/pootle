@@ -303,7 +303,7 @@ class PootleNavPage(PootlePage):
     for key in wanted:
       percentkey = key + "percentage"
       wordkey = key + "sourcewords"
-      gotten[percentkey] = gotten[wordkey]*100/max(gotten["totalsourcewords"], 1)
+      gotten[percentkey] = int(gotten[wordkey]*100/max(gotten["totalsourcewords"], 1))
 
     for key in gotten:
       if key.find("check-") == 0:
