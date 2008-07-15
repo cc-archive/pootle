@@ -290,7 +290,7 @@ class OptionalLoginAppServer(server.LoginAppServer):
       # Because of the exception, 'session' might not be initialised. So let's
       # play extra safe
       if not session:
-          raise Exception("Could not initialise session.\nDetail:%s" % str(e))
+          raise
 
       exceptionstr = self.errorhandler.exception_str()
       errormessage = str(e).decode("utf-8")
