@@ -664,12 +664,13 @@ class TranslationProject(object):
 
     try:
       os.chdir(execdir)
-    except:
-      print "Precommit dir change for %s failed: %s." % (pofilename, execdir)
-    try:
-      system(cmd)
-    except:
-      print "Precommit command for %s failed: %s." % (pofilename, cmd)
+    except Exception, e:
+      print "Precommit dir change for %s failed: %s.  Reason: %s" % (pofilename, execdir, str(e))
+    else:
+      try:
+        os.system(cmd)
+      except Exception, e:
+        print "Precommit command for %s failed: %s.  Reason: %s" % (pofilename, cmd, str(e))
 
   def commitpofile(self, session, dirname, pofilename):
     """commits an individual PO file to version control"""
