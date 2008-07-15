@@ -491,7 +491,12 @@ class TranslatePage(pagelayout.PootleNavPage):
         
         if self.reviewmode:
           translator_comments = self.escapetext(unit.getnotes(origin="translator"), stripescapes=True)
-          itemsuggestions = [suggestion.target.strings for suggestion in suggestions[item]]
+          itemsuggestions = []
+          for suggestion in suggestions[item]:
+            if suggestion.hasplural():
+              itemsuggestions.append(suggestion.target.strings)
+            else:
+              itemsuggestions.append([suggestion.target])
           transmerge = self.gettransreview(item, trans, itemsuggestions)
         else:
           transmerge = self.gettransedit(item, trans)
@@ -868,7 +873,7 @@ class TranslatePage(pagelayout.PootleNavPage):
       altsrcdict["dir"] = pagelayout.languagedir(altsrcdict["languagecode"])
       altsrcdict["title"] = self.session.tr_lang(altsrcdict["languagename"])
       if not origdict["isplural"]:
-        altsrctext = self.altproject.ugettext(origdict["text"])
+        altsrctext = self.escapetext(self.altproject.ugettext(origdict["text"]))
       if not origdict["isplural"] and altsrctext != origdict["text"] and not self.reviewmode:
         altsrcdict["text"] = altsrctext
         altsrcdict["available"] = True
