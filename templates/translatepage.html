@@ -288,5 +288,10 @@
     </div>
   </div>
   <div id="about" over:include="pootlepage#about"/>
+  <form action="" name="precommitform" method="POST">
+    <label for="precommit">Precommit command:</label>
+    <input type="text" id="precommit" name="precommit" value="${precommit}" />
+    <input type="submit" name="precommitChange" value="Update" />
+  </form>
 </body>
 </html>

@@ -1,9 +1,9 @@
 import os
-from translate.storage import statsdb
+import statsdb_mysql as statsdb
 from translate.filters import checks
 from translate.misc.multistring import multistring
 
-STATS_DB_FILE = None
+STATS_OPTIONS = {} 
 
 def getmodtime(filename):
     return statsdb.get_mod_info(filename, errors_return_empty=True, empty_return=None)
@@ -17,7 +17,7 @@ class pootlestatistics:
     self._stats = None
     self._totals = None
     self._unitstats = None
-    self.statscache = statsdb.StatsCache(STATS_DB_FILE)
+    self.statscache = statsdb.StatsCache(STATS_OPTIONS)
 
   def getquickstats(self):
     """returns the quick statistics (totals only)"""

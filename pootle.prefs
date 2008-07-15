@@ -16,6 +16,13 @@ Pootle:
     # The password for the user with distinguished name dn
     pw = ""
 
+  statsdb:
+    # The connection information for the mysql server
+    host = ""
+    user = ""
+    passwd = ""
+    db = ""
+
   serverclass = pootleserver.PootleServer
   sessionkey='p00tl3'
 

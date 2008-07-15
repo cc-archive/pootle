@@ -61,6 +61,10 @@ class PootleServer(users.OptionalLoginAppServer, templateserver.TemplateServer):
   def __init__(self, instance, webserver, sessioncache=None, errorhandler=None, loginpageclass=users.LoginPage):
     if sessioncache is None:
       sessioncache = users.PootleSessionCache(sessionclass=users.PootleSession)
+    statistics.STATS_OPTIONS['host'] = instance.statsdb.host
+    statistics.STATS_OPTIONS['user'] = instance.statsdb.user
+    statistics.STATS_OPTIONS['passwd'] = instance.statsdb.passwd
+    statistics.STATS_OPTIONS['db'] = instance.statsdb.db
     self.potree = potree.POTree(instance)
     super(PootleServer, self).__init__(instance, webserver, sessioncache, errorhandler, loginpageclass)
     self.templatedir = filelocations.templatedir
@@ -648,7 +652,6 @@ def main():
   options, args = parser.parse_args()
   options.errorlevel = options.logerrors
   usepsyco(options)
-  statistics.STATS_DB_FILE = options.statsdb_file
   if options.action != "runwebserver":
     options.servertype = "dummy"
   server = parser.getserver(options)

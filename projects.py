@@ -44,6 +44,7 @@ import os
 import cStringIO
 import traceback
 import gettext
+import MySQLdb as dbapi2
 
 class RightsError(ValueError):
   pass
@@ -120,10 +121,51 @@ class TranslationProject(object):
       self.filestyle = "gnu"
     else:
       self.filestyle = "std"
+    self.configureDB()
     self.readprefs()
     self.scanpofiles()
     self.readquickstats()
     self.initindex()
+
+  def configureDB(self):
+    self.conn = dbapi2.connect(statistics.STATS_OPTIONS['host'],statistics.STATS_OPTIONS['user'],statistics.STATS_OPTIONS['passwd'],statistics.STATS_OPTIONS['db'])
+    self.cur = self.conn.cursor()
+    # TODO: Replace names with IDs when language / projects are in DB  
+    self.cur.execute("""CREATE TABLE IF NOT EXISTS quickstats(
+        id INTEGER PRIMARY KEY AUTO_INCREMENT,
+        projectname LONGTEXT NOT NULL,
+        languagename LONGTEXT NOT NULL,
+        subdir LONGTEXT NOT NULL,
+        filename LONGTEXT NOT NULL,
+        translatedwords INTEGER,
+        translated INTEGER,
+        fuzzywords INTEGER,
+        fuzzy INTEGER,
+        totalwords INTEGER,
+        total INTEGER);""")
+
+    try:
+      self.cur.execute("""CREATE UNIQUE INDEX filenameindex
+          ON quickstats(projectname(100), languagename(100), subdir(100), filename(100));""")
+    except dbapi2.OperationalError, (errid, errstr):
+      if errid != 1061: # Index already exists
+        raise
+
+    # TODO: Replace names with IDs when language / projects are in DB  
+    self.cur.execute("""CREATE TABLE IF NOT EXISTS precommits(
+        id INTEGER PRIMARY KEY AUTO_INCREMENT,
+        projectname LONGTEXT NOT NULL,
+        languagename LONGTEXT NOT NULL,
+        subdir LONGTEXT NOT NULL,
+        filename LONGTEXT NOT NULL,
+        command LONGTEXT NOT NULL);""")
+    
+    try:
+      self.cur.execute("""CREATE UNIQUE INDEX filenameindex
+          ON precommits(projectname(100), languagename(100), subdir(100), filename(100));""")
+    except dbapi2.OperationalError, (errid, errstr):
+      if errid != 1061: # Index already exists
+        raise
 
   def readprefs(self):
     """reads the project preferences"""
@@ -605,6 +647,30 @@ class TranslationProject(object):
       versioncontrol.updatefile(pathname)
       self.scanpofiles()
 
+  def getprecommit(self, dirname, pofilename):
+    self.cur.execute("SELECT command FROM precommits WHERE projectname = %s AND languagename = %s AND subdir = %s AND filename = %s",(self.projectname, self.languagename, dirname, pofilename));
+    res = self.cur.fetchone()
+    if res == None:
+      return None
+    return res[0]
+
+  def setprecommit(self, dirname, pofilename, command):
+    self.cur.execute("REPLACE INTO precommits (projectname, languagename, subdir, filename, command) VALUES (%s,%s,%s,%s,%s)", (self.projectname, self.languagename, dirname, pofilename, command))
+
+  def runprecommit(self, execdir, dirname, pofilename):
+    cmd = self.getprecommit(dirname, pofilename)
+    if cmd == None:
+      return
+
+    try:
+      os.chdir(execdir)
+    except:
+      print "Precommit dir change for %s failed: %s." % (pofilename, execdir)
+    try:
+      system(cmd)
+    except:
+      print "Precommit command for %s failed: %s." % (pofilename, cmd)
+
   def commitpofile(self, session, dirname, pofilename):
     """commits an individual PO file to version control"""
     if "commit" not in self.getrights(session):
@@ -613,8 +679,15 @@ class TranslationProject(object):
     stats = self.getquickstats([os.path.join(dirname, pofilename)])
     statsstring = "%d of %d messages translated (%d fuzzy)." % \
         (stats["translated"], stats["total"], stats["fuzzy"])
-    versioncontrol.commitfile(pathname, message="Commit from %s by user %s. %s" % 
-        (session.server.instance.title, session.username, statsstring))
+    message="Verbatim commit from %s by user %s, editing po file %s. %s" % (session.server.instance.title, session.username, pofilename, statsstring)
+    execdir = os.path.split(pathname)[0]
+    self.runprecommit(execdir, dirname, pofilename)
+    for rcs_obj in versioncontrol.get_versioned_objects_recursive(execdir):
+      try:
+        rcs_obj.commit(message)
+      except IOError, e:
+        print "IOError caught: "+str(e)
+        pass
 
   def converttemplates(self, session):
     """creates PO files from the templates"""
@@ -1075,32 +1148,21 @@ class TranslationProject(object):
 
   def savequickstats(self):
     """saves the quickstats"""
-    self.quickstatsfilename = os.path.join(self.podir, "pootle-%s-%s.stats" % (self.projectcode, self.languagecode))
-    quickstatsfile = open(self.quickstatsfilename, "w")
-    sortedquickstats = self.quickstats.items()
-    sortedquickstats.sort()
-    for pofilename, (translatedwords, translated, fuzzywords, fuzzy, totalwords, total) in sortedquickstats:
-      quickstatsfile.write("%s, %d, %d, %d, %d, %d, %d\n" % \
-          (pofilename, translatedwords, translated, fuzzywords, fuzzy, totalwords, total))
-    quickstatsfile.close()
+    quickstatsitems = self.quickstats.items()
+    for pofilename, (translatedwords, translated, fuzzywords, fuzzy, totalwords, total) in quickstatsitems:
+      # This is a non-standard SQL command, but is supported by mySQL and SQLite
+      # TODO: replace names with IDs when language / project are in DB
+      self.cur.execute("REPLACE INTO quickstats (languagename, projectname, subdir, filename, translatedwords, translated, fuzzywords, fuzzy, totalwords, total) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",(self.languagename, self.projectname, os.path.split(pofilename)[0], os.path.split(pofilename)[1], translatedwords, translated, fuzzywords, fuzzy, totalwords, total))
 
   def readquickstats(self):
-    """reads the quickstats from disk"""
+    """reads the quickstats"""
     self.quickstats = {}
-    self.quickstatsfilename = os.path.join(self.podir, "pootle-%s-%s.stats" % (self.projectcode, self.languagecode))
-    if os.path.exists(self.quickstatsfilename):
-      quickstatsfile = open(self.quickstatsfilename, "r")
-      for line in quickstatsfile:
-        items = line.split(",")
-        if len(items) != 7:
-          #Must be an old format style without the fuzzy stats
-          self.quickstats = self.getquickstats()
-          self.savequickstats()
-          break
-        else:
-          pofilename, translatedwords, translated, fuzzywords, fuzzy, totalwords, total = items
-          self.quickstats[pofilename] = tuple([int(a.strip()) for a in \
-              translatedwords, translated, fuzzywords, fuzzy, totalwords, total])
+    # TODO: replace names with IDs when language / project are in DB
+    self.cur.execute("SELECT subdir, filename, translatedwords, translated, fuzzywords, fuzzy, totalwords, total FROM quickstats WHERE languagename = %s AND projectname = %s",(self.languagename,self.projectname))
+    results = self.cur.fetchall()
+    for items in results: 
+      subdir, filename, translatedwords, translated, fuzzywords, fuzzy, totalwords, total = items
+      self.quickstats[os.path.join(subdir,filename)] = (translatedwords, translated, fuzzywords, fuzzy, totalwords, total)
 
   def getquickstats(self, pofilenames=None):
     """Gets translated and total stats and wordcounts without doing calculations returning dictionary."""

@@ -28,6 +28,7 @@ from translate.storage import po
 from translate.misc.multistring import multistring
 import difflib
 import urllib
+import os
 
 xml_re = re.compile("&lt;.*?&gt;")
 
@@ -116,6 +117,10 @@ class TranslatePage(pagelayout.PootleNavPage):
     language = {"code": pagelayout.weblanguage(self.project.languagecode), "name": self.project.languagename, "dir": pagelayout.languagedir(self.project.languagecode)}
     sessionvars = {"status": session.status, "isopen": session.isopen, "issiteadmin": session.issiteadmin()}
     stats = {"summary": mainstats, "checks": [], "tracks": [], "assigns": []}
+
+    if 'precommitChange' in argdict.keys():
+      self.project.setprecommit(os.path.split(self.pofilename)[0], os.path.split(self.pofilename)[1], argdict['precommit'])
+    precommit = self.project.getprecommit(os.path.split(self.pofilename)[0], os.path.split(self.pofilename)[1])
     templatevars = {"pagetitle": pagetitle,
         "project": {"code": self.project.projectcode, "name": self.project.projectname},
         "language": language,
@@ -150,7 +155,8 @@ class TranslatePage(pagelayout.PootleNavPage):
         "pofilename": givenpofilename,
         # general vars
         "session": sessionvars,
-        "instancetitle": instancetitle}
+        "instancetitle": instancetitle,
+        "precommit": precommit}
 
     if self.showassigns and "assign" in self.rights:
       templatevars["assign"] = self.getassignbox()
