@@ -1,9 +1,10 @@
 import os
-import statsdb_mysql as statsdb
 from translate.filters import checks
 from translate.misc.multistring import multistring
 
 STATS_OPTIONS = {} 
+statsdb = None
+dbapi2 = None
 
 def getmodtime(filename):
     return statsdb.get_mod_info(filename, errors_return_empty=True, empty_return=None)

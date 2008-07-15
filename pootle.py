@@ -61,10 +61,18 @@ class PootleServer(users.OptionalLoginAppServer, templateserver.TemplateServer):
   def __init__(self, instance, webserver, sessioncache=None, errorhandler=None, loginpageclass=users.LoginPage):
     if sessioncache is None:
       sessioncache = users.PootleSessionCache(sessionclass=users.PootleSession)
-    statistics.STATS_OPTIONS['host'] = instance.statsdb.host
-    statistics.STATS_OPTIONS['user'] = instance.statsdb.user
-    statistics.STATS_OPTIONS['passwd'] = instance.statsdb.passwd
-    statistics.STATS_OPTIONS['db'] = instance.statsdb.db
+
+    # Set up our database modules
+    statistics.statsdb = __import__(instance.stats.statsdb)
+    if hasattr(instance.stats, "dbapi2cont"):
+      statistics.dbapi2 = getattr(__import__(instance.stats.dbapi2cont,globals(),locals(),[instance.stats.dbapi2mod]), instance.stats.dbapi2mod)
+    else:
+      statistics.dbapi2 = __import__(instance.stats.dbapi2mod)
+     
+    # Set up the connection options
+    for k,v in instance.stats.connect.iteritems():
+      statistics.STATS_OPTIONS[k] = v
+
     self.potree = potree.POTree(instance)
     super(PootleServer, self).__init__(instance, webserver, sessioncache, errorhandler, loginpageclass)
     self.templatedir = filelocations.templatedir

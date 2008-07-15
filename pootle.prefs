@@ -16,12 +16,38 @@ Pootle:
     # The password for the user with distinguished name dn
     pw = ""
 
-  statsdb:
-    # The connection information for the mysql server
-    host = ""
-    user = ""
-    passwd = ""
-    db = ""
+  # Currently, mysql is the default database setup.  If a different one is
+  # used, the connection interface is dealt with in this configuration file,
+  # but the actual SQL queries will have to be manually converted
+  stats:
+    # The statsdb file in translate toolkit to use; alternately, a file
+    # supporting the same interface as statsdb can be placed in pootle's
+    # main directory and used
+    statsdb = "statsdb_mysql"
+
+    # The name of a module supporting the dbapi2 interface:
+    # http://www.python.org/dev/peps/pep-0249/
+    # If dbapi2cont and dbapi2mod are both defined, the dbapi2 module will 
+    # be imported with "from dbapi2cont import dbapi2mod"; if only dbapi2mod
+    # is defined, it will be imported with "import dbapi2mod"
+    dbapi2mod = "MySQLdb"
+    
+    # Configuration information for server; these correspond exactly to
+    # parameters passed to dbapi2.connect():
+    connect:
+      host = ""
+      user = ""
+      passwd = ""
+      db = ""
+
+    # Use these parameters for SQLite
+
+    # statsdb = "statsdb_sqlite"
+    # dbapi2cont = "pysqlite2"
+    # dbapi2mod = "dbapi2"
+    # connect:
+    #   database = "stats.db"
+
 
   serverclass = pootleserver.PootleServer
   sessionkey='p00tl3'

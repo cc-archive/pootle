@@ -44,7 +44,8 @@ import os
 import cStringIO
 import traceback
 import gettext
-import MySQLdb as dbapi2
+
+dbapi2 = None
 
 class RightsError(ValueError):
   pass
@@ -128,7 +129,8 @@ class TranslationProject(object):
     self.initindex()
 
   def configureDB(self):
-    self.conn = dbapi2.connect(statistics.STATS_OPTIONS['host'],statistics.STATS_OPTIONS['user'],statistics.STATS_OPTIONS['passwd'],statistics.STATS_OPTIONS['db'])
+    dbapi2 = statistics.dbapi2
+    self.conn = dbapi2.connect(**statistics.STATS_OPTIONS)
     self.cur = self.conn.cursor()
     # TODO: Replace names with IDs when language / projects are in DB  
     self.cur.execute("""CREATE TABLE IF NOT EXISTS quickstats(
