@@ -332,8 +332,11 @@ def updaterights(project, session, argdict):
           key = key.decode("utf-8")
         if key.startswith("rights-"):
           username = key.replace("rights-", "", 1)
-          if isinstance(value, dict):
-            value.pop("existence","")
+          if isinstance(value, list):
+            try:
+              value.remove("existence")
+            except:
+              pass
           project.setrights(username, value)
         if key.startswith("rightsremove-"):
           username = key.replace("rightsremove-", "", 1)
