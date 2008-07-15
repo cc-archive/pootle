@@ -203,7 +203,11 @@ class StatsCache(object):
         """Calculates and caches the statistics of the given store 
         unconditionally."""
         realpath = os.path.realpath(store.filename)
-        os.utime(realpath, (mod_info[0], mod_info[0]))
+        try:
+            os.utime(realpath, (mod_info[0], mod_info[0]))
+        except Exception, e:
+            print "utime failed: %s" % (str(e))
+            pass 
         self.cur.execute("""DELETE FROM files WHERE
             path=?;""", (realpath,))
         self.cur.execute("""INSERT INTO files 

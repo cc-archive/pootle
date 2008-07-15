@@ -198,6 +198,7 @@ class StatsCache(object):
         try:
             os.utime(realpath, (mod_info[0], mod_info[0]))
         except Exception, e:
+            print "utime failed: %s" % (str(e))
             pass 
         self.cur.execute("""DELETE FROM files WHERE
             path=%s;""", (realpath,))
