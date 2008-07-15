@@ -118,7 +118,7 @@ class TranslatePage(pagelayout.PootleNavPage):
     sessionvars = {"status": session.status, "isopen": session.isopen, "issiteadmin": session.issiteadmin()}
     stats = {"summary": mainstats, "checks": [], "tracks": [], "assigns": []}
 
-    if 'precommitChange' in argdict.keys():
+    if 'precommitChange' in argdict.keys() and "commit" in self.rights:
       self.project.setprecommit(os.path.split(self.pofilename)[0], os.path.split(self.pofilename)[1], argdict['precommit'])
     precommit = self.project.getprecommit(os.path.split(self.pofilename)[0], os.path.split(self.pofilename)[1])
     templatevars = {"pagetitle": pagetitle,
@@ -156,7 +156,8 @@ class TranslatePage(pagelayout.PootleNavPage):
         # general vars
         "session": sessionvars,
         "instancetitle": instancetitle,
-        "precommit": precommit}
+        "precommit": precommit,
+        "rights": self.rights}
 
     if self.showassigns and "assign" in self.rights:
       templatevars["assign"] = self.getassignbox()
