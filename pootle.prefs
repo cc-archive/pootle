@@ -137,7 +137,7 @@ Pootle:
   # per language, and all files in one directory. If you change this from the 
   # default, remember to copy the project called "pootle" to your new directory
   # to provide the localised interface for Pootle.
-  podirectory = "po"
+  podirectory = "projects"
 
   # pootle.projects
   #

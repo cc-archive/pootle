@@ -153,22 +153,6 @@ class TranslationProject(object):
       if errid != 1061: # Index already exists
         raise
 
-    # TODO: Replace names with IDs when language / projects are in DB  
-    self.cur.execute("""CREATE TABLE IF NOT EXISTS precommits(
-        id INTEGER PRIMARY KEY AUTO_INCREMENT,
-        projectname LONGTEXT NOT NULL,
-        languagename LONGTEXT NOT NULL,
-        subdir LONGTEXT NOT NULL,
-        filename LONGTEXT NOT NULL,
-        command LONGTEXT NOT NULL);""")
-    
-    try:
-      self.cur.execute("""CREATE UNIQUE INDEX filenameindex
-          ON precommits(projectname(100), languagename(100), subdir(100), filename(100));""")
-    except dbapi2.OperationalError, (errid, errstr):
-      if errid != 1061: # Index already exists
-        raise
-
   def readprefs(self):
     """reads the project preferences"""
     self.prefs = prefs.PrefsParser()
@@ -648,16 +632,6 @@ class TranslationProject(object):
     else:
       versioncontrol.updatefile(pathname)
       self.scanpofiles()
-
-  def getprecommit(self, dirname, pofilename):
-    self.cur.execute("SELECT command FROM precommits WHERE projectname = %s AND languagename = %s AND subdir = %s AND filename = %s",(self.projectname, self.languagename, dirname, pofilename));
-    res = self.cur.fetchone()
-    if res == None:
-      return None
-    return res[0]
-
-  def setprecommit(self, dirname, pofilename, command):
-    self.cur.execute("REPLACE INTO precommits (projectname, languagename, subdir, filename, command) VALUES (%s,%s,%s,%s,%s)", (self.projectname, self.languagename, dirname, pofilename, command))
 
   def runprecommit(self, execdir, dirname, pofilename):
     cmd = self.getprecommit(dirname, pofilename)
