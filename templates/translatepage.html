@@ -55,12 +55,6 @@
           <a href="${pagelink.href}">${pagelink.text}</a>${pagelink.sep}
         </span>
       </div>
-      <form action="" name="precommitform" method="POST" py:if="'commit' in rights">
-        <label for="precommit">Precommit command:</label>
-        <input type="text" id="precommit" name="precommit" value="${precommit}" />
-        <input type="submit" name="precommitChange" value="Update" />
-      </form>
-
     </div>
 
     <div class="translate-form">
