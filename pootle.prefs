@@ -139,6 +139,15 @@ Pootle:
   # to provide the localised interface for Pootle.
   podirectory = "projects"
 
+  # pootle.scriptsdirectory
+  #
+  # Contains python scripts; specifically:
+  # ${scriptsdirectory}/precommit/${projectname}.py, which will be called on
+  # any file in ${projectname} before it is committed.
+  # ${scriptsdirectory}/postcommit/${projectname}.py, which will be called on
+  # any file in ${projectname} that is successfully committed. 
+  scriptsdirectory = "scripts"
+
   # pootle.projects
   #
   # The projects section defines what projects are available on this instance

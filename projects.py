@@ -44,6 +44,7 @@ import os
 import cStringIO
 import traceback
 import gettext
+import subprocess
 
 dbapi2 = None
 
@@ -103,6 +104,8 @@ class TranslationProject(object):
     self.languagecode = languagecode
     self.projectcode = projectcode
     self.potree = potree
+    self.precommitdir = os.path.join(self.potree.instance.scriptsdirectory, "precommit")
+    self.postcommitdir = os.path.join(self.potree.instance.scriptsdirectory, "postcommit")
     self.languagename = self.potree.getlanguagename(self.languagecode)
     self.projectname = self.potree.getprojectname(self.projectcode)
     self.projectdescription = self.potree.getprojectdescription(self.projectcode)
@@ -633,9 +636,13 @@ class TranslationProject(object):
       versioncontrol.updatefile(pathname)
       self.scanpofiles()
 
-  def runprecommit(self, execdir, dirname, pofilename):
-    pass #TODO implement this
-  
+  def runprojectscript(self, scriptdir, target):
+    script = os.path.join(scriptdir, self.projectcode)
+    try:
+      subprocess.call([script, target])
+    except:
+      pass # If something goes wrong, we just continue without worrying
+
   def commitpofile(self, session, dirname, pofilename):
     """commits an individual PO file to version control"""
     if "commit" not in self.getrights(session):
@@ -645,14 +652,16 @@ class TranslationProject(object):
     statsstring = "%d of %d messages translated (%d fuzzy)." % \
         (stats["translated"], stats["total"], stats["fuzzy"])
     message="Verbatim commit from %s by user %s, editing po file %s. %s" % (session.server.instance.title, session.username, pofilename, statsstring)
-    execdir = os.path.split(pathname)[0]
-    self.runprecommit(execdir, dirname, pofilename)
-    for rcs_obj in versioncontrol.get_versioned_objects_recursive(execdir):
+    fulldir = os.path.split(pathname)[0]
+    self.runprojectscript(self.precommitdir, pathname) # Precommit
+    for rcs_obj in versioncontrol.get_versioned_objects_recursive(fulldir):
       try:
         rcs_obj.commit(message)
       except IOError, e:
         print "IOError caught: "+str(e)
         pass
+      else:
+        self.runprojectscript(self.postcommitdir, pathname) # Postcommit
 
   def converttemplates(self, session):
     """creates PO files from the templates"""
