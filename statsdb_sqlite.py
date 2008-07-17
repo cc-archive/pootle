@@ -52,7 +52,11 @@ class StatsCache(object):
     cur = None
     """The current cursor"""
 
-    def __new__(cls, statsfile=None):
+    def __new__(cls, statsdb=None):
+        try:
+          statsfile = statsdb['database']
+        except:
+          statsfile = None
         if not statsfile:
             if not cls.defaultfile:
                 userdir = os.path.expanduser("~")

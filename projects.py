@@ -46,7 +46,7 @@ import traceback
 import gettext
 import subprocess
 
-dbapi2 = None
+from sqlalchemy import *
 
 class RightsError(ValueError):
   pass
@@ -100,6 +100,11 @@ class TranslationProject(object):
   fileext = "po"
   index_directory = ".translation_index"
 
+  engine = None
+  metadata = None
+  conn = None
+  quickstatstable = None
+
   def __init__(self, languagecode, projectcode, potree, create=False):
     self.languagecode = languagecode
     self.projectcode = projectcode
@@ -132,29 +137,34 @@ class TranslationProject(object):
     self.initindex()
 
   def configureDB(self):
-    dbapi2 = statistics.dbapi2
-    self.conn = dbapi2.connect(**statistics.STATS_OPTIONS)
-    self.cur = self.conn.cursor()
-    # TODO: Replace names with IDs when language / projects are in DB  
-    self.cur.execute("""CREATE TABLE IF NOT EXISTS quickstats(
-        id INTEGER PRIMARY KEY AUTO_INCREMENT,
-        projectname LONGTEXT NOT NULL,
-        languagename LONGTEXT NOT NULL,
-        subdir LONGTEXT NOT NULL,
-        filename LONGTEXT NOT NULL,
-        translatedwords INTEGER,
-        translated INTEGER,
-        fuzzywords INTEGER,
-        fuzzy INTEGER,
-        totalwords INTEGER,
-        total INTEGER);""")
+    if TranslationProject.conn != None: # If we already have a connection, use that one
+      return
+    
+    TranslationProject.metadata = MetaData()
+    if statistics.DB_TYPE == "sqlite":
+      TranslationProject.engine = create_engine('sqlite:///%s' % statistics.STATS_OPTIONS['database'])
+    else:
+      TranslationProject.engine = create_engine('%s://' % (statistics.DB_TYPE), connect_args = statistics.STATS_OPTIONS)
+    TranslationProject.conn = TranslationProject.engine.connect()
 
-    try:
-      self.cur.execute("""CREATE UNIQUE INDEX filenameindex
-          ON quickstats(projectname(100), languagename(100), subdir(100), filename(100));""")
-    except dbapi2.OperationalError, (errid, errstr):
-      if errid != 1061: # Index already exists
-        raise
+    TranslationProject.quickstatstable = Table('quickstats', TranslationProject.metadata,
+      Column('id', Integer, primary_key=True, autoincrement=True),
+      Column('projectcode', String(100), nullable=False), 
+      Column('languagecode', String(100), nullable=False), 
+      Column('subdir', String(100), nullable=False), 
+      Column('filename', String(100), nullable=False), 
+      Column('translatedwords', Integer),
+      Column('translated', Integer),
+      Column('fuzzywords', Integer),
+      Column('fuzzy', Integer),
+      Column('totalwords', Integer),
+      Column('total', Integer)
+    )
+
+    c = TranslationProject.quickstatstable.c
+    Index('filenameindex', c.projectcode, c.languagecode, c.subdir, c.filename, unique=True)
+
+    TranslationProject.metadata.create_all(TranslationProject.engine)
 
   def readprefs(self):
     """reads the project preferences"""
@@ -1124,16 +1134,35 @@ class TranslationProject(object):
     """saves the quickstats"""
     quickstatsitems = self.quickstats.items()
     for pofilename, (translatedwords, translated, fuzzywords, fuzzy, totalwords, total) in quickstatsitems:
-      # This is a non-standard SQL command, but is supported by mySQL and SQLite
-      # TODO: replace names with IDs when language / project are in DB
-      self.cur.execute("REPLACE INTO quickstats (languagename, projectname, subdir, filename, translatedwords, translated, fuzzywords, fuzzy, totalwords, total) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",(self.languagename, self.projectname, os.path.split(pofilename)[0], os.path.split(pofilename)[1], translatedwords, translated, fuzzywords, fuzzy, totalwords, total))
+      [subdir, filename] = os.path.split(pofilename)
+      c = TranslationProject.quickstatstable.c
+
+      selq = select([c.id], and_(c.projectcode == self.projectcode, c.languagecode == self.languagecode, c.subdir == subdir, c.filename == filename))
+      res = TranslationProject.conn.execute(selq)
+      numentries = res.rowcount # How many entries are already in the table for this file (should be <= 1)
+
+      if numentries <= 0: # New quickstats entry
+        TranslationProject.conn.execute(
+          TranslationProject.quickstatstable.insert(),
+          projectcode=self.projectcode, languagecode=self.languagecode, subdir=subdir, filename=filename, translatedwords=translatedwords, translated=translated, fuzzywords=fuzzywords, fuzzy=fuzzy, totalwords=totalwords, total=total
+        )
+      else: #Already exists
+        foundid = res.fetchone()[0] # Get the ID of the existing one
+        TranslationProject.conn.execute(
+          TranslationProject.quickstatstable.update(c.id == foundid), 
+          translatedwords=translatedwords, translated=translated, fuzzywords=fuzzywords, fuzzy=fuzzy, totalwords=totalwords, total=total
+        )
+        
 
   def readquickstats(self):
     """reads the quickstats"""
     self.quickstats = {}
-    # TODO: replace names with IDs when language / project are in DB
-    self.cur.execute("SELECT subdir, filename, translatedwords, translated, fuzzywords, fuzzy, totalwords, total FROM quickstats WHERE languagename = %s AND projectname = %s",(self.languagename,self.projectname))
-    results = self.cur.fetchall()
+    c = TranslationProject.quickstatstable.c
+
+    results = TranslationProject.conn.execute(
+      select([c.subdir, c.filename, c.translatedwords, c.translated, c.fuzzywords, c.fuzzy, c.totalwords, c.total],
+      and_(c.projectcode == self.projectcode, c.languagecode == self.languagecode))
+    )
     for items in results: 
       subdir, filename, translatedwords, translated, fuzzywords, fuzzy, totalwords, total = items
       self.quickstats[os.path.join(subdir,filename)] = (translatedwords, translated, fuzzywords, fuzzy, totalwords, total)

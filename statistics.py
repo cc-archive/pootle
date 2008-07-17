@@ -1,7 +1,6 @@
 
 STATS_OPTIONS = {} 
-statsdb = None
-dbapi2 = None
+DB_TYPE = None
 
 def getmodtime(filename):
   try:
