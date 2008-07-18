@@ -55,6 +55,7 @@ import os
 import re
 import random
 import pprint
+from sqlalchemy import *
 
 class PootleServer(users.OptionalLoginAppServer, templateserver.TemplateServer):
   """the Server that serves the Pootle Pages"""
@@ -62,17 +63,25 @@ class PootleServer(users.OptionalLoginAppServer, templateserver.TemplateServer):
     if sessioncache is None:
       sessioncache = users.PootleSessionCache(sessionclass=users.PootleSession)
 
+    self.configDB(instance)
+    self.potree = potree.POTree(instance, self)
+    super(PootleServer, self).__init__(instance, webserver, sessioncache, errorhandler, loginpageclass)
+    self.templatedir = filelocations.templatedir
+    self.setdefaultoptions()
+
+  def configDB(self, instance):
     statistics.statsdb = __import__(instance.stats.statsdb)
     # Set up the connection options
     for k,v in instance.stats.connect.iteritems():
       statistics.STATS_OPTIONS[k] = v
-
     statistics.DB_TYPE = instance.stats.dbtype
 
-    self.potree = potree.POTree(instance)
-    super(PootleServer, self).__init__(instance, webserver, sessioncache, errorhandler, loginpageclass)
-    self.templatedir = filelocations.templatedir
-    self.setdefaultoptions()
+    self.metadata = MetaData()
+    if statistics.DB_TYPE == "sqlite":
+      self.engine = create_engine('sqlite:///%s' % statistics.STATS_OPTIONS['database'])
+    else:
+      self.engine = create_engine('%s://' % (statistics.DB_TYPE), connect_args = statistics.STATS_OPTIONS)
+    self.conn = self.engine.connect()
 
   def loadurl(self, filename, context):
     """loads a url internally for overlay code"""

@@ -33,7 +33,8 @@ regionre = re.compile("^[_-][A-Z]{2,3}$")
 
 class POTree:
   """Manages the tree of projects and languages"""
-  def __init__(self, instance):
+  def __init__(self, instance, server=None):
+    self.server = server
     self.languages = instance.languages
     if not self.haslanguage("templates"):
       setattr(self.languages, "templates.fullname", "Templates")

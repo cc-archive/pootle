@@ -100,9 +100,6 @@ class TranslationProject(object):
   fileext = "po"
   index_directory = ".translation_index"
 
-  engine = None
-  metadata = None
-  conn = None
   quickstatstable = None
 
   def __init__(self, languagecode, projectcode, potree, create=False):
@@ -137,17 +134,9 @@ class TranslationProject(object):
     self.initindex()
 
   def configureDB(self):
-    if TranslationProject.conn != None: # If we already have a connection, use that one
+    if TranslationProject.quickstatstable != None:
       return
-    
-    TranslationProject.metadata = MetaData()
-    if statistics.DB_TYPE == "sqlite":
-      TranslationProject.engine = create_engine('sqlite:///%s' % statistics.STATS_OPTIONS['database'])
-    else:
-      TranslationProject.engine = create_engine('%s://' % (statistics.DB_TYPE), connect_args = statistics.STATS_OPTIONS)
-    TranslationProject.conn = TranslationProject.engine.connect()
-
-    TranslationProject.quickstatstable = Table('quickstats', TranslationProject.metadata,
+    TranslationProject.quickstatstable = Table('quickstats', self.potree.server.metadata,
       Column('id', Integer, primary_key=True, autoincrement=True),
       Column('projectcode', String(100), nullable=False), 
       Column('languagecode', String(100), nullable=False), 
@@ -164,7 +153,7 @@ class TranslationProject(object):
     c = TranslationProject.quickstatstable.c
     Index('filenameindex', c.projectcode, c.languagecode, c.subdir, c.filename, unique=True)
 
-    TranslationProject.metadata.create_all(TranslationProject.engine)
+    self.potree.server.metadata.create_all(self.potree.server.engine)
 
   def readprefs(self):
     """reads the project preferences"""
@@ -1138,17 +1127,17 @@ class TranslationProject(object):
       c = TranslationProject.quickstatstable.c
 
       selq = select([c.id], and_(c.projectcode == self.projectcode, c.languagecode == self.languagecode, c.subdir == subdir, c.filename == filename))
-      res = TranslationProject.conn.execute(selq)
+      res = self.potree.server.conn.execute(selq)
       numentries = res.rowcount # How many entries are already in the table for this file (should be <= 1)
 
       if numentries <= 0: # New quickstats entry
-        TranslationProject.conn.execute(
+        self.potree.server.conn.execute(
           TranslationProject.quickstatstable.insert(),
           projectcode=self.projectcode, languagecode=self.languagecode, subdir=subdir, filename=filename, translatedwords=translatedwords, translated=translated, fuzzywords=fuzzywords, fuzzy=fuzzy, totalwords=totalwords, total=total
         )
       else: #Already exists
         foundid = res.fetchone()[0] # Get the ID of the existing one
-        TranslationProject.conn.execute(
+        self.potree.server.conn.execute(
           TranslationProject.quickstatstable.update(c.id == foundid), 
           translatedwords=translatedwords, translated=translated, fuzzywords=fuzzywords, fuzzy=fuzzy, totalwords=totalwords, total=total
         )
@@ -1159,7 +1148,7 @@ class TranslationProject(object):
     self.quickstats = {}
     c = TranslationProject.quickstatstable.c
 
-    results = TranslationProject.conn.execute(
+    results = self.potree.server.conn.execute(
       select([c.subdir, c.filename, c.translatedwords, c.translated, c.fuzzywords, c.fuzzy, c.totalwords, c.total],
       and_(c.projectcode == self.projectcode, c.languagecode == self.languagecode))
     )
