@@ -89,7 +89,6 @@
                   <span class="translation-text" py:content="XML(item.orig.plural_text)">plural text</span><br />
                 </span>
               </div>
-              <br />
               <!--! Alternative source language translation (if enabled and available) -->
               <div py:if="item.altsrc.available" class="translation-text-headers" lang="$uilanguage" dir="$uidir" py:content="item.altsrc.title">Alternative Source Language Name</div>
               <div py:if="item.altsrc.available" class="translate-original ${item.orig.focus_class}">
