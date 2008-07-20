@@ -123,7 +123,6 @@ h1, h2, h3
 }
 div.autoexpand
 {
-	max-height: 50px;
 	min-height: 1.5em;
 	overflow: hidden;
 	border-bottom: none;
