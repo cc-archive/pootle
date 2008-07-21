@@ -228,7 +228,7 @@ class TranslatePage(pagelayout.PootleNavPage):
 
   def getassignbox(self):
     """gets strings if the user can assign strings"""
-    users = self.session.loginchecker.alchemysession.query(User.username).order_by(User.username).all()
+    users = self.session.server.alchemysession.query(User.username).order_by(User.username).all()
     return {
       "title": self.localize("Assign Strings"),
       "user_title": self.localize("Assign to User"),
@@ -370,7 +370,7 @@ class TranslatePage(pagelayout.PootleNavPage):
   def getusernode(self):
     """gets the user's prefs node"""
     if self.session.isopen:
-      return self.session.loginchecker.alchemysession.query(User).filter_by(username=self.session.username).first()
+      return self.session.server.alchemysession.query(User).filter_by(username=self.session.username).first()
     else:
       return None
 

@@ -235,7 +235,7 @@ class TranslationProject(object):
       return self.languagecode in getattr(user, "languages", [])
 
     users = {}
-    for user in session.loginchecker.alchemysession.query(User).all():
+    for user in session.server.alchemysession.query(User).all():
       if usableuser(user):
         # Let's build a nice descriptive name for use in the interface. It will
         # contain both the username and the full name, if available.

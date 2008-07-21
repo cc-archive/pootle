@@ -29,22 +29,14 @@ class User(object):
 
 class AlchemyLoginChecker:
   Session = None
-  alchemysession = None
 
   def __init__(self, session, instance):
     self.session = session
     self.instance = instance
     self.engine = session.server.engine
     self.metadata = session.server.metadata
-
-    # If we don't already have a session, make one
-    if AlchemyLoginChecker.alchemysession == None:
-      AlchemyLoginChecker.Session = sessionmaker(bind=self.engine, autoflush=True)
-      AlchemyLoginChecker.alchemysession = AlchemyLoginChecker.Session()
-    
-    # For easier reference
-    self.alchemysession = AlchemyLoginChecker.alchemysession
-
+    self.alchemysession = session.server.alchemysession
+   
     try: # Check and see if we already have a users table
       users_table = self.metadata.tables['users']
     except KeyError: # If not, make one
@@ -55,16 +47,16 @@ class AlchemyLoginChecker:
         Column('username', String(50), nullable=False, index=True),
         Column('name', String(50), nullable=False),
         Column('email', String(40), nullable=False),
-        Column('activated', Boolean, nullable=False),
+        Column('activated', Boolean, nullable=False, default=False),
         Column('activationcode', String(128)),
         Column('passwdhash', String(128)),
         Column('logintype', String(20)),
-        Column('siteadmin', Boolean, nullable=False),
-        Column('projects', String(255), nullable=False),
-        Column('languages', String(255), nullable=False),
-        Column('viewrows', Integer, nullable=False),
-        Column('translaterows', Integer, nullable=False),
-        Column('uilanguage', String(20), nullable=False)
+        Column('siteadmin', Boolean, nullable=False, default=False),
+        Column('projects', String(255), nullable=False, default=""),
+        Column('languages', String(255), nullable=False, default=""),
+        Column('viewrows', Integer, nullable=False, default="10"),
+        Column('translaterows', Integer, nullable=False, default="10"),
+        Column('uilanguage', String(20), nullable=False, default="en")
       )
       self.metadata.create_all(self.engine)
       mapper(User, users_table) 

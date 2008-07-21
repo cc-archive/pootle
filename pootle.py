@@ -55,7 +55,9 @@ import os
 import re
 import random
 import pprint
+
 from sqlalchemy import *
+from sqlalchemy.orm import *
 
 class PootleServer(users.OptionalLoginAppServer, templateserver.TemplateServer):
   """the Server that serves the Pootle Pages"""
@@ -82,6 +84,8 @@ class PootleServer(users.OptionalLoginAppServer, templateserver.TemplateServer):
     else:
       self.engine = create_engine('%s://' % (statistics.DB_TYPE), connect_args = statistics.STATS_OPTIONS)
     self.conn = self.engine.connect()
+    Session = sessionmaker(bind=self.engine, autoflush=True)
+    self.alchemysession = Session()
 
   def loadurl(self, filename, context):
     """loads a url internally for overlay code"""
@@ -468,7 +472,7 @@ class PootleServer(users.OptionalLoginAppServer, templateserver.TemplateServer):
         elif top == "users.html":
           if "changeusers" in argdict:
             self.changeusers(session, argdict)
-          return adminpages.UsersAdminPage(self, session.loginchecker.alchemysession, session, self.instance)
+          return adminpages.UsersAdminPage(self, session.server.alchemysession, session, self.instance)
         elif top == "languages.html":
           if "changelanguages" in argdict:
             self.potree.changelanguages(argdict)
