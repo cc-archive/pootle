@@ -190,11 +190,19 @@ class UserIndex(pagelayout.PootlePage):
     sessionvars = {"status": session.status, "isopen": session.isopen, "issiteadmin": session.issiteadmin()}
     quicklinks = self.getquicklinks()
     setoptionstext = self.localize("Please click on 'Change options' and select some languages and projects")
+    statstitle = self.localize("User Statistics")
+    statstext = {
+                  'suggmade': self.localize("Suggestions Made"),
+                  'suggused': self.localize("Suggestions Used"),
+                  'suggper': self.localize("Suggestion Use Percentage"),
+                  'submade': self.localize("Submissions Made"),
+                }
     templatevars = {"pagetitle": pagetitle, "optionslink": optionslink,
         "adminlink": adminlink, "admintext": admintext, 
         "quicklinkstitle": quicklinkstitle,
         "quicklinks": quicklinks, "setoptionstext": setoptionstext,
-        "session": sessionvars, "instancetitle": instancetitle}
+        "session": sessionvars, "instancetitle": instancetitle,
+        "statstitle": statstitle, "statstext": statstext}
     pagelayout.PootlePage.__init__(self, templatename, templatevars, session)
 
   def getquicklinks(self):

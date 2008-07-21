@@ -106,8 +106,8 @@ def completetemplatevars(templatevars, session, bannerheight=135):
     templatevars["logout_link"] = session.currenturl+"&islogout=1"
   else:
     templatevars["logout_link"] = session.currenturl+"?islogout=1"
-    
-
+  if "user" not in templatevars:
+    templatevars["user"] = session.user
   if "search" not in templatevars:
     templatevars["search"] = None
 

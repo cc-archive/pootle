@@ -35,8 +35,27 @@
       <div py:if="not quicklinks" class="item-description" py:content="setoptionstext">
         Please click on 'Change options' and select some languages and projects
       </div>
+      <h3 class="title" py:content="statstitle">User Statistics</h3>
+      <table>
+        <tr>
+          <th scope="row" dir="$uidir" py:content="statstext['suggmade']">Suggestions Made</th>
+          <td>${user.suggestionsmade}</td>
+        </tr>
+        <tr>
+          <th scope="row" dir="$uidir" py:content="statstext['suggused']">Suggestions Used</th>
+          <td>${user.suggestionsused}</td>
+        </tr>
+        <tr>
+          <th scope="row" dir="$uidir" py:content="statstext['suggper']">Suggestions Use Percentage</th>
+          <td>${100 * user.suggestionsused / user.suggestionsmade}%</td>
+        </tr>
+        <tr>
+          <th scope="row" dir="$uidir" py:content="statstext['submade']">Submissions Made</th>
+          <td>${user.submissionsmade}</td>
+        </tr>
+      </table>
     </div>
-    
+
     <ul class="linklist">
       <li><a href="options.html" py:content="optionslink">Change options</a></li>
       <li py:if="session.issiteadmin"><a href="../admin/" py:content="adminlink">Admin page</a></li>
