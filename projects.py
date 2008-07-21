@@ -135,6 +135,8 @@ class TranslationProject(object):
     self.initindex()
 
   def configureDB(self):
+    self.asession = self.potree.server.alchemysession
+
     if TranslationProject.quickstatstable != None:
       return
     TranslationProject.quickstatstable = Table('quickstats', self.potree.server.metadata,
@@ -1323,6 +1325,12 @@ class TranslationProject(object):
     languageprefs = getattr(session.instance.languages, self.languagecode, None)
     pofile.updateunit(item, newvalues, session.user, languageprefs)
     self.updateindex(pofilename, [item])
+    
+    if session.username != None:
+      user = self.asession.query(User).filter_by(username=session.username).first()
+      if user != None:
+        user.submissionsmade += 1
+        self.asession.commit()
 
   def suggesttranslation(self, pofilename, item, trans, session):
     """stores a new suggestion for a translation..."""
@@ -1331,6 +1339,12 @@ class TranslationProject(object):
     pofile = self.getpofile(pofilename)
     pofile.track(item, "suggestion made by %s" % session.username)
     pofile.addsuggestion(item, trans, session.username)
+   
+    if session.username != None:
+      user = self.asession.query(User).filter_by(username=session.username).first()
+      if user != None:
+        user.suggestionsmade += 1
+        self.asession.commit()
 
   def getsuggestions(self, pofile, item):
     """find all the suggestions submitted for the given (pofile or pofilename) and item"""
@@ -1347,9 +1361,17 @@ class TranslationProject(object):
     if isinstance(pofile, (str, unicode)):
       pofilename = pofile
       pofile = self.getpofile(pofilename)
-    pofile.track(item, "suggestion by %s accepted by %s" % (self.getsuggester(pofile, item, suggitem), session.username))
+    suggester = self.getsuggester(pofile, item, suggitem)
+    pofile.track(item, "suggestion by %s accepted by %s" % (suggester, session.username))
     pofile.deletesuggestion(item, suggitem)
     self.updatetranslation(pofilename, item, {"target": newtrans, "fuzzy": False}, session)
+
+    if suggester != None:
+      user = self.asession.query(User).filter_by(username=suggester).first()
+      if user != None:
+        user.suggestionsused += 1
+        self.asession.commit()
+
 
   def getsuggester(self, pofile, item, suggitem):
     """returns who suggested the given item's suggitem if recorded, else None"""

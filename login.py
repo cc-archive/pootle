@@ -26,6 +26,9 @@ class User(object):
     self.viewrows = 10
     self.translaterows = 10
     self.uilanguage = 'en'
+    self.suggestionsmade = 0
+    self.suggestionsused = 0
+    self.submissionsmade = 0
 
 class AlchemyLoginChecker:
   Session = None
@@ -47,16 +50,19 @@ class AlchemyLoginChecker:
         Column('username', String(50), nullable=False, index=True),
         Column('name', String(50), nullable=False),
         Column('email', String(40), nullable=False),
-        Column('activated', Boolean, nullable=False, default=False),
+        Column('activated', Boolean, nullable=False, server_default="0"),
         Column('activationcode', String(128)),
         Column('passwdhash', String(128)),
         Column('logintype', String(20)),
-        Column('siteadmin', Boolean, nullable=False, default=False),
-        Column('projects', String(255), nullable=False, default=""),
-        Column('languages', String(255), nullable=False, default=""),
-        Column('viewrows', Integer, nullable=False, default="10"),
-        Column('translaterows', Integer, nullable=False, default="10"),
-        Column('uilanguage', String(20), nullable=False, default="en")
+        Column('siteadmin', Boolean, nullable=False, server_default="0"),
+        Column('projects', String(255), nullable=False, server_default=""),
+        Column('languages', String(255), nullable=False, server_default=""),
+        Column('viewrows', Integer, nullable=False, server_default="10"),
+        Column('translaterows', Integer, nullable=False, server_default="10"),
+        Column('uilanguage', String(20), nullable=False, server_default="en"),
+        Column('suggestionsmade', Integer, nullable=False, server_default="0"),
+        Column('suggestionsused', Integer, nullable=False, server_default="0"),
+        Column('submissionsmade', Integer, nullable=False, server_default="0")
       )
       self.metadata.create_all(self.engine)
       mapper(User, users_table) 
