@@ -32,6 +32,7 @@ from translate.misc.multistring import multistring
 from translate.lang.common import Common
 
 import MySQLdb as dbapi2
+
 import os.path
 import re
 import sys
@@ -49,40 +50,31 @@ class StatsCache(object):
     cur = None
     """The current cursor"""
 
-    def __new__(cls, conndict):
+    def __new__(cls, statsdict={}):
         # First see if a cache for this file already exists:
-        if str(conndict) in cls._caches:
-            return cls._caches[str(conndict)]
+        if str(statsdict) in cls._caches:
+            return cls._caches[str(statsdict)]
         # No existing cache. Let's build a new one and keep a copy
-        cache = cls._caches[str(conndict)] = object.__new__(cls)
-        cache.con = dbapi2.connect(host=conndict['host'], user=conndict['user'], passwd=conndict['passwd'], db=conndict['db'])
+        cache = cls._caches[str(statsdict)] = object.__new__(cls)
+        cache.con = dbapi2.connect(**statsdict)
         cache.cur = cache.con.cursor()
         cache.create()
         return cache
-
-    def allowErrors(self, cmd, errlist):
-        """Execute a simple SQL query, allowing errors of any type in errlist"""
-        try:
-            self.cur.execute(cmd)
-        except dbapi2.OperationalError, (errid, errstr):
-            if errid not in errlist:
-                raise
 
     def create(self):
         """Create all tables and indexes."""
         self.cur.execute("""CREATE TABLE IF NOT EXISTS files(
             fileid INTEGER PRIMARY KEY AUTO_INCREMENT,
             path LONGTEXT NOT NULL,
-            mod_info CHAR(50) NOT NULL,
+            st_mtime INTEGER NOT NULL,
+            st_size INTEGER NOT NULL,
             toolkitbuild INTEGER NOT NULL);""")
-        # mod_info should never be larger than about 138 bits as computed by
-        # get_mod_info. This is because st_mtime is at most 64 bits, multiplying
-        # by 1000 adds at most 10 bits and file_stat.st_size is at most 64 bits.
-        # Therefore, we should get away with 50 decimal digits (actually, we need
-        # math.log((1 << 139) - 1, 10) = 41.8 characters, but whatever).
 
-        self.allowErrors("""CREATE UNIQUE INDEX filepathindex
-            ON files (path(500));""", [1061])
+        try:
+          self.cur.execute("""CREATE UNIQUE INDEX filepathindex
+            ON files (path(500));""")
+        except:
+          pass
 
         self.cur.execute("""CREATE TABLE IF NOT EXISTS units(
             id INTEGER PRIMARY KEY AUTO_INCREMENT,
@@ -94,16 +86,21 @@ class StatsCache(object):
             state INTEGER,
             sourcewords INTEGER,
             targetwords INTEGER);""")
-        
-        self.allowErrors("""CREATE INDEX fileidindex
-            ON units(fileid);""", [1061])
+        try:
+          self.cur.execute("""CREATE INDEX fileidindex
+            ON units(fileid);""")
+        except:
+          pass
 
         self.cur.execute("""CREATE TABLE IF NOT EXISTS checkerconfigs(
             configid INTEGER PRIMARY KEY AUTO_INCREMENT,
             config LONGTEXT);""")
 
-        self.allowErrors("""CREATE INDEX configindex
-            ON checkerconfigs(config(500));""", [1061])
+        try:
+          self.cur.execute("""CREATE INDEX configindex
+            ON checkerconfigs(config(500));""")
+        except:
+          pass
 
         self.cur.execute("""CREATE TABLE IF NOT EXISTS uniterrors(
             errorid INTEGER PRIMARY KEY AUTO_INCREMENT,
@@ -113,12 +110,15 @@ class StatsCache(object):
             name LONGTEXT NOT NULL,
             message LONGTEXT);""")
 
-        self.allowErrors("""CREATE INDEX uniterrorindex
-            ON uniterrors(fileid, configid);""", [1061])
+        try:
+          self.cur.execute("""CREATE INDEX uniterrorindex
+            ON uniterrors(fileid, configid);""")
+        except:
+          pass
         
         self.con.commit()
 
-    def _getfileid(self, filename, opt_mod_info=(-1, -1), check_mod_info=True, store=None, errors_return_empty=False):
+    def _getfileid(self, filename, check_mod_info=True, store=None, errors_return_empty=False):
         """Attempt to find the fileid of the given file, if it hasn't been
         updated since the last record update.
 
@@ -129,27 +129,27 @@ class StatsCache(object):
         @param opt_mod_info: an optional mod_info to consider in addition 
         to the actual mod_info of the given file
         @rtype: String or None
-        """
+        """    
         realpath = os.path.realpath(filename)
-        self.cur.execute("""SELECT fileid, mod_info FROM files
+        self.cur.execute("""SELECT fileid, st_mtime, st_size FROM files
                 WHERE path=%s;""", (realpath,))
         filerow = self.cur.fetchone()
         try:
-            mod_info = max(opt_mod_info, get_mod_info(realpath))        
+            mod_info = get_mod_info(realpath)
             if filerow:
                 fileid = filerow[0]
                 if not check_mod_info:
                     # Update the mod_info of the file
                     self.cur.execute("""UPDATE files 
-                            SET mod_info=%s 
-                            WHERE fileid=%s;""", (dump_mod_info(mod_info), fileid))
+                            SET st_mtime=%s, st_size=%s 
+                            WHERE fileid=%s;""", (mod_info[0], mod_info[1], fileid))
                     return fileid
-                if parse_mod_info(filerow[1]) == mod_info:
+                if (filerow[1], filerow[2]) == mod_info:
                     return fileid
             # We can only ignore the mod_info if the row already exists:
-            assert check_mod_info
-            store = store or factory.getobject(filename)
-            return self._cachestore(store, mod_info)
+            assert check_mod_info        
+            store = store or factory.getobject(realpath)
+            return self._cachestore(store, realpath, mod_info)
         except (base.ParseError, IOError, OSError, AssertionError):
             if errors_return_empty:
                 return -1
@@ -180,31 +180,25 @@ class StatsCache(object):
                                 unit.source, unit.target, \
                                 sourcewords, targetwords, \
                                 statefordb(unit)))
+        # XXX: executemany is non-standard
         for v in unitvalues:
-            self.cur.execute("""INSERT INTO units
-                (unitid, fileid, unitindex, source, target, sourcewords, targetwords, state) 
-                values (%s, %s, %s, %s, %s, %s, %s, %s);""",
-                v)
+          self.cur.execute("""INSERT INTO units
+            (unitid, fileid, unitindex, source, target, sourcewords, targetwords, state) 
+            values (%s, %s, %s, %s, %s, %s, %s, %s);""",
+            v)
         self.con.commit()
         if unitindex:
             return state_strings[statefordb(units[0])]
         return ""
 
-    def _cachestore(self, store, mod_info):
+    def _cachestore(self, store, realpath, mod_info):
         """Calculates and caches the statistics of the given store 
         unconditionally."""
-        realpath = os.path.realpath(store.filename)
-        # TODO Figure out when this system call fails
-        try:
-            os.utime(realpath, (mod_info[0], mod_info[0]))
-        except Exception, e:
-            print "utime failed: %s" % (str(e))
-            pass 
         self.cur.execute("""DELETE FROM files WHERE
             path=%s;""", (realpath,))
         self.cur.execute("""INSERT INTO files 
-            (fileid, path, mod_info, toolkitbuild) values (NULL, %s, %s, %s);""", 
-            (realpath, dump_mod_info(mod_info), toolkitversion.build))
+            (fileid, path, st_mtime, st_size, toolkitbuild) values (NULL, %s, %s, %s, %s);""", 
+            (realpath, mod_info[0], mod_info[1], toolkitversion.build))
         fileid = self.cur.lastrowid
         self.cur.execute("""DELETE FROM units WHERE
             fileid=%s""", (fileid,))
@@ -228,17 +222,16 @@ class StatsCache(object):
         totals = emptystats()
         return self.cur.fetchall()
 
-    def filetotals(self, filename, **kwargs):
+    def filetotals(self, filename):
         """Retrieves the statistics for the given file if possible, otherwise 
         delegates to cachestore()."""
         fileid = None
         if not fileid:
             try:
-                fileid = self._getfileid(filename, **kwargs)
+                fileid = self._getfileid(filename)
             except ValueError, e:
                 print >> sys.stderr, str(e)
                 return {}
-
 
         self.cur.execute("""SELECT 
             state,
@@ -248,7 +241,6 @@ class StatsCache(object):
             FROM units WHERE fileid=%s
             GROUP BY state;""", (fileid,))
         values = self.cur.fetchall()
-
 
         totals = emptystats()
         for stateset in values:
@@ -287,11 +279,12 @@ class StatsCache(object):
             unitvalues.remove(dummy)
             errornames.append("total")
 
-        for v in unitvalues:
-            self.cur.execute("""INSERT INTO uniterrors
-                (unitindex, fileid, configid, name, message) 
-                values (%s, %s, %s, %s, %s);""",
-                v)
+        # XXX: executemany is non-standard
+        for u in unitvalues:
+          self.cur.execute("""INSERT INTO uniterrors
+            (unitindex, fileid, configid, name, message) 
+            values (%s, %s, %s, %s, %s);""",
+            u)
         self.con.commit()
         return errornames
 
@@ -312,8 +305,7 @@ class StatsCache(object):
         
         This method assumes that everything was up to date before (file totals,
         checks, checker config, etc."""
-        suggestion_filename, suggestion_mod_info = suggestioninfo(filename)
-        fileid = self._getfileid(filename, suggestion_mod_info, check_mod_info=False)
+        fileid = self._getfileid(filename, check_mod_info=False)
         configid = self._getstoredcheckerconfig(checker)
         unitid = unit.getid()
         # get the unit index
@@ -326,19 +318,18 @@ class StatsCache(object):
         # remove the current errors
         self.cur.execute("""DELETE FROM uniterrors WHERE
             fileid=%s AND unitindex=%s;""", (fileid, unitindex))
-        if suggestion_filename:
-            checker.setsuggestionstore(factory.getobject(suggestion_filename, ignore=os.path.extsep+ 'pending'))
+        if os.path.exists(suggestion_filename(filename)):
+            checker.setsuggestionstore(factory.getobject(suggestion_filename(filename), ignore=suggestion_extension()))
         state.extend(self._cacheunitschecks([unit], fileid, configid, checker, unitindex))
         return state
     
-    def filechecks(self, filename, checker, store=None, **kwargs):
+    def filechecks(self, filename, checker, store=None):
         """Retrieves the error statistics for the given file if possible, 
         otherwise delegates to cachestorechecks()."""
-        suggestion_filename, suggestion_mod_info = suggestioninfo(filename, **kwargs)
         fileid = None
         configid = self._getstoredcheckerconfig(checker)
         try:
-            fileid = self._getfileid(filename, suggestion_mod_info, store=store, **kwargs)
+            fileid = self._getfileid(filename, store=store)
             if not configid:
                 self.cur.execute("""INSERT INTO checkerconfigs
                     (configid, config) values (NULL, %s);""", 
@@ -346,7 +337,7 @@ class StatsCache(object):
                 configid = self.cur.lastrowid
         except ValueError, e:
             print >> sys.stderr, str(e)
-            return {}
+            return emptyfilechecks()
 
         def geterrors():
             self.cur.execute("""SELECT 
@@ -361,8 +352,8 @@ class StatsCache(object):
             # This could happen if we haven't done the checks before, or the
             # file changed, or we are using a different configuration
             store = store or factory.getobject(filename)
-            if suggestion_filename:
-                checker.setsuggestionstore(factory.getobject(suggestion_filename, ignore=os.path.extsep+ 'pending'))
+            if os.path.exists(suggestion_filename(filename)):
+                checker.setsuggestionstore(factory.getobject(suggestion_filename(filename), ignore=suggestion_extension()))
             self.cachestorechecks(fileid, store, checker, configid)
             values = geterrors()
 
@@ -377,13 +368,13 @@ class StatsCache(object):
 
         return errors
 
-    def filestats(self, filename, checker, store=None, **kwargs):
+    def filestats(self, filename, checker, store=None):
         """Return a dictionary of property names mapping sets of unit 
         indices with those properties."""
-        stats = {"total": [], "translated": [], "fuzzy": [], "untranslated": []}
+        stats = emptyfilestats()
 
-        stats.update(self.filechecks(filename, checker, store, **kwargs))
-        fileid = self._getfileid(filename, store=store, **kwargs)
+        stats.update(self.filechecks(filename, checker, store))
+        fileid = self._getfileid(filename, store=store)
 
         self.cur.execute("""SELECT 
             state,
@@ -398,7 +389,7 @@ class StatsCache(object):
 
         return stats
       
-    def unitstats(self, filename, _lang=None, store=None, **kwargs):
+    def unitstats(self, filename, _lang=None, store=None):
         # For now, lang and store are unused. lang will allow the user to
         # base stats information on the given language. See the commented
         # line containing stats.update below. 
@@ -408,10 +399,10 @@ class StatsCache(object):
         Please note that this is different from filestats, since filestats
         supplies sets of unit indices with a given property, whereas this
         method supplies arrays which map unit indices to given values."""
-        stats = {"sourcewordcount": [], "targetwordcount": []}
+        stats = emptyunitstats()
         
         #stats.update(self.unitchecks(filename, lang, store))
-        fileid = self._getfileid(filename, store=store, **kwargs)
+        fileid = self._getfileid(filename, store=store)
         
         self.cur.execute("""SELECT
           sourcewords, targetwords

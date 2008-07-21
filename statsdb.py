@@ -31,6 +31,8 @@ from translate.storage import factory, base
 from translate.misc.multistring import multistring
 from translate.lang.common import Common
 
+import MySQLdb as dbapi2
+
 import os.path
 import re
 import sys
@@ -90,49 +92,31 @@ def emptystats():
         stats[state + "targetwords"] = 0
     return stats
 
+def emptyfiletotals():
+    return {"total": 0}
+
+def emptyfilechecks():
+    return {}
+
+def emptyfilestats():
+    return {"total": [], "translated": [], "fuzzy": [], "untranslated": []}
+
+def emptyunitstats():
+    return {"sourcewordcount": [], "targetwordcount": []}
+
 # We allow the caller to specify which value to return when errors_return_empty
 # is True. We do this, since Poolte wants None to be returned when it calls
 # get_mod_info directly, whereas we want an integer to be returned for 
 # uses of get_mod_info within this module.
 # TODO: Get rid of empty_return when Pootle code is improved to not require
 #       this.
-def get_mod_info(file_path, errors_return_empty=False, empty_return=0):
-    try:
-        file_stat = os.stat(file_path)
-        assert not stat.S_ISDIR(file_stat.st_mode)
-        return (file_stat.st_mtime, file_stat.st_size)
-    except:
-        if errors_return_empty:
-            return empty_return
-        else:
-            raise
+def get_mod_info(file_path):
+    file_stat = os.stat(file_path)
+    assert not stat.S_ISDIR(file_stat.st_mode)
+    return file_stat.st_mtime, file_stat.st_size
 
-def suggestioninfo(filename, **kwargs):
-    """Provides the filename of the associated file containing suggestions and 
-    its mod_info, if it exists."""
-    root, ext = os.path.splitext(filename)
-    suggestion_filename = None
-    suggestion_mod_info = -1
-    if ext == os.path.extsep + "po":
-        # For a PO file there might be an associated file with suggested
-        # translations. If either file changed, we want to regenerate the
-        # statistics.
-        suggestion_filename = filename + os.path.extsep + 'pending'
-        if not os.path.exists(suggestion_filename):
-            suggestion_filename = None
-        else:
-            suggestion_mod_info = get_mod_info(suggestion_filename, **kwargs)
-    return suggestion_filename, suggestion_mod_info
+def suggestion_extension():
+    return os.path.extsep + 'pending'
 
-def parse_mod_info(string):
-    try:
-        tokens = string.strip("()").split(",")
-        if os.stat_float_times():
-            return (float(tokens[0]), long(tokens[1]))
-        else:
-            return (int(tokens[0]), long(tokens[1]))
-    except:
-        return (-1, -1)
-
-def dump_mod_info(mod_info):
-    return str(mod_info)
+def suggestion_filename(filename):
+    return filename + suggestion_extension()
