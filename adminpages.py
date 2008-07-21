@@ -22,6 +22,7 @@
 from Pootle import pagelayout
 from Pootle import projects
 from translate.filters import checks
+from login import User
 
 import locale
 
@@ -188,9 +189,9 @@ class ProjectsAdminPage(pagelayout.PootlePage):
 
 class UsersAdminPage(pagelayout.PootlePage):
   """page for administering pootle..."""
-  def __init__(self, server, users, session, instance):
+  def __init__(self, server, alchemysession, session, instance):
     self.server = server
-    self.users = users
+    self.alchemysession = alchemysession 
     self.session = session
     self.instance = instance
     self.localize = session.localize
@@ -230,7 +231,9 @@ class UsersAdminPage(pagelayout.PootlePage):
 
   def getusersoptions(self):
     users = []
-    for usercode, usernode in self.users.iteritems(sorted=True):
+    q = self.alchemysession.query(User).order_by(User.username).all()
+    for usernode in q: 
+      username = getattr(usernode, "username", "")
       fullname = getattr(usernode, "name", "")
       email = getattr(usernode, "email", "")
       logintype = getattr(usernode, "logintype", "")
@@ -241,14 +244,14 @@ class UsersAdminPage(pagelayout.PootlePage):
         activatedattr = ""
       userremove = None
       # l10n: The parameter is a languagecode, projectcode or username
-      removelabel = self.localize("Remove %s", usercode)
-      useroptions = [{"name": "username-%s" % usercode, "value": fullname, "type": "text"},
-                     {"name": "useremail-%s" % usercode, "value": email, "type": "text"},
-                     {"name": "userpassword-%s" % usercode, "value": None, "type": "text"},
-                     {"name": "useractivated-%s" % usercode, "type": "checkbox", activatedattr: activatedattr},
-                     {"name": "userlogintype-%s" % usercode, "value": logintype, "type": "text"},
-                     {"name": "userremove-%s" % usercode, "value": None, "type": "checkbox", "label": removelabel}]
-      users.append({"code": usercode, "options": useroptions})
+      removelabel = self.localize("Remove %s", username)
+      useroptions = [{"name": "username-%s" % username, "value": fullname, "type": "text"},
+                     {"name": "useremail-%s" % username, "value": email, "type": "text"},
+                     {"name": "userpassword-%s" % username, "value": None, "type": "text"},
+                     {"name": "useractivated-%s" % username, "type": "checkbox", activatedattr: activatedattr},
+                     {"name": "userlogintype-%s" % username, "value": logintype, "type": "text"},
+                     {"name": "userremove-%s" % username, "value": None, "type": "checkbox", "label": removelabel}]
+      users.append({"code": username, "options": useroptions})
     return users
 
 class ProjectAdminPage(pagelayout.PootlePage):

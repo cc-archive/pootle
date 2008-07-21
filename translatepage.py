@@ -30,6 +30,8 @@ import difflib
 import urllib
 import os
 
+from login import User
+
 xml_re = re.compile("&lt;.*?&gt;")
 
 def oddoreven(polarity):
@@ -226,8 +228,7 @@ class TranslatePage(pagelayout.PootleNavPage):
 
   def getassignbox(self):
     """gets strings if the user can assign strings"""
-    users = [username for username, userprefs in self.session.loginchecker.users.iteritems() if username != "__dummy__"]
-    users.sort()
+    users = self.session.loginchecker.alchemysession.query(User.username).order_by(User.username).all()
     return {
       "title": self.localize("Assign Strings"),
       "user_title": self.localize("Assign to User"),
@@ -369,9 +370,7 @@ class TranslatePage(pagelayout.PootleNavPage):
   def getusernode(self):
     """gets the user's prefs node"""
     if self.session.isopen:
-      import re
-      dsu = re.sub("\.", "D0T", self.session.username.encode("utf-8")) #FIXME
-      return getattr(self.session.loginchecker.users, dsu, None)
+      return self.session.loginchecker.alchemysession.query(User).filter_by(username=self.session.username).first()
     else:
       return None
 

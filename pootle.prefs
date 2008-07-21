@@ -99,9 +99,6 @@ Pootle:
   # Where users are directed by default when they login
   homepage = "home/"
 
-  # The file that contains the user preferences.
-  userprefs = "users.prefs"
-
   # defaultrights
   # 
   # This is the default permissions (access rights) that will be used for 

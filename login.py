@@ -8,9 +8,83 @@
 # The Mozilla LDAP package. 
 import mozldap
 
-from jToolkit import web
+from sqlalchemy import *
+from sqlalchemy.orm import *
 
-class LDAPLoginChecker(web.session.LoginChecker):
+class User(object):
+  def __init__(self):
+    self.username = ''
+    self.name = ''
+    self.email = ''
+    self.activated = False
+    self.activationcode = None
+    self.passwdhash = None
+    self.logintype = None
+    self.siteadmin = False 
+    self.projects = "" 
+    self.languages = "" 
+    self.viewrows = 10
+    self.translaterows = 10
+    self.uilanguage = 'en'
+
+class AlchemyLoginChecker:
+  Session = None
+  alchemysession = None
+
+  def __init__(self, session, instance):
+    self.session = session
+    self.instance = instance
+    self.engine = session.server.engine
+    self.metadata = session.server.metadata
+
+    # If we don't already have a session, make one
+    if AlchemyLoginChecker.alchemysession == None:
+      AlchemyLoginChecker.Session = sessionmaker(bind=self.engine, autoflush=True)
+      AlchemyLoginChecker.alchemysession = AlchemyLoginChecker.Session()
+    
+    # For easier reference
+    self.alchemysession = AlchemyLoginChecker.alchemysession
+
+    try: # Check and see if we already have a users table
+      users_table = self.metadata.tables['users']
+    except KeyError: # If not, make one
+      # TODO Eventually, projects and languages will be many-to-many relations
+      # with the projects and languages tables
+      users_table = Table('users', self.metadata,
+        Column('id', Integer, primary_key=True, autoincrement=True),
+        Column('username', String(50), nullable=False, index=True),
+        Column('name', String(50), nullable=False),
+        Column('email', String(40), nullable=False),
+        Column('activated', Boolean, nullable=False),
+        Column('activationcode', String(128)),
+        Column('passwdhash', String(128)),
+        Column('logintype', String(20)),
+        Column('siteadmin', Boolean, nullable=False),
+        Column('projects', String(255), nullable=False),
+        Column('languages', String(255), nullable=False),
+        Column('viewrows', Integer, nullable=False),
+        Column('translaterows', Integer, nullable=False),
+        Column('uilanguage', String(20), nullable=False)
+      )
+      self.metadata.create_all(self.engine)
+      mapper(User, users_table) 
+
+  def getmd5password(self, username=None):
+    """retrieves the md5 hash of the password for this user, or another if another is given..."""
+    if username is None:
+      username = self.session.username
+    if not self.userexists(username):
+      raise IndexError, self.session.localize("user does not exist (%r)") % username
+    return self.alchemysession.query(User).filter_by(username=username).first().passwdhash
+
+  def userexists(self, username=None):
+    """checks whether user username exists"""
+    if username is None:
+      username = self.session.username
+    return self.alchemysession.query(User).filter_by(username=username).count() > 0
+ 
+
+class LDAPLoginChecker(AlchemyLoginChecker):
   """A login checker that uses users.prefs files for preferences, but
   LDAP for user authentication.  This extends LoginChecker to get its
   implementation of preferences; since LDAP does not support getting
@@ -19,7 +93,7 @@ class LDAPLoginChecker(web.session.LoginChecker):
   """
 
   def __init__(self, session, instance):
-    web.session.LoginChecker.__init__(self, session, instance)
+    AlchemyLoginChecker.__init__(self, session, instance)
     self.cn = instance.ldap.cn
     self.dn = instance.ldap.dn
     self.pw = instance.ldap.pw
@@ -63,7 +137,7 @@ class LDAPLoginChecker(web.session.LoginChecker):
     raise NotImplementedError
 
 
-class HashLoginChecker(web.session.LoginChecker):
+class HashLoginChecker(AlchemyLoginChecker):
   """A login checker duplicating the capabilities of the default LoginChecker,
   but supporting the iscorrectpass method.
   
@@ -75,7 +149,7 @@ class HashLoginChecker(web.session.LoginChecker):
       username = self.session.username
     return md5.md5(password).hexdigest() == self.getmd5password(username) 
 
-class ProgressiveLoginChecker(web.session.LoginChecker):
+class ProgressiveLoginChecker(AlchemyLoginChecker):
   """A login checker that looks at a preference set in the user's entry
   in users.prefs to determine what LoginChecker to use.  It has the same
   interface as LDAPLoginChecker and HashLoginChecker.
@@ -83,16 +157,14 @@ class ProgressiveLoginChecker(web.session.LoginChecker):
   """
 
   def __init__(self, session, instance, logindict):
-    web.session.LoginChecker.__init__(self, session, instance)
+    AlchemyLoginChecker.__init__(self, session, instance)
     self.logincheckers = logindict
 
   def getAcctNode(self, username):
-    import re
-    dotsafeusername = re.sub("\.","D0T",username)
-    try:
-      return self.users.__getattr__(dotsafeusername)
-    except AttributeError:
+    acct = self.alchemysession.query(User).filter_by(username=username).first()
+    if acct == None:
       raise self.NoSuchUser("Given username (%s) has no account" % username)
+    return acct
 
   def getChecker(self, username):
     n = self.getAcctNode(username)

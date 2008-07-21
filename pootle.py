@@ -468,7 +468,7 @@ class PootleServer(users.OptionalLoginAppServer, templateserver.TemplateServer):
         elif top == "users.html":
           if "changeusers" in argdict:
             self.changeusers(session, argdict)
-          return adminpages.UsersAdminPage(self, session.loginchecker.users, session, self.instance)
+          return adminpages.UsersAdminPage(self, session.loginchecker.alchemysession, session, self.instance)
         elif top == "languages.html":
           if "changelanguages" in argdict:
             self.potree.changelanguages(argdict)

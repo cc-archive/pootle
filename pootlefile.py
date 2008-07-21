@@ -448,7 +448,7 @@ def make_class(base_class):
       self.pofreshen()
       return super(pootlefile, self).getoutput()
   
-    def updateunit(self, item, newvalues, userprefs, languageprefs):
+    def updateunit(self, item, newvalues, user, languageprefs):
       """updates a translation with a new target value"""
       self.pofreshen()
       unit = self.getitem(item)
@@ -464,9 +464,9 @@ def make_class(base_class):
         
       po_revision_date = time.strftime("%Y-%m-%d %H:%M") + tzstring()
       headerupdates = {"PO_Revision_Date": po_revision_date, "X_Generator": self.x_generator}
-      if userprefs:
-        if getattr(userprefs, "name", None) and getattr(userprefs, "email", None):
-          headerupdates["Last_Translator"] = "%s <%s>" % (userprefs.name, userprefs.email)
+      if user:
+        if getattr(user, "name", None) and getattr(user, "email", None):
+          headerupdates["Last_Translator"] = "%s <%s>" % (user.name, user.email)
       # XXX: If we needed to add a header, the index value in item will be one out after
       # adding the header.
       # TODO: remove once we force the PO class to always output headers

@@ -47,6 +47,7 @@ import gettext
 import subprocess
 
 from sqlalchemy import *
+from login import User
 
 class RightsError(ValueError):
   pass
@@ -199,8 +200,6 @@ class TranslationProject(object):
     if username is None:
       username = "nobody"
     #FIXME
-    import re
-    username = re.sub("\.","D0T",username)
     rights = None
     rightstree = getattr(self.prefs, "rights", None)
     if rightstree is not None:
@@ -230,28 +229,43 @@ class TranslationProject(object):
   def getuserswithinterest(self, session):
     """returns all the users who registered for this language and project"""
 
-    def usableuser(user, userprefs):
-      if user in ["__dummy__", "default", "nobody"]:
+    def usableuser(user):
+      if user.username in ["__dummy__", "default", "nobody"]:
         return False
-      return self.languagecode in getattr(userprefs, "languages", [])
+      return self.languagecode in getattr(user, "languages", [])
 
     users = {}
-    for username, userprefs in session.loginchecker.users.iteritems():
-      if usableuser(username, userprefs):
+    for user in session.loginchecker.alchemysession.query(User).all():
+      if usableuser(user):
         # Let's build a nice descriptive name for use in the interface. It will
         # contain both the username and the full name, if available.
-        name = getattr(userprefs, "name", None)
+        username = getattr(user, "username", None)
+        name = getattr(user, "name", None)
         if name:
           description = "%s (%s)" % (name, username)
         else:
           description = username
-        setattr(userprefs, "description", description)
-        users[username] = userprefs
+        setattr(user, "description", description)
+        users[username] = user
     return users
 
   def getuserswithrights(self):
     """gets all users that have rights defined for this project"""
-    return [username for username, user_rights in getattr(self.prefs, "rights", {}).iteritems()]
+
+    # FIXME This is a bit of a hack to fix the .prefs tendency to split on
+    # periods in usernames; the original idea of just looking at all immediate
+    # children of prefs would return "user@domain" if "user@domain.com" were
+    # listed.  This follows the trail until it finds a string or a unicode,
+    # which should be the rights list
+
+    usernames = []
+    for username, node in getattr(self.prefs, "rights", {}).iteritems():
+      name = username
+      while type(node) != str and type(node) != unicode:
+        nextname, node = node.iteritems().next()
+        name = name + "." + nextname
+      usernames.append(name)
+    return usernames
 
   def setrights(self, username, rights):
     """sets the rights for the given username... (or not-logged-in if username is None)"""
@@ -1307,7 +1321,7 @@ class TranslationProject(object):
     pofile = self.pofiles[pofilename]
     pofile.track(item, "edited by %s" % session.username)
     languageprefs = getattr(session.instance.languages, self.languagecode, None)
-    pofile.updateunit(item, newvalues, session.prefs, languageprefs)
+    pofile.updateunit(item, newvalues, session.user, languageprefs)
     self.updateindex(pofilename, [item])
 
   def suggesttranslation(self, pofilename, item, trans, session):
