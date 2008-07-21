@@ -762,7 +762,27 @@ class PootleSession(web.session.LoginSession):
     else:
       self.sessioncache.setsessioncookie(req, server, '', {'path': '/', 'expires': int(-time.time()+1)})
 
+  def setsessionstring(self, sessionstring):
+    """sets the session string for this session"""
+    super(PootleSession, self).setsessionstring(sessionstring)
+
+    # If we failed at opening the session, clear out the information we set
+    if not self.isopen:
+      self.username,self.timestamp,self.sessionid,self.parentsessionname = None,None,None,""
+
 class PootleSessionCache(session.SessionCache):
+  def getsession(self, req, argdict, server):
+    """gets the current session"""
+    session = super(PootleSessionCache, self).getsession(req, argdict, server)
+
+    # If the session string is not - (so the cookie claims to have a login)
+    # but the session didn't open (so the login was bad), clear out the login
+    sessionstring = self.getsessioncookie(req, argdict, server)
+    if sessionstring != "-" and not session.isopen:
+      session.updatecookie(req, server)
+    
+    return session
+
   def setcookie(self, req, cookiedict, attributes={}):
     """Puts the bits from the cookiedict into Morsels, sets the req cookie
     
