@@ -33,7 +33,7 @@ import Cookie
 import re
 import time
 
-from login import User
+from dbclasses import User
 
 class RegistrationError(ValueError):
   def __init__(self, message):

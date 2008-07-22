@@ -56,6 +56,7 @@ import re
 import random
 import pprint
 
+import dbclasses
 from sqlalchemy import *
 from sqlalchemy.orm import *
 
@@ -78,12 +79,13 @@ class PootleServer(users.OptionalLoginAppServer, templateserver.TemplateServer):
       statistics.STATS_OPTIONS[k] = v
     statistics.DB_TYPE = instance.stats.dbtype
 
-    self.metadata = MetaData()
+    self.metadata = dbclasses.Base.metadata
     if statistics.DB_TYPE == "sqlite":
       self.engine = create_engine('sqlite:///%s' % statistics.STATS_OPTIONS['database'])
     else:
       self.engine = create_engine('%s://' % (statistics.DB_TYPE), connect_args = statistics.STATS_OPTIONS)
     self.conn = self.engine.connect()
+
     Session = sessionmaker(bind=self.engine, autoflush=True)
     self.alchemysession = Session()
 

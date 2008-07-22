@@ -30,7 +30,7 @@ import difflib
 import urllib
 import os
 
-from login import User
+from dbclasses import User
 
 xml_re = re.compile("&lt;.*?&gt;")
 

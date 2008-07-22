@@ -47,7 +47,7 @@ import gettext
 import subprocess
 
 from sqlalchemy import *
-from login import User
+from dbclasses import User
 
 class RightsError(ValueError):
   pass

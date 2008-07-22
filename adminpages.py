@@ -22,7 +22,7 @@
 from Pootle import pagelayout
 from Pootle import projects
 from translate.filters import checks
-from login import User
+from dbclasses import User
 
 import locale
 
