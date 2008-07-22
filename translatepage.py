@@ -461,7 +461,7 @@ class TranslatePage(pagelayout.PootleNavPage):
           if not (nplurals and nplurals.isdigit()):
             # The file doesn't have plural information declared. Let's get it from
             # the language
-            nplurals = getattr(getattr(self.session.instance.languages, self.project.languagecode, None), "nplurals", "")
+            nplurals = getattr(getattr(self.project.potree.languages, self.project.languagecode, None), "nplurals", "")
           nplurals = int(nplurals)
           if len(trans) != nplurals:
             # Chop if in case it is too long
@@ -647,7 +647,7 @@ class TranslatePage(pagelayout.PootleNavPage):
       desiredbuttons.remove("suggest")
     if "translate" in desiredbuttons and "translate" not in self.rights:
       desiredbuttons.remove("translate")
-    specialchars = getattr(getattr(self.session.instance.languages, self.project.languagecode, None), "specialchars", "")
+    specialchars = getattr(getattr(self.project.potree.languages, self.project.languagecode, None), "specialchars", "")
     if isinstance(specialchars, str):
       specialchars = specialchars.decode("utf-8")
     return {"desired": desiredbuttons,

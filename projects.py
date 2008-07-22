@@ -1322,7 +1322,7 @@ class TranslationProject(object):
       raise RightsError(session.localize("You do not have rights to change translations here"))
     pofile = self.pofiles[pofilename]
     pofile.track(item, "edited by %s" % session.username)
-    languageprefs = getattr(session.instance.languages, self.languagecode, None)
+    languageprefs = getattr(self.potree.languages, self.languagecode, None)
     pofile.updateunit(item, newvalues, session.user, languageprefs)
     self.updateindex(pofilename, [item])
     

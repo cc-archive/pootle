@@ -27,6 +27,7 @@ from Pootle import pagelayout
 from translate.misc import autoencode
 import os
 import re
+from dbclasses import Language, Project
 
 languagere = re.compile("^[a-z]{2,3}([_-][A-Z]{2,3}|)$")
 regionre = re.compile("^[_-][A-Z]{2,3}$")
@@ -35,11 +36,19 @@ class POTree:
   """Manages the tree of projects and languages"""
   def __init__(self, instance, server=None):
     self.server = server
-    self.languages = instance.languages
+
+    langlist = self.server.alchemysession.query(Language).order_by(Language.code).all()
+    self.languages = dict( (l.code, l) for l in langlist)
+
     if not self.haslanguage("templates"):
-      setattr(self.languages, "templates.fullname", "Templates")
+      newlang = Language("templates", "Templates")
+      self.server.alchemysession.add(newlang)
+      self.languages[newlang.code] = newlang 
       self.saveprefs()
-    self.projects = instance.projects
+
+    projlist = self.server.alchemysession.query(Project).order_by(Project.code).all()
+    self.projects = dict( (p.code, p) for p in projlist) 
+
     self.podirectory = instance.podirectory
     self.instance = instance
     self.projectcache = {}
@@ -47,8 +56,7 @@ class POTree:
   def saveprefs(self):
     """saves any changes made to the preferences"""
     # TODO: this is a hack, fix it up nicely :-)
-    prefsfile = self.languages.__root__.__dict__["_setvalue"].im_self
-    prefsfile.savefile()
+    self.server.alchemysession.commit()
 
   def changelanguages(self, argdict):
     """changes language entries"""
@@ -56,7 +64,9 @@ class POTree:
       if key.startswith("languageremove-"):
         languagecode = key.replace("languageremove-", "", 1)
         if self.haslanguage(languagecode):
-          delattr(self.languages, languagecode)
+          langobject = self.languages[languagecode] 
+          self.server.alchemysession.delete(langobject)
+          del self.languages[languagecode]
       elif key.startswith("languagename-"):
         languagecode = key.replace("languagename-", "", 1)
         if self.haslanguage(languagecode):
@@ -105,7 +115,6 @@ class POTree:
         # FIXME need to check that default values are not present
         # if languagename == self.localize("(add language here)"):
         #   raise ValueError("Please set a value for the language name")
-        print "nplurals: %s" % languagenplurals
         if not languagenplurals.isdigit() and not languagenplurals == "":
           raise ValueError("Number of plural forms must be numeric")
         # if languagenplurals == self.localize("(number of plurals)"):
@@ -114,10 +123,9 @@ class POTree:
         #   raise ValueError("Please set a value for the plural equation")
         if not languagenplurals == "" and languagepluralequation == "":
           raise ValueError("Please set both the number of plurals and the plural equation OR leave both blank")
-        setattr(self.languages, languagecode + ".fullname", languagename)
-        setattr(self.languages, languagecode + ".specialchars", languagespecialchars)
-        setattr(self.languages, languagecode + ".nplurals", languagenplurals)
-        setattr(self.languages, languagecode + ".pluralequation", languagepluralequation)
+        newlang = Language(languagecode, languagename, languagenplurals, languagepluralequation, languagespecialchars)
+        self.languages[newlang.code] = newlang
+        self.server.alchemysession.add(newlang)
     self.saveprefs()
 
   def changeprojects(self, argdict):
@@ -129,35 +137,37 @@ class POTree:
     for key, value in argdict.iteritems():
       if key.startswith("projectremove-"):
         projectcode = key.replace("projectremove-", "", 1)
-        if hasattr(self.projects, projectcode):
-          delattr(self.projects, projectcode)
+        if self.hasprojectcode(projectcode):
+          pobject = self.projects[projectcode] 
+          self.server.alchemysession.delete(pobject)
+          del self.projects[projectcode]
       elif key.startswith("projectname-"):
         projectcode = key.replace("projectname-", "", 1)
-        if hasattr(self.projects, projectcode):
+        if self.hasprojectcode(projectcode):
           projectname = self.getprojectname(projectcode)
           if projectname != value:
             self.setprojectname(projectcode, value)
       elif key.startswith("projectdescription-"):
         projectcode = key.replace("projectdescription-", "", 1)
-        if hasattr(self.projects, projectcode):
+        if self.hasprojectcode(projectcode):
           projectdescription = self.getprojectdescription(projectcode)
           if projectdescription != value:
             self.setprojectdescription(projectcode, value)
       elif key.startswith("projectcheckerstyle-"):
         projectcode = key.replace("projectcheckerstyle-", "", 1)
-        if hasattr(self.projects, projectcode):
+        if self.hasprojectcode(projectcode):
           projectcheckerstyle = self.getprojectcheckerstyle(projectcode)
           if projectcheckerstyle != value:
             self.setprojectcheckerstyle(projectcode, value)
       elif key.startswith("projectfiletype-"):
         projectcode = key.replace("projectfiletype-", "", 1)
-        if hasattr(self.projects, projectcode):
+        if self.hasprojectcode(projectcode):
           projectlocalfiletype = self.getprojectlocalfiletype(projectcode)
           if projectlocalfiletype != value:
             self.setprojectlocalfiletype(projectcode, value)
       elif key.startswith("projectcreatemofiles-"):
         projectcode = key.replace("projectcreatemofiles-", "", 1)
-        if hasattr(self.projects, projectcode):
+        if self.hasprojectcode(projectcode):
           self.setprojectcreatemofiles(projectcode, 1)
       elif key == "newprojectcode":
         projectcode = value.lower()
@@ -165,18 +175,16 @@ class POTree:
           continue
         if not (projectcode[:1].isalpha() and projectcode.replace("_","").isalnum()):
           raise ValueError("Project code must be alphanumeric and start with an alphabetic character (got %r)" % projectcode)
-        if hasattr(self.projects, projectcode):
+        if self.hasprojectcode(projectcode):
           raise ValueError("Already have project with the code %s" % projectcode)
         projectname = argdict.get("newprojectname", projectcode)
         projecttype = argdict.get("newprojectfiletype", "")
         projectdescription = argdict.get("newprojectdescription", "")
         projectcheckerstyle = argdict.get("newprojectcheckerstyle", "")
         projectcreatemofiles = argdict.get("newprojectcreatemofiles", "")
-        setattr(self.projects, projectcode + ".fullname", projectname)
-        setattr(self.projects, projectcode + ".localfiletype", projecttype)
-        setattr(self.projects, projectcode + ".description", projectdescription)
-        setattr(self.projects, projectcode + ".checkerstyle", projectcheckerstyle)
-        setattr(self.projects, projectcode + ".createmofiles", projectcreatemofiles)
+        newproject = Project(projectcode, projectname, projectdescription, projectcheckerstyle, projecttype, projectcreatemofiles)
+        self.projects[newproject.code] = newproject
+        self.server.alchemysession.add(newproject)
         projectdir = os.path.join(self.podirectory, projectcode)
         if not os.path.isdir(projectdir):
           os.mkdir(projectdir)
@@ -184,11 +192,15 @@ class POTree:
 
   def haslanguage(self, languagecode):
     """checks if this language exists"""
-    return hasattr(self.languages, languagecode)
+    return languagecode in self.languages.keys() 
+
+  def hasprojectcode(self, projectcode):
+    """checks if this project exists"""
+    return projectcode in self.projects.keys()
 
   def getlanguageprefs(self, languagecode):
     """returns the language object"""
-    return getattr(self.languages, languagecode)
+    return self.languages[languagecode]
 
   def getlanguagename(self, languagecode):
     """returns the language's full name"""
@@ -224,7 +236,7 @@ class POTree:
 
   def getlanguagecodes(self, projectcode=None):
     """returns a list of valid languagecodes for a given project or all projects"""
-    alllanguagecodes = [languagecode for languagecode, language in self.languages.iteritems()]
+    alllanguagecodes = self.languages.keys() 
     if projectcode is None:
       languagecodes = alllanguagecodes
     else:
@@ -263,7 +275,7 @@ class POTree:
 
   def getprojectcodes(self, languagecode=None):
     """returns a list of project codes that are valid for the given languagecode or all projects"""
-    projectcodes = [projectcode for projectcode, projectprefs in self.projects.iteritems()]
+    projectcodes = self.projects.keys() 
     projectcodes.sort()
     if languagecode is None:
       return projectcodes
@@ -272,7 +284,7 @@ class POTree:
 
   def hasproject(self, languagecode, projectcode):
     """returns whether the project exists for the language"""
-    if not hasattr(self.projects, projectcode):
+    if not self.hasprojectcode(projectcode):
       return False
     if languagecode is None:
       return True
@@ -323,30 +335,34 @@ class POTree:
       raise ValueError("projects.TranslationProject for project %s, language %s already exists" % (projectcode, languagecode))
     self.projectcache[languagecode, projectcode] = projects.TranslationProject(languagecode, projectcode, self, create=True)
 
+  def getprojectprefs(self, projectcode):
+    """returns the project object"""
+    return self.projects[projectcode] 
+
   def getprojectname(self, projectcode):
     """returns the full name of the project"""
-    projectprefs = getattr(self.projects, projectcode)
+    projectprefs = self.getprojectprefs(projectcode)
     return getattr(projectprefs, "fullname", projectcode)
 
   def setprojectname(self, projectcode, projectname):
     """returns the full name of the project"""
-    projectprefs = getattr(self.projects, projectcode)
+    projectprefs = self.getprojectprefs(projectcode)
     setattr(projectprefs, "fullname", projectname)
 
   def getprojectdescription(self, projectcode):
     """returns the project description"""
-    projectprefs = getattr(self.projects, projectcode)
+    projectprefs = self.getprojectprefs(projectcode)
     return getattr(projectprefs, "description", projectcode)
 
   def setprojectdescription(self, projectcode, projectdescription):
     """returns the project description"""
-    projectprefs = getattr(self.projects, projectcode)
+    projectprefs = self.getprojectprefs(projectcode)
     setattr(projectprefs, "description", projectdescription)
 
   def getprojectlocalfiletype(self, projectcode):
     """returns the project allowed file type. We assume it is .po if nothing
     else is specified."""
-    projectprefs = getattr(self.projects, projectcode)
+    projectprefs = self.getprojectprefs(projectcode)
     type = getattr(projectprefs, "localfiletype", "po")
     if not type:
       type = "po"
@@ -354,27 +370,27 @@ class POTree:
 
   def setprojectlocalfiletype(self, projectcode, projectfiletype):
     """sets the allowed file type for the project"""
-    projectprefs = getattr(self.projects, projectcode)
+    projectprefs = self.getprojectprefs(projectcode)
     setattr(projectprefs, "localfiletype", projectfiletype)
 
   def getprojectcheckerstyle(self, projectcode):
     """returns the project checker style"""
-    projectprefs = getattr(self.projects, projectcode)
+    projectprefs = self.getprojectprefs(projectcode)
     return getattr(projectprefs, "checkerstyle", projectcode)
 
   def setprojectcheckerstyle(self, projectcode, projectcheckerstyle):
     """sets the project checker style"""
-    projectprefs = getattr(self.projects, projectcode)
+    projectprefs = self.getprojectprefs(projectcode)
     setattr(projectprefs, "checkerstyle", projectcheckerstyle)
 
   def getprojectcreatemofiles(self, projectcode):
     """returns whether the project builds MO files"""
-    projectprefs = getattr(self.projects, projectcode)
+    projectprefs = self.getprojectprefs(projectcode)
     return getattr(projectprefs, "createmofiles", False)
 
   def setprojectcreatemofiles(self, projectcode, projectcreatemofiles):
     """sets whether the project builds MO files"""
-    projectprefs = getattr(self.projects, projectcode)
+    projectprefs = self.getprojectprefs(projectcode)
     setattr(projectprefs, "createmofiles", projectcreatemofiles)
 
   def hasgnufiles(self, podir, languagecode=None, depth=0, maxdepth=3, poext="po"):
@@ -389,7 +405,7 @@ class POTree:
           else:
             projectcode = dirs[1]
           return projectcode
-        projectprefs = getattr(self.projects, getprojectcode())
+        projectprefs = self.getprojectprefs(projectcode)
         style = getattr(projectprefs, "treestyle")
         if    style == "gnu"    \
            or style == "nongnu":

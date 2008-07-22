@@ -89,6 +89,16 @@ class PootleServer(users.OptionalLoginAppServer, templateserver.TemplateServer):
     Session = sessionmaker(bind=self.engine, autoflush=True)
     self.alchemysession = Session()
 
+    self.metadata.create_all(self.engine)
+
+    try:
+      dbclasses.create_default_projects(self.alchemysession)
+      dbclasses.create_default_languages(self.alchemysession)
+      self.alchemysession.flush()
+    except Exception, e:
+      # Defaults were already there, so rollback 
+      self.alchemysession.rollback()
+
   def loadurl(self, filename, context):
     """loads a url internally for overlay code"""
     # print "call to load %s with context:\n%s" % (filename, pprint.pformat(context))
