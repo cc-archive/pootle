@@ -30,6 +30,11 @@ class User(object):
     self.suggestionsused = 0
     self.submissionsmade = 0
 
+  def suggestionusepercentage(self):
+    if self.suggestionsmade == 0:
+      return 0
+    return 100 * self.suggestionsused / self.suggestionsmade
+
 class AlchemyLoginChecker:
   Session = None
 

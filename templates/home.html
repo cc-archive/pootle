@@ -47,7 +47,7 @@
         </tr>
         <tr>
           <th scope="row" dir="$uidir" py:content="statstext['suggper']">Suggestions Use Percentage</th>
-          <td>${100 * user.suggestionsused / user.suggestionsmade}%</td>
+          <td>${user.suggestionusepercentage()}%</td>
         </tr>
         <tr>
           <th scope="row" dir="$uidir" py:content="statstext['submade']">Submissions Made</th>
