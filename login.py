@@ -10,8 +10,31 @@ import mozldap
 
 from sqlalchemy import *
 from sqlalchemy.orm import *
+from sqlalchemy.ext.declarative import declarative_base
 
-class User(object):
+Base = declarative_base()
+
+class User(Base):
+  __tablename__ = 'users'
+
+  id = Column(Integer, primary_key=True, autoincrement=True)
+  username = Column(String(50), nullable=False, index=True)
+  name = Column(String(50), nullable=False)
+  email = Column(String(40), nullable=False)
+  activated = Column(Boolean, nullable=False, server_default="0")
+  activationcode = Column(String(128))
+  passwdhash = Column(String(128))
+  logintype = Column(String(20))
+  siteadmin = Column(Boolean, nullable=False, server_default="0")
+  projects = Column(String(255), nullable=False, server_default="")
+  languages = Column(String(255), nullable=False, server_default="")
+  viewrows = Column(Integer, nullable=False, server_default="10")
+  translaterows = Column(Integer, nullable=False, server_default="10")
+  uilanguage = Column(String(20), nullable=False, server_default="en")
+  suggestionsmade = Column(Integer, nullable=False, server_default="0")
+  suggestionsused = Column(Integer, nullable=False, server_default="0")
+  submissionsmade = Column(Integer, nullable=False, server_default="0")
+
   def __init__(self):
     self.username = ''
     self.name = ''
@@ -30,6 +53,9 @@ class User(object):
     self.suggestionsused = 0
     self.submissionsmade = 0
 
+  def __repr__(self):
+    return "<User %s (%s) <%s>>" % (self.username, self.name, self.email)
+
   def suggestionusepercentage(self):
     if self.suggestionsmade == 0:
       return 0
@@ -44,33 +70,6 @@ class AlchemyLoginChecker:
     self.engine = session.server.engine
     self.metadata = session.server.metadata
     self.alchemysession = session.server.alchemysession
-   
-    try: # Check and see if we already have a users table
-      users_table = self.metadata.tables['users']
-    except KeyError: # If not, make one
-      # TODO Eventually, projects and languages will be many-to-many relations
-      # with the projects and languages tables
-      users_table = Table('users', self.metadata,
-        Column('id', Integer, primary_key=True, autoincrement=True),
-        Column('username', String(50), nullable=False, index=True),
-        Column('name', String(50), nullable=False),
-        Column('email', String(40), nullable=False),
-        Column('activated', Boolean, nullable=False, server_default="0"),
-        Column('activationcode', String(128)),
-        Column('passwdhash', String(128)),
-        Column('logintype', String(20)),
-        Column('siteadmin', Boolean, nullable=False, server_default="0"),
-        Column('projects', String(255), nullable=False, server_default=""),
-        Column('languages', String(255), nullable=False, server_default=""),
-        Column('viewrows', Integer, nullable=False, server_default="10"),
-        Column('translaterows', Integer, nullable=False, server_default="10"),
-        Column('uilanguage', String(20), nullable=False, server_default="en"),
-        Column('suggestionsmade', Integer, nullable=False, server_default="0"),
-        Column('suggestionsused', Integer, nullable=False, server_default="0"),
-        Column('submissionsmade', Integer, nullable=False, server_default="0")
-      )
-      self.metadata.create_all(self.engine)
-      mapper(User, users_table) 
 
   def getmd5password(self, username=None):
     """retrieves the md5 hash of the password for this user, or another if another is given..."""
