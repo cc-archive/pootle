@@ -667,11 +667,12 @@ class TranslationProject(object):
     statsstring = "%d of %d messages translated (%d fuzzy)." % \
         (stats["translated"], stats["total"], stats["fuzzy"])
     message="Verbatim commit from %s by user %s, editing po file %s. %s" % (session.server.instance.title, session.username, pofilename, statsstring)
+    author=session.username
     fulldir = os.path.split(pathname)[0]
     self.runprojectscript(self.precommitdir, pathname) # Precommit
     for rcs_obj in versioncontrol.get_versioned_objects_recursive(fulldir):
       try:
-        rcs_obj.commit(message)
+        rcs_obj.commit(message, author)
       except IOError, e:
         print "IOError caught: "+str(e)
         pass

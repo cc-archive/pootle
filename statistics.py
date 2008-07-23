@@ -61,7 +61,6 @@ class pootlestatistics:
     except:
       return statsdb.emptyunitstats()
 
-  @invalidates_memoization
   def updatequickstats(self, save=True):
     """updates the project's quick stats on this file"""
     totals = self.getquickstats()
@@ -86,6 +85,7 @@ class pootlestatistics:
         else:
           self.getstats()[classname].remove(item)
         self.getstats()[classname].sort()
+    self.updatequickstats()
 
   @memoize
   def getitemslen(self):
