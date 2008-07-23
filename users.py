@@ -645,14 +645,10 @@ class PootleSession(web.session.LoginSession):
 
   def setoptions(self, argdict):
     """sets the user options"""
-    userprojects = argdict.get("projects", [])
-    if isinstance(userprojects, (str, unicode)):
-      userprojects = [userprojects]
-    setattr(self.user, "projects", ",".join(userprojects))
-    userlanguages = argdict.get("languages", [])
-    if isinstance(userlanguages, (str, unicode)):
-      userlanguages = [userlanguages]
-    setattr(self.user, "languages", ",".join(userlanguages))
+    userprojects = argdict.get("projects", []) # A list of the codes
+    setattr(self.user, "projects", map(lambda code: self.server.potree.projects[code], userprojects))
+    userlanguages = argdict.get("languages", []) # A list of the codes
+    setattr(self.user, "languages", map(lambda code: self.server.potree.languages[code], userlanguages))
     self.saveuser()
 
   def setpersonaloptions(self, argdict):
@@ -695,12 +691,12 @@ class PootleSession(web.session.LoginSession):
   def getprojects(self):
     """gets the user's projects"""
     userprojects = getattr(self.user, "projects", "")
-    return [projectcode.strip() for projectcode in userprojects.split(',') if projectcode.strip()]
+    return [p.code for p in userprojects]
 
   def getlanguages(self):
     """gets the user's languages"""
     userlanguages = getattr(self.user, "languages", "")
-    return [languagecode.strip() for languagecode in userlanguages.split(',') if languagecode.strip()]
+    return [l.code for l in userlanguages] 
 
   def getaltsrclanguage(self):
     """gets the user's alternative source language"""

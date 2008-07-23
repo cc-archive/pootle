@@ -6,6 +6,16 @@ from sqlalchemy.ext.declarative import declarative_base
 
 Base = declarative_base()
 
+user_languages = Table('user_languages', Base.metadata,
+  Column('user_id', Integer, ForeignKey('users.id')),
+  Column('language_id', Integer, ForeignKey('languages.id'))
+)
+
+user_projects = Table('user_projects', Base.metadata,
+  Column('user_id', Integer, ForeignKey('users.id')),
+  Column('project_id', Integer, ForeignKey('projects.id'))
+)
+
 class User(Base):
   __tablename__ = 'users'
 
@@ -18,14 +28,16 @@ class User(Base):
   passwdhash = Column(String(128))
   logintype = Column(String(20))
   siteadmin = Column(Boolean, nullable=False, server_default="0")
-  projects = Column(String(255), nullable=False, server_default="")
-  languages = Column(String(255), nullable=False, server_default="")
   viewrows = Column(Integer, nullable=False, server_default="10")
   translaterows = Column(Integer, nullable=False, server_default="10")
-  uilanguage = Column(String(20), nullable=False, server_default="en")
+  uilanguage = Column(String(10), ForeignKey('languages.code'))
+  altsrclanguage = Column(String(10), ForeignKey('languages.code'))
   suggestionsmade = Column(Integer, nullable=False, server_default="0")
   suggestionsused = Column(Integer, nullable=False, server_default="0")
   submissionsmade = Column(Integer, nullable=False, server_default="0")
+
+  projects = relation('Project', secondary=user_projects, backref='users')
+  languages = relation('Language', secondary=user_languages, backref='users')
 
   def __init__(self):
     self.username = ''
@@ -36,11 +48,10 @@ class User(Base):
     self.passwdhash = None
     self.logintype = None
     self.siteadmin = False 
-    self.projects = "" 
-    self.languages = "" 
     self.viewrows = 10
     self.translaterows = 10
     self.uilanguage = 'en'
+    self.altsrclanguage = 'en'
     self.suggestionsmade = 0
     self.suggestionsused = 0
     self.submissionsmade = 0
@@ -97,6 +108,11 @@ class Project(Base):
 
   def __repr__(self):
     return "<Project %s: %s>" % (self.code, self.fullname)
+
+
+User.uilanguageobj = relation('Language', primaryjoin=User.uilanguage==Language.code, backref='uiusers')
+User.altsrclanguageobj = relation('Language', primaryjoin=User.altsrclanguage==Language.code, backref='altsrcusers')
+
 
 def create_default_projects(s):
      

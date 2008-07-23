@@ -234,7 +234,7 @@ class TranslationProject(object):
     def usableuser(user):
       if user.username in ["__dummy__", "default", "nobody"]:
         return False
-      return self.languagecode in getattr(user, "languages", [])
+      return self.languagecode in map(lambda l: l.code, getattr(user, "languages", []))
 
     users = {}
     for user in session.server.alchemysession.query(User).all():
