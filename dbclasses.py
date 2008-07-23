@@ -32,9 +32,6 @@ class User(Base):
   translaterows = Column(Integer, nullable=False, server_default="10")
   uilanguage = Column(String(10), ForeignKey('languages.code'))
   altsrclanguage = Column(String(10), ForeignKey('languages.code'))
-  suggestionsmade = Column(Integer, nullable=False, server_default="0")
-  suggestionsused = Column(Integer, nullable=False, server_default="0")
-  submissionsmade = Column(Integer, nullable=False, server_default="0")
 
   projects = relation('Project', secondary=user_projects, backref='users')
   languages = relation('Language', secondary=user_languages, backref='users')
@@ -52,18 +49,35 @@ class User(Base):
     self.translaterows = 10
     self.uilanguage = 'en'
     self.altsrclanguage = 'en'
-    self.suggestionsmade = 0
-    self.suggestionsused = 0
-    self.submissionsmade = 0
 
   def __repr__(self):
     return "<User %s (%s) <%s>>" % (self.username, self.name, self.email)
 
-  def suggestionusepercentage(self):
-    if self.suggestionsmade == 0:
-      return 0
-    return 100 * self.suggestionsused / self.suggestionsmade
+  def suggestionsMadeCount(self):
+    return len(self.suggestionsMade)
 
+  def suggestionsAcceptedCount(self):
+    return len(self.suggestionsAccepted)
+
+  def suggestionsPendingCount(self):
+    return len(self.suggestionsPending)
+
+  def suggestionsRejectedCount(self):
+    return len(self.suggestionsRejected)
+
+  def suggestionsReviewedCount(self):
+    return len(self.suggestionsReviewed)
+
+  def submissionsCount(self):
+    return len(self.submissions)
+
+  def suggestionUsePercentage(self):
+    accepted = self.suggestionsAcceptedCount()
+    rejected = self.suggestionsRejectedCount()
+    beenreviewed = accepted+rejected
+    if beenreviewed == 0:
+      return 0
+    return 100 * accepted / beenreviewed 
 
 class Language(Base):
   __tablename__ = 'languages'
@@ -109,10 +123,61 @@ class Project(Base):
   def __repr__(self):
     return "<Project %s: %s>" % (self.code, self.fullname)
 
+class Submission(Base):
+  __tablename__ = 'submissions'
 
-User.uilanguageobj = relation('Language', primaryjoin=User.uilanguage==Language.code, backref='uiusers')
-User.altsrclanguageobj = relation('Language', primaryjoin=User.altsrclanguage==Language.code, backref='altsrcusers')
+  # TODO The shared data (this through project) should be in its own parent
+  # "Contribution" class
+  id = Column(Integer, primary_key=True)
+  creationTime = Column(DateTime)
 
+  languageID = Column(Integer, ForeignKey('languages.id'))
+  projectID = Column(Integer, ForeignKey('projects.id'))
+  filename = Column(String(255))
+  source = Column(UnicodeText)
+  trans = Column(UnicodeText)
+
+  language = relation(Language, backref='submissions')
+  project = relation(Project, backref='submissions')
+
+  submitterID = Column(Integer, ForeignKey('users.id'))
+  submitter = relation(User, backref='submissions')
+
+class Suggestion(Base):
+  __tablename__ = 'suggestions'
+
+  # TODO The shared data (this through project) should be in its own parent
+  # "Contribution" class
+  id = Column(Integer, primary_key=True)
+  creationTime = Column(DateTime)
+
+  languageID = Column(Integer, ForeignKey('languages.id'))
+  projectID = Column(Integer, ForeignKey('projects.id'))
+  filename = Column(String(255))
+  source = Column(UnicodeText)
+  trans = Column(UnicodeText)
+
+  language = relation(Language, backref='suggestions')
+  project = relation(Project, backref='suggestions')
+
+  suggesterID = Column(Integer, ForeignKey('users.id'))
+  
+  reviewerID = Column(Integer, ForeignKey('users.id'))
+  reviewStatus = Column(String(30), server_default="pending")
+  reviewTime = Column(DateTime)
+  reviewSubmissionID = Column(Integer, ForeignKey('submissions.id'))
+
+  reviewSubmission = relation(Submission, backref=backref('fromsuggestion', uselist=False))
+
+User.uilanguageobj = relation(Language, primaryjoin=User.uilanguage==Language.code, backref='uiusers')
+User.altsrclanguageobj = relation(Language, primaryjoin=User.altsrclanguage==Language.code, backref='altsrcusers')
+
+Suggestion.suggester = relation(User, primaryjoin=Suggestion.suggesterID==User.id, backref='suggestionsMade')
+Suggestion.reviewer = relation(User, primaryjoin=Suggestion.reviewerID==User.id, backref='suggestionsReviewed')
+
+User.suggestionsAccepted = relation(Suggestion, primaryjoin=and_(Suggestion.suggesterID==User.id, Suggestion.reviewStatus=="accepted"))
+User.suggestionsRejected = relation(Suggestion, primaryjoin=and_(Suggestion.suggesterID==User.id, Suggestion.reviewStatus=="rejected"))
+User.suggestionsPending = relation(Suggestion, primaryjoin=and_(Suggestion.suggesterID==User.id, Suggestion.reviewStatus=="pending"))
 
 def create_default_projects(s):
      

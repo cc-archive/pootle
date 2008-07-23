@@ -38,20 +38,28 @@
       <h3 class="title" py:content="statstitle">User Statistics</h3>
       <table>
         <tr>
-          <th scope="row" dir="$uidir" py:content="statstext['suggmade']">Suggestions Made</th>
-          <td>${user.suggestionsmade}</td>
+          <th scope="row" dir="$uidir" py:content="statstext['suggaccepted']">Suggestions Accepted</th>
+          <td>${user.suggestionsAcceptedCount()}</td>
         </tr>
         <tr>
-          <th scope="row" dir="$uidir" py:content="statstext['suggused']">Suggestions Used</th>
-          <td>${user.suggestionsused}</td>
+          <th scope="row" dir="$uidir" py:content="statstext['suggpending']">Suggestions Pending</th>
+          <td>${user.suggestionsPendingCount()}</td>
+        </tr>
+        <tr>
+          <th scope="row" dir="$uidir" py:content="statstext['suggrejected']">Suggestions Rejected</th>
+          <td>${user.suggestionsRejectedCount()}</td>
         </tr>
         <tr>
           <th scope="row" dir="$uidir" py:content="statstext['suggper']">Suggestions Use Percentage</th>
-          <td>${user.suggestionusepercentage()}%</td>
+          <td>${user.suggestionUsePercentage()}%</td>
+        </tr>
+        <tr>
+          <th scope="row" dir="$uidir" py:content="statstext['suggreviewed']">Suggestions Reviewed</th>
+          <td>${user.suggestionsReviewedCount()}</td>
         </tr>
         <tr>
           <th scope="row" dir="$uidir" py:content="statstext['submade']">Submissions Made</th>
-          <td>${user.submissionsmade}</td>
+          <td>${user.submissionsCount()}</td>
         </tr>
       </table>
     </div>

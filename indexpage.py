@@ -193,7 +193,10 @@ class UserIndex(pagelayout.PootlePage):
     statstitle = self.localize("User Statistics")
     statstext = {
                   'suggmade': self.localize("Suggestions Made"),
-                  'suggused': self.localize("Suggestions Used"),
+                  'suggaccepted': self.localize("Suggestions Accepted"),
+                  'suggpending': self.localize("Suggestions Pending"),
+                  'suggrejected': self.localize("Suggestions Rejected"),
+                  'suggreviewed': self.localize("Suggestions Reviewed"),
                   'suggper': self.localize("Suggestion Use Percentage"),
                   'submade': self.localize("Submissions Made"),
                 }

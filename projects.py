@@ -45,9 +45,11 @@ import cStringIO
 import traceback
 import gettext
 import subprocess
+import datetime
 
 from sqlalchemy import *
-from dbclasses import User
+from sqlalchemy.exc import *
+from dbclasses import * 
 
 class RightsError(ValueError):
   pass
@@ -107,6 +109,8 @@ class TranslationProject(object):
     self.languagecode = languagecode
     self.projectcode = projectcode
     self.potree = potree
+    self.language = self.potree.languages[languagecode]
+    self.project = self.potree.projects[projectcode]
     self.precommitdir = os.path.join(self.potree.instance.scriptsdirectory, "precommit")
     self.postcommitdir = os.path.join(self.potree.instance.scriptsdirectory, "postcommit")
     self.languagename = self.potree.getlanguagename(self.languagecode)
@@ -1317,35 +1321,69 @@ class TranslationProject(object):
     units = [pofile.units[index] for index in pofile.statistics.getstats()["total"][max(itemstart,0):itemstop]]
     return units
 
-  def updatetranslation(self, pofilename, item, newvalues, session):
+  def updatetranslation(self, pofilename, item, newvalues, session, suggObj=None):
     """updates a translation with a new value..."""
     if "translate" not in self.getrights(session):
       raise RightsError(session.localize("You do not have rights to change translations here"))
     pofile = self.pofiles[pofilename]
     pofile.track(item, "edited by %s" % session.username)
     languageprefs = getattr(self.potree.languages, self.languagecode, None)
+    
+    source = pofile.getitem(item).getsource()
+
+    s = Submission()
+    s.creationTime = datetime.datetime.utcnow()
+
+    s.language = self.language 
+    s.project = self.project
+    s.filename = pofile.filename
+    s.source = source
+    s.trans = newvalues['target']
+
+    if session.user != None:
+      s.submitter = session.user
+
+    s.fromsuggestion = suggObj
+
+    session.server.alchemysession.commit()
+    
     pofile.updateunit(item, newvalues, session.user, languageprefs)
     self.updateindex(pofilename, [item])
-    
-    if session.username != None:
-      user = self.asession.query(User).filter_by(username=session.username).first()
-      if user != None:
-        user.submissionsmade += 1
-        self.asession.commit()
 
   def suggesttranslation(self, pofilename, item, trans, session):
     """stores a new suggestion for a translation..."""
     if "suggest" not in self.getrights(session):
       raise RightsError(session.localize("You do not have rights to suggest changes here"))
     pofile = self.getpofile(pofilename)
-    pofile.track(item, "suggestion made by %s" % session.username)
-    pofile.addsuggestion(item, trans, session.username)
-   
-    if session.username != None:
-      user = self.asession.query(User).filter_by(username=session.username).first()
-      if user != None:
-        user.suggestionsmade += 1
-        self.asession.commit()
+    source = pofile.getitem(item).getsource()
+
+    s = Suggestion()
+    s.creationTime = datetime.datetime.utcnow()
+
+    s.language = self.language 
+    s.project = self.project
+    s.filename = pofile.filename
+    s.source = source 
+    s.trans = trans
+
+    s.reviewStatus = "pending"
+
+    # TODO This is a hack to get around the following issue: When one logs
+    # out, the user is set to None (since the session is no longer open),
+    # but username remains for this query; if someone POSTSs a suggestion
+    # while logging out, it will thus go into the .pending file as one of
+    # that person's submissions, but into the database as anonymous.  This
+    # fixes it by making it an anonymous suggestion in the file.
+    if session.user != None:
+      s.suggester = session.user
+      uname = session.user.username
+    else:
+      uname = None
+
+    session.server.alchemysession.commit()
+
+    pofile.track(item, "suggestion made by %s" % uname)
+    pofile.addsuggestion(item, trans, uname)
 
   def getsuggestions(self, pofile, item):
     """find all the suggestions submitted for the given (pofile or pofilename) and item"""
@@ -1355,6 +1393,34 @@ class TranslationProject(object):
     suggestpos = pofile.getsuggestions(item)
     return suggestpos
 
+  def markSuggestion(self, pofile, item, newtrans, session, suggester, status):
+    """Marks the suggestion specified by the parameters with the given status,
+    and returns that suggestion object"""
+    source = pofile.getitem(item).getsource()
+    
+    query = self.asession.query(Suggestion)
+    query = query.filter_by(language=self.language)
+    query = query.filter_by(project=self.project)
+    query = query.filter_by(source=source)
+    query = query.filter_by(trans=newtrans)
+    query = query.filter_by(reviewStatus="pending")
+
+    user = None
+    if suggester != None:
+      user = self.asession.query(User).filter_by(username=suggester).first()
+    query = query.filter_by(suggester=user)
+
+    sugg = query.first()
+    if sugg != None:
+      sugg.reviewer = session.user
+      sugg.reviewStatus = status
+      sugg.reviewTime = datetime.datetime.utcnow()
+      self.asession.commit()
+    else:
+      print "No database entry for suggestion found; database integrity issue detected!"
+
+    return sugg
+
   def acceptsuggestion(self, pofile, item, suggitem, newtrans, session):
     """accepts the suggestion into the main pofile"""
     if not "review" in self.getrights(session):
@@ -1363,17 +1429,14 @@ class TranslationProject(object):
       pofilename = pofile
       pofile = self.getpofile(pofilename)
     suggester = self.getsuggester(pofile, item, suggitem)
+
+    suggObj = self.markSuggestion(pofile, item, newtrans, session, suggester, "accepted")
+
     pofile.track(item, "suggestion by %s accepted by %s" % (suggester, session.username))
     pofile.deletesuggestion(item, suggitem)
-    self.updatetranslation(pofilename, item, {"target": newtrans, "fuzzy": False}, session)
+    self.updatetranslation(pofilename, item, {"target": newtrans, "fuzzy": False}, session, suggObj)
 
-    if suggester != None:
-      user = self.asession.query(User).filter_by(username=suggester).first()
-      if user != None:
-        user.suggestionsused += 1
-        self.asession.commit()
-
-
+  
   def getsuggester(self, pofile, item, suggitem):
     """returns who suggested the given item's suggitem if recorded, else None"""
     if isinstance(pofile, (str, unicode)):
@@ -1388,7 +1451,11 @@ class TranslationProject(object):
     if isinstance(pofile, (str, unicode)):
       pofilename = pofile
       pofile = self.getpofile(pofilename)
-    pofile.track(item, "suggestion by %s rejected by %s" % (self.getsuggester(pofile, item, suggitem), session.username))
+    suggester = self.getsuggester(pofile, item, suggitem)
+
+    suggObj = self.markSuggestion(pofile, item, newtrans, session, suggester, "rejected")
+
+    pofile.track(item, "suggestion by %s rejected by %s" % (suggester, session.username))
     pofile.deletesuggestion(item, suggitem)
 
   def gettmsuggestions(self, pofile, item):
