@@ -139,6 +139,7 @@ class TranslatePage(pagelayout.PootleNavPage):
         "accept_button": self.localize("Accept"),
         "reject_button": self.localize("Reject"),
         "fuzzytext": self.localize("Fuzzy"),
+        "viewsuggtext": self.localize("View Suggestions"),
         # l10n: Heading above the textarea for translator comments.
         "translator_comments_title": self.localize("Translator comments"),
         # l10n: Heading above the comments extracted from the programing source code
@@ -443,8 +444,7 @@ class TranslatePage(pagelayout.PootleNavPage):
   def maketable(self):
     self.translations = self.gettranslations()
     items = []
-    if self.reviewmode and self.item is not None:
-      suggestions = {self.item: self.project.getsuggestions(self.pofilename, self.item)}
+    suggestions = {}
     for row, unit in enumerate(self.translations):
       tmsuggestions = []
       if isinstance(unit.source, multistring):
@@ -473,6 +473,7 @@ class TranslatePage(pagelayout.PootleNavPage):
       item = self.firstitem + row
       origdict = self.getorigdict(item, orig, item in self.editable)
       transmerge = {}
+      suggestions[item] = self.project.getsuggestions(self.pofilename, item)
 
       message_context = ""
       if item in self.editable:
@@ -486,13 +487,7 @@ class TranslatePage(pagelayout.PootleNavPage):
         
         if self.reviewmode:
           translator_comments = self.escapetext(unit.getnotes(origin="translator"), stripescapes=True)
-          itemsuggestions = []
-          for suggestion in suggestions[item]:
-            if suggestion.hasplural():
-              itemsuggestions.append(suggestion.target.strings)
-            else:
-              itemsuggestions.append([suggestion.target])
-          transmerge = self.gettransreview(item, trans, itemsuggestions)
+          transmerge = {} 
         else:
           transmerge = self.gettransedit(item, trans)
       else:
@@ -500,6 +495,21 @@ class TranslatePage(pagelayout.PootleNavPage):
         developer_comments = unit.getnotes(origin="developer")
         locations = ""
         transmerge = self.gettransview(item, trans)
+
+      itemsuggestions = []
+      for suggestion in suggestions[item]:
+        if suggestion.hasplural():
+          itemsuggestions.append(suggestion.target.strings)
+        else:
+          itemsuggestions.append([suggestion.target])
+      transreview = self.gettransreview(item, trans, itemsuggestions)
+      if 'forms' in transmerge.keys():
+        for fnum in range(len(transmerge['forms'])):
+          transreview['forms'][fnum]['text'] = transmerge['forms'][fnum]['text']
+      else:
+        transreview['forms'][0]['text'] = transmerge['text']
+      transmerge.update(transreview)
+
       transdict = {"itemid": "trans%d" % item,
                    "focus_class": origdict["focus_class"],
                    "isplural": len(trans) > 1,
@@ -612,7 +622,7 @@ class TranslatePage(pagelayout.PootleNavPage):
     if editable:
       focus_class = "translate-original-focus"
     else:
-      focus_class = "autoexpand"
+      focus_class = ""
     purefields = []
     for pluralid, pluraltext in enumerate(orig):
       pureid = "orig-pure%d.%d" % (item, pluralid)
@@ -819,6 +829,7 @@ class TranslatePage(pagelayout.PootleNavPage):
           form["title"] = self.localize("Plural Form %d", pluralitem)
         forms.append(form)
       suggdict = {"title": suggtitle,
+                  "author": suggestedby,
                   "forms": forms,
                   "suggid": "%d.%d" % (item, suggid),
                   "canreview": "review" in self.rights,

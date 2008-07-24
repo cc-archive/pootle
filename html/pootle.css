@@ -252,11 +252,17 @@ td.translate-translation
 {
 	background-color: #f4f4f4;
 }
-.translate-translation-fuzzy
+.translate-translation-fuzzy[dir="ltr"]
 {
 	color: #666;
 	border-left: 4px solid #AAA;
 	padding-left: 3px;
+}
+.translate-translation-fuzzy[dir="rtl"]
+{
+	color: #666;
+	border-right: 4px solid #AAA;
+	padding-right: 3px;
 }
 textarea.translate-translation-fuzzy
 {
@@ -527,6 +533,7 @@ textarea.translation
 }
 .translation-text
 {
+  display: inline;
 	max-width: 100%;
 	overflow: auto;
 /*        white-space: pre-wrap;*/
@@ -548,9 +555,16 @@ textarea.translation
 a.translation-action
 {
 	position: absolute;
-	margin: 2px;
-	padding: 2px;
+	margin: 0px;
 	z-index: 2;
+}
+a.translation-action[dir="ltr"]
+{
+	padding-left: 4px;
+}
+a.translation-action[dir="rtl"]
+{
+	padding-right: 4px;
 }
 div.translation-action
 {
@@ -737,4 +751,38 @@ th[scope="row"][dir="rtl"] {
 
 .topcontr td {
   text-align: right;
+}
+
+ul.sugglist {
+  clear: both;
+}
+
+a.sugglink[dir="ltr"] {
+  float: right;
+  padding-right: 1em;
+}
+
+a.sugglink[dir="rtl"] {
+  float: left;
+  padding-left: 1em;
+}
+
+span.suggauthor[dir="ltr"] {
+  float: right;
+}
+
+span.suggauthor[dir="rtl"] {
+  float: left;
+}
+
+div.suggestions {
+  display: inline;
+}
+
+div.translate-translation {
+  min-height: 1.5em;
+}
+
+div.translate-original {
+  min-height: 1.5em;
 }

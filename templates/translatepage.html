@@ -11,11 +11,14 @@
 <script src="${baseurl}js/autoexpand.js" type="text/javascript"></script>
 <script src="${baseurl}js/jquery/jquery.js" type="text/javascript"></script>
 <script src="${baseurl}js/autogrow.js" type="text/javascript"></script>
-<script type="text/javascript">
-  $(document).ready(function(){
-    $('textarea').autogrow(); // This can't work with the .ready() for logins; they cona't both
-                              // happen at once, but this should be fixed eventually
-  });
+<script>
+ $(document).ready(function(){
+   $(".sugglink").click(function(event){
+     event.preventDefault();
+     $(this).siblings(".suggestions").children(".sugglist").slideToggle("slow");
+   });
+   $(".sugglist").hide();
+ });
   
 </script>
   <!--[if lt IE 7.]>
@@ -111,7 +114,7 @@
                 <!--! Review suggestions -->
                 <span py:if="item.editable and reviewmode" class="translation-text">
                   <div class="translation-action">
-                    <a py:if="item.trans.editlink" href="${item.trans.editlink.href}" class="translation-action" py:content="item.trans.editlink.text" id="${item.trans.editlink.linkid}">Edit</a>
+                    <a py:if="item.trans.editlink" href="${item.trans.editlink.href}" class="translation-action" py:content="item.trans.editlink.text" id="${item.trans.editlink.linkid}" dir="$uidir">Edit</a>
                   </div>
                   <b class="${item.state_class}" py:content="item.trans.current_title">Current Translation:</b><br />
                   <span py:for="form in item.trans.forms" py:strip="True">
@@ -218,12 +221,24 @@
                 <?python
                   action = "document.location='%s';"
                 ?>
-                <div py:if="not item.editable" class="${item.state_class}" style="min-height: 1.5em;" ondblclick="${not item.trans.editlink or action % item.trans.editlink.href}">
+                <div dir="$uidir" py:if="not item.editable" class="${item.state_class}">
                   <div dir="$uidir" lang="$language.code" class="translation-action">
                     <a py:if="item.trans.editlink" lang="$uilanguage" dir="$uidir" href="${item.trans.editlink.href}" class="translation-action" py:content="item.trans.editlink.text" id="${item.trans.editlink.linkid}">Edit</a>
                   </div>
+                  <a href="#" class="sugglink" dir="$uidir">${viewsuggtext} (<span class="idcount">${str(len(item.trans.suggestions))}</span>)</a>
                   <div dir="$language.dir" lang="$language.code" py:if="not item.trans.isplural" class="translation-text" py:content="XML(item.trans.text)">
                     text
+                  </div>
+                  <div class="suggestions">
+                    <ul class="sugglist" py:if="len(item.trans.suggestions) > 0">
+                      <li py:for="sugg in item.trans.suggestions">
+                        <span class="suggauthor" dir="$uidir">(${sugg.author})</span>
+                        <ul py:if="len(sugg.forms) > 1">
+                          <li py:for="form in sugg.forms">${form.value}</li>
+                        </ul>
+                        <span py:strip="True" py:if="len(sugg.forms) == 1">${sugg.forms[0].value}</span>
+                      </li>
+                    </ul>
                   </div>
                   <span py:if="item.trans.isplural">
                     <span py:for="form in item.trans.forms" py:strip="True">
