@@ -82,6 +82,28 @@
   <div id="about" dir="$uidir" lang="$uilanguage">
     <a href="${baseurl}about.html" py:content="aboutlink">About this Pootle server</a>
   </div>
+
+  <div id="topcontr">
+    <h3 py:contents="topstatsheading">Top Contributors</h3>
+    <table py:for="stats in topstats">
+      <caption py:content="stats['headerlabel']">Top Users</caption>
+      <thead>
+        <tr>
+          <th scope="col" py:content="stats['ranklabel']">Rank</th>
+          <th scope="col" py:content="stats['namelabel']">Name</th>
+          <th scope="col" py:content="stats['vallabel']">Stat</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr py:for="(num, (name, val)) in enumerate(stats['data'])" class="item item-${num % 2}">
+          <td>${num+1}. </td>
+          <th scope="row">${name}</th>
+          <td>${val}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
 </body>
 </html>
 

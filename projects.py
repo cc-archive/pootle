@@ -1336,7 +1336,7 @@ class TranslationProject(object):
 
     s.language = self.language 
     s.project = self.project
-    s.filename = pofile.filename
+    s.filename = pofile.pofilename
     s.source = source
     s.trans = newvalues['target']
 
@@ -1362,7 +1362,7 @@ class TranslationProject(object):
 
     s.language = self.language 
     s.project = self.project
-    s.filename = pofile.filename
+    s.filename = pofile.pofilename
     s.source = source 
     s.trans = trans
 

@@ -141,7 +141,7 @@ div.item
 {
 	margin-bottom:5px;
 }
-.item-even
+.item-even, .item-0
 {
 	background-color: #f4f4f4;
 }
@@ -704,4 +704,37 @@ th[scope="row"][dir="ltr"] {
 th[scope="row"][dir="rtl"] {
   text-align: left;
   padding-left: 1em;
+}
+
+.topcontr {
+  clear: both;
+}
+
+.topcontr h3 {
+  padding: 1em;
+}
+
+.topcontr table {
+  float: left;
+  width: 150px;
+  margin-left: 25px;
+  margin-right: 25px;
+}
+
+.topcontr caption {
+  font-weight: bold;
+  font-variant: small-caps;
+}
+
+.topcontr table thead {
+  display: none;
+}
+
+.topcontr th[scope="row"] {
+  text-align: left;
+  font-weight: normal;
+}
+
+.topcontr td {
+  text-align: right;
 }

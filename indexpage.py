@@ -38,6 +38,8 @@ import sys
 import re
 import locale
 
+from dbclasses import *
+
 def shortdescription(descr):
   """Returns a short description by removing markup and only including up 
   to the first br-tag"""
@@ -45,7 +47,17 @@ def shortdescription(descr):
   if stopsign >= 0:
     descr = descr[:stopsign]
   return re.sub("<[^>]*>", "", descr).strip()
-  
+
+def gentopstats(topsugg, topreview, topsub, localize):
+  ranklabel = localize("Rank")
+  namelabel = localize("Name")
+  topstats = []
+  topstats.append({'data':topsugg, 'headerlabel':localize('Suggestions'), 'ranklabel':ranklabel, 'namelabel':namelabel, 'vallabel':localize('Suggestions')})
+  topstats.append({'data':topreview, 'headerlabel':localize('Reviews'), 'ranklabel':ranklabel, 'namelabel':namelabel, 'vallabel':localize('Reviews')})
+  topstats.append({'data':topsub, 'headerlabel':localize('Submissions'), 'ranklabel':ranklabel, 'namelabel':namelabel, 'vallabel':localize('Submissions')})
+  return topstats
+
+
 class AboutPage(pagelayout.PootlePage):
   """the bar at the side describing current login details etc"""
   def __init__(self, session):
@@ -98,10 +110,20 @@ class PootleIndex(pagelayout.PootlePage):
 #@todo - need localized dates
     # rewritten for compatibility with Python 2.3
     # languages.sort(cmp=locale.strcoll, key=lambda dict: dict["name"])
+    
+    asession = self.potree.server.alchemysession
+    topsugg = asession.query(User.name, func.count(Suggestion.id)).join((Suggestion, User.suggestionsMade)).filter(Suggestion.reviewStatus == 'accepted').group_by(User.name).order_by(func.count(Suggestion.id).desc())[:5]
+    topreview = asession.query(User.name, func.count(Suggestion.id)).join((Suggestion, User.suggestionsReviewed)).group_by(User.name).order_by(func.count(Suggestion.id).desc())[:5]
+    topsub = asession.query(User.name, func.count(Submission.id)).join((Submission, User.submissions)).group_by(User.name).order_by(func.count(Submission.id).desc())[:5]
+   
+    topstats = gentopstats(topsugg, topreview, topsub, self.localize) 
+
     templatevars = {"pagetitle": pagetitle, "description": description, 
         "meta_description": meta_description, "keywords": keywords,
         "languagelink": languagelink, "languages": self.getlanguages(session),
         "projectlink": projectlink, "projects": self.getprojects(session),
+        # top users
+        "topstats": topstats, "topstatsheading": self.localize("Top Contributors"),
         "session": sessionvars, "instancetitle": instancetitle}
     pagelayout.PootlePage.__init__(self, templatename, templatevars, session)
 
@@ -269,10 +291,20 @@ class LanguageIndex(pagelayout.PootleNavPage):
     templatename = "language"
     adminlink = self.localize("Admin")
     sessionvars = {"status": session.status, "isopen": session.isopen, "issiteadmin": session.issiteadmin()}
+
+    asession = self.potree.server.alchemysession
+    topsugg = asession.query(User.name, func.count(Suggestion.id)).join((Suggestion, User.suggestionsMade)).filter(Suggestion.language == self.potree.languages[self.languagecode]).filter(Suggestion.reviewStatus == 'accepted').group_by(User.name).order_by(func.count(Suggestion.id).desc())[:5]
+    topreview = asession.query(User.name, func.count(Suggestion.id)).join((Suggestion, User.suggestionsReviewed)).filter(Suggestion.language == self.potree.languages[self.languagecode]).group_by(User.name).order_by(func.count(Suggestion.id).desc())[:5]
+    topsub = asession.query(User.name, func.count(Submission.id)).join((Submission, User.submissions)).filter(Submission.language == self.potree.languages[self.languagecode]).group_by(User.name).order_by(func.count(Submission.id).desc())[:5]
+   
+    topstats = gentopstats(topsugg, topreview, topsub, self.localize) 
+
     templatevars = {"pagetitle": pagetitle,
         "language": {"code": languagecode, "name": self.tr_lang(self.languagename), "stats": languagestats, "info": languageinfo},
         "projects": languageprojects, 
         "statsheadings": self.getstatsheadings(),
+        # top users
+        "topstats": topstats, "topstatsheading": self.localize("Top Contributors"),
         "session": sessionvars, "instancetitle": instancetitle}
     pagelayout.PootleNavPage.__init__(self, templatename, templatevars, session, bannerheight=80)
 
@@ -337,11 +369,21 @@ class ProjectLanguageIndex(pagelayout.PootleNavPage):
     sessionvars = {"status": session.status, "isopen": session.isopen, "issiteadmin": session.issiteadmin()}
     statsheadings = self.getstatsheadings()
     statsheadings["name"] = self.localize("Language")
+
+    asession = self.potree.server.alchemysession
+    topsugg = asession.query(User.name, func.count(Suggestion.id)).join((Suggestion, User.suggestionsMade)).filter(Suggestion.project == self.potree.projects[self.projectcode]).filter(Suggestion.reviewStatus == 'accepted').group_by(User.name).order_by(func.count(Suggestion.id).desc())[:5]
+    topreview = asession.query(User.name, func.count(Suggestion.id)).join((Suggestion, User.suggestionsReviewed)).filter(Suggestion.project == self.potree.projects[self.projectcode]).group_by(User.name).order_by(func.count(Suggestion.id).desc())[:5]
+    topsub = asession.query(User.name, func.count(Submission.id)).join((Submission, User.submissions)).filter(Submission.project == self.potree.projects[self.projectcode]).group_by(User.name).order_by(func.count(Submission.id).desc())[:5]
+   
+    topstats = gentopstats(topsugg, topreview, topsub, self.localize) 
+
     templatevars = {"pagetitle": pagetitle,
         "project": {"code": projectcode, "name": projectname, "stats": projectstats},
         "description": description, "meta_description": meta_description, 
         "adminlink": adminlink, "languages": languages,
         "session": sessionvars, "instancetitle": instancetitle, 
+        # top users
+        "topstats": topstats, "topstatsheading": self.localize("Top Contributors"),
         "statsheadings": statsheadings}
     pagelayout.PootleNavPage.__init__(self, templatename, templatevars, session, bannerheight=80)
 
@@ -423,6 +465,18 @@ class ProjectIndex(pagelayout.PootleNavPage):
     pagetitle = self.localize("%s: Project %s, Language %s", instancetitle, self.project.projectname, self.tr_lang(self.project.languagename))
     templatename = "fileindex"
     sessionvars = {"status": session.status, "isopen": session.isopen, "issiteadmin": session.issiteadmin()}
+
+    reqstart = ""
+    if dirfilter:
+      reqstart = dirfilter;
+
+    asession = self.project.potree.server.alchemysession
+    topsugg = asession.query(User.name, func.count(Suggestion.id)).join((Suggestion, User.suggestionsMade)).filter(Suggestion.language == self.project.language).filter(Suggestion.project == self.project.project).filter(Suggestion.reviewStatus == 'accepted').filter(Suggestion.filename.like(reqstart+"%")).group_by(User.name).order_by(func.count(Suggestion.id).desc())[:5]
+    topreview = asession.query(User.name, func.count(Suggestion.id)).join((Suggestion, User.suggestionsReviewed)).filter(Suggestion.language == self.project.language).filter(Suggestion.project == self.project.project).filter(Suggestion.filename.like(reqstart+"%")).group_by(User.name).order_by(func.count(Suggestion.id).desc())[:5]
+    topsub = asession.query(User.name, func.count(Submission.id)).join((Submission, User.submissions)).filter(Submission.language == self.project.language).filter(Submission.project == self.project.project).filter(Submission.filename.like(reqstart+"%")).group_by(User.name).order_by(func.count(Submission.id).desc())[:5]
+   
+    topstats = gentopstats(topsugg, topreview, topsub, self.localize) 
+
     templatevars = {"pagetitle": pagetitle,
         "project": {"code": self.project.projectcode, "name": self.project.projectname},
         "language": {"code": self.project.languagecode, "name": self.tr_lang(self.project.languagename)},
@@ -436,7 +490,9 @@ class ProjectIndex(pagelayout.PootleNavPage):
         # are we in editing mode (otherwise stats)
         "editing": self.editing,
         # stats table headings
-        "statsheadings": self.getstatsheadings(), 
+        "statsheadings": self.getstatsheadings(),
+        # top users
+        "topstats": topstats, "topstatsheading": self.localize("Top Contributors"),
         # general vars
         "session": sessionvars, "instancetitle": instancetitle}
     pagelayout.PootleNavPage.__init__(self, templatename, templatevars, session, bannerheight=80)
