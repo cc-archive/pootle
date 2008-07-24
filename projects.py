@@ -682,6 +682,13 @@ class TranslationProject(object):
         pass
       else:
         self.runprojectscript(self.postcommitdir, pathname) # Postcommit
+       
+        # Update the author for that revision
+        try:
+          subprocess.call([os.path.join(self.postcommitdir,"updateAuthor"), pathname])
+        except:
+          print "Unable to update author"
+          pass
 
   def converttemplates(self, session):
     """creates PO files from the templates"""
