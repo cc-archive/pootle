@@ -1337,8 +1337,8 @@ class TranslationProject(object):
     s.language = self.language 
     s.project = self.project
     s.filename = pofile.pofilename
-    s.source = source
-    s.trans = newvalues['target']
+    s.source = unicode(source)
+    s.trans = unicode(newvalues['target'])
 
     if session.user != None:
       s.submitter = session.user
@@ -1363,8 +1363,8 @@ class TranslationProject(object):
     s.language = self.language 
     s.project = self.project
     s.filename = pofile.pofilename
-    s.source = source 
-    s.trans = trans
+    s.source = unicode(source)
+    s.trans = unicode(trans)
 
     s.reviewStatus = "pending"
 
@@ -1401,8 +1401,8 @@ class TranslationProject(object):
     query = self.asession.query(Suggestion)
     query = query.filter_by(language=self.language)
     query = query.filter_by(project=self.project)
-    query = query.filter_by(source=source)
-    query = query.filter_by(trans=newtrans)
+    query = query.filter_by(source=unicode(source))
+    query = query.filter_by(trans=unicode(newtrans))
     query = query.filter_by(reviewStatus="pending")
 
     user = None

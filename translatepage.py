@@ -505,9 +505,10 @@ class TranslatePage(pagelayout.PootleNavPage):
       transreview = self.gettransreview(item, trans, itemsuggestions)
       if 'forms' in transmerge.keys():
         for fnum in range(len(transmerge['forms'])):
-          transreview['forms'][fnum]['text'] = transmerge['forms'][fnum]['text']
-      else:
+          transreview['forms'][fnum].update(transmerge['forms'][fnum])
+      elif 'text' in transmerge.keys():
         transreview['forms'][0]['text'] = transmerge['text']
+ 
       transmerge.update(transreview)
 
       transdict = {"itemid": "trans%d" % item,

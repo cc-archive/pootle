@@ -229,6 +229,12 @@
                   <div dir="$language.dir" lang="$language.code" py:if="not item.trans.isplural" class="translation-text" py:content="XML(item.trans.text)">
                     text
                   </div>
+                  <span py:if="item.trans.isplural">
+                    <span py:for="form in item.trans.forms" py:strip="True">
+                      <span class="translation-text-headers" py:content="form.title">Plural Form ${form.n}</span><br />
+                      <span class="translation-text" py:content="XML(form.text)">Text</span><br />
+                    </span>
+                  </span>
                   <div class="suggestions">
                     <ul class="sugglist" py:if="len(item.trans.suggestions) > 0">
                       <li py:for="sugg in item.trans.suggestions">
@@ -240,12 +246,6 @@
                       </li>
                     </ul>
                   </div>
-                  <span py:if="item.trans.isplural">
-                    <span py:for="form in item.trans.forms" py:strip="True">
-                      <span class="translation-text-headers" py:content="form.title">Plural Form ${form.n}</span><br />
-                      <span class="translation-text" py:content="XML(form.text)">Text</span><br />
-                    </span>
-                  </span>
                 </div>
               </div>
             </td>
