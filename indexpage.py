@@ -152,7 +152,13 @@ class PootleIndex(pagelayout.PootlePage):
         transper = 100
         fuzzyper = 0 
         untransper = 0 
-      lastact = "June 24th, 2008"
+
+      asession = self.potree.server.alchemysession
+      recentsub = asession.query(Submission.creationTime).filter_by(language=self.potree.languages[langcode]).order_by(Submission.creationTime.desc()).first()
+      lastact = ""
+      if recentsub != None:
+        lastact = recentsub[0]
+
       if viewable:
         languages.append({"code": langcode, "name": self.tr_lang(langname), "lastactivity": lastact, "trans": trans, "fuzzy": fuzzy, "untrans": untrans, "total": total, "transper": transper, "fuzzyper": fuzzyper, "untransper": untransper}) 
     languages.sort(lambda x,y: locale.strcoll(x["name"], y["name"]))
@@ -186,7 +192,13 @@ class PootleIndex(pagelayout.PootlePage):
         untransper = 0 
       projectname = self.potree.getprojectname(projectcode)
       description = shortdescription(self.potree.getprojectdescription(projectcode))
-      lastact = "June 24th, 2008"
+      
+      asession = self.potree.server.alchemysession
+      recentsub = asession.query(Submission.creationTime).filter_by(project=self.potree.projects[projectcode]).order_by(Submission.creationTime.desc()).first()
+      lastact = ""
+      if recentsub != None:
+        lastact = recentsub[0]
+      
       if viewable:
         projects.append({"code": projectcode, "name": projectname, "description": description, "lastactivity": lastact, "trans": trans, "fuzzy": fuzzy, "untrans": untrans, "total": total, "transper": transper, "fuzzyper": fuzzyper, "untransper": untransper})
     return projects
