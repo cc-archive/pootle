@@ -655,12 +655,17 @@ class TranslationProject(object):
       versioncontrol.updatefile(pathname)
       self.scanpofiles()
 
-  def runprojectscript(self, scriptdir, target):
+  def runprojectscript(self, scriptdir, target, extraargs = []):
+    currdir = os.getcwd()
     script = os.path.join(scriptdir, self.projectcode)
     try:
-      subprocess.call([script, target])
+      os.chdir(scriptdir)
+      cmd = [script, target]
+      cmd.extend(extraargs)
+      subprocess.call(cmd)
     except:
       pass # If something goes wrong, we just continue without worrying
+    os.chdir(currdir)
 
   def commitpofile(self, session, dirname, pofilename):
     """commits an individual PO file to version control"""
@@ -673,22 +678,14 @@ class TranslationProject(object):
     message="Verbatim commit from %s by user %s, editing po file %s. %s" % (session.server.instance.title, session.username, pofilename, statsstring)
     author=session.username
     fulldir = os.path.split(pathname)[0]
-    self.runprojectscript(self.precommitdir, pathname) # Precommit
-    for rcs_obj in versioncontrol.get_versioned_objects_recursive(fulldir):
-      try:
-        rcs_obj.commit(message, author)
-      except IOError, e:
-        print "IOError caught: "+str(e)
-        pass
-      else:
-        self.runprojectscript(self.postcommitdir, pathname) # Postcommit
-       
-        # Update the author for that revision
-        try:
-          subprocess.call([os.path.join(self.postcommitdir,"updateAuthor"), pathname])
-        except:
-          print "Unable to update author"
-          pass
+   
+    self.runprojectscript(self.precommitdir, pathname, [author]) # Precommit
+    try:
+      versioncontrol.commitfile(pathname, message=message, author=author)
+      success = 1
+    except IOError, e:
+      success = 0
+    self.runprojectscript(self.postcommitdir, pathname, [str(success)]) # Postcommit
 
   def converttemplates(self, session):
     """creates PO files from the templates"""
