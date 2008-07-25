@@ -786,3 +786,11 @@ div.translate-translation {
 div.translate-original {
   min-height: 1.5em;
 }
+
+.cancellink {
+  padding-left: .5em;
+}
+
+.placeholder {
+  color: gray;
+}

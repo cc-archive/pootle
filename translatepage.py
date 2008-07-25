@@ -858,14 +858,33 @@ class TranslatePage(pagelayout.PootleNavPage):
       escapefunction = self.escapetext
     editlink = self.geteditlink(item)
     transdict = {"editlink": editlink}
+
+    cansugg = "suggest" in self.rights 
+    cantrans = "translate" in self.rights
+    ables = ""
+    if cansugg: 
+      ables = "suggestable "+ables
+    if cantrans: 
+      ables = "submitable "+ables
+
     if len(trans) > 1:
       forms = []
       for pluralitem, pluraltext in enumerate(trans):
         form = {"title": self.localize("Plural Form %d", pluralitem), "n": pluralitem, "text": escapefunction(pluraltext)}
+        editclass = ""
+        if cantrans or cansugg: 
+          editclass = ables+"edittrans"+str(item)+"p"+str(pluralitem)
+        form["editclass"] = editclass
+
         forms.append(form)
       transdict["forms"] = forms
     elif trans:
       transdict["text"] = escapefunction(trans[0])
+      editclass = ""
+      if cantrans or cansugg: 
+        editclass = ables+"edittrans"+str(item)
+      transdict["editclass"] = editclass
+
     else:
       # Error, problem with plurals perhaps?
       transdict["text"] = ""
