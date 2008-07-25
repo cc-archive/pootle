@@ -2,7 +2,7 @@
 
 Name:           virtaal
 Version:        0.1
-Release:        8%{?dist}
+Release:        9%{?dist}
 Summary:        Localization and translation editor
 
 Group:          Development/Tools
@@ -30,8 +30,8 @@ A Computer Aided Translation (CAT) tool built on the Translate Toolkit.
 
 VirTaal includes features that allow a localizer to work effecively including:
 syntax highlighting, Translation Memory and glossaries.  Showing only 
-the data that is needed.  A simple and effective user interface ensures 
-that you can focus on the translation task straight away.
+the data that is needed through its simple and effective user interface it
+ensures that you can focus on the translation task straight away.
 
 By building on the Translate Toolkit VirTaal is able to edit any of the
 following formats: XLIFF, Gettext PO and .mo, Qt .qm, Wordfast TM, TMX,
@@ -111,6 +111,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Jul 24 2008 Dwayne Bailey <dwayne@translate.org.za> - 0.1-9.fc9
+- Rebuild after upstream data location changes
+
 * Tue Jun 3 2008 Dwayne Bailey <dwayne@translate.org.za> - 0.1-8.fc9
 - Rebuild for fc9
 
