@@ -2,7 +2,7 @@
 
 Name:           virtaal
 Version:        0.1
-Release:        9%{?dist}
+Release:        10%{?dist}
 Summary:        Localization and translation editor
 
 Group:          Development/Tools
@@ -111,6 +111,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat Jul 26 2008 Dwayne Bailey <dwayne@translate.org.za> - 0.1-10.fc9
+- Package autocorrect files
+
 * Thu Jul 24 2008 Dwayne Bailey <dwayne@translate.org.za> - 0.1-9.fc9
 - Rebuild after upstream data location changes
 
