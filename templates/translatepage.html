@@ -21,6 +21,10 @@ $(document).ready(function(){
   });
   $(".sugglist").hide();
 
+  });
+</script>
+<script type="text/javascript" py:if="items">
+$(document).ready(function(){
   first = ${items[0].itemid};
   last = ${items[-1].itemid};
   currurl = "${current_url}";
