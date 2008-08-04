@@ -648,6 +648,7 @@ class TranslationProject(object):
         newpofile.mergeitem(newpo, localpo, "versionmerge")
       # saving
       newpofile.savepofile()
+      newpofile.reset_statistics()
       self.pofiles[pofilename] = newpofile
       # recalculate everything
       newpofile.readpofile()
