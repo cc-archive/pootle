@@ -17,7 +17,7 @@
 $(document).ready(function(){
   $(".sugglink").click(function(event){
     event.preventDefault();
-    $(this).siblings(".suggestions").children(".sugglist").slideToggle("slow");
+    $(this).siblings(".suggestions").children(".sugglist").toggle();
   });
   $(".sugglist").hide();
 

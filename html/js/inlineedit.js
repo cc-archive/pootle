@@ -48,7 +48,7 @@ tpagestart = function(first, last, currurl){
         event       : 'dblclick',
         original    : etrans[0].innerHTML,
         type        : 'translator',
-        onblur      : 'cancel',
+        onblur      : 'ignore',
         indicator   : 'Saving...',
         placeholder : '<span class="placeholder">Add translation</span>',
         width       : 250,
