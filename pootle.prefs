@@ -8,6 +8,8 @@ importmodules:
   pootleserver = 'Pootle.pootle'
 
 Pootle:
+  # Contains LDAP connection information.  To disable ldap support, simply
+  # delete this section of the .prefs file
   ldap:
     # The ldap server to connect to.  Should start with "ldap://"
     cn = ""

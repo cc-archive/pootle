@@ -569,7 +569,9 @@ class PootleSession(web.session.LoginSession):
     self.server = server
     if loginchecker == None:
       import login
-      logindict = {'ldap':login.LDAPLoginChecker(self, server.instance), 'hash':login.HashLoginChecker(self, server.instance)}
+      logindict = {'hash':login.HashLoginChecker(self, server.instance)}
+      if hasattr(server.instance, 'ldap'):
+        logindict['ldap'] = login.LDAPLoginChecker(self, server.instance)
       loginchecker = login.ProgressiveLoginChecker(self, server.instance, logindict)
     super(PootleSession, self).__init__(sessioncache, server, sessionstring, loginchecker)
     self.getuser()
@@ -732,7 +734,7 @@ class PootleSession(web.session.LoginSession):
         # like we can ever end up here if the sessionstring was valid
         self.isvalid = False
         return self.isvalid
-    elif self.loginchecker.logincheckers["ldap"].userexists():
+    elif self.loginchecker.logincheckers.has_key("ldap") and self.loginchecker.logincheckers["ldap"].userexists():
       if password != None:
         passcorrect = self.loginchecker.logincheckers["ldap"].iscorrectpass(password)
         if passcorrect:
