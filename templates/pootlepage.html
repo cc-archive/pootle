@@ -70,7 +70,7 @@
           </tr>
         </table>
         <input type="submit" name="islogin" value="${links.login}" />
-        <input type="submit" name="doregister" value="${links.register}" />
+        <input type="submit" name="doregister" value="${links.register}" py:if="canregister" />
         <input type="hidden" name="returnurl" value="${current_url}" /> 
       </form>
 

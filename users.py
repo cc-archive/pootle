@@ -442,6 +442,8 @@ class OptionalLoginAppServer(server.LoginAppServer):
   def handleregistration(self, session, argdict):
     """handles the actual registration"""
     #TODO: Fix layout, punctuation, spacing and correlation of messages
+    if not hasattr(server.instance, 'hash'):
+      return
     supportaddress = getattr(self.instance.registration, 'supportaddress', "")
     username = argdict.get("username", "")
     if not username or not username.isalnum() or not username[0].isalpha():
@@ -569,7 +571,9 @@ class PootleSession(web.session.LoginSession):
     self.server = server
     if loginchecker == None:
       import login
-      logindict = {'hash':login.HashLoginChecker(self, server.instance)}
+      logindict = {}
+      if hasattr(server.instance, 'hash'):
+        logindict['hash'] = login.HashLoginChecker(self, server.instance)
       if hasattr(server.instance, 'ldap'):
         logindict['ldap'] = login.LDAPLoginChecker(self, server.instance)
       loginchecker = login.ProgressiveLoginChecker(self, server.instance, logindict)

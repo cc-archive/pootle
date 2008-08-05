@@ -18,6 +18,10 @@ Pootle:
     # The password for the user with distinguished name dn
     pw = ""
 
+  # If this option exists, it will allow hashed logins / registration.  Comment
+  # out this line to remove this functionality
+  hash = "allow"
+
   stats:
     # The statsdb file in translate toolkit to use; alternately, a file
     # supporting the same interface as statsdb can be placed in pootle's

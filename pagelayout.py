@@ -100,6 +100,7 @@ def completetemplatevars(templatevars, session, bannerheight=135):
   templatevars["password_title"] = session.localize("Password:")
   templatevars["login_text"] = session.localize('Login')
   templatevars["register_text"] = session.localize('Register')
+  templatevars["canregister"] = hasattr(session.instance, "hash")
   templatevars["links"] = localize_links(session)
   templatevars["current_url"] = session.currenturl
   if "?" in session.currenturl: 
