@@ -249,6 +249,27 @@ class PootleServer(users.OptionalLoginAppServer, templateserver.TemplateServer):
     """gets the language for a user who does not specify one in the URL"""
     return session.language 
 
+  def handle(self, req, pathwords, argdict):
+    """handles the request and returns a page object in response"""
+    # Identical to the first five lines of super.handle()
+    argdict = self.processargs(argdict)
+    session = self.getsession(req, argdict)
+    session.pagecount += 1
+    session.remote_ip = self.getremoteip(req)
+    session.localaddr = self.getlocaladdr(req)
+
+    if self.instance.baseurl[-1] == '/':
+      session.currenturl = self.instance.baseurl[:-1]+req.path
+    else:
+      session.currenturl = self.instance.baseurl+req.path
+    session.reqpath = req.path
+    if req.path.find("?") >= 0:
+      session.getsuffix = req.path[req.path.find("?"):]
+    else:
+      session.getsuffix = "" 
+
+    return self.getpage(pathwords, session, argdict)
+
   def getpage(self, pathwords, session, argdict):
     """return a page that will be sent to the user"""
 
@@ -264,26 +285,13 @@ class PootleServer(users.OptionalLoginAppServer, templateserver.TemplateServer):
     argdict = newargdict
 
     # Strip of the base url
-    baseurl = re.sub('http://[^/]', '', self.instance.baseurl)
+    baseurl = re.sub('https?://[^/]*', '', self.instance.baseurl)
     # Split up and remove empty parts
     basepathwords = filter(None, baseurl.split('/'))
     while pathwords and basepathwords and basepathwords[0] == pathwords[0]:
       basepathwords = basepathwords[1:]
       pathwords = pathwords[1:]
-
-    session.currenturl = self.instance.baseurl + ("/".join(pathwords))
-    if pathwords and "." not in pathwords[-1]:
-      session.currenturl += '/'
-      #FIXME This is a dirty hack; session.currenturl will contain post information 
-    getsuffix = ""
-    if argdict:
-      safeargdict = argdict.copy()
-      safeargdict.pop('password',None)
-      safeargdict.pop('islogin',None)
-      safeargdict.pop('islogout',None)
-      getsuffix = "&".join(map(lambda (x,y): unicode(x)+"="+unicode(y),safeargdict.items()))
-      session.currenturl = session.currenturl+"?"+getsuffix 
-
+    
     if pathwords:
       top = pathwords[0]
     else:
@@ -298,13 +306,15 @@ class PootleServer(users.OptionalLoginAppServer, templateserver.TemplateServer):
     if not self.potree.haslanguage(lang) and not self.potree.haslanguage(lonelang):
       sessionlang = self.getuserlanguage(session)
       session.setlanguage(sessionlang)
-      return server.Redirect(self.instance.baseurl+sessionlang+"/"+"/".join(pathwords)+getsuffix)
+      url = self.instance.baseurl+sessionlang+"/"+"/".join(pathwords)+session.getsuffix
+      return server.Redirect(url)
     elif self.potree.haslanguage(lang):
       session.setlanguage(lang)
       session.localizedurl = self.instance.baseurl+lang+"/"
     else: #Must have lonelang
       session.setlanguage(lonelang)
-      return server.Redirect(self.instance.baseurl+lonelang+"/"+"/".join(pathwords[1:])+getsuffix)
+      url = self.instance.baseurl+lonelang+"/"+"/".join(pathwords[1:])+session.getsuffix
+      return server.Redirect(url)
 
 
     pathwords = pathwords[1:]
