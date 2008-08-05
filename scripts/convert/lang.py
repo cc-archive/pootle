@@ -19,17 +19,26 @@ class LangStore(txt.TxtFile):
   UnitClass = LangUnit
 
   def parse(self, lines):
+    #Have we just seen a ';' line, and so are ready for a translation
+    readyTrans = False
+
     if not isinstance(lines, list):
       lines = lines.split("\n")
     for linenum in range(len(lines)):
       line = lines[linenum].rstrip("\n").rstrip("\r")
-      if len(line) == 0:
+
+      if len(line) == 0: #Skip blank lines
         continue
+
+      if readyTrans: #If we are expecting a translation, set the target
+        u.settarget(line)
+        readyTrans = False #We already have our translation
+        continue
+
       if line[0] == ';':
         u = self.addsourceunit(line[1:])
+        readyTrans = True # We're now expecting a translation on the next line
         u.addlocation("%s:%d" % (self.filename, linenum+1))
-      else:
-        u.settarget(line)
 
   def __str__(self):
     return "\n\n".join([str(unit) for unit in self.units])
