@@ -18,6 +18,7 @@ tpagestart = function(first, last, currurl){
 
     // Return the submitted value so the page updates
     if (settings.submitdata["stype"] == "submit") {
+      $(settings.fuzzydiv).removeClass("translate-translation-fuzzy");
       return(value);
     }
     if (settings.submitdata["stype"] == "suggest") {
@@ -44,6 +45,7 @@ tpagestart = function(first, last, currurl){
         allowsubmit : etrans.hasClass("submitable"),
         suggdiv     : etrans.siblings(".suggestions"),
         sugglink    : etrans.siblings(".sugglink"),
+        fuzzydiv    : etrans.parent(".translate-translation-fuzzy"),
         linenum     : ln,
         event       : 'dblclick',
         original    : etrans[0].innerHTML,
@@ -71,6 +73,7 @@ tpagestart = function(first, last, currurl){
             allowsubmit : ptrans.hasClass("submitable"), 
             suggdiv     : ptrans.parent().siblings(".suggestions"),
             sugglink    : ptrans.parent().siblings(".sugglink"),
+            fuzzydiv    : etrans.parent().parent(".translate-translation-fuzzy"),
             linenum     : ln+"."+pn,
             event       : 'dblclick',
             original    : ptrans[0].innerHTML,
