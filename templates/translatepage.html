@@ -200,12 +200,12 @@ $(document).ready(function(){
                       <input py:if="'translate' in buttons.desired" type="submit" name="submit${buttons.item}" accesskey="s" value="${buttons.submit}"/>
                     </div>
                     <div py:if="'translate' in buttons.desired">
-                      <input type="checkbox" checked="${item.fuzzy}" name="fuzzy${buttons.item}" accesskey="f" />
-                      ${fuzzytext}
+                      <input type="checkbox" checked="${item.fuzzy}" name="fuzzy${buttons.item}" accesskey="f" id="fuzzy${buttons.item}" />
+                      <label for="fuzzy${buttons.item}">${fuzzytext}</label>
                     </div>
                     <div py:if="not 'translate' in buttons.desired">
-                      <input type="checkbox" disabled="disabled" checked="${item.fuzzy}" name="fuzzy${buttons.item}" />
-                      ${fuzzytext}
+                      <input type="checkbox" disabled="disabled" checked="${item.fuzzy}" name="fuzzy${buttons.item}" id="fuzzy${buttons.item}" />
+                      <label for="fuzzy${buttons.item}">${fuzzytext}</label>
                     </div>
                     <div py:if="'specialchars' in buttons and ('translate' in buttons.desired or 'suggest' in buttons.desired)" class="specialchars" lang="$language.code">
                       <span py:for="specialchar in buttons.specialchars" py:strip="True">
