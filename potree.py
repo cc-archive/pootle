@@ -179,7 +179,7 @@ class POTree:
         projecttype = argdict.get("newprojectfiletype", "")
         projectdescription = argdict.get("newprojectdescription", "")
         projectcheckerstyle = argdict.get("newprojectcheckerstyle", "")
-        projectcreatemofiles = argdict.get("newprojectcreatemofiles", "")
+        projectcreatemofiles = bool(argdict.get("newprojectcreatemofiles", "") or 0)
         newproject = Project(projectcode, projectname, projectdescription, projectcheckerstyle, projecttype, projectcreatemofiles)
         self.projects[newproject.code] = newproject
         self.server.alchemysession.add(newproject)
