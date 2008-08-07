@@ -21,7 +21,11 @@ $(document).ready(function(){
   });
   $(".sugglist").hide();
 
+  $(".fuzzycheck").click(function(event){
+    $(this).parent().parent().find("textarea").toggleClass("translate-translation-fuzzy");
   });
+
+});
 </script>
 <script type="text/javascript" py:if="items">
 $(document).ready(function(){
@@ -200,11 +204,11 @@ $(document).ready(function(){
                       <input py:if="'translate' in buttons.desired" type="submit" name="submit${buttons.item}" accesskey="s" value="${buttons.submit}"/>
                     </div>
                     <div py:if="'translate' in buttons.desired">
-                      <input type="checkbox" checked="${item.fuzzy}" name="fuzzy${buttons.item}" accesskey="f" id="fuzzy${buttons.item}" />
+                      <input type="checkbox" checked="${item.fuzzy}" name="fuzzy${buttons.item}" accesskey="f" id="fuzzy${buttons.item}" class="fuzzycheck" />
                       <label for="fuzzy${buttons.item}">${fuzzytext}</label>
                     </div>
                     <div py:if="not 'translate' in buttons.desired">
-                      <input type="checkbox" disabled="disabled" checked="${item.fuzzy}" name="fuzzy${buttons.item}" id="fuzzy${buttons.item}" />
+                      <input type="checkbox" disabled="disabled" checked="${item.fuzzy}" name="fuzzy${buttons.item}" id="fuzzy${buttons.item}" class="fuzzycheck" />
                       <label for="fuzzy${buttons.item}">${fuzzytext}</label>
                     </div>
                     <div py:if="'specialchars' in buttons and ('translate' in buttons.desired or 'suggest' in buttons.desired)" class="specialchars" lang="$language.code">
