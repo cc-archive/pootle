@@ -83,7 +83,7 @@ class PootleServer(users.OptionalLoginAppServer, templateserver.TemplateServer):
     if statistics.DB_TYPE == "sqlite":
       self.engine = create_engine('sqlite:///%s' % statistics.STATS_OPTIONS['database'])
     else:
-      self.engine = create_engine('%s://' % (statistics.DB_TYPE), connect_args = statistics.STATS_OPTIONS)
+      self.engine = create_engine('%s://' % (statistics.DB_TYPE), connect_args = statistics.STATS_OPTIONS, pool_recycle=3600)
     self.conn = self.engine.connect()
 
     Session = sessionmaker(bind=self.engine, autoflush=True)
