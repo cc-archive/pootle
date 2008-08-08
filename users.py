@@ -442,7 +442,7 @@ class OptionalLoginAppServer(server.LoginAppServer):
   def handleregistration(self, session, argdict):
     """handles the actual registration"""
     #TODO: Fix layout, punctuation, spacing and correlation of messages
-    if not hasattr(server.instance, 'hash'):
+    if not hasattr(self.instance, 'hash'):
       return
     supportaddress = getattr(self.instance.registration, 'supportaddress', "")
     username = argdict.get("username", "")
