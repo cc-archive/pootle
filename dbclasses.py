@@ -169,6 +169,26 @@ class Suggestion(Base):
 
   reviewSubmission = relation(Submission, backref=backref('fromsuggestion', uselist=False))
 
+class Quickstat(Base):
+  __tablename__ = 'quickstats'
+
+  id = Column(Integer, primary_key=True, autoincrement=True)
+  projectid = Column(String(100), ForeignKey('projects.id'))
+  languageid = Column(String(100), ForeignKey('languages.id'))
+  
+  language = relation(Language, backref='quickstats')
+  project = relation(Project, backref='quickstats')
+
+  subdir = Column(String(100), nullable=False)
+  filename = Column(String(100), nullable=False)
+  
+  translatedwords = Column(Integer)
+  translated = Column(Integer)
+  fuzzywords = Column(Integer)
+  fuzzy = Column(Integer)
+  totalwords = Column(Integer)
+  total = Column(Integer)
+ 
 User.uilanguageobj = relation(Language, primaryjoin=User.uilanguage==Language.code, backref='uiusers')
 User.altsrclanguageobj = relation(Language, primaryjoin=User.altsrclanguage==Language.code, backref='altsrcusers')
 

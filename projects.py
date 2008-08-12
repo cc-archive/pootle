@@ -103,8 +103,6 @@ class TranslationProject(object):
   fileext = "po"
   index_directory = ".translation_index"
 
-  quickstatstable = None
-
   def __init__(self, languagecode, projectcode, potree, create=False):
     self.languagecode = languagecode
     self.projectcode = projectcode
@@ -132,35 +130,10 @@ class TranslationProject(object):
       self.filestyle = "gnu"
     else:
       self.filestyle = "std"
-    self.configureDB()
     self.readprefs()
     self.scanpofiles()
     self.readquickstats()
     self.initindex()
-
-  def configureDB(self):
-    self.asession = self.potree.server.alchemysession
-
-    if TranslationProject.quickstatstable != None:
-      return
-    TranslationProject.quickstatstable = Table('quickstats', self.potree.server.metadata,
-      Column('id', Integer, primary_key=True, autoincrement=True),
-      Column('projectcode', String(100), nullable=False), 
-      Column('languagecode', String(100), nullable=False), 
-      Column('subdir', String(100), nullable=False), 
-      Column('filename', String(100), nullable=False), 
-      Column('translatedwords', Integer),
-      Column('translated', Integer),
-      Column('fuzzywords', Integer),
-      Column('fuzzy', Integer),
-      Column('totalwords', Integer),
-      Column('total', Integer)
-    )
-
-    c = TranslationProject.quickstatstable.c
-    Index('filenameindex', c.projectcode, c.languagecode, c.subdir, c.filename, unique=True)
-
-    self.potree.server.metadata.create_all(self.potree.server.engine)
 
   def readprefs(self):
     """reads the project preferences"""
@@ -1141,46 +1114,32 @@ class TranslationProject(object):
 
   def updatequickstats(self, pofilename, translatedwords, translated, fuzzywords, fuzzy, totalwords, total, save=True):
     """updates the quick stats on the given file"""
-    self.quickstats[pofilename] = (translatedwords, translated, fuzzywords, fuzzy, totalwords, total)
+    if not self.quickstats.has_key(pofilename):
+      [subdir, filename] = os.path.split(pofilename)
+      self.quickstats[pofilename] = Quickstat()
+      self.quickstats[pofilename].project = self.project 
+      self.quickstats[pofilename].language = self.language 
+      self.quickstats[pofilename].subdir = subdir
+      self.quickstats[pofilename].filename = filename 
+
+    self.quickstats[pofilename].translatedwords = translatedwords
+    self.quickstats[pofilename].translated = translated
+    self.quickstats[pofilename].fuzzywords = fuzzywords
+    self.quickstats[pofilename].fuzzy = fuzzy
+    self.quickstats[pofilename].totalwords = totalwords
+    self.quickstats[pofilename].total = total
     if save:
       self.savequickstats()
 
   def savequickstats(self):
     """saves the quickstats"""
-    quickstatsitems = self.quickstats.items()
-    for pofilename, (translatedwords, translated, fuzzywords, fuzzy, totalwords, total) in quickstatsitems:
-      [subdir, filename] = os.path.split(pofilename)
-      c = TranslationProject.quickstatstable.c
-
-      selq = select([c.id], and_(c.projectcode == self.projectcode, c.languagecode == self.languagecode, c.subdir == subdir, c.filename == filename))
-      res = self.potree.server.conn.execute(selq)
-      numentries = res.rowcount # How many entries are already in the table for this file (should be <= 1)
-
-      if numentries <= 0: # New quickstats entry
-        self.potree.server.conn.execute(
-          TranslationProject.quickstatstable.insert(),
-          projectcode=self.projectcode, languagecode=self.languagecode, subdir=subdir, filename=filename, translatedwords=translatedwords, translated=translated, fuzzywords=fuzzywords, fuzzy=fuzzy, totalwords=totalwords, total=total
-        )
-      else: #Already exists
-        foundid = res.fetchone()[0] # Get the ID of the existing one
-        self.potree.server.conn.execute(
-          TranslationProject.quickstatstable.update(c.id == foundid), 
-          translatedwords=translatedwords, translated=translated, fuzzywords=fuzzywords, fuzzy=fuzzy, totalwords=totalwords, total=total
-        )
-        
+    self.potree.server.alchemysession.commit()
 
   def readquickstats(self):
     """reads the quickstats"""
     self.quickstats = {}
-    c = TranslationProject.quickstatstable.c
-
-    results = self.potree.server.conn.execute(
-      select([c.subdir, c.filename, c.translatedwords, c.translated, c.fuzzywords, c.fuzzy, c.totalwords, c.total],
-      and_(c.projectcode == self.projectcode, c.languagecode == self.languagecode))
-    )
-    for items in results: 
-      subdir, filename, translatedwords, translated, fuzzywords, fuzzy, totalwords, total = items
-      self.quickstats[os.path.join(subdir,filename)] = (translatedwords, translated, fuzzywords, fuzzy, totalwords, total)
+    for qs in self.potree.server.alchemysession.query(Quickstat).filter_by(project = self.project).filter_by(language = self.language):
+      self.quickstats[os.path.join(qs.subdir, qs.filename)] = qs 
 
   def getquickstats(self, pofilenames=None):
     """Gets translated and total stats and wordcounts without doing calculations returning dictionary."""
@@ -1192,22 +1151,21 @@ class TranslationProject(object):
       if pofilename not in self.quickstats:
         slowfiles.append(pofilename)
         continue
-      translatedwords, translated, fuzzywords, fuzzy, totalwords, total = self.quickstats[pofilename]
-      alltranslatedwords += translatedwords
-      alltranslated += translated
-      allfuzzywords += fuzzywords
-      allfuzzy += fuzzy
-      alltotalwords += totalwords
-      alltotal += total
+      
+      alltranslatedwords += self.quickstats[pofilename].translatedwords
+      alltranslated += self.quickstats[pofilename].translated
+      allfuzzywords += self.quickstats[pofilename].fuzzywords
+      allfuzzy += self.quickstats[pofilename].fuzzy
+      alltotalwords += self.quickstats[pofilename].totalwords
+      alltotal += self.quickstats[pofilename].total
     for pofilename in slowfiles:
       self.pofiles[pofilename].statistics.updatequickstats(save=False)
-      translatedwords, translated, fuzzywords, fuzzy, totalwords, total = self.quickstats[pofilename]
-      alltranslatedwords += translatedwords
-      alltranslated += translated
-      allfuzzywords += fuzzywords
-      allfuzzy += fuzzy
-      alltotalwords += totalwords
-      alltotal += total
+      alltranslatedwords += self.quickstats[pofilename].translatedwords
+      alltranslated += self.quickstats[pofilename].translated
+      allfuzzywords += self.quickstats[pofilename].fuzzywords
+      allfuzzy += self.quickstats[pofilename].fuzzy
+      alltotalwords += self.quickstats[pofilename].totalwords
+      alltotal += self.quickstats[pofilename].total
     if slowfiles:
       self.savequickstats()
     return {"translatedsourcewords": alltranslatedwords, "translated": alltranslated, 
