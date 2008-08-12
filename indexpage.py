@@ -129,7 +129,8 @@ class PootleIndex(pagelayout.PootlePage):
 
   def getlanguages(self,session):
     languages = []
-    for langcode, langname in self.potree.getlanguages():
+    asession = self.potree.server.alchemysession
+    for (langcode, langname, recentsub) in asession.query(Language.code, Language.fullname, func.min(Submission.creationTime)).outerjoin((Submission, Language.submissions)).order_by(Language.fullname).group_by(Language.code).all(): 
       projectcodes = self.potree.getprojectcodes(langcode)
       trans = 0
       fuzzy = 0
@@ -153,11 +154,9 @@ class PootleIndex(pagelayout.PootlePage):
         fuzzyper = 0 
         untransper = 0 
 
-      asession = self.potree.server.alchemysession
-      recentsub = asession.query(Submission.creationTime).filter_by(language=self.potree.languages[langcode]).order_by(Submission.creationTime.desc()).first()
       lastact = ""
       if recentsub != None:
-        lastact = recentsub[0]
+        lastact = recentsub
 
       if viewable:
         languages.append({"code": langcode, "name": self.tr_lang(langname), "lastactivity": lastact, "trans": trans, "fuzzy": fuzzy, "untrans": untrans, "total": total, "transper": transper, "fuzzyper": fuzzyper, "untransper": untransper}) 
@@ -167,7 +166,8 @@ class PootleIndex(pagelayout.PootlePage):
   def getprojects(self,session):
     """gets the options for the projects"""
     projects = []
-    for projectcode in self.potree.getprojectcodes():
+    asession = self.potree.server.alchemysession
+    for (projectcode, recentsub) in asession.query(Project.code, func.min(Submission.creationTime)).outerjoin((Submission, Project.submissions)).order_by(Project.fullname).group_by(Project.code).all(): 
       langcodes = self.potree.getlanguagecodes(projectcode)
       trans = 0
       fuzzy = 0
@@ -193,11 +193,9 @@ class PootleIndex(pagelayout.PootlePage):
       projectname = self.potree.getprojectname(projectcode)
       description = shortdescription(self.potree.getprojectdescription(projectcode))
       
-      asession = self.potree.server.alchemysession
-      recentsub = asession.query(Submission.creationTime).filter_by(project=self.potree.projects[projectcode]).order_by(Submission.creationTime.desc()).first()
       lastact = ""
       if recentsub != None:
-        lastact = recentsub[0]
+        lastact = recentsub
       
       if viewable:
         projects.append({"code": projectcode, "name": projectname, "description": description, "lastactivity": lastact, "trans": trans, "fuzzy": fuzzy, "untrans": untrans, "total": total, "transper": transper, "fuzzyper": fuzzyper, "untransper": untransper})
