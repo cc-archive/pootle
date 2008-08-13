@@ -360,10 +360,21 @@ class TranslationProjectAdminPage(pagelayout.PootlePage):
     self.session = session
     self.localize = session.localize
     self.rightnames = self.project.getrightnames(session)
+
+    if not self.session.issiteadmin():
+      raise projects.Rights404Error
+
+    try:
+      if "scanpofiles" in argdict:
+        self.project.scanpofiles()
+    except:
+      pass
+
     updaterights(project, session, argdict)
     # l10n: This is the page title. The first parameter is the language name, the second parameter is the project name
     pagetitle = self.localize("Pootle Admin: %s %s", self.project.languagename, self.project.projectname)
     main_link = self.localize("Project home page")
+    rescan_files_link = self.localize("Rescan project files")
     norights_text = self.localize("You do not have the rights to administer this project.")
     templatename = "projectlangadmin"
     sessionvars = {"status": self.session.status, "isopen": self.session.isopen, "issiteadmin": self.session.issiteadmin()}
@@ -372,6 +383,7 @@ class TranslationProjectAdminPage(pagelayout.PootlePage):
         "project": {"code": self.project.projectcode, "name": self.project.projectname},
         "language": {"code": self.project.languagecode, "name": self.project.languagename},
         "main_link": main_link,
+        "rescan_files_link": rescan_files_link,
         "session": sessionvars, "instancetitle": instancetitle}
     templatevars.update(self.getoptions())
     pagelayout.PootlePage.__init__(self, templatename, templatevars, session, bannerheight=80)
