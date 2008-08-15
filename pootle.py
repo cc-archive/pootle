@@ -706,6 +706,15 @@ def get_runner(options):
   else:
     return simplewebserver.run
 
+def set_stats_db(server, options):
+  def get_stats():
+    if options.statsdb_file != None:
+      return options.statsdb_file
+    else:
+      return getattr(server.instance, 'stats_db', None)
+  
+  statistics.STATS_DB_FILE = get_stats()
+
 def main():
   # run the web server
   checkversions()
@@ -716,6 +725,7 @@ def main():
   if options.action != "runwebserver":
     options.servertype = "dummy"
   server = parser.getserver(options)
+  set_stats_db(server, options)
   server.options = options
   if options.action == "runwebserver":
     run = get_runner(options)

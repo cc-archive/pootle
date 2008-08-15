@@ -79,6 +79,8 @@ a:link		{ color: #004077; text-decoration: none; }
 a:visited	{ color: #004077; text-decoration: none; }
 a:hover[href]	{ color: #004077; text-decoration: underline; }
 a:active[href]	{ color: #004077; text-decoration: underline; }
+a img { border: 0; }
+
 html {
 /*	height: 98%;*/
 /*	min-height: 98%;*/
@@ -90,6 +92,18 @@ body {
 	margin: 0px;
 	padding: 0px;
 }
+
+#working {
+  position: absolute;
+  left: 50%;
+  margin: 0 auto;
+  text-align: center;
+  font-weight: bold;
+  background-color: #cc0000;
+  color: #eeeeec;
+  padding: 3px;
+}
+
 #abovefooter
 {
 /*	min-height: 98%;*/
@@ -151,15 +165,55 @@ div.navbar
 	padding: 5px;
 	min-height: 1.8em;
 }
-div.searchform
-{
-	float: right;
-	max-width: 30%;
+
+div.searchform {
+  float: right;
+  max-width: 30%;
+  /* sets max-height for IE */
+  height: expression( this.scrollHeight > (500/12) * parseInt(document.body.currentStyle.fontSize) ? "1.8em" : "auto" );
+  max-height: 1.8em;
+  background-color:#E4E6E8;
+  padding: 3px;
+  border: 1px solid gray;
 }
-div.searchform[dir="rtl"]
-{
-	float: left;
+
+div.searchform[dir="rtl"] {
+  float: left;
 }
+
+div.advancedsearch {
+  background-color: #E4E6E8;
+  border-bottom: 1px solid gray;
+  border-left: 1px solid gray;
+  border-right: 1px solid gray;
+  overflow: auto;
+  padding-bottom:3px;
+  padding-left: 3px;
+  padding-right: 8px;
+  position: relative;
+  z-index: 2;
+  display: none;
+}
+
+div.advancedsearch[dir="rtl"] {
+  position: relative;
+  padding-left: 8px;
+  padding-right: 3px;
+}
+
+div.nodefaultsearch {
+  background-color: #f1f3f5 !important;
+}
+
+label.inputHint {
+  display: none;
+}
+
+.togglesearch {
+  cursor: pointer;
+  vertical-align: middle;
+}
+
 div.goalitem 
 {
 	margin-bottom:6px;
@@ -270,10 +324,47 @@ textarea.translate-translation-fuzzy
 	border-left: 6px groove gray;
 	padding-left: 3px;
 }
-.translate-suggestion
-{
+
+#translate-original-container,
+#translate-suggestion-container {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.translate-suggestion-block {
+  position: relative;
+  margin-top: 5px;
+  margin-bottom: 10px;
+}
+
+.translate-suggestion-block .rejectsugg img {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  cursor: pointer;
+}
+
+.translate-suggestion-block .rejectsugg img[dir="rtl"] {
+  left: 0px;
+  right: auto;
+}
+
+.translate-suggestion-block .acceptsugg img {
+  position: absolute;
+  top: 0px;
+  right: 20px;
+  cursor: pointer;
+}
+
+.translate-suggestion-block .acceptsugg img[dir="rtl"] {
+  left: 20px;
+  right: auto;
+}
+
+.translate-suggestion {
 	background-color: #DDD;
 }
+
 .translator-comments
 {
 	background-color: #b0d6de;

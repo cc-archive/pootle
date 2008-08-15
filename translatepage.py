@@ -67,6 +67,7 @@ class TranslatePage(pagelayout.PootleNavPage):
       self.showassigns = int(self.showassigns)
     self.session = session
     self.localize = session.localize
+    self.searchfields = self.getsearchfields()
     self.rights = self.project.getrights(self.session)
     if "view" not in self.rights:
       raise projects.Rights404Error(None)
@@ -136,8 +137,8 @@ class TranslatePage(pagelayout.PootleNavPage):
         "translation_title": self.localize("Translation"),
         "items": items,
         "reviewmode": self.reviewmode,
-        "accept_button": self.localize("Accept"),
-        "reject_button": self.localize("Reject"),
+        "accept_title": self.localize("Accept suggestion"),
+        "reject_title": self.localize("Reject suggestion"),
         "fuzzytext": self.localize("Fuzzy"),
         "viewsuggtext": self.localize("View Suggestions"),
         # l10n: Heading above the textarea for translator comments.
@@ -149,14 +150,27 @@ class TranslatePage(pagelayout.PootleNavPage):
         # optional sections, will appear if these values are replaced
         "assign": None,
         # l10n: text next to search field
-        "search": {"title": self.localize("Search")},
+        "search": {"title": self.localize("Search"),
+                   "advanced_title": self.localize("Advanced Search"),
+                   "fields": self.searchfields},
         # hidden widgets
         "searchtext": self.searchtext,
         "pofilename": givenpofilename,
         # general vars
         "session": sessionvars,
         "instancetitle": instancetitle,
-        "rights": self.rights}
+        "rights": self.rights,
+        # l10n: Text displayed when an AJAX petition is being made
+        "ajax_status_text": self.localize("Working..."),
+        # l10n: Text displayed in an alert box when an AJAX petition has failed
+        "ajax_error": self.localize("Error: Something went wrong."),
+        "accept_button": self.localize("Accept"),
+        "reject_button": self.localize("Reject")
+
+        }
+
+    if self.extra_class:
+      templatevars["search"]["extra_class"] = "nodefaultsearch"
 
     if self.showassigns and "assign" in self.rights:
       templatevars["assign"] = self.getassignbox()
@@ -342,7 +356,9 @@ class TranslatePage(pagelayout.PootleNavPage):
       self.project.updatetranslation(self.pofilename, item, newvalues, self.session)
       
       self.lastitem = item
-    for item, suggid in rejects:
+
+    # It's necessary to loop the list reversed in order to selectively remove items
+    for item, suggid in reversed(rejects):
       value = suggestions[item, suggid]
       if isinstance(value, dict) and len(value) == 1 and 0 in value:
         value = value[0]
@@ -380,7 +396,9 @@ class TranslatePage(pagelayout.PootleNavPage):
     item = self.argdict.pop("item", None)
     if item is None:
       try:
-        search = pootlefile.Search(dirfilter=self.dirfilter, matchnames=self.matchnames, searchtext=self.searchtext)
+        # Retrieve the search fields we want to search for
+        fields = [f["name"] for f in self.searchfields if f["value"] == "1"]
+        search = pootlefile.Search(dirfilter=self.dirfilter, matchnames=self.matchnames, searchtext=self.searchtext, searchfields=fields)
         # TODO: find a nicer way to let people search stuff assigned to them (does it by default now)
         # search.assignedto = self.argdict.get("assignedto", self.session.username)
         search.assignedto = self.argdict.get("assignedto", None)
@@ -445,6 +463,8 @@ class TranslatePage(pagelayout.PootleNavPage):
     self.translations = self.gettranslations()
     items = []
     suggestions = {}
+    if (self.reviewmode or self.translatemode) and self.item is not None:
+      suggestions = {self.item: self.project.getsuggestions(self.pofilename, self.item)}
     for row, unit in enumerate(self.translations):
       tmsuggestions = []
       if isinstance(unit.source, multistring):
@@ -485,9 +505,15 @@ class TranslatePage(pagelayout.PootleNavPage):
         tmsuggestions = self.project.gettmsuggestions(self.pofilename, self.item)
         tmsuggestions.extend(self.project.getterminology(self.session, self.pofilename, self.item))
         
-        if self.reviewmode:
+        if self.translatemode or self.reviewmode:
           translator_comments = self.escapetext(unit.getnotes(origin="translator"), stripescapes=True)
           transmerge = {} 
+          transedit = self.gettransedit(item, trans)
+          # Make sure we don't overwrite the diff attribute in case it's plural
+          if len(trans) > 1:
+            for i, f in enumerate(transedit["forms"]):
+              transedit["forms"][i].update(transmerge["forms"][i])
+          transmerge.update(transedit)
         else:
           transmerge = self.gettransedit(item, trans)
       else:
@@ -527,6 +553,9 @@ class TranslatePage(pagelayout.PootleNavPage):
       if unit.isfuzzy():
         state_class += "translate-translation-fuzzy"
         fuzzy = "checked"
+
+      hassuggestion = len(transdict.get("suggestions", {})) > 0
+
       itemdict = {
                  "itemid": item,
                  "orig": origdict,
@@ -541,6 +570,7 @@ class TranslatePage(pagelayout.PootleNavPage):
                  "locations": locations,
                  "message_context": message_context,
                  "tm": tmsuggestions,
+                 "hassuggestion": hassuggestion
                  }
 
       altsrcdict = {"available": False}
@@ -905,3 +935,40 @@ class TranslatePage(pagelayout.PootleNavPage):
         altsrcdict["available"] = True
     return altsrcdict
 
+  def getsearchfields(self):
+    tmpfields = [{"name": "source",
+                  "text": self.localize("Source Text"),
+                  "value": self.argdict.get("source", 0),
+                  "checked": self.argdict.get("source", 0) == "1" and "checked" or None},
+                 {"name": "target",
+                  "text": self.localize("Target Text"),
+                  "value": self.argdict.get("target", 0),
+                  "checked": self.argdict.get("target", 0) == "1" and "checked" or None},
+                 {"name": "notes",
+                  "text": self.localize("Comments"),
+                  "value": self.argdict.get("notes", 0),
+                  "checked": self.argdict.get("notes", 0) == "1" and "checked" or None},
+                 {"name": "locations",
+                  "text": self.localize("Locations"),
+                  "value": self.argdict.get("locations", 0),
+                  "checked": self.argdict.get("locations", 0) == "1" and "checked" or None}]
+
+    somechecked = False
+    self.extra_class = False
+    for i, v in enumerate(tmpfields):
+      if not somechecked:
+        if tmpfields[i-1]["checked"] is not None:
+          somechecked = True
+      if (i - 1 == 0) or (i - 1 == 1):
+        if tmpfields[i-1]["checked"] is None:
+          self.extra_class = True
+      else:
+        if tmpfields[i-1]["checked"] is not None:
+          self.extra_class = True
+    if not somechecked:
+      # set the default search to "source" and "target"
+      tmpfields[0]["checked"] = "checked"
+      tmpfields[1]["checked"] = "checked"
+      self.extra_class = False
+
+    return tmpfields

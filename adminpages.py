@@ -75,8 +75,9 @@ class LanguagesAdminPage(pagelayout.PootlePage):
     templatename = "adminlanguages"
     sessionvars = {"status": self.session.status, "isopen": self.session.isopen, "issiteadmin": self.session.issiteadmin()}
     instancetitle = getattr(self.instance, "title", session.localize("Pootle Demo"))
+    pagetitle = self.localize("Pootle Languages Admin Page")
     text = self.gettext(session)
-    templatevars = {"languages": self.getlanguagesoptions(), "options": self.getoptions(), "session": sessionvars, "instancetitle": instancetitle, "text": text}
+    templatevars = {"pagetitle": pagetitle, "languages": self.getlanguagesoptions(), "options": self.getoptions(), "session": sessionvars, "instancetitle": instancetitle, "text": text}
     pagelayout.PootlePage.__init__(self, templatename, templatevars, session)
 
   def gettext(self, session):
@@ -133,8 +134,9 @@ class ProjectsAdminPage(pagelayout.PootlePage):
     self.alltypes = [{"value": check, "description": check} for check in projectfiletypes]
     sessionvars = {"status": self.session.status, "isopen": self.session.isopen, "issiteadmin": self.session.issiteadmin()}
     instancetitle = getattr(self.instance, "title", session.localize("Pootle Demo"))
+    pagetitle = self.localize("Pootle Projects Admin Page")
     text = self.gettext(session)
-    templatevars = {"projects": self.getprojectsoptions(), "options": self.getoptions(), "session": sessionvars, "instancetitle": instancetitle, "text": text}
+    templatevars = {"pagetitle": pagetitle, "projects": self.getprojectsoptions(), "options": self.getoptions(), "session": sessionvars, "instancetitle": instancetitle, "text": text}
     pagelayout.PootlePage.__init__(self, templatename, templatevars, session)
 
   def gettext(self, session):
@@ -198,8 +200,9 @@ class UsersAdminPage(pagelayout.PootlePage):
     templatename = "adminusers"
     sessionvars = {"status": self.session.status, "isopen": self.session.isopen, "issiteadmin": self.session.issiteadmin()}
     instancetitle = getattr(self.instance, "title", session.localize("Pootle Demo"))
+    pagetitle = self.localize("Pootle User Admin Page")
     text = self.gettext(session)
-    templatevars = {"users": self.getusersoptions(), "options": self.getoptions(), "session": sessionvars, "instancetitle": instancetitle, "text": text}
+    templatevars = {"pagetitle": pagetitle, "users": self.getusersoptions(), "options": self.getoptions(), "session": sessionvars, "instancetitle": instancetitle, "text": text}
     pagelayout.PootlePage.__init__(self, templatename, templatevars, session)
 
   def gettext(self, session):
