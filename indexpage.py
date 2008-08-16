@@ -313,6 +313,9 @@ class LanguageIndex(pagelayout.PootleNavPage):
         "language": {"code": languagecode, "name": self.tr_lang(self.languagename), "stats": languagestats, "info": languageinfo},
         "projects": languageprojects, 
         "statsheadings": self.getstatsheadings(),
+        "untranslatedtext": self.localize("%s untranslated words"),
+        "fuzzytext": self.localize("%s fuzzy words"),
+        "complete": self.localize("Complete"),
         # top users
         "topstats": topstats, "topstatsheading": self.localize("Top Contributors"),
         "session": sessionvars, "instancetitle": instancetitle}
@@ -391,6 +394,9 @@ class ProjectLanguageIndex(pagelayout.PootleNavPage):
         "project": {"code": projectcode, "name": projectname, "stats": projectstats},
         "description": description, "meta_description": meta_description, 
         "adminlink": adminlink, "languages": languages,
+        "untranslatedtext": self.localize("%s untranslated words"),
+        "fuzzytext": self.localize("%s fuzzy words"),
+        "complete": self.localize("Complete"),
         "session": sessionvars, "instancetitle": instancetitle, 
         # top users
         "topstats": topstats, "topstatsheading": self.localize("Top Contributors"),
@@ -507,6 +513,9 @@ class ProjectIndex(pagelayout.PootleNavPage):
         "statsheadings": self.getstatsheadings(),
         # top users
         "topstats": topstats, "topstatsheading": self.localize("Top Contributors"),
+        "untranslatedtext": self.localize("%s untranslated words"),
+        "fuzzytext": self.localize("%s fuzzy words"),
+        "complete": self.localize("Complete"),
         # general vars
         "session": sessionvars, "instancetitle": instancetitle}
     pagelayout.PootleNavPage.__init__(self, templatename, templatevars, session, bannerheight=80)
