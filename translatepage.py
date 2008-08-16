@@ -140,7 +140,8 @@ class TranslatePage(pagelayout.PootleNavPage):
         "accept_title": self.localize("Accept suggestion"),
         "reject_title": self.localize("Reject suggestion"),
         "fuzzytext": self.localize("Fuzzy"),
-        "viewsuggtext": self.localize("View Suggestions"),
+        # l10n: Ajax link for suggestions.  %s is the number of suggestions
+        "viewsuggtext": self.localize("View Suggestions (%s)"),
         # l10n: Heading above the textarea for translator comments.
         "translator_comments_title": self.localize("Translator comments"),
         # l10n: Heading above the comments extracted from the programing source code
@@ -164,9 +165,10 @@ class TranslatePage(pagelayout.PootleNavPage):
         "ajax_status_text": self.localize("Working..."),
         # l10n: Text displayed in an alert box when an AJAX petition has failed
         "ajax_error": self.localize("Error: Something went wrong."),
+        # l10n: Button label
         "accept_button": self.localize("Accept"),
+        # l10n: Button label
         "reject_button": self.localize("Reject")
-
         }
 
     if self.extra_class:

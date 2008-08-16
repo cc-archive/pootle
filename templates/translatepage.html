@@ -36,7 +36,6 @@
     currurl = "${current_url}";
     tpagestart(first, last, currurl);
   });
-  
   </script>
   <!--[if lt IE 7.]>
     <script defer type="text/javascript" src="${baseurl}js/correctpng.js"></script>
@@ -285,7 +284,11 @@
                   <div dir="$uidir" lang="$language.code" class="translation-action">
                     <a py:if="item.trans.editlink" lang="$uilanguage" dir="$uidir" href="${item.trans.editlink.href}" class="translation-action" py:content="item.trans.editlink.text" id="${item.trans.editlink.linkid}">Edit</a>
                   </div>
-                  <a href="#" class="sugglink" dir="$uidir">${viewsuggtext} (<span class="scount">${str(len(item.trans.suggestions))}</span>)</a>
+
+                  <?python
+                  suggestiontext = viewsuggtext % ("<span class='scount'>" + str(len(item.trans.suggestions)) + "</span>")
+                  ?>
+                  <a href="#" class="sugglink" dir="$uidir" py:if="item.hassuggestion" py:content="XML(suggestiontext)">View Suggestions (0)</a>
 
                   <div dir="$language.dir" lang="$language.code" py:if="not item.trans.isplural" class="${item.trans.editclass} translation-text" py:content="XML(item.trans.text)" id="${item.trans.itemid}">
                     text
