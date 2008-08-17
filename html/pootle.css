@@ -885,3 +885,7 @@ div.translate-original {
 .placeholder {
   color: gray;
 }
+
+.hide {
+    display: none;
+}
