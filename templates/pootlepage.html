@@ -104,6 +104,34 @@
     </table>
   </div>
 
+  <div id="translationsummarylegend">
+    <div> <img src="/images/green-bar.png" alt="" />${translationlegend.translated}</div>
+    <div> <img src="/images/purple-bar.png" alt="" />${translationlegend.fuzzy}</div>
+    <div> <img src="/images/red-bar.png" alt="" />${translationlegend.untranslated}</div>
+  </div>
+
+  <div id="userstatistics" py:strip="True">
+      <h3 class="title" py:content="statstitle">User Statistics</h3>
+      <table>
+        <tr>
+          <th scope="row" dir="$uidir" py:content="statstext['suggaccepted']">Suggestions Accepted</th>
+          <td>${user.suggestionsAcceptedCount()}</td>
+        </tr>
+        <tr>
+          <th scope="row" dir="$uidir" py:content="statstext['suggpending']">Suggestions Pending</th>
+          <td>${user.suggestionsPendingCount()}</td>
+        </tr>
+        <tr>
+          <th scope="row" dir="$uidir" py:content="statstext['suggreviewed']">Suggestions Reviewed</th>
+          <td>${user.suggestionsReviewedCount()}</td>
+        </tr>
+        <tr>
+          <th scope="row" dir="$uidir" py:content="statstext['submade']">Submissions Made</th>
+          <td>${user.submissionsCount()}</td>
+        </tr>
+      </table>
+  </div>
+
 </body>
 </html>
 

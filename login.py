@@ -125,9 +125,9 @@ class ProgressiveLoginChecker(AlchemyLoginChecker):
     try:
       return self.logincheckers[n.logintype]
     except AttributeError:
-      raise AttributeError("Given username (%s) has no login type lister" % username)
+      raise AttributeError("Given username (%s) has no login type listed" % username)
     except KeyError:
-      raise self.NoSuchLoginChecker("Given username (%s) LoginChecker does not exist" % username)
+      raise self.NoSuchLoginChecker("Given username (%s) requested a non-existant LoginChecker.  Check your config file." % username)
 
   def userexists(self, username=None, create=False):
     """This function checks to see if the user exists; namely, does the user

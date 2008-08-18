@@ -140,6 +140,15 @@ class PootlePage:
         item.setpolarity(polarity)
       polarity = not polarity
     return itemlist
+  
+  def gettranslationsummarylegendl10n(self):
+    """Returns a dictionary of localized headings.  This is only used because we
+    can't do L10n directly in our templates. :("""
+    headings = {"translated":     self.localize("Translations are complete"),
+                "fuzzy":        self.localize("Translations need to be checked (they are marked fuzzy)"),
+                "untranslated": self.localize("Untranslated") }
+    return headings
+
 
 class PootleNavPage(PootlePage):
   def makenavbarpath_dict(self, project=None, session=None, currentfolder=None, language=None, argdict=None, dirfilter=None):

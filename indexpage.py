@@ -124,7 +124,9 @@ class PootleIndex(pagelayout.PootlePage):
         "projectlink": projectlink, "projects": self.getprojects(session),
         # top users
         "topstats": topstats, "topstatsheading": self.localize("Top Contributors"),
-        "session": sessionvars, "instancetitle": instancetitle}
+        "session": sessionvars, "instancetitle": instancetitle,
+        "translationlegend": self.gettranslationsummarylegendl10n()
+        }
     pagelayout.PootlePage.__init__(self, templatename, templatevars, session)
 
   def getlanguages(self,session):
@@ -221,8 +223,9 @@ class UserIndex(pagelayout.PootlePage):
     instancetitle = getattr(session.instance, "title", session.localize("Pootle Demo"))
     sessionvars = {"status": session.status, "isopen": session.isopen, "issiteadmin": session.issiteadmin()}
     quicklinks = self.getquicklinks()
-    setoptionstext = self.localize("Please click on 'Change options' and select some languages and projects")
-    statstitle = self.localize("User Statistics")
+    setoptionstext = self.localize("You need to <a href='options.html'>choose your languages and projects</a>.")
+    # l10n: %s is the full name of the currently logged in user
+    statstitle = self.localize("%s's Statistics", session.user.name)
     statstext = {
                   'suggmade': self.localize("Suggestions Made"),
                   'suggaccepted': self.localize("Suggestions Accepted"),
@@ -318,7 +321,9 @@ class LanguageIndex(pagelayout.PootleNavPage):
         "complete": self.localize("Complete"),
         # top users
         "topstats": topstats, "topstatsheading": self.localize("Top Contributors"),
-        "session": sessionvars, "instancetitle": instancetitle}
+        "session": sessionvars, "instancetitle": instancetitle,
+        "translationlegend": self.gettranslationsummarylegendl10n()
+        }
     pagelayout.PootleNavPage.__init__(self, templatename, templatevars, session, bannerheight=80)
 
   def getlanguageinfo(self):
@@ -400,7 +405,9 @@ class ProjectLanguageIndex(pagelayout.PootleNavPage):
         "session": sessionvars, "instancetitle": instancetitle, 
         # top users
         "topstats": topstats, "topstatsheading": self.localize("Top Contributors"),
-        "statsheadings": statsheadings}
+        "statsheadings": statsheadings,
+        "translationlegend": self.gettranslationsummarylegendl10n()
+        }
     pagelayout.PootleNavPage.__init__(self, templatename, templatevars, session, bannerheight=80)
 
   def getlanguages(self, session):
@@ -517,7 +524,9 @@ class ProjectIndex(pagelayout.PootleNavPage):
         "fuzzytext": self.localize("%s fuzzy words"),
         "complete": self.localize("Complete"),
         # general vars
-        "session": sessionvars, "instancetitle": instancetitle}
+        "session": sessionvars, "instancetitle": instancetitle,
+        "translationlegend": self.gettranslationsummarylegendl10n()
+        }
     pagelayout.PootleNavPage.__init__(self, templatename, templatevars, session, bannerheight=80)
     if self.showassigns and "assign" in self.rights:
       self.templatevars["assign"] = self.getassignbox()

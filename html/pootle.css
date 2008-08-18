@@ -889,3 +889,9 @@ div.translate-original {
 .hide {
     display: none;
 }
+div#translationsummarylegend div img {
+    vertical-align:middle;
+    width: 25px;
+    height: 15px;
+    padding: 0px 5px 0px 5px;
+}

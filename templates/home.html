@@ -33,36 +33,10 @@
           </ul>
         </li>
       </ul>
-      <div py:if="not quicklinks" class="item-description" py:content="setoptionstext">
-        Please click on 'Change options' and select some languages and projects
+      <div py:if="not quicklinks" class="item-description" py:content="XML(setoptionstext)">
+        You need to <a href="options.html">choose your languages and projects</a>.
       </div>
-      <h3 class="title" py:content="statstitle">User Statistics</h3>
-      <table>
-        <tr>
-          <th scope="row" dir="$uidir" py:content="statstext['suggaccepted']">Suggestions Accepted</th>
-          <td>${user.suggestionsAcceptedCount()}</td>
-        </tr>
-        <tr>
-          <th scope="row" dir="$uidir" py:content="statstext['suggpending']">Suggestions Pending</th>
-          <td>${user.suggestionsPendingCount()}</td>
-        </tr>
-        <tr>
-          <th scope="row" dir="$uidir" py:content="statstext['suggrejected']">Suggestions Rejected</th>
-          <td>${user.suggestionsRejectedCount()}</td>
-        </tr>
-        <tr>
-          <th scope="row" dir="$uidir" py:content="statstext['suggper']">Suggestions Use Percentage</th>
-          <td>${user.suggestionUsePercentage()}%</td>
-        </tr>
-        <tr>
-          <th scope="row" dir="$uidir" py:content="statstext['suggreviewed']">Suggestions Reviewed</th>
-          <td>${user.suggestionsReviewedCount()}</td>
-        </tr>
-        <tr>
-          <th scope="row" dir="$uidir" py:content="statstext['submade']">Submissions Made</th>
-          <td>${user.submissionsCount()}</td>
-        </tr>
-      </table>
+      <div id="userstatistics" over:include="pootlepage#userstatistics" />
     </div>
 
     <ul class="linklist">
