@@ -1,9 +1,9 @@
 %{!?python_sitelib: %define python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib()")}
 
 Name:           spelt
-Version:        0.1rc2
-Release:        0.1%{?dist}
-Summary:        A tool to classify words from a language database according to their roots.
+Version:        0.1
+Release:        1%{?dist}
+Summary:        A tool to classify words for spell checker development
 
 Group:          Development/Tools
 License:        GPLv2+
@@ -33,6 +33,14 @@ The language database is an XML-based format that is only used by Spelt to class
 
 %build
 %{__python} setup.py build
+./maketranslations %{name}
+pushd po
+for po in $(ls *.po)
+do
+    mkdir -p locale/$(basename $po .po)/LC_MESSAGES/
+    msgfmt $po --output-file=locale/$(basename $po .po)/LC_MESSAGES/%{name}.mo
+done
+popd
 
 
 %install
@@ -40,16 +48,14 @@ rm -rf $RPM_BUILD_ROOT
 %{__python} setup.py install -O1 --skip-build --install-data=/usr --root $RPM_BUILD_ROOT
 
 # Cleanup horrid ./setup.py installs
-mv %{buildroot}%{_bindir}/run_spelt.py %{buildroot}%{_bindir}/spelt
 pushd  %{buildroot}%{_datadir}
 mkdir -p mime/packages applications icons
-mv spelt/spelt.{png,ico} icons
-mv spelt/splash_logo.png icons
 popd
+mv share/spelt/spelt-mimetype.xml %{buildroot}%{_datadir}/mime/packages
 
 desktop-file-install --vendor="fedora" --delete-original \
    --dir=%{buildroot}%{_datadir}/applications            \
-   %{buildroot}%{_datadir}/applications/%{name}.desktop
+   share/%{name}/%{name}.desktop
 cp -rp po/locale %{buildroot}%{_datadir}/
 %find_lang %{name}
 
@@ -78,17 +84,18 @@ rm -rf $RPM_BUILD_ROOT
 
 %files -f %{name}.lang
 %defattr(-,root,root,-)
-%doc README
+%doc README TODO RELEASE share/spelt/examples
 %{_bindir}/*
 %{_datadir}/applications/*
 %{_datadir}/mime/packages/*
-%exclude %{_datadir}/spelt/*.in
 %{_datadir}/spelt
 %{_datadir}/icons/*
 %{python_sitelib}/spelt*
-%{python_sitelib}/*egg-info
 
 
 %changelog
+* Tue Aug 19 2008 Dwayne Bailey <dwayne@translate.org.za> - 0.1-1.fc9
+- Update for 0.1
+
 * Mon Aug 18 2008 Walter Leibbrandt <walter@translate.org.za> - 0.1rc2-0.1.fc9
 - Initial packaging
