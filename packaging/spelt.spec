@@ -1,8 +1,8 @@
 %{!?python_sitelib: %define python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib()")}
 
 Name:           spelt
-Version:        0.1
-Release:        1%{?dist}
+Version:        0.1rc2
+Release:        0.1%{?dist}
 Summary:        A tool to classify words from a language database according to their roots.
 
 Group:          Development/Tools
@@ -90,5 +90,5 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Mon Aug 18 2008 Walter Leibbrandt <walter@translate.org.za> - 0.1-1.fc8
+* Mon Aug 18 2008 Walter Leibbrandt <walter@translate.org.za> - 0.1rc2-0.1.fc9
 - Initial packaging
