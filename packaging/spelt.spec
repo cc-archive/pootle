@@ -2,7 +2,7 @@
 
 Name:           spelt
 Version:        0.1
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        A tool to classify words for spell checker development
 
 Group:          Development/Tools
@@ -16,9 +16,8 @@ BuildRequires:  python-devel
 BuildRequires:  desktop-file-utils
 BuildRequires:  gettext
 BuildRequires:  intltool
-Requires:       translate-toolkit
 Requires:       pygtk2
-Requires:       lxml
+Requires:       python-lxml
 Requires:       xdg-utils
 
 
@@ -94,6 +93,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Aug 19 2008 Dwayne Bailey <dwayne@translate.org.za> - 0.1-2.fc9
+- Installation fixes
+
 * Tue Aug 19 2008 Dwayne Bailey <dwayne@translate.org.za> - 0.1-1.fc9
 - Update for 0.1
 
