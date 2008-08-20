@@ -1,16 +1,9 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html  PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns:py="http://purl.org/kid/ns#" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<head>
-  <title>Pootle Navigation Bar</title>
-  <!--[if lt IE 7.]>
-    <script defer type="text/javascript" src="${baseurl}js/correctpng.js"></script>
-  <![endif]-->
-</head>
-<body>
-  <div id="item" class="contentsitem">
+<?xml version="1.0" encoding="utf-8"?>
+<include-this xmlns:py="http://purl.org/kid/ns#">
+  <div py:def="item_block(item, uidir, uilanguage, baseurl, block=None)" class="contentsitem">
     <img src="${baseurl}images/${item.icon}.png" class="icon" alt="" dir="$uidir" lang="$uilanguage" />
-    <h3 id="itemtitle" class="title"><a href="${item.href}">${item.title}</a></h3>
+    <h3 py:if="block == None" id="itemtitle" class="title"><a href="${item.href}">${item.title}</a></h3>
+    <div py:if="block != None" py:replace="block"/>
     <div id="actionlinks" class="item-description" py:if="item.actions">
       <span py:for="link in item.actions.basic" py:strip="True">
         <a href="${link.href}" title="${link.title}">${link.text}</a>
@@ -43,7 +36,8 @@
       </span>
     </div>
   </div>
-  <div id="itemstats" class="item-statistics">
+
+  <div py:def="itemstats(item)" class="item-statistics">
     <span py:if="item.stats.summary" py:replace="XML(item.stats.summary)">
       2/2 words (100%) translated <span class="string-statistics">[2/2 strings]</span>
     </span>
@@ -61,8 +55,9 @@
     </span>
   </div>
 
-  <div id="itemdata" py:strip="True">
+  <div py:def="itemdata(item, uidir, uilanguage, baseurl)">
     <td class="stats-name">
+      <img src="${baseurl}images/${item.icon}.png" class="icon" alt="" dir="$uidir" lang="$uilanguage" />
       <a href="${item.href}" lang="en" dir="ltr">${item.title}</a>
     </td>
     <span py:if="item.data" py:strip="True">
@@ -72,48 +67,13 @@
       <td class="stats">${item.data.totalsourcewords}</td>
       <td class="stats-graph">
         <span class="sortkey">${item.data.translatedpercentage}</span>
-        <span class="graph" title="${item.data.translatedpercentage}% complete" dir="$uidir">
-            <span class="translated" style="width: ${item.data.translatedpercentage or int(bool(item.data.translatedsourcewords))}px" />
-            <span class="fuzzy" style="${cssaligndir}: ${item.data.translatedpercentage or int(bool(item.data.translatedsourcewords))}px; width: ${item.data.fuzzypercentage or int(bool(item.data.fuzzysourcewords))}px" py:if="item.data.fuzzysourcewords"/>
-            <span class="untranslated" style="${cssaligndir}: ${(item.data.translatedpercentage or int(bool(item.data.translatedsourcewords))) + (item.data.fuzzypercentage or int(bool(item.data.fuzzysourcewords)))}px; width: ${100 - ((item.data.translatedpercentage or int(bool(item.data.translatedsourcewords))) + (item.data.fuzzypercentage or int(bool(item.data.fuzzysourcewords))))}px" py:if="item.data.untranslatedsourcewords" />
-        </span>
+        <table border="0" cellpadding="0" cellspacing="0"><tr>
+            <td bgcolor="green" class="data" height="20" width="${item.data.translatedpercentage or int(bool(item.data.translatedsourcewords))}" />
+            <td bgcolor="#d3d3d3" class="data" height="20" width="${item.data.fuzzypercentage or int(bool(item.data.fuzzysourcewords))}" py:if="item.data.fuzzysourcewords"/>
+            <td bgcolor="red" class="data" height="20" width="${item.data.untranslatedpercentage or int(bool(item.data.untranslatedsourcewords))}" py:if="item.data.untranslatedsourcewords" />
+        </tr></table>
       </td>
     </span>
   </div>
 
-  <div id="itemsummary" py:strip="True">
-    <td class="stats-name">
-      <a href="${item.href}" lang="en" dir="ltr">${item.title}</a>
-    </td>
-    <span py:if="item.data" py:strip="True">
-      <td class="stats-graph">
-        <span class="sortkey">${item.data.translatedpercentage}</span>
-        <span class="graph" title="${item.data.translatedpercentage}% complete" dir="$uidir">
-            <span class="translated" style="width: ${item.data.translatedpercentage or int(bool(item.data.translatedsourcewords))}px" />
-            <span class="fuzzy" style="${cssaligndir}: ${item.data.translatedpercentage or int(bool(item.data.translatedsourcewords))}px; width: ${item.data.fuzzypercentage or int(bool(item.data.fuzzysourcewords))}px" py:if="item.data.fuzzysourcewords"/>
-            <span class="untranslated" style="${cssaligndir}: ${(item.data.translatedpercentage or int(bool(item.data.translatedsourcewords))) + (item.data.fuzzypercentage or int(bool(item.data.fuzzysourcewords)))}px; width: ${100 - ((item.data.translatedpercentage or int(bool(item.data.translatedsourcewords))) + (item.data.fuzzypercentage or int(bool(item.data.fuzzysourcewords))))}px" py:if="item.data.untranslatedsourcewords" />
-        </span>
-      </td>
-      <td class="stats">
-        <?python
-            untranslatedwordstext = untranslatedtext % (item.data.untranslatedsourcewords)
-            fuzzywordstext = fuzzytext % (item.data.fuzzysourcewords)
-        ?>
-        <ul>
-        <span py:if="item.data.untranslatedsourcewords" py:strip="True">
-            <li class="todo"><a href="${item.href}translate.html?untranslated=1&amp;editing=1" py:content="untranslatedwordstext">untranslated words</a></li>
-        </span>
-        <span py:if="item.data.fuzzysourcewords" py:strip="True">
-            <li class="todo"><a href="${item.href}translate.html?fuzzy=1&amp;editing=1" py:content="fuzzywordstext">fuzzy words</a></li>
-        </span>
-        <span py:if="item.data.translatedsourcewords == item.data.totalsourcewords" py:strip="True">
-            <li class="complete" py:content="complete">Complete</li>
-        </span>
-        </ul>
-      </td>
-      <td class="stats">${item.data.totalsourcewords}</td>
-    </span>
-  </div>
-</body>
-</html>
-
+</include-this>

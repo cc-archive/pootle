@@ -1,15 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# 
+#
 # Copyright 2004-2006 Zuza Software Foundation
-# 
+#
 # This file is part of translate.
 #
 # translate is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
+#
 # translate is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -67,7 +67,6 @@ class TranslatePage(pagelayout.PootleNavPage):
       self.showassigns = int(self.showassigns)
     self.session = session
     self.localize = session.localize
-    self.searchfields = self.getsearchfields()
     self.rights = self.project.getrights(self.session)
     if "view" not in self.rights:
       raise projects.Rights404Error(None)
@@ -153,7 +152,7 @@ class TranslatePage(pagelayout.PootleNavPage):
         # l10n: text next to search field
         "search": {"title": self.localize("Search"),
                    "advanced_title": self.localize("Advanced Search"),
-                   "fields": self.searchfields},
+                   "fields": self.getsearchfields()},
         # hidden widgets
         "searchtext": self.searchtext,
         "pofilename": givenpofilename,
@@ -337,7 +336,7 @@ class TranslatePage(pagelayout.PootleNavPage):
       value = translations[item]
       self.project.suggesttranslation(self.pofilename, item, value, self.session)
       self.lastitem = item
-      
+
     for item in submits:
       if item in skips or item not in translations:
         continue
@@ -356,7 +355,7 @@ class TranslatePage(pagelayout.PootleNavPage):
         newvalues["translator_comments"] = translator_comments
 
       self.project.updatetranslation(self.pofilename, item, newvalues, self.session)
-      
+
       self.lastitem = item
 
     # It's necessary to loop the list reversed in order to selectively remove items
@@ -399,7 +398,7 @@ class TranslatePage(pagelayout.PootleNavPage):
     if item is None:
       try:
         # Retrieve the search fields we want to search for
-        fields = [f["name"] for f in self.searchfields if f["value"] == "1"]
+        fields = [f["name"] for f in self.getsearchfields() if f["value"] == "1"]
         search = pootlefile.Search(dirfilter=self.dirfilter, matchnames=self.matchnames, searchtext=self.searchtext, searchfields=fields)
         # TODO: find a nicer way to let people search stuff assigned to them (does it by default now)
         # search.assignedto = self.argdict.get("assignedto", self.session.username)
@@ -506,7 +505,7 @@ class TranslatePage(pagelayout.PootleNavPage):
           message_context = "".join(unit.getcontext())
         tmsuggestions = self.project.gettmsuggestions(self.pofilename, self.item)
         tmsuggestions.extend(self.project.getterminology(self.session, self.pofilename, self.item))
-        
+
         if self.translatemode or self.reviewmode:
           translator_comments = self.escapetext(unit.getnotes(origin="translator"), stripescapes=True)
           transmerge = {} 
@@ -549,7 +548,7 @@ class TranslatePage(pagelayout.PootleNavPage):
         focus_class = "translate-focus"
       else:
         focus_class = ""
-      
+
       state_class = ""
       fuzzy = None
       if unit.isfuzzy():
@@ -597,7 +596,7 @@ class TranslatePage(pagelayout.PootleNavPage):
     """Replace special characters &, <, >, add and handle escapes if asked."""
     text = text.replace("&", "&amp;") # Must be done first!
     text = text.replace("<", "&lt;").replace(">", "&gt;")
-    
+
     if stripescapes:
       text = text.replace("\n", '<br />')
       text = text.replace("\r", '<br />')
@@ -747,7 +746,7 @@ class TranslatePage(pagelayout.PootleNavPage):
         transdict["text"] = self.escapefortextarea(self.localize("Translation not possible because plural information for your language is not available. Please contact the site administrator."))
         textid = "trans%d" % item
         focusbox = textid
-        
+
       transdict["can_spell"] = spellcheck.can_check_lang(self.project.languagecode)
       transdict["spell_args"] = spellargs
       transdict["buttons"] = buttons
@@ -931,46 +930,12 @@ class TranslatePage(pagelayout.PootleNavPage):
       altsrcdict["dir"] = pagelayout.languagedir(altsrcdict["languagecode"])
       altsrcdict["title"] = self.session.tr_lang(altsrcdict["languagename"])
       if not origdict["isplural"]:
-        altsrctext = self.escapetext(self.altproject.ugettext(origdict["text"]))
-      if not origdict["isplural"] and altsrctext != origdict["text"] and not self.reviewmode:
+        orig = origdict["text"]
+        altsrctext = self.escapetext(self.altproject.ugettext(orig))
+      else:
+        altsrctext = None
+      if not origdict["isplural"] and altsrctext != orig and not self.reviewmode:
         altsrcdict["text"] = altsrctext
         altsrcdict["available"] = True
     return altsrcdict
 
-  def getsearchfields(self):
-    tmpfields = [{"name": "source",
-                  "text": self.localize("Source Text"),
-                  "value": self.argdict.get("source", 0),
-                  "checked": self.argdict.get("source", 0) == "1" and "checked" or None},
-                 {"name": "target",
-                  "text": self.localize("Target Text"),
-                  "value": self.argdict.get("target", 0),
-                  "checked": self.argdict.get("target", 0) == "1" and "checked" or None},
-                 {"name": "notes",
-                  "text": self.localize("Comments"),
-                  "value": self.argdict.get("notes", 0),
-                  "checked": self.argdict.get("notes", 0) == "1" and "checked" or None},
-                 {"name": "locations",
-                  "text": self.localize("Locations"),
-                  "value": self.argdict.get("locations", 0),
-                  "checked": self.argdict.get("locations", 0) == "1" and "checked" or None}]
-
-    somechecked = False
-    self.extra_class = False
-    for i, v in enumerate(tmpfields):
-      if not somechecked:
-        if tmpfields[i-1]["checked"] is not None:
-          somechecked = True
-      if (i - 1 == 0) or (i - 1 == 1):
-        if tmpfields[i-1]["checked"] is None:
-          self.extra_class = True
-      else:
-        if tmpfields[i-1]["checked"] is not None:
-          self.extra_class = True
-    if not somechecked:
-      # set the default search to "source" and "target"
-      tmpfields[0]["checked"] = "checked"
-      tmpfields[1]["checked"] = "checked"
-      self.extra_class = False
-
-    return tmpfields

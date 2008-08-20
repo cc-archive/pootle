@@ -811,36 +811,36 @@ th[scope="row"][dir="rtl"] {
   padding-left: 1em;
 }
 
-.topcontr {
+.topcontributers {
   clear: both;
 }
 
-.topcontr h3 {
+.topcontributers h3 {
   padding: 1em;
 }
 
-.topcontr table {
+.topcontributers table {
   float: left;
   width: 150px;
   margin-left: 25px;
   margin-right: 25px;
 }
 
-.topcontr caption {
+.topcontributers caption {
   font-weight: bold;
   font-variant: small-caps;
 }
 
-.topcontr table thead {
+.topcontributers table thead {
   display: none;
 }
 
-.topcontr th[scope="row"] {
+.topcontributers th[scope="row"] {
   text-align: left;
   font-weight: normal;
 }
 
-.topcontr td {
+.topcontributers td {
   text-align: right;
 }
 

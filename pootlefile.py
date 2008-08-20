@@ -1,15 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# 
+#
 # Copyright 2004-2006 Zuza Software Foundation
-# 
+#
 # This file is part of translate.
 #
 # translate is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
+#
 # translate is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -34,13 +34,14 @@ from jToolkit import timecache
 from jToolkit import glock
 import time
 import os
+import bisect
 
 _UNIT_CHECKER = checks.UnitChecker()
 
 class LockedFile:
   """locked interaction with a filesystem file"""
   #Locking is disabled for now since it impacts performance negatively and was
-  #not complete yet anyway. Reverse svn revision 5271 to regain the locking 
+  #not complete yet anyway. Reverse svn revision 5271 to regain the locking
   #code here.
   def __init__(self, filename):
     self.filename = filename
@@ -248,12 +249,12 @@ def make_class(base_class):
         self.project = project
         self.checker = self.project.checker
         self.filename = os.path.join(self.project.podir, self.pofilename)
-      
+
       self.lockedfile = LockedFile(self.filename)
       # we delay parsing until it is required
       self.pomtime = None
       self.assigns = None
-  
+
       self.pendingfilename = self.filename + os.extsep + "pending"
       self.pendingfile = None
       self.statistics = statistics.pootlestatistics(self)
@@ -261,16 +262,16 @@ def make_class(base_class):
       # we delay parsing until it is required
       self.pomtime = None
       self.tracker = timecache.timecache(20*60)
-  
+
     def reset_statistics(self):
       self.statistics = statistics.pootlestatistics(self)
-  
+
     def parsestring(cls, storestring):
       newstore = cls()
       newstore.parse(storestring)
       return newstore
     parsestring = classmethod(parsestring)
-  
+
     def parsefile(cls, storefile):
       """Reads the given file (or opens the given filename) and parses back to an object"""
       if isinstance(storefile, basestring):
@@ -281,31 +282,31 @@ def make_class(base_class):
         storestring = ""
       return cls.parsestring(storestring)
     parsefile = classmethod(parsefile)
-  
+
     def getheaderplural(self):
-      """returns values for nplural and plural values.  It tries to see if the 
+      """returns values for nplural and plural values.  It tries to see if the
       file has it specified (in a po header or similar)."""
       try:
         return super(pootlefile, self).getheaderplural()
       except AttributeError:
         return None, None
-  
+
     def updateheaderplural(self, *args, **kwargs):
-      """updates the file header. If there is an updateheader function in the 
+      """updates the file header. If there is an updateheader function in the
       underlying store it will be delegated there."""
       try:
         super(pootlefile, self).updateheaderplural(*args, **kwargs)
       except AttributeError:
         pass
-  
+
     def updateheader(self, **kwargs):
-      """updates the file header. If there is an updateheader function in the 
+      """updates the file header. If there is an updateheader function in the
       underlying store it will be delegated there."""
       try:
         super(pootlefile, self).updateheader(**kwargs)
       except AttributeError:
         pass
-  
+
     def readpendingfile(self):
       """reads and parses the pending file corresponding to this file"""
       if os.path.exists(self.pendingfilename):
@@ -313,14 +314,14 @@ def make_class(base_class):
         self.pendingfile = factory.getobject(inputfile, ignore=".pending")
       else:
         self.pendingfile = po.pofile()
-  
+
     def savependingfile(self):
       """saves changes to disk..."""
       output = str(self.pendingfile)
       outputfile = open(self.pendingfilename, "w")
       outputfile.write(output)
       outputfile.close()
-  
+
     def readtmfile(self):
       """reads and parses the tm file corresponding to this file"""
       if os.path.exists(self.tmfilename):
@@ -331,19 +332,19 @@ def make_class(base_class):
         self.tmmtime, self.tmfile = tmmtime, factory.getobject(inputfile, ignore=".tm")
       else:
         self.tmfile = po.pofile()
-  
+
     def getsuggestions(self, item):
       """find all the suggestion items submitted for the given item"""
       unit = self.getitem(item)
       if isinstance(unit, xliff.xliffunit):
         return unit.getalttrans()
-  
+
       locations = unit.getlocations()
       self.readpendingfile()
       # TODO: review the matching method
       suggestpos = [suggestpo for suggestpo in self.pendingfile.units if suggestpo.getlocations() == locations]
       return suggestpos
-  
+
     def addsuggestion(self, item, suggtarget, username):
       """adds a new suggestion for the given item"""
       unit = self.getitem(item)
@@ -355,7 +356,7 @@ def make_class(base_class):
         self.savepofile()
         self.reset_statistics()
         return
-  
+
       self.readpendingfile()
       newpo = unit.copy()
       if username is not None:
@@ -366,7 +367,7 @@ def make_class(base_class):
       self.savependingfile()
       self.statistics.reclassifyunit(item)
       self.reset_statistics()
-  
+
     def deletesuggestion(self, item, suggitem):
       """removes the suggestion from the pending file"""
       unit = self.getitem(item)
@@ -384,19 +385,19 @@ def make_class(base_class):
         self.savependingfile()
       self.statistics.reclassifyunit(item)
       self.reset_statistics()
-  
+
     def getsuggester(self, item, suggitem):
       """returns who suggested the given item's suggitem if recorded, else None"""
       unit = self.getsuggestions(item)[suggitem]
       if hasattr(unit, "xmlelement"):
         return unit.xmlelement.get("origin")
-  
+
       for msgidcomment in unit.msgidcomments:
         if msgidcomment.find("suggested by ") != -1:
           suggestedby = po.unquotefrompo([msgidcomment]).replace("_:", "", 1).replace("suggested by ", "", 1).strip()
           return suggestedby
       return None
-  
+
     def gettmsuggestions(self, item):
       """find all the tmsuggestion items submitted for the given item"""
       self.readtmfile()
@@ -406,11 +407,11 @@ def make_class(base_class):
       # Can't simply use the location index, because we want multiple matches
       suggestpos = [suggestpo for suggestpo in self.tmfile.units if suggestpo.getlocations() == locations]
       return suggestpos
-  
+
     def track(self, item, message):
       """sets the tracker message for the given item"""
       self.tracker[item] = message
-  
+
     def readpofile(self):
       """reads and parses the main file"""
       # make sure encoding is reset so it is read from the file
@@ -420,15 +421,15 @@ def make_class(base_class):
       # note: we rely on this not resetting the filename, which we set earlier, when given a string
       self.parse(filecontents)
       self.pomtime = pomtime
-  
+
     def savepofile(self):
       """saves changes to the main file to disk..."""
       output = str(self)
       self.pomtime = self.lockedfile.writecontents(output)
-  
+
     def pofreshen(self):
       """makes sure we have a freshly parsed pofile
-      
+
       @return: True if the file was freshened, False otherwise"""
       try:
           if self.pomtime != self.lockedfile.readmodtime():
@@ -444,17 +445,17 @@ def make_class(base_class):
           else:
               print "%s is a broken symlink" % (self.filename,)
       return False
-  
+
     def getoutput(self):
       """returns pofile output"""
       self.pofreshen()
       return super(pootlefile, self).getoutput()
-  
+
     def updateunit(self, item, newvalues, user, languageprefs):
       """updates a translation with a new target value"""
       self.pofreshen()
       unit = self.getitem(item)
-  
+
       if newvalues.has_key("target"):
         unit.target = newvalues["target"]
       if newvalues.has_key("fuzzy"):
@@ -463,34 +464,50 @@ def make_class(base_class):
         unit.removenotes()
         if newvalues["translator_comments"]:
           unit.addnote(newvalues["translator_comments"])
-        
-      po_revision_date = time.strftime("%Y-%m-%d %H:%M") + tzstring()
-      headerupdates = {"PO_Revision_Date": po_revision_date, "X_Generator": self.x_generator}
-      if user:
-        if getattr(user, "name", None) and getattr(user, "email", None):
-          headerupdates["Last_Translator"] = "%s <%s>" % (user.name, user.email)
-      # XXX: If we needed to add a header, the index value in item will be one out after
-      # adding the header.
-      # TODO: remove once we force the PO class to always output headers
-      force_recache = False 
-      if not self.header():
-        force_recache = True
-      self.updateheader(add=True, **headerupdates)
-      if languageprefs:
-        nplurals = getattr(languageprefs, "nplurals", None)
-        pluralequation = getattr(languageprefs, "pluralequation", None)
-        if nplurals and pluralequation:
-          self.updateheaderplural(nplurals, pluralequation)
+
+      if isinstance(self, po.pofile):
+        po_revision_date = time.strftime("%Y-%m-%d %H:%M") + tzstring()
+        headerupdates = {"PO_Revision_Date": po_revision_date, "X_Generator": self.x_generator}
+        if userprefs:
+          if getattr(userprefs, "name", None) and getattr(userprefs, "email", None):
+            headerupdates["Last_Translator"] = "%s <%s>" % (userprefs.name, userprefs.email)
+        # XXX: If we needed to add a header, the index value in item will be one out after
+        # adding the header.
+        # TODO: remove once we force the PO class to always output headers
+        force_recache = False
+        if not self.header():
+          force_recache = True
+        self.updateheader(add=True, **headerupdates)
+        if languageprefs:
+          nplurals = getattr(languageprefs, "nplurals", None)
+          pluralequation = getattr(languageprefs, "pluralequation", None)
+          if nplurals and pluralequation:
+            self.updateheaderplural(nplurals, pluralequation)
+
       self.savepofile()
       self.statistics.reclassifyunit(item)
       self.reset_statistics()
-  
+
     def getitem(self, item):
       """Returns a single unit based on the item number."""
       return self.units[self.statistics.getstats()["total"][item]]
-  
+
     def iteritems(self, search, lastitem=None):
       """iterates through the items in this pofile starting after the given lastitem, using the given search"""
+
+      def find_min(low, high, translatables, matchname):
+        for index in self.statistics.getstats().get(matchname, []):
+          if low <= index <= high:
+            return bisect.bisect_left(translatables, index)
+        return -1
+
+      def next_item(low, high, translatables, matchnames):
+        indices = (find_min(low, high, translatables, name) for name in matchnames)
+        try:
+          return min(i for i in indices if i > -1)
+        except ValueError:
+          raise StopIteration
+
       # update stats if required
       translatables = self.statistics.getstats()["total"]
       if lastitem is None:
@@ -498,18 +515,21 @@ def make_class(base_class):
       else:
         minitem = lastitem + 1
       maxitem = len(translatables)
-      validitems = range(minitem, maxitem)
+      if not 0 <= minitem < maxitem:
+        raise StopIteration
       if search.assignedto or search.assignedaction:
+        validitems = xrange(minitem, maxitem)
         assignitems = self.getassigns().finditems(search)
         validitems = [item for item in validitems if item in assignitems]
       # loop through, filtering on matchnames if required
-      for item in validitems:
-        if not search.matchnames:
-          yield item
-        for name in search.matchnames:
-          if translatables[item] in self.statistics.getstats()[name]:
-            yield item
-  
+      if not search.matchnames:
+        if minitem < len(translatables):
+          yield minitem
+        else:
+          raise StopIteration
+      else:
+        yield next_item(translatables[minitem], translatables[maxitem - 1], translatables, search.matchnames)
+
     def matchitems(self, newfile, uselocations=False):
       """matches up corresponding items in this pofile with the given newfile, and returns tuples of matching poitems (None if no match found)"""
       if not hasattr(self, "sourceindex"):
@@ -523,7 +543,7 @@ def make_class(base_class):
         foundid = False
         if uselocations:
           newlocations = newpo.getlocations()
-          mergedlocations = []
+          mergedlocations = set()
           for location in newlocations:
             if location in mergedlocations:
               continue
@@ -532,7 +552,7 @@ def make_class(base_class):
               if oldpo is not None:
                 foundid = True
                 matches.append((oldpo, newpo))
-                mergedlocations.append(location)
+                mergedlocations.add(location)
                 continue
         if not foundid:
           # We can't use the multistring, because it might contain more than two
@@ -544,41 +564,41 @@ def make_class(base_class):
           else:
             matches.append((None, newpo))
       # find items that have been removed
-      matcheditems = [oldpo for oldpo, newpo in matches if oldpo]
+      matcheditems = set(oldpo for oldpo, newpo in matches if oldpo)
       for oldpo in self.units:
         if not oldpo in matcheditems:
           matches.append((oldpo, None))
       return matches
-  
+
     def getassigns(self):
       if self.assigns is None:
           self.assigns = pootleassigns(self)
       return self.assigns
-  
-    def mergeitem(self, oldpo, newpo, username, suggest=False):
+
+    def mergeitem(self, po_position, oldpo, newpo, username, suggest=False):
       """merges any changes from newpo into oldpo"""
       unchanged = oldpo.target == newpo.target
       if not suggest and (not oldpo.target or not newpo.target or oldpo.isheader() or newpo.isheader() or unchanged):
         oldpo.merge(newpo)
       else:
-        for item in self.statistics.getstats()["total"]:
-          matchpo = self.units[item]
-          if matchpo == oldpo:
-            strings = getattr(newpo.target, "strings", [newpo.target])
-            self.addsuggestion(item, strings, username)
-            return
-        raise KeyError("Could not find item for merge")
-  
+        if oldpo in po_position:
+          strings = getattr(newpo.target, "strings", [newpo.target])
+          self.addsuggestion(po_position[oldpo], strings, username)
+        else:
+          raise KeyError("Could not find item for merge")
+
     def mergefile(self, newfile, username, allownewstrings=True, suggestions=False):
       """make sure each msgid is unique ; merge comments etc from duplicates into original"""
       self.makeindex()
+      translatables = (self.units[index] for index in self.statistics.getstats()["total"])
+      po_position = dict((unit, position) for position, unit in enumerate(translatables))
       matches = self.matchitems(newfile)
       for oldpo, newpo in matches:
         if suggestions:
           if oldpo and newpo:
-              self.mergeitem(oldpo, newpo, username, suggest=True)
+              self.mergeitem(po_position, oldpo, newpo, username, suggest=True)
           continue
-  
+
         if oldpo is None:
           if allownewstrings:
             if isinstance(newpo, po.pounit):
@@ -589,11 +609,11 @@ def make_class(base_class):
           # TODO: mark the old one as obsolete
           pass
         else:
-          self.mergeitem(oldpo, newpo, username)
+          self.mergeitem(po_position, oldpo, newpo, username)
           # we invariably want to get the ids (source locations) from the newpo
           if hasattr(newpo, "sourcecomments"):
             oldpo.sourcecomments = newpo.sourcecomments
-  
+
       if not isinstance(newfile, po.pofile) or suggestions:
         #TODO: We don't support updating the header yet.
         self.savepofile()
@@ -601,15 +621,15 @@ def make_class(base_class):
         # the easiest way to recalculate everything
         self.readpofile()
         return
-  
+
       #Let's update selected header entries. Only the ones listed below, and ones
       #that are empty in self can be updated. The check in header_order is just
       #a basic sanity check so that people don't insert garbage.
-      updatekeys = ['Content-Type', 
-                    'POT-Creation-Date', 
-                    'Last-Translator', 
-                    'Project-Id-Version', 
-                    'PO-Revision-Date', 
+      updatekeys = ['Content-Type',
+                    'POT-Creation-Date',
+                    'Last-Translator',
+                    'Project-Id-Version',
+                    'PO-Revision-Date',
                     'Language-Team']
       headerstoaccept = {}
       ownheader = self.parseheader()
@@ -617,7 +637,7 @@ def make_class(base_class):
         if key in updatekeys or (not key in ownheader or not ownheader[key]) and key in po.pofile.header_order:
           headerstoaccept[key] = value
       self.updateheader(add=True, **headerstoaccept)
-      
+
       #Now update the comments above the header:
       header = self.header()
       newheader = newfile.header()
@@ -629,7 +649,7 @@ def make_class(base_class):
         if newheader:
           for i in range(len(header.allcomments)):
             header.allcomments[i].extend(newheader.allcomments[i])
-      
+
       self.savepofile()
       self.reset_statistics()
       # the easiest way to recalculate everything
@@ -650,7 +670,7 @@ _pootlefile_classes = {}
 # see whether there is a class which contains pootlefile functionality
 # and which derives from the translation store class. If there isn't
 # we invoke make_class to create such a class. Then we return an
-# instance of this class to the user. 
+# instance of this class to the user.
 def pootlefile(project=None, pofilename=None):
   po_class = po.pofile
   if pofilename != None:
@@ -661,7 +681,9 @@ def pootlefile(project=None, pofilename=None):
 
 class Search:
   """an object containing all the searching information"""
-  def __init__(self, dirfilter=None, matchnames=[], assignedto=None, assignedaction=None, searchtext=None, searchfields=["source", "target"]):
+  def __init__(self, dirfilter=None, matchnames=[], assignedto=None, assignedaction=None, searchtext=None, searchfields=None):
+    if searchfields is None:
+      searchfields = ["source", "target"]
     self.dirfilter = dirfilter
     self.matchnames = matchnames
     self.assignedto = assignedto

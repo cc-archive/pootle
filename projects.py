@@ -1,15 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# 
+#
 # Copyright 2004-2006 Zuza Software Foundation
-# 
+#
 # This file is part of translate.
 #
 # translate is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
+#
 # translate is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -282,7 +282,7 @@ class TranslationProject(object):
     for goalname, goalnode in goals.iteritems():
       newgoals[goalname.decode("utf-8")] = goalnode
     return newgoals
-    
+
   def getgoalfiles(self, goalname, dirfilter=None, maxdepth=None, includedirs=True, expanddirs=False, includepartial=False):
     """gets the files for the given goal, with many options!
     dirfilter limits to files in a certain subdirectory
@@ -573,53 +573,12 @@ class TranslationProject(object):
       originfile = cStringIO.StringIO(origcontents)
       origpofile.parse(originfile)
       # matching current file with BASE version
-      matches = origpofile.matchitems(currentpofile, uselocations=False)
       # TODO: add some locking here...
       # reading new version of file
       versioncontrol.updatefile(pathname)
       newpofile = pootlefile.pootlefile(self, popath)
       newpofile.pofreshen()
-      if not hasattr(newpofile, "sourceindex"):
-        newpofile.makeindex()
-      newmatches = []
-      # sorting through old matches
-      for origpo, localpo in matches:
-        # we need to find the corresponding newpo to see what to merge
-        if localpo is None:
-          continue
-        if origpo is None:
-          # if it wasn't in the original, then use the addition for searching
-          origpo = localpo
-        else:
-          origmsgstr = origpo.target
-          localmsgstr = localpo.target
-          if origmsgstr == localmsgstr:
-            continue
-
-        foundsource = False
-        # First try to find a match on location
-        for location in origpo.getlocations():
-          if location in newpofile.locationindex:
-            newpo = newpofile.locationindex[location]
-            if newpo is not None and newpo.source == localpo.source:
-              foundsource = True
-              newmatches.append((newpo, localpo))
-              continue
-        if not foundsource:
-          source = origpo.source
-          if source in newpofile.sourceindex:
-            newpo = newpofile.sourceindex[source]
-            newmatches.append((newpo, localpo))
-          else:
-            newmatches.append((None, localpo))
-      # finding new matches
-      for newpo, localpo in newmatches:
-        if newpo is None:
-          # TODO: include localpo as obsolete
-          continue
-        if localpo is None:
-          continue
-        newpofile.mergeitem(newpo, localpo, "versionmerge")
+      newpofile.mergefile(currentpofile, "versionmerge")
       # saving
       newpofile.savepofile()
       newpofile.reset_statistics()
@@ -650,7 +609,8 @@ class TranslationProject(object):
     stats = self.getquickstats([os.path.join(dirname, pofilename)])
     statsstring = "%d of %d messages translated (%d fuzzy)." % \
         (stats["translated"], stats["total"], stats["fuzzy"])
-    message="Verbatim commit from %s by user %s, editing po file %s. %s" % (session.server.instance.title, session.username, pofilename, statsstring)
+
+    message="Commit from %s by user %s, editing po file %s. %s" % (session.server.instance.title, session.username, pofilename, statsstring)
     author=session.username
     fulldir = os.path.split(pathname)[0]
    
@@ -736,21 +696,39 @@ class TranslationProject(object):
 
   def uploadarchive(self, session, dirname, archivecontents):
     """uploads the files inside the archive"""
-    # Bug #402
-    #try:
-    #  from tempfile import mktemp
-    #  tempzipfile = mkstemp()
-    #  using zip command line is fast
-    #  os.system("cd %s ; zip -r - %s > %s" % (self.podir, " ".join(pofilenames), tempzipfile))
-    #  return open(tempzipfile, "r").read()
-    #finally:
-    #  if os.path.exists(tempzipfile):
-    #    os.remove(tempzipfile)
 
-    # but if it doesn't work, we can do it from python
+    # First we try to use "unzip" from the system, otherwise fall back to using
+    # the slower zipfile module (below)...
+    from tempfile import mkdtemp, mkstemp
+    tempdir = mkdtemp(prefix='pootle')
+    tempzipfd, tempzipname = mkstemp(prefix='pootle', suffix='.zip')
+
+    try:
+      os.write(tempzipfd, archivecontents)
+      os.close(tempzipfd)
+
+      import subprocess
+      subprocess.Popen('unzip "%s" -d "%s"' % (tempzipname, tempdir), shell=True)
+
+      def upload(basedir, path, files):
+        for fname in files:
+          if not os.path.isfile(os.path.join(path, fname)):
+            continue
+          if not fname.endswith(os.extsep + self.fileext):
+            print "error adding %s: not a %s file" % (fname, os.extsep + self.fileext)
+            continue
+          fcontents = open(os.path.join(path, fname), 'rb').read()
+          self.uploadfile(session, path[len(basedir)+1:], fname, fcontents)
+      os.path.walk(tempdir, upload, tempdir)
+      return
+    finally:
+      # Clean up temporary file and directory used in try-block
+      import shutil
+      os.unlink(tempzipname)
+      shutil.rmtree(tempdir)
+
     import zipfile
-    archivefile = cStringIO.StringIO(archivecontents)
-    archive = zipfile.ZipFile(archivefile, 'r')
+    archive = zipfile.ZipFile(cStringIO.StringIO(archivecontents), 'r')
     # TODO: find a better way to return errors...
     for filename in archive.namelist():
       if not filename.endswith(os.extsep + self.fileext):
@@ -871,7 +849,7 @@ class TranslationProject(object):
          The function "pofreshen" in pootlefile.py would be the natural place
          for this. But this causes circular calls between the current (r7514)
          statistics code and "updateindex" leading to indexing database lock
-         issues. 
+         issues.
          WARNING: You have to stop the pootle server before manually changing
          po files, if you want to keep the index database in sync.
 
@@ -900,7 +878,7 @@ class TranslationProject(object):
           return
         elif items:
           # Update only specific items - usually single translation via the web
-          # interface. All other items should still be up-to-date (even with an 
+          # interface. All other items should still be up-to-date (even with an
           # older pomtime).
           print "updating", self.languagecode, "index for", pofilename, "items", items
           # delete the relevant items from the database
@@ -930,7 +908,7 @@ class TranslationProject(object):
           doc["source"] = orig
           doc["target"] = trans
           doc["notes"] = unit.getnotes()
-          doc["locations"] = "\n".join(unit.getlocations())
+          doc["locations"] = unit.getlocations()
           addlist.append(doc)
         if addlist:
           index.begin_transaction()
@@ -982,7 +960,7 @@ class TranslationProject(object):
     searchparts = []
     if search.searchtext:
       # Generate a list for the query based on the selected fields
-      querylist = [("%s" % f, search.searchtext) for f in search.searchfields]
+      querylist = [(f, search.searchtext) for f in search.searchfields]
       textquery = index.make_query(querylist, False)
       searchparts.append(textquery)
     if search.dirfilter:
@@ -1019,7 +997,7 @@ class TranslationProject(object):
       grepfilter = pogrep.GrepFilter(search.searchtext, search.searchfields, ignorecase=True)
     for pofilename in self.searchpofilenames(pofilename, search, includelast=True):
       pofile = self.getpofile(pofilename)
-      if indexer.HAVE_INDEXER and (search.searchtext or search.matchnames):
+      if indexer.HAVE_INDEXER and search.searchtext:
         filesearch = search.copy()
         filesearch.dirfilter = pofilename
         hits = self.indexsearch(filesearch, "itemno")
@@ -1173,15 +1151,15 @@ class TranslationProject(object):
       alltotal += self.quickstats[pofilename].total
     if slowfiles:
       self.savequickstats()
-    return {"translatedsourcewords": alltranslatedwords, "translated": alltranslated, 
-            "fuzzysourcewords": allfuzzywords, "fuzzy": allfuzzy, 
+    return {"translatedsourcewords": alltranslatedwords, "translated": alltranslated,
+            "fuzzysourcewords": allfuzzywords, "fuzzy": allfuzzy,
             "totalsourcewords": alltotalwords, "total": alltotal}
 
   def combinestats(self, pofilenames=None):
     """combines translation statistics for the given po files (or all if None given)"""
     if pofilenames is None:
       pofilenames = self.pofilenames
-    pofilenames = [pofilename for pofilename in pofilenames 
+    pofilenames = [pofilename for pofilename in pofilenames
                    if pofilename != None and not os.path.isdir(pofilename)]
     total_stats = self.combine_totals(pofilenames)
     total_stats['units'] = self.combine_unit_stats(pofilenames)
@@ -1472,7 +1450,7 @@ class TranslationProject(object):
       self.termmatcher = None
       self.termmatchermtime = None
     return self.termmatcher
-    
+
   def getterminology(self, session, pofile, item):
     """find all the terminology for the given (pofile or pofilename) and item"""
     try:
