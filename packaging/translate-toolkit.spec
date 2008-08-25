@@ -1,18 +1,16 @@
 %{!?python_sitelib: %define python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib()")}
 
 Name:           translate-toolkit
-Version:        1.1.1
-Release:        1%{?dist}
+Version:        1.2
+Release:        0.1.beta1%{?dist}
 Summary:        Tools to assist with localization
 
 Group:          Development/Tools
 License:        GPLv2+
 URL:            http://translate.sourceforge.net/wiki/toolkit/index
-Source0:        http://downloads.sourceforge.net/translate/%{name}-%{version}.tar.bz2
-#Source0:        http://translate.sourceforge.net/snapshots/%{name}-%{version}rc4/%{name}-%{version}rc4.tar.bz2
+#Source0:        http://downloads.sourceforge.net/translate/%{name}-%{version}.tar.bz2
+Source0:        http://translate.sourceforge.net/snapshots/%{name}-%{version}-beta1/%{name}-%{version}-beta1.tar.bz2
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-
-Patch1:         translate-toolkit-1.1.1-locamotion.patch
 
 BuildArch:      noarch
 BuildRequires:  python-devel
@@ -22,6 +20,7 @@ Requires:       python-Levenshtein
 Requires:       python-lxml
 Requires:       python-iniparse
 Requires:       gettext-devel
+# Don't we need sgllite?
 
 
 %description
@@ -52,8 +51,7 @@ developers wishing to build new tools or reuse the libraries in other tools.
 
 
 %prep
-%setup -q -n %{name}-%{version}
-%patch1 -p1
+%setup -q -n %{name}-%{version}-beta1
 
 
 %build
@@ -105,6 +103,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Jun 3 2008 Dwayne Bailey <dwayne@translate.org.za> - 1.2-0.1.beta1.fc9
+- Update to 1.2-beta1
+
 * Tue Jun 3 2008 Dwayne Bailey <dwayne@translate.org.za> - 1.1.1-1.fc9
 - Rebuild for fc9
 
