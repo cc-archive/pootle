@@ -20,7 +20,6 @@ Requires:       python-Levenshtein
 Requires:       python-lxml
 Requires:       python-iniparse
 Requires:       gettext-devel
-# Don't we need sgllite?
 
 
 %description
