@@ -35,7 +35,7 @@ class po2amo:
 
     return thetargetfile
 
-def convertpo(inputfile, outputfile, templates):
+def convertpo(inputfile, outputfile, templates=None):
   """reads in stdin using fromfileclass, converts using convertorclass, writes to stdout"""
   inputstore = po.pofile(inputfile)
   convertor = po2amo()
