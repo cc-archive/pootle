@@ -18,18 +18,6 @@ def _getfiles(file):
   sourcefile = os.path.join(os.path.split(os.path.split(file)[0])[0], "en_US", "messages.po")
   return (combinedfile, mainfile, sourcefile)
 
-def hook(hooktype, file, *args, **kwargs):
-  if hooktype == "initialize":
-    return initialize(file, *args, **kwargs)
-  if hooktype == "precommit":
-    return precommit(file, *args, **kwargs)
-  if hooktype == "postcommit":
-    return postcommit(file, *args, **kwargs)
-  if hooktype == "preupdate":
-    return preupdate(file, *args, **kwargs)
-  if hooktype == "postupdate":
-    return postupdate(file, *args, **kwargs)
-
 def initialize(projectdir, languagecode):
   """The first paramater is the path to the project directory.  It's up to this
   script to know any internal structure of the directory"""

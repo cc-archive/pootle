@@ -23,8 +23,8 @@ def hook(project, hooktype, file, *args, **kwargs):
   """
   try:
     activehook = __import__(project, globals(), locals(), [])
-    if (hasattr(activehook, 'hook') and callable(activehook.hook)):
-        return activehook.hook(hooktype, file, *args, **kwargs)
+    if hasattr(activehook, hooktype) and callable(getattr(activehook, hooktype)):
+        return getattr(activehook, hooktype)(file, *args, **kwargs)
     else:
         return []
   except ImportError:
