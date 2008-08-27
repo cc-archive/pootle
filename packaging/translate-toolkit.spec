@@ -2,14 +2,14 @@
 
 Name:           translate-toolkit
 Version:        1.2
-Release:        0.1.beta1%{?dist}
+Release:        0.2.beta2%{?dist}
 Summary:        Tools to assist with localization
 
 Group:          Development/Tools
 License:        GPLv2+
 URL:            http://translate.sourceforge.net/wiki/toolkit/index
 #Source0:        http://downloads.sourceforge.net/translate/%{name}-%{version}.tar.bz2
-Source0:        http://translate.sourceforge.net/snapshots/%{name}-%{version}-beta1/%{name}-%{version}-beta1.tar.bz2
+Source0:        http://translate.sourceforge.net/snapshots/%{name}-%{version}-beta1/%{name}-%{version}-beta2.tar.bz2
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildArch:      noarch
@@ -50,7 +50,7 @@ developers wishing to build new tools or reuse the libraries in other tools.
 
 
 %prep
-%setup -q -n %{name}-%{version}-beta1
+%setup -q -n %{name}-%{version}-beta2
 
 
 %build
@@ -102,7 +102,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Tue Jun 3 2008 Dwayne Bailey <dwayne@translate.org.za> - 1.2-0.1.beta1.fc9
+* Tue Aug 26 2008 Dwayne Bailey <dwayne@translate.org.za> - 1.2-0.2.beta2.fc9
+- Update to 1.2-beta2
+
+* Mon Aug 25 2008 Dwayne Bailey <dwayne@translate.org.za> - 1.2-0.1.beta1.fc9
 - Update to 1.2-beta1
 
 * Tue Jun 3 2008 Dwayne Bailey <dwayne@translate.org.za> - 1.1.1-1.fc9
