@@ -9,7 +9,7 @@ Group:          Development/Tools
 License:        GPLv2+
 URL:            http://translate.sourceforge.net/wiki/toolkit/index
 #Source0:        http://downloads.sourceforge.net/translate/%{name}-%{version}.tar.bz2
-Source0:        http://translate.sourceforge.net/snapshots/%{name}-%{version}-beta1/%{name}-%{version}-beta2.tar.bz2
+Source0:        http://translate.sourceforge.net/snapshots/%{name}-%{version}-beta2/%{name}-%{version}-beta2.tar.bz2
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildArch:      noarch
