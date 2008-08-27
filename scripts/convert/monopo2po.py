@@ -61,7 +61,7 @@ class amo2po:
 
     return thetargetfile
 
-def convertamo(inputfile, outputfile, templatefile):
+def convertpo(inputfile, outputfile, templatefile):
   """reads in stdin using fromfileclass, converts using convertorclass, writes to stdout"""
   engstore = po.pofile(inputfile)
   forstore = po.pofile(templatefile)
@@ -77,7 +77,7 @@ def main(argv=None):
   from translate.misc import stdiotell
   import sys
   sys.stdout = stdiotell.StdIOWrapper(sys.stdout)
-  formats = {"*":("po",convertamo)}
+  formats = {"*":("po",convertpo)}
   parser = convert.ConvertOptionParser(formats, usetemplates=True, description=__doc__)
   parser.run(argv)
 
