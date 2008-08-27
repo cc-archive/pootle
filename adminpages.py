@@ -281,6 +281,16 @@ class ProjectAdminPage(pagelayout.PootlePage):
         for languagecode in languagecodes:
           translationproject = self.potree.getproject(languagecode, self.projectcode)
           translationproject.converttemplates(self.session)
+      if "initialize" in argdict:
+        languagecodes = argdict.get("updatelanguage", None)
+        if not languagecodes:
+          raise ValueError("No languagecode given in doupdatelanguage")
+        if isinstance(languagecodes, (str, unicode)):
+          languagecodes = [languagecodes]
+        for languagecode in languagecodes:
+          translationproject = self.potree.getproject(languagecode, self.projectcode)
+          translationproject.initialize(self.session, languagecode)
+
     main_link = self.localize("Back to main page")
     existing_title = self.localize("Existing languages")
     existing_languages = self.getexistinglanguages()
@@ -293,6 +303,8 @@ class ProjectAdminPage(pagelayout.PootlePage):
     full_name = self.localize("Full Name")
     # l10n: This refers to updating the translation files from the templates like with .pot files
     update_link = self.localize("Update from templates")
+    # l10n: This refers to running an intialization script for the given project+locale
+    initialize_link = self.localize("Initialize")
     templatename = "projectadmin"
     sessionvars = {"status": self.session.status, "isopen": self.session.isopen, "issiteadmin": self.session.issiteadmin()}
     instancetitle = getattr(self.session.instance, "title", session.localize("Pootle Demo"))
@@ -302,7 +314,8 @@ class ProjectAdminPage(pagelayout.PootlePage):
         "existing_title": existing_title, "existing_languages": existing_languages,
         "new_languages": new_languages,
         "update_button": update_button, "add_button": self.localize("Add Language"),
-        "main_link": main_link, "update_link": update_link,
+        "main_link": main_link, "update_link": update_link, 
+        "initialize_link": initialize_link,
         "session": sessionvars, "instancetitle": instancetitle}
     pagelayout.PootlePage.__init__(self, templatename, templatevars, session, bannerheight=80)
 

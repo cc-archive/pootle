@@ -47,6 +47,8 @@ import gettext
 import subprocess
 import datetime
 
+from scripts import hooks
+
 from sqlalchemy import *
 from sqlalchemy.exc import *
 from dbclasses import * 
@@ -614,13 +616,23 @@ class TranslationProject(object):
     author=session.username
     fulldir = os.path.split(pathname)[0]
    
-    self.runprojectscript(self.precommitdir, pathname, [author]) # Precommit
+    filestocommit = hooks.hook(self.projectcode, "precommit", pathname, author=author, message=message)
+    success = True
     try:
-      versioncontrol.commitfile(pathname, message=message, author=author)
-      success = 1
-    except IOError, e:
-      success = 0
-    self.runprojectscript(self.postcommitdir, pathname, [str(success)]) # Postcommit
+      for file in filestocommit:
+        versioncontrol.commitfile(file, message=message, author=author)
+    except Exception, e:
+      print "Failed to commit files: %s" % e
+      success = False 
+    hooks.hook(self.projectcode, "postcommit", pathname, success=success)
+
+  def initialize(self, session, languagecode):
+    try:
+      projectdir = os.path.join(self.potree.podirectory, self.projectcode)
+      hooks.hook(self.projectcode, "initialize", projectdir, languagecode)
+      self.scanpofiles()
+    except Exception, e:
+      print "Failed to initialize (%s): %s" % (languagecode, e)
 
   def converttemplates(self, session):
     """creates PO files from the templates"""

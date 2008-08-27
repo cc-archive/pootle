@@ -47,6 +47,7 @@ from Pootle.templates import pootlepage, navbar
               <td><span py:content="l.code">code</span></td>
               <td><input type="checkbox" name="updatelanguage" value="${l.code}"/></td>
               <td><a href="?doupdatelanguage=1&amp;updatelanguage=${l.code}" py:content="update_link">Update from templates</a></td>
+              <td><a href="?initialize=1&amp;updatelanguage=${l.code}" py:content="initialize_link">Initialize</a></td>
           </tr>
         </table>
       <input type="submit" name="doupdatelanguage" value="${update_button}"/>
