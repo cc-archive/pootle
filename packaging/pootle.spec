@@ -4,14 +4,14 @@
 
 Name:           pootle
 Version:        1.2.0
-Release:        0.1.beta1%{?dist}
+Release:        0.2.beta2%{?dist}
 Summary:        Localization and translation management web application
 
 Group:          Development/Tools
 License:        GPLv2+
 URL:            http://translate.sourceforge.net/wiki/pootle/index
 #Source:        http://downloads.sourceforge.net/translate/%{name}-%{version}.tar.bz2
-Source:         http://translate.sourceforge.net/snapshots/%{fullname}-%{version}-beta1/%{fullname}-%{version}-beta1.tar.bz2
+Source:         http://translate.sourceforge.net/snapshots/%{fullname}-%{version}-beta2/%{fullname}-%{version}-beta2.tar.bz2
 Source1:        pootle-initscript
 Source2:        pootle-logrotate
 Source3:        pootle-sysconfig
@@ -35,7 +35,7 @@ Requires(pre): shadow-utils
 A web application for managing the translation of Gettext PO and XLIFF files.
 
 %prep
-%setup -q -n %{fullname}-%{version}-beta1
+%setup -q -n %{fullname}-%{version}-beta2
 %patch1 -p1
 
 
@@ -60,7 +60,7 @@ mv $RPM_BUILD_ROOT/%{python_sitelib}/Pootle/po/pootle $RPM_BUILD_ROOT/var/lib/po
 install $RPM_BUILD_ROOT/%{python_sitelib}/Pootle/*.prefs $RPM_BUILD_ROOT/etc/pootle
 install -d $RPM_BUILD_ROOT/var/cache/pootle
 install -d $RPM_BUILD_ROOT/var/log/pootle
-install $RPM_SOURCE_DIR/pootle-initscript -D $RPM_BUILD_ROOT/etc/init.d/pootle
+install $RPM_SOURCE_DIR/pootle-initscript -D $RPM_BUILD_ROOT/etc/rc.d/init.d/pootle
 install $RPM_SOURCE_DIR/pootle-logrotate -D $RPM_BUILD_ROOT/etc/logrotate.d/pootle
 install $RPM_SOURCE_DIR/pootle-sysconfig -D $RPM_BUILD_ROOT/etc/sysconfig/pootle
 
@@ -95,12 +95,16 @@ chmod -R g+w /var/lib/pootle
 /var/lib/pootle
 %dir /var/cache/pootle
 %dir /var/log/pootle
-/etc/init.d/pootle
+/etc/rc.d/init.d/pootle
 /etc/logrotate.d/pootle
 
 
 %changelog
-* Thu Feb 14 2008 Dwayne Bailey <dwayne@translate.org.za> - 1.2.0-0.1.beta1.fc9
+* Wed Aug 27 2008 Dwayne Bailey <dwayne@translate.org.za> - 1.2.0-0.2.beta2.fc9
+- Update to 1.2.0-beta2
+- Fix initscript installation location
+
+* Sun Aug 24 2008 Dwayne Bailey <dwayne@translate.org.za> - 1.2.0-0.1.beta1.fc9
 - Build for 1.2.0-beta1 release
 - Create initscripts, sysconfig; create proper logging; configure stats database
 
