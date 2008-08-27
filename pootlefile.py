@@ -451,7 +451,7 @@ def make_class(base_class):
       self.pofreshen()
       return super(pootlefile, self).getoutput()
 
-    def updateunit(self, item, newvalues, user, languageprefs):
+    def updateunit(self, item, newvalues, userprefs, languageprefs):
       """updates a translation with a new target value"""
       self.pofreshen()
       unit = self.getitem(item)
