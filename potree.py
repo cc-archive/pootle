@@ -381,6 +381,15 @@ class POTree:
     projectprefs = self.getprojectprefs(projectcode)
     setattr(projectprefs, "checkerstyle", projectcheckerstyle)
 
+  def getprojectignoredfiles(self, projectcode):
+    """returns a set of the ignored files for the project.  This is temporary code
+    until a real preferences system is in place."""
+    projectprefs = self.getprojectprefs(projectcode)
+    ignoredfiles = getattr(projectprefs, "ignoredfiles", projectcode)
+    if len(ignoredfiles) > 0:
+      return set(ignoredfiles.split(','))
+    return []
+
   def getprojectcreatemofiles(self, projectcode):
     """returns whether the project builds MO files"""
     projectprefs = self.getprojectprefs(projectcode)
@@ -497,6 +506,10 @@ class POTree:
 
     def addfiles(podir, dirname, fnames):
       """adds the files to the set of files for this project"""
+
+      # Remove the files we want to ignore
+      fnames = set(fnames) - self.getprojectignoredfiles(projectcode)
+      
       if dirname == os.curdir:
         basedirname = ""
       else:

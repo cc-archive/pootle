@@ -110,8 +110,9 @@ class Project(Base):
   localfiletype = Column(String(50), server_default="")
   createmofiles = Column(Boolean, server_default="0")
   treestyle = Column(String(20))
+  ignoredfiles = Column(String(255), nullable=False)
 
-  def __init__(self, code, fullname = "", description = "", checkstyle = "", localfiletype = "", createmofiles=False, treestyle=""):
+  def __init__(self, code, fullname = "", description = "", checkstyle = "", localfiletype = "", createmofiles=False, treestyle="", ignoredfiles=""):
     self.code = code
     self.fullname = fullname 
     self.description = description 
@@ -119,6 +120,7 @@ class Project(Base):
     self.localfiletype = localfiletype 
     self.createmofiles = createmofiles
     self.treestyle = treestyle
+    self.ignoredfiles = ignoredfiles
 
   def __repr__(self):
     return "<Project %s: %s>" % (self.code, self.fullname)
