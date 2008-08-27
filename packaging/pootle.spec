@@ -4,7 +4,7 @@
 
 Name:           pootle
 Version:        1.2.0
-Release:        0.2.beta2%{?dist}
+Release:        0.3.beta2%{?dist}
 Summary:        Localization and translation management web application
 
 Group:          Development/Tools
@@ -47,6 +47,21 @@ A web application for managing the translation of Gettext PO and XLIFF files.
 rm -rf $RPM_BUILD_ROOT
 %{__python} pootlesetup.py install -O1 --skip-build --root $RPM_BUILD_ROOT
 
+# Create the manpages
+mkdir -p $RPM_BUILD_ROOT/%{_mandir}/man1
+for program in $RPM_BUILD_ROOT/%{_bindir}/*;
+do
+    case $(basename $program) in
+    PootleServer)
+        ;;
+    *)
+        LC_ALL=C PYTHONPATH=. $program --manpage \
+        >  $RPM_BUILD_ROOT/%{_mandir}/man1/$(basename $program).1 \
+        || rm -f $RPM_BUILD_ROOT/%{_mandir}/man1/$(basename $program).1
+        ;;
+    esac
+done
+
 # remove documentation files from site-packages
 rm $RPM_BUILD_ROOT/%{python_sitelib}/Pootle/{COPYING,ChangeLog,LICENSE,README}
 rm $RPM_BUILD_ROOT/%{python_sitelib}/Pootle/test_*
@@ -88,6 +103,7 @@ chmod -R g+w /var/lib/pootle
 %doc Pootle/{COPYING,ChangeLog,README}
 %{_bindir}/*
 %{_sbindir}/*
+%{_mandir}/man1/*
 %config /etc/pootle
 %config /etc/sysconfig/pootle
 %{python_sitelib}/Pootle*
@@ -100,6 +116,9 @@ chmod -R g+w /var/lib/pootle
 
 
 %changelog
+* Wed Aug 27 2008 Dwayne Bailey <dwayne@translate.org.za> - 1.2.0-0.3.beta2.fc9
+- Create man pages
+
 * Wed Aug 27 2008 Dwayne Bailey <dwayne@translate.org.za> - 1.2.0-0.2.beta2.fc9
 - Update to 1.2.0-beta2
 - Fix initscript installation location
