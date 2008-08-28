@@ -616,7 +616,13 @@ class TranslationProject(object):
     author=session.username
     fulldir = os.path.split(pathname)[0]
    
-    filestocommit = hooks.hook(self.projectcode, "precommit", pathname, author=author, message=message)
+    try:
+      filestocommit = hooks.hook(self.projectcode, "precommit", pathname, author=author, message=message)
+    except ImportError:
+      # Failed to import the hook - we're going to assume there just isn't a hook to
+      # import.  That means we'll commit the original file.
+      filestocommit = [pathname]
+
     success = True
     try:
       for file in filestocommit:
@@ -624,7 +630,10 @@ class TranslationProject(object):
     except Exception, e:
       print "Failed to commit files: %s" % e
       success = False 
-    hooks.hook(self.projectcode, "postcommit", pathname, success=success)
+    try:
+      hooks.hook(self.projectcode, "postcommit", pathname, success=success)
+    except:
+      pass
 
   def initialize(self, session, languagecode):
     try:

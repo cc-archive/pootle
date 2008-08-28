@@ -27,8 +27,7 @@ def hook(project, hooktype, file, *args, **kwargs):
         return getattr(activehook, hooktype)(file, *args, **kwargs)
     else:
         return []
-  except ImportError:
-    print "Failed to import hook (%s)" % project
-    pass
+  except ImportError, e:
+    raise ImportError(e)
   except Exception, e:
     print "Exception in project (%s) hook (%s) for file (%s): %s" % (project, hooktype, file, e)
