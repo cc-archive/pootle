@@ -388,7 +388,7 @@ class POTree:
     ignoredfiles = getattr(projectprefs, "ignoredfiles", projectcode)
     if len(ignoredfiles) > 0:
       return set(ignoredfiles.split(','))
-    return []
+    return set([])
 
   def getprojectcreatemofiles(self, projectcode):
     """returns whether the project builds MO files"""
