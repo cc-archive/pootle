@@ -303,19 +303,20 @@ class PootleServer(users.OptionalLoginAppServer, templateserver.TemplateServer):
     if dashpos >= 0:
       lonelang = top[:dashpos]
 
-    if not self.potree.haslanguage(lang) and not self.potree.haslanguage(lonelang):
-      sessionlang = self.getuserlanguage(session)
-      session.setlanguage(sessionlang)
-      url = self.instance.baseurl+sessionlang+"/"+"/".join(pathwords)+session.getsuffix
-      return server.Redirect(url)
-    elif self.potree.haslanguage(lang):
-      session.setlanguage(lang)
-      session.localizedurl = self.instance.baseurl+lang+"/"
-    else: #Must have lonelang
-      session.setlanguage(lonelang)
-      url = self.instance.baseurl+lonelang+"/"+"/".join(pathwords[1:])+session.getsuffix
-      return server.Redirect(url)
-
+    # Don't redirect to localized versions for non-localized file types
+    if not re.search('(css|js|png|jpg|gif)$', "".join(pathwords[-1:])):
+      if not self.potree.haslanguage(lang) and not self.potree.haslanguage(lonelang):
+        sessionlang = self.getuserlanguage(session)
+        session.setlanguage(sessionlang)
+        url = self.instance.baseurl+sessionlang+"/"+"/".join(pathwords)+session.getsuffix
+        return server.Redirect(url)
+      elif self.potree.haslanguage(lang):
+        session.setlanguage(lang)
+        session.localizedurl = self.instance.baseurl+lang+"/"
+      else: #Must have lonelang
+        session.setlanguage(lonelang)
+        url = self.instance.baseurl+lonelang+"/"+"/".join(pathwords[1:])+session.getsuffix
+        return server.Redirect(url)
 
     pathwords = pathwords[1:]
     if pathwords:
