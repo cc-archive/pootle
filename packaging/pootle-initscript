@@ -26,11 +26,7 @@ prog="pootle"
 
 [ -e /etc/sysconfig/$prog ] && . /etc/sysconfig/$prog
 
-prefsfile=${PREFSFILE-/etc/pootle/pootle.prefs}
-port=${PORT-"8080"}
 pidfile=${PIDFILE-/var/run/pootle.pid}
-logfile=${LOGFILE-/var/log/pootle/access.log}
-errorfile=${ERRORFILE-/var/log/pootle/errors.log}
 
 lockfile=/var/lock/subsys/$prog
 
@@ -38,7 +34,7 @@ start() {
     [ -x $exec ] || exit 5
     [ -f $config ] || exit 6
     echo -n $"Starting $prog: "
-    daemon --pidfile=${pidfile} $exec -B --port=${port} --prefsfile=${prefsfile} --pidfile=${pidfile} --logerrors=traceback >> $logfile 2> $errorfile
+    daemon --pidfile=${pidfile} /usr/sbin/run_pootle.sh
     retval=$?
     echo
     [ $retval -eq 0 ] && touch $lockfile
