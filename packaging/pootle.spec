@@ -4,7 +4,7 @@
 
 Name:           pootle
 Version:        1.2.0
-Release:        0.3.beta2%{?dist}
+Release:        0.4.beta2%{?dist}
 Summary:        Localization and translation management web application
 
 Group:          Development/Tools
@@ -15,6 +15,7 @@ Source:         http://translate.sourceforge.net/snapshots/%{fullname}-%{version
 Source1:        pootle-initscript
 Source2:        pootle-logrotate
 Source3:        pootle-sysconfig
+Source4:        run_pootle.sh
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 Patch1:         pootle-1.2.0-fixes.patch
@@ -78,6 +79,7 @@ install -d $RPM_BUILD_ROOT/var/log/pootle
 install $RPM_SOURCE_DIR/pootle-initscript -D $RPM_BUILD_ROOT/etc/rc.d/init.d/pootle
 install $RPM_SOURCE_DIR/pootle-logrotate -D $RPM_BUILD_ROOT/etc/logrotate.d/pootle
 install $RPM_SOURCE_DIR/pootle-sysconfig -D $RPM_BUILD_ROOT/etc/sysconfig/pootle
+install $RPM_SOURCE_DIR/run_pootle.sh -D $RPM_BUILD_ROOT/usr/sbin
 
 
 %clean
@@ -116,8 +118,12 @@ chmod -R g+w /var/lib/pootle
 
 
 %changelog
+* Tue Sep 2 2008 Dwayne Bailey <dwayne@translate.org.za> - 1.2.0-0.4.beta2.fc9
+- Create run_pootle.sh wrapper for server
+
 * Wed Aug 27 2008 Dwayne Bailey <dwayne@translate.org.za> - 1.2.0-0.3.beta2.fc9
 - Create man pages
+- Rebuild with a refreshed tarball that contains jquery
 
 * Wed Aug 27 2008 Dwayne Bailey <dwayne@translate.org.za> - 1.2.0-0.2.beta2.fc9
 - Update to 1.2.0-beta2
