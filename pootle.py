@@ -304,7 +304,7 @@ class PootleServer(users.OptionalLoginAppServer, templateserver.TemplateServer):
       lonelang = top[:dashpos]
 
     # Don't redirect to localized versions for non-localized file types
-    if not re.search('(css|js|png|jpg|gif)$', "".join(pathwords[-1:])):
+    if not re.search('(css|js|png|jpg|gif|ico)$', "".join(pathwords[-1:])):
       if not self.potree.haslanguage(lang) and not self.potree.haslanguage(lonelang):
         sessionlang = self.getuserlanguage(session)
         session.setlanguage(sessionlang)
