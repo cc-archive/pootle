@@ -21,9 +21,11 @@ from Pootle.templates import pootlepage
 
   <div id="body">
 
-    <h2 py:content="introtext"> Please enter your activation details </h2>
+    <div class="site-message" py:if="introtext">
+        <div class="info" py:if="introtext" py:content="introtext">Message</div>
+    </div>
 
-    <form action="" enctype="multipart/form-data" method="post" name="activate" id="activate">
+    <form action="" method="post" name="activate" id="activate">
       <table cellpadding="1" width="70%" border="0" cellspacing="1">
         <tr>
           <td colspan="1" style="width: 33%" rowspan="1" valign="top">

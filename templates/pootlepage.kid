@@ -124,7 +124,6 @@
     </div>
 
     <div py:def="userstatistics(user, statstext, statstitle)" id="userstatistics">
-      <h3 class="title" py:content="statstitle">User Statistics</h3>
       <table>
         <tr>
           <th scope="row" py:content="statstext['suggaccepted']">Suggestions Accepted</th>
