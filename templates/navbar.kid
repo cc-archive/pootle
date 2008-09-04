@@ -55,6 +55,7 @@
     </span>
   </div>
 
+  <!-- TODO deprecated? -->
   <div py:def="itemdata(item, uidir, uilanguage, baseurl)">
     <td class="stats-name">
       <img src="${baseurl}images/${item.icon}.png" class="icon" alt="" dir="$uidir" lang="$uilanguage" />
@@ -73,6 +74,46 @@
             <td bgcolor="red" class="data" height="20" width="${item.data.untranslatedpercentage or int(bool(item.data.untranslatedsourcewords))}" py:if="item.data.untranslatedsourcewords" />
         </tr></table>
       </td>
+    </span>
+  </div>
+
+  <div py:def="itemsummary(item, uidir, untranslatedtext, fuzzytext, complete)" py:strip="True">
+    <?python 
+      if uidir == 'ltr':
+        cssaligndir = 'left'
+      else:
+        cssaligndir = 'right'
+    ?>
+    <td class="stats-name">
+      <a href="${item.href}">${item.title}</a>
+    </td>
+    <span py:if="item.data" py:strip="True">
+      <td class="stats-graph">
+        <span class="sortkey">${item.data.translatedpercentage}</span>
+        <span class="graph" title="${item.data.translatedpercentage}% complete" dir="$uidir">
+            <span class="translated" style="width: ${item.data.translatedpercentage or int(bool(item.data.translatedsourcewords))}px" />
+            <span class="fuzzy" style="${cssaligndir}: ${item.data.translatedpercentage or int(bool(item.data.translatedsourcewords))}px; width: ${item.data.fuzzypercentage or int(bool(item.data.fuzzysourcewords))}px" py:if="item.data.fuzzysourcewords"/>
+            <span class="untranslated" style="${cssaligndir}: ${(item.data.translatedpercentage or int(bool(item.data.translatedsourcewords))) + (item.data.fuzzypercentage or int(bool(item.data.fuzzysourcewords)))}px; width: ${100 - ((item.data.translatedpercentage or int(bool(item.data.translatedsourcewords))) + (item.data.fuzzypercentage or int(bool(item.data.fuzzysourcewords))))}px" py:if="item.data.untranslatedsourcewords" />
+        </span>
+      </td>
+      <td class="stats">
+        <?python
+            untranslatedwordstext = untranslatedtext % (item.data.untranslatedsourcewords)
+            fuzzywordstext = fuzzytext % (item.data.fuzzysourcewords)
+        ?>
+        <ul>
+        <span py:if="item.data.untranslatedsourcewords" py:strip="True">
+            <li class="todo"><a href="${item.href}translate.html?untranslated=1&amp;editing=1" py:content="untranslatedwordstext">untranslated words</a></li>
+        </span>
+        <span py:if="item.data.fuzzysourcewords" py:strip="True">
+            <li class="todo"><a href="${item.href}translate.html?fuzzy=1&amp;editing=1" py:content="fuzzywordstext">fuzzy words</a></li>
+        </span>
+        <span py:if="item.data.translatedsourcewords == item.data.totalsourcewords" py:strip="True">
+            <li class="complete" py:content="complete">Complete</li>
+        </span>
+        </ul>
+      </td>
+      <td class="stats">${item.data.totalsourcewords}</td>
     </span>
   </div>
 

@@ -31,11 +31,16 @@ def localize_links(session):
   links["admin"] = session.localize("Admin")
   links["doc"] = session.localize("Docs & help")
   links["doclang"] = getdoclang(session.language)
-  links["logout"] = session.localize("Log out")
-  links["login"] = session.localize("Log in")
+  #links["logout"] = session.localize("Log out")
+  #links["login"] = session.localize("Log in")
   #l10n: Verb, as in "to register"
   links["register"] = session.localize("Register")
   links["activate"] = session.localize("Activate")
+
+  # accessibility links
+  links["skip_nav"] = session.localize("skip to navigation")
+  links["switch_language"] = session.localize("switch language")
+
   return links
 
 def getdoclang(language):
@@ -84,21 +89,23 @@ def completetemplatevars(templatevars, session, bannerheight=135):
     	templatevars["baseurl"] += "/"
   if not "enablealtsrc" in templatevars:
      templatevars["enablealtsrc"] = getattr(session.instance, "enablealtsrc", False)
-  templatevars["logo_alttext"] = session.localize("Pootle Logo")
+  templatevars["logo_alttext"] = session.localize("Mozilla")
   templatevars["aboutlink"] = session.localize("About this Pootle server")
   templatevars["uilanguage"] = weblanguage(session.language)
   templatevars["uidir"] = languagedir(session.language)
+  # TODO FIXME cssaligndir is deprecated?
   if templatevars["uidir"] == 'ltr':  
     templatevars["cssaligndir"] = "left"
   else:
     templatevars["cssaligndir"] = "right"
-  templatevars["username_title"] = session.localize("Username:")
+  templatevars["username_title"] = session.localize("Username")
   try:
     templatevars["username"] = templatevars["username"]
   except:
     templatevars["username"] = "" 
-  templatevars["password_title"] = session.localize("Password:")
-  templatevars["login_text"] = session.localize('Login')
+  templatevars["password_title"] = session.localize("Password")
+  templatevars["login_text"] = session.localize('Log in')
+  templatevars["logout_text"] = session.localize('Log out')
   templatevars["register_text"] = session.localize('Register')
   templatevars["canregister"] = hasattr(session.instance, "hash")
   templatevars["links"] = localize_links(session)
@@ -111,6 +118,7 @@ def completetemplatevars(templatevars, session, bannerheight=135):
     templatevars["user"] = session.user
   if "search" not in templatevars:
     templatevars["search"] = None
+
 
 class PootlePage:
   """the main page"""

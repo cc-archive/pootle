@@ -3,31 +3,26 @@
 from Pootle.templates import navbar, pootlepage
 ?>
 <!DOCTYPE html  PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns:py="http://purl.org/kid/ns#" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<html xmlns:py="http://purl.org/kid/ns#" xmlns="http://www.w3.org/1999/xhtml" xml:lang="$uilanguage" lang="$uilanguage" dir="$uidir">
 <head>
-  <meta name="generator" content="HTML Tidy for Linux/x86 (vers 1st September 2004), see www.w3.org" />
 
   <title py:content="pagetitle">Pootle: ${project.name}</title>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  <meta name="description" content="${meta_description}" />
-  <link rel="stylesheet" type="text/css" href="${baseurl}pootle.css" />
+
+  <link rel="stylesheet" type="text/css" href="${baseurl}style.css" />
   <link rel="shortcut icon" href="${baseurl}favicon.ico" />
-  <script src="${baseurl}js/jquery/jquery.js" type="text/javascript"></script>
-  <!-- the 'sorttable.js' script depends on the variable 'baseurl' -->
-  <script type="text/javascript"> var baseurl = "${baseurl}"; </script>
-  <script type="text/javascript" src="${baseurl}js/sorttable.js"></script>
-  <!--[if lt IE 7.]>
-    <script defer type="text/javascript" src="${baseurl}js/correctpng.js"></script>
-  <![endif]-->
 </head>
 
-<body bgcolor="#FFFFFF">
-  <div id="abovefooter">
-  <div py:replace="pootlepage.banner(instancetitle, links, session, uidir, uilanguage, baseurl)"/>
+<body class="home">
 
-  <div id="content" dir="$uidir" lang="$uilanguage">
-    <div class="navbar">
-      <img src="${baseurl}images/folder.png" class="icon" alt="" dir="$uidir" lang="$uilanguage" />
+<div id="wrapper">
+<div id="doc">
+    
+  <div py:replace="pootlepage.header(links, session, baseurl, logo_alttext)"/>
+
+  <div id="body">
+
+
+    <div id="nav-secondary">
 
       <h3 class="title">[ <a href="${baseurl}projects/${project.code}/" py:content="project.name">Project</a> ]</h3>
 
@@ -40,35 +35,65 @@ from Pootle.templates import navbar, pootlepage
       </div>
     </div>
 
-    <div class="intro" py:content="XML(description)">
-      This is the project description
+    <div class="site-message">
+        <div class="info" py:content="XML(description)">
+            This is the project description
+        </div>
     </div>
 
-      <table class="sortable stats" id="stats" cellpadding="5" cellspacing="0" width="100%">
-        <thead>
-          <tr>
-            <th class="stats">${statsheadings.name}</th>
-            <th class="stats">${statsheadings.progress}</th>
-            <th class="stats">${statsheadings.summary}</th>
-            <th class="stats">${statsheadings.totalwords}</th>
-        </tr>
-      </thead>
-      <tbody class="stats">
-        <div py:for="item in languages" py:strip="True">
-          <tr  class="item item-${item.parity}">
-            <div py:replace="navbar.itemdata(item, uidir, uilanguage, baseurl)"/>
-          </tr>
-        </div>
-      </tbody>
-    </table>
-    <div py:replace="pootlepage.translationsummarylegend(translationlegend)" />
+    <!-- TODO FIXME make widemodule -->
+      <div class="module">
+          <div class="hd">
+          </div>
+          <div class="bd">
+              <table class="sortable stats" id="stats" cellpadding="5" cellspacing="0" width="100%">
+                <thead>
+                  <tr>
+                    <th class="stats">${statsheadings.name}</th>
+                    <th class="stats">${statsheadings.progress}</th>
+                    <th class="stats">${statsheadings.summary}</th>
+                    <th class="stats">${statsheadings.totalwords}</th>
+                </tr>
+                </thead>
+                <tbody class="stats">
+                  <div py:for="item in languages" py:strip="True">
+                    <tr  class="item item-${item.parity}">
+                      <div py:replace="navbar.itemsummary(item, uidir, untranslatedtext, fuzzytext, complete)"/>
+                    </tr>
+                  </div>
+                </tbody>
+              </table>
+          </div>
+          <div class="ft"></div>
+      </div>
 
-    <div py:replace="pootlepage.topcontributerstable(topstats, topstatsheading)" />
+      <div class="module first clear">
+          <div class="hd"></div>
+          <div class="bd">
+              <div py:replace="pootlepage.translationsummarylegend(translationlegend)" />
+          </div>
+          <div class="ft"></div>
+      </div>
 
-  </div>
+      <div py:replace="pootlepage.topcontributerstable(topstats, topstatsheading)" />
 
-  </div>
-  <div py:replace="pootlepage.user_links(links, session, uidir, uilanguage, baseurl)"/>
-  <div py:replace="pootlepage.about(aboutlink, uidir, uilanguage, baseurl)"/>
+  </div><!-- end #body-->
+
+  <div py:replace="pootlepage.login_form(username_title, password_title, login_text, register_text, logout_text, session, baseurl, uilanguage)"/>
+	
+</div><!-- end #doc -->
+</div><!-- end #wrapper -->
+
+  <div py:replace="pootlepage.footer()"/>
+
+  <script type="text/javascript" src="/js/jquery.min.js"></script>
+  <script type="text/javascript" src="/js/script.js"></script>
+
+  <script type="text/javascript" src="${baseurl}js/sorttable.js"></script>
+
+  <!--[if lt IE 7.]>
+    <script defer type="text/javascript" src="${baseurl}js/correctpng.js"></script>
+  <![endif]-->
+
 </body>
 </html>
