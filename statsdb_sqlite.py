@@ -40,6 +40,8 @@ import re
 import sys
 import stat
 
+from statsdb import *
+
 class StatsCache(object):
     """An object instantiated as a singleton for each statsfile that provides 
     access to the database cache from a pool of StatsCache objects."""

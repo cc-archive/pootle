@@ -31,8 +31,6 @@ from translate.storage import factory, base
 from translate.misc.multistring import multistring
 from translate.lang.common import Common
 
-import MySQLdb as dbapi2
-
 import os.path
 import re
 import sys
