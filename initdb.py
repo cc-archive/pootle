@@ -43,7 +43,7 @@ def attempt(s,obj):
   print "Adding %s... " % (str(obj)),
   try:
     s.add(obj)
-    s.flush()
+    s.commit()
   except Exception, e:
     s.rollback()
     print "FAILED"
