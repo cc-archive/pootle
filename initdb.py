@@ -52,14 +52,14 @@ def attempt(s,obj):
 
 def create_default_projects(s):
       pootle = Project("pootle")
-      pootle.fullname = "Pootle"
+      pootle.fullname = u"Pootle"
       pootle.description = "<div dir='ltr' lang='en'>Interface translations for Pootle. <br /> See the <a href='http://pootle.locamotion.org'>official Pootle server</a> for the translations of Pootle.</div>"
       pootle.checkstyle = "standard"
       pootle.localfiletype = "po"
       attempt(s,pootle)
       
       terminology = Project("terminology")
-      terminology.fullname = "Terminology"
+      terminology.fullname = u"Terminology"
       terminology.description = "<div dir='ltr' lang='en'>Terminology project that Pootle should use to suggest terms.<br />There might be useful terminology files on the <a href='http://pootle.locamotion.org/projects/terminology/'>official Pootle server</a>.</div>"
       terminology.checkstyle = "standard"
       terminology.localfiletype = "po"
@@ -67,9 +67,9 @@ def create_default_projects(s):
     
 def create_default_languages(s):
     af = Language("af")
-    af.fullname = "Afrikaans"
-    af.specialchars = "ëïêôûáéíóúý"
-    af.nplurals = 2
+    af.fullname = u"Afrikaans"
+    af.specialchars = u"ëïêôûáéíóúý"
+    af.nplurals = '2'
     af.pluralequation = "(n != 1)"
     attempt(s,af)
 
@@ -622,7 +622,7 @@ def create_default_languages(s):
     zh_CN.fullname = u'Chinese (China)'
     zh_CN.nplurals = '1'
     zh_CN.pluralequation ='0'
-    zh_CN.specialchars = "←→↔×÷©…—‘’“”【】《》"
+    zh_CN.specialchars = u"←→↔×÷©…—‘’“”【】《》"
     attempt(s,zh_CN)
 
 # 繁體中文
@@ -631,7 +631,7 @@ def create_default_languages(s):
     zh_HK.fullname = u'Chinese (Hong Kong)'
     zh_HK.nplurals = '1'
     zh_HK.pluralequation ='0'
-    zh_HK.specialchars = "←→↔×÷©…—‘’“”「」『』【】《》"
+    zh_HK.specialchars = u"←→↔×÷©…—‘’“”「」『』【】《》"
     attempt(s,zh_HK)
 
 # 繁體中文
@@ -640,7 +640,7 @@ def create_default_languages(s):
     zh_TW.fullname = u'Chinese (Taiwan)'
     zh_TW.nplurals = '1'
     zh_TW.pluralequation ='0'
-    zh_TW.specialchars = "←→↔×÷©…—‘’“”「」『』【】《》"
+    zh_TW.specialchars = u"←→↔×÷©…—‘’“”「」『』【】《》"
     attempt(s,zh_TW)
 
 # This is a "language" that gives people access to the (untranslated) template files

@@ -89,7 +89,7 @@ class Language(Base):
   pluralequation = Column(String(100))
   specialchars = Column(Unicode(100), server_default="")
 
-  def __init__(self, code, fullname = "", nplurals = 1, pluralequation = "", specialchars=""):
+  def __init__(self, code, fullname = "", nplurals = 1, pluralequation = "", specialchars=u""):
     self.code = code
     self.fullname = fullname 
     self.nplurals = nplurals 
