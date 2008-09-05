@@ -51,7 +51,7 @@ class StatsCache(object):
     """The current cursor"""
 
     def __new__(cls, statsdict={}):
-        statsfile = statsdict['filename']
+        statsfile = statsdict['database']
         if not statsfile:
             if not cls.defaultfile:
                 userdir = os.path.expanduser("~")
