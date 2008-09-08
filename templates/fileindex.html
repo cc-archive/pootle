@@ -12,7 +12,7 @@ from Pootle.templates import pootlepage, navbar
   <link rel="shortcut icon" href="${baseurl}favicon.ico" />
 </head>
 
-<body class="home">
+<body>
 
 <div id="wrapper">
 <div id="doc">
@@ -76,7 +76,7 @@ from Pootle.templates import pootlepage, navbar
         </thead>
         <tbody class="stats">
           <div py:for="item in children" py:strip="True">
-            <tr  class="item item-${item.parity}">
+            <tr  class="item ${item.parity}">
               <div py:replace="navbar.itemdata(item, uidir, uilanguage, baseurl)"/>
             </tr>
           </div>
@@ -99,8 +99,7 @@ from Pootle.templates import pootlepage, navbar
         </div>
     </div>
 
-    <!-- TODO FIXME make widemodule -->
-      <div class="module">
+      <div class="module-primary">
           <div class="hd">
           </div>
           <div class="bd">
@@ -110,12 +109,12 @@ from Pootle.templates import pootlepage, navbar
                 <div py:replace="navbar.itemstats(item)"/>
               </div>
 
-              <div py:if="'isdir' in item" class="item item-${item.parity}">
+              <div py:if="'isdir' in item" class="item ${item.parity}">
                 <div py:replace="navbar.item_block(item, uidir, uilanguage, baseurl)"/>
                 <div py:replace="navbar.itemstats(item)"/>
               </div>
 
-              <div py:if="'isfile' in item" class="item item-${item.parity}">
+              <div py:if="'isfile' in item" class="item ${item.parity}">
                 <div py:replace="navbar.item_block(item, uidir, uilanguage, baseurl)"/>
                 <div py:replace="navbar.itemstats(item)"/>
               </div>

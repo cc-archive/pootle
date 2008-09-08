@@ -12,7 +12,7 @@ from Pootle.templates import pootlepage
   <link rel="shortcut icon" href="${baseurl}favicon.ico" />
 </head>
 
-<body class="home">
+<body>
 
 <div id="wrapper">
 <div id="doc">
@@ -25,8 +25,7 @@ from Pootle.templates import pootlepage
       <div class="info"> You do not have the rights to administer Pootle </div>
     </div>
 
-      <!-- TODO FIXME make widemodule -->
-      <div py:if="session.issiteadmin" class="module first">
+      <div py:if="session.issiteadmin" class="module-primary first">
           <div class="hd"> </div>
           <div class="bd">
             <ul class="linklist">

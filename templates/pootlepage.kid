@@ -8,8 +8,15 @@
 <!-- TODO need a switch box -->
             <a href="#switch" py:content="links.switch_language">switch language</a>
         </div>
+        <?python
+            header_attributes = {};
+            if session.isopen:
+                header_attributes = {'class':'logged-in'}
+            if session.issiteadmin:
+                header_attributes = {'class':'logged-in admin'}
+        ?>
 
-        <div id="header">
+        <div id="header" py:attrs="header_attributes">
             <div>
                 <h1><a href="/" title="${links.home}"><img src="/img/nav_logo.png" height="56" width="261" alt="${logo_alttext}" /></a></h1>
             
@@ -144,8 +151,7 @@
       </table>
     </div>
 
-    <!-- TODO FIXME make widemodule -->
-    <div py:def="topcontributerstable(topstats, topstatsheading)" class="module first clear topcontributers">
+    <div py:def="topcontributerstable(topstats, topstatsheading)" class="module-primary clear topcontributers">
         <div class="hd"><h2 py:contents="topstatsheading">Top Contributors</h2></div>
         <div class="bd">
           <table py:for="stats in topstats">
