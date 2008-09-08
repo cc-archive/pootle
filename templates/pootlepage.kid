@@ -32,8 +32,12 @@
                         </span>
                         <span py:if="session.isopen" py:strip="True">
                             <li class="yuimenubaritem"><a href="${baseurl}home/">My account</a></li>
+                            <li class="yuimenubaritem"><a href="${baseurl}?islogout=1">Log out</a></li>
                         </span>
-                        <li id="menu-login" class="yuimenubaritem"><a href="#"><span>Log in</span></a></li></ul>
+                        <span py:if="not session.isopen" py:strip="True">
+                            <li id="menu-login" class="yuimenubaritem"><a href="${baseurl}login.html"><span>Log in</span></a></li>
+                        </span>
+                    </ul>
                   </div>
                 </div>	
             </div>
@@ -154,25 +158,22 @@
     <div py:def="topcontributerstable(topstats, topstatsheading)" class="module-primary clear topcontributers">
         <div class="hd"><h2 py:contents="topstatsheading">Top Contributors</h2></div>
         <div class="bd">
-          <table py:for="stats in topstats">
-            <caption py:content="stats['headerlabel']">Top Users</caption>
-            <thead>
-              <tr>
-                <th scope="col" py:content="stats['ranklabel']">Rank</th>
-                <th scope="col" py:content="stats['namelabel']">Name</th>
-                <th scope="col" py:content="stats['vallabel']">Stat</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr py:for="(num, (name, val)) in enumerate(stats['data'])" class="item item-${num % 2}">
-                <td>${num+1}. </td>
-                <th scope="row">${name}</th>
-                <td>${val}</td>
-              </tr>
-            </tbody>
-          </table>
+          <div py:for="stats in topstats">
+              <div class="statslist">
+                  <h3 py:content="stats['headerlabel']">Top</h3>
+                  <ul py:for="(num, (name, val)) in enumerate(stats['data'])">
+                      <?python
+                        if num % 2:
+                            list_attributes = {'class': 'even'}
+                        else:
+                            list_attributes = {'class': 'odd'}
+                      ?>
+                      <li py:attrs="list_attributes"><span class="name">${name}</span><span class="value">${val}</span></li>
+                  </ul>
+              </div>
+          </div>
         </div>
-        <div class="ft"></div>
+        <div class="ft clear"></div>
     </div>
 
 </include>

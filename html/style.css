@@ -68,7 +68,7 @@ th {
     padding: 0 0 7px 0;
 }
 
-tr.even {
+tr.even, li.even{
     background: #f7f7f5;
 }
 
@@ -573,6 +573,21 @@ td.translation {
 
 #login-form p {
     margin: 0 0 0.5em 0;
+}
+
+div.statslist {
+    float: left;
+    width: 250px;
+    margin: 0px 60px 0px 0px;
+}
+
+div.statslist ul li span.name {
+    font-weight:bold;
+    width: 200px;
+    overflow: hidden;
+}
+div.statslist ul li span.value {
+    float: right;
 }
 
 #footer {
