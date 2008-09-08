@@ -58,30 +58,36 @@ from Pootle.templates import pootlepage, navbar
     </div>
 
     <!--! The statistics view -->
-    <div py:if="not editing and children">
-      <br clear="all" />
-      <table class="sortable stats" id="stats" cellpadding="5" cellspacing="0" width="100%">
-        <thead>
-          <tr>
-            <th class="stats">${statsheadings.name}</th>
-            <th class="stats">${statsheadings.translated}</th>
-            <th class="stats" title="${statsheadings.translatedpercentage}">%</th>
-            <th class="stats">${statsheadings.fuzzy}</th>
-            <th class="stats" title="${statsheadings.fuzzypercentage}">%</th>
-            <th class="stats">${statsheadings.untranslated}</th>
-            <th class="stats" title="${statsheadings.untranslatedpercentage}">%</th>
-            <th class="stats">${statsheadings.total}</th>
-            <th class="stats">${statsheadings.progress}</th>
-          </tr>
-        </thead>
-        <tbody class="stats">
-          <div py:for="item in children" py:strip="True">
-            <tr  class="item ${item.parity}">
-              <div py:replace="navbar.itemdata(item, uidir, uilanguage, baseurl)"/>
-            </tr>
+    <div py:if="not editing and children" py:strip="True">
+      <div class="module-primary">
+          <div class="hd">
           </div>
-        </tbody>
-      </table>
+          <div class="bd">
+              <table class="sortable stats" id="stats" cellpadding="5" cellspacing="0" width="100%">
+                <thead>
+                  <tr>
+                    <th class="stats">${statsheadings.name}</th>
+                    <th class="stats">${statsheadings.translated}</th>
+                    <th class="stats" title="${statsheadings.translatedpercentage}">%</th>
+                    <th class="stats">${statsheadings.fuzzy}</th>
+                    <th class="stats" title="${statsheadings.fuzzypercentage}">%</th>
+                    <th class="stats">${statsheadings.untranslated}</th>
+                    <th class="stats" title="${statsheadings.untranslatedpercentage}">%</th>
+                    <th class="stats">${statsheadings.total}</th>
+                    <th class="stats">${statsheadings.progress}</th>
+                  </tr>
+                </thead>
+                <tbody class="stats">
+                  <div py:for="item in children" py:strip="True">
+                    <tr  class="item ${item.parity}">
+                      <div py:replace="navbar.itemdata(item, uidir, uilanguage, baseurl)"/>
+                    </tr>
+                  </div>
+                </tbody>
+              </table>
+          </div>
+          <div class="ft"></div>
+      </div>
     </div>
 
     <!--! The editing view -->
@@ -99,11 +105,11 @@ from Pootle.templates import pootlepage, navbar
         </div>
     </div>
 
+    <div py:if="editing" py:for="item in children" py:strip="True">
       <div class="module-primary">
           <div class="hd">
           </div>
           <div class="bd">
-            <div py:if="editing" py:for="item in children" py:strip="True">
               <div py:if="'isgoal' in item" class="goalitem">
                 <div py:replace="navbar.item_block(item, uidir, uilanguage, baseurl, show_goals(item))"/>
                 <div py:replace="navbar.itemstats(item)"/>
@@ -118,61 +124,52 @@ from Pootle.templates import pootlepage, navbar
                 <div py:replace="navbar.item_block(item, uidir, uilanguage, baseurl)"/>
                 <div py:replace="navbar.itemstats(item)"/>
               </div>
-            </div>
           </div>
           <div class="ft"></div>
       </div>
-  
-
-  <!-- TODO ME! 
-  <div py:def="extra_links()">
-    <div class="sidetitle" py:if="assign" py:content="assign.title">
-      Assign Strings
     </div>
 
-    <form py:if="assign" action="" method="post" name="assignform">
-      <select name="assignto" title="${assign.users_text}">
-        <option py:for="user in assign.users" value="${user}" py:content="assign.users[user].description">Username</option>
-      </select>
-      <input type="text" name="action" value="translate" title="${assign.action_text}" />
-      <input type="submit" name="doassign" value="${assign.button}" />
-    </form>
+      <div py:if="assign or goals or upload" class="module first">
+          <div class="hd"> </div>
+          <div class="bd">
+            <div class="sidetitle" py:if="assign" py:content="assign.title">
+              Assign Strings
+            </div>
 
-    <div class="sidetitle" py:if="goals" py:content="goals.title">
-      Goals
-    </div>
+            <form py:if="assign" action="" method="post" name="assignform">
+              <select name="assignto" title="${assign.users_text}">
+                <option py:for="user in assign.users" value="${user}" py:content="assign.users[user].description">Username</option>
+              </select>
+              <input type="text" name="action" value="translate" title="${assign.action_text}" />
+              <input type="submit" name="doassign" value="${assign.button}" />
+            </form>
 
-    <form py:if="goals" action="" method="post" name="goalform">
-      <input type="text" name="newgoal" title="${goals.name_title}" />
-      <input type="submit" name="doaddgoal" value="${goals.button}" />
-    </form>
+            <div class="sidetitle" py:if="goals" py:content="goals.title">
+              Goals
+            </div>
 
-    <div class="sidetitle" py:if="upload" py:content="upload.title">
-      Upload File
-    </div>
+            <form py:if="goals" action="" method="post" name="goalform">
+              <input type="text" name="newgoal" title="${goals.name_title}" />
+              <input type="submit" name="doaddgoal" value="${goals.button}" />
+            </form>
 
-    <form py:if="upload" action="" method="post" name="uploadform" enctype="multipart/form-data">
-      <div>
-        <input type="file" name="uploadfile" size="15" class="upload" title="${upload.file_title}" />
+            <div class="sidetitle" py:if="upload" py:content="upload.title">
+              Upload File
+            </div>
+
+            <form py:if="upload" action="" method="post" name="uploadform" enctype="multipart/form-data">
+              <div>
+                <input type="file" name="uploadfile" size="15" class="upload" title="${upload.file_title}" />
+              </div>
+              <div py:if="upload.overwrite">
+                <input type="radio" name="dooverwrite" value="Yes" title="${upload.overwrite_title}" py:content="upload.overwrite"/>
+                <input type="radio" name="dooverwrite" checked="checked" value="No" title="${upload.merge_title}" py:content="upload.merge"/>
+              </div>
+              <input type="submit" name="doupload" value="${upload.upload_button}" />
+            </form>
+          </div>
+          <div class="ft"></div>
       </div>
-      <div py:if="upload.overwrite">
-        <input type="radio" name="dooverwrite" value="Yes" title="${upload.overwrite_title}" py:content="upload.overwrite"/>
-        <input type="radio" name="dooverwrite" checked="checked" value="No" title="${upload.merge_title}" py:content="upload.merge"/>
-      </div>
-      <input type="submit" name="doupload" value="${upload.upload_button}" />
-    </form>
-  </div>
-  -->
-
-
-
-
-
-
-
-
-
-
 
       <div py:replace="pootlepage.topcontributerstable(topstats, topstatsheading)" />
 
