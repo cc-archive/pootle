@@ -68,7 +68,7 @@ th {
     padding: 0 0 7px 0;
 }
 
-tr.even, li.even{
+tr.even, td.even, li.even{
     background: #f7f7f5;
 }
 
@@ -590,6 +590,129 @@ div.statslist ul li span.value {
     float: right;
 }
 
+/* Merged from pootle.css for translatepage.html.  Needs to be reviewed */
+        .translate-context
+        {
+            background-color: #EEE;
+            font-family: monospace;
+            margin-top: 10px;
+            overflow: auto;
+        }
+        .translate-locations
+        {
+            background-color: #DDD;
+            font-family: monospace;
+            margin-top: 10px;
+            overflow: auto;
+        }
+        .translate-diff-replace
+        {
+            background-color: #ffff00;
+            border: 1px solid #f0f000;
+        }
+        .translate-diff-delete
+        {
+            background-color: #ff8000;
+            border: 1px solid #f07000;
+        }
+        .translate-diff-insert
+        {
+            background-color: #80ff00;
+            border: 1px solid #70f000;
+        }
+        .translation-text
+        {
+            display: inline;
+            max-width: 100%;
+            overflow: auto;
+            padding: 10px;
+        }
+        .translation-text-headers
+        {
+            font-weight: bolder;
+            color: #006699;
+        }
+        .translation-highlight-space
+        {
+            background-color: #d3d3d3;
+        }
+        .translation-highlight-accelerator
+        {
+            color: #8b8b00;
+            background-color: #add8e6;
+        }
+        .translation-highlight-variable
+        {
+            color: #8b0000;
+        }
+        .translation-highlight-escape
+        {
+            color: purple;
+        }
+        .translation-highlight-html
+        {
+            color: #A00000;
+        }
+        .specialchars
+        {
+            line-height: 150%;
+            margin-top: 5px;
+        }
+        ul.sugglist {
+          clear: both;
+        }
+        a.sugglink[dir="ltr"] {
+          float: right;
+          padding-right: 1em;
+        }
+
+        a.sugglink[dir="rtl"] {
+          float: left;
+          padding-left: 1em;
+        }
+        span.suggauthor[dir="ltr"] {
+          float: right;
+        }
+
+        span.suggauthor[dir="rtl"] {
+          float: left;
+        }
+        div.translate-translation {
+          min-height: 1.5em;
+        }
+
+        div.translate-original {
+          min-height: 1.5em;
+        }
+        div.suggestions ul li{
+            padding-left: 30px;
+        }
+        a.translation-action
+        {
+            position: absolute;
+            margin: 0px;
+            z-index: 2;
+        }
+        a.translation-action[dir="ltr"]
+        {
+            padding-left: 4px;
+        }
+        a.translation-action[dir="rtl"]
+        {
+            padding-right: 4px;
+        }
+        div.translation-action
+        {
+            float: right;
+            width: 0px;
+            height: 0px;
+        }
+        div.translation-action[dir="rtl"]
+        {
+            float: left;
+        }
+
+
 #footer {
 	background: #fff url(/img/footer-border.png) top center repeat-x;
 	text-align: center;
@@ -649,6 +772,10 @@ div.statslist ul li span.value {
   background-color: #cc0000;
   color: #eeeeec;
   padding: 3px;
+}
+
+.hide {
+    display: none;
 }
 
 /* CSS for the pretty graphs, mostly from http://l10n.gnome.org/ */
