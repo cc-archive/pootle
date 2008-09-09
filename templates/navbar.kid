@@ -55,7 +55,6 @@
     </span>
   </div>
 
-  <!-- TODO deprecated? -->
   <div py:def="itemdata(item, uidir, uilanguage, baseurl)">
     <td class="stats-name">
       <img src="${baseurl}images/${item.icon}.png" class="icon" alt="" dir="$uidir" lang="$uilanguage" />
