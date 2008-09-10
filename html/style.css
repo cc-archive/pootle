@@ -17,12 +17,11 @@ version: 2.5.1
 
 
 body {
-	font-family: georgia, serif;
 	color: #000000;
 	text-align: center;
 	margin: 0;
 	padding: 0;
-	font-family: Verdana;
+	font-family: sans-serif;
 	background: url(/img/page-bg.jpg) #fff 50% -85px repeat-x;
 }
 
@@ -147,7 +146,6 @@ body.home {
 	width: 100%;
 	margin: 0;
 	height: 56px;
-	font-family: Verdana;
 }
 
 #header.logged-in {
@@ -458,7 +456,6 @@ textarea.translation {
 }
 
 #search label {
-    font-family: Georgia, serif;
     font-size: 130%;
     position: relative;
     top: 3px;
@@ -531,7 +528,6 @@ textarea.translation {
 
 #translations {
     clear: both;
-    font-family: Georgia, serif;
     font-size: 131%;
     width: 100%;
     margin: 10px 0 0 0;
@@ -717,7 +713,6 @@ div.statslist ul li span.value {
     color: #898378;
 	margin-top: 100px;
 	clear: both;
-	font-family: verdana;
 	font-size: 90%;
 	height: 70px;
 	padding: 35px 0 0 0;
