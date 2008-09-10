@@ -18,7 +18,7 @@ version: 2.5.1
 
 body {
 	font-family: georgia, serif;
-	color: #807970;
+	color: #000000;
 	text-align: center;
 	margin: 0;
 	padding: 0;
@@ -144,7 +144,7 @@ body.home {
 
 
 #header {
-	width: 931px;
+	width: 100%;
 	margin: 0;
 	height: 56px;
 	font-family: Verdana;
@@ -220,8 +220,7 @@ body.home {
 
 #nav-main #menu-login a {
     background: none;
-    padding-right: 161px;
-    padding-left: 35px;
+    padding-left: 32px;
     background: url(/img/login-bg.png) 14px 43% no-repeat;
 }
 
@@ -231,7 +230,6 @@ body.home {
 }
 
 #nav-secondary {    
-    background-color: #f7f7f7;
     padding: 15px 25px 15px 45px;
     font-size: 110%;
     margin: 0 0 10px 0;
@@ -721,7 +719,7 @@ div.statslist ul li span.value {
 	clear: both;
 	font-family: verdana;
 	font-size: 90%;
-	min-height: 345px;
+	height: 70px;
 	padding: 35px 0 0 0;
 }
 
