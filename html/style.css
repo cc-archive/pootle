@@ -128,7 +128,7 @@ body.home {
 	z-index: 1;
 }
 
-[dir="rtl"] #doc {
+html[dir="rtl"] #doc {
 	text-align: right;
 }
 
@@ -574,6 +574,9 @@ div.statslist {
     width: 250px;
     margin: 0px 60px 0px 0px;
 }
+html[dir="rtl"] div.statslist {
+    float: right;
+}
 
 div.statslist ul li span.name {
     font-weight:bold;
@@ -582,6 +585,9 @@ div.statslist ul li span.name {
 }
 div.statslist ul li span.value {
     float: right;
+}
+html[dir="rtl"] div.statslist ul li span.value {
+    float: left;
 }
 
 /* Merged from pootle.css for translatepage.html.  Needs to be reviewed */
