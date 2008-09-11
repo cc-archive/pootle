@@ -45,9 +45,9 @@ OpenOffice.org SDF, Java (and Mozilla) .properties, Qt .ts and Mozilla DTD.
 
 %build
 %{__python} setup.py build
-./maketranslations
+./maketranslations %{name}
 pushd po
-for po in $(ls *.po)
+for po in $(ls *.po | egrep -v de_DE)
 do
     mkdir -p locale/$(basename $po .po)/LC_MESSAGES/
     msgfmt $po --output-file=locale/$(basename $po .po)/LC_MESSAGES/%{name}.mo
@@ -60,13 +60,12 @@ rm -rf $RPM_BUILD_ROOT
 %{__python} setup.py install -O1 --skip-build --install-data=/usr --root $RPM_BUILD_ROOT
 
 # Cleanup horrid ./setup.py installs
-mv %{buildroot}%{_bindir}/run_virtaal.py %{buildroot}%{_bindir}/virtaal
 pushd  %{buildroot}%{_datadir}
 mkdir -p mime/packages applications icons
-mv virtaal/virtaal-mimetype.xml mime/packages
-mv virtaal/virtaal.desktop applications
 mv virtaal/virtaal.{png,ico} icons
 popd
+mv share/virtaal/virtaal-mimetype.xml %{buildroot}%{_datadir}/mime/packages
+mv share/virtaal/virtaal.desktop %{buildroot}%{_datadir}/applications
 
 desktop-file-install --vendor="fedora" --delete-original \
    --dir=%{buildroot}%{_datadir}/applications            \
@@ -99,18 +98,23 @@ rm -rf $RPM_BUILD_ROOT
 
 %files -f %{name}.lang
 %defattr(-,root,root,-)
-%doc README
+%doc README po/*.pot
 %{_bindir}/*
 %{_datadir}/applications/*
 %{_datadir}/mime/packages/*
-%exclude %{_datadir}/virtaal/*.in
+%exclude %{_datadir}/virtaal/virtaal.desktop*
+%exclude %{_datadir}/virtaal/virtaal-mimetype.xml*
 %{_datadir}/virtaal
 %{_datadir}/icons/*
 %{python_sitelib}/virtaal*
-%{python_sitelib}/*egg-info
 
 
 %changelog
+* Thu Sep 11 2008 Dwayne Bailey <dwayne@translate.org.za> - 0.1-11.fc9
+- Update for various file moves.
+- Package virtaal.pot and gtk+-lite.pot
+- Exclude the de_DE.mo debug translations
+
 * Sat Jul 26 2008 Dwayne Bailey <dwayne@translate.org.za> - 0.1-10.fc9
 - Package autocorrect files
 
