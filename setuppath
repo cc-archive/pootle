@@ -12,7 +12,7 @@ for translatesubdir in ("convert", "tools", "filters"):
 pathstr.append('"%s"' % os.path.join(translatedir, "tools"))
 pathstr.append('"%s"' % os.path.join(translatedir, "Pootle"))
 pathstr.append('"%s"' % os.path.join(translatedir, "Pootle", "tools"))
-pathstr.append('"%s"' % os.path.join(translatedir, "virtaal"))
+pathstr.append('"%s"' % os.path.join(translatedir, "virtaal", "bin"))
 pythonpathstr.append('"%s"' % translatedir)
 pythonpathstr.append('"%s"' % os.path.join(translatedir, "virtaal"))
 
