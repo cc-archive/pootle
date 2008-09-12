@@ -153,6 +153,7 @@ class ProjectsAdminPage(pagelayout.PootlePage):
                {"name": "name", "title": self.localize("Full Name"), 
                                 "newvalue": self.localize("(add project here)")},
                {"name": "description", "title": self.localize("Project Description"), "newvalue": self.localize("(project description)")},
+               {"name": "ignoredfiles", "title": self.localize("Ignored Files"), "newvalue": self.localize("(comma separated list)")},
                {"name": "checkerstyle", "title": self.localize("Checker Style"), "selectoptions": self.allchecks, "newvalue": ""},
                {"name": "filetype", "title": self.localize("File Type"), "selectoptions": self.alltypes, "newvalue": ""},
                {"name": "createmofiles", "title": self.localize("Create MO Files"), "type": "checkbox", "newvalue": "True"},
@@ -170,6 +171,7 @@ class ProjectsAdminPage(pagelayout.PootlePage):
       projectadminlink = "../projects/%s/admin.html" % projectcode
       projectname = self.potree.getprojectname(projectcode)
       projectdescription = self.potree.getprojectdescription(projectcode)
+      projectignoredfiles = ", ".join(self.potree.getprojectignoredfiles(projectcode))
       projectname = self.potree.getprojectname(projectcode)
       projectcheckerstyle = self.potree.getprojectcheckerstyle(projectcode)
       projectfiletype = self.potree.getprojectlocalfiletype(projectcode)
@@ -182,6 +184,7 @@ class ProjectsAdminPage(pagelayout.PootlePage):
       removelabel = self.localize("Remove %s", projectcode)
       projectoptions = [{"name": "projectname-%s" % projectcode, "value": projectname, "type": "text"},
                         {"name": "projectdescription-%s" % projectcode, "value": projectdescription, "type": "text"},
+                        {"name": "projectignoredfiles-%s" % projectcode, "value": projectignoredfiles, "type": "text"},
                         {"name": "projectcheckerstyle-%s" % projectcode, "value": projectcheckerstyle, "selectoptions": self.allchecks},
                         {"name": "projectfiletype-%s" % projectcode, "value": projectfiletype, "selectoptions": self.alltypes},
                         {"name": "projectcreatemofiles-%s" % projectcode, "value": projectcreatemofiles, "type": "checkbox", projectcreatemofiles: projectcreatemofiles},

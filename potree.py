@@ -151,6 +151,12 @@ class POTree:
           projectdescription = self.getprojectdescription(projectcode)
           if projectdescription != value:
             self.setprojectdescription(projectcode, value)
+      elif key.startswith("projectignoredfiles-"):
+        projectcode = key.replace("projectignoredfiles-", "", 1)
+        if self.hasprojectcode(projectcode):
+          projectignoredfiles = self.getprojectignoredfiles(projectcode)
+          if projectignoredfiles != value:
+            self.setprojectignoredfiles(projectcode, value)
       elif key.startswith("projectcheckerstyle-"):
         projectcode = key.replace("projectcheckerstyle-", "", 1)
         if self.hasprojectcode(projectcode):
@@ -389,6 +395,11 @@ class POTree:
     if len(ignoredfiles) > 0:
       return set(ignoredfiles.split(','))
     return set([])
+
+  def setprojectignoredfiles(self, projectcode, ignoredfiles):
+    "sets the ignored files"
+    projectprefs = self.getprojectprefs(projectcode)
+    setattr(projectprefs, "ignoredfiles", ignoredfiles)
 
   def getprojectcreatemofiles(self, projectcode):
     """returns whether the project builds MO files"""
