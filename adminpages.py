@@ -171,7 +171,7 @@ class ProjectsAdminPage(pagelayout.PootlePage):
       projectadminlink = "../projects/%s/admin.html" % projectcode
       projectname = self.potree.getprojectname(projectcode)
       projectdescription = self.potree.getprojectdescription(projectcode)
-      projectignoredfiles = ", ".join(self.potree.getprojectignoredfiles(projectcode))
+      projectignoredfiles = ",".join(self.potree.getprojectignoredfiles(projectcode))
       projectname = self.potree.getprojectname(projectcode)
       projectcheckerstyle = self.potree.getprojectcheckerstyle(projectcode)
       projectfiletype = self.potree.getprojectlocalfiletype(projectcode)
