@@ -337,7 +337,8 @@ class OptionalLoginAppServer(server.LoginAppServer):
     if not self.hasuser(alchemysession, username):
       usernode = User()
       usernode.username = username
-      alchemysession.save(usernode)
+      alchemysession.add(usernode)
+      alchemysession.flush()
     else:
       usernode = alchemysession.query(User).filter_by(username=username).first()
     return usernode
@@ -345,13 +346,13 @@ class OptionalLoginAppServer(server.LoginAppServer):
   def adduser(self, alchemysession, username, fullname, email, password, logintype="hash"):
     """adds the user with the given details"""
     if logintype == "ldap":
-      self.addldapuser(alchemysession, username)
-      return
+      return self.addldapuser(alchemysession, username)
     usernode = self.getusernode(alchemysession, username)
     usernode.name = fullname
     usernode.email = email
     usernode.logintype = logintype
     usernode.passwdhash = web.session.md5hexdigest(password)
+    return usernode
 
   def addldapuser(self, alchemysession, username):
     email = username
@@ -362,19 +363,26 @@ class OptionalLoginAppServer(server.LoginAppServer):
     usernode.name = fullname
     usernode.email = email
     usernode.logintype = "ldap" 
+    return usernode
 
-  def makeactivationcode(self, alchemysession, username):
+  def makeactivationcode(self, alchemysession, username=None):
     """makes a new activation code for the user and returns it"""
     usernode = self.getusernode(alchemysession, username)
-    usernode.activated = 0
     activationcode = self.generateactivationcode()
+    usernode.activated = 0
     usernode.activationcode = activationcode
+    alchemysession.add(usernode)
+    alchemysession.flush()
     return activationcode
+
 
   def activate(self, alchemysession, username):
     """sets the user as activated"""
     if self.hasuser(alchemysession, username):
-      self.getusernode(alchemysession, username).activated = True 
+      usernode = self.getusernode(alchemysession, username)
+      usernode.activated = True
+      alchemysession.add(usernode)
+      alchemysession.flush()
 
   def changeusers(self, session, argdict):
     """handles multiple changes from the site admin"""
@@ -431,19 +439,22 @@ class OptionalLoginAppServer(server.LoginAppServer):
         if useremail == session.localize("(add email here)"):
           raise ValueError("Please set the users email address or leave it blank")
         useractivate = "newuseractivate" in argdict
-        self.adduser(alchemysession, username, userfullname, useremail, userpassword, logintype)
+        usernode = self.adduser(alchemysession, username, userfullname, useremail, userpassword, logintype)
         if useractivate:
-          self.activate(alchemysession, username)
+          usernode.activate = 1
         else:
-          activationcode = self.makeactivationcode(alchemysession, username)
-          print "user activation code for %s is %s" % (username, activationcode)
+          usernode.activationcode = self.makeactivationcode(alchemysession, username)
+      if usernode:
+        alchemysession.add(usernode)
+      alchemysession.flush()
     session.saveuser()
 
   def handleregistration(self, session, argdict):
     """handles the actual registration"""
     #TODO: Fix layout, punctuation, spacing and correlation of messages
     if not hasattr(self.instance, 'hash'):
-      return
+      raise RegistrationError(session.localize("Local registration is disable."))
+
     supportaddress = getattr(self.instance.registration, 'supportaddress', "")
     username = argdict.get("username", "")
     if not username or not username.isalnum() or not username[0].isalpha():
@@ -454,9 +465,9 @@ class OptionalLoginAppServer(server.LoginAppServer):
     passwordconfirm = argdict.get("passwordconfirm", "")
     if " " in email or not (email and "@" in email and "." in email):
       raise RegistrationError(session.localize("You must supply a valid email address"))
-    userexists = session.loginchecker.userexists(username)
     alchemysession = session.server.alchemysession
-    if userexists:
+
+    if session.loginchecker.userexists(username):
       usernode = self.getusernode(alchemysession, username)
       # use the email address on file
       email = getattr(usernode, "email", email)
@@ -473,8 +484,9 @@ class OptionalLoginAppServer(server.LoginAppServer):
       displaymessage += session.localize("Proceeding to <a href='%s'>login</a>\n", redirecturl)
     else:
       validatepassword(session, password, passwordconfirm)
-      self.adduser(alchemysession, username, fullname, email, password)
+      usernode = self.adduser(alchemysession, username, fullname, email, password)
       activationcode = self.makeactivationcode(alchemysession, username)
+      usernode.activationcode = activationcode
       activationlink = ""
       message = session.localize("A Pootle account has been created for you using this email address.\n")
       if session.instance.baseurl.startswith("http://"):
@@ -492,15 +504,15 @@ class OptionalLoginAppServer(server.LoginAppServer):
       displaymessage = session.localize("Account created. You will be emailed login details and an activation code. Please enter your activation code on the <a href='%s'>activation page</a>.", redirecturl)
       if activationlink:
         displaymessage += " " + session.localize("(Or simply click on the activation link in the email)")
-    session.saveuser()
+
+      alchemysession.add(usernode)
+      alchemysession.flush()
+
     message += session.localize("Your user name is: %s\n", username)
-    if password.strip():
-      message += session.localize("Your password is: %s\n", password)
     message += session.localize("Your registered email address is: %s\n", email)
     smtpserver = self.instance.registration.smtpserver
     fromaddress = self.instance.registration.fromaddress
-    subject = Header(session.localize("Pootle Registration"),
-                     "utf-8").encode()
+    subject = Header(session.localize("Pootle Registration"), "utf-8").encode()
     messagedict = {"from": fromaddress, "to": [email], "subject": subject, "body": message}
     if supportaddress:
       messagedict["reply-to"] = supportaddress
@@ -544,7 +556,8 @@ class OptionalLoginAppServer(server.LoginAppServer):
         correctcode = getattr(usernode, "activationcode", "")
         if correctcode and correctcode.strip().lower() == activationcode.strip().lower():
           setattr(usernode, "activated", 1)
-          session.saveuser()
+          session.server.alchemysession.add(usernode)
+          session.server.alchemysession.flush()
           redirectpage = pagelayout.PootlePage("Redirecting to login...", {}, session)
           redirectpage.templatename = "redirect"
           redirectpage.templatevars = {
@@ -597,10 +610,8 @@ class PootleSession(web.session.LoginSession):
     """saves changed preferences back to disk"""
     if self.user == None:
       return
-    if self.user.id == None:
-      self.server.alchemysession.save(self.user) # New user
-    self.server.alchemysession.commit() # Modified user 
-    
+    self.server.alchemysession.add(self.user)
+    self.server.alchemysession.flush()
 
   def open(self):
     """opens the session, along with the users prefs"""
@@ -609,7 +620,7 @@ class PootleSession(web.session.LoginSession):
     return self.isopen
 
   def close(self, req):
-    """opens the session, along with the users prefs"""
+    """closes the session, along with the users prefs"""
     super(PootleSession, self).close(req)
     self.getuser()
 

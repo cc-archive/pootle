@@ -91,7 +91,7 @@ class PootleServer(users.OptionalLoginAppServer, templateserver.TemplateServer):
       self.engine = create_engine('%s://?encoding=utf8' % (statistics.DB_TYPE), encoding='utf-8', connect_args = statistics.STATS_OPTIONS, pool_recycle=3600)
     self.conn = self.engine.connect()
 
-    Session = sessionmaker(bind=self.engine, autoflush=True)
+    Session = sessionmaker(bind=self.engine, autoflush=True, autocommit=True)
     self.alchemysession = Session()
 
     self.metadata.create_all(self.engine)
@@ -274,8 +274,8 @@ class PootleServer(users.OptionalLoginAppServer, templateserver.TemplateServer):
       session.getsuffix = "" 
 
     page = self.getpage(pathwords, session, argdict)
-    if not session.isopen:
-      session.server.alchemysession.close();
+    #if not session.isopen:
+      #session.server.alchemysession.close();
     return page
 
   def getpage(self, pathwords, session, argdict):

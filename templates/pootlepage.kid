@@ -70,7 +70,10 @@
             <form action="/${uilanguage}/login.html" method="post" id="login-form">
                 <p><label for="username" py:content="username_title">Username</label> <input type="text" id="username" name="username" /></p>
                 <p><label for="password" py:content="password_title">Password</label> <input type="password" id="password" name="password" /></p>
-                <p><input type="submit" value="${login_text}" /><input type="submit" value="${register_text}" py:if="canregister" /></p>
+                <p>
+                    <input type="submit" name="islogin" value="${login_text}" />
+                    <input type="submit" name="doregister" value="${register_text}" py:if="canregister" />
+                </p>
                 <input type="hidden" name="islogin" value="true" /> 
             </form>
         </div>
