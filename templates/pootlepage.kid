@@ -64,13 +64,13 @@
         <!-- end footer -->
     </div>
 
-    <div py:def="login_form(username_title, password_title, login_text, register_text, logout_text, session, baseurl, uilanguage)" py:strip="True">
+    <div py:def="login_form(username_title, password_title, login_text, register_text, canregister, session, uilanguage)" py:strip="True">
         <!-- start login form -->
         <div py:if="not session.isopen" py:strip="True">
             <form action="/${uilanguage}/login.html" method="post" id="login-form">
                 <p><label for="username" py:content="username_title">Username</label> <input type="text" id="username" name="username" /></p>
                 <p><label for="password" py:content="password_title">Password</label> <input type="password" id="password" name="password" /></p>
-                <p><input type="submit" value="${login_text}" /><input type="submit" value="${register_text}" /></p>
+                <p><input type="submit" value="${login_text}" /><input type="submit" value="${register_text}" py:if="canregister" /></p>
                 <input type="hidden" name="islogin" value="true" /> 
             </form>
         </div>
