@@ -67,10 +67,15 @@ class PootleServer(users.OptionalLoginAppServer, templateserver.TemplateServer):
       sessioncache = users.PootleSessionCache(sessionclass=users.PootleSession)
 
     self.configDB(instance)
-    self.potree = potree.POTree(instance, self)
-    super(PootleServer, self).__init__(instance, webserver, sessioncache, errorhandler, loginpageclass)
-    self.templatedir = filelocations.templatedir
-    self.setdefaultoptions()
+    try:
+      self.potree = potree.POTree(instance, self)
+      super(PootleServer, self).__init__(instance, webserver, sessioncache, errorhandler, loginpageclass)
+      self.templatedir = filelocations.templatedir
+      self.setdefaultoptions()
+    except Exception, e:
+      self.alchemysession.rollback()
+      self.alchemysession.close()
+      raise e
 
   def configDB(self, instance):
     statistics.statsdb = __import__(instance.stats.statsdb)
@@ -79,11 +84,11 @@ class PootleServer(users.OptionalLoginAppServer, templateserver.TemplateServer):
       statistics.STATS_OPTIONS[k] = v
     statistics.DB_TYPE = instance.stats.dbtype
 
-    self.metadata = dbclasses.Base.metadata
+    self.metadata = dbclasses.metadata
     if statistics.DB_TYPE == "sqlite":
       self.engine = create_engine('sqlite:///%s' % statistics.STATS_OPTIONS['database'])
     else:
-      self.engine = create_engine('%s://' % (statistics.DB_TYPE), connect_args = statistics.STATS_OPTIONS, pool_recycle=3600)
+      self.engine = create_engine('%s://?encoding=utf8' % (statistics.DB_TYPE), encoding='utf-8', connect_args = statistics.STATS_OPTIONS, pool_recycle=3600)
     self.conn = self.engine.connect()
 
     Session = sessionmaker(bind=self.engine, autoflush=True)
@@ -268,7 +273,10 @@ class PootleServer(users.OptionalLoginAppServer, templateserver.TemplateServer):
     else:
       session.getsuffix = "" 
 
-    return self.getpage(pathwords, session, argdict)
+    page = self.getpage(pathwords, session, argdict)
+    if not session.isopen:
+      session.server.alchemysession.close();
+    return page
 
   def getpage(self, pathwords, session, argdict):
     """return a page that will be sent to the user"""

@@ -23,11 +23,11 @@ def configDB(instance):
     STATS_OPTIONS[k] = v
   DB_TYPE = instance.stats.dbtype
 
-  metadata = Base.metadata
+  #metadata = Base.metadata
   if DB_TYPE == "sqlite":
     engine = create_engine('sqlite:///%s' % STATS_OPTIONS['database'])
   else:
-    engine = create_engine('%s://' % (DB_TYPE), connect_args = STATS_OPTIONS)
+    engine = create_engine('%s://?charset=utf8' % (DB_TYPE), encoding='utf-8', connect_args = STATS_OPTIONS)
   conn = engine.connect()
 
   Session = sessionmaker(bind=engine, autoflush=True)
@@ -46,19 +46,19 @@ def attempt(s,obj):
     s.commit()
   except Exception, e:
     s.rollback()
-    print "FAILED"
+    print "FAILED: %s" % e
   else:
     print "OK"
 
 def create_default_projects(s):
-      pootle = Project("pootle")
+      pootle = Project(u"pootle")
       pootle.fullname = u"Pootle"
       pootle.description = "<div dir='ltr' lang='en'>Interface translations for Pootle. <br /> See the <a href='http://pootle.locamotion.org'>official Pootle server</a> for the translations of Pootle.</div>"
       pootle.checkstyle = "standard"
       pootle.localfiletype = "po"
       attempt(s,pootle)
       
-      terminology = Project("terminology")
+      terminology = Project(u"terminology")
       terminology.fullname = u"Terminology"
       terminology.description = "<div dir='ltr' lang='en'>Terminology project that Pootle should use to suggest terms.<br />There might be useful terminology files on the <a href='http://pootle.locamotion.org/projects/terminology/'>official Pootle server</a>.</div>"
       terminology.checkstyle = "standard"
@@ -649,8 +649,8 @@ def create_default_languages(s):
     attempt(s,templates)
 
 def create_default_users(s):
-  admin = User("admin")
-  admin.name="Administrator"
+  admin = User(u"admin")
+  admin.name=u"Administrator"
   admin.activated="True"
   admin.passwdhash=md5.new("admin").hexdigest()
   admin.logintype="hash"
