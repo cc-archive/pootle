@@ -30,7 +30,7 @@ class TestPO2XLIFF:
         assert xliff.translate("bla") is None
  
     def test_basic(self):
-        minipo = """# Afrikaans translation of program ABC
+        minipo = r"""# Afrikaans translation of program ABC
 #
 msgid ""
 msgstr ""
