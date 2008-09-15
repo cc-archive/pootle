@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <include xmlns:py="http://purl.org/kid/ns#">
 
-    <div py:def="header(links, session, baseurl, logo_alttext)" py:strip="True">
+    <div py:def="header(links, session, baseurl, instancetitle)" py:strip="True">
         <!-- start header -->
         <div id="nav-access">
             <a href="#nav-main" py:content="links.skip_nav">skip to navigation</a>
@@ -16,7 +16,7 @@
 
         <div id="header" py:attrs="header_attributes">
             <div>
-                <h1><a href="/" title="${links.home}"><img src="/img/nav_logo.png" height="56" width="261" alt="${logo_alttext}" /></a></h1>
+                <h1><a href="/" title="${links.home}" py:content="instancetitle">Verbatim</a></h1>
             
                 <div id="nav-main" class="yuimenubar">
                   <div class="bd">

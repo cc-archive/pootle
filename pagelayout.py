@@ -89,7 +89,6 @@ def completetemplatevars(templatevars, session, bannerheight=135):
     	templatevars["baseurl"] += "/"
   if not "enablealtsrc" in templatevars:
      templatevars["enablealtsrc"] = getattr(session.instance, "enablealtsrc", False)
-  templatevars["logo_alttext"] = session.localize("Mozilla")
   templatevars["aboutlink"] = session.localize("About this Pootle server")
   templatevars["uilanguage"] = weblanguage(session.language)
   templatevars["uidir"] = languagedir(session.language)
