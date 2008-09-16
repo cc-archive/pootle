@@ -41,6 +41,7 @@ class ParseState(object):
         self.last_node = None
         self.level = 0
         self.xpath = []
+        self.placeable_name = ["<top-level>"]
 
 def make_translatable(state, placeable_name = None):
     if state.level > 0:
@@ -83,10 +84,14 @@ def process_children(dom_node, state):
 
 def apply(dom_node, state):  
     state.xpath.append(dom_node.tag)
+    if dom_node.tag in state.placeable_table:
+        state.placeable_name.append(state.placeable_table[dom_node.tag])
     if dom_node.tag in state.namespace_table:
         result = process_translatable(dom_node, state)
     else:
         result = process_children(dom_node, state)
+    if dom_node.tag in state.placeable_table:
+        state.placeable_name.pop()
     state.xpath.pop()
     return result
 
