@@ -20,6 +20,30 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
+class XPathBreadcrumb(object):
+    def __init__(self):
+        self._xpath = []
+        self._tagtally = [{}]
+        
+    def start_tag(self, tag):
+        tally_dict = self._tagtally[-1]
+        tally = tally_dict.get(tag, -1) + 1
+        tally_dict[tag] = tally
+        self._xpath.append((tag, tally))
+        self._tagtally.append({})
+      
+    def end_tag(self):
+        self._xpath.pop()
+        self._tagtally.pop()
+
+    def _get_xpath(self):
+        def str_component(component):
+            tag, pos = component
+            return "%s[%d]" % (tag, pos)
+        return "/".join(str_component(component) for component in self._xpath)
+    
+    xpath = property(_get_xpath)
+
 class Translatable(object):
     """A node corresponds to a translatable element. A node may
        have children, which correspond to placeables."""
@@ -28,7 +52,7 @@ class Translatable(object):
         self.placeable_id = placeable_id
         self.text = [] # A list of Nodes and unicodes
         self.placables = []
-        self.xpath = []
+        self.xpath = ""
 
 class ParseState(object):
     def __init__(self, namespace_table, placeable_table):
@@ -37,7 +61,7 @@ class ParseState(object):
         self.placeable_id    = 0
         self.last_node = None
         self.level = 0
-        self.xpath = []
+        self.xpath_breadcrumb = XPathBreadcrumb()
         self.placeable_name = ["<top-level>"]
 
 def make_translatable(state, placeable_name = None):
@@ -72,6 +96,7 @@ def process_translatable(dom_node, state):
     placeables, text = process_placeables(dom_node, state)
     translatable.placeables = placeables
     translatable.text.extend(text)
+    translatable.xpath = state.xpath_breadcrumb.xpath
     return [translatable]
 
 def process_children(dom_node, state):
@@ -80,7 +105,7 @@ def process_children(dom_node, state):
     return [child for child_list in children for child in child_list]
 
 def apply(dom_node, state):  
-    state.xpath.append(dom_node.tag)
+    state.xpath_breadcrumb.start_tag(dom_node.tag)
     if dom_node.tag in state.placeable_table:
         state.placeable_name.append(state.placeable_table[dom_node.tag])
     if dom_node.tag in state.namespace_table:
@@ -89,7 +114,7 @@ def apply(dom_node, state):
         result = process_children(dom_node, state)
     if dom_node.tag in state.placeable_table:
         state.placeable_name.pop()
-    state.xpath.pop()
+    state.xpath_breadcrumb.end_tag()
     return result
 
 # ======================
