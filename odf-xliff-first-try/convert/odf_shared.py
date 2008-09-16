@@ -22,6 +22,9 @@
 
 import xml_extract
 
+def make_tag(uri, raw_tag):
+    return "{%s}%s" % (uri, raw_tag)
+
 # From itools
 # This information is derived from Itaapy's itools and can be seen at
 # http://git.hforge.org/?p=itools.git;a=blob;f=odf/schema.py;h=1e2b2e145b55a1b73e4fd22d7610acaed3a88c38;hb=HEAD
@@ -47,9 +50,7 @@ manifest_uri = 'urn:oasis:names:tc:opendocument:xmlns:manifest:1.0'
 presentation_uri = 'urn:oasis:names:tc:opendocument:xmlns:presentation:1.0'
 smil_uri = 'urn:oasis:names:tc:opendocument:xmlns:smil-compatible:1.0'
 
-odf_namespace_table = {
-    (text_uri, 'text') : set(['p', 'h']) 
-}
+odf_namespace_table = set([make_tag(text_uri, 'p'), make_tag(text_uri, 'h')])
 
 odf_placables_table = {
     (text_uri, 'text') : {

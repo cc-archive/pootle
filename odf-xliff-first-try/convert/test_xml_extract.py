@@ -182,13 +182,19 @@ style:num-format="1">1</text:sequence>: Pic 1</text:p>
 class TestXMLExtract:
     def test_basic(self):
         tree = etree.parse(cStringIO.StringIO(odf_file))
-        result = xml_extract.apply(tree.getroot(), xml_extract.ApplyState(odf_shared.odf_namespace_table))
+        result = xml_extract.apply(tree.getroot(), xml_extract.ParseState(odf_shared.odf_namespace_table, odf_shared.odf_placables_table))
         return result
       
     def test_extract(self):
+        def f(translatable):
+            print translatable.text
+      
         store = factory.classes['xlf']()
         tree = etree.parse(cStringIO.StringIO(odf_file))
-        xml_extract.extract(tree.getroot(), store, odf_shared.odf_namespace_table, odf_shared.odf_placables_table)
+        parse_state = xml_extract.ParseState(odf_shared.odf_namespace_table, odf_shared.odf_placables_table)
+        root = tree.getroot()
+        translatables = xml_extract.apply(root, parse_state)
+        xml_extract.walk_translatable_tree(translatables, f)
         print store
       
 t = TestXMLExtract()
