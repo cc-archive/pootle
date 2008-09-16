@@ -65,12 +65,12 @@ def process_placeables(dom_node, state):
     for child in dom_node:
         placeable = process_placeable(child, state)
         placeables.append(placeable)
-        text.append(placeable.placeable_name)
+        text.extend([placeable.placeable_name, child.tail])
     state.level -= 1
     return placeables, text
 
 def process_translatable(dom_node, state):
-    translatable = make_translatable(state)
+    translatable = make_translatable(state, state.placeable_name[-1])
     translatable.text.append(dom_node.text)
     placeables, text = process_placeables(dom_node, state)
     translatable.placeables = placeables
