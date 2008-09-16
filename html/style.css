@@ -106,7 +106,7 @@ h1, h2, h3 {
 
 html[dir=rtl] ul li,
 html[dir=rtl] ol li ul li {
-	padding: 3px 10px 4px 0;
+	padding: 1px 0 4px 0;
 	background-position: 100% 10px;
 }
 
@@ -184,6 +184,12 @@ html[dir="rtl"] #doc {
 
 #header h1 a:hover {
     text-decoration: none;
+}
+
+html[dir="rtl"] #header h1 a {
+    padding: 0;
+    margin: 0 0 0 15px;
+    background-position: 15px 50%;
 }
 
 #nav-main {
