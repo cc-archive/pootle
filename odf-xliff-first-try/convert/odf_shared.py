@@ -50,12 +50,13 @@ manifest_uri = 'urn:oasis:names:tc:opendocument:xmlns:manifest:1.0'
 presentation_uri = 'urn:oasis:names:tc:opendocument:xmlns:presentation:1.0'
 smil_uri = 'urn:oasis:names:tc:opendocument:xmlns:smil-compatible:1.0'
 
-odf_namespace_table = set([make_tag(text_uri, 'p'), make_tag(text_uri, 'h')])
+odf_namespace_table = set([
+    make_tag(text_uri, 'p'), 
+    make_tag(text_uri, 'h')
+])
 
 odf_placables_table = {
-    (text_uri, 'text') : {
-         'note': ('footnote',),
-         'frame': ('frame',),
-    }
+    make_tag(text_uri, 'note'): 'footnote',
+    make_tag(draw_uri, 'frame'): 'frame',
 }
 
