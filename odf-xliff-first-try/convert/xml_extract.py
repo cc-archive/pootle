@@ -23,11 +23,8 @@
 class Translatable(object):
     """A node corresponds to a translatable element. A node may
        have children, which correspond to placeables."""
-    def __init__(self, placeable_id = -1, placeable_name = None): 
-        if placeable_name is not None:
-            self.placeable_name = placeable_name
-        else:
-            self.placeable_name = "<toplevel element>"             
+    def __init__(self, placeable_id, placeable_name): 
+        self.placeable_name = placeable_name
         self.placeable_id = placeable_id
         self.text = [] # A list of Nodes and unicodes
         self.placables = []
