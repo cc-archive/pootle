@@ -186,15 +186,12 @@ class TestXMLExtract:
         return result
       
     def test_extract(self):
-        def f(translatable):
-            print translatable.text
-      
         store = factory.classes['xlf']()
         tree = etree.parse(cStringIO.StringIO(odf_file))
         parse_state = xml_extract.ParseState(odf_shared.odf_namespace_table, odf_shared.odf_placables_table)
         root = tree.getroot()
         translatables = xml_extract.apply(root, parse_state)
-        xml_extract.walk_translatable_tree(translatables, f)
+        xml_extract.walk_translatable_tree(translatables, xml_extract.make_store_adder(store))
         print store
       
 t = TestXMLExtract()

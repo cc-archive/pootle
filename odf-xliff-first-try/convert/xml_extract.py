@@ -121,6 +121,23 @@ def apply(dom_node, state):
 
 # ======================
 
+def make_store_adder(store):
+    UnitClass = store.UnitClass
+    def add_to_store(translatable):
+        source_text = []
+        for component in translatable.text:
+            if isinstance(component, Translatable):
+                placeable_text = u"[[[%(placeable_name)s_%(placeable_id)d]]]" % component.__dict__
+                source_text.append(placeable_text)
+            else:
+                source_text.append(component)
+        unit = UnitClass(u''.join(source_text))
+        unit.addlocation(translatable.xpath)
+        if translatable.placeable_id > -1:
+            unit.addlocation("References: %(placeable_id)d" % translatable.__dict__)
+        store.addunit(unit)
+    return add_to_store
+
 def walk_translatable_tree(translatables, f):
     for translatable in translatables:
         f(translatable)
