@@ -51,7 +51,7 @@ class Translatable(object):
         self.placeable_name = placeable_name
         self.placeable_id = placeable_id
         self.text = [] # A list of Nodes and unicodes
-        self.placables = []
+        self.placeables = []
         self.xpath = ""
 
 class ParseState(object):
