@@ -67,8 +67,10 @@ class ParseState(object):
 def make_translatable(state, placeable_name = None):
     if state.level > 0:
         state.placeable_id += 1
-    return Translatable(state.placeable_id, placeable_name)
-
+        return Translatable(state.placeable_id, placeable_name)
+    else:
+        return Translatable(-1, placeable_name)
+      
 def process_placeable(dom_node, state):
     placeable = apply(dom_node, state)
     if len(placeable) == 0:
