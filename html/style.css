@@ -111,7 +111,6 @@ html[dir=rtl] ol li ul li {
 }
 
 body.home {
-    background-position: 50% 0;
 }
 
 #nav-access { 
@@ -272,6 +271,7 @@ html[dir="rtl"] #header h1 a {
     font-size: 91%;
     background-color: #ffe;
     border: 1px solid #fc9;
+    margin-bottom:2em;
 }
 
 .site-message .info{
@@ -603,11 +603,10 @@ html[dir="rtl"] div.statslist {
 
 div.statslist ul li span.name {
     font-weight:bold;
-    width: 200px;
     overflow: hidden;
 }
 div.statslist ul li span.value {
-    float: right;
+    margin-left:50px;
 }
 html[dir="rtl"] div.statslist ul li span.value {
     float: left;
@@ -623,7 +622,6 @@ html[dir="rtl"] div.statslist ul li span.value {
         }
         .translate-locations
         {
-            background-color: #DDD;
             font-family: monospace;
             margin-top: 10px;
             overflow: auto;
@@ -707,6 +705,11 @@ html[dir="rtl"] div.statslist ul li span.value {
         div.translate-original {
           min-height: 1.5em;
         }
+        div.suggestions{
+			font-style:italic;
+			margin-bottom:6px;
+			margin-top:6px;
+        }
         div.suggestions ul li{
             padding-left: 30px;
         }
@@ -718,11 +721,11 @@ html[dir="rtl"] div.statslist ul li span.value {
         }
         a.translation-action[dir="ltr"]
         {
-            padding-left: 4px;
+            padding-left: 13px;
         }
         a.translation-action[dir="rtl"]
         {
-            padding-right: 4px;
+            padding-right: 13px;
         }
         div.translation-action
         {
@@ -909,4 +912,25 @@ label.inputHint {
 .togglesearch {
   cursor: pointer;
   vertical-align: middle;
+
 }
+.sidebar {
+	float: right;
+}
+
+.sidebar .sidetitle {
+	font-weight: bold;
+}
+
+.sidebar .sidetitle .tm-unit {
+	cursor: pointer;
+}
+
+.sidebar .sidetitle .tm-unit .tm-translation{
+	font-style:italic;
+}
+.icon {
+	float:left;
+	margin-right:8px;
+}
+
