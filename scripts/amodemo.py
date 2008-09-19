@@ -63,7 +63,7 @@ def preupdate(updatedfile):
   if os.path.basename(updatedfile) == "messages-combined.po":
     
     # Get the files we'll be using
-    (combinedfile, mainfile, sourcefile) = _getfiles(committedfile)
+    (combinedfile, mainfile, sourcefile) = _getfiles(updatedfile)
    
     # We want to update messages.po
     return mainfile
