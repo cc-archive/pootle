@@ -125,6 +125,8 @@ def make_store_adder(store):
     UnitClass = store.UnitClass
     def add_to_store(translatable):
         source_text = []
+        if translatable.text in ([u""], []):
+            return
         for component in translatable.text:
             if isinstance(component, Translatable):
                 placeable_text = u"[[[%(placeable_name)s_%(placeable_id)d]]]" % component.__dict__
