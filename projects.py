@@ -564,10 +564,16 @@ class TranslationProject(object):
     """updates an individual PO file from version control"""
     if "admin" not in self.getrights(session):
       raise RightsError(session.localize("You do not have rights to update files here"))
-    pathname = self.getuploadpath(dirname, pofilename)
     # read from version control
+    pathname = self.getuploadpath(dirname, pofilename)
+    try:
+      pathname = hooks.hook(self.projectcode, "preupdate", pathname)
+    except:
+      pass
+
     if os.path.exists(pathname):
       popath = os.path.join(dirname, pofilename)
+
       currentpofile = self.getpofile(popath)
       # reading BASE version of file
       origcontents = versioncontrol.getcleanfile(pathname, "BASE")
@@ -590,6 +596,11 @@ class TranslationProject(object):
     else:
       versioncontrol.updatefile(pathname)
       self.scanpofiles()
+
+    try:
+      hooks.hook(self.projectcode, "postupdate", pathname)
+    except:
+      pass
 
   def runprojectscript(self, scriptdir, target, extraargs = []):
     currdir = os.getcwd()
@@ -1137,7 +1148,7 @@ class TranslationProject(object):
 
   def savequickstats(self):
     """saves the quickstats"""
-    self.potree.server.alchemysession.commit()
+    pass
 
   def readquickstats(self):
     """reads the quickstats"""
@@ -1312,8 +1323,6 @@ class TranslationProject(object):
 
     s.fromsuggestion = suggObj
 
-    session.server.alchemysession.commit()
-    
     pofile.updateunit(item, newvalues, session.user, languageprefs)
     self.updateindex(pofilename, [item])
 
@@ -1346,8 +1355,6 @@ class TranslationProject(object):
       uname = session.user.username
     else:
       uname = None
-
-    session.server.alchemysession.commit()
 
     pofile.track(item, "suggestion made by %s" % uname)
     pofile.addsuggestion(item, trans, uname)
@@ -1382,7 +1389,6 @@ class TranslationProject(object):
       sugg.reviewer = session.user
       sugg.reviewStatus = status
       sugg.reviewTime = datetime.datetime.utcnow()
-      self.asession.commit()
     else:
       print "No database entry for suggestion found; database integrity issue detected!"
 

@@ -66,8 +66,8 @@ def preupdate(updatedfile):
     (combinedfile, mainfile, sourcefile) = _getfiles(committedfile)
    
     # We want to update messages.po
-    return [mainfile]
-  return []
+    return mainfile
+  return ""
 
 def postupdate(updatedfile):
   pass
