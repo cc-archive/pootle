@@ -23,6 +23,9 @@ from Pootle.templates import pootlepage
 
   <div id="body">
 
+    <div class="site-message" py:if="message">
+        <div class="info" py:if="message" py:content="XML(message)">Message</div>
+    </div>
       <div class="module first">
           <div class="hd">
               <h2 py:content="languagelink">Languages</h2>

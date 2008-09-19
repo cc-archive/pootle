@@ -25,6 +25,10 @@ from Pootle.templates import pootlepage
 
     <h1 py:content="XML(description)">this is a demo installation of pootle</h1>
 
+    <div py:if="message" class="site-message">
+        <div class="info" py:if="message" py:content="XML(message)">Message</div>
+    </div>
+
       <div class="module first">
           <div class="hd">
               <h2 py:content="languagelink">Languages</h2>

@@ -118,6 +118,14 @@ def completetemplatevars(templatevars, session, bannerheight=135):
   if "search" not in templatevars:
     templatevars["search"] = None
 
+  # Messaging system
+  if "message" not in templatevars:
+    templatevars['message'] = ''
+  else:
+    templatevars['message'] = templatevars['message'] + '<br />'
+  for message in session.getMessages():
+    templatevars['message'] = templatevars['message'] + message + '<br />'
+
 
 class PootlePage:
   """the main page"""

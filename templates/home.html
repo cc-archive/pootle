@@ -20,6 +20,9 @@ from Pootle.templates import pootlepage
   <div py:replace="pootlepage.header(links, session, baseurl, instancetitle)"/>
 
   <div id="body">
+    <div class="site-message" py:if="message">
+        <div class="info" py:if="message" py:content="XML(message)">Message</div>
+    </div>
 
       <div class="module first">
           <div class="hd">

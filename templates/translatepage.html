@@ -23,6 +23,10 @@ from Pootle.templates import pootlepage, navbar
 
   <div id="ajaxresponse" style="display: none;">${ajax_status_text}</div>
 
+    <div py:if="message" class="site-message">
+        <div class="info" py:if="message" py:content="XML(message)">Message</div>
+    </div>
+
     <div id="nav-secondary">
         <div class="navbar" py:for="item in navitems">
           <!--! Search form -->

@@ -26,6 +26,9 @@ from Pootle.templates import pootlepage
     </div>
 
       <div py:if="session.issiteadmin" class="module-primary first">
+          <div class="site-message" py:if="message">
+              <div class="info" py:if="message" py:content="XML(message)">Message</div>
+          </div>
           <div class="hd"> </div>
           <div class="bd">
             <ul class="linklist">

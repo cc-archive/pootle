@@ -597,6 +597,8 @@ class TranslationProject(object):
       versioncontrol.updatefile(pathname)
       self.scanpofiles()
 
+    session.addMessage("Updated file: <em>%s</em>" % pofilename)
+
     try:
       hooks.hook(self.projectcode, "postupdate", pathname)
     except:
@@ -638,8 +640,10 @@ class TranslationProject(object):
     try:
       for file in filestocommit:
         versioncontrol.commitfile(file, message=message, author=author)
+        session.addMessage("Committed file: <em>%s</em>" % file)
     except Exception, e:
       print "Failed to commit files: %s" % e
+      session.addMessage("Failed to commit file: %s" % e)
       success = False 
     try:
       hooks.hook(self.projectcode, "postcommit", pathname, success=success)

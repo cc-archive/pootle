@@ -582,6 +582,7 @@ class PootleSession(web.session.LoginSession):
     # hence, we default it to ProgressiveLoginChecker first, before we call
     # LoginSession's __init__.
     self.server = server
+    self.messages = []
     if loginchecker == None:
       import login
       logindict = {}
@@ -623,6 +624,15 @@ class PootleSession(web.session.LoginSession):
     """closes the session, along with the users prefs"""
     super(PootleSession, self).close(req)
     self.getuser()
+
+  def addMessage(self, message):
+    self.messages.append(message)
+
+  def getMessages(self, clear=True):
+    messages = self.messages
+    if clear:
+      self.messages = []
+    return messages
 
   def setlanguage(self, language):
     """sets the language for the session"""

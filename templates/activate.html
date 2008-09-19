@@ -21,8 +21,9 @@ from Pootle.templates import pootlepage
 
   <div id="body">
 
-    <div class="site-message" py:if="introtext">
+    <div class="site-message" py:if="introtext or message">
         <div class="info" py:if="introtext" py:content="introtext">Message</div>
+        <div class="info" py:if="message" py:content="XML(message)">Message</div>
     </div>
 
     <form action="" method="post" name="activate" id="activate">

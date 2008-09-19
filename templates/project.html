@@ -21,6 +21,9 @@ from Pootle.templates import navbar, pootlepage
 
   <div id="body">
 
+    <div py:if="message" class="site-message">
+        <div class="info" py:if="message" py:content="XML(message)">Message</div>
+    </div>
 
     <div id="nav-secondary">
 

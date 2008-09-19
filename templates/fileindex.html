@@ -54,7 +54,7 @@ from Pootle.templates import pootlepage, navbar
     </div>
 
     <div py:if="message" class="site-message">
-        <div class="info" py:if="message" py:content="message">Message</div>
+        <div class="info" py:if="message" py:content="XML(message)">Message</div>
     </div>
 
     <!--! The statistics view -->
