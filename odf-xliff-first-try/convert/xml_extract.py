@@ -134,7 +134,7 @@ def make_store_adder(store):
         unit = UnitClass(u''.join(source_text))
         unit.addlocation(translatable.xpath)
         if translatable.placeable_id > -1:
-            unit.addlocation("References: %(placeable_id)d" % translatable.__dict__)
+            unit.addnote("References: %(placeable_id)d" % translatable.__dict__)
         store.addunit(unit)
     return add_to_store
 
