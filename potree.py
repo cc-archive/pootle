@@ -53,8 +53,8 @@ class POTree:
 
   def saveprefs(self):
     """saves any changes made to the preferences"""
-    # TODO: this is a hack, fix it up nicely :-)
-    self.server.alchemysession.commit()
+    # sqlalchemy autocommit should take care of this
+    pass
 
   def changelanguages(self, argdict):
     """changes language entries"""
