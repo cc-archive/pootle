@@ -180,9 +180,18 @@ def create_default_languages(s):
     attempt(s,en)
 
 # English (United Kingdom)
-#    en_GB.fullname = u'English (United Kingdom)'
-#    en_GB.nplurals = '2'
-#    en_GB.pluralequation ='(n != 1)'
+    en_GB = Language("en_GB")
+    en_GB.fullname = u'English (United Kingdom)'
+    en_GB.nplurals = '2'
+    en_GB.pluralequation ='(n != 1)'
+    attempt(s,en_GB)
+
+# English (US)
+    en_US = Language("en_US")
+    en_US.fullname = u'English'
+    en_US.nplurals = '2'
+    en_US.pluralequation ='(n != 1)'
+    attempt(s,en_US)
 
 # English (South Africa)
     en_ZA = Language("en_ZA")
@@ -203,6 +212,22 @@ def create_default_languages(s):
     es.nplurals = '2'
     es.pluralequation ='(n != 1)'
     attempt(s,es)
+
+# Español
+# Spanish (Argentina)
+    es_AR = Language("es_AR")
+    es_AR.fullname = u'Spanish (Argentina)'
+    es_AR.nplurals = '2'
+    es_AR.pluralequation ='(n != 1)'
+    attempt(s,es_AR)
+
+# Español
+# Spanish (Spain)
+    es_ES = Language("es_ES")
+    es_ES.fullname = u'Spanish (Spain)'
+    es_ES.nplurals = '2'
+    es_ES.pluralequation ='(n != 1)'
+    attempt(s,es_ES)
 
 # Eesti
 # Estonian
@@ -568,6 +593,14 @@ def create_default_languages(s):
     sv.nplurals = '2'
     sv.pluralequation ='(n != 1)'
     attempt(s,sv)
+
+# Svenska
+# Swedish (Sweden)
+    sv_SE = Language("sv_SE")
+    sv_SE.fullname = u'Swedish (Sweden)'
+    sv_SE.nplurals = '2'
+    sv_SE.pluralequation ='(n != 1)'
+    attempt(s,sv_SE)
 
 # தமிழ்
 # Tamil
