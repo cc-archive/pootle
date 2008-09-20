@@ -491,6 +491,14 @@ def create_default_languages(s):
     pt.pluralequation ='(n != 1)'
     attempt(s,pt)
 
+# Português 
+# Portuguese from Portugal
+    pt_PT = Language("pt_PT")
+    pt_PT.fullname = u'Portuguese (Portugal)'
+    pt_PT.nplurals = '2'
+    pt_PT.pluralequation ='(n != 1)'
+    attempt(s,pt_PT)
+
 # Português do Brasil
 # Brazilian Portuguese
     pt_BR = Language("pt_BR")
