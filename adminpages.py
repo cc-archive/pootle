@@ -380,7 +380,7 @@ class TranslationProjectAdminPage(pagelayout.PootlePage):
     self.localize = session.localize
     self.rightnames = self.project.getrightnames(session)
 
-    if "admin" not in self.getrights(session):
+    if "admin" not in project.getrights(session):
       raise projects.Rights404Error
 
     try:
