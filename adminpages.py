@@ -269,7 +269,7 @@ class ProjectAdminPage(pagelayout.PootlePage):
     self.localize = session.localize
     self.tr_lang = session.tr_lang
     projectname = self.potree.getprojectname(self.projectcode)
-    if self.session.issiteadmin():
+    if "admin" not in self.getrights(session):
       if "doaddlanguage" in argdict:
         newlanguage = argdict.get("newlanguage", None)
         if not newlanguage:
@@ -380,7 +380,7 @@ class TranslationProjectAdminPage(pagelayout.PootlePage):
     self.localize = session.localize
     self.rightnames = self.project.getrightnames(session)
 
-    if not self.session.issiteadmin():
+    if "admin" not in self.getrights(session):
       raise projects.Rights404Error
 
     try:

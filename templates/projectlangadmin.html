@@ -21,11 +21,7 @@ from Pootle.templates import pootlepage
 
   <div id="body">
 
-    <div py:if="not session.issiteadmin" class="site-message" lang="en" dir="ltr">
-      <div class="info"> You do not have the rights to administer Pootle </div>
-    </div>
-
-      <div py:if="session.issiteadmin" class="module first">
+      <div class="module first">
         <div py:if="message" class="site-message">
             <div class="info" py:if="message" py:content="XML(message)">Message</div>
         </div>

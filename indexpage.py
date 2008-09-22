@@ -267,8 +267,7 @@ class UserIndex(pagelayout.PootlePage):
         if self.potree.hasproject(languagecode, projectcode):
           projecttitle = self.potree.getprojectname(projectcode)
           project = self.potree.getproject(languagecode, projectcode)
-          isprojectadmin = "admin" in project.getrights(session=self.session) \
-                            or self.session.issiteadmin()
+          isprojectadmin = "admin" in project.getrights(session=self.session)
           langlinks.append({"code": projectcode, "name": projecttitle,
                             "isprojectadmin": isprojectadmin, "sep": "<br />"})
       if langlinks:
