@@ -27,6 +27,38 @@ from context import with_context
 import odf_shared
 
 class XPathBreadcrumb(object):
+    """A class which is used to build XPath-like paths as a DOM tree is
+    walked. It keeps track of the number of times which it has seen
+    a certain tag, so that it will correctly create indices for tags.
+    
+    Initially, the path is empty. Thus
+    >>> xb = XPathBreadcrumb()
+    >>> xb.xpath
+    ""
+    
+    Suppose we walk down a DOM node for the tag <foo> and we want to
+    record this, we simply do
+    >>> xb.start_tag('foo')
+    
+    Now, the path is no longer empty. Thus
+    >>> xb.xpath
+    foo[0]
+    
+    Now suppose there are two <bar> tags under the tag <foo> (that is
+    <foo><bar></bar><bar></bar><foo>), then the breadcrumb will keep
+    track of the number of times it sees <bar>. Thus
+    
+    >>> xb.start_tag('bar')
+    >>> xb.xpath
+    foo[0]/bar[0]
+    >>> xb.end_tag()
+    >>> xb.xpath
+    foo[0]
+    >>> xb.start_tag('bar')
+    >>> xb.xpath
+    foo[0]/bar[1]
+    """
+
     def __init__(self):
         self._xpath = []
         self._tagtally = [{}]
@@ -61,6 +93,8 @@ class Translatable(object):
         self.xpath = ""
 
 class ParseState(object):
+    """Maintain constants and variables used during the walking of a
+    DOM tree (via the function apply)."""
     def __init__(self, namespace_table, placeable_table):
         self.namespace_table = namespace_table
         self.placeable_table = placeable_table
@@ -71,23 +105,44 @@ class ParseState(object):
         self.placeable_name = ["<top-level>"]
 
 def make_translatable(state, placeable_name = None):
+    """Make a Translatable object. If we are in a placeable (this
+    is true if state.level > 0, then increase state.placeable by 1
+    and return a Translatable with that placeable ID.
+    
+    Otherwise we are processing a top-level element, and we give
+    it a placeable_id of -1."""
     if state.level > 0:
         state.placeable_id += 1
         return Translatable(state.placeable_id, placeable_name)
     else:
         return Translatable(-1, placeable_name)
       
-def process_placeable(dom_node, state):
+def process_placeable(dom_node, state):    
     placeable = apply(dom_node, state)
+    # This happens if there were no recognized child tags and thus
+    # no translatable is returned. Make a placeable with the name
+    # "placeable"
     if len(placeable) == 0:
         return make_translatable(state, "placeable")
+    # The ideal situation: we got exactly one translateable back
+    # when processing this tree.
     elif len(placeable) == 1:
         return placeable[0]
+    # This is bad. This means that there are two or more translateables
+    # competing to be the current placeable. This means that further
+    # down in the tree, another tag should be handled as a translateable
+    # with a number of placealbes, and that translateable would be the
+    # placeable in which we are interested here.
     else:
         print "ERROR: Found more than one translatable element for a single placeable"
         return placeable[0]
 
 def process_placeables(dom_node, state):
+    """Return a list of placeables and list with
+    alternating string-placeable objects. The former is
+    useful for directly working with placeables and the latter
+    is what will be used to build the final translatable string."""
+  
     def level_enter():
         state.level += 1
         
@@ -102,6 +157,8 @@ def process_placeables(dom_node, state):
             placeables.append(placeable)
             text.extend([placeable, child.tail or u""])
         return placeables, text
+    # Do the work within a context to ensure that level_exit
+    # will be called, come what may.
     return with_context(level_enter, level_exit, with_block)
 
 def process_translatable(dom_node, state):
@@ -144,7 +201,13 @@ def apply(dom_node, state):
 
 # ======================
 
-def make_store_adder(store):
+def quote_placables(placeable_name, placeable_id):
+    return u"[[[%s_%d]]]" % (placeable_name, placeable_id)
+
+def make_store_adder(store, placeable_quoter = quote_placables):
+    """Return a function which, when called with a Translatable will add
+    a unit to 'store'. The placeables will represented as strings according
+    to 'placeable_quoter'."""
     UnitClass = store.UnitClass
     def add_to_store(translatable):
         source_text = []
@@ -152,14 +215,13 @@ def make_store_adder(store):
             return
         for component in translatable.text:
             if isinstance(component, Translatable):
-                placeable_text = u"[[[%(placeable_name)s_%(placeable_id)d]]]" % component.__dict__
-                source_text.append(placeable_text)
+                source_text.append(placeable_quoter(component.placeable_name, component.placeable_id))
             else:
                 source_text.append(component)
         unit = UnitClass(u''.join(source_text))
         unit.addlocation(translatable.xpath)
         if translatable.placeable_id > -1:
-            unit.addnote("References: %(placeable_id)d" % translatable.__dict__)
+            unit.addnote("References: %d" % translatable.placeable_id)
         store.addunit(unit)
     return add_to_store
 
@@ -174,13 +236,14 @@ def as_file(obj):
     else:
         return obj
 
-def build_store(odf_filename, store):
-    """Utility function for loading xml_filename"""        
+def build_store(odf_filename, store, store_adder = None):
+    """Utility function for loading xml_filename"""
+    store_adder = None or make_store_adder(store)
     tree = etree.parse(as_file(odf_filename))
     parse_state = ParseState(odf_shared.odf_namespace_table, odf_shared.odf_placables_table)
     root = tree.getroot()
     translatables = apply(root, parse_state)
-    walk_translatable_tree(translatables, make_store_adder(store))
+    walk_translatable_tree(translatables, store_adder)
     return tree
         
 # ======================
