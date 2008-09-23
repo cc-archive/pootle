@@ -18,11 +18,9 @@
 # along with translate; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-from translate.storage import po
 from translate.storage import factory
-from translate.search import indexing
 import os
-import profile
+import cProfile
 import pstats
 import random
 import sys
@@ -111,7 +109,7 @@ if __name__ == "__main__":
             print methodname, "%d dirs, %d files, %d strings, %d/%d words" % sample_file_sizes
             print "_______________________________________________________"
             statsfile = "%s_%s" % (methodname, storetype) + '_%d_%d_%d_%d_%d.stats' % sample_file_sizes
-            profile.run('benchmarker.%s(%s)' % (methodname, methodparam), statsfile)
+            cProfile.run('benchmarker.%s(%s)' % (methodname, methodparam), statsfile)
             stats = pstats.Stats(statsfile)
             stats.sort_stats('cumulative').print_stats(20)
             print "_______________________________________________________"

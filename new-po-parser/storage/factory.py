@@ -42,8 +42,10 @@ from translate.storage import wordfast
 try:
     #Although poxliff is unused in this module, it is referenced in test_factory
     from translate.storage import poxliff
+    from translate.storage import qph
     from translate.storage import tbx
     from translate.storage import tmx
+    from translate.storage import ts2 as ts
     from translate.storage import xliff
     support_xml = True
 except ImportError, e:
@@ -66,9 +68,11 @@ _ext is a pseudo extension, that is their is no real extension by that name."""
 
 if support_xml:
     classes.update({
+           "qph": qph.QphFile,
            "tbx": tbx.tbxfile,
            "tmx": tmx.tmxfile, 
-           "xliff": xliff.xlifffile, "xlf": xliff.xlifffile, 
+           "ts": ts.tsfile,
+           "xliff": xliff.xlifffile, "xlf": xliff.xlifffile,
     })
 
 decompressclass = {
@@ -110,6 +114,8 @@ def _guessextention(storefile):
         extention = 'po'
     elif '%Wordfast TM' in start:
         extention = 'txt'
+    elif '<!DOCTYPE TS>' in start:
+        extention = 'ts'
     else:
         raise ValueError("Failed to guess file type.")
     storefile.seek(0)

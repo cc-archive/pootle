@@ -126,6 +126,14 @@ def encodingToUse(encoding):
 def is_null(lst):
     return lst == [] or len(lst) == 1 and lst[0] == '""'
 
+def extractstr(string):
+    left = string.find('"')
+    right = string.rfind('"')
+    if right > -1:
+        return string[left:right+1]
+    else:
+        return string[left:] + '"'
+
 class pounit(pocommon.pounit):
     # othercomments = []      #   # this is another comment
     # automaticcomments = []  #   #. comment extracted from the source code
