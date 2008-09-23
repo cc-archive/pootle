@@ -266,15 +266,18 @@ def get_tag_arrays(dom_node):
         child_dict[child.tag].append(child)
     return child_dict
 
-def apply_translations(dom_node, unit_node, f):
-    tag_array = get_tag_arrays(dom_node)
+def apply_translations(dom_node, unit_node, do_translate):
+    # If there is a translation unit associated with this unit_node...
     if unit_node.unit != None:
-        f(dom_node, unit_node.unit)
+        # The invoke do_translate on the dom_node and the unit; do_translate
+        # should replace the text in dom_node with the text in unit_node.
+        do_translate(dom_node, unit_node.unit)
+    tag_array = get_tag_arrays(dom_node)
     for unit_child_index, unit_child in unit_node.children.iteritems():
         tag, index = unit_child_index
         try:
             dom_child = tag_array[tag][index]
-            apply_translations(dom_child, unit_child, f)
+            apply_translations(dom_child, unit_child, do_translate)
         # Raised if tag is not in tag_array. We might want to complain to the
         # user in the future.
         except KeyError:
