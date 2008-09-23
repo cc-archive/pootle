@@ -20,7 +20,11 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
+import lxml.etree as etree
+
 from context import with_context
+
+import odf_shared
 
 class XPathBreadcrumb(object):
     def __init__(self):
@@ -163,6 +167,20 @@ def walk_translatable_tree(translatables, f):
     for translatable in translatables:
         f(translatable)
         walk_translatable_tree(translatable.placeables, f)
+
+def as_file(obj):
+    if isinstance(obj, (str, unicode)):
+        return open(obj)
+    else:
+        return obj
+
+def build_store(odf_filename, store):
+    """Utility function for loading xml_filename"""        
+    tree = etree.parse(as_file(odf_filename))
+    parse_state = ParseState(odf_shared.odf_namespace_table, odf_shared.odf_placables_table)
+    root = tree.getroot()
+    translatables = apply(root, parse_state)
+    walk_translatable_tree(translatables, make_store_adder(store))
         
 # ======================
 
