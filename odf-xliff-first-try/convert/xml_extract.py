@@ -275,7 +275,11 @@ def apply_translations(dom_node, unit_node, f):
         try:
             dom_child = tag_array[tag][index]
             apply_translations(dom_child, unit_child, f)
+        # Raised if tag is not in tag_array. We might want to complain to the
+        # user in the future.
         except KeyError:
             pass
+        # Raised if index is not in tag_array[tag]. We might want to complain to
+        # the user in the future
         except IndexError:
             pass
