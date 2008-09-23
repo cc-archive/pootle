@@ -181,6 +181,7 @@ def build_store(odf_filename, store):
     root = tree.getroot()
     translatables = apply(root, parse_state)
     walk_translatable_tree(translatables, make_store_adder(store))
+    return tree
         
 # ======================
 

@@ -188,11 +188,7 @@ class TestXMLExtract:
     def test_extract(self):
         #store = factory.classes['xlf']()
         store = factory.classes['po']()
-        tree = etree.parse(cStringIO.StringIO(odf_file))
-        parse_state = xml_extract.ParseState(odf_shared.odf_namespace_table, odf_shared.odf_placables_table)
-        root = tree.getroot()
-        translatables = xml_extract.apply(root, parse_state)
-        xml_extract.walk_translatable_tree(translatables, xml_extract.make_store_adder(store))
+        xml_extract.build_store(cStringIO.StringIO(odf_file), store)
         print store
 
     def test_roundtrip(self):
@@ -203,17 +199,12 @@ class TestXMLExtract:
       
         def first_child(unit_node):
             return unit_node.children.values()[0]
-      
-        #store = factory.classes['xlf']()
-        store = factory.classes['po']()
-        tree = etree.parse(cStringIO.StringIO(odf_file))
-        parse_state = xml_extract.ParseState(odf_shared.odf_namespace_table, odf_shared.odf_placables_table)
+
+        store = factory.classes['xlf']()
+        tree = xml_extract.build_store(cStringIO.StringIO(odf_file), store)
         root = tree.getroot()
-        translatables = xml_extract.apply(root, parse_state)
-        xml_extract.walk_translatable_tree(translatables, xml_extract.make_store_adder(store))
         unit_tree = first_child(xml_extract.build_unit_tree(store))
         xml_extract.apply_translations(root, unit_tree, show_print)
-
       
 t = TestXMLExtract()
 t.test_roundtrip()
