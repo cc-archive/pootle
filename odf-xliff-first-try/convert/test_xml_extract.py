@@ -3,10 +3,12 @@
 
 import cStringIO
 
+import lxml.etree as etree
+
+from translate.storage import factory
+
 import xml_extract
 import odf_shared
-import lxml.etree as etree
-from translate.storage import factory
 
 odf_file = """<?xml version="1.0" encoding="utf-8"?>
 <office:document-content xmlns:office="urn:oasis:names:tc:opendocument:xmlns:office:1.0"
