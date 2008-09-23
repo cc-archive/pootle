@@ -399,7 +399,9 @@ class PootleServer(users.OptionalLoginAppServer, templateserver.TemplateServer):
         except:
           pass
         if session.isopen:
-          returnurl = argdict.get('returnurl', None) or getattr(self.instance, 'homepage', 'index.html')
+          returnurl = argdict.get('returnurl', None) 
+          if returnurl == None or re.search('[^A-Za-z0-9?./]+', returnurl):
+            returnurl = getattr(self.instance, 'homepage', '/' + session.user.uilanguage + '/index.html')
           return server.Redirect(returnurl)
         message = None
         if 'username' in argdict:
@@ -459,6 +461,7 @@ class PootleServer(users.OptionalLoginAppServer, templateserver.TemplateServer):
               message = session.localize("Personal details updated")
             if "changeinterface" in argdict:
               session.setinterfaceoptions(argdict)
+              return server.Redirect(self.instance.baseurl+session.language+"/home/options.html")
           except users.RegistrationError, errormessage:
             message = errormessage
           return users.UserOptions(self.potree, session, message)

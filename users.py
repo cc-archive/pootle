@@ -711,7 +711,7 @@ class PootleSession(web.session.LoginSession):
     setinterfacevalue("viewrows", self.localize("The number of rows displayed in view mode must be numeric"))
     setinterfacevalue("translaterows", self.localize("The number of rows displayed in translate mode must be numeric"))
     useraltsrclanguage = argdict.get("altsrclanguage", "")
-    if isinstance(useraltsrclanguage, (str, unicode)):
+    if isinstance(useraltsrclanguage, (str, unicode)) and useraltsrclanguage != "":
       setattr(self.user, "altsrclanguage", useraltsrclanguage)
     self.saveuser()
 
