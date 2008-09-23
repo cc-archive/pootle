@@ -31,24 +31,14 @@ from Pootle.templates import pootlepage
           <div class="bd">
               <h3 class="title" py:content="detailstitle">Personal Details</h3>
 
-              <form action="" method="post" name="personal" id="personal">
+              <form py:if="logintype != 'ldap'" action="" method="post" name="personal" id="personal">
                 <table cellpadding="1" cellspacing="1">
-                  <tr>
-                    <td colspan="1" rowspan="1">
-                      <h3 class="title" py:content="option_heading">Option</h3>
-                    </td>
-                    <td colspan="1" rowspan="1">
-                      <h3 class="title" py:content="value_heading">Current value</h3>
-                    </td>
-                  </tr>
-
                   <tr>
                     <td colspan="1" rowspan="1" py:content="fullname_title">Name</td>
                     <td colspan="1" rowspan="1">
                       <input type="text" name="option-name" value="${fullname}"/>
                     </td>
                   </tr>
-
                   <tr>
                     <td colspan="1" rowspan="1" py:content="email_title">Email</td>
                     <td colspan="1" rowspan="1">
@@ -61,7 +51,6 @@ from Pootle.templates import pootlepage
                       <input type="password" name="option-password" value=""/>
                     </td>
                   </tr>
-
                   <tr>
                     <td colspan="1" rowspan="1" py:content="passwordconfirm_title">Confirm Password</td>
                     <td colspan="1" rowspan="1">
@@ -71,19 +60,23 @@ from Pootle.templates import pootlepage
                 </table><input type="submit" name="changepersonal" value="${submit_button}" />
               </form>
 
+              <div py:if="logintype == 'ldap'">
+                <table cellpadding="1" cellspacing="1">
+                  <tr>
+                    <td colspan="1" rowspan="1" py:content="fullname_title">Name</td>
+                    <td colspan="1" rowspan="1">${fullname}</td>
+                  </tr>
+                  <tr>
+                    <td colspan="1" rowspan="1" py:content="email_title">Email</td>
+                    <td colspan="1" rowspan="1">${email}</td>
+                  </tr>
+                </table>
+              </div>
+
               <h3 class="title" py:content="interface_title">Translation Interface Configuration</h3>
 
               <form action="" method="post" name="interface" id="interface">
                 <table cellpadding="1" cellspacing="1">
-                  <tr>
-                    <td colspan="1" rowspan="1">
-                      <h3 class="title" py:content="option_heading">Option</h3>
-                    </td>
-                    <td colspan="1" rowspan="1">
-                      <h3 class="title" py:content="value_heading">Current value</h3>
-                    </td>
-                  </tr>
-
                   <tr>
                     <td colspan="1" rowspan="1" py:content="uilanguage_heading">User Interface language</td>
                     <td colspan="1" rowspan="1"><select name="option-uilanguage" style="width: 100%;">
@@ -92,7 +85,6 @@ from Pootle.templates import pootlepage
                       </option>
                     </select></td>
                   </tr>
-
                   <tr py:if="enablealtsrc == 'True'">
                     <td colspan="1" rowspan="1" py:content="altsrclanguage_title">Alternative Source Language</td>
                     <td colspan="1" rowspan="1">
@@ -103,7 +95,6 @@ from Pootle.templates import pootlepage
                       </select>
                     </td>
                   </tr>
-
                   <tr py:for="option in other_options">
                     <td colspan="1" rowspan="1" py:content="option.description">Option Name</td>
                     <td colspan="1" rowspan="1">

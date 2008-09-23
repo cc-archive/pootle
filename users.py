@@ -186,8 +186,6 @@ class UserOptions(pagelayout.PootlePage):
     sessionvars = {"status": session.status, "isopen": session.isopen, "issiteadmin": session.issiteadmin()}
     templatevars = {"pagetitle": pagetitle, "introtext": message,
         "detailstitle": self.localize("Personal Details"),
-        "option_heading": self.localize("Option"),
-        "value_heading": self.localize("Current value"),
         "fullname_title": self.localize("Name"),
         "fullname": self.session.user.name,
         "email_title": self.localize("Email"),
@@ -204,7 +202,9 @@ class UserOptions(pagelayout.PootlePage):
         "submit_button": self.localize("Save changes"),
         "session": sessionvars,
         "instancetitle": instancetitle,
-        "enablealtsrc": enablealtsrc}
+        "enablealtsrc": enablealtsrc,
+        "logintype": self.session.user.logintype
+        }
     if enablealtsrc == 'True':
       templatevars["altsrclanguage_title"] = self.localize("Alternative Source Language")
       templatevars["altsrclanguages"] = self.getaltsrcoptions()
