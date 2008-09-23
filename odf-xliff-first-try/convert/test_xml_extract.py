@@ -181,24 +181,40 @@ style:num-format="1">1</text:sequence>: Pic 1</text:p>
 </office:document-content>
 """
 
+import re
+
+placeable_pattern = re.compile(u'\[\[\[\w+\]\]\]')
+
+def replace_dom_text(dom_node, unit):
+    """Use the unit's target (or source in the case where there is no translation)
+    to update the text in the dom_node and at the tails of its children."""
+    translation = unicode(unit.target or unit.source)
+    # This will alter be used to swap around placeables if their positions are changed
+    # Search for all the placeables in 'translation'
+    _placeable_tokens = placeable_pattern.findall(translation)
+    # Split 'translation' into the different chunks of text which
+    # run between the placeables.
+    non_placeable_chunks = placeable_pattern.split(translation)
+    dom_node.text = non_placeable_chunks[0]
+    # Assign everything after the first non_placeable to the
+    # tails of the child XML nodes (since this is where such text
+    # appears).
+    for chunk, child in zip(non_placeable_chunks[1:], dom_node):
+        child.tail = chunk
+
 class TestXMLExtract:
     def test_basic(self):
         tree = etree.parse(cStringIO.StringIO(odf_file))
         result = xml_extract.apply(tree.getroot(), xml_extract.ParseState(odf_shared.odf_namespace_table, odf_shared.odf_placables_table))
         return result
-      
+
     def test_extract(self):
         #store = factory.classes['xlf']()
         store = factory.classes['po']()
         xml_extract.build_store(cStringIO.StringIO(odf_file), store)
         print store
 
-    def test_roundtrip(self):
-        def show_print(dom_node, unit):
-            print etree.tostring(dom_node)
-            print unit
-            print '================================================='
-      
+    def test_roundtrip(self):      
         def first_child(unit_node):
             return unit_node.children.values()[0]
 
@@ -206,7 +222,8 @@ class TestXMLExtract:
         tree = xml_extract.build_store(cStringIO.StringIO(odf_file), store)
         root = tree.getroot()
         unit_tree = first_child(xml_extract.build_unit_tree(store))
-        xml_extract.apply_translations(root, unit_tree, show_print)
-      
+        xml_extract.apply_translations(root, unit_tree, replace_dom_text)
+        print etree.tostring(tree)
+
 t = TestXMLExtract()
 t.test_roundtrip()
