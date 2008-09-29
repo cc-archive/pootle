@@ -8,6 +8,10 @@ from Pootle.templates import pootlepage, navbar
 
   <title py:content="pagetitle">Pootle: translating ${project.name} into ${language.name}: ${pofilename}</title>
 
+  <!--! Only in <head> because $() is used through the page.  Once the page is rewritten this should move to the footer. --> 
+  <script type="text/javascript" src="/js/jquery.min.js"></script>
+  <script type="text/javascript" src="/js/script.js"></script>
+
   <link rel="stylesheet" type="text/css" href="${baseurl}style.css" />
   <link rel="shortcut icon" href="${baseurl}favicon.ico" />
 </head>
@@ -365,8 +369,6 @@ from Pootle.templates import pootlepage, navbar
 
   <div py:replace="pootlepage.footer()"/>
 
-  <script type="text/javascript" src="/js/jquery.min.js"></script>
-  <script type="text/javascript" src="/js/script.js"></script>
 
   <!--! TODO Fix JS includes, bug 442316 --> 
   <script src="${baseurl}js/autoexpand.js" type="text/javascript"></script>
