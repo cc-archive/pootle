@@ -2,7 +2,7 @@
 
 Name:           virtaal
 Version:        0.1
-Release:        10%{?dist}
+Release:        13%{?dist}
 Summary:        Localization and translation editor
 
 Group:          Development/Tools
@@ -98,7 +98,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files -f %{name}.lang
 %defattr(-,root,root,-)
-%doc README po/*.pot
+%doc README LICENSE po/*.pot
 %{_bindir}/*
 %{_datadir}/applications/*
 %{_datadir}/mime/packages/*
@@ -110,6 +110,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat Sep 20 2008 Dwayne Bailey <dwayne@translate.org.za> - 0.1-12.fc9
+- Include LICENSE
+
 * Thu Sep 11 2008 Dwayne Bailey <dwayne@translate.org.za> - 0.1-11.fc9
 - Update for various file moves.
 - Package virtaal.pot and gtk+-lite.pot
