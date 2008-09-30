@@ -1,15 +1,17 @@
 %{!?python_sitelib: %define python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib()")}
 
+%define         prerelease -rc1
+
 Name:           translate-toolkit
-Version:        1.2
-Release:        0.2.beta2%{?dist}
+Version:        1.2.0
+Release:        0.3.rc1%{?dist}
 Summary:        Tools to assist with localization
 
 Group:          Development/Tools
 License:        GPLv2+
 URL:            http://translate.sourceforge.net/wiki/toolkit/index
 #Source0:        http://downloads.sourceforge.net/translate/%{name}-%{version}.tar.bz2
-Source0:        http://translate.sourceforge.net/snapshots/%{name}-%{version}-beta2/%{name}-%{version}-beta2.tar.bz2
+Source0:        http://translate.sourceforge.net/snapshots/%{name}-%{version}%{prerelease}/%{name}-%{version}%{prerelease}.tar.bz2
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildArch:      noarch
@@ -19,6 +21,7 @@ Requires:       python-psyco
 Requires:       python-Levenshtein
 Requires:       python-lxml
 Requires:       python-iniparse
+Requires:       python-vobject
 Requires:       gettext-devel
 
 
@@ -32,10 +35,11 @@ Including:
     * Other localization formats - TMX, TBX, Qt Linguist (.ts), 
            Java .properties, Wordfast TM
     * Compiled formats: Gettext MO, Qt .qm
-    * Other formats - text, HTML, CSV, INI, wiki (MediaWiki, DokuWiki)
+    * Other formats - text, HTML, CSV, INI, wiki (MediaWiki, DokuWiki), iCal
     * Specialised - OpenOffice.org GSI/SDF, PHP,
             Mozilla (.dtd, .properties, etc)
-  * Tools: count, search, debug and segment localization files
+  * Tools: count, search, debug, segment and extract terminology from
+            localization files.
   * Checkers: validate translations with over 46 checks
 
 %package devel
@@ -50,7 +54,7 @@ developers wishing to build new tools or reuse the libraries in other tools.
 
 
 %prep
-%setup -q -n %{name}-%{version}-beta2
+%setup -q -n %{name}-%{version}%{prerelease}
 
 
 %build
@@ -102,6 +106,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Sep 30 2008 Dwayne Bailey <dwayne@translate.org.za> - 1.2.0-0.3.rc1.fc9
+- Update to 1.2.0-rc1
+- Include ical2po dependencies
+
 * Tue Aug 26 2008 Dwayne Bailey <dwayne@translate.org.za> - 1.2-0.2.beta2.fc9
 - Update to 1.2-beta2
 
