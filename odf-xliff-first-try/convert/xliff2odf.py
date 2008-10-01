@@ -69,7 +69,7 @@ def translate_odf(template, input_file):
     def translate_dom_trees(unit_trees, dom_trees):
         for filename, dom_tree in dom_trees.iteritems():
             file_unit_tree = unit_trees[filename]
-            xml_extract.apply_translations(dom_tree.getroot(), file_unit_tree, replace_dom_text)
+            xml_extract.apply_translations(dom_tree.getroot(), file_unit_tree.children.values()[0], replace_dom_text)
         return dom_trees
 
     dom_trees = load_dom_trees(template)
@@ -79,7 +79,7 @@ def translate_odf(template, input_file):
 def write_odf(template, output_file, dom_trees):
     def copy_odf(input_file, output_file, exclusion_list):
         input_zip  = zipfile.ZipFile(input_file,  'r')
-        output_zip = zipfile.ZipFile(output_file, 'w')
+        output_zip = zipfile.ZipFile(output_file, 'w', compression=zipfile.ZIP_DEFLATED)
         for name in [name for name in input_zip.namelist() if name not in exclusion_list]:
             output_zip.writestr(name, input_zip.read(name))
         return output_zip
