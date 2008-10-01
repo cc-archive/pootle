@@ -2,14 +2,14 @@
 # -*- coding: utf-8 -*-
 #
 # Copyright 2004-2006 Zuza Software Foundation
-#
+# 
 # This file is part of translate.
 #
 # translate is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-#
+# 
 # translate is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -22,49 +22,84 @@
 
 """convert OpenDocument (ODF) files to Gettext PO localization files"""
 
-import sys
+import cStringIO
+import zipfile
+import re
+
+import lxml.etree as etree
 
 from translate.storage import factory
+from translate.convert import xml_extract
 
-# Import from itools
-import itools
-import itools.handlers
+def first_child(unit_node):
+    return unit_node.children.values()[0]
 
-import odf_shared
+placeable_pattern = re.compile(u'\[\[\[\w+\]\]\]')
 
-def make_translate_func(store):
-    def translate_func(source):
-        return store.findunit(source)
-    return translate_func
+def replace_dom_text(dom_node, unit):
+    """Use the unit's target (or source in the case where there is no translation)
+    to update the text in the dom_node and at the tails of its children."""
+    translation = unicode(unit.target or unit.source)
+    # This will alter be used to swap around placeables if their positions are changed
+    # Search for all the placeables in 'translation'
+    _placeable_tokens = placeable_pattern.findall(translation)
+    # Split 'translation' into the different chunks of text which
+    # run between the placeables.
+    non_placeable_chunks = placeable_pattern.split(translation)
+    dom_node.text = non_placeable_chunks[0]
+    # Assign everything after the first non_placeable to the
+    # tails of the child XML nodes (since this is where such text
+    # appears).
+    for chunk, child in zip(non_placeable_chunks[1:], dom_node):
+        child.tail = chunk
 
-class xliff2odf:  
-    def convertstore(self, inputfile, odffile):
-        """converts a file to .po format"""
-        store = factory.getobject(inputfile)
-        handler = itools.handlers.get_handler(odffile.name)
-        try:
-            translate = handler.translate
-        except AttributeError:
-            message = 'ERROR: The file "%s" could not be processed\n'
-            sys.stderr.write(message % odffile)
-            return
-        return translate(make_translate_func(store), srx_handler=odf_shared.null_segmenter)
+def translate_odf(template, input_file):
+    def open_odf(filename):
+        z = zipfile.ZipFile(filename, 'r')
+        return {'content.xml': z.read("content.xml")}
+  
+    def load_dom_trees(template):
+        odf_data = open_odf(template)
+        return dict((filename, etree.parse(cStringIO.StringIO(data))) for filename, data in odf_data.iteritems())
+    
+    def load_unit_tree(input_file):
+        store = factory.getobject(input_file)
+        return {'content.xml': xml_extract.build_unit_tree(store)}
+    
+    def translate_dom_trees(unit_trees, dom_trees):
+        for filename, dom_tree in dom_trees.iteritems():
+            file_unit_tree = unit_trees[filename]
+            xml_extract.apply_translations(dom_tree.getroot(), file_unit_tree, replace_dom_text)
+        return dom_trees
 
-def convertodf(inputfile, outputfile, templates):
+    dom_trees = load_dom_trees(template)
+    unit_trees = load_unit_tree(input_file)
+    return translate_dom_trees(unit_trees, dom_trees)
+
+def write_odf(template, output_file, dom_trees):
+    def copy_odf(input_file, output_file, exclusion_list):
+        input_zip  = zipfile.ZipFile(input_file,  'r')
+        output_zip = zipfile.ZipFile(output_file, 'w')
+        for name in [name for name in input_zip.namelist() if name not in exclusion_list]:
+            output_zip.writestr(name, input_zip.read(name))
+        return output_zip
+
+    def write_content_to_odf(output_zip, dom_trees):
+        for filename, dom_tree in dom_trees.iteritems():
+            output_zip.writestr(filename, etree.tostring(dom_tree))
+
+    output_zip = copy_odf(template, output_file, dom_trees.keys())
+    write_content_to_odf(output_zip, dom_trees)
+
+def convertxliff(input_file, output_file, template):
     """reads in stdin using fromfileclass, converts using convertorclass, writes to stdout"""
-    convertor = xliff2odf()
-    outputstore = convertor.convertstore(inputfile, templates)
-    if outputstore.isempty():
-        return 0
-    outputfile.write(str(outputstore))
-    return 1
+    dom_trees = translate_odf(template, input_file)
+    write_odf(template, output_file, dom_trees)
+    return True
 
 def main(argv=None):
     from translate.convert import convert
-    formats = {"xlf":("sxw", convertodf),
-               "xlf":("odt", convertodf),
-               "xlf":("ods", convertodf),
-               "xlf":("odp", convertodf)}
+    formats = {"xlf": ("odt", convertxliff)}
     parser = convert.ConvertOptionParser(formats, usetemplates=True, description=__doc__)
     parser.run(argv)
 
