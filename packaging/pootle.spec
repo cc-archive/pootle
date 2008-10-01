@@ -1,17 +1,18 @@
 %{!?python_sitelib: %define python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib()")}
 
-%define fullname Pootle
+%define         fullname Pootle
+%define         prerelease -rc1
 
 Name:           pootle
 Version:        1.2.0
-Release:        0.4.beta2%{?dist}
+Release:        0.5.rc1%{?dist}
 Summary:        Localization and translation management web application
 
 Group:          Development/Tools
 License:        GPLv2+
 URL:            http://translate.sourceforge.net/wiki/pootle/index
 #Source:        http://downloads.sourceforge.net/translate/%{name}-%{version}.tar.bz2
-Source:         http://translate.sourceforge.net/snapshots/%{fullname}-%{version}-beta2/%{fullname}-%{version}-beta2.tar.bz2
+Source:         http://translate.sourceforge.net/snapshots/%{fullname}-%{version}-beta2/%{fullname}-%{version}%{prerelease}.tar.bz2
 Source1:        pootle-initscript
 Source2:        pootle-logrotate
 Source3:        pootle-sysconfig
@@ -36,7 +37,7 @@ Requires(pre): shadow-utils
 A web application for managing the translation of Gettext PO and XLIFF files.
 
 %prep
-%setup -q -n %{fullname}-%{version}-beta2
+%setup -q -n %{fullname}-%{version}%{prerelease}
 %patch1 -p1
 
 
@@ -118,6 +119,9 @@ chmod -R g+w /var/lib/pootle
 
 
 %changelog
+* Tue Sep 30 2008 Dwayne Bailey <dwayne@translate.org.za> - 1.2.0-0.5.rc1.fc9
+- Update to RC1
+
 * Tue Sep 2 2008 Dwayne Bailey <dwayne@translate.org.za> - 1.2.0-0.4.beta2.fc9
 - Create run_pootle.sh wrapper for server
 
