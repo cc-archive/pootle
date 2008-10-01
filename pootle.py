@@ -348,9 +348,7 @@ class PootleServer(users.OptionalLoginAppServer, templateserver.TemplateServer):
       elif pathwords and pathwords[-1].endswith(".css"):
         cssfile = os.path.join(filelocations.htmldir, *pathwords)
         if not os.path.exists(cssfile):
-          cssfile = os.path.join(filelocations.jtoolkitdir, *pathwords)
-          if not os.path.exists(cssfile):
-            return None
+          return None
         csspage = widgets.PlainContents(None)
         csspage.content_type = "text/css"
         csspage.sendfile_path = cssfile
@@ -717,7 +715,7 @@ class PootleOptionParser(simplewebserver.WebOptionParser):
 
 def checkversions():
   """Checks that version dependencies are met"""
-  if not hasattr(toolkitversion, "build") or toolkitversion.build < 11000:
+  if not hasattr(toolkitversion, "build") or toolkitversion.build < 12000:
     raise RuntimeError("requires Translate Toolkit version >= 1.1.  Current installed version is: %s" % toolkitversion.ver)
 
 def usepsyco(options):

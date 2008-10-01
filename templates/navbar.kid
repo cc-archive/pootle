@@ -2,7 +2,7 @@
 <include-this xmlns:py="http://purl.org/kid/ns#">
   <div py:def="item_block(item, uidir, uilanguage, baseurl, block=None)" class="contentsitem">
     <img src="${baseurl}images/${item.icon}.png" class="icon" alt="" dir="$uidir" lang="$uilanguage" />
-    <h3 py:if="block == None" id="itemtitle" class="title"><a href="${item.href}">${item.title}</a></h3>
+    <h3 py:if="item.title" id="itemtitle" class="title"><a href="${item.href}">${item.title}</a></h3>
     <div py:if="block != None" py:replace="block"/>
     <div id="actionlinks" class="item-description" py:if="item.actions">
       <span py:for="link in item.actions.basic" py:strip="True">
@@ -99,13 +99,18 @@
         <?python
             untranslatedwordstext = untranslatedtext % (item.data.untranslatedsourcewords)
             fuzzywordstext = fuzzytext % (item.data.fuzzysourcewords)
+
+            # TODO: Need to verify these work for multiple files in the same directory.  It
+            # might be showing all fuzzy files for the whole dir instead of per file
+            untranslatedhref = "translate.html?untranslated=1&editing=1"
+            fuzzyhref = "translate.html?fuzzy=1&editing=1"
         ?>
         <ul>
         <span py:if="item.data.untranslatedsourcewords" py:strip="True">
-            <li class="todo"><a href="${item.href}translate.html?untranslated=1&amp;editing=1" py:content="untranslatedwordstext">untranslated words</a></li>
+            <li class="todo"><a href="${untranslatedhref}" py:content="untranslatedwordstext">untranslated words</a></li>
         </span>
         <span py:if="item.data.fuzzysourcewords" py:strip="True">
-            <li class="todo"><a href="${item.href}translate.html?fuzzy=1&amp;editing=1" py:content="fuzzywordstext">fuzzy words</a></li>
+            <li class="todo"><a href="${fuzzyhref}" py:content="fuzzywordstext">fuzzy words</a></li>
         </span>
         <span py:if="item.data.translatedsourcewords == item.data.totalsourcewords" py:strip="True">
             <li class="complete" py:content="complete">Complete</li>

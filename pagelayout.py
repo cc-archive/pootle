@@ -119,7 +119,7 @@ def completetemplatevars(templatevars, session, bannerheight=135):
     templatevars["search"] = None
 
   # Messaging system
-  if "message" not in templatevars:
+  if "message" not in templatevars or len(templatevars['message']) == 0:
     templatevars['message'] = ''
   else:
     templatevars['message'] = templatevars['message'] + '<br />'
@@ -259,15 +259,12 @@ class PootleNavPage(PootlePage):
   def describestats(self, project, projectstats, numfiles):
     """returns a sentence summarizing item statistics"""
     translated = projectstats.get("translated", [])
-    total = projectstats.get("total", [])
+    total = projectstats.get("total", 0)
     if "translatedsourcewords" in projectstats:
       translatedwords = projectstats["translatedsourcewords"]
     else:
       translatedwords = project.countwords(translated)
-    if "totalsourcewords" in projectstats:
-      totalwords = projectstats["totalsourcewords"]
-    else:
-      totalwords = project.countwords(total)
+    totalwords = projectstats["totalsourcewords"]
     if isinstance(translated, list):
       translated = len(translated)
     if isinstance(total, list):

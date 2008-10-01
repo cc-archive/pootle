@@ -35,8 +35,29 @@ from jToolkit import glock
 import time
 import os
 import bisect
+import weakref
+import util
 
 _UNIT_CHECKER = checks.UnitChecker()
+
+suggestion_source_index = weakref.WeakKeyDictionary()
+
+def build_map(store, property):
+  unit_map = {}
+  for unit in store.units:
+    key = property(unit)
+    if key not in unit_map:
+      unit_map[key] = []
+    unit_map[key].append(unit)
+  return unit_map
+
+def build_index(store, index, property):
+  if store not in index:
+    index[store] = build_map(store, property)
+  return index[store]
+
+def get_source_index(store):
+  return build_index(store, suggestion_source_index, lambda unit: unit.source)
 
 class LockedFile:
   """locked interaction with a filesystem file"""
@@ -231,6 +252,27 @@ class pootleassigns:
             assignitems.extend(actionitems)
     return assignitems
 
+def member(sorted_set, element):
+  """Check whether element appears in sorted_set."""
+  pos = bisect.bisect_left(sorted_set, element)
+  if pos < len(sorted_set):
+    return sorted_set[pos] == element
+  else:
+    return False
+
+def intersect(set_a, set_b):
+  """Find the intersection of the sorted sets set_a and set_b."""
+  # If both set_a and set_b have elements
+  if len(set_b) != 0 and len(set_a) != 0:
+    # Find the position of the element in set_a that is at least
+    # as large as the minimum element in set_b.
+    start_a = bisect.bisect_left(set_a, set_b[0])
+    # For each element in set_a...
+    for element in set_a[start_a:]:
+      # ...which is also in set_b...
+      if member(set_b, element):
+        yield element
+
 def make_class(base_class):
   class pootlefile(base_class):
     """this represents a pootle-managed file and its associated files"""
@@ -257,11 +299,19 @@ def make_class(base_class):
 
       self.pendingfilename = self.filename + os.extsep + "pending"
       self.pendingfile = None
+      self.pomtime = self.lockedfile.readmodtime()
       self.statistics = statistics.pootlestatistics(self)
       self.tmfilename = self.filename + os.extsep + "tm"
       # we delay parsing until it is required
       self.pomtime = None
       self.tracker = timecache.timecache(20*60)
+      self._total = util.undefined # self.statistics.getstats()["total"]
+
+    @util.lazy('_total')
+    def _get_total(self):
+      return self.statistics.getstats()["total"]
+
+    total = property(_get_total)
 
     def reset_statistics(self):
       self.statistics = statistics.pootlestatistics(self)
@@ -338,12 +388,9 @@ def make_class(base_class):
       unit = self.getitem(item)
       if isinstance(unit, xliff.xliffunit):
         return unit.getalttrans()
-
-      locations = unit.getlocations()
-      self.readpendingfile()
-      # TODO: review the matching method
-      suggestpos = [suggestpo for suggestpo in self.pendingfile.units if suggestpo.getlocations() == locations]
-      return suggestpos
+      else:
+        self.readpendingfile()
+        return get_source_index(self.pendingfile).get(unit.source, [])
 
     def addsuggestion(self, item, suggtarget, username):
       """adds a new suggestion for the given item"""
@@ -354,9 +401,7 @@ def make_class(base_class):
         unit.addalttrans(suggtarget, origin=username)
         self.statistics.reclassifyunit(item)
         self.savepofile()
-        self.reset_statistics()
         return
-
       self.readpendingfile()
       newpo = unit.copy()
       if username is not None:
@@ -366,9 +411,8 @@ def make_class(base_class):
       self.pendingfile.addunit(newpo)
       self.savependingfile()
       self.statistics.reclassifyunit(item)
-      self.reset_statistics()
 
-    def deletesuggestion(self, item, suggitem):
+    def deletesuggestion(self, item, suggitem, newtrans=None):
       """removes the suggestion from the pending file"""
       unit = self.getitem(item)
       if hasattr(unit, "xmlelement"):
@@ -377,14 +421,18 @@ def make_class(base_class):
         self.savepofile()
       else:
         self.readpendingfile()
-        locations = unit.getlocations()
+        # Update the suggestion index
+        get_source_index(self.pendingfile)[unit.source] = [unit for unit in get_source_index(self.pendingfile)[unit.source] if unit.target != newtrans]
         # TODO: remove the suggestion in a less brutal manner
-        pendingitems = [pendingitem for pendingitem, suggestpo in enumerate(self.pendingfile.units) if suggestpo.getlocations() == locations]
-        pendingitem = pendingitems[suggitem]
-        del self.pendingfile.units[pendingitem]
-        self.savependingfile()
+        pendingitems = [pendingitem for pendingitem, suggestpo in enumerate(self.pendingfile.units) if suggestpo.source == unit.source]
+        try:
+          pendingitem = pendingitems[suggitem]
+          del self.pendingfile.units[pendingitem]
+          self.savependingfile()
+        except IndexError:
+          print "Found an index error attempting to delete a suggestion"
+          pass # TODO: Print a warning for the user.
       self.statistics.reclassifyunit(item)
-      self.reset_statistics()
 
     def getsuggester(self, item, suggitem):
       """returns who suggested the given item's suggitem if recorded, else None"""
@@ -417,12 +465,14 @@ def make_class(base_class):
       # make sure encoding is reset so it is read from the file
       self.encoding = None
       self.units = []
+      self._total = util.undefined
       pomtime, filecontents = self.lockedfile.getcontents()
       # note: we rely on this not resetting the filename, which we set earlier, when given a string
       self.parse(filecontents)
       self.pomtime = pomtime
+      self.reset_statistics()
 
-    def savepofile(self):
+    def savepofile(self, reset_stats=True):
       """saves changes to the main file to disk..."""
       output = str(self)
       self.pomtime = self.lockedfile.writecontents(output)
@@ -433,7 +483,6 @@ def make_class(base_class):
       @return: True if the file was freshened, False otherwise"""
       try:
           if self.pomtime != self.lockedfile.readmodtime():
-            self.reset_statistics()
             self.readpofile()
             return True
       except OSError, e:
@@ -455,6 +504,7 @@ def make_class(base_class):
       """updates a translation with a new target value"""
       self.pofreshen()
       unit = self.getitem(item)
+      reset_stats = False
 
       if newvalues.has_key("target"):
         unit.target = newvalues["target"]
@@ -467,68 +517,78 @@ def make_class(base_class):
 
       if isinstance(self, po.pofile):
         po_revision_date = time.strftime("%Y-%m-%d %H:%M") + tzstring()
-        headerupdates = {"PO_Revision_Date": po_revision_date, "X_Generator": self.x_generator}
+        headerupdates = {
+                "PO_Revision_Date": po_revision_date,
+                "Language": self.project.languagecode,
+                "X_Generator": self.x_generator,
+        }
         if userprefs:
           if getattr(userprefs, "name", None) and getattr(userprefs, "email", None):
             headerupdates["Last_Translator"] = "%s <%s>" % (userprefs.name, userprefs.email)
         # XXX: If we needed to add a header, the index value in item will be one out after
         # adding the header.
         # TODO: remove once we force the PO class to always output headers
-        force_recache = False
-        if not self.header():
-          force_recache = True
+        reset_stats = self.header() is None
         self.updateheader(add=True, **headerupdates)
         if languageprefs:
           nplurals = getattr(languageprefs, "nplurals", None)
           pluralequation = getattr(languageprefs, "pluralequation", None)
           if nplurals and pluralequation:
             self.updateheaderplural(nplurals, pluralequation)
-
-      self.savepofile()
+      # If we didn't add a header, savepofile doesn't have to reset the stats,
+      # since reclassifyunit will do. This gives us a little speed boost for
+      # the common case.
+      self.savepofile(reset_stats)
       self.statistics.reclassifyunit(item)
-      self.reset_statistics()
 
     def getitem(self, item):
       """Returns a single unit based on the item number."""
-      return self.units[self.statistics.getstats()["total"][item]]
+      return self.units[self.total[item]]
 
     def iteritems(self, search, lastitem=None):
       """iterates through the items in this pofile starting after the given lastitem, using the given search"""
-
-      def find_min(low, high, translatables, matchname):
-        for index in self.statistics.getstats().get(matchname, []):
-          if low <= index <= high:
-            return bisect.bisect_left(translatables, index)
-        return -1
-
-      def next_item(low, high, translatables, matchnames):
-        indices = (find_min(low, high, translatables, name) for name in matchnames)
-        try:
-          return min(i for i in indices if i > -1)
-        except ValueError:
-          raise StopIteration
-
-      # update stats if required
-      translatables = self.statistics.getstats()["total"]
-      if lastitem is None:
-        minitem = 0
-      else:
-        minitem = lastitem + 1
-      maxitem = len(translatables)
-      if not 0 <= minitem < maxitem:
-        raise StopIteration
-      if search.assignedto or search.assignedaction:
-        validitems = xrange(minitem, maxitem)
-        assignitems = self.getassigns().finditems(search)
-        validitems = [item for item in validitems if item in assignitems]
-      # loop through, filtering on matchnames if required
-      if not search.matchnames:
-        if minitem < len(translatables):
-          yield minitem
+      def get_min(lastitem):
+        if lastitem is None:
+          return 0
         else:
-          raise StopIteration
-      else:
-        yield next_item(translatables[minitem], translatables[maxitem - 1], translatables, search.matchnames)
+          return lastitem + 1
+
+      def narrow_to_last_item_range(translatables, lastitem):
+        return translatables[get_min(lastitem):]
+
+      def narrow_to_assigns(translatables, search):
+        if search.assignedto or search.assignedaction:
+          assignitems = self.getassigns().finditems(search)
+          return list(intersect(assignitems, translatables))
+        else:
+          return translatables
+
+      def narrow_to_matches(translatables, search):
+        if search.matchnames:
+          stats = self.statistics.getstats()
+          matches = reduce(set.__or__, (set(stats[matchname]) for matchname in search.matchnames if matchname in stats))
+          return intersect(sorted(matches), translatables)
+        else:
+          return translatables
+
+      translatables = self.total
+
+      # To get the items to iterate, we
+      # 1. filter translatables to the range of elements after lastitem,
+      # 2. filter translatables according to assignments,
+      # 3. filter translatables according to the quality checks (which
+      #    are contained in search.matches)
+      new_translatables = narrow_to_matches(
+        narrow_to_assigns(
+            narrow_to_last_item_range(translatables, lastitem),
+            search),
+        search)
+
+      # translatables contains the indices into the store of the units. We need to
+      # know what indices of these indices are in translatables itself. Since
+      # translatables is sorted, we simply need to perform binary searches to
+      # get the answer.
+      return (bisect.bisect_left(translatables, item) for item in new_translatables)
 
     def matchitems(self, newfile, uselocations=False):
       """matches up corresponding items in this pofile with the given newfile, and returns tuples of matching poitems (None if no match found)"""
@@ -590,7 +650,7 @@ def make_class(base_class):
     def mergefile(self, newfile, username, allownewstrings=True, suggestions=False):
       """make sure each msgid is unique ; merge comments etc from duplicates into original"""
       self.makeindex()
-      translatables = (self.units[index] for index in self.statistics.getstats()["total"])
+      translatables = (self.units[index] for index in self.total)
       po_position = dict((unit, position) for position, unit in enumerate(translatables))
       matches = self.matchitems(newfile)
       for oldpo, newpo in matches:
@@ -601,10 +661,7 @@ def make_class(base_class):
 
         if oldpo is None:
           if allownewstrings:
-            if isinstance(newpo, po.pounit):
-              self.addunit(newpo)
-            else:
-              self.addunit(self.UnitClass.buildfromunit(newpo))
+            self.addunit(self.UnitClass.buildfromunit(newpo))
         elif newpo is None:
           # TODO: mark the old one as obsolete
           pass
@@ -617,9 +674,6 @@ def make_class(base_class):
       if not isinstance(newfile, po.pofile) or suggestions:
         #TODO: We don't support updating the header yet.
         self.savepofile()
-        self.reset_statistics()
-        # the easiest way to recalculate everything
-        self.readpofile()
         return
 
       #Let's update selected header entries. Only the ones listed below, and ones
@@ -651,9 +705,6 @@ def make_class(base_class):
             header.allcomments[i].extend(newheader.allcomments[i])
 
       self.savepofile()
-      self.reset_statistics()
-      # the easiest way to recalculate everything
-      self.readpofile()
   return pootlefile
 
 _pootlefile_classes = {}

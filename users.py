@@ -24,7 +24,7 @@ from jToolkit.web import server
 from jToolkit.web import session
 from jToolkit import mailer
 from jToolkit import prefs
-from Pootle import pagelayout
+from Pootle import pagelayout, request_cache
 from translate.lang import data as langdata
 from translate.lang import factory
 from email.Header import Header
@@ -284,6 +284,7 @@ class OptionalLoginAppServer(server.LoginAppServer):
       else:
         self.initlanguage(req, session)
       page = self.getpage(pathwords, session, argdict)
+      request_cache.reset()
     except Exception, e:
       # Because of the exception, 'session' might not be initialised. So let's
       # play extra safe

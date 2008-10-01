@@ -27,6 +27,7 @@ from Pootle import pootlefile
 from translate.storage import po
 from translate.misc.multistring import multistring
 import difflib
+import operator
 import urllib
 import os
 
@@ -82,7 +83,7 @@ class TranslatePage(pagelayout.PootleNavPage):
     # TODO: clean up modes to be one variable
     self.viewmode = self.argdict.get("view", 0) and "view" in self.rights
     self.reviewmode = self.argdict.get("review", 0)
-    self.translatemode = self.argdict.get("translate", 0) or self.argdict.get("searchtext", 0) and ("translate" in self.rights or "suggest" in self.rights)
+    self.translatemode = (self.argdict.get("translate", 0) or self.argdict.get("searchtext", 0)) and ("translate" in self.rights or "suggest" in self.rights)
     notice = {}
     try:
       self.finditem()
@@ -102,10 +103,10 @@ class TranslatePage(pagelayout.PootleNavPage):
       rows = self.getdisplayrows("translate")
       icon="edit"
     if self.pofilename is not None:
-      postats = self.project.getpostats(self.pofilename)
-      untranslated, fuzzy = postats["untranslated"], postats["fuzzy"]
+      postats = self.project.getpototals(self.pofilename)
+      untranslated, fuzzy = postats["total"] - postats["translated"], postats["fuzzy"]
       translated, total = postats["translated"], postats["total"]
-      mainstats = self.localize("%d/%d translated\n(%d untranslated, %d fuzzy)", len(translated), len(total), len(untranslated), len(fuzzy))
+      mainstats = self.localize("%d/%d translated\n(%d untranslated, %d fuzzy)", translated, total, untranslated, fuzzy)
       pagelinks = self.getpagelinks("?translate=1&view=1", rows)
     navbarpath_dict = self.makenavbarpath_dict(self.project, self.session, self.pofilename, dirfilter=self.dirfilter or "")
     # templatising
@@ -237,7 +238,10 @@ class TranslatePage(pagelayout.PootleNavPage):
       self.templatevars["assigns"] = self.getassignbox()
     if self.pofilename is not None:
       if self.matchnames:
-        checknames = [matchname.replace("check-", "", 1) for matchname in self.matchnames]
+        checknames = \
+        ["<a href='http://translate.sourceforge.net/wiki/toolkit/pofilter_tests#%(checkname)s' \
+        title='%(checkname)s' target='_blank'>%(checkname)s</a>" % \
+        {"checkname": matchname.replace("check-", "", 1)} for matchname in self.matchnames]
         # TODO: put the following parameter in quotes, since it will be foreign in all target languages
         # l10n: the parameter is the name of one of the quality checks, like "fuzzy"
         self.templatevars["checking_text"] = self.localize("checking %s", ", ".join(checknames))
@@ -358,6 +362,8 @@ class TranslatePage(pagelayout.PootleNavPage):
 
       self.lastitem = item
 
+    # Make sure we have rejects list properly sorted
+    rejects.sort(key=operator.itemgetter(1))
     # It's necessary to loop the list reversed in order to selectively remove items
     for item, suggid in reversed(rejects):
       value = suggestions[item, suggid]
@@ -930,12 +936,10 @@ class TranslatePage(pagelayout.PootleNavPage):
       altsrcdict["dir"] = pagelayout.languagedir(altsrcdict["languagecode"])
       altsrcdict["title"] = self.session.tr_lang(altsrcdict["languagename"])
       if not origdict["isplural"]:
-        orig = origdict["text"]
-        altsrctext = self.escapetext(self.altproject.ugettext(orig))
-      else:
-        altsrctext = None
-      if not origdict["isplural"] and altsrctext != orig and not self.reviewmode:
-        altsrcdict["text"] = altsrctext
-        altsrcdict["available"] = True
+        orig = origdict["pure"][0]["value"]
+        altsrctext = self.altproject.ugettext(orig)
+        if altsrctext != orig and not self.reviewmode:
+          altsrcdict["text"] = self.escapetext(altsrctext)
+          altsrcdict["available"] = True
     return altsrcdict
 

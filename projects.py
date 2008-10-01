@@ -32,7 +32,7 @@ from translate.convert import po2oo
 from translate.tools import pocompile
 from translate.tools import pogrep
 from translate.search import match
-from translate.search import indexer
+from translate.search import indexing
 from translate.storage import statsdb, base
 from Pootle import statistics
 from Pootle import pootlefile
@@ -46,6 +46,7 @@ import traceback
 import gettext
 import subprocess
 import datetime
+import zipfile
 
 from scripts import hooks
 
@@ -121,7 +122,6 @@ class TranslationProject(object):
     checkerclasses = [checks.projectcheckers.get(self.projectcheckerstyle, checks.StandardChecker), checks.StandardUnitChecker]
     self.checker = checks.TeeChecker(checkerclasses=checkerclasses, errorhandler=self.filtererrorhandler, languagecode=languagecode)
     self.fileext = self.potree.getprojectlocalfiletype(self.projectcode)
-    self.quickstats = {}
     self.asession = self.potree.server.alchemysession
     # terminology matcher
     self.termmatcher = None
@@ -135,8 +135,32 @@ class TranslationProject(object):
       self.filestyle = "std"
     self.readprefs()
     self.scanpofiles()
-    self.readquickstats()
-    self.initindex()
+    self._indexing_enabled = True
+    self._index_initialized = False
+
+    self.initindex(self._get_indexer())
+   
+  def _get_indexer(self):
+    if self._indexing_enabled:
+      try:
+        indexer = self.make_indexer()
+        if not self._index_initialized:
+          self.initindex(indexer)
+          self._index_initialized = True
+        return indexer
+      except Exception, e:
+        print "Could not intialize indexer for %s in %s: %s" % (self.projectcode, self.languagecode, str(e))
+        self._indexing_enabled = False
+        return None
+    else:
+      return None
+
+  indexer = property(_get_indexer)
+
+  def _has_index(self):
+    return self._indexing_enabled and (self._index_initialized or self.indexer != None)
+
+  has_index = property(_has_index)
 
   def readprefs(self):
     """reads the project preferences"""
@@ -515,7 +539,7 @@ class TranslationProject(object):
       raise ValueError("invalid/insecure file name: %s" % localfilename)
     if self.filestyle == "gnu":
       if not self.potree.languagematch(self.languagecode, localfilename[:-len("."+self.fileext)]):
-        raise ValueError("invalid GNU-style file name %s: must match '%s.%s' or '%s[_-][A-Z]{2,3}.%s'" % (localfilename, self.fileext, self.languagecode, self.languagecode, self.fileext))
+        raise ValueError("invalid GNU-style file name %s: must match '%s.%s' or '%s[_-][A-Z]{2,3}.%s'" % (localfilename, self.languagecode, self.fileext, self.languagecode, self.fileext))
     dircheck = self.podir
     for part in dirname.split(os.sep):
       dircheck = os.path.join(dircheck, part)
@@ -558,7 +582,6 @@ class TranslationProject(object):
       outfile = open(popathname, "wb")
       outfile.write(contents)
       outfile.close()
-      self.scanpofiles()
 
   def updatepofile(self, session, dirname, pofilename):
     """updates an individual PO file from version control"""
@@ -575,11 +598,6 @@ class TranslationProject(object):
       popath = os.path.join(dirname, pofilename)
 
       currentpofile = self.getpofile(popath)
-      # reading BASE version of file
-      origcontents = versioncontrol.getcleanfile(pathname, "BASE")
-      origpofile = pootlefile.pootlefile(self, popath)
-      originfile = cStringIO.StringIO(origcontents)
-      origpofile.parse(originfile)
       # matching current file with BASE version
       # TODO: add some locking here...
       # reading new version of file
@@ -587,15 +605,9 @@ class TranslationProject(object):
       newpofile = pootlefile.pootlefile(self, popath)
       newpofile.pofreshen()
       newpofile.mergefile(currentpofile, "versionmerge")
-      # saving
-      newpofile.savepofile()
-      newpofile.reset_statistics()
       self.pofiles[pofilename] = newpofile
-      # recalculate everything
-      newpofile.readpofile()
     else:
       versioncontrol.updatefile(pathname)
-      self.scanpofiles()
 
     session.addMessage("Updated file: <em>%s</em>" % pofilename)
 
@@ -688,12 +700,13 @@ class TranslationProject(object):
         pofilename = self.languagecode + os.extsep + "po"
       else:
         pofilename = potfilename[:-len(os.extsep+"pot")] + os.extsep + "po"
-        pofilename = os.path.basename(pofilename)
       origpofilename = os.path.join(self.podir, pofilename)
       if os.path.exists(origpofilename):
         origpofile = open(origpofilename)
       else:
         origpofile = None
+        if not os.path.exists(os.path.dirname(origpofilename)):
+          os.makedirs(os.path.dirname(origpofilename))
       pot2po.convertpot(inputfile, outputfile, origpofile)
       outfile = open(origpofilename, "wb")
       outfile.write(outputfile.getvalue())
@@ -721,7 +734,6 @@ class TranslationProject(object):
         os.remove(tempzipfile)
 
     # but if it doesn't work, we can do it from python
-    import zipfile
     archivecontents = cStringIO.StringIO()
     archive = zipfile.ZipFile(archivecontents, 'w', zipfile.ZIP_DEFLATED)
     for pofilename in pofilenames:
@@ -733,52 +745,59 @@ class TranslationProject(object):
   def uploadarchive(self, session, dirname, archivecontents):
     """uploads the files inside the archive"""
 
+    def unzip_external(archivecontents):
+      from tempfile import mkdtemp, mkstemp
+      tempdir = mkdtemp(prefix='pootle')
+      tempzipfd, tempzipname = mkstemp(prefix='pootle', suffix='.zip')
+
+      try:
+        os.write(tempzipfd, archivecontents)
+        os.close(tempzipfd)
+
+        import subprocess
+        if subprocess.call(["unzip", tempzipname, "-d", tempdir]):
+          raise zipfile.BadZipfile(session.localize("Error while extracting archive"))
+
+        def upload(basedir, path, files):
+          for fname in files:
+            if not os.path.isfile(os.path.join(path, fname)):
+              continue
+            if not fname.endswith(os.extsep + self.fileext):
+              print "error adding %s: not a %s file" % (fname, os.extsep + self.fileext)
+              continue
+            fcontents = open(os.path.join(path, fname), 'rb').read()
+            self.uploadfile(session, path[len(basedir)+1:], fname, fcontents)
+        os.path.walk(tempdir, upload, tempdir)
+        return
+      finally:
+        # Clean up temporary file and directory used in try-block
+        import shutil
+        os.unlink(tempzipname)
+        shutil.rmtree(tempdir)
+
+    def unzip_python(archivecontents):
+      archive = zipfile.ZipFile(cStringIO.StringIO(archivecontents), 'r')
+      # TODO: find a better way to return errors...
+      for filename in archive.namelist():
+        if not filename.endswith(os.extsep + self.fileext):
+          print "error adding %s: not a %s file" % (filename, os.extsep + self.fileext)
+          continue
+        contents = archive.read(filename)
+        subdirname, pofilename = os.path.dirname(filename), os.path.basename(filename)
+        try:
+          # TODO: use zipfile info to set the time and date of the file
+          self.uploadfile(session, os.path.join(dirname, subdirname), pofilename, contents)
+        except ValueError, e:
+          print "error adding %s" % filename, e
+          continue
+      archive.close()
+
     # First we try to use "unzip" from the system, otherwise fall back to using
     # the slower zipfile module (below)...
-    from tempfile import mkdtemp, mkstemp
-    tempdir = mkdtemp(prefix='pootle')
-    tempzipfd, tempzipname = mkstemp(prefix='pootle', suffix='.zip')
-
     try:
-      os.write(tempzipfd, archivecontents)
-      os.close(tempzipfd)
-
-      import subprocess
-      subprocess.Popen('unzip "%s" -d "%s"' % (tempzipname, tempdir), shell=True)
-
-      def upload(basedir, path, files):
-        for fname in files:
-          if not os.path.isfile(os.path.join(path, fname)):
-            continue
-          if not fname.endswith(os.extsep + self.fileext):
-            print "error adding %s: not a %s file" % (fname, os.extsep + self.fileext)
-            continue
-          fcontents = open(os.path.join(path, fname), 'rb').read()
-          self.uploadfile(session, path[len(basedir)+1:], fname, fcontents)
-      os.path.walk(tempdir, upload, tempdir)
-      return
-    finally:
-      # Clean up temporary file and directory used in try-block
-      import shutil
-      os.unlink(tempzipname)
-      shutil.rmtree(tempdir)
-
-    import zipfile
-    archive = zipfile.ZipFile(cStringIO.StringIO(archivecontents), 'r')
-    # TODO: find a better way to return errors...
-    for filename in archive.namelist():
-      if not filename.endswith(os.extsep + self.fileext):
-        print "error adding %s: not a %s file" % (filename, os.extsep + self.fileext)
-        continue
-      contents = archive.read(filename)
-      subdirname, pofilename = os.path.dirname(filename), os.path.basename(filename)
-      try:
-        # TODO: use zipfile info to set the time and date of the file
-        self.uploadfile(session, os.path.join(dirname, subdirname), pofilename, contents)
-      except ValueError, e:
-        print "error adding %s" % filename, e
-        continue
-    archive.close()
+      unzip_external(archivecontents)
+    except Exception:
+      unzip_python(archivecontents)
 
   def ootemplate(self):
     """Tests whether this project has an OpenOffice.org template SDF file in
@@ -845,7 +864,7 @@ class TranslationProject(object):
       yield self.pofilenames[index]
       index += 1
 
-  def getindexer(self):
+  def make_indexer(self):
     """get an indexing object for this project
 
     Since we do not want to keep the indexing databases open for the lifetime of
@@ -853,39 +872,38 @@ class TranslationProject(object):
     but should be used via a short living local variable.
     """
     indexdir = os.path.join(self.podir, self.index_directory)
-    index = indexer.get_indexer(indexdir)
+    index = indexing.get_indexer(indexdir)
     index.set_field_analyzers({
             "pofilename": index.ANALYZER_EXACT,
             "itemno": index.ANALYZER_EXACT,
             "pomtime": index.ANALYZER_EXACT})
     return index
 
-  def initindex(self):
+  def initindex(self, indexer):
     """initializes the search index"""
-    if not indexer.HAVE_INDEXER:
-      return
     pofilenames = self.pofiles.keys()
     pofilenames.sort()
     for pofilename in pofilenames:
-      self.updateindex(pofilename, optimize=False)
+      self.updateindex(indexer, pofilename, optimize=False)
 
-  def updateindex(self, pofilename, items=None, optimize=True):
+  def updateindex(self, indexer, pofilename, items=None, optimize=True):
     """updates the index with the contents of pofilename (limit to items if given)
 
     There are three reasons for calling this function:
-      (A) creating a new instance of "TranslationProject" (see "initindex")
+      1. creating a new instance of L{TranslationProject} (see L{initindex})
           -> check if the index is up-to-date / rebuild the index if necessary
-      (B) translating a unit via the web interface
+      2. translating a unit via the web interface
           -> (re)index only the specified unit(s)
 
-    The argument "items" should be None for (A).
+    The argument L{items} should be None for 1.
 
     known problems:
-      1) This function should get called, when the po file changes externally.
+      1. This function should get called, when the po file changes externally.
          The function "pofreshen" in pootlefile.py would be the natural place
          for this. But this causes circular calls between the current (r7514)
          statistics code and "updateindex" leading to indexing database lock
          issues.
+
          WARNING: You have to stop the pootle server before manually changing
          po files, if you want to keep the index database in sync.
 
@@ -896,17 +914,16 @@ class TranslationProject(object):
     @param optimize: should the indexing database be optimized afterwards
     @type optimize: bool
     """
-    if not indexer.HAVE_INDEXER:
-      return
-    index = self.getindexer()
+    if indexer == None:
+      return False
     pofile = self.pofiles[pofilename]
     # check if the pomtime in the index == the latest pomtime
     try:
         pomtime = statistics.getmodtime(pofile.filename)
-        pofilenamequery = index.make_query([("pofilename", pofilename)], True)
-        pomtimequery = index.make_query([("pomtime", str(pomtime))], True)
-        gooditemsquery = index.make_query([pofilenamequery, pomtimequery], True)
-        gooditemsnum = index.get_query_result(gooditemsquery).get_matches_count()
+        pofilenamequery = indexer.make_query([("pofilename", pofilename)], True)
+        pomtimequery = indexer.make_query([("pomtime", str(pomtime))], True)
+        gooditemsquery = indexer.make_query([pofilenamequery, pomtimequery], True)
+        gooditemsnum = indexer.get_query_result(gooditemsquery).get_matches_count()
         # if there is at least one up-to-date indexing item, then the po file
         # was not changed externally -> no need to update the database
         if (gooditemsnum > 0) and (not items):
@@ -918,15 +935,15 @@ class TranslationProject(object):
           # older pomtime).
           print "updating", self.languagecode, "index for", pofilename, "items", items
           # delete the relevant items from the database
-          itemsquery = index.make_query([("itemno", str(itemno)) for itemno in items], False)
-          index.delete_doc([pofilenamequery, itemsquery])
+          itemsquery = indexer.make_query([("itemno", str(itemno)) for itemno in items], False)
+          indexer.delete_doc([pofilenamequery, itemsquery])
         else:
           # (items is None)
           # The po file is not indexed - or it was changed externally (see
           # "pofreshen" in pootlefile.py).
           print "updating", self.projectcode, self.languagecode, "index for", pofilename
           # delete all items of this file
-          index.delete_doc({"pofilename": pofilename})
+          indexer.delete_doc({"pofilename": pofilename})
         pofile.pofreshen()
         if items is None:
           # rebuild the whole index
@@ -947,15 +964,15 @@ class TranslationProject(object):
           doc["locations"] = unit.getlocations()
           addlist.append(doc)
         if addlist:
-          index.begin_transaction()
+          indexer.begin_transaction()
           try:
             for add_item in addlist:
-                index.index_document(add_item)
+                indexer.index_document(add_item)
           finally:
-            index.commit_transaction()
-            index.flush(optimize=optimize)
+            indexer.commit_transaction()
+            indexer.flush(optimize=optimize)
     except (base.ParseError, IOError, OSError):
-        index.delete_doc({"pofilename": pofilename})
+        indexer.delete_doc({"pofilename": pofilename})
         print "Not indexing %s, since it is corrupt" % (pofilename,)
 
   def matchessearch(self, pofilename, search):
@@ -980,46 +997,51 @@ class TranslationProject(object):
             return False
     if search.matchnames:
       postats = self.getpostats(pofilename)
-      matches = False
       for name in search.matchnames:
         if postats.get(name):
-          matches = True
-      if not matches:
-        return False
+          return True        
+      return False
     return True
 
   def indexsearch(self, search, returnfields):
     """returns the results from searching the index with the given search"""
-    if not indexer.HAVE_INDEXER:
+    def do_search(indexer):
+      searchparts = []
+      if search.searchtext:
+        # Generate a list for the query based on the selected fields
+        querylist = [(f, search.searchtext) for f in search.searchfields]
+        textquery = indexer.make_query(querylist, False)
+        searchparts.append(textquery)
+      if search.dirfilter:
+        pofilenames = self.browsefiles(dirfilter=search.dirfilter)
+        filequery = indexer.make_query([("pofilename", pofilename) for pofilename in pofilenames], False)
+        searchparts.append(filequery)
+      # TODO: add other search items
+      limitedquery = indexer.make_query(searchparts, True)
+      return indexer.search(limitedquery, returnfields)
+
+    indexer = self.indexer
+    if indexer != None:
+      return do_search(indexer)
+    else:
       return False
-    index = self.getindexer()
-    searchparts = []
-    if search.searchtext:
-      # Generate a list for the query based on the selected fields
-      querylist = [(f, search.searchtext) for f in search.searchfields]
-      textquery = index.make_query(querylist, False)
-      searchparts.append(textquery)
-    if search.dirfilter:
-      pofilenames = self.browsefiles(dirfilter=search.dirfilter)
-      filequery = index.make_query([("pofilename", pofilename) for pofilename in pofilenames], False)
-      searchparts.append(filequery)
-    # TODO: add other search items
-    limitedquery = index.make_query(searchparts, True)
-    return index.search(limitedquery, returnfields)
 
   def searchpofilenames(self, lastpofilename, search, includelast=False):
     """find the next pofilename that has items matching the given search"""
     if lastpofilename and not lastpofilename in self.pofiles:
       # accessing will autoload this file...
       self.pofiles[lastpofilename]
-    if indexer.HAVE_INDEXER and search.searchtext:
-      # TODO: move this up a level, use index to manage whole search, so we don't do this twice
-      hits = self.indexsearch(search, "pofilename")
-      # there will be only result for the field "pofilename" - so we just
-      # pick the first
-      searchpofilenames = dict.fromkeys([hit["pofilename"][0] for hit in hits])
-    else:
-      searchpofilenames = None
+    searchpofilenames = None
+    if self.has_index and search.searchtext:
+      try:
+        # TODO: move this up a level, use index to manage whole search, so we don't do this twice
+        hits = self.indexsearch(search, "pofilename")
+        # there will be only result for the field "pofilename" - so we just
+        # pick the first
+        searchpofilenames = dict.fromkeys([hit["pofilename"][0] for hit in hits])
+      except:
+        print "Could not perform indexed search on %s. Index is corrupt." % lastpofilename
+        self._indexing_enabled = False
     for pofilename in self.iterpofilenames(lastpofilename, includelast):
       if searchpofilenames is not None:
         if pofilename not in searchpofilenames:
@@ -1027,39 +1049,57 @@ class TranslationProject(object):
       if self.matchessearch(pofilename, search):
         yield pofilename
 
-  def searchpoitems(self, pofilename, item, search):
+  def searchpoitems(self, pofilename, lastitem, search):
     """finds the next item matching the given search"""
-    if search.searchtext:
-      grepfilter = pogrep.GrepFilter(search.searchtext, search.searchfields, ignorecase=True)
-    for pofilename in self.searchpofilenames(pofilename, search, includelast=True):
+
+    def indexed(pofilename, search, lastitem):
+      filesearch = search.copy()
+      filesearch.dirfilter = pofilename
+      hits = self.indexsearch(filesearch, "itemno")
+      # there will be only result for the field "itemno" - so we just
+      # pick the first
+      all_items = (int(doc["itemno"][0]) for doc in hits)
+      next_items = (search_item for search_item in all_items if search_item > lastitem)
+      try:
+        # Since we will call self.searchpoitems (the method in which we are)
+        # every time a user clicks the next button, the loop which calls yield
+        # on indexed will only need a single value from this generator. So we
+        # only return a list with a single item.
+        return [min(next_items)]
+      except ValueError:
+        return []
+
+    def non_indexed(pofilename, search, lastitem):
+      # Ask pofile for all the possible items which follow lastitem, based on
+      # the criteria in search.
       pofile = self.getpofile(pofilename)
-      if indexer.HAVE_INDEXER and search.searchtext:
-        filesearch = search.copy()
-        filesearch.dirfilter = pofilename
-        hits = self.indexsearch(filesearch, "itemno")
-        # there will be only result for the field "itemno" - so we just
-        # pick the first
-        items = [int(doc["itemno"][0]) for doc in hits]
-        items = [searchitem for searchitem in items if searchitem > item]
-        items.sort()
-        notextsearch = search.copy()
-        notextsearch.searchtext = None
-        matchitems = list(pofile.iteritems(notextsearch, item))
+      items = pofile.iteritems(search, lastitem)
+      if search.searchtext:
+        # We'll get here if the user is searching for a piece of text and if no indexer
+        # (such as Xapian or Lucene) is usable. First build a grepper...
+        grepfilter = pogrep.GrepFilter(search.searchtext, search.searchfields, ignorecase=True)
+        # ...then filter the items using the grepper.
+        return (item for item in items if grepfilter.filterunit(pofile.getitem(item)))
       else:
-        items = pofile.iteritems(search, item)
-        matchitems = items
-      for item in items:
-        if items != matchitems:
-          if item not in matchitems:
-            continue
-        # TODO: move this to iteritems
-        if search.searchtext:
-          unit = pofile.getitem(item)
-          if grepfilter.filterunit(unit):
-            yield pofilename, item
-        else:
-          yield pofilename, item
-      item = None
+        return items
+
+    def get_items(pofilename, search, lastitem):
+      if self.has_index and search.searchtext:
+        try:
+          # Return an iterator using the indexer if indexing is available and if there is searchtext.
+          return indexed(pofilename, search, lastitem)
+        except:
+          print "Could not perform indexed search on %s. Index is corrupt." % pofilename
+          self._indexing_enabled = False
+      return non_indexed(pofilename, search, lastitem)
+
+    for pofilename in self.searchpofilenames(pofilename, search, includelast=True):
+      for item in get_items(pofilename, search, lastitem):
+        yield pofilename, item
+      # this must be set to None so that the next call to
+      # get_items(self.getpofile(pofilename), search, lastitem) [see just above]
+      # will start afresh with the first item in the next pofilename.
+      lastitem = None
 
   def reassignpoitems(self, session, search, assignto, action):
     """reassign all the items matching the search to the assignto user(s) evenly, with the given action"""
@@ -1164,32 +1204,13 @@ class TranslationProject(object):
     """Gets translated and total stats and wordcounts without doing calculations returning dictionary."""
     if pofilenames is None:
       pofilenames = self.pofilenames
-    alltranslatedwords, alltranslated, allfuzzywords, allfuzzy, alltotalwords, alltotal = 0, 0, 0, 0, 0, 0
-    slowfiles = []
-    for pofilename in pofilenames:
-      if pofilename not in self.quickstats:
-        slowfiles.append(pofilename)
-        continue
-      
-      alltranslatedwords += self.quickstats[pofilename].translatedwords
-      alltranslated += self.quickstats[pofilename].translated
-      allfuzzywords += self.quickstats[pofilename].fuzzywords
-      allfuzzy += self.quickstats[pofilename].fuzzy
-      alltotalwords += self.quickstats[pofilename].totalwords
-      alltotal += self.quickstats[pofilename].total
-    for pofilename in slowfiles:
-      self.pofiles[pofilename].statistics.updatequickstats(save=False)
-      alltranslatedwords += self.quickstats[pofilename].translatedwords
-      alltranslated += self.quickstats[pofilename].translated
-      allfuzzywords += self.quickstats[pofilename].fuzzywords
-      allfuzzy += self.quickstats[pofilename].fuzzy
-      alltotalwords += self.quickstats[pofilename].totalwords
-      alltotal += self.quickstats[pofilename].total
-    if slowfiles:
-      self.savequickstats()
-    return {"translatedsourcewords": alltranslatedwords, "translated": alltranslated,
-            "fuzzysourcewords": allfuzzywords, "fuzzy": allfuzzy,
-            "totalsourcewords": alltotalwords, "total": alltotal}
+    result =  {"translatedsourcewords": 0, "translated": 0,
+               "fuzzysourcewords": 0, "fuzzy": 0,
+               "totalsourcewords": 0, "total": 0}
+    for stats in (self.pofiles[key].statistics.getquickstats() for key in pofilenames):
+      for key in result:
+        result[key] += stats[key]
+    return result
 
   def combinestats(self, pofilenames=None):
     """combines translation statistics for the given po files (or all if None given)"""
@@ -1295,12 +1316,12 @@ class TranslationProject(object):
   def getpofilelen(self, pofilename):
     """returns number of items in the given pofilename"""
     pofile = self.getpofile(pofilename)
-    return pofile.statistics.getitemslen()
+    return len(pofile.total)
 
   def getitems(self, pofilename, itemstart, itemstop):
     """returns a set of items from the pofile, converted to original and translation strings"""
     pofile = self.getpofile(pofilename)
-    units = [pofile.units[index] for index in pofile.statistics.getstats()["total"][max(itemstart,0):itemstop]]
+    units = [pofile.units[index] for index in pofile.total[max(itemstart,0):itemstop]]
     return units
 
   def updatetranslation(self, pofilename, item, newvalues, session, suggObj=None):
@@ -1328,7 +1349,7 @@ class TranslationProject(object):
     s.fromsuggestion = suggObj
 
     pofile.updateunit(item, newvalues, session.user, languageprefs)
-    self.updateindex(pofilename, [item])
+    self.updateindex(self.indexer, pofilename, [item])
 
   def suggesttranslation(self, pofilename, item, trans, session):
     """stores a new suggestion for a translation..."""
@@ -1390,9 +1411,11 @@ class TranslationProject(object):
 
     sugg = query.first()
     if sugg != None:
-      sugg.reviewer = session.user
-      sugg.reviewStatus = status
-      sugg.reviewTime = datetime.datetime.utcnow()
+      # If you want to save rejected suggestions in the database, uncomment the following lines and comment out the delete line
+      #sugg.reviewer = session.user
+      #sugg.reviewStatus = status
+      #sugg.reviewTime = datetime.datetime.utcnow()
+      self.asession.delete(sugg)
     else:
       print "No database entry for suggestion found; database integrity issue detected!"
 
@@ -1410,7 +1433,7 @@ class TranslationProject(object):
     suggObj = self.markSuggestion(pofile, item, newtrans, session, suggester, "accepted")
 
     pofile.track(item, "suggestion by %s accepted by %s" % (suggester, session.username))
-    pofile.deletesuggestion(item, suggitem)
+    pofile.deletesuggestion(item, suggitem, newtrans)
     self.updatetranslation(pofilename, item, {"target": newtrans, "fuzzy": False}, session, suggObj)
 
   
@@ -1430,10 +1453,13 @@ class TranslationProject(object):
       pofile = self.getpofile(pofilename)
     suggester = self.getsuggester(pofile, item, suggitem)
 
+    # Deletes the suggestion from the database
     suggObj = self.markSuggestion(pofile, item, newtrans, session, suggester, "rejected")
 
     pofile.track(item, "suggestion by %s rejected by %s" % (suggester, session.username))
-    pofile.deletesuggestion(item, suggitem)
+
+    # Deletes the suggestion from the .pending file
+    pofile.deletesuggestion(item, suggitem, newtrans)
 
   def gettmsuggestions(self, pofile, item):
     """find all the TM suggestions for the given (pofile or pofilename) and item"""
@@ -1614,18 +1640,9 @@ class DummyProject(TranslationProject):
       self.checker = checker
     self.projectcode = projectcode
     self.languagecode = languagecode
-    self.readquickstats()
 
   def scanpofiles(self):
     """A null operation if potree is not present"""
-    pass
-
-  def readquickstats(self):
-    """dummy statistics are empty"""
-    self.quickstats = {}
-
-  def savequickstats(self):
-    """saves quickstats if possible"""
     pass
 
 class DummyStatsProject(DummyProject):
@@ -1633,17 +1650,6 @@ class DummyStatsProject(DummyProject):
   def __init__(self, podir, checker, projectcode=None, languagecode=None):
     """initializes the project with the given podir"""
     DummyProject.__init__(self, podir, checker, projectcode, languagecode)
-
-  def readquickstats(self):
-    """reads statistics from whatever files are available"""
-    self.quickstats = {}
-    if self.projectcode is not None and self.languagecode is not None:
-      TranslationProject.readquickstats(self)
-
-  def savequickstats(self):
-    """saves quickstats if possible"""
-    if self.projectcode is not None and self.languagecode is not None:
-      TranslationProject.savequickstats(self)
 
 class TemplatesProject(TranslationProject):
   """Manages Template files (.pot files) for a project"""
