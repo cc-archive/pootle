@@ -107,8 +107,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/*
 %{_datadir}/applications/*
 %{_datadir}/mime/packages/*
-%exclude %{_datadir}/virtaal/virtaal.desktop*
-%exclude %{_datadir}/virtaal/virtaal-mimetype.xml*
 %{_datadir}/virtaal
 %{_datadir}/icons/*
 %{python_sitelib}/*
