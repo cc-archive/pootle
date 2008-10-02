@@ -204,24 +204,34 @@ def apply(dom_node, state):
 def quote_placables(placeable_name, placeable_id):
     return u"[[[%s_%d]]]" % (placeable_name, placeable_id)
 
+def contains_translatable_text(translatable):
+    return translatable.text in ([u""], [])
+
+def get_source_text(translatable, placeable_quoter):
+    source_text = []
+    for component in translatable.text:
+        if isinstance(component, Translatable):
+            source_text.append(placeable_quoter(component.placeable_name, component.placeable_id))
+        else:
+            source_text.append(component)
+    return u''.join(source_text)
+
+def add_location_and_ref_info(unit, translatable):
+    unit.addlocation(translatable.xpath)
+    if translatable.placeable_id > -1:
+        unit.addnote("References: %d" % translatable.placeable_id)
+    return unit
+
 def make_store_adder(store, placeable_quoter = quote_placables):
     """Return a function which, when called with a Translatable will add
     a unit to 'store'. The placeables will represented as strings according
     to 'placeable_quoter'."""
     UnitClass = store.UnitClass
     def add_to_store(translatable):
-        source_text = []
-        if translatable.text in ([u""], []):
+        if not contains_translatable_text(translatable):
             return
-        for component in translatable.text:
-            if isinstance(component, Translatable):
-                source_text.append(placeable_quoter(component.placeable_name, component.placeable_id))
-            else:
-                source_text.append(component)
-        unit = UnitClass(u''.join(source_text))
-        unit.addlocation(translatable.xpath)
-        if translatable.placeable_id > -1:
-            unit.addnote("References: %d" % translatable.placeable_id)
+        source_text = get_source_text(translatable, placeable_quoter)        
+        unit = add_location_and_ref_info(UnitClass(source_text), translatable)
         store.addunit(unit)
     return add_to_store
 
