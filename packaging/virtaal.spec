@@ -64,14 +64,6 @@ popd
 rm -rf $RPM_BUILD_ROOT
 %{__python} setup.py install -O1 --skip-build --install-data=/usr --root $RPM_BUILD_ROOT
 
-# Cleanup horrid ./setup.py installs
-pushd  %{buildroot}%{_datadir}
-mkdir -p mime/packages applications icons
-mv virtaal/virtaal.{png,ico} icons
-popd
-mv share/virtaal/virtaal-mimetype.xml %{buildroot}%{_datadir}/mime/packages
-mv share/virtaal/virtaal.desktop %{buildroot}%{_datadir}/applications
-
 desktop-file-install --vendor="fedora" --delete-original \
    --dir=%{buildroot}%{_datadir}/applications            \
    %{buildroot}%{_datadir}/applications/%{name}.desktop
