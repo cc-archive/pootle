@@ -1,25 +1,31 @@
 %{!?python_sitelib: %define python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib()")}
 
+%define         pkgname Virtaal
+%define         prerelease -rc1
+
 Name:           virtaal
-Version:        0.1
-Release:        13%{?dist}
+Version:        0.2
+Release:        0.2.rc1%{?dist}
 Summary:        Localization and translation editor
 
 Group:          Development/Tools
 License:        GPLv2+
 URL:            http://translate.sourceforge.net/wiki/virtaal/index
-Source0:        http://downloads.sourceforge.net/translate/%{name}-%{version}.tar.bz2
-#Source0:        http://translate.sourceforge.net/snapshots/%{name}-%{version}rc4/%{name}-%{version}rc4.tar.bz2
+#Source0:        http://downloads.sourceforge.net/translate/%{name}-%{version}.tar.bz2
+Source0:        http://translate.sourceforge.net/snapshots/%{name}-%{version}%{prerelease}/%{pkgname}-%{version}%{prerelease}.tar.bz2
+Source1:        maketranslations
+Source2:        virtaal-0.2-rc1-po.tar.bz2
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-#Patch0:         virtaal-glade-location.patch
+Patch0:         LICENSE.patch
+Patch1:         Virtaal-0.2-rc1-fixes.patch
 
 BuildArch:      noarch
 BuildRequires:  python-devel
 BuildRequires:  desktop-file-utils
 BuildRequires:  gettext
 BuildRequires:  intltool
-Requires:       translate-toolkit
+Requires:       translate-toolkit >= 1.2
 Requires:       pygtk2
 Requires:       gnome-python2-gtkspell
 Requires:       xdg-utils
@@ -28,24 +34,26 @@ Requires:       xdg-utils
 %description
 A Computer Aided Translation (CAT) tool built on the Translate Toolkit.
 
-VirTaal includes features that allow a localizer to work effecively including:
+Virtaal includes features that allow a localizer to work effecively including:
 syntax highlighting, Translation Memory and glossaries.  Showing only 
 the data that is needed through its simple and effective user interface it
 ensures that you can focus on the translation task straight away.
 
-By building on the Translate Toolkit VirTaal is able to edit any of the
+By building on the Translate Toolkit Virtaal is able to edit any of the
 following formats: XLIFF, Gettext PO and .mo, Qt .qm, Wordfast TM, TMX,
 TBX.  By using the Translate Toolkit converters a translator can edit:
 OpenOffice.org SDF, Java (and Mozilla) .properties, Qt .ts and Mozilla DTD.
  
 
 %prep
-%setup -q -n %{name}-%{version}
-#%patch0 -p1 -b .glade
+%setup -q -n %{pkgname}-%{version}%{prerelease}
+%setup -a 2 -D -n %{pkgname}-%{version}%{prerelease}
+%patch0 -p0
+%patch1 -p1
 
 %build
 %{__python} setup.py build
-./maketranslations %{name}
+$RPM_SOURCE_DIR/maketranslations %{name}
 pushd po
 for po in $(ls *.po | egrep -v de_DE)
 do
@@ -106,10 +114,16 @@ rm -rf $RPM_BUILD_ROOT
 %exclude %{_datadir}/virtaal/virtaal-mimetype.xml*
 %{_datadir}/virtaal
 %{_datadir}/icons/*
-%{python_sitelib}/virtaal*
+%{python_sitelib}/*
 
 
 %changelog
+* Wed Oct 1 2008 Dwayne Bailey <dwayne@translate.org.za> - 0.2-0.2.rc1.fc9
+- Fix file locations
+
+* Wed Oct 1 2008 Dwayne Bailey <dwayne@translate.org.za> - 0.2-0.1.rc1.fc9
+- Update to RC1
+
 * Sat Sep 20 2008 Dwayne Bailey <dwayne@translate.org.za> - 0.1-12.fc9
 - Include LICENSE
 
