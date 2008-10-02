@@ -12,8 +12,6 @@ License:        GPLv2+
 URL:            http://translate.sourceforge.net/wiki/virtaal/index
 #Source0:        http://downloads.sourceforge.net/translate/%{name}-%{version}.tar.bz2
 Source0:        http://translate.sourceforge.net/snapshots/%{name}-%{version}%{prerelease}/%{name}-%{version}%{prerelease}.tar.bz2
-Source1:        maketranslations
-Source2:        virtaal-0.2-rc1-po.tar.bz2
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 Patch1:         Virtaal-0.2-rc1-fixes.patch
