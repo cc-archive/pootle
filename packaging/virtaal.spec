@@ -16,7 +16,6 @@ Source1:        maketranslations
 Source2:        virtaal-0.2-rc1-po.tar.bz2
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-Patch0:         LICENSE.patch
 Patch1:         Virtaal-0.2-rc1-fixes.patch
 
 BuildArch:      noarch
@@ -47,7 +46,6 @@ OpenOffice.org SDF, Java (and Mozilla) .properties and Mozilla DTD.
 %prep
 %setup -q -n %{name}-%{version}%{prerelease}
 %setup -a 2 -D -n %{name}-%{version}%{prerelease}
-%patch0 -p0
 %patch1 -p1
 
 %build
