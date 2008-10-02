@@ -93,6 +93,7 @@ class tsunit(lisa.LISAunit):
         return filter(not_none, [self._getsourcenode(), self._gettargetnode()])
 
     def getsource(self):
+        # TODO: support <byte>. See bug 528.
         sourcenode = self._getsourcenode()
         if self.hasplural():
             return multistring([sourcenode.text])
@@ -128,7 +129,7 @@ class tsunit(lisa.LISAunit):
             numerus_nodes = targetnode.findall(self.namespaced("numerusform"))
             return multistring([node.text for node in numerus_nodes])
         else:
-            return targetnode.text or ""
+            return targetnode.text or u""
     target = property(gettarget, settarget)
 
     def hasplural(self):
@@ -292,7 +293,7 @@ class tsfile(lisa.LISAfile):
     def switchcontext(self, contextname, createifmissing=False):
         """Switch the current context to the one named contextname, optionally 
         creating it if it doesn't exist."""
-        self._context_name = contextname
+        self._contextname = contextname
         contextnode = self.getcontextnode(contextname)
         if contextnode is None:
             if not createifmissing:
@@ -311,3 +312,14 @@ class tsfile(lisa.LISAfile):
             return NPLURALS[lang]
         else:
             return 1
+
+    def __str__(self):
+        """Converts to a string containing the file's XML.
+        
+        We have to override this to ensure mimic the Qt convention:
+            - no XML decleration
+            - plain DOCTYPE that lxml seems to ignore
+        """
+        return "<!DOCTYPE TS>" + etree.tostring(self.document, pretty_print=True, xml_declaration=False, encoding='utf-8')
+
+

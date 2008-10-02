@@ -101,6 +101,7 @@ class poheader(object):
         "PO-Revision-Date",
         "Last-Translator",
         "Language-Team",
+        "Language",
         "MIME-Version",
         "Content-Type",
         "Content-Transfer-Encoding",
@@ -221,7 +222,15 @@ class poheader(object):
         """update the Plural-Form PO header"""
         if isinstance(nplurals, basestring):
             nplurals = int(nplurals)
-        self.updateheader( Plural_Forms = "nplurals=%d; plural=%s;" % (nplurals, plural) )
+        self.updateheader(add=True, Plural_Forms = "nplurals=%d; plural=%s;" % (nplurals, plural) )
+
+    def gettargetlanguage(self):
+        header = self.parseheader()
+        return header.get('Language')
+
+    def settargetlanguage(self, lang):
+        if isinstance(lang, basestr) and len(lang) > 1:
+            self.updateheader(add=True, Language=lang)
 
     def mergeheaders(self, otherstore):
         """Merges another header with this header.

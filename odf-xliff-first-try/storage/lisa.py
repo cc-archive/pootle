@@ -44,7 +44,7 @@ def getText(node):
         # if node.text is none, we want to return "" since the tag is there
 
 def _findAllMatches(text, re_obj):
-    """generate match objects for all @re_obj matches in @text."""
+    """generate match objects for all L{re_obj} matches in L{text}."""
     start = 0
     max = len(text)
     while start < max:
@@ -56,7 +56,7 @@ def _findAllMatches(text, re_obj):
 placeholders = ['(%[diouxXeEfFgGcrs])', r'(\\+.?)', '(%[0-9]$lx)', '(%[0-9]\$[a-z])', '(<.+?>)']
 re_placeholders = [re.compile(ph) for ph in placeholders]
 def _getPhMatches(text):
-    'return list of regexp matchobjects for with all place holders in the @text'
+    'return list of regexp matchobjects for with all place holders in the L{text}'
     matches = []
     for re_ph in re_placeholders:
         matches.extend(list(_findAllMatches(text, re_ph)))
@@ -82,9 +82,9 @@ def setXMLspace(node, value):
 def namespaced(namespace, name):
     """Returns name in Clark notation within the given namespace.
 
-    For example namespaced("source") in an XLIFF document might return
-        {urn:oasis:names:tc:xliff:document:1.1}source
-    This is needed throughout lxml.
+       For example namespaced("source") in an XLIFF document might return::
+           {urn:oasis:names:tc:xliff:document:1.1}source
+       This is needed throughout lxml.
     """
     if namespace:
         return "{%s}%s" % (namespace, name)
@@ -130,9 +130,9 @@ Provisional work is done to make several languages possible."""
     def namespaced(self, name):
         """Returns name in Clark notation.
 
-        For example namespaced("source") in an XLIFF document might return
-            {urn:oasis:names:tc:xliff:document:1.1}source
-        This is needed throughout lxml.
+           For example namespaced("source") in an XLIFF document might return::
+               {urn:oasis:names:tc:xliff:document:1.1}source
+           This is needed throughout lxml.
         """
         return namespaced(self.namespace, name)
 
@@ -284,9 +284,9 @@ class LISAfile(base.TranslationStore):
     def namespaced(self, name):
         """Returns name in Clark notation.
 
-        For example namespaced("source") in an XLIFF document might return
-            {urn:oasis:names:tc:xliff:document:1.1}source
-        This is needed throughout lxml.
+           For example namespaced("source") in an XLIFF document might return::
+               {urn:oasis:names:tc:xliff:document:1.1}source
+           This is needed throughout lxml.
         """
         return namespaced(self.namespace, name)
 

@@ -20,6 +20,73 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 """Manage the Wordfast Translation Memory format
+
+   Wordfast TM format is the Translation Memory format used by the 
+   U{Wordfast<http://www.wordfast.net/>} computer aided translation tool.
+
+   It is a bilingual base class derived format with L{WordfastTMFile}
+   and L{WordfastUnit} providing file and unit level access.
+
+   Wordfast tools
+   ==============
+   Wordfast is a computer aided translation tool.  It is an application
+   built on top of Microsoft Word and is implemented as a rather 
+   sophisticated set of macros.  Understanding that helps us understand
+   many of the seemingly strange choices around this format including:
+   encoding, escaping and file naming.
+
+   Implementation
+   ==============
+   The implementation covers the full requirements of a Wordfast TM file.
+   The files are simple Tab Seperated Value (TSV) files that can be read 
+   by Microsoft Excel and other spreadsheet programs.  They use the .txt 
+   extension which does make it more difficult to automatically identify 
+   such files.
+
+   The dialect of the TSV files is specified by L{WordfastDialect}.
+
+   Encoding
+   --------
+   The files are UTF-16 or ISO-8859-1 (Latin1) encoded.  These choices
+   are most likely because Microsoft Word is the base editing tool for
+   Wordfast.
+
+   The format is tab seperated so We are able to detect UTF-16 vs Latin1 
+   by searching for the occurance of a UTF-16 tab character and then
+   continuing with the parsing.
+
+   Timestamps
+   ----------
+   L{WordfastTime} allows for the correct management of the Wordfast
+   YYYYMMDD~HHMMSS timestamps.  However, timestamps on individual units are 
+   not updated when edited.
+
+   Header
+   ------
+   L{WordfastHeader} provides header management support.  The header 
+   functionality is fully implemented through observing the behaviour of the
+   files in real use cases, input from the Wordfast programmers and 
+   public documentation.
+
+   Escaping
+   --------
+   Wordfast TM implements a form of escaping that covers two aspects:
+     1. Placeable: bold, formating, etc.  These are left as is and ignored.
+        It is up to the editor and future placeable implementation to manage
+        these.
+     2. Escapes: items that may confuse Excel or translators are 
+        escaped as &'XX;. These are fully implemented and are converted to
+        and from Unicode.  By observing behaviour and reading documentation
+        we where able to observe all possible escapes. Unfortunately the
+        escaping differs slightly between Windows and Mac version.  This
+        might cause errors in future.
+   Functions allow for L{conversion to Unicode<_wf_to_char>} and L{back to 
+   Wordfast escapes<_char_to_wf>}.
+
+   Extended Attributes
+   -------------------
+   The last 4 columns allow users to define and manage extended attributes.
+   These are left as is and are not directly managed byour implemenation.
 """
 
 import csv
@@ -92,11 +159,13 @@ WF_ESCAPE_MAP = (
 """Mapping of Wordfast &'XX; escapes to correct Unicode characters"""
 
 TAB_UTF16 = "\x00\x09"
+"""The tab \\t character as it would appear in UTF-16 encoding"""
 
 def _char_to_wf(string):
     """Char -> Wordfast &'XX; escapes
     
-    @note: Full roundtripping is not possible because of the escaping of \n and \t"""
+       Full roundtripping is not possible because of the escaping of NEWLINE \\n 
+       and TAB \\t"""
     # FIXME there is no platform check to ensure that we use Mac encodings when running on a Mac
     if string:
         for code, char in WF_ESCAPE_MAP:

@@ -21,39 +21,40 @@
 
 """This module contains all the common features for languages.
 
-Supported features:
-language code (km, af)
-language name (Khmer, Afrikaans)
-Plurals
-  Number of plurals (nplurals)
-  Plural equation
-pofilter tests to ignore
-
-Segmentation
-  characters
-  words
-  sentences
-
-TODO:
-Ideas for possible features:
-
-Language-Team information
-
-Segmentation
-  phrases
-
-Punctuation
-  End of sentence
-  Start of sentence
-  Middle of sentence
-  Quotes
-    single
-    double
-
-Valid characters
-Accelerator characters
-Special characters
-Direction (rtl or ltr)
+   Supported features
+   ==================
+     - language code (km, af)
+     - language name (Khmer, Afrikaans)
+     - Plurals
+       - Number of plurals (nplurals)
+       - Plural equation
+     - pofilter tests to ignore
+   
+   Segmentation
+   ------------
+     - characters
+     - words
+     - sentences
+   
+   TODOs and Ideas for possible features
+   =====================================
+     - Language-Team information
+     - Segmentation
+       - phrases
+   
+   Punctuation
+   -----------
+     - End of sentence
+     - Start of sentence
+     - Middle of sentence
+     - Quotes
+       - single
+       - double
+   
+     - Valid characters
+     - Accelerator characters
+     - Special characters
+     - Direction (rtl or ltr)
 """
 
 from translate.lang import data
@@ -66,7 +67,7 @@ class Common(object):
     """The ISO 639 language code, possibly with a country specifier or other 
     modifier.
     
-    Examples:
+    Examples::
         km
         pt_BR
         sr_YU@Latn
@@ -75,10 +76,10 @@ class Common(object):
     fullname = ""
     """The full (English) name of this language.
 
-    Dialect codes should have the form of 
-      Khmer
-      Portugese (Brazil)
-      #TODO: sr_YU@Latn?
+       Dialect codes should have the form of 
+         - Khmer
+         - Portugese (Brazil)
+         - TODO: sr_YU@Latn?
     """
     
     nplurals = 0
@@ -96,6 +97,8 @@ class Common(object):
     See U{http://www.gnu.org/software/gettext/manual/html_node/gettext_150.html}.
     Also see data.py
     """
+    # Don't change these defaults of nplurals or pluralequation willy-nilly:
+    # some code probably depends on these for unrecognised languages
     
     listseperator = u", "
     """This string is used to seperate lists of textual elements. Most 
@@ -206,11 +209,15 @@ class Common(object):
         """Converts the punctuation in a string according to the rules of the 
         language."""
 #        TODO: look at po::escapeforpo() for performance idea
+        if not text:
+            return text
         for source, target in cls.puncdict.iteritems():
             text = text.replace(source, target)
         # Let's account for cases where a punctuation symbol plus a space is 
-        # replaced, but the space won't exist at the end of a message
-        if text and text[-1] + " " in cls.puncdict:
+        # replaced, but the space won't exist at the end of a message.
+        # As a simple improvement for messages ending in ellipses (...), we
+        # test that the last character is different from the second last
+        if (text[-1] + " " in cls.puncdict) and (text[-2] != text[-1]):
             text = text[:-1] + cls.puncdict[text[-1] + " "]
         return text
     punctranslate = classmethod(punctranslate)
