@@ -26,7 +26,7 @@ import cStringIO
 import zipfile
 
 from translate.storage import factory
-from translate.convert import xml_extract
+from translate.storage import xml_extract
 
 def convertodf(inputfile, outputfile, templates):
     """reads in stdin using fromfileclass, converts using convertorclass, writes to stdout"""

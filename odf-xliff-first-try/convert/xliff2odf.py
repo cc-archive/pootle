@@ -29,7 +29,7 @@ import re
 import lxml.etree as etree
 
 from translate.storage import factory
-from translate.convert import xml_extract
+from translate.storage import xml_extract
 
 def first_child(unit_node):
     return unit_node.children.values()[0]
