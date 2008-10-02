@@ -104,6 +104,12 @@
             # might be showing all fuzzy files for the whole dir instead of per file
             untranslatedhref = "translate.html?untranslated=1&editing=1"
             fuzzyhref = "translate.html?fuzzy=1&editing=1"
+
+            # sigh; here is a cheesy hack.  If item.code exists we're at the root
+            # level of browsing the doc tree (i.e. not looking at a specific locale)
+            if item.code:
+              untranslatedhref = item.href + untranslatedhref
+              fuzzyhref = item.href + fuzzyhref
         ?>
         <ul>
         <span py:if="item.data.untranslatedsourcewords" py:strip="True">
