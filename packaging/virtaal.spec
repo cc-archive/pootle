@@ -1,18 +1,17 @@
 %{!?python_sitelib: %define python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib()")}
 
-%define         pkgname Virtaal
 %define         prerelease -rc1
 
 Name:           virtaal
 Version:        0.2
-Release:        0.2.rc1%{?dist}
+Release:        0.3.rc1%{?dist}
 Summary:        Localization and translation editor
 
 Group:          Development/Tools
 License:        GPLv2+
 URL:            http://translate.sourceforge.net/wiki/virtaal/index
 #Source0:        http://downloads.sourceforge.net/translate/%{name}-%{version}.tar.bz2
-Source0:        http://translate.sourceforge.net/snapshots/%{name}-%{version}%{prerelease}/%{pkgname}-%{version}%{prerelease}.tar.bz2
+Source0:        http://translate.sourceforge.net/snapshots/%{name}-%{version}%{prerelease}/%{name}-%{version}%{prerelease}.tar.bz2
 Source1:        maketranslations
 Source2:        virtaal-0.2-rc1-po.tar.bz2
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -32,22 +31,22 @@ Requires:       xdg-utils
 
 
 %description
-A Computer Aided Translation (CAT) tool built on the Translate Toolkit.
+A program for Computer Aided Translation (CAT) built on the Translate Toolkit.
 
 Virtaal includes features that allow a localizer to work effecively including:
-syntax highlighting, Translation Memory and glossaries.  Showing only 
+syntax highlighting, autocomplete and autocorrect.  Showing only 
 the data that is needed through its simple and effective user interface it
 ensures that you can focus on the translation task straight away.
 
-By building on the Translate Toolkit Virtaal is able to edit any of the
-following formats: XLIFF, Gettext PO and .mo, Qt .qm, Wordfast TM, TMX,
-TBX.  By using the Translate Toolkit converters a translator can edit:
-OpenOffice.org SDF, Java (and Mozilla) .properties, Qt .ts and Mozilla DTD.
+By building on the Translate Toolkit, Virtaal is able to edit any of the
+following formats: XLIFF, Gettext PO and .mo, Qt .ts, .qph and .qm, Wordfast 
+TM, TMX, TBX.  By using the Translate Toolkit converters a translator can edit:
+OpenOffice.org SDF, Java (and Mozilla) .properties and Mozilla DTD.
  
 
 %prep
-%setup -q -n %{pkgname}-%{version}%{prerelease}
-%setup -a 2 -D -n %{pkgname}-%{version}%{prerelease}
+%setup -q -n %{name}-%{version}%{prerelease}
+%setup -a 2 -D -n %{name}-%{version}%{prerelease}
 %patch0 -p0
 %patch1 -p1
 
