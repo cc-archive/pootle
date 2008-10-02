@@ -22,7 +22,8 @@
 
 import lxml.etree as etree
 
-from translate.misc.context import with_context
+from translate.misc.context import with_
+from translate.misc.contextlib import contextmanager, nested
 
 import odf_shared
 
@@ -142,13 +143,13 @@ def process_placeables(dom_node, state):
     alternating string-placeable objects. The former is
     useful for directly working with placeables and the latter
     is what will be used to build the final translatable string."""
-  
-    def level_enter():
-        state.level += 1
-        
-    def level_exit():
-        state.level -= 1
 
+    @contextmanager
+    def set_level():
+        state.level += 1
+        yield state.level
+        state.level -= 1
+    
     placeables = []
     text = []
     def with_block(level):
@@ -157,9 +158,9 @@ def process_placeables(dom_node, state):
             placeables.append(placeable)
             text.extend([placeable, child.tail or u""])
         return placeables, text
-    # Do the work within a context to ensure that level_exit
-    # will be called, come what may.
-    return with_context(level_enter, level_exit, with_block)
+    # Do the work within a context to ensure that the level is
+    # reset, come what may.
+    return with_(set_level(), with_block)
 
 def process_translatable(dom_node, state):
     translatable = make_translatable(state, state.placeable_name[-1])
@@ -176,28 +177,27 @@ def process_children(dom_node, state):
     return [child for child_list in children for child in child_list]
 
 def apply(dom_node, state):
-    def xpath_enter():
+    @contextmanager
+    def xpath_set():
         state.xpath_breadcrumb.start_tag(dom_node.tag)
-      
-    def xpath_exit():
+        yield state.xpath_breadcrumb
         state.xpath_breadcrumb.end_tag()
         
-    def placeable_enter():
+    @contextmanager
+    def placeable_set():
         if dom_node.tag in state.placeable_table:
             state.placeable_name.append(state.placeable_table[dom_node.tag])
-            
-    def placeable_exit():
-        if dom_node.tag in state.placeable_table:
+            yield state.placeable_name
             state.placeable_name.pop()
-  
-    def with_block(None_):
-        def with_block(None_):
-            if dom_node.tag in state.namespace_table:
-                return process_translatable(dom_node, state)
-            else:
-                return process_children(dom_node, state)            
-        return with_context(placeable_enter, placeable_exit, with_block)
-    return with_context(xpath_enter, xpath_exit, with_block)
+        else:
+            yield state.placeable_name 
+      
+    def with_block(xpath_breadcrumb, placeable_name):
+        if dom_node.tag in state.namespace_table:
+            return process_translatable(dom_node, state)
+        else:
+            return process_children(dom_node, state)            
+    return with_(nested(xpath_set(), placeable_set()), with_block)
 
 # ======================
 

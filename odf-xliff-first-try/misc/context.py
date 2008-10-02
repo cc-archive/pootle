@@ -22,27 +22,27 @@
 
 import sys
 
-def with_(context, body):
-    """A function to mimic the with statement introduced in Python 2.5"""
+def with_(mgr, body):
+    """A function to mimic the with statement introduced in Python 2.5
+    
+    The code below was taken from http://www.python.org/dev/peps/pep-0343/
+    """
+    exit = mgr.__exit__  # Not calling it yet
+    value = mgr.__enter__()
+    exc = True
     try:
-      retval = body(context.__enter__())
-      context.__exit__(None, None, None)
-      return retval
-    except:
-      if not context.__exit__(*sys.exc_info()):
-        raise
-
-class SimpleContext(object):
-    def __init__(self, enter, exit):
-        self.enter = enter
-        self.exit = exit
-        
-    def __enter__(self):
-        return self.enter()
-      
-    def __exit__(self, last_type, last_value, last_traceback):
-        self.exit()
-        return True
-
-def with_context(enter, exit, body):
-    return with_(SimpleContext(enter, exit), body)
+        try:
+            if isinstance(value, (tuple, list)):
+                return body(*value)
+            else:
+                return body(value)
+        except:
+            # The exceptional case is handled here
+            exc = False
+            if not exit(*sys.exc_info()):
+                raise
+            # The exception is swallowed if exit() returns true
+    finally:
+        # The normal and non-local-goto cases are handled here
+        if exc:
+            exit(None, None, None)
