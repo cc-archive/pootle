@@ -221,6 +221,7 @@ html[dir="rtl"] #header h1 a {
 	float: left;
 	font-weight: bold;
 	font-size: 95%;
+	letter-spacing: -0.5px;
 	color: #fff;
 	background: transparent url(/img/header-nav-divider.png) top right no-repeat;
 }
