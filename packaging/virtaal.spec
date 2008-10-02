@@ -102,6 +102,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Oct 2 2008 Dwayne Bailey <dwayne@translate.org.za> - 0.2-0.3.rc1.fc9
+- Rebuild after tarball restructuring
+
 * Wed Oct 1 2008 Dwayne Bailey <dwayne@translate.org.za> - 0.2-0.2.rc1.fc9
 - Fix file locations
 
