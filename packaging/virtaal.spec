@@ -14,7 +14,7 @@ URL:            http://translate.sourceforge.net/wiki/virtaal/index
 Source0:        http://translate.sourceforge.net/snapshots/%{name}-%{version}%{prerelease}/%{name}-%{version}%{prerelease}.tar.bz2
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-Patch1:         Virtaal-0.2-rc1-fixes.patch
+#Patch1:         Virtaal-0.2-rc1-fixes.patch
 
 BuildArch:      noarch
 BuildRequires:  python-devel
@@ -43,8 +43,7 @@ OpenOffice.org SDF, Java (and Mozilla) .properties and Mozilla DTD.
 
 %prep
 %setup -q -n %{name}-%{version}%{prerelease}
-%setup -a 2 -D -n %{name}-%{version}%{prerelease}
-%patch1 -p1
+#%patch1 -p1
 
 %build
 %{__python} setup.py build
