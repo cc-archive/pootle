@@ -22,7 +22,7 @@
 
 import lxml.etree as etree
 
-from context import with_context
+from translate.misc.context import with_context
 
 import odf_shared
 
