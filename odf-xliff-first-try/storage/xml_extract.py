@@ -215,7 +215,7 @@ def apply(dom_node, state):
 def quote_placables(placeable_name, placeable_id):
     return u"[[[%s_%d]]]" % (placeable_name, placeable_id)
 
-def contains_translatable_text(translatable):
+def contains_no_translatable_text(translatable):
     return translatable.text in ([u""], [])
 
 def get_source_text(translatable, placeable_quoter):
@@ -240,7 +240,7 @@ def make_store_adder(store, placeable_quoter = quote_placables):
     to 'placeable_quoter'."""
     UnitClass = store.UnitClass
     def add_to_store(translatable):
-        if not contains_translatable_text(translatable):
+        if contains_no_translatable_text(translatable):
             return
         source_text = get_source_text(translatable, placeable_quoter)        
         unit = add_location_and_ref_info(UnitClass(source_text), translatable)
