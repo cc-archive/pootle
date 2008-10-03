@@ -22,8 +22,12 @@
 
 import lxml.etree as etree
 
+from translate.storage import base
+
 from translate.misc.context import with_
 from translate.misc.contextlib import contextmanager, nested
+from translate.misc.typecheck import accepts, Self, IsCallable, IsOneOf
+from translate.misc.typecheck.typeclasses import Number
 
 import odf_shared
 
@@ -64,6 +68,7 @@ class XPathBreadcrumb(object):
         self._xpath = []
         self._tagtally = [{}]
         
+    @accepts(Self(), unicode)
     def start_tag(self, tag):
         tally_dict = self._tagtally[-1]
         tally = tally_dict.get(tag, -1) + 1
@@ -78,8 +83,8 @@ class XPathBreadcrumb(object):
     def _get_xpath(self):
         def str_component(component):
             tag, pos = component
-            return "%s[%d]" % (tag, pos)
-        return "/".join(str_component(component) for component in self._xpath)
+            return u"%s[%d]" % (tag, pos)
+        return u"/".join(str_component(component) for component in self._xpath)
     
     xpath = property(_get_xpath)
 
@@ -103,8 +108,9 @@ class ParseState(object):
         self.last_node = None
         self.level = 0
         self.xpath_breadcrumb = XPathBreadcrumb()
-        self.placeable_name = ["<top-level>"]
+        self.placeable_name = [u"<top-level>"]
 
+@accepts(ParseState, unicode)
 def make_translatable(state, placeable_name = None):
     """Make a Translatable object. If we are in a placeable (this
     is true if state.level > 0, then increase state.placeable by 1
@@ -117,14 +123,15 @@ def make_translatable(state, placeable_name = None):
         return Translatable(state.placeable_id, placeable_name)
     else:
         return Translatable(-1, placeable_name)
-      
+
+@accepts(etree._Element, ParseState)
 def process_placeable(dom_node, state):    
     placeable = apply(dom_node, state)
     # This happens if there were no recognized child tags and thus
     # no translatable is returned. Make a placeable with the name
     # "placeable"
     if len(placeable) == 0:
-        return make_translatable(state, "placeable")
+        return make_translatable(state, u"placeable")
     # The ideal situation: we got exactly one translateable back
     # when processing this tree.
     elif len(placeable) == 1:
@@ -138,6 +145,7 @@ def process_placeable(dom_node, state):
         print "ERROR: Found more than one translatable element for a single placeable"
         return placeable[0]
 
+@accepts(etree._Element, ParseState)
 def process_placeables(dom_node, state):
     """Return a list of placeables and list with
     alternating string-placeable objects. The former is
@@ -162,6 +170,7 @@ def process_placeables(dom_node, state):
     # reset, come what may.
     return with_(set_level(), with_block)
 
+@accepts(etree._Element, ParseState)
 def process_translatable(dom_node, state):
     translatable = make_translatable(state, state.placeable_name[-1])
     translatable.text.append(dom_node.text or u"")
@@ -171,15 +180,17 @@ def process_translatable(dom_node, state):
     translatable.xpath = state.xpath_breadcrumb.xpath
     return [translatable]
 
+@accepts(etree._Element, ParseState)
 def process_children(dom_node, state):
     children = [apply(child, state) for child in dom_node]
     # Flatten a list of lists into a list of elements
     return [child for child_list in children for child in child_list]
 
+@accepts(etree._Element, ParseState)
 def apply(dom_node, state):
     @contextmanager
     def xpath_set():
-        state.xpath_breadcrumb.start_tag(dom_node.tag)
+        state.xpath_breadcrumb.start_tag(unicode(dom_node.tag))
         yield state.xpath_breadcrumb
         state.xpath_breadcrumb.end_tag()
         
@@ -222,6 +233,7 @@ def add_location_and_ref_info(unit, translatable):
         unit.addnote("References: %d" % translatable.placeable_id)
     return unit
 
+@accepts(base.TranslationStore, IsCallable())
 def make_store_adder(store, placeable_quoter = quote_placables):
     """Return a function which, when called with a Translatable will add
     a unit to 'store'. The placeables will represented as strings according
@@ -235,21 +247,17 @@ def make_store_adder(store, placeable_quoter = quote_placables):
         store.addunit(unit)
     return add_to_store
 
+@accepts([Translatable], IsCallable())
 def walk_translatable_tree(translatables, f):
     for translatable in translatables:
         f(translatable)
         walk_translatable_tree(translatable.placeables, f)
 
-def as_file(obj):
-    if isinstance(obj, (str, unicode)):
-        return open(obj)
-    else:
-        return obj
-
-def build_store(odf_filename, store, store_adder = None):
+@accepts(lambda obj: hasattr(obj, "read"), base.TranslationStore, IsOneOf(IsCallable(), type(None)))
+def build_store(odf_file, store, store_adder = None):
     """Utility function for loading xml_filename"""
-    store_adder = None or make_store_adder(store)
-    tree = etree.parse(as_file(odf_filename))
+    store_adder = store_adder or make_store_adder(store)
+    tree = etree.parse(odf_file)
     parse_state = ParseState(odf_shared.odf_namespace_table, odf_shared.odf_placables_table)
     root = tree.getroot()
     translatables = apply(root, parse_state)
@@ -259,6 +267,7 @@ def build_store(odf_filename, store, store_adder = None):
 # ======================
 
 class XPathTree(object):
+    @accepts(Self(), base.TranslationUnit)
     def __init__(self, unit = None):
         self.unit = unit
         self.children = {}
@@ -275,6 +284,7 @@ def split_xpath_component(xpath_component):
     index = int(xpath_component[lbrac+1:rbrac])
     return tag, index
 
+@accepts(unicode)
 def split_xpath(xpath):
     """Split an 'xpath' string separated by / into a reversed list of its components. Thus:
     
@@ -288,6 +298,7 @@ def split_xpath(xpath):
     components = [split_xpath_component(component) for component in components]
     return list(reversed(components))
 
+@accepts(etree._Element, [(unicode, Number)], base.TranslationUnit)
 def add_unit_to_tree(node, xpath_components, unit):
     """Walk down the tree rooted a node, and follow nodes which correspond to the
     components of xpath_components. When reaching the end of xpath_components,
@@ -315,6 +326,7 @@ def add_unit_to_tree(node, xpath_components, unit):
     else:
         node.unit = unit
 
+@accepts(base.TranslationStore)
 def build_unit_tree(store):
     """Enumerate a translation store and build a tree with XPath components as nodes
     and where a node contains a unit if a path from the root of the tree to the node
@@ -341,6 +353,7 @@ def build_unit_tree(store):
         add_unit_to_tree(tree, location, unit)
     return tree
 
+@accepts(etree._Element)
 def get_tag_arrays(dom_node):
     """Return a dictionary indexed by child tag names, where each tag is associated with an array
     of all the child nodes with matching the tag name, in the order in which they appear as children
@@ -358,6 +371,7 @@ def get_tag_arrays(dom_node):
         child_dict[child.tag].append(child)
     return child_dict
 
+@accepts(etree._Element, Translatable, IsCallable())
 def apply_translations(dom_node, unit_node, do_translate):
     # If there is a translation unit associated with this unit_node...
     if unit_node.unit != None:
