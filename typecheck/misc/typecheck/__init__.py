@@ -1535,8 +1535,20 @@ def typecheck_yield(*signature):
         return Fake_generator(gen, signature)
     return _decorator(signature, 'type_return', 'type_yield', __check_yield)
 
+_null_decorator = lambda *args, **kwargs: lambda f: f
+typecheck = _null_decorator
+accepts = _null_decorator
+returns = _null_decorator
+yields = _null_decorator
+
 # Aliases
-typecheck = typecheck_args
-accepts = typecheck_args
-returns = typecheck_return
-yields = typecheck_yield
+def enable_typechecking():
+    global typecheck
+    global accepts
+    global returns
+    global yields
+  
+    typecheck = typecheck_args
+    accepts = typecheck_args
+    returns = typecheck_return
+    yields = typecheck_yield
