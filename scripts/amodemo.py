@@ -15,7 +15,7 @@ from Pootle.scripts.convert import monopo2po, po2monopo
 def _getfiles(file):
   mainfile = os.path.join(os.path.split(file)[0], "messages.po")
   combinedfile = os.path.join(os.path.split(file)[0], "messages-combined.po")
-  sourcefile = os.path.join(os.path.split(os.path.split(file)[0])[0], "en_US", "messages.po")
+  sourcefile = os.path.join(os.path.split(os.path.split(os.path.split(file)[0])[0])[0], "en_US", "LC_MESSAGES", "messages.po")
   return (combinedfile, mainfile, sourcefile)
 
 def initialize(projectdir, languagecode):
@@ -61,13 +61,19 @@ def postcommit(committedfile, success):
 
 def preupdate(updatedfile):
   if os.path.basename(updatedfile) == "messages-combined.po":
-    
+
     # Get the files we'll be using
     (combinedfile, mainfile, sourcefile) = _getfiles(updatedfile)
-   
+    
     # We want to update messages.po
+    #print "Updating %s" % mainfile
     return mainfile
   return ""
 
 def postupdate(updatedfile):
-  pass
+  # Get the files we'll be using
+  (combinedfile, mainfile, sourcefile) = _getfiles(updatedfile)
+
+  # Create the new messages-combined.po file
+  #print "Converting amo %s to %s with template %s" % (sourcefile, combinedfile, mainfile)
+  monopo2po.convertpo(open(sourcefile,"r"), open(combinedfile,"w"), open(mainfile,"r"))
