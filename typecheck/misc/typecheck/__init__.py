@@ -1552,3 +1552,7 @@ def enable_typechecking():
     accepts = typecheck_args
     returns = typecheck_return
     yields = typecheck_yield
+
+import os
+if "PYTHONTYPECHECK" in os.environ:
+    enable_typechecking()
