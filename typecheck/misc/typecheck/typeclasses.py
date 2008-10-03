@@ -1,4 +1,4 @@
-from typecheck import Typeclass
+from translate.misc.typecheck import Typeclass
 
 ### Number
 ####################################################
