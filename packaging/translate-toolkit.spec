@@ -1,18 +1,20 @@
 %{!?python_sitelib: %define python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib()")}
 
-%define         prerelease -rc1
+%define         prerelease ""
 
 Name:           translate-toolkit
 Version:        1.2.0
-Release:        0.3.rc1%{?dist}
+Release:        1%{?dist}
 Summary:        Tools to assist with localization
 
 Group:          Development/Tools
 License:        GPLv2+
 URL:            http://translate.sourceforge.net/wiki/toolkit/index
-#Source0:        http://downloads.sourceforge.net/translate/%{name}-%{version}.tar.bz2
-Source0:        http://translate.sourceforge.net/snapshots/%{name}-%{version}%{prerelease}/%{name}-%{version}%{prerelease}.tar.bz2
+Source0:        http://downloads.sourceforge.net/translate/%{name}-%{version}.tar.bz2
+#Source0:        http://translate.sourceforge.net/snapshots/%{name}-%{version}%{prerelease}/%{name}-%{version}%{prerelease}.tar.bz2
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+
+Patch0:		translate-poterminology-stoplist.diff
 
 BuildArch:      noarch
 BuildRequires:  python-devel
@@ -55,6 +57,7 @@ developers wishing to build new tools or reuse the libraries in other tools.
 
 %prep
 %setup -q -n %{name}-%{version}%{prerelease}
+%patch0 -p1
 
 
 %build
@@ -86,6 +89,10 @@ rm $RPM_BUILD_ROOT/%{python_sitelib}/translate/{COPYING,ChangeLog,LICENSE,README
 rm $RPM_BUILD_ROOT/%{python_sitelib}/translate/{convert,filters,tools}/TODO
 rm $RPM_BUILD_ROOT/%{python_sitelib}/translate/misc/README
 
+# Move data files to /usr/share
+mkdir  $RPM_BUILD_ROOT/%{_datadir}/translate-toolkit
+mv $RPM_BUILD_ROOT/%{python_sitelib}/translate/share/stoplist* $RPM_BUILD_ROOT/%{_datadir}/translate-toolkit
+
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -97,6 +104,7 @@ rm -rf $RPM_BUILD_ROOT
 %doc translate/ChangeLog translate/COPYING translate/README
 %{_bindir}/*
 %{_mandir}/man1/*
+%{_datadir}/translate-toolkit
 %{python_sitelib}/translate*
 %exclude %{_bindir}/*.pyc
 %exclude %{_bindir}/*.pyo
@@ -106,6 +114,11 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Sep 30 2008 Dwayne Bailey <dwayne@translate.org.za> - 1.2.0-1.fc9
+- Update to 1.2.0 final
+- Include stoplist-en and adjust poterminology to read it from the 
+  /usr/share/ location
+
 * Tue Sep 30 2008 Dwayne Bailey <dwayne@translate.org.za> - 1.2.0-0.3.rc1.fc9
 - Update to 1.2.0-rc1
 - Include ical2po dependencies
