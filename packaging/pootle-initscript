@@ -4,7 +4,7 @@
 #
 # chkconfig:   - 20 80
 # description: Web-based localisation server that allows online translations and \
-#              management of localisation projects using PO or XLIFF files.
+#              management of localisation projects using Gettext PO or XLIFF files.
 
 ### BEGIN INIT INFO
 # Provides: 
@@ -14,8 +14,9 @@
 # Should-Stop: 
 # Default-Start: 
 # Default-Stop: 
-# Short-Description: 
-# Description:      
+# Short-Description: Pootle localisation server
+# Description:      Web-based localisation server that allows online translations and
+#		management of localisation projects using Gettext PO or XLIFF files.
 ### END INIT INFO
 
 # Source function library.
