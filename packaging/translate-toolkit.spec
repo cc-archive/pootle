@@ -114,7 +114,7 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Tue Sep 30 2008 Dwayne Bailey <dwayne@translate.org.za> - 1.2.0-1.fc9
+* Mon Oct 6 2008 Dwayne Bailey <dwayne@translate.org.za> - 1.2.0-1.fc9
 - Update to 1.2.0 final
 - Include stoplist-en and adjust poterminology to read it from the 
   /usr/share/ location
