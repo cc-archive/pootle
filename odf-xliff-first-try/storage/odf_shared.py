@@ -52,8 +52,13 @@ smil_uri = u'urn:oasis:names:tc:opendocument:xmlns:smil-compatible:1.0'
 
 odf_namespace_table = set([
     make_tag(text_uri, u'p'), 
-    make_tag(text_uri, u'h')
+    make_tag(text_uri, u'h'),
+    make_tag(text_uri, u'span')
 ])
+
+odf_inline_placeables_table = {
+    make_tag(text_uri, u'span'): u'span'
+}
 
 odf_placables_table = {
     make_tag(text_uri, u'note'): u'footnote',

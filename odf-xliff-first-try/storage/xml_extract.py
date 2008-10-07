@@ -94,19 +94,26 @@ class Translatable(object):
     def __init__(self, placeable_id, placeable_name): 
         self.placeable_name = placeable_name
         self.placeable_id = placeable_id
-        self.text = [] # A list of Nodes and unicodes
-        self.placeables = []
+        self.placeable_tag_id = 1
+        self.source = []
         self.xpath = ""
+        self.is_inline = False
+
+    def _get_placeables(self):
+        return [placeable for placeable in self.source if isinstance(placeable, Translatable)]
+
+    placeables = property(_get_placeables)
 
 class ParseState(object):
     """Maintain constants and variables used during the walking of a
     DOM tree (via the function apply)."""
-    def __init__(self, namespace_table, placeable_table):
+    def __init__(self, namespace_table, placeable_table = {}, inline_placeable_table = {}):
         self.namespace_table = namespace_table
         self.placeable_table = placeable_table
-        self.placeable_id    = 0
-        self.last_node = None
+        self.inline_placeable_table = inline_placeable_table
+        self.placeable_id = 0
         self.level = 0
+        self.is_inline = False
         self.xpath_breadcrumb = XPathBreadcrumb()
         self.placeable_name = [u"<top-level>"]
 
@@ -146,7 +153,7 @@ def process_placeable(dom_node, state):
         return placeable[0]
 
 @accepts(etree._Element, ParseState)
-def process_placeables(dom_node, state):
+def process_placeables(dom_node, state, source):
     """Return a list of placeables and list with
     alternating string-placeable objects. The former is
     useful for directly working with placeables and the latter
@@ -158,14 +165,11 @@ def process_placeables(dom_node, state):
         yield state.level
         state.level -= 1
     
-    placeables = []
-    text = []
     def with_block(level):
+        source = []
         for child in dom_node:
-            placeable = process_placeable(child, state)
-            placeables.append(placeable)
-            text.extend([placeable, child.tail or u""])
-        return placeables, text
+            source.extend([process_placeable(child, state), unicode(child.tail or u"")])
+        return source
     # Do the work within a context to ensure that the level is
     # reset, come what may.
     return with_(set_level(), with_block)
@@ -173,11 +177,10 @@ def process_placeables(dom_node, state):
 @accepts(etree._Element, ParseState)
 def process_translatable(dom_node, state):
     translatable = make_translatable(state, state.placeable_name[-1])
-    translatable.text.append(dom_node.text or u"")
-    placeables, text = process_placeables(dom_node, state)
-    translatable.placeables = placeables
-    translatable.text.extend(text)
+    translatable.source = [unicode(dom_node.text or u"")] + \
+                           process_placeables(dom_node, state, translatable.source)
     translatable.xpath = state.xpath_breadcrumb.xpath
+    translatable.is_inline = state.is_inline
     return [translatable]
 
 @accepts(etree._Element, ParseState)
@@ -201,31 +204,60 @@ def apply(dom_node, state):
             yield state.placeable_name
             state.placeable_name.pop()
         else:
-            yield state.placeable_name 
+            yield state.placeable_name
+            
+    @contextmanager
+    def inline_set():
+        old_inline = state.is_inline
+        if dom_node.tag in state.inline_placeable_table:
+            state.is_inline = True
+        yield state.is_inline
+        state.is_inline = old_inline
       
-    def with_block(xpath_breadcrumb, placeable_name):
+    def with_block(xpath_breadcrumb, placeable_name, is_inline):
         if dom_node.tag in state.namespace_table:
             return process_translatable(dom_node, state)
         else:
             return process_children(dom_node, state)            
-    return with_(nested(xpath_set(), placeable_set()), with_block)
+    return with_(nested(xpath_set(), placeable_set(), inline_set()), with_block)
 
 # ======================
 
-def quote_placables(placeable_name, placeable_id):
-    return u"[[[%s_%d]]]" % (placeable_name, placeable_id)
+#def quote_placables(placeable_name, placeable_id):
+#    return u"[[[%s_%d]]]" % (placeable_name, placeable_id)
 
 def contains_no_translatable_text(translatable):
-    return translatable.text in ([u""], [])
+    return translatable.source in ([u""], [])
 
-def get_source_text(translatable, placeable_quoter):
-    source_text = []
-    for component in translatable.text:
-        if isinstance(component, Translatable):
-            source_text.append(placeable_quoter(component.placeable_name, component.placeable_id))
+#def tag(tag_name, **attribs):
+#    tag_text = [u'<%(tag_name)s']
+#    for attrib_key, attrib_val in attribs.iteritems():
+#        tag_text.append(u'%s="%s"' % (attrib_key, attrib_val))
+#    tag_text.append(u'/>')
+#    return u' '.join(tag_text)
+
+#def get_source_text(translatable, placeable_quoter):
+#    source_text = []
+#    for component in translatable.text:
+#        if isinstance(component, Translatable):
+#            #source_text.append(tag('bx', id=))
+#          
+#            source_text.append(placeable_quoter(component.placeable_name, component.placeable_id))
+#        else:
+#            source_text.append(component)
+#    return u''.join(source_text)
+
+def to_string(translatable):
+    result = []
+    for chunk in translatable.source:
+        if isinstance(chunk, unicode):
+            result.append(chunk)
         else:
-            source_text.append(component)
-    return u''.join(source_text)
+            if chunk.is_inline:
+                result.extend([u'<g id="%s">' % chunk.placeable_id, to_string(chunk), u'</g>'])
+            else:
+                result.append(u'<x id="%s"/>' % chunk.placeable_id)
+    return u''.join(result)
 
 def add_location_and_ref_info(unit, translatable):
     unit.addlocation(translatable.xpath)
@@ -233,17 +265,18 @@ def add_location_and_ref_info(unit, translatable):
         unit.addnote("References: %d" % translatable.placeable_id)
     return unit
 
-@accepts(base.TranslationStore, IsCallable())
-def make_store_adder(store, placeable_quoter = quote_placables):
+@accepts(base.TranslationStore)
+def make_store_adder(store):
     """Return a function which, when called with a Translatable will add
     a unit to 'store'. The placeables will represented as strings according
     to 'placeable_quoter'."""
+    
     UnitClass = store.UnitClass
     def add_to_store(translatable):
-        if contains_no_translatable_text(translatable):
+        if contains_no_translatable_text(translatable) or translatable.is_inline:
             return
-        source_text = get_source_text(translatable, placeable_quoter)        
-        unit = add_location_and_ref_info(UnitClass(source_text), translatable)
+        unit = UnitClass(to_string(translatable))
+        unit = add_location_and_ref_info(unit, translatable)
         store.addunit(unit)
     return add_to_store
 
@@ -255,10 +288,10 @@ def walk_translatable_tree(translatables, f):
 
 @accepts(lambda obj: hasattr(obj, "read"), base.TranslationStore, IsOneOf(IsCallable(), type(None)))
 def build_store(odf_file, store, store_adder = None):
-    """Utility function for loading xml_filename"""
+    """Utility function for loading xml_filename"""    
     store_adder = store_adder or make_store_adder(store)
     tree = etree.parse(odf_file)
-    parse_state = ParseState(odf_shared.odf_namespace_table, odf_shared.odf_placables_table)
+    parse_state = ParseState(odf_shared.odf_namespace_table, odf_shared.odf_placables_table, odf_shared.odf_inline_placeables_table)
     root = tree.getroot()
     translatables = apply(root, parse_state)
     walk_translatable_tree(translatables, store_adder)
