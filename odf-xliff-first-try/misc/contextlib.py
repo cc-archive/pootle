@@ -21,6 +21,17 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
+# NB! IMPORTANT SEMANTIC DIFFERENCE WITH THE OFFICIAL contextlib.
+# In Python 2.5+, if an exception is thrown in a 'with' statement
+# which uses a generator-based context manager (that is, a
+# context manager created by decorating a generator with
+# @contextmanager), the exception will be propagated to the 
+# generator via the .throw method of the generator.
+#
+# This does not exist in Python 2.4. Thus, we just naively finish
+# off the context manager. This also means that generator-based
+# context managers can't deal with exceptions, so be warned.
+
 """Utilities for with-statement contexts.  See PEP 343."""
 
 import sys
@@ -53,7 +64,8 @@ class GeneratorContextManager(object):
                 # tell if we get the same exception back
                 value = type()
             try:
-                self.gen.throw(type, value, traceback)
+                #self.gen.throw(type, value, traceback)
+                self.gen.next()
                 raise RuntimeError("generator didn't stop after throw()")
             except StopIteration, exc:
                 # Suppress the exception *unless* it's the same exception that
