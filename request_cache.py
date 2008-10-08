@@ -27,7 +27,8 @@ def call(func, *args, **kwargs):
         return _data[key]
     else:
         result = func(*args, **kwargs)
-        _data[key] = result
+        # Disabled per bug 459005
+        #_data[key] = result
         return result
 
 def reset():

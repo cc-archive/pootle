@@ -353,12 +353,12 @@ class StatsCache(object):
         return fileid
 
     def get_unit_stats(self, fileid, unitid):
-        values = self.cur.execute("""
+        self.cur.execute("""
             SELECT   state, sourcewords, targetwords
             FROM     units
             WHERE    fileid=%s AND unitid=%s
         """, (fileid, unitid))
-        return self.cur.fetchone()
+        return map(int, self.cur.fetchone())
 
     def recacheunit(self, filename, checker, unit):
         """Recalculate all information for a specific unit. This is necessary
