@@ -168,9 +168,11 @@ def create_default_languages(s):
 
 # Ελληνικά
 # Greek
-#    el.fullname = u'Greek'
-#    el.nplurals = '2'
-#    el.pluralequation ='(n != 1)'
+    el = Language("el")
+    el.fullname = u'Greek'
+    el.nplurals = '2'
+    el.pluralequation ='(n != 1)'
+    attempt(s,el)
 
 # English
     en = Language("en")
@@ -287,11 +289,27 @@ def create_default_languages(s):
 #    fy.nplurals = '2'
 #    fy.pluralequation ='(n != 1)'
 
+# Frysk
+# Frisian
+    fy_NL = Language("fy_NL")
+    fy_NL.fullname = u'Frisian'
+    fy_NL.nplurals = '2'
+    fy_NL.pluralequation ='(n != 1)'
+    attempt(s,fy_NL)
+
 # Gaeilge
 # Irish
 #    ga.fullname = u'Irish'
 #    ga.nplurals = '3'
 #    ga.pluralequation ='n==1 ? 0 : n==2 ? 1 : 2'
+
+# Gaeilge
+# Irish
+    ga_IE = Language("ga_IE")
+    ga_IE.fullname = u'Irish'
+    ga_IE.nplurals = '3'
+    ga_IE.pluralequation ='n==1 ? 0 : n==2 ? 1 : 2'
+    attempt(s,ga_IE)
 
 # Galego
 # Galician
@@ -309,9 +327,11 @@ def create_default_languages(s):
 
 # עברית
 # Hebrew
-#    he.fullname = u'Hebrew'
-#    he.nplurals = '2'
-#    he.pluralequation ='(n != 1)'
+    he = Language("he")
+    he.fullname = u'Hebrew'
+    he.nplurals = '2'
+    he.pluralequation ='(n != 1)'
+    attempt(s,he)
 
 # हिन्दी
 # Hindi
@@ -426,9 +446,11 @@ def create_default_languages(s):
 
 # Монгол
 # Mongolian
-#    mn.fullname = u'Mongolian'
-#    mn.nplurals = '2'
-#    mn.pluralequation ='(n != 1)'
+    mn = Language("mn")
+    mn.fullname = u'Mongolian'
+    mn.nplurals = '2'
+    mn.pluralequation ='(n != 1)'
+    attempt(s,mn)
 
 # Marathi
 #    mr.fullname = u'Marathi'
@@ -566,9 +588,11 @@ def create_default_languages(s):
 
 # Shqip
 # Albanian
-#    sq.fullname = u'Albanian'
-#    sq.nplurals = '2'
-#    sq.pluralequation ='(n != 1)'
+    sq = Language("sq")
+    sq.fullname = u'Albanian'
+    sq.nplurals = '2'
+    sq.pluralequation ='(n != 1)'
+    attempt(s,sq)
 
 # Српски / Srpski
 # Serbian
