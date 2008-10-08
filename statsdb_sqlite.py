@@ -19,6 +19,13 @@
 # along with translate; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
+
+#####################################################################
+### NOTICE: THIS FILE IS OUT OF DATE AS OF r8576.  This file is created by splitting 
+# /trunk/translate/storage/statsdb.py into statsdb.py and this file.  When an
+# updated file is needed that should happen again.
+#####################################################################
+
 """Module to provide a cache of statistics in a database.
 
 @organization: Zuza Software Foundation

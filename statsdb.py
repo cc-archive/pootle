@@ -30,6 +30,7 @@ from translate import __version__ as toolkitversion
 from translate.storage import factory, base
 from translate.misc.multistring import multistring
 from translate.lang.common import Common
+from UserDict import UserDict
 
 import os.path
 import re
@@ -73,13 +74,43 @@ def wordsinunit(unit):
         targetwords += wordcount(s)
     return sourcewords, targetwords
 
+class Record(UserDict):
+    def __init__(self, record_keys, record_values=None, compute_derived_values = lambda x: x):
+        if record_values == None:
+            record_values = (0 for _i in record_keys)
+        self.record_keys = record_keys
+        self.data = dict(zip(record_keys, record_values))
+        self._compute_derived_values = compute_derived_values
+        self._compute_derived_values(self)
+
+    def to_tuple(self):
+        return tuple(self[key] for key in self.record_keys)
+
+    def __add__(self, other):
+        result = Record(self.record_keys)
+        for key in self.keys():
+            result[key] = self[key] + other[key]
+        self._compute_derived_values(self)
+        return result
+
+    def __sub__(self, other):
+        result = Record(self.record_keys)
+        for key in self.keys():
+            result[key] = self[key] - other[key]
+        self._compute_derived_values(self)
+        return result
+
+    def as_string_for_db(self):
+      return ",".join([repr(int(x)) for x in self.to_tuple()])
+
+UNTRANSLATED, TRANSLATED, FUZZY = 0, 1, 2
 def statefordb(unit):
     """Returns the numeric database state for the unit."""
     if unit.istranslated():
-        return 1
+        return TRANSLATED
     if unit.isfuzzy() and unit.target:
-        return 2
-    return 0
+        return FUZZY
+    return UNTRANSLATED
 
 def emptystats():
     """Returns a dictionary with all statistics initalised to 0."""
@@ -91,7 +122,9 @@ def emptystats():
     return stats
 
 def emptyfiletotals():
-    return {"total": 0}
+    # TODO XXX this is mysql specific and shouldn't be here
+    from statsdb_mysql import FileTotals
+    return FileTotals.new_record()
 
 def emptyfilechecks():
     return {}
