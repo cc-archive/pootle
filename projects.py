@@ -137,8 +137,6 @@ class TranslationProject(object):
     self.scanpofiles()
     self._indexing_enabled = True
     self._index_initialized = False
-
-    self.initindex(self._get_indexer())
    
   def _get_indexer(self):
     if self._indexing_enabled:
@@ -615,6 +613,16 @@ class TranslationProject(object):
       hooks.hook(self.projectcode, "postupdate", pathname)
     except:
       pass
+
+    if newpofile:
+      # Update po index for new file
+      self.stats = {}
+      for xpofilename in self.pofilenames:
+        self.getpostats(xpofilename)
+        self.pofiles[xpofilename] = pootlefile.pootlefile(self, xpofilename)
+        self.pofiles[xpofilename].statistics.getstats()
+        self.updateindex(self.indexer, xpofilename)
+      self.projectcache = {}
 
   def runprojectscript(self, scriptdir, target, extraargs = []):
     currdir = os.getcwd()
@@ -1171,35 +1179,6 @@ class TranslationProject(object):
           assigncount += 1
     return assigncount
 
-  def updatequickstats(self, pofilename, translatedwords, translated, fuzzywords, fuzzy, totalwords, total, save=True):
-    """updates the quick stats on the given file"""
-    if not self.quickstats.has_key(pofilename):
-      [subdir, filename] = os.path.split(pofilename)
-      self.quickstats[pofilename] = Quickstat()
-      self.quickstats[pofilename].project = self.project 
-      self.quickstats[pofilename].language = self.language 
-      self.quickstats[pofilename].subdir = subdir
-      self.quickstats[pofilename].filename = filename 
-
-    self.quickstats[pofilename].translatedwords = translatedwords
-    self.quickstats[pofilename].translated = translated
-    self.quickstats[pofilename].fuzzywords = fuzzywords
-    self.quickstats[pofilename].fuzzy = fuzzy
-    self.quickstats[pofilename].totalwords = totalwords
-    self.quickstats[pofilename].total = total
-    if save:
-      self.savequickstats()
-
-  def savequickstats(self):
-    """saves the quickstats"""
-    pass
-
-  def readquickstats(self):
-    """reads the quickstats"""
-    self.quickstats = {}
-    for qs in self.potree.server.alchemysession.query(Quickstat).filter_by(project = self.project).filter_by(language = self.language):
-      self.quickstats[os.path.join(qs.subdir, qs.filename)] = qs 
-
   def getquickstats(self, pofilenames=None):
     """Gets translated and total stats and wordcounts without doing calculations returning dictionary."""
     if pofilenames is None:
@@ -1255,7 +1234,6 @@ class TranslationProject(object):
       pofile = self.pofiles[pofilename]
       if 0 <= item < len(pofile.statistics.getunitstats()['sourcewordcount']):
         wordcount += pofile.statistics.getunitstats()['sourcewordcount'][item]
-    print "projects::countwords()"
     return wordcount
 
   def getpomtime(self):

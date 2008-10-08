@@ -225,8 +225,6 @@ class PootleServer(users.OptionalLoginAppServer, templateserver.TemplateServer):
                 print "refreshing stats for", fpath
                 pootlefile.pootlefile(dummyproject, fpath).statistics.updatequickstats()
           os.path.walk(arg, refreshdir, None)
-          if projectcode and languagecode:
-            dummyproject.savequickstats()
         elif os.path.isfile(arg):
           dummyproject = projects.DummyStatsProject(".", stdchecker)
           print "refreshing stats for", arg
@@ -274,6 +272,7 @@ class PootleServer(users.OptionalLoginAppServer, templateserver.TemplateServer):
       session.getsuffix = "" 
 
     page = self.getpage(pathwords, session, argdict)
+    # Can't use because it breaks ajax stuff.
     #if not session.isopen:
       #session.server.alchemysession.close();
     return page

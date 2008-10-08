@@ -18,7 +18,7 @@ languages = Table('languages', metadata,
   mysql_charset='utf8'
 )
 
-projects  = Table('projects', metadata,
+_projects  = Table('projects', metadata,
   Column('id', Integer, primary_key=True),
   Column('code', Unicode(255), nullable=False, unique=True),
   Column('fullname', Unicode(255), nullable=False),
@@ -28,22 +28,6 @@ projects  = Table('projects', metadata,
   Column('createmofiles', Boolean, server_default="0"),
   Column('treestyle', String(20), server_default=""),
   Column('ignoredfiles', Unicode(255), nullable=False, server_default=""),
-  mysql_engine='innodb',
-  mysql_charset='utf8'
-)
-
-quickstats  = Table('quickstats', metadata,
-  Column('id', Integer, primary_key=True, autoincrement=True),
-  Column('projectid', Integer, ForeignKey('projects.id')),
-  Column('languageid', Integer, ForeignKey('languages.id')),
-  Column('subdir', Unicode(255), nullable=False, server_default=""),
-  Column('filename', Unicode(255), nullable=False),
-  Column('translatedwords', Integer),
-  Column('translated', Integer),
-  Column('fuzzywords', Integer),
-  Column('fuzzy', Integer),
-  Column('totalwords', Integer),
-  Column('total', Integer),
   mysql_engine='innodb',
   mysql_charset='utf8'
 )
@@ -142,9 +126,6 @@ class Submission(object):
 class Suggestion(object):
   pass
 
-class Quickstat(object):
-  pass
-  
 class User(object):
 
   def __init__(self, username=u''):
@@ -193,11 +174,7 @@ class User(object):
  
 # Create a mapping between class and table and build ORM relationships.  Note the backreferences.
 mapper(Language, languages)
-mapper(Project, projects)
-mapper(Quickstat, quickstats, properties={
-    'language' : relation(Language, backref='quickstats'),
-    'project'  : relation(Project, backref='quickstats')
-  })
+mapper(Project, _projects)
 mapper(Submission, submissions, properties={
     'language'  : relation(Language, backref='submissions'),
     'project'   : relation(Project, backref='submissions'),
