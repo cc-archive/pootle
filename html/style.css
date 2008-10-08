@@ -702,6 +702,28 @@ html[dir="rtl"] div.statslist ul li span.value {
         div.translate-translation {
           min-height: 1.5em;
         }
+        .translate-translation-fuzzy[dir="ltr"]
+        {
+            color: #666;
+            border-left: 4px solid #AAA;
+            padding-left: 3px;
+        }
+        .translate-translation-fuzzy[dir="rtl"]
+        {
+            color: #666;
+            border-right: 4px solid #AAA;
+            padding-right: 3px;
+        }
+        textarea.translate-translation-fuzzy
+        {
+            color: black;
+            border-left: 6px groove gray;
+            padding-left: 3px;
+        }
+
+        .translate-suggestion {
+            background-color: #DDD;
+        }
 
         div.translate-original {
           min-height: 1.5em;
