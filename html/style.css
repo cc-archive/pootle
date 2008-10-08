@@ -800,6 +800,10 @@ html[dir="rtl"] div.statslist ul li span.value {
   padding: 3px;
 }
 
+.placeholder {
+  color: gray;
+}
+
 .hide {
     display: none;
 }
