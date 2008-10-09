@@ -27,6 +27,7 @@ from translate.storage import base
 from translate.misc.typecheck import accepts, IsCallable, Any
 from translate.storage.xml_extract import misc
 from translate.storage.xml_extract import extract
+from translate.storage.xml_extract import unit_tree
 
 @accepts(etree._Element)
 def _get_tag_arrays(dom_node):
@@ -46,7 +47,7 @@ def _get_tag_arrays(dom_node):
         child_dict[child.tag].append(child)
     return child_dict
 
-@accepts(etree._Element, extract.Translatable, IsCallable())
+@accepts(etree._Element, unit_tree.XPathTree, extract.Translatable, IsCallable())
 def apply_translations(dom_node, unit_node, do_translate):
     tag_array = _get_tag_arrays(dom_node)
     for unit_child_index, unit_child in unit_node.children.iteritems():
