@@ -30,6 +30,7 @@ import lxml.etree as etree
 
 from translate.storage import factory
 from translate.storage import xml_extract
+from translate.storage import odf_shared
 
 def first_child(unit_node):
     return unit_node.children.values()[0]
@@ -48,9 +49,10 @@ def translate_odf(template, input_file):
         return {'content.xml': xml_extract.build_unit_tree(store)}
     
     def translate_dom_trees(unit_trees, dom_trees):
+        make_parse_state = lambda: xml_extract.ParseState(odf_shared.odf_namespace_table, odf_shared.odf_placables_table, odf_shared.odf_inline_placeables_table)
         for filename, dom_tree in dom_trees.iteritems():
             file_unit_tree = unit_trees[filename]
-            xml_extract.apply_translations(dom_tree.getroot(), file_unit_tree.children.values()[0], xml_extract.replace_dom_text)
+            xml_extract.apply_translations(dom_tree.getroot(), file_unit_tree.children.values()[0], xml_extract.replace_dom_text(make_parse_state))
         return dom_trees
 
     dom_trees = load_dom_trees(template)
