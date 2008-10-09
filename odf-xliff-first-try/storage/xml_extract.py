@@ -405,11 +405,6 @@ def get_tag_arrays(dom_node):
 
 @accepts(etree._Element, Translatable, IsCallable())
 def apply_translations(dom_node, unit_node, do_translate):
-    # If there is a translation unit associated with this unit_node...
-    if unit_node.unit != None:
-        # The invoke do_translate on the dom_node and the unit; do_translate
-        # should replace the text in dom_node with the text in unit_node.
-        do_translate(dom_node, unit_node.unit)
     tag_array = get_tag_arrays(dom_node)
     for unit_child_index, unit_child in unit_node.children.iteritems():
         tag, index = unit_child_index
@@ -424,6 +419,11 @@ def apply_translations(dom_node, unit_node, do_translate):
         # the user in the future
         except IndexError:
             pass
+    # If there is a translation unit associated with this unit_node...
+    if unit_node.unit != None:
+        # The invoke do_translate on the dom_node and the unit; do_translate
+        # should replace the text in dom_node with the text in unit_node.
+        do_translate(dom_node, unit_node.unit)
 
 placeable_pattern = re.compile(u'\[\[\[\w+\]\]\]')
 
