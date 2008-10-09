@@ -27,6 +27,7 @@ import zipfile
 
 from translate.storage import factory
 from translate.storage import xml_extract
+from translate.storage import odf_shared
 
 def convertodf(inputfile, outputfile, templates):
     """reads in stdin using fromfileclass, converts using convertorclass, writes to stdout"""
@@ -36,7 +37,8 @@ def convertodf(inputfile, outputfile, templates):
         contents = z.read("content.xml")
     except (ValueError, zipfile.BadZipfile):
         contents = open(inputfile, 'r').read()
-    xml_extract.build_store(cStringIO.StringIO(contents), store)
+    parse_state = xml_extract.ParseState(odf_shared.odf_namespace_table, odf_shared.odf_placables_table, odf_shared.odf_inline_placeables_table)
+    xml_extract.build_store(cStringIO.StringIO(contents), store, parse_state)
     store.save()
     return True
 

@@ -31,8 +31,6 @@ from translate.misc.contextlib import contextmanager, nested
 from translate.misc.typecheck import accepts, Self, IsCallable, IsOneOf
 from translate.misc.typecheck.typeclasses import Number
 
-import odf_shared
-
 class XPathBreadcrumb(object):
     """A class which is used to build XPath-like paths as a DOM tree is
     walked. It keeps track of the number of times which it has seen
@@ -289,11 +287,10 @@ def walk_translatable_tree(translatables, f):
         walk_translatable_tree(translatable.placeables, f)
 
 @accepts(lambda obj: hasattr(obj, "read"), base.TranslationStore, IsOneOf(IsCallable(), type(None)))
-def build_store(odf_file, store, store_adder = None):
+def build_store(odf_file, store, parse_state, store_adder = None):
     """Utility function for loading xml_filename"""    
     store_adder = store_adder or make_store_adder(store)
     tree = etree.parse(odf_file)
-    parse_state = ParseState(odf_shared.odf_namespace_table, odf_shared.odf_placables_table, odf_shared.odf_inline_placeables_table)
     root = tree.getroot()
     translatables = apply(root, parse_state)
     walk_translatable_tree(translatables, store_adder)
