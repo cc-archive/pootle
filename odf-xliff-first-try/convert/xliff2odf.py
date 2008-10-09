@@ -34,25 +34,6 @@ from translate.storage import xml_extract
 def first_child(unit_node):
     return unit_node.children.values()[0]
 
-placeable_pattern = re.compile(u'\[\[\[\w+\]\]\]')
-
-def replace_dom_text(dom_node, unit):
-    """Use the unit's target (or source in the case where there is no translation)
-    to update the text in the dom_node and at the tails of its children."""
-    translation = unicode(unit.target or unit.source)
-    # This will alter be used to swap around placeables if their positions are changed
-    # Search for all the placeables in 'translation'
-    _placeable_tokens = placeable_pattern.findall(translation)
-    # Split 'translation' into the different chunks of text which
-    # run between the placeables.
-    non_placeable_chunks = placeable_pattern.split(translation)
-    dom_node.text = non_placeable_chunks[0]
-    # Assign everything after the first non_placeable to the
-    # tails of the child XML nodes (since this is where such text
-    # appears).
-    for chunk, child in zip(non_placeable_chunks[1:], dom_node):
-        child.tail = chunk
-
 def translate_odf(template, input_file):
     def open_odf(filename):
         z = zipfile.ZipFile(filename, 'r')
@@ -69,7 +50,7 @@ def translate_odf(template, input_file):
     def translate_dom_trees(unit_trees, dom_trees):
         for filename, dom_tree in dom_trees.iteritems():
             file_unit_tree = unit_trees[filename]
-            xml_extract.apply_translations(dom_tree.getroot(), file_unit_tree.children.values()[0], replace_dom_text)
+            xml_extract.apply_translations(dom_tree.getroot(), file_unit_tree.children.values()[0], xml_extract.replace_dom_text)
         return dom_trees
 
     dom_trees = load_dom_trees(template)
