@@ -29,7 +29,9 @@ import re
 import lxml.etree as etree
 
 from translate.storage import factory
-from translate.storage import xml_extract
+from translate.storage.xml_extract import unit_tree
+from translate.storage.xml_extract import extract
+from translate.storage.xml_extract import generate
 from translate.storage import odf_shared
 
 def first_child(unit_node):
@@ -46,13 +48,13 @@ def translate_odf(template, input_file):
     
     def load_unit_tree(input_file):
         store = factory.getobject(input_file)
-        return {'content.xml': xml_extract.build_unit_tree(store)}
+        return {'content.xml': unit_tree.build_unit_tree(store)}
     
     def translate_dom_trees(unit_trees, dom_trees):
-        make_parse_state = lambda: xml_extract.ParseState(odf_shared.odf_namespace_table, odf_shared.odf_placables_table, odf_shared.odf_inline_placeables_table)
+        make_parse_state = lambda: extract.ParseState(odf_shared.odf_namespace_table, odf_shared.odf_placables_table, odf_shared.odf_inline_placeables_table)
         for filename, dom_tree in dom_trees.iteritems():
             file_unit_tree = unit_trees[filename]
-            xml_extract.apply_translations(dom_tree.getroot(), file_unit_tree.children.values()[0], xml_extract.replace_dom_text(make_parse_state))
+            generate.apply_translations(dom_tree.getroot(), file_unit_tree.children.values()[0], generate.replace_dom_text(make_parse_state))
         return dom_trees
 
     dom_trees = load_dom_trees(template)
