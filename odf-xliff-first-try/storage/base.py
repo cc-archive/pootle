@@ -337,8 +337,15 @@ class TranslationStore(object):
     """Base class for stores for multiple translation units of type UnitClass."""
 
     UnitClass = TranslationUnit
+    """The class of units that will be instantiated and used by this class"""
+    Name = "Base translation store"
+    """The human usable name of this store type"""
     Mimetypes = None
+    """A list of MIME types associated with this store type"""
     Extensions = None
+    """A list of file extentions associated with this store type"""
+    _binary = False
+    """Indicates whether a file should be accessed as a binary file."""
 
     def __init__(self, unitclass=None):
         """Constructs a blank TranslationStore."""
@@ -485,7 +492,10 @@ class TranslationStore(object):
     def savefile(self, storefile):
         """Writes the string representation to the given file (or filename)."""
         if isinstance(storefile, basestring):
-            storefile = open(storefile, "w")
+            mode = 'w'
+            if self._binary:
+                mode = 'wb'
+            storefile = open(storefile, mode)
         self.fileobj = storefile
         self._assignname()
         storestring = str(self)
@@ -495,24 +505,30 @@ class TranslationStore(object):
     def save(self):
         """Save to the file that data was originally read from, if available."""
         fileobj = getattr(self, "fileobj", None)
+        mode = 'w'
+        if self._binary:
+            mode = 'wb'
         if not fileobj:
             filename = getattr(self, "filename", None)
             if filename:
-                fileobj = file(filename, "w")
+                fileobj = file(filename, mode)
         else:
             fileobj.close()
             filename = getattr(fileobj, "name", getattr(fileobj, "filename", None))
             if not filename:
                 raise ValueError("No file or filename to save to")
-            fileobj = fileobj.__class__(filename, "w")
+            fileobj = fileobj.__class__(filename, mode)
         self.savefile(fileobj)
 
     def parsefile(cls, storefile):
         """Reads the given file (or opens the given filename) and parses back to an object."""
 
+        mode = 'r'
+        if cls._binary:
+            mode = 'rb'
         if isinstance(storefile, basestring):
-            storefile = open(storefile, "r")
-        mode = getattr(storefile, "mode", "r")
+            storefile = open(storefile, mode)
+        mode = getattr(storefile, "mode", mode)
         #For some reason GzipFile returns 1, so we have to test for that here
         if mode == 1 or "r" in mode:
             storestring = storefile.read()
