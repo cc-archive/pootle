@@ -32,5 +32,4 @@ def call(func, *args, **kwargs):
         return result
 
 def reset():
-    global _data
-    _data = {}
+    _data.clear()

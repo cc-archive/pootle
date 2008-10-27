@@ -37,6 +37,7 @@ from Pootle import potree
 from Pootle import pootlefile
 from Pootle import users
 from Pootle import filelocations
+from Pootle import request_cache
 from translate.misc import optrecurse
 # Versioning information
 from Pootle import __version__ as pootleversion
@@ -59,6 +60,14 @@ import pprint
 import dbclasses
 from sqlalchemy import *
 from sqlalchemy.orm import *
+
+def use_request_cache(f):
+    def decorated_f(*args, **kwargs):
+        try:
+            return f(*args, **kwargs)
+        finally:
+            request_cache.reset()
+    return decorated_f
 
 class PootleServer(users.OptionalLoginAppServer, templateserver.TemplateServer):
   """the Server that serves the Pootle Pages"""
@@ -277,6 +286,7 @@ class PootleServer(users.OptionalLoginAppServer, templateserver.TemplateServer):
       #session.server.alchemysession.close();
     return page
 
+  @use_request_cache
   def getpage(self, pathwords, session, argdict):
     """return a page that will be sent to the user"""
 
@@ -661,7 +671,6 @@ class PootleServer(users.OptionalLoginAppServer, templateserver.TemplateServer):
           if ancestor is None: continue
           try:
             ancestor_str = str(ancestor)
-            #ancestor_str = kid.et.tostring(ancestor)
           except Exception, e:
             ancestor_str = "(could not convert %s: %s)" % (str(ancestor), str(e))
           xml_traceback.append(ancestor_str)
