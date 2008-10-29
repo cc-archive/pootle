@@ -98,7 +98,9 @@ class FileTotals(object):
           FROM   filetotals
           WHERE  fileid=%(id)s;""" % {'keys': self.db_keys(), 'id': fileid})
       # These come back as longs...
-      result = map(int, self.cur.fetchone())
+      result = self.cur.fetchone()
+      if result:
+        result = map(int, result)
       return Record(FileTotals.keys, result, self._compute_derived_values)
 
     def __setitem__(self, fileid, record):
@@ -358,7 +360,10 @@ class StatsCache(object):
             FROM     units
             WHERE    fileid=%s AND unitid=%s
         """, (fileid, unitid))
-        return map(int, self.cur.fetchone())
+        result = self.cur.fetchone()
+        if result:
+          result = map(int, result)
+        return result
 
     def recacheunit(self, filename, checker, unit):
         """Recalculate all information for a specific unit. This is necessary

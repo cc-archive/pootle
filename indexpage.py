@@ -518,9 +518,9 @@ class ProjectIndex(pagelayout.PootleNavPage):
     templatename = "fileindex"
     sessionvars = {"status": session.status, "isopen": session.isopen, "issiteadmin": session.issiteadmin()}
 
-    reqstart = ""
+    reqstart = u""
     if dirfilter:
-      reqstart = dirfilter;
+      reqstart = unicode(dirfilter)
 
     asession = self.project.potree.server.alchemysession
     topsugg = asession.query(User.name, func.count(Suggestion.id)).join((Suggestion, User.suggestionsMade)).filter(Suggestion.language == self.project.language).filter(Suggestion.project == self.project.project).filter(Suggestion.reviewStatus == 'accepted').filter(Suggestion.filename.like(reqstart+"%")).group_by(User.name).order_by(func.count(Suggestion.id).desc())[:5]
