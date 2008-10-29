@@ -1,10 +1,10 @@
-%{!?python_sitelib: %define python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib()")}
+%{!?python_sitearch: %define python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib(1)")}
 
 %define pkgname py
 
 Name:           pylib
 Version:        0.9.2
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        py lib aims to support an improved development process addressing deployment, versioning, testing and documentation.
 
 Group:          Development/Tools
@@ -13,8 +13,8 @@ URL:            http://codespeak.net/py/dist/index.html
 Source0:        http://pypi.python.org/packages/source/p/py/%{pkgname}-%{version}.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-BuildArch:      noarch
 BuildRequires:  python-devel
+BuildRequires:  python-setuptools >= 0.6c8
 
 
 %description
@@ -31,16 +31,6 @@ Support functionality
 * py.xml for generating in-memory xml/html object trees
 * py.io: Helper Classes for Capturing of Input/Output
 * py.log: an alpha document about the ad-hoc logging facilities
-
-%package debug
-Summary:        Debug data for %{name} applications.
-Group:          Development/Tools
-License:        GPLv2+
-Requires:       %{name} = %{version}-%{release}
-
-%description debug
-The %{name}-debug package contains debug data for specifically the greenlets
-application.
 
 
 %prep
@@ -65,15 +55,15 @@ rm -rf $RPM_BUILD_ROOT
 %doc py/doc/*
 %doc py/LICENSE
 %{_bindir}/*
-%{python_sitelib}/py*
-
-%files debug
-/usr/lib/debug/.build-id/8b/f0be26315769659f345b15c6a33fbaa29c6ead*
-/usr/src/debug/py-0.9.2/*
-/usr/lib/debug/usr/lib/python2.5/site-packages/py/c-extension/greenlet/greenlet.so.debug
+%{python_sitearch}/py*
 
 
 %changelog
+* Wed Oct 29 2008 Dwayne Bailey <dwayne@translate.org.za> - 0.9.2-2
+- Drop noarch and adjust python_sitelib to _sitearch
+- Remove uneeded debug package
+- Add python-setuptools as a BuildRequires
+
 * Tue Sep 2 2008 Dwayne Bailey <dwayne@translate.org.za> - 0.9.2-1
 - Update to 0.9.2 release
 - Add debug package
