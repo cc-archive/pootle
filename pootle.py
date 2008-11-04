@@ -320,27 +320,6 @@ class PootleServer(users.OptionalLoginAppServer, templateserver.TemplateServer):
     if dashpos >= 0:
       lonelang = top[:dashpos]
 
-    # Don't redirect to localized versions for non-localized file types
-    if not re.search('(css|js|png|jpg|gif|ico)$', "".join(pathwords[-1:])):
-      if not self.potree.haslanguage(lang) and not self.potree.haslanguage(lonelang):
-        sessionlang = self.getuserlanguage(session)
-        session.setlanguage(sessionlang)
-        url = self.instance.baseurl+sessionlang+"/"+"/".join(pathwords)+session.getsuffix
-        return server.Redirect(url)
-      elif self.potree.haslanguage(lang):
-        session.setlanguage(lang)
-        session.localizedurl = self.instance.baseurl+lang+"/"
-      else: #Must have lonelang
-        session.setlanguage(lonelang)
-        url = self.instance.baseurl+lonelang+"/"+"/".join(pathwords[1:])+session.getsuffix
-        return server.Redirect(url)
-
-    pathwords = pathwords[1:]
-    if pathwords:
-      top = pathwords[0]
-    else:
-      top = ""
-
     try:
       if top == 'js':
         pathwords = pathwords[1:]
@@ -452,7 +431,7 @@ class PootleServer(users.OptionalLoginAppServer, templateserver.TemplateServer):
               "pagetitle": session.localize("Redirecting to login..."),
               "refresh": 1,
               "refreshurl": "login.html",
-              "message": session.localize("Need to log in to access home page"),
+              "message": session.localize("You need to log in to access your home page"),
               }
           pagelayout.completetemplatevars(templatevars, session)
           return server.Redirect("../login.html", withtemplate=(templatename, templatevars))
@@ -484,7 +463,7 @@ class PootleServer(users.OptionalLoginAppServer, templateserver.TemplateServer):
               "pagetitle": session.localize("Redirecting to login..."),
               "refresh": 1,
               "refreshurl": "login.html",
-              "message": session.localize("Need to log in to access admin page"),
+              "message": session.localize("You must log in to administer Pootle."),
               }
           pagelayout.completetemplatevars(templatevars, session)
           return server.Redirect("../login.html", withtemplate=(templatename, templatevars))

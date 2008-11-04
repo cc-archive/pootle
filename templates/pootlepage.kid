@@ -67,7 +67,7 @@
     <div py:def="login_form(username_title, password_title, login_text, register_text, canregister, session, uilanguage)" py:strip="True">
         <!-- start login form -->
         <div py:if="not session.isopen" py:strip="True">
-            <form action="/${uilanguage}/login.html" method="post" id="login-form">
+            <form action="/login.html" method="post" id="login-form">
                 <p><label for="username" py:content="username_title">Username</label> <input type="text" id="username" name="username" /></p>
                 <p><label for="password" py:content="password_title">Password</label> <input type="password" id="password" name="password" /></p>
                 <p>
