@@ -25,7 +25,7 @@ from Pootle.templates import pootlepage, navbar
         <div class="info" py:if="message" py:content="XML(message)">Message</div>
     </div>
     <div id="nav-secondary">
-      <h3 class="title">[ <a href="${baseurl}languages/${language.code}/" py:content="language.name">Language</a> (<py:content>$language.code</py:content>)]</h3>
+      <h3 class="title">[ <a href="${baseurl}${language.code}/" py:content="language.name">Language</a> (<py:content>$language.code</py:content>)]</h3>
 
       <div class="item-statistics" py:content="language.stats">
         0 projects, average 0% translated

@@ -45,7 +45,7 @@ from Pootle.templates import pootlepage
                   </thead>
                   <tr py:for="l in existing_languages" class="item item-${l.parity}">
 
-                      <td><a href="../../languages/${l.code}/${project.code}/admin.html" py:content="l.name">Language</a></td>
+                      <td><a href="../../${l.code}/${project.code}/admin.html" py:content="l.name">Language</a></td>
                       <td><span py:content="l.code">code</span></td>
                       <td><input type="checkbox" name="updatelanguage" value="${l.code}"/></td>
                       <td><a href="?doupdatelanguage=1&amp;updatelanguage=${l.code}" py:content="update_link">Update from templates</a></td>

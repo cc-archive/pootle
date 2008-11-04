@@ -437,7 +437,7 @@ class ProjectLanguageIndex(pagelayout.PootleNavPage):
 
   def getlanguageitem(self, languagecode, languagename):
     language = self.potree.getproject(languagecode, self.projectcode)
-    href = "../../languages/%s/%s/" % (languagecode, self.projectcode)
+    href = "../../%s/%s/" % (languagecode, self.projectcode)
     quickstats = language.getquickstats()
     data = self.getstats(language, quickstats)
     self.updatepagestats(data["translatedsourcewords"], data["totalsourcewords"])

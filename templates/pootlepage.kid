@@ -22,9 +22,7 @@
                   <div class="bd">
                     <ul class="first-of-type">
                         <li class="yuimenubaritem"><a href="${baseurl}" py:content="links.home">Home</a></li>
-                        <li class="yuimenubaritem"><a href="${baseurl}projects/" py:content="links.projects">All Languages</a></li>
-                        <li class="yuimenubaritem"><a href="${baseurl}languages/" py:content="links.languages">All Projects</a></li>
-                        <li class="yuimenubaritem"><a href="${baseurl}doc/${links.doclang}/index.html" py:content="links.doc">Docs &amp; Help</a></li>
+                        <li class="yuimenubaritem"><a href="${baseurl}${links.doclang}/doc/index.html" py:content="links.doc">Docs &amp; Help</a></li>
                         <span py:if="session.issiteadmin" py:strip="True">
                             <li class="yuimenubaritem"><a href="${baseurl}admin/" py:content="links.admin">Admin</a></li>
                         </span>
