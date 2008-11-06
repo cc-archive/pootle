@@ -35,6 +35,10 @@ class TestCreate(object):
         open(cls.prefsfile, "w").write(setupprefs.getsource())
         cls.prefs = prefs.PrefsParser(cls.prefsfile)
         cls.prefs.resolveimportmodules()
+
+        cls.testuser = u"testuser"
+        cls.testpass = u""
+
         if isclassmethod(cls, cls.setup_pootleserver):
             cls.setup_pootleserver()
 
@@ -119,6 +123,12 @@ class TestCreate(object):
         prefs.setvalue("Pootle.projects.testproject.description", "Test Project for verifying functionality")
         prefs.setvalue("Pootle.projects.testproject.localfiletype", "po")
         prefs.setvalue("Pootle.users.testuser.activated", 1)
+
+        # Need the path to the database here.  This should be in an external config file.
+        prefs.setvalue("Pootle.stats.connect.database", "")
+        prefs.setvalue("Pootle.hash", "allow")
+        prefs.setvalue("Pootle.scriptsdirectory", "scripts")
+
         testuserprefs = instance.users.testuser
         testuserprefs.passwdhash = session.md5hexdigest("")
         instance.podirectory = cls.podir

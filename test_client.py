@@ -65,15 +65,19 @@ class ServerTester:
 
     def fetch_page(self, relative_url):
         """Utility method that fetches a page from the webserver installed in the service."""
-        url = "%s/%s" % (self.baseaddress, relative_url)
-        print "fetching", url
+        url = "%s%s" % (self.baseaddress, relative_url)
+        print "Fetching: ", url
         stream = self.urlopen(url)
         contents = stream.read()
         return contents
 
     def login(self):
         """Utility method that calls the login method with username and password."""
-        return self.fetch_page("?islogin=1&username=testuser&password=")
+        return self.fetch_page("?islogin=1&username=%s&password=%s" % (self.testuser, self.testpass))
+
+    def logout(self):
+        """Utility method that calls the logout method."""
+        return self.fetch_page("?islogout=1")
 
     def post_request(self, relative_url, contents, headers):
         """Utility method that posts a request to the webserver installed in the service."""
@@ -99,7 +103,7 @@ class ServerTester:
         """Sets up any extra preferences required."""
         if hasattr(method, "userprefs"):
             for key, value in method.userprefs.iteritems():
-                self.prefs.setvalue("Pootle.users.testuser." + key, value)
+                self.prefs.setvalue("Pootle.users.%s.%s" % (self.testuser, key), value)
 
     def setup_testproject_dir(self, perms=None):
         """Sets up a blank test project directory."""
@@ -112,34 +116,54 @@ class ServerTester:
         os.mkdir(podir)
         if perms:
             prefsfile = file(os.path.join(projectdir, lang, "pootle-%s-%s.prefs" % (projectname, lang)), 'w')
-            prefsfile.write("# Prefs file for Pootle unit tests\nrights:\n  testuser = '%s'\n" % perms)
+            prefsfile.write("# Prefs file for Pootle unit tests\nrights:\n  %s = '%s'\n" % (self.testuser, perms))
             prefsfile.close()
         language_page = self.fetch_page("%s/%s/" % (lang, projectname))
 
         assert "Test Language" in language_page
-        assert "Pootle Unit Tests" in language_page
         assert "0 files, 0/0 words (0%) translated" in language_page
         return podir
+
+    def teardown_method(self, method):
+      self.cookiejar.clear()
+      pass
 
     # Test methods
     ###############
     def test_login(self):
         """Checks that login works and sets cookies."""
-        contents = self.login()
+        # make sure we start logged out
+        contents = self.fetch_page("")
+        assert "Log in" in contents
+
         # check login leads us to a normal page
-        assert "Log In" not in contents
+        contents = self.login()
+        assert "Log in" not in contents
+
         # check login is retained on next fetch
         contents = self.fetch_page("")
-        assert "Log In" not in contents
+        assert "Log in" not in contents
+
+    def test_logout(self):
+        """Checks that logout works after logging in."""
+        # make sure we start logged in
+        contents = self.login()
+        assert "Log out" in contents
+
+        # check login leads us to a normal page
+        contents = self.logout()
+        assert "Log in" in contents
 
     def test_non_admin_rights(self):
         """Checks that, without admin rights, we can't access the admin screen."""
-        contents = self.login()
-        adminlink = '<a href="/admin/">Admin</a>' in contents
-        assert not adminlink
         contents = self.fetch_page("admin/")
-        denied = "You do not have the rights to administer pootle" in contents
-        assert denied
+        assert "You must log in to administer Pootle" in contents
+
+        contents = self.login()
+        assert not '<a href="/admin/">Admin</a>' in contents
+
+        contents = self.fetch_page("admin/")
+        assert "You do not have the rights to administer pootle" in contents
 
     def test_admin_rights(self):
         """Checks that admin rights work properly."""
