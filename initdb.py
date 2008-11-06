@@ -21,13 +21,9 @@ def configDB(instance):
   STATS_OPTIONS = {}
   for k,v in instance.stats.connect.iteritems():
     STATS_OPTIONS[k] = v
-  DB_TYPE = instance.stats.dbtype
 
   #metadata = Base.metadata
-  if DB_TYPE == "sqlite":
-    engine = create_engine('sqlite:///%s' % STATS_OPTIONS['database'])
-  else:
-    engine = create_engine('%s://?charset=utf8' % (DB_TYPE), encoding='utf-8', connect_args = STATS_OPTIONS)
+  engine = create_engine('sqlite:///%s' % STATS_OPTIONS['database'])
   conn = engine.connect()
 
   Session = sessionmaker(bind=engine, autoflush=True)

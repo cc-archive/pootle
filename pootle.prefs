@@ -23,28 +23,9 @@ Pootle:
   hash = "allow"
 
   stats:
-    # The statsdb file in translate toolkit to use; alternately, a file
-    # supporting the same interface as statsdb can be placed in pootle's
-    # main directory and used
-    statsdb = "statsdb_mysql"
-    
-    # The database type; this is the "protocol" in SQLALchemy's connect URL
-    dbtype = "mysql"
-
-    # Configuration information for server; these correspond exactly to
-    # parameters passed to dbapi2.connect():
+    # Absolute or relative path to sqlite database to use
     connect:
-      host = ""
-      user = ""
-      passwd = ""
-      db = ""
-
-    # Use these parameters for SQLite
-
-    #statsdb = "statsdb_sqlite"
-    #dbtype = "sqlite"
-    #connect:
-    #  database = "stats.db"
+      database = "stats.db"
 
   serverclass = pootleserver.PootleServer
   sessionkey='p00tl3'

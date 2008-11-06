@@ -44,6 +44,8 @@ from Pootle import __version__ as pootleversion
 from translate import __version__ as toolkitversion
 from jToolkit import __version__ as jtoolkitversion
 from Pootle import statistics
+from translate.storage import statsdb
+
 try:
   from xml.etree import ElementTree
 except ImportError:
@@ -87,17 +89,13 @@ class PootleServer(users.OptionalLoginAppServer, templateserver.TemplateServer):
       raise e
 
   def configDB(self, instance):
-    statistics.statsdb = __import__(instance.stats.statsdb)
+    statistics.statsdb = statsdb
     # Set up the connection options
     for k,v in instance.stats.connect.iteritems():
       statistics.STATS_OPTIONS[k] = v
-    statistics.DB_TYPE = instance.stats.dbtype
 
     self.metadata = dbclasses.metadata
-    if statistics.DB_TYPE == "sqlite":
-      self.engine = create_engine('sqlite:///%s' % statistics.STATS_OPTIONS['database'])
-    else:
-      self.engine = create_engine('%s://?encoding=utf8' % (statistics.DB_TYPE), encoding='utf-8', connect_args = statistics.STATS_OPTIONS, pool_recycle=3600)
+    self.engine = create_engine('sqlite:///%s' % statistics.STATS_OPTIONS['database'])
     self.conn = self.engine.connect()
 
     Session = sessionmaker(bind=self.engine, autoflush=True, autocommit=True)

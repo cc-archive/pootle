@@ -2,7 +2,6 @@ import request_cache
 import traceback
 
 STATS_OPTIONS = {} 
-DB_TYPE = None
 
 def getmodtime(filename):
   try:
@@ -25,7 +24,7 @@ class pootlestatistics:
     """constructs statistic object for the given file"""
     # TODO: try and remove circular references between basefile and this class
     self.basefile = basefile
-    self.statscache = statsdb.StatsCache(STATS_OPTIONS)
+    self.statscache = statsdb.StatsCache(STATS_OPTIONS['database'])
 
   def getquickstats(self):
     """returns the quick statistics (totals only)"""
