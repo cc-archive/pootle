@@ -101,6 +101,8 @@ class ServerTester:
 
     def setup_prefs(self, method):
         """Sets up any extra preferences required."""
+        self.testuser = 'testuser'
+        self.testpass = ''
         if hasattr(method, "userprefs"):
             for key, value in method.userprefs.iteritems():
                 self.prefs.setvalue("Pootle.users.%s.%s" % (self.testuser, key), value)
@@ -157,7 +159,8 @@ class ServerTester:
     def test_non_admin_rights(self):
         """Checks that, without admin rights, we can't access the admin screen."""
         contents = self.fetch_page("admin/")
-        assert "You must log in to administer Pootle" in contents
+        print contents
+        assert "Need to log in to access admin page" in contents
 
         contents = self.login()
         assert not '<a href="/admin/">Admin</a>' in contents
