@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # coding: utf-8
 from sqlalchemy import *
 from sqlalchemy.orm import *
@@ -34,7 +35,7 @@ def configDB(instance):
   create_default_projects(alchemysession)
   create_default_languages(alchemysession)
   create_default_users(alchemysession)
-  
+
 def attempt(s,obj):
   print "Adding %s... " % (str(obj)),
   try:
@@ -47,20 +48,20 @@ def attempt(s,obj):
     print "OK"
 
 def create_default_projects(s):
-      pootle = Project(u"pootle")
-      pootle.fullname = u"Pootle"
-      pootle.description = "<div dir='ltr' lang='en'>Interface translations for Pootle. <br /> See the <a href='http://pootle.locamotion.org'>official Pootle server</a> for the translations of Pootle.</div>"
-      pootle.checkstyle = "standard"
-      pootle.localfiletype = "po"
-      attempt(s,pootle)
-      
-      terminology = Project(u"terminology")
-      terminology.fullname = u"Terminology"
-      terminology.description = "<div dir='ltr' lang='en'>Terminology project that Pootle should use to suggest terms.<br />There might be useful terminology files on the <a href='http://pootle.locamotion.org/projects/terminology/'>official Pootle server</a>.</div>"
-      terminology.checkstyle = "standard"
-      terminology.localfiletype = "po"
-      attempt(s,terminology)
-    
+  pootle = Project(u"pootle")
+  pootle.fullname = u"Pootle"
+  pootle.description = "<div dir='ltr' lang='en'>Interface translations for Pootle. <br /> See the <a href='http://pootle.locamotion.org'>official Pootle server</a> for the translations of Pootle.</div>"
+  pootle.checkstyle = "standard"
+  pootle.localfiletype = "po"
+  attempt(s,pootle)
+
+  terminology = Project(u"terminology")
+  terminology.fullname = u"Terminology"
+  terminology.description = "<div dir='ltr' lang='en'>Terminology project that Pootle should use to suggest terms.<br />There might be useful terminology files on the <a href='http://pootle.locamotion.org/projects/terminology/'>official Pootle server</a>.</div>"
+  terminology.checkstyle = "standard"
+  terminology.localfiletype = "po"
+  attempt(s,terminology)
+
 def create_default_languages(s):
     af = Language("af")
     af.fullname = u"Afrikaans"
@@ -372,7 +373,7 @@ def create_default_languages(s):
     it.pluralequation ='(n != 1)'
     attempt(s,it)
 
-# 日本語 
+# 日本語
 # Japanese
     ja = Language("ja")
     ja.fullname = u'Japanese'
@@ -534,7 +535,7 @@ def create_default_languages(s):
     pt.pluralequation ='(n != 1)'
     attempt(s,pt)
 
-# Português 
+# Português
 # Portuguese from Portugal
     pt_PT = Language("pt_PT")
     pt_PT.fullname = u'Portuguese (Portugal)'
@@ -649,7 +650,7 @@ def create_default_languages(s):
     uk.nplurals = '3'
     uk.pluralequation ='(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)'
     attempt(s,uk)
- 
+
 # Tshivenḓa
 # Venda
 #    ve.fullname = u'Venda'
