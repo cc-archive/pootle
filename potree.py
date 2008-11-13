@@ -39,7 +39,7 @@ class POTree:
     self.languages = dict( (l.code, l) for l in langlist)
 
     if not self.haslanguage("templates"):
-      newlang = Language("templates", "Templates")
+      newlang = Language("templates", u"Templates")
       self.server.alchemysession.add(newlang)
       self.languages[newlang.code] = newlang 
       self.saveprefs()
