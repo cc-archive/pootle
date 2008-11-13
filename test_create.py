@@ -157,7 +157,7 @@ class NoReuse(TestCreate):
         """sets up the session for the test"""
         session = users.PootleSession(sessioncache, self.server)
         timestamp = dates.formatdate(dates.currentdate(), '%Y%m%d%H%M%S')
-        session.create("admin","",timestamp,'en')
+        session.create(u"admin","",timestamp,'en')
         session.remote_ip = "unit tests..."
         return session
 
