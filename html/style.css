@@ -22,7 +22,7 @@ body {
 	margin: 0;
 	padding: 0;
 	font-family: sans-serif;
-	background: url(/img/page-bg.jpg) #fff 50% -85px repeat-x;
+	background: url(/images/page-bg.jpg) #fff 50% -85px repeat-x;
 }
 
 a:link,
@@ -160,14 +160,14 @@ html[dir="rtl"] #doc {
 #header h1 {
 	margin: 0;
 	float: left;
-	background: transparent url(/img/header-background.png) top left;
+	background: transparent url(/images/header-background.png) top left;
 	width: 261px;
 	height: 56px;
 	line-height: 56px;
 }
 
 #header h1 a {
-    background: url(/img/nav_logo.png) left 50% no-repeat;
+    background: url(/images/nav_logo.png) left 50% no-repeat;
     padding: 0 0 0 50px;
     margin: 0 0 0 15px;
     text-transform: lowercase;
@@ -193,7 +193,7 @@ html[dir="rtl"] #header h1 a {
 
 #nav-main {
 	float: left;
-	background: #1e4262 url(/img/header-background.png) top right;
+	background: #1e4262 url(/images/header-background.png) top right;
 }
 
 #nav-main ul {
@@ -210,7 +210,7 @@ html[dir="rtl"] #header h1 a {
 }
 
 #nav-main ul {
-	background: transparent url(/img/header-nav-divider.png) top left no-repeat;
+	background: transparent url(/images/header-nav-divider.png) top left no-repeat;
 	padding-left: 2px;
 }
 
@@ -223,7 +223,7 @@ html[dir="rtl"] #header h1 a {
 	font-size: 95%;
 	letter-spacing: -0.5px;
 	color: #fff;
-	background: transparent url(/img/header-nav-divider.png) top right no-repeat;
+	background: transparent url(/images/header-nav-divider.png) top right no-repeat;
 }
 
 #nav-main ul li a:link,
@@ -236,17 +236,17 @@ html[dir="rtl"] #header h1 a {
 #nav-main ul li a:active,
 #nav-main ul li a.yuimenubaritemlabel-selected {
 	color: #fff;
-	background: #31526f url(/img/header-nav-menu-backgrounds.png) top right no-repeat;
+	background: #31526f url(/images/header-nav-menu-backgrounds.png) top right no-repeat;
 }
 
 #nav-main #menu-login a {
     background: none;
     padding-left: 32px;
-    background: url(/img/login-bg.png) 14px 43% no-repeat;
+    background: url(/images/login-bg.png) 14px 43% no-repeat;
 }
 
 #nav-main #menu-login a span {
-    background: url(/img/login-arrow.png) no-repeat 45px;
+    background: url(/images/login-arrow.png) no-repeat 45px;
     padding: 0 15px 0 0;
 }
 
@@ -322,12 +322,12 @@ html[dir="rtl"] #header h1 a {
 }
 
 .module-primary .bd {
-    background: url(/img/mod-borders-wide.png) top left no-repeat;
+    background: url(/images/mod-borders-wide.png) top left no-repeat;
     padding: 15px;
 }
 
 .module-primary .ft {
-    background: url(/img/mod-borders-wide.png) no-repeat;
+    background: url(/images/mod-borders-wide.png) no-repeat;
     background-position: -1015px 0;
     min-height: 20px;
 }
@@ -347,7 +347,7 @@ html[dir="rtl"] #header h1 a {
 }
 
 .module .bd {
-    background: url(/img/mod-borders.png) top left no-repeat;
+    background: url(/images/mod-borders.png) top left no-repeat;
     padding: 15px;
 }
 
@@ -368,7 +368,7 @@ html[dir="rtl"] #header h1 a {
 
 .module .ft {
     min-height: 20px;
-    background: url(/img/mod-borders.png) no-repeat;
+    background: url(/images/mod-borders.png) no-repeat;
     background-position: -515px 0;
 }
 
@@ -403,7 +403,7 @@ textarea.translation {
 }
 
 #language-info {
-    background: #f7f7f7 url(/img/translate-notepad.png) 15px 50% no-repeat;
+    background: #f7f7f7 url(/images/translate-notepad.png) 15px 50% no-repeat;
     padding: 15px 25px 10px 45px;
     font-size: 91%;
 }
@@ -492,7 +492,7 @@ textarea.translation {
 }
 
 #search button {
-    background: url(/img/search-arrow.png) top left no-repeat;
+    background: url(/images/search-arrow.png) top left no-repeat;
     width: 20px;
     height: 20px;
     padding: 0;
@@ -763,7 +763,7 @@ html[dir="rtl"] div.statslist ul li span.value {
 
 
 #footer {
-	background: #fff url(/img/footer-border.png) top center repeat-x;
+	background: #fff url(/images/footer-border.png) top center repeat-x;
 	text-align: center;
     color: #898378;
 	margin-top: 100px;
