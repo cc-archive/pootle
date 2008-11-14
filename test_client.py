@@ -294,7 +294,7 @@ class ServerTester:
         self.login()
 
         podir = self.setup_testproject_dir(perms="view, suggest")
-        tree = potree.POTree(self.prefs.Pootle)
+        tree = potree.POTree(self.prefs.Pootle, self.server)
         project = projects.TranslationProject("zxx", "testproject", tree)
         po1contents = '#: test.c\nmsgid "test"\nmsgstr ""\n'
         open(os.path.join(podir, "test_upload.po"), "w").write(po1contents)
@@ -319,7 +319,7 @@ class ServerTester:
         self.login()
 
         podir = self.setup_testproject_dir(perms="view, translate, overwrite")
-        tree = potree.POTree(self.prefs.Pootle)
+        tree = potree.POTree(self.prefs.Pootle, self.server)
         project = projects.TranslationProject("zxx", "testproject", tree)
         po1contents = '#: test.c\nmsgid "test"\nmsgstr ""\n'
         open(os.path.join(podir, "test_upload.po"), "w").write(po1contents)
@@ -378,7 +378,7 @@ class ServerTester:
         self.login()
 
         podir = self.setup_testproject_dir(perms="view, translate")
-        tree = potree.POTree(self.prefs.Pootle)
+        tree = potree.POTree(self.prefs.Pootle, self.server)
         project = projects.TranslationProject("zxx", "testproject", tree)
         po1contents = '#: test.c\nmsgid "test"\nmsgstr "rest"\n\n#: frog.c\nmsgid "tadpole"\nmsgstr "fish"\n'
         open(os.path.join(podir, "test_existing.po"), "w").write(po1contents)
@@ -412,7 +412,7 @@ class ServerTester:
         self.login()
 
         podir = self.setup_testproject_dir(perms="view, translate")
-        tree = potree.POTree(self.prefs.Pootle)
+        tree = potree.POTree(self.prefs.Pootle, self.server)
         project = projects.TranslationProject("zxx", "testproject", tree)
         pocontents = '#: test.c\nmsgid "test"\nmsgstr "rest"\n\n#: frog.c\nmsgid "tadpole"\nmsgstr "fish"\n'
         open(os.path.join(podir, "test_existing.po"), "w").write(pocontents)
@@ -476,7 +476,7 @@ class ServerTester:
         headers = {"Content-Type": content_type, "Content-Length": len(post_contents)}
         translatepage = self.post_request("zxx/testproject/test_upload.po?translate=1&editing=1", post_contents, headers)
 
-        tree = potree.POTree(self.prefs.Pootle)
+        tree = potree.POTree(self.prefs.Pootle, self.server)
         project = projects.TranslationProject("zxx", "testproject", tree)
         pofile = project.getpofile("test_upload.po")
         assert str(pofile.units[1]) == expected_pocontents
@@ -516,7 +516,7 @@ class ServerTester:
         headers = {"Content-Type": content_type, "Content-Length": len(post_contents)}
         translatepage = self.post_request("zxx/testproject/test_upload.po?translate=1&editing=1", post_contents, headers)
 
-        tree = potree.POTree(self.prefs.Pootle)
+        tree = potree.POTree(self.prefs.Pootle, self.server)
         project = projects.TranslationProject("zxx", "testproject", tree)
         pofile = project.getpofile("test_upload.po")
         assert str(pofile.units[1]) == expected_pocontents
@@ -543,7 +543,7 @@ class ServerTester:
         translatepage = self.fetch_page("zxx/testproject/test_fuzzy.po?translate=1&editing=1")
         assert '<input checked="checked" name="fuzzy0" accesskey="f" type="checkbox" id="fuzzy0" class="unfuzzy" />' in translatepage
 
-        tree = potree.POTree(self.prefs.Pootle)
+        tree = potree.POTree(self.prefs.Pootle, self.server)
         project = projects.TranslationProject("zxx", "testproject", tree)
         pofile = project.getpofile("test_fuzzy.po")
         expected_pocontents = '#: test.c\n#, fuzzy\nmsgid "fuzzy"\nmsgstr "wuzzy"\n'
@@ -559,7 +559,7 @@ class ServerTester:
         # Fetch the page once more and check that the fuzzy checkbox is NOT checked.
         translatepage = self.fetch_page("zxx/testproject/test_fuzzy.po?translate=1&editing=1")
         assert '<input class="unfuzzy" accesskey="f" type="checkbox" name="fuzzy0" id="fuzzy0" />' in translatepage
-        tree = potree.POTree(self.prefs.Pootle)
+        tree = potree.POTree(self.prefs.Pootle, self.server)
         project = projects.TranslationProject("zxx", "testproject", tree)
         pofile = project.getpofile("test_fuzzy.po")
         assert not pofile.units[1].isfuzzy()
@@ -579,7 +579,7 @@ class ServerTester:
         headers = {"Content-Type": content_type, "Content-Length": len(post_contents)}
         translatepage = self.post_request("zxx/testproject/test_upload.po?translate=1&editing=1", post_contents, headers)
 
-        tree = potree.POTree(self.prefs.Pootle)
+        tree = potree.POTree(self.prefs.Pootle, self.server)
         project = projects.TranslationProject("zxx", "testproject", tree)
         pofile = project.getpofile("test_upload.po")
         assert str(pofile.units[1]) == expected_pocontents
