@@ -591,15 +591,26 @@ class ServerTester:
         podir = self.setup_testproject_dir(perms="view, translate")
         pofile_storename = os.path.join(podir, "test_nav_url.po")
         pocontents = '#: test.c\nmsgid "test1"\nmsgstr "rest"\n'
-        pocontents += '\n#. Second Unit\nmsgid "test2"\nmsgstr "rest2"\n'
+        pocontents += '\nmsgid "test2"\nmsgstr "rest2"\n'
+        pocontents += '\nmsgid "test3"\nmsgstr "rest2"\n'
+        pocontents += '\nmsgid "test4"\nmsgstr "rest2"\n'
+        pocontents += '\nmsgid "test5"\nmsgstr "rest2"\n'
+        pocontents += '\nmsgid "test6"\nmsgstr "rest2"\n'
+        pocontents += '\nmsgid "test7"\nmsgstr "rest2"\n'
+        pocontents += '\nmsgid "test8"\nmsgstr "rest2"\n'
+        pocontents += '\nmsgid "test9"\nmsgstr "rest2"\n'
+        pocontents += '\nmsgid "test10"\nmsgstr "rest2"\n'
+        pocontents += '\nmsgid "test11"\nmsgstr "rest2"\n'
         open(pofile_storename, "w").write(pocontents)
 
-        self.prefs.setvalue("Pootle.users.testuser.viewrows", 1)
+        # Mozootle can't currently use preferences set like this, so commented
+        # out for now:
+        #self.prefs.setvalue("Pootle.users.testuser.viewrows", 1)
         translatepage = self.fetch_page("zxx/testproject/test_nav_url.po?translate=1&view=1")
         patterns = re.findall('<a href=".(.*)".*Next 1.*</a>', translatepage)
         parameters = patterns[0].split('&amp;')
         assert 'pofilename=test_nav_url.po' in parameters
-        assert 'item=1' in parameters
+        assert 'item=10' in parameters
 
     def test_search(self):
         """Test the searching functionality when results are and are not expected."""
