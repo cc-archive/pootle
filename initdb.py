@@ -15,7 +15,8 @@ def main():
 
   prefsfile = sys.argv[1]
   pref = prefs.PrefsParser(prefsfile)
-  configDB(pref.Pootle)
+  session = configDB(pref.Pootle)
+  create_default_db(session)
 
 def configDB(instance):
   # Set up the connection options
@@ -32,9 +33,12 @@ def configDB(instance):
 
   metadata.create_all(engine)
 
-  create_default_projects(alchemysession)
-  create_default_languages(alchemysession)
-  create_default_users(alchemysession)
+  return alchemysession
+
+def create_default_db(s):
+  create_default_projects(s)
+  create_default_languages(s)
+  create_default_users(s)
 
 def attempt(s,obj):
   print "Adding %s... " % (str(obj)),
