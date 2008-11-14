@@ -43,7 +43,7 @@ from translate.misc import optrecurse
 from Pootle import __version__ as pootleversion
 from translate import __version__ as toolkitversion
 from jToolkit import __version__ as jtoolkitversion
-from Pootle import statistics
+from Pootle import statistics, pan_app
 from translate.storage import statsdb
 
 try:
@@ -621,7 +621,8 @@ class PootleServer(users.OptionalLoginAppServer, templateserver.TemplateServer):
   def buildpage(self, filename, context, loadurl=None, localize=None, innerid=None):
     """build a response for the template with the vars in context"""
     context = templateserver.attribify(context)
-    t = kid.Template(filename, **context)
+    template_module = kid.load_template(filename, cache=pan_app.cache_templates)
+    t = template_module.Template(filename, **context)
     try:
       return t.serialize(output="xhtml")
     except Exception, e:
@@ -678,6 +679,8 @@ class PootleOptionParser(simplewebserver.WebOptionParser):
                     default=None, help="Specifies the location of the SQLite stats db file.")
     self.add_option('', "--profile", action="store", type="string", dest="profile",
                     help="Perform profiling, storing the result to the supplied filename.")
+    self.add_option('', "--no_cache_templates", action="store_false", dest="cache_templates", default=False,
+                    help="Pootle should not cache templates, but reload them with every request.")
     try:
       import psyco
       self.add_option('', "--psyco", dest="psyco", default=None, choices=psycomodes, metavar="MODE",
@@ -748,6 +751,22 @@ def set_stats_db(server, options):
 
   statistics.STATS_DB_FILE = get_stats()
 
+def set_template_caching(options):
+  if options.cache_templates is not None:
+    pan_app.cache_templates = options.cache_templates
+
+def set_options(server, options):
+  set_stats_db(server, options)
+  set_template_caching(options)                                        
+  server.options = options
+
+def run_pootle(server, options, args):
+  if options.action == "runwebserver":
+    run = get_runner(options)
+    run(server, options)
+  elif options.action == "refreshstats":
+    server.refreshstats(args)
+
 def main():
   # run the web server
   checkversions()
@@ -758,13 +777,8 @@ def main():
   if options.action != "runwebserver":
     options.servertype = "dummy"
   server = parser.getserver(options)
-  set_stats_db(server, options)
-  server.options = options
-  if options.action == "runwebserver":
-    run = get_runner(options)
-    run(server, options)
-  elif options.action == "refreshstats":
-    server.refreshstats(args)
+  set_options(server, options)
+  run_pootle(server, options, args)                                        
 
 if __name__ == '__main__':
   main()
