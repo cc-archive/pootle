@@ -32,7 +32,7 @@ from dbclasses import Language, Project
 
 class POTree:
   """Manages the tree of projects and languages"""
-  def __init__(self, instance, server=None):
+  def __init__(self, instance, server):
     self.server = server
 
     langlist = self.server.alchemysession.query(Language).order_by(Language.code).all()
