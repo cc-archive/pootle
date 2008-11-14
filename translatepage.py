@@ -488,7 +488,7 @@ class TranslatePage(pagelayout.PootleNavPage):
           if not (nplurals and nplurals.isdigit()):
             # The file doesn't have plural information declared. Let's get it from
             # the language
-            nplurals = getattr(getattr(self.project.potree.languages, self.project.languagecode, None), "nplurals", "")
+            nplurals = getattr(self.project.potree.languages[self.project.languagecode], "nplurals", "")
           nplurals = int(nplurals)
           if len(trans) != nplurals:
             # Chop if in case it is too long
