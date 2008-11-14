@@ -7,10 +7,7 @@
 # Date: 10 Jun 2008
 
 # Requires python-ldap module from http://python-ldap.sourceforge.net/
-try:
-    import ldap
-except:
-    ldap = None
+import ldap
 
 class MozillaLdap:
   """ LDAP class for connecting to mozilla's LDAP server
