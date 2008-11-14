@@ -127,7 +127,6 @@ class TestCreate(object):
         # Need the path to the database here.  This should be in an external config file.
         prefs.setvalue("Pootle.stats.connect.database", "./tests_stats.db")
         prefs.setvalue("Pootle.hash", "allow")
-        prefs.setvalue("Pootle.scriptsdirectory", "scripts")
 
         testuserprefs = instance.users.testuser
         testuserprefs.passwdhash = session.md5hexdigest("")

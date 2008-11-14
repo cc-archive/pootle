@@ -112,8 +112,6 @@ class TranslationProject(object):
     self.potree = potree
     self.language = self.potree.languages[languagecode]
     self.project = self.potree.projects[projectcode]
-    self.precommitdir = os.path.join(self.potree.instance.scriptsdirectory, "precommit")
-    self.postcommitdir = os.path.join(self.potree.instance.scriptsdirectory, "postcommit")
     self.languagename = self.potree.getlanguagename(self.languagecode)
     self.projectname = self.potree.getprojectname(self.projectcode)
     self.projectdescription = self.potree.getprojectdescription(self.projectcode)
