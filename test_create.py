@@ -125,7 +125,7 @@ class TestCreate(object):
         prefs.setvalue("Pootle.users.testuser.activated", 1)
 
         # Need the path to the database here.  This should be in an external config file.
-        prefs.setvalue("Pootle.stats.connect.database", "")
+        prefs.setvalue("Pootle.stats.connect.database", "./tests_stats.db")
         prefs.setvalue("Pootle.hash", "allow")
         prefs.setvalue("Pootle.scriptsdirectory", "scripts")
 
