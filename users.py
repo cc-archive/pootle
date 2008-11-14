@@ -390,6 +390,7 @@ class OptionalLoginAppServer(server.LoginAppServer):
       raise ValueError(session.localize("You need to be siteadmin to change users"))
     alchemysession = session.server.alchemysession
     for key, value in argdict.iteritems():
+      usernode = None
       if key.startswith("userremove-"):
         username = key.replace("userremove-", "", 1)
         if self.hasuser(alchemysession, username):
