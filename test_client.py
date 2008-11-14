@@ -73,7 +73,7 @@ class ServerTester:
 
     def login(self):
         """Utility method that calls the login method with username and password."""
-        return self.fetch_page("?islogin=1&username=%s&password=%s" % (self.testuser, self.testpass))
+        return self.fetch_page("?islogin=1&username=%s&password=" % (self.testuser.username))
 
     def logout(self):
         """Utility method that calls the logout method."""
@@ -99,11 +99,50 @@ class ServerTester:
         else:
             self.urlopen = ClientCookie.urlopen
 
+    def setup_database(self, method):
+        """Create a new database to test with."""
+        import os, md5
+        from dbclasses import Language, Project, User
+        from initdb import attempt, configDB
+
+        self.alchemysess = configDB(self.prefs.Pootle)
+
+        # Populate database with test data
+        testproject = Project(u"testproject")
+        testproject.fullname = u"Pootle Unit Tests"
+        testproject.description = "Test Project for verifying functionality"
+        testproject.checkstyle = "standard"
+        testproject.localfiletype = "po"
+        attempt(self.alchemysess, testproject)
+
+        zxx = Language("zxx")
+        zxx.fullname = u'Test Language'
+        zxx.nplurals = '1'
+        zxx.pluralequation ='0'
+        attempt(self.alchemysess, zxx)
+
+        testuser = User(u"testuser")
+        testuser.name=u"Administrator"
+        testuser.activated="True"
+        testuser.passwdhash=md5.new("").hexdigest()
+        testuser.logintype="hash"
+        testuser.siteadmin=True
+        attempt(self.alchemysess, testuser)
+
+        self.alchemysess.flush()
+
     def setup_prefs(self, method):
         """Sets up any extra preferences required."""
+        from dbclasses import User
+        self.testuser = self.alchemysess.query(User).filter(User.username == u'testuser').first()
         if hasattr(method, "userprefs"):
             for key, value in method.userprefs.iteritems():
-                self.prefs.setvalue("Pootle.users.%s.%s" % (self.testuser, key), value)
+                self.prefs.setvalue("Pootle.users.%s.%s" % (self.testuser.username, key), value)
+
+            # Update database with userprefs
+            self.testuser.siteadmin = method.userprefs['rights.siteadmin']
+            self.alchemysess.flush()
+        self.alchemysess.close()
 
     def setup_testproject_dir(self, perms=None):
         """Sets up a blank test project directory."""
@@ -116,7 +155,7 @@ class ServerTester:
         os.mkdir(podir)
         if perms:
             prefsfile = file(os.path.join(projectdir, lang, "pootle-%s-%s.prefs" % (projectname, lang)), 'w')
-            prefsfile.write("# Prefs file for Pootle unit tests\nrights:\n  %s = '%s'\n" % (self.testuser, perms))
+            prefsfile.write("# Prefs file for Pootle unit tests\nrights:\n  %s = '%s'\n" % (self.testuser.username, perms))
             prefsfile.close()
         language_page = self.fetch_page("%s/%s/" % (lang, projectname))
 
@@ -496,7 +535,7 @@ class ServerTester:
         headers = {"Content-Type": content_type, "Content-Length": len(post_contents)}
         translatepage = self.post_request("zxx/testproject/test_upload.po?translate=1&editing=1", post_contents, headers)
 
-        tree = potree.POTree(self.prefs.Pootle)
+        tree = potree.POTree(self.prefs.Pootle, self.server)
         project = projects.TranslationProject("zxx", "testproject", tree)
         pofile = project.getpofile("test_upload.po")
         assert str(pofile.units[1]) == expected_pocontents
@@ -649,6 +688,7 @@ def MakeServerTester(baseclass):
     """Makes a new Server Tester class using the base class to setup webserver etc."""
     class TestServer(baseclass, ServerTester):
         def setup_method(self, method):
+            ServerTester.setup_database(self, method)
             ServerTester.setup_prefs(self, method)
             baseclass.setup_method(self, method)
             ServerTester.setup_cookies(self)
