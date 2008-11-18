@@ -46,16 +46,14 @@
         <!-- end header -->
     </div>
 
-    <div py:def="footer()" py:strip="True">
+    <div py:def="footer(links, baseurl)" py:strip="True">
         <!-- start footer -->
         <div id="footer">
             <div id="footer-contents">
                 <ul class="nav">
-                   <li><a href="#">Home</a></li>
-                   <li><a href="#">All languages</a></li>
-                   <li><a href="#">All projects</a></li>
-                   <li><a href="#">Docs &amp; Help</a></li>
-                   <li><a href="#">About this Pootle Server</a></li>
+                    <li><a href="${baseurl}" py:content="links.home">Home</a></li>
+                    <li><a href="${baseurl}${links.doclang}/doc/index.html" py:content="links.doc">Docs &amp; Help</a></li>
+                    <li><a href="${baseurl}about.html" py:content="links.about">About this Pootle Server</a></li>
                 </ul>
             </div>
         </div>

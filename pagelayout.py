@@ -33,6 +33,7 @@ def localize_links(session):
   links["doclang"] = getdoclang(session.language)
   #links["logout"] = session.localize("Log out")
   #links["login"] = session.localize("Log in")
+  links["about"] = session.localize("About")
   #l10n: Verb, as in "to register"
   links["register"] = session.localize("Register")
   links["activate"] = session.localize("Activate")
