@@ -609,7 +609,7 @@ class ServerTester:
 
         # Fetch the page once more and check that the fuzzy checkbox is NOT checked.
         translatepage = self.fetch_page("zxx/testproject/test_fuzzy.po?translate=1&editing=1")
-        assert '<input class="unfuzzy" accesskey="f" type="checkbox" name="fuzzy0" id="fuzzy0" />' in translatepage
+        assert '<input class="fuzzycheck" accesskey="f" type="checkbox" name="fuzzy0" id="fuzzy0" />' in translatepage
         tree = potree.POTree(self.prefs.Pootle, self.server)
         project = projects.TranslationProject("zxx", "testproject", tree)
         pofile = project.getpofile("test_fuzzy.po")
