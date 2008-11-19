@@ -8,15 +8,15 @@ importmodules:
   pootleserver = 'Pootle.pootle'
 
 Pootle:
-  # Contains LDAP connection information.  To disable ldap support, simply
-  # delete this section of the .prefs file
-  ldap:
+  # Contains LDAP connection information.  To enable ldap support, simply
+  # uncomment the "ldap" line and the three variables below it
+  #ldap:
     # The ldap server to connect to.  Should start with "ldap://"
-    cn = ""
+    #cn = ""
     # The distinguished name of the user to bind anonymously with
-    dn = ""
+    #dn = ""
     # The password for the user with distinguished name dn
-    pw = ""
+    #pw = ""
 
   # If this option exists, it will allow hashed logins / registration.  Comment
   # out this line to remove this functionality
