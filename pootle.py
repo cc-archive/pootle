@@ -679,7 +679,7 @@ class PootleOptionParser(simplewebserver.WebOptionParser):
                     default=None, help="Specifies the location of the SQLite stats db file.")
     self.add_option('', "--profile", action="store", type="string", dest="profile",
                     help="Perform profiling, storing the result to the supplied filename.")
-    self.add_option('', "--no_cache_templates", action="store_false", dest="cache_templates", default=False,
+    self.add_option('', "--no_cache_templates", action="store_false", dest="cache_templates", default=True,
                     help="Pootle should not cache templates, but reload them with every request.")
     try:
       import psyco
