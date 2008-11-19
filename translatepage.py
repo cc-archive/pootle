@@ -512,17 +512,7 @@ class TranslatePage(pagelayout.PootleNavPage):
         tmsuggestions = self.project.gettmsuggestions(self.pofilename, self.item)
         tmsuggestions.extend(self.project.getterminology(self.session, self.pofilename, self.item))
 
-        if self.translatemode or self.reviewmode:
-          translator_comments = self.escapetext(unit.getnotes(origin="translator"), stripescapes=True)
-          transmerge = {} 
-          transedit = self.gettransedit(item, trans)
-          # Make sure we don't overwrite the diff attribute in case it's plural
-          if len(trans) > 1:
-            for i, f in enumerate(transedit["forms"]):
-              transedit["forms"][i].update(transmerge["forms"][i])
-          transmerge.update(transedit)
-        else:
-          transmerge = self.gettransedit(item, trans)
+        transmerge = self.gettransedit(item, trans)
       else:
         translator_comments = unit.getnotes(origin="translator")
         developer_comments = unit.getnotes(origin="developer")
