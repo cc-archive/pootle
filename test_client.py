@@ -121,27 +121,37 @@ class ServerTester:
         zxx.pluralequation ='0'
         attempt(self.alchemysess, zxx)
 
-        testuser = User(u"testuser")
-        testuser.name=u"Administrator"
-        testuser.activated="True"
-        testuser.passwdhash=md5.new("").hexdigest()
-        testuser.logintype="hash"
-        testuser.siteadmin=True
-        attempt(self.alchemysess, testuser)
+        adminuser = User(u"adminuser")
+        adminuser.name=u"Administrator"
+        adminuser.activated="True"
+        adminuser.passwdhash=md5.new("").hexdigest()
+        adminuser.logintype="hash"
+        adminuser.siteadmin=True
+        attempt(self.alchemysess, adminuser)
+
+        normaluser = User(u"normaluser")
+        normaluser.name=u"Norman the Normal User"
+        normaluser.activated="True"
+        normaluser.passwdhash=md5.new("").hexdigest()
+        normaluser.logintype="hash"
+        normaluser.siteadmin=False
+        attempt(self.alchemysess, normaluser)
 
         self.alchemysess.flush()
 
     def setup_prefs(self, method):
         """Sets up any extra preferences required."""
         from dbclasses import User
-        self.testuser = self.alchemysess.query(User).filter(User.username == u'testuser').first()
         if hasattr(method, "userprefs"):
+            if method.userprefs['rights.siteadmin']:
+                self.testuser = self.alchemysess.query(User).filter(User.username == u'adminuser').first()
+            else:
+                self.testuser = self.alchemysess.query(User).filter(User.username == u'normaluser').first()
+
             for key, value in method.userprefs.iteritems():
                 self.prefs.setvalue("Pootle.users.%s.%s" % (self.testuser.username, key), value)
-
-            # Update database with userprefs
-            self.testuser.siteadmin = method.userprefs['rights.siteadmin']
-            self.alchemysess.flush()
+        else:
+            self.testuser = self.alchemysess.query(User).filter(User.username == u'normaluser').first()
         self.alchemysess.close()
 
     def setup_testproject_dir(self, perms=None):
@@ -195,6 +205,7 @@ class ServerTester:
 
     def test_non_admin_rights(self):
         """Checks that, without admin rights, we can't access the admin screen."""
+
         contents = self.fetch_page("admin/")
         assert "You must log in to administer Pootle" in contents
 
@@ -203,6 +214,7 @@ class ServerTester:
 
         contents = self.fetch_page("admin/")
         assert "You do not have the rights to administer pootle" in contents
+    test_non_admin_rights.userprefs = {"rights.siteadmin": False}
 
     def test_admin_rights(self):
         """Checks that admin rights work properly."""
@@ -251,7 +263,7 @@ class ServerTester:
         """Tests that we can add a language to a project, then access its page when there are no files."""
         self.login()
 
-        language_list = self.fetch_page("projects/testproject/")
+        language_list = self.fetch_page("projects/testproject/index.html")
         assert "Test Language" not in language_list
         assert "Pootle Unit Tests" in language_list
 
@@ -433,7 +445,7 @@ class ServerTester:
         # NOTE: this is what we do currently: any altered strings become suggestions.
         # It may be a good idea to change this
         mergedcontents = '#: test.c\nmsgid "test"\nmsgstr "rest"\n\n#: frog.c\nmsgid "tadpole"\nmsgstr "fish"\n\n#: toad.c\nmsgid "slink"\nmsgstr "stink"\n'
-        suggestedcontents = '#: test.c\nmsgid ""\n"_: suggested by testuser\\n"\n"test"\nmsgstr "rested"\n'
+        suggestedcontents = '#: test.c\nmsgid ""\n"_: suggested by adminuser\\n"\n"test"\nmsgstr "rested"\n'
         pofile_storename = os.path.join(podir, "test_existing.po")
         assert os.path.isfile(pofile_storename)
         assert open(pofile_storename).read().find(mergedcontents) >= 0
@@ -487,7 +499,7 @@ class ServerTester:
         # NOTE: this is what we do currently: any altered strings become suggestions.
         # It may be a good idea to change this
         mergedcontents = '#: test.c\nmsgid "test"\nmsgstr "rest"\n\n#: frog.c\nmsgid "tadpole"\nmsgstr "fish"\n\n#: toad.c\nmsgid "slink"\nmsgstr "stink"\n'
-        suggestedcontents = '#: test.c\nmsgid ""\n"_: suggested by testuser\\n"\n"test"\nmsgstr "rested"\n'
+        suggestedcontents = '#: test.c\nmsgid ""\n"_: suggested by adminuser\\n"\n"test"\nmsgstr "rested"\n'
         pofile_storename = os.path.join(podir, "test_existing.po")
         assert os.path.isfile(pofile_storename)
         assert open(pofile_storename).read().find(mergedcontents) >= 0
