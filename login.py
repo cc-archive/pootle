@@ -6,7 +6,11 @@
 
 
 # The Mozilla LDAP package. 
-import mozldap
+try:
+  import ldap
+  import mozldap
+except ImportError:
+  pass
 
 from sqlalchemy import *
 from sqlalchemy.orm import *
