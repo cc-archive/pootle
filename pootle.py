@@ -259,31 +259,6 @@ class PootleServer(users.OptionalLoginAppServer, templateserver.TemplateServer):
     """gets the language for a user who does not specify one in the URL"""
     return session.language 
 
-  def handle(self, req, pathwords, argdict):
-    """handles the request and returns a page object in response"""
-    # Identical to the first five lines of super.handle()
-    argdict = self.processargs(argdict)
-    session = self.getsession(req, argdict)
-    session.pagecount += 1
-    session.remote_ip = self.getremoteip(req)
-    session.localaddr = self.getlocaladdr(req)
-
-    if self.instance.baseurl[-1] == '/':
-      session.currenturl = self.instance.baseurl[:-1]+req.path
-    else:
-      session.currenturl = self.instance.baseurl+req.path
-    session.reqpath = req.path
-    if req.path.find("?") >= 0:
-      session.getsuffix = req.path[req.path.find("?"):]
-    else:
-      session.getsuffix = "" 
-
-    page = self.getpage(pathwords, session, argdict)
-    # Can't use because it breaks ajax stuff.
-    #if not session.isopen:
-      #session.server.alchemysession.close();
-    return page
-
   @use_request_cache
   def getpage(self, pathwords, session, argdict):
     """return a page that will be sent to the user"""

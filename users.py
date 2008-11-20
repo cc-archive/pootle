@@ -278,9 +278,19 @@ class OptionalLoginAppServer(server.LoginAppServer):
     try:
       argdict = self.processargs(argdict)
       session = self.getsession(req, argdict)
+      if self.instance.baseurl[-1] == '/':
+        session.currenturl = self.instance.baseurl[:-1]+req.path
+      else:
+        session.currenturl = self.instance.baseurl+req.path
+      session.reqpath = req.path
+      if req.path.find("?") >= 0:
+        session.getsuffix = req.path[req.path.find("?"):]
+      else:
+        session.getsuffix = "" 
       if session.isopen:
         session.pagecount += 1
         session.remote_ip = self.getremoteip(req)
+        session.localaddr = self.getlocaladdr(req)
       else:
         self.initlanguage(req, session)
       page = self.getpage(pathwords, session, argdict)
