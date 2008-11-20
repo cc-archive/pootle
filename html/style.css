@@ -637,7 +637,7 @@ td.translation {
 
 #login-form {
     color: #000;
-    width: 250px;
+    width: 350px;
     display: none;
 }
 
@@ -648,7 +648,7 @@ td.translation {
 #login-form label {
     display: block;
     float: left;
-    width: 6em;
+    width: 10em;
     text-align: right;
     padding: 0 5px 0 0;
 }
