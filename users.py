@@ -669,8 +669,11 @@ class PootleSession(web.session.LoginSession):
     if self.language:
       self.lang = factory.getlanguage(self.language)
 
-  def validate(self):
-    """checks if this session is valid (which means the user must be activated)"""
+  def old_validate(self):
+    """DEPRECATED: Checks if this session is valid (which means the user must be activated).
+    
+    This is an older (but sqlalchemy aware) implimentation of validate() that
+    doesn't support LDAP, but might be useful for comparisson."""
     if not super(PootleSession, self).validate():
       return False
     usernode = self.server.alchemysession.query(User).filter_by(username=self.username).first()
@@ -746,11 +749,13 @@ class PootleSession(web.session.LoginSession):
     return getattr(self.user, "siteadmin", False)
 
   def validate(self, password=None):
-    """checks if this session is valid"""
-
-    # From a small amount of testing, this gets called without a password
-    # only from setsessionstring, which is called only on the first loading
-    # of a page by a given user
+    """Checks if this session is valid.
+    
+    We are overriding this to accept a password and to make it possible to 
+    defer authentication to ldap, even if the user doesn't exist in our 
+    loginchecker.
+    """
+    # This is roughly based on jToolkit.web.session::LoginSession::validate()
     self.isvalid = 0
     if self.markedinvalid:
       self.status = self.markedinvalid
@@ -765,10 +770,9 @@ class PootleSession(web.session.LoginSession):
         # is when it is called from setsessionstring(); the only
         # time that seems to be called is in the contructor for a session,
         # and a session seems to only be constructed if the session string
-        # was not in the cache.  To be safe, we will simply set isvalid to
-        # False; from what I've seen of jToolkit, it really doesn't seem
-        # like we can ever end up here if the sessionstring was valid
-        self.isvalid = False
+        # was not in the cache.  This will happen if the server was restarted
+        # during a session, for example.
+        self.isvalid = self.checksessionid()
         return self.isvalid
     elif self.loginchecker.logincheckers.has_key("ldap") and self.loginchecker.logincheckers["ldap"].userexists():
       if password != None:
@@ -781,12 +785,13 @@ class PootleSession(web.session.LoginSession):
     return self.isvalid
 
   def create(self,username,password,timestamp,language):
-    """initializes the session with the parameters"""
+    """Initializes the session with the parameters.
+    
+    We are overriding to be able to pass the password to validate()."""
     self.username, password, self.timestamp = username, password, timestamp
     self.setlanguage(language)
     self.sessionid = self.getsessionid(password)
-    self.validate(password) # Pass it the password; we need to make sure 
-                            # the password is correct!
+    self.validate(password) # Our overridden .validate() can accept a password
     self.open()
 
   def updatecookie(self, req, server):
