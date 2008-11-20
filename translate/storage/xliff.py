@@ -69,7 +69,7 @@ class xliffunit(lisa.LISAunit):
             nodes.extend(sources[- (sourcesl - targetsl):])
         return nodes
 
-    def addalttrans(self, txt, origin=None, lang=None):
+    def addalttrans(self, txt, origin=None, lang=None, sourcetxt=None, matchquality=None):
         """Adds an alt-trans tag and alt-trans components to the unit.
         
         @type txt: String
@@ -83,6 +83,13 @@ class xliffunit(lisa.LISAunit):
         alttrans = etree.SubElement(self.xmlelement, self.namespaced("alt-trans"))
         alttarget = etree.SubElement(alttrans, self.namespaced("target"))
         alttarget.text = txt
+        if sourcetxt:
+            if isinstance(sourcetxt, str):
+                sourcetxt = sourcetxt.decode("utf-8")
+            altsource = etree.SubElement(alttrans, self.namespaced("source"))
+            altsource.text = sourcetxt
+        if matchquality:
+            alttrans.set("match-quality", matchquality)
         if origin:
             alttrans.set("origin", origin)
         if lang:
@@ -294,13 +301,15 @@ class xliffunit(lisa.LISAunit):
         """returns the restype attribute in the trans-unit tag"""
         return self.xmlelement.get("restype")
 
-    def merge(self, otherunit, overwrite=False, comments=True):
+    def merge(self, otherunit, overwrite=False, comments=True, authoritative=False):
         #TODO: consider other attributes like "approved"
         super(xliffunit, self).merge(otherunit, overwrite, comments)
         if self.target:
             self.marktranslated()
-        if otherunit.isfuzzy():
-            self.markfuzzy()
+            if otherunit.isfuzzy():
+                self.markfuzzy()
+            elif otherunit.source == self.source:
+                self.markfuzzy(False)
 
     def correctorigin(self, node, origin):
         """Check against node tag's origin (e.g note or alt-trans)"""
