@@ -84,11 +84,12 @@ a img { border: 0; }
 html {
 /*	height: 98%;*/
 /*	min-height: 98%;*/
+    background: #fff;
 }
 body {
 /*	height: 98%;*/
 /*	min-height: 98%;*/
-	background: url(images/gradient.png) repeat-x scroll;
+	background: url(images/gradient.png) #fff repeat-x scroll;
 	margin: 0px;
 	padding: 0px;
 }
@@ -254,6 +255,7 @@ table.translate-table
 	width:100%;
 	border-spacing:1px;
 	border:0;
+	table-layout: fixed;
 }
 .translate-table-title
 {
