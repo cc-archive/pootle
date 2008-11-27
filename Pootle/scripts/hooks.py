@@ -31,3 +31,4 @@ def hook(project, hooktype, file, *args, **kwargs):
     raise ImportError(e)
   except Exception, e:
     print "Exception in project (%s) hook (%s) for file (%s): %s" % (project, hooktype, file, e)
+    raise
