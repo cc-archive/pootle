@@ -122,9 +122,14 @@ Pootle:
   # pootle.scriptsdirectory
   #
   # Contains python scripts; specifically:
-  # ${scriptsdirectory}/precommit/${projectname}.py, which will be called on
-  # any file in ${projectname} before it is committed.
-  # ${scriptsdirectory}/postcommit/${projectname}.py, which will be called on
-  # any file in ${projectname} that is successfully committed. 
+  # For each project, ${scriptsdirectory}/${projectname}.py is examined.
+  # If it exists, it must define the following functions:
+  # initialize(projectdir, languagecode)
+  # precommit(committedfile, author, message)
+  # postcommit(committedfile, success)
+  # preupdate(updatedfile)
+  # postupdate(updatedfile)
+  # See https://wiki.mozilla.org/Verbatim:Development/commithooks for further
+  # details.
   scriptsdirectory = "scripts"
 
