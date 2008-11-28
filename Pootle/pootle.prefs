@@ -84,7 +84,7 @@ Pootle:
   # If specified, "supportaddress" will be given in registration emails as the
   # address to contact with queries.
   registration:
-    fromaddress = "pootle-registration@localhost"
+    fromaddress = "webmaster@creativecommons.org"
     smtpserver = "localhost"
   # supportaddress = "pootle-admin@yourdomain.org"
 
