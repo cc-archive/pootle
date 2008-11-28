@@ -132,4 +132,5 @@ Pootle:
   # See https://wiki.mozilla.org/Verbatim:Development/commithooks for further
   # details.
   scriptsdirectory = "scripts"
+  enablealtsrc = False
 
