@@ -107,7 +107,7 @@ Pootle:
   # Enable support for alternative language. Take into account that this might
   # supposse a considerable performance penalty in big Pootle installations.
   # Default: "False"
-  # enablealtsrc = "True"
+  enablealtsrc = "True"
 
   # pootle.podirectory
   #
@@ -132,5 +132,4 @@ Pootle:
   # See https://wiki.mozilla.org/Verbatim:Development/commithooks for further
   # details.
   scriptsdirectory = "scripts"
-  enablealtsrc = False
 
