@@ -47,7 +47,7 @@ Pootle:
   # The name of this instance of Pootle. This will appear on the title bar of
   # most Pootle pages. You can use something short like 
   #   "$(Your Projectname) Pootle"
-  title = "Pootle"
+  title = "Creative Commons Pootle"
 
   # Pootle.description
   # 
