@@ -13,11 +13,8 @@ import os
 BASE_DIR = os.path.join(os.getenv('HOME'), 'checkouts', 'cc_org')
 CC_CHECKOUT = os.path.join(BASE_DIR, 'cc-i18n-trunk')
 
-import sys
-import subprocess
 import glob
 from subprocess import Popen, PIPE
-from Pootle.scripts.convert import monopo2po, po2monopo
 
 def initialize(projectdir, languagecode):
     '''This does nothing because for now I expect the CC Pootle maintainers to manually symlink in each language directory'''
