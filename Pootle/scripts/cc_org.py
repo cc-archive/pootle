@@ -1,9 +1,8 @@
 #!/usr/bin/python
+'''Verbatim script for managing the translate.creativecommons.org project.
+This is a modification to amodemo.py. 
+More information at https://wiki.mozilla.org/Verbatim'''
 
-# Verbatim script for managing the translate.creativecommons.org project.
-# This is a modification to amodemo.py. 
-# More information at https://wiki.mozilla.org/Verbatim
-#
 # Author: Wil Clouser <clouserw@mozilla.com>
 # Author: Dan Schafer <dschafer@andrew.cmu.edu>
 # Author: Asheesh Laroia <asheesh@creativecommons.org>
