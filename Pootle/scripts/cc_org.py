@@ -10,8 +10,8 @@
 
 import os
 ## HACK
-base_dir=os.path.join(os.getenv('HOME'), 'checkouts', 'cc_org')
-cc_checkout = os.path.join(base_dir, 'cc-i18n-trunk')
+BASE_DIR=os.path.join(os.getenv('HOME'), 'checkouts', 'cc_org')
+cc_checkout = os.path.join(BASE_DIR, 'cc-i18n-trunk')
 cc_style = os.path.join(cc_checkout, 'i18n')
 po_style = os.path.join(cc_checkout, 'po')
 
