@@ -20,7 +20,7 @@ from subprocess import Popen, PIPE
 from Pootle.scripts.convert import monopo2po, po2monopo
 
 def initialize(projectdir, languagecode):
-    # This does nothing because for now I expect the CC Pootle maintainers to manually symlink in each language directory
+    '''This does nothing because for now I expect the CC Pootle maintainers to manually symlink in each language directory'''
     pass
 
 def silent_success_call(argv, cwd = None):
