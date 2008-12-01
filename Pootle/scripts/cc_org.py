@@ -17,6 +17,7 @@ import sys
 import os
 import os.path
 import subprocess
+import glob
 from subprocess import Popen, PIPE
 from Pootle.scripts.convert import monopo2po, po2monopo
 
