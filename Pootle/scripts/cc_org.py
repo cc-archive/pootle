@@ -74,7 +74,7 @@ def precommit(committedfile, author, message):
     return ret
 
 def postcommit(committedfile, success):
-    # I can't think of anything we need to do post commit.
+    '''I can't think of anything we need to do post commit.'''
     pass
 
 def preupdate(updatedfile): 
