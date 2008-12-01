@@ -11,9 +11,9 @@
 import os
 ## HACK
 BASE_DIR=os.path.join(os.getenv('HOME'), 'checkouts', 'cc_org')
-cc_checkout = os.path.join(BASE_DIR, 'cc-i18n-trunk')
-cc_style = os.path.join(cc_checkout, 'i18n')
-po_style = os.path.join(cc_checkout, 'po')
+CC_CHECKOUT = os.path.join(BASE_DIR, 'cc-i18n-trunk')
+cc_style = os.path.join(CC_CHECKOUT, 'i18n')
+po_style = os.path.join(CC_CHECKOUT, 'po')
 
 import sys
 import os
@@ -35,10 +35,10 @@ def silent_success_call(argv, cwd = None):
 def committed2real_and_sub_and_ccstyle(committedfile):
     realpath = os.path.realpath(committedfile)
     assert realpath != committedfile # it better be a symlink to the hidden cc_checkout path
-    assert cc_checkout in realpath
+    assert CC_CHECKOUT in realpath
 
-    # Grab the relative path from cc_checkout
-    subpath = realpath.split(cc_checkout, 1)[1]
+    # Grab the relative path from CC_CHECKOUT
+    subpath = realpath.split(CC_CHECKOUT, 1)[1]
 
     assert 'po' in subpath
 
@@ -53,11 +53,11 @@ def precommit(committedfile, author, message):
     # Later: Optimize this by pulling the language out of the filename
     
     # run po2cc, and also be sure to commit the cc version
-    silent_success_call(['./bin/po2cc'], cwd=cc_checkout) # needs no arguments
+    silent_success_call(['./bin/po2cc'], cwd=CC_CHECKOUT) # needs no arguments
 
     realpath, subpath, cc_style = committed2real_and_sub(committedfile)
 
-    ret = [cc_checkout + subpath, cc_checkout + cc_style]
+    ret = [CC_CHECKOUT + subpath, CC_CHECKOUT + cc_style]
 
     # See if suggestion files and other gunk exists
     rest = glob.glob(committedfile.replace('.po', '') + '.pending')
@@ -81,7 +81,7 @@ def preupdate(updatedfile):
 
     realpath, subpath, cc_style = committed2real_and_sub(updatedfile)
 
-    return [cc_checkout + subpath, cc_checkout + cc_style]
+    return [CC_CHECKOUT + subpath, CC_CHECKOUT + cc_style]
 
 def postupdate(updatedfile):
     '''cc_org postupdate: After a new version of a file is grabbed from svn,
