@@ -12,8 +12,6 @@ import os
 ## HACK
 BASE_DIR = os.path.join(os.getenv('HOME'), 'checkouts', 'cc_org')
 CC_CHECKOUT = os.path.join(BASE_DIR, 'cc-i18n-trunk')
-cc_style = os.path.join(CC_CHECKOUT, 'i18n')
-po_style = os.path.join(CC_CHECKOUT, 'po')
 
 import sys
 import os
