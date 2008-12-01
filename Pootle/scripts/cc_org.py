@@ -77,7 +77,7 @@ def postcommit(committedfile, success):
 
 def preupdate(updatedfile): 
     '''cc_org preupdate: When one updates the PO-style po file,
-    one should update the CC-style one also.
+    one should update the CC-style one also.'''
 
     realpath, subpath, cc_style = committed2real_and_sub(updatedfile)
 
