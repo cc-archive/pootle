@@ -7,14 +7,14 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2005-06-13 14:54-0500\n"
-"PO-Revision-Date: 2006-10-02 17:08+0200\n"
-"Last-Translator: Khoem Sokhem <khoemsokhem@khmeros.info>\n"
+"PO-Revision-Date: 2008-11-26 02:47+0000\n"
+"Last-Translator: Sou Sovichea <chhit@chhit.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Pootle 0.10.1rc1\n"
+"X-Generator: Pootle 1.2.0-rc1\n"
 
 #: web/server.py:57
 #, python-format
@@ -43,31 +43,31 @@ msgstr ""
 
 #: web/server.py:110
 msgid "Login"
-msgstr ""
+msgstr "ចូល"
 
 #: web/server.py:123
 msgid "Username:"
-msgstr ""
+msgstr "ឈ្មោះអ្នកប្រើ"
 
 #: web/server.py:125
 msgid "Password:"
-msgstr ""
+msgstr "ពាក្យ​សម្ងាត់"
 
 #: web/server.py:130
 msgid "Language:"
-msgstr ""
+msgstr "ភាសា"
 
 #: web/server.py:551 web/server.py:642
 msgid "Select Application"
-msgstr ""
+msgstr "ជ្រើសកម្មវិធី"
 
 #: web/server.py:637
 msgid "Logout"
-msgstr ""
+msgstr "បោះបង់"
 
 #: web/server.py:639
 msgid "Exit"
-msgstr ""
+msgstr "ចាកចេញ"
 
 #: web/session.py:191 web/session.py:344 web/session.py:350
 #, python-format
@@ -76,19 +76,19 @@ msgstr ""
 
 #: web/session.py:193
 msgid "couldn't add new session"
-msgstr ""
+msgstr "មិនអាចបន្ថែមសម័យថ្មី"
 
 #: web/session.py:214
 msgid "logged out"
-msgstr ""
+msgstr "បានបោះបង់"
 
 #: web/session.py:234
 msgid "connected"
-msgstr ""
+msgstr "បានភ្ជាប់"
 
 #: web/session.py:269
 msgid "exited parent session"
-msgstr ""
+msgstr "បានចេញពីមេសម័យ"
 
 #: web/session.py:314
 msgid "need to define the users or userprefs entry on the server config"
@@ -101,7 +101,7 @@ msgstr ""
 
 #: web/session.py:362
 msgid "invalid username and/or password"
-msgstr ""
+msgstr "ឈ្មោះ​អ្នក​ប្រើរឹពាក្យ​សម្ងាត់មិន​ត្រឹមត្រូវ"
 
 #: web/session.py:433 web/session.py:437
 msgid "failed login confirmation"
