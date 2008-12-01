@@ -251,9 +251,9 @@ Pootle:
 
 # Български
 # Bulgarian
-#    bg.fullname = u'Bulgarian'
-#    bg.nplurals = '2'
-#    bg.pluralequation ='(n != 1)'
+    bg.fullname = u'Bulgarian'
+    bg.nplurals = '2'
+    bg.pluralequation ='(n != 1)'
 
 # বাংলা
 # Bengali
@@ -408,9 +408,9 @@ Pootle:
 
 # עברית
 # Hebrew
-#    he.fullname = u'Hebrew'
-#    he.nplurals = '2'
-#    he.pluralequation ='(n != 1)'
+    he.fullname = u'Hebrew'
+    he.nplurals = '2'
+    he.pluralequation ='(n != 1)'
 
 # हिन्दी
 # Hindi
