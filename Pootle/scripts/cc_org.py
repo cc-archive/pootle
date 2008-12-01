@@ -32,6 +32,9 @@ def silent_success_call(argv, cwd = None):
     assert not output[0]
 
 def committed2real_sub_cc(committedfile):
+    '''Given a filesystem path to a cc_org PO file, verify that it
+    really is a symlink to a file in CC_CHECKOUT, and then provide the
+    alternate path to it and to its CC-style counterpart.'''
     realpath = os.path.realpath(committedfile)
     assert realpath != committedfile # it better be a symlink to the hidden cc_checkout path
     assert CC_CHECKOUT in realpath
