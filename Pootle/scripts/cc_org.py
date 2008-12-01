@@ -24,6 +24,8 @@ def initialize(projectdir, languagecode):
     pass
 
 def silent_success_call(argv, cwd = None):
+    '''Give me an argv list, and I will pass it Popen, assert that it
+    exit(0)'d, and assert it had no output.'''
     pipe = Popen(argv, stdout=PIPE, cwd = cwd)
     output = pipe.communicate()
     assert pipe.returncode == 0
