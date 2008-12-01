@@ -14,8 +14,6 @@ BASE_DIR = os.path.join(os.getenv('HOME'), 'checkouts', 'cc_org')
 CC_CHECKOUT = os.path.join(BASE_DIR, 'cc-i18n-trunk')
 
 import sys
-import os
-import os.path
 import subprocess
 import glob
 from subprocess import Popen, PIPE
