@@ -31,7 +31,7 @@ def silent_success_call(argv, cwd = None):
     assert pipe.returncode == 0
     assert not output[0]
 
-def committed2real_and_sub_and_ccstyle(committedfile):
+def committed2real_sub_cc(committedfile):
     realpath = os.path.realpath(committedfile)
     assert realpath != committedfile # it better be a symlink to the hidden cc_checkout path
     assert CC_CHECKOUT in realpath
@@ -54,7 +54,7 @@ def precommit(committedfile, author, message):
     # run po2cc, and also be sure to commit the cc version
     silent_success_call(['./bin/po2cc'], cwd=CC_CHECKOUT) # needs no arguments
 
-    realpath, subpath, cc_style = committed2real_and_sub(committedfile)
+    realpath, subpath, cc_style = committed2real_sub_cc(committedfile)
 
     ret = [CC_CHECKOUT + subpath, CC_CHECKOUT + cc_style]
 
@@ -78,7 +78,7 @@ def preupdate(updatedfile):
     '''cc_org preupdate: When one updates the PO-style po file,
     one should update the CC-style one also.'''
 
-    realpath, subpath, cc_style = committed2real_and_sub(updatedfile)
+    realpath, subpath, cc_style = committed2real_sub_cc(updatedfile)
 
     return [CC_CHECKOUT + subpath, CC_CHECKOUT + cc_style]
 
