@@ -63,11 +63,18 @@ def precommit(committedfile, author, message):
         ret.extend(rest)
 
     # Look for .prefs and .stats, too
-    base = os.path.join(os.path.split(committedfile)[:-1])
-    prefs_and_stats = glob.glob(os.path.join(base, 'pootle-cc_org-*'))
-    ret.extend(prefs_and_stats)
+    ret.extend(committed2prefs_and_stats(committedfile))
 
     return ret
+
+def committed2prefs_and_stats(committedfile):
+    '''Input: a full path name
+    Output: The matching *.prefs and *.stats'''
+    realpath = os.path.realpath(committedfile)
+    dir, base = os.path.split(realpath)
+    
+    prefs_and_stats = glob.glob(dir, 'pootle-cc_org-*')
+    return prefs_and_stats
 
 def postcommit(committedfile, success):
     '''I can't think of anything we need to do post commit.'''
