@@ -13,8 +13,8 @@ How it works
 ------------
 The concept is: a PO file is a document, so lets use PO files directly, 
 rather than storing it in a database.  But we need quick access to statistics 
-so we cache them in .stats files. This lets us do most checks etc. in advance 
-and then iterate quickly.
+so we cache them in a statistics database. This lets us do most checks etc. 
+in advance and then iterate quickly.
 
 References
 ----------
@@ -132,7 +132,7 @@ To reindex manually, simply remove any stats files you want reindexed, or run
 
 Assignments
 -----------
-To assign sstrings to users, you need to create a xxx.po.assigns file in the same 
+To assign strings to users, you need to create a xxx.po.assigns file in the same 
 directory as xxx.po This should contain lines in the following format:
 
 username: action: 0,2-34,36,99
