@@ -76,8 +76,9 @@ or 2.3, please first check that the error also occurs in 2.4 or 2.5 before
 reporting it as a bug.
 
 The package lxml is needed for XML file processing. Version 1.3.4 and upwards 
-should work. Alpha versions of lxml 2.0.0 have been tested.
-http://codespeak.net/lxml/
+should work in most cases, although the odf2xliff and xliff2odf tools
+require at least version 2.0.0 to function correctly. 
+from http://codespeak.net/lxml/
 
 The package lxml has dependencies on libxml2 and libxslt. Please check the lxml
 site for the recommended versions of these libraries.
@@ -90,6 +91,11 @@ When the environment variable USECPO is set to 1, the toolkit will attempt to
 use libgettextpo from the gettext-tools package (it might have a slightly 
 different name on your distribution). This can greatly speed up access to PO 
 files, but has not yet been tested as extensively. Feedback is most welcome.
+
+When the environment variable PYTHONTYPECHECK is defined, the toolkit will
+enable dynamic type checking for certain functions in the toolkit (mostly
+those belonging the ODF-XLIFF code). This adds quite a bit of overhead and
+is only of use to programmers.
 
 Psyco can help to speed up several of the programs in the toolkit. It is
 optional, but highly recommended.
@@ -205,6 +211,8 @@ pot2po   - PO file initialiser
 csv2tbx  - Create TBX (TermBase eXchange) files from Comma Separated Value (CSV) files
 ini2po   - convert .ini files to to PO
 ical2po  - Convert iCalendar files (*.ics) to PO
+odf2xliff - Extract translatable strings from an ODF file into an XLIFF file
+xliff2odf - Combine an XLIFF file with an ODF template to generate a translated ODF file
 
 * Tools (Quality Assurance)
 pofilter - run any of the 40+ checks on your PO files
