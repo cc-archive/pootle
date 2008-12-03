@@ -20,7 +20,11 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-"""convert OpenDocument (ODF) files to XLIFF localization files"""
+"""convert OpenDocument (ODF) files to XLIFF localization files
+
+see: http://translate.sourceforge.net/wiki/toolkit/odf2xliff for examples and
+usage instructions.
+""""
 
 # Import from ttk
 from translate.storage import factory
