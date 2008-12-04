@@ -85,6 +85,15 @@ def write_odf(template, output_file, dom_trees):
 
 def convertxliff(input_file, output_file, template):
     """reads in stdin using fromfileclass, converts using convertorclass, writes to stdout"""
+
+    # Temporary hack.
+    # template and output_file are Zip files, and need to be
+    # read and written as binary files under Windows, but
+    # they aren't initially in binary mode (under Windows);
+    # thus, we have to reopen them as such.
+    template = open(template.name, 'rb')
+    output_file = open(output_file.name, 'wb')
+
     dom_trees = translate_odf(template, input_file)
     write_odf(template, output_file, dom_trees)
     return True

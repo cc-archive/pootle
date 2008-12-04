@@ -38,6 +38,13 @@ def convertodf(inputfile, outputfile, templates, engine):
        writes to stdout
     """
 
+    # Temporary hack.
+    # inputfile is a Zip file, and needs to be
+    # read and written as a binary file under Windows, but
+    # they isn't initially in binary mode (under Windows);
+    # thus, we have to reopen it as such.
+    inputfile = open(inputfile.name, 'rb')
+
     def translate_toolkit_implementation(store):
         import cStringIO
         import zipfile
