@@ -24,7 +24,7 @@
 
 see: http://translate.sourceforge.net/wiki/toolkit/odf2xliff for examples and
 usage instructions.
-""""
+"""
 
 # Import from ttk
 from translate.storage import factory
