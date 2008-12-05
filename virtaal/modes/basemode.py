@@ -18,11 +18,23 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-from maincontroller  import MainController
-from modecontroller  import ModeController
-from storecontroller import StoreController
-from storecursor     import StoreCursor
-from undocontroller  import UndoController
-from unitcontroller  import UnitController
 
-__all__ = ['MainController', 'ModeController', 'StoreController', 'StoreCursor', 'UndoController', 'UnitController']
+class BaseMode(object):
+    """Interface for other modes."""
+    name = 'BaseMode' """The internal name of the mode."""
+    display_name = '' """Sublcasses should mark this for translation with _()"""
+    widgets = []
+
+    # INITIALIZERS #
+    def __init__(self, mode_controller):
+        raise NotImplementedError()
+
+
+    # METHODS #
+    def selected(self):
+        """Signals that this mode has just been selected by the given document."""
+        raise NotImplementedError()
+
+    def unselected(self):
+        """This is run right before the mode is unselected."""
+        raise NotImplementedError()
