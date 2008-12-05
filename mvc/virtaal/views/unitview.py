@@ -23,7 +23,7 @@ import re
 from gobject import idle_add, GObject, SIGNAL_RUN_FIRST, TYPE_INT, TYPE_NONE, TYPE_PYOBJECT, TYPE_STRING
 from translate.lang import factory
 
-from virtaal.common import GObjectWrapper
+from virtaal.common import GObjectWrapper, pan_app
 
 import markup
 import rendering
@@ -237,6 +237,20 @@ class UnitView(gtk.EventBox, GObjectWrapper, gtk.CellEditable, BaseView):
         if self.unit.hasplural():
             num_targets = self.controller.nplurals
 
+        # FIXME: Move add_spell_checking() and its call below to a more appropriate place.
+        def add_spell_checking(text_view, language):
+            try:
+                import gtkspell
+            except ImportError, e:
+                gtkspell = None
+            if gtkspell:
+                try:
+                    spell = gtkspell.Spell(text_view)
+                    spell.set_language(language)
+                except:
+                    logging.info("Could not initialize spell checking")
+                    gtkspell = None
+
         def on_text_view_n_press_event(text_view, event):
             """Handle special keypresses in the textarea."""
             # Automatically move to the next line if \n is entered
@@ -279,6 +293,8 @@ class UnitView(gtk.EventBox, GObjectWrapper, gtk.CellEditable, BaseView):
             textview.get_pango_context().set_font_description(rendering.get_target_font_description())
             textview.get_pango_context().set_language(rendering.get_target_language())
             textview.connect('key-press-event', on_text_view_n_press_event)
+
+            add_spell_checking(textview, pan_app.settings.language['contentlang'])
 
             self.widgets['vbox_targets'].add(target)
             self.targets.append(textview)
