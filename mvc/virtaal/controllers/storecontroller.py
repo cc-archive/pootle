@@ -87,7 +87,7 @@ class StoreController(BaseController):
         if not i < len(self.get_store().get_units()):
             raise ValueError('Unit not found.')
 
-        self.cursor.select_index(i)
+        self.cursor.index = i
 
     def open_file(self, filename, uri=''):
         if not self.store:
