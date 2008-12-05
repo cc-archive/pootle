@@ -18,6 +18,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-from mainview import MainView
+from mainview  import MainView
+from storeview import StoreView
+from unitview  import UnitView
 
-__all__ = ['MainView']
+__all__ = ['MainView', 'StoreView', 'UnitView']
