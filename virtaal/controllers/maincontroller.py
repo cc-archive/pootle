@@ -46,7 +46,19 @@ class MainController(BaseController):
 
 
     # METHODS #
-    def open_file(self, filename, uri='', reload=False):
+    def show_error(self, msg):
+        """Shortcut for C{self.view.show_error_dialog()}"""
+        return self.view.show_error_dialog(message=msg)
+
+    def show_input(self, title='', msg=''):
+        """Shortcut for C{self.view.show_input_dialog()}"""
+        return self.view.show_input_dialog(title=title, message=msg)
+
+    def show_prompt(self, title='', msg=''):
+        """Shortcut for C{self.view.show_prompt_dialog()}"""
+        return self.view.show_prompt_dialog(title=title, message=msg)
+
+    def open_file(self, filename, uri=''):
         """Open the file given by C{filename}.
             @returns: The filename opened, or C{None} if an error has occurred."""
         if self.store_controller.store_is_modified():
@@ -57,23 +69,35 @@ class MainController(BaseController):
                 return
             # Unnecessary to test for 'discard'
 
+        if self.store_controller.store and self.store_controller.store.get_filename() == filename:
+            promptmsg = 'You selected the currently open file for opening. Do you want to reload the file?'
+            if not self.show_prompt(msg=promptmsg):
+                return False
+
         try:
-            self.store_controller.open_file(filename, uri)
-            return filename
-        except Exception, exc:
-            print 'Error opening file: ', exc
+            result = self.store_controller.open_file(filename, uri)
+            return result
+        except IOError, exc:
+            self.show_error(
+                message=_("Could not open file.\n\n%(error_message)s\n\nTry saving at a different location." % {error_message: str(exc)})
+            )
             return None
+        #except Exception, exc:
+        #    print 'Error opening file: ', exc
+        #    raise exc
+        #    return None
 
     def save_file(self, filename=''):
         try:
             self.store_controller.save_file(filename)
         except IOError, exc:
-            self.view.show_error_dialog(
-                message=_("Could not save file.\n\n%(error_message)s\n\nTry saving at a different location." % {error_message: str(e)})
+            self.show_error(
+                message=_("Could not save file.\n\n%(error_message)s\n\nTry saving at a different location." % {error_message: str(exc)})
             )
 
     def quit(self):
-        gtk.main_quit()
+        # FIXME: Add modification-checks
+        self.view.quit()
 
     def run(self):
-        self.main_view.show()
+        self.view.show()
