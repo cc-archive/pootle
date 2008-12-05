@@ -28,6 +28,7 @@ try:
     import gtkspell
 except ImportError, e:
     gtkspell = None
+gtkspell = None # FIXME: Remove this line when myspell is playing along.
 
 import pan_app
 import rendering
