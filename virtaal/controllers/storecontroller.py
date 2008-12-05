@@ -82,6 +82,7 @@ class Cursor(gobject.GObject):
         self.curr_pos = bisect_left(self.indices, index)
 
 
+# TODO: Create an event that is emitted when a cursor is created
 class StoreController(BaseController):
     """The controller for all store-level activities."""
 

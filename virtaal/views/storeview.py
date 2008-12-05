@@ -25,6 +25,9 @@ from storeviewwidgets import *
 
 
 # XXX: ASSUMPTION: The model to display is self.controller.store
+# TODO: Add event handler for store controller's cursor-creation event, so that
+#       the store view can connect to the new cursor's "cursor-changed" event
+#       (which is currently done in load_store())
 class StoreView(BaseView):
     """The view of the store and interface to store-level actions."""
 
