@@ -92,10 +92,11 @@ class UnitEditor(gtk.EventBox, gtk.CellEditable):
         'modified':(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, ())
     }
 
-    def __init__(self, parent, unit):
+    def __init__(self, unit, nplurals, targetlang):
         gtk.EventBox.__init__(self)
-        self._document = parent.document
-        self.layout = unit_layout.build_layout(unit, self._document.nplurals)
+        self.nplurals = nplurals
+        self.targetlang = targetlang
+        self.layout = unit_layout.build_layout(unit, self.nplurals)
         self.add(self.layout)
         self.sources = [src for src in unit_layout.get_sources(self.layout)]
         self.targets = []
@@ -144,7 +145,7 @@ class UnitEditor(gtk.EventBox, gtk.CellEditable):
     def copy_original(self, text_view):
         buf = text_view.get_buffer()
         position = buf.props.cursor_position
-        lang = factory.getlanguage(self._document.get_target_language())
+        lang = factory.getlanguage(self.targetlang)
         new_source = lang.punctranslate(self._unit.source)
         # if punctranslate actually changed something, let's insert that as an
         # undo step
