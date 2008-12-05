@@ -47,6 +47,7 @@ class SearchMode(BaseMode):
         self._create_widgets()
         self._setup_key_bindings()
         self.filter = self.makefilter()
+        self.re_search = None
         self.select_first_match = True
         self._search_timeout = 0
 
