@@ -195,6 +195,12 @@ class UnitView(gtk.EventBox, GObjectWrapper, gtk.CellEditable, BaseView):
         textview = textbox.get_child()
         labelexpander = LabelExpander(textbox, lambda *args: self.unit.getnotes(origin))
 
+        self.widgets['vbox_middle'].add(labelexpander)
+        if origin == 'programmer':
+            self.widgets['vbox_middle'].reorder_child(labelexpander, 0)
+        elif origin == 'translator':
+            self.widgets['vbox_middle'].reorder_child(labelexpander, 4)
+
     def _layout_add_sources(self):
         num_sources = 1
         if self.unit.hasplural():
@@ -231,6 +237,9 @@ class UnitView(gtk.EventBox, GObjectWrapper, gtk.CellEditable, BaseView):
             )
         textview = textbox.get_child()
         labelexpander = LabelExpander(textbox, lambda *args: self.unit.getcontext())
+
+        self.widgets['vbox_middle'].add(labelexpander)
+        self.widgets['vbox_middle'].reorder_child(labelexpander, 2)
 
     def _layout_add_targets(self):
         num_targets = 1
