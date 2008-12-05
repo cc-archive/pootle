@@ -137,7 +137,6 @@ class UnitView(gtk.EventBox, GObjectWrapper, gtk.CellEditable, BaseView):
             option.connect("toggled", self._on_fuzzy_toggled)
 
         self._modified = False
-        self.connect('key-press-event', self._on_key_press_event)
 
     def modified(self):
         self._modified = True
@@ -183,7 +182,6 @@ class UnitView(gtk.EventBox, GObjectWrapper, gtk.CellEditable, BaseView):
 
         scrollwnd = gtk.ScrolledWindow()
         scrollwnd.set_policy(gtk.POLICY_NEVER, scroll_policy)
-        scrollwnd.connect('key-press-event', self._on_key_press_event_enter)
         scrollwnd.add(textview)
 
         return scrollwnd
@@ -307,12 +305,6 @@ class UnitView(gtk.EventBox, GObjectWrapper, gtk.CellEditable, BaseView):
             return True
         return False
 
-    def _on_key_press_event_enter(self, widget, event, *_args):
-        if event.keyval == gtk.keysyms.Return or event.keyval == gtk.keysyms.KP_Enter:
-            widget.parent.emit('key-press-event', event)
-            return True
-        return False
-
     def _on_target_changed(self, buffer, index):
         newtext = buffer.get_text(buffer.get_start_iter(), buffer.get_end_iter())
         if self.unit.hasplural():
@@ -340,6 +332,11 @@ class UnitView(gtk.EventBox, GObjectWrapper, gtk.CellEditable, BaseView):
         self.emit('delete-text', old_text, start_offset, end_offset, cursor_pos, target_num)
 
     def _on_text_view_key_press_event(self, widget, event, *_args):
+        if event.keyval == gtk.keysyms.Return or event.keyval == gtk.keysyms.KP_Enter:
+            self.must_advance = True
+            self.editing_done()
+            return True
+
         # Alt-Down
         if event.keyval == gtk.keysyms.Down and event.state & gtk.gdk.MOD1_MASK:
             idle_add(self.copy_original, widget)
