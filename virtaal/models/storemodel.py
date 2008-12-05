@@ -104,8 +104,8 @@ class StoreModel(BaseModel):
             self._trans_store.savefile(filename)
 
     def _compute_nplurals(self, store):
-        # FIXME this needs to be pushed back into the stores, we don't want to import each format
         # Copied as-is from Document._compute_nplurals()
+        # FIXME this needs to be pushed back into the stores, we don't want to import each format
         if isinstance(store, poheader):
             nplurals, _pluralequation = store.getheaderplural()
             if nplurals is None:
