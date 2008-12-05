@@ -47,8 +47,9 @@ class StoreView(BaseView):
 
 
     # ACCESSORS #
-    def get_cursor(self):
+    def _get_cursor(self):
         return self.controller.cursor
+    cursor = property(_get_cursor)
 
     def get_store(self):
         return self.store
@@ -56,16 +57,13 @@ class StoreView(BaseView):
     def get_unit_celleditor(self, unit):
         return self.controller.get_unit_celleditor(unit)
 
-    def set_cursor_pos(self, pos):
-        self.get_cursor().select_index(pos)
-
 
     # METHODS #
     def load_store(self, store):
         self.store = store
         if store:
             self._treeview.set_model(store)
-            self.get_cursor().connect('cursor-changed', self._on_cursor_change)
+            self.cursor.connect('cursor-changed', self._on_cursor_change)
 
     def show(self):
         child = self.parent_widget.get_child()
@@ -81,4 +79,4 @@ class StoreView(BaseView):
 
     # EVENT HANDLERS #
     def _on_cursor_change(self, cursor):
-        self._treeview.select_index(cursor.curr_pos)
+        self._treeview.select_index(cursor.index)
