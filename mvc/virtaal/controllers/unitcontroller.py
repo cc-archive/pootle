@@ -18,6 +18,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
+import gobject
+
 from virtaal.views import UnitView
 
 from basecontroller import BaseController
@@ -26,8 +28,14 @@ from basecontroller import BaseController
 class UnitController(BaseController):
     """Controller for unit-based operations."""
 
+    __gtype_name__ = "UnitController"
+    __gsignals__ = {
+        'unit_editor_created': (gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_PYOBJECT,))
+    }
+
     # INITIALIZERS #
     def __init__(self, store_controller):
+        gobject.GObject.__init__(self)
         self.main_controller = store_controller.main_controller
         self.store_controller = store_controller
         self.store_controller.unit_controller = self

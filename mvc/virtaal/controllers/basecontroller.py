@@ -18,8 +18,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
+import gobject
 
-class BaseController(object):
+
+class BaseController(gobject.GObject):
     """Interface for controllers."""
 
     def __init__(self):
