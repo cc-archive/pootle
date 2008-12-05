@@ -204,10 +204,8 @@ class MainView(BaseView):
     def _setup_key_bindings(self):
         self.accel_group = gtk.AccelGroup()
         self.main_window.add_accel_group(self.accel_group)
-        gtk.accel_map_add_entry("<Virtaal>/Edit/Undo", gtk.keysyms.z, gdk.CONTROL_MASK)
-        gtk.accel_map_add_entry("<Virtaal>/Edit/Search", gtk.keysyms.F3, 0)
         # TODO: Move this to where it should be
-        #self.accel_group.connect_by_path("<Virtaal>/Edit/Undo", self._on_undo)
+        #gtk.accel_map_add_entry("<Virtaal>/Edit/Search", gtk.keysyms.F3, 0)
         #self.accel_group.connect_by_path("<Virtaal>/Edit/Search", self._on_search)
 
 
