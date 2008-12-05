@@ -49,14 +49,18 @@ class StoreController(BaseController):
 
 
     # METHODS #
-    def get_nplurals(self):
-        return self.store and self.store.nplurals or 0
+    def get_nplurals(self, store=None):
+        if not store:
+            store = self.store
+        return store and store.nplurals or 0
 
-    def get_target_language(self):
-        return self.store and self.store.get_target_language() or 'und'
+    def get_target_language(self, store=None):
+        if not store:
+            store = self.store
+        return store and store.get_target_language() or 'und'
 
     def get_unit_celleditor(self, unit):
-        return self.unit_controller.get_unit_celleditor(unit)
+        return self.unit_controller.load_unit(unit)
 
     def open_file(self, filename, uri=''):
         if not self.store:
