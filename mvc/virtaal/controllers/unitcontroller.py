@@ -44,6 +44,12 @@ class UnitController(BaseController):
         self.unit_views = {}
 
 
+    # ACCESSORS #
+    def get_target_language(self):
+        """Get the target language via C{self.store_controller}."""
+        return self.store_controller.get_target_language()
+
+
     # METHODS #
     def load_unit(self, unit):
         self.current_unit = unit
