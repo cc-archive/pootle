@@ -18,6 +18,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
+import gobject
+
 from virtaal.common import GObjectWrapper, pan_app
 from virtaal.views import MainView
 
@@ -29,6 +31,9 @@ class MainController(BaseController):
         program loop."""
 
     __gtype_name__ = 'MainController'
+    __gsignals__ = {
+        'controller-registered': (gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_PYOBJECT,))
+    }
 
     # INITIALIZERS #
     def __init__(self):
@@ -50,7 +55,69 @@ class MainController(BaseController):
     def set_saveable(self, value):
         self.view.set_saveable(value)
 
+    def _get_mode_controller(self):
+        return getattr(self, '_mode_controller', None)
+    def _set_mode_controller(self, value):
+        self._mode_controller = value
+        self.emit('controller-registered', self._mode_controller)
+    mode_controller = property(_get_mode_controller, _set_mode_controller)
+
+    def _get_store_controller(self):
+        return getattr(self, '_store_controller', None)
+    def _set_store_controller(self, value):
+        self._store_controller = value
+        self.emit('controller-registered', self._store_controller)
+    store_controller = property(_get_store_controller, _set_store_controller)
+
+    def _get_undo_controller(self):
+        return getattr(self, '_undo_controller', None)
+    def _set_undo_controller(self, value):
+        self._undo_controller = value
+        self.emit('controller-registered', self._undo_controller)
+    undo_controller = property(_get_undo_controller, _set_undo_controller)
+
+    def _get_unit_controller(self):
+        return getattr(self, '_unit_controller', None)
+    def _set_unit_controller(self):
+        self._unit_controller = value
+        self.emit('controller-registered', self._unit_controller)
+    unit_controller = property(_get_unit_controller, _set_unit_controller)
+
     # METHODS #
+    def open_file(self, filename, uri=''):
+        """Open the file given by C{filename}.
+            @returns: The filename opened, or C{None} if an error has occurred."""
+        if self.store_controller.is_modified():
+            response = self.view.show_save_confirm_dialog()
+            if response == 'save':
+                self.store_controller.save_file()
+            elif response == 'cancel':
+                return False
+            # Unnecessary to test for 'discard'
+
+        if self.store_controller.store and self.store_controller.store.get_filename() == filename:
+            promptmsg = 'You selected the currently open file for opening. Do you want to reload the file?'
+            if not self.show_prompt(msg=promptmsg):
+                return False
+
+        try:
+            self.store_controller.open_file(filename, uri)
+            self.mode_controller.refresh_mode()
+            return True
+        except Exception, exc:
+            self.show_error(
+                _("Could not open file.\n\n%(error_message)s\n\nTry opening a different file." % {'error_message': str(exc)})
+            )
+            return False
+
+    def save_file(self, filename=None):
+        try:
+            self.store_controller.save_file(filename)
+        except IOError, exc:
+            self.show_error(
+                message=_("Could not save file.\n\n%(error_message)s\n\nTry saving at a different location." % {error_message: str(exc)})
+            )
+
     def select_unit(self, unit):
         """Select the specified unit in the store view."""
         self.store_controller.select_unit(unit)
@@ -66,43 +133,6 @@ class MainController(BaseController):
     def show_prompt(self, title='', msg=''):
         """Shortcut for C{self.view.show_prompt_dialog()}"""
         return self.view.show_prompt_dialog(title=title, message=msg)
-
-    def open_file(self, filename, uri=''):
-        """Open the file given by C{filename}.
-            @returns: The filename opened, or C{None} if an error has occurred."""
-        if self.store_controller.is_modified():
-            response = self.view.show_save_confirm_dialog()
-            if response == 'save':
-                self.store_controller.save_file()
-            elif response == 'cancel':
-                return
-            # Unnecessary to test for 'discard'
-
-        if self.store_controller.store and self.store_controller.store.get_filename() == filename:
-            promptmsg = 'You selected the currently open file for opening. Do you want to reload the file?'
-            if not self.show_prompt(msg=promptmsg):
-                return False
-
-        try:
-            result = self.store_controller.open_file(filename, uri)
-            return result
-        except IOError, exc:
-            self.show_error(
-                message=_("Could not open file.\n\n%(error_message)s\n\nTry saving at a different location." % {error_message: str(exc)})
-            )
-            return None
-        #except Exception, exc:
-        #    print 'Error opening file: ', exc
-        #    raise exc
-        #    return None
-
-    def save_file(self, filename=None):
-        try:
-            self.store_controller.save_file(filename)
-        except IOError, exc:
-            self.show_error(
-                message=_("Could not save file.\n\n%(error_message)s\n\nTry saving at a different location." % {error_message: str(exc)})
-            )
 
     def quit(self):
         if self.store_controller.is_modified():
