@@ -18,6 +18,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
+import gtk
+
 from baseview import BaseView
 from storeviewwidgets import *
 
@@ -34,6 +36,8 @@ class StoreView(BaseView):
 
         self._init_treeview()
         self.load_store(self.controller.store)
+
+        self.controller.main_controller.view.main_window.connect('configure-event', self._treeview.on_configure_event)
 
     def _init_treeview(self):
         self._treeview = StoreTreeView(self)

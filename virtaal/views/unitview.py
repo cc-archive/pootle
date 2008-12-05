@@ -268,14 +268,7 @@ class UnitView(gtk.EventBox, gtk.CellEditable, BaseView):
             self.targets.append(textview)
 
     def _layout_add_fuzzy(self):
-        def on_toggled(widget, *_args):
-            if widget.get_active():
-                set_option(True)
-            else:
-                set_option(False)
-
         check_button = gtk.CheckButton(label=_('F_uzzy'))
-        check_button.connect('toggled', on_toggled)
         check_button.set_active(self.unit.isfuzzy())
         # FIXME: not allowing focus will probably raise various issues related to keyboard accesss.
         check_button.set_property("can-focus", False)

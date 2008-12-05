@@ -21,6 +21,7 @@
 import gobject
 import gtk
 import pango
+from gtk import gdk
 
 from virtaal import markup
 from virtaal import rendering
@@ -158,8 +159,7 @@ class StoreTreeModel(gtk.GenericTreeModel):
         self.row_changed(new_path, self.get_iter(new_path))
 
     def store_index_to_path(self, store_index):
-        itr = bisect_left(range(len(self._store.units)), store_index)
-        return self.on_get_path(itr)
+        return self.on_get_path(store_index)
 
     def path_to_store_index(self, path):
         return path[0]
