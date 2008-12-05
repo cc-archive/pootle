@@ -18,11 +18,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-from maincontroller  import MainController
-from modecontroller  import ModeController
-from storecontroller import StoreController
-from storecursor     import StoreCursor
-from undocontroller  import UndoController
-from unitcontroller  import UnitController
+from defaultmode import DefaultMode
+from quicktransmode import QuickTranslateMode
+from searchmode import SearchMode
 
-__all__ = ['MainController', 'ModeController', 'StoreController', 'StoreCursor', 'UndoController', 'UnitController']
+
+modeclasses = [DefaultMode, QuickTranslateMode, SearchMode]
+
+__all__ = ['modeclasses']
