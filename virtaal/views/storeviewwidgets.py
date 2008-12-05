@@ -20,6 +20,7 @@
 
 import gobject
 import gtk
+import logging
 import pango
 from gtk import gdk
 
