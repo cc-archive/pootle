@@ -31,7 +31,7 @@ from baseview import BaseView
 from widgets.label_expander import LabelExpander
 
 
-class UnitView(gtk.EventBox, gtk.CellEditable, BaseView):
+class UnitView(gtk.EventBox, GObjectWrapper, gtk.CellEditable, BaseView):
     """View for translation units and its actions."""
 
     __gtype_name__ = "UnitView"
@@ -48,11 +48,10 @@ class UnitView(gtk.EventBox, gtk.CellEditable, BaseView):
     # INITIALIZERS #
     def __init__(self, controller, unit):
         gtk.EventBox.__init__(self)
-        self.controller = controller
+        GObjectWrapper.__init__(self)
 
+        self.controller = controller
         self.gladefilename, self.gui = self.load_glade_file(["virtaal", "virtaal.glade"], root='UnitEditor', domain="virtaal")
-        self._all_signals = ('modified', 'insert-text', 'delete-text')
-        self._enabled_signals = list(self._all_signals)
         self.sources = []
         self.targets = []
         self.options = {}
@@ -105,24 +104,6 @@ class UnitView(gtk.EventBox, gtk.CellEditable, BaseView):
 
         translation_start = self.first_word_re.match(text).span()[1]
         buf.place_cursor(buf.get_iter_at_offset(translation_start))
-
-    def disable_signals(self, signals=[]):
-        """Disable all or specified signals."""
-        if signals:
-            for sig in signals:
-                if sig not in self._enabled_signals:
-                    self._enabled_signals.remove(sig)
-        else:
-            self._enabled_signals = []
-
-    def enable_signals(self, signals=[]):
-        """Enable all or specified signals."""
-        if signals:
-            for sig in signals:
-                if sig not in self._enabled_signals:
-                    self._enabled_signals.append(sig)
-        else:
-            self._enabled_signals = list(self._all_signals)
 
     def focus_text_view(self, text_view):
         text_view.grab_focus()
@@ -341,24 +322,15 @@ class UnitView(gtk.EventBox, gtk.CellEditable, BaseView):
         else:
             raise IndexError()
 
-        if 'modified' not in self._enabled_signals:
-            return
-
         self.modified()
 
     def _on_target_insert_text(self, buff, iter, ins_text, length, target_num):
-        if 'insert-text' not in self._enabled_signals:
-            return
-
         old_text = buff.get_text(buff.get_start_iter(), buff.get_end_iter())
         offset = len(buff.get_text(buff.get_start_iter(), iter)) # FIXME: Isn't there a better way to do this?
 
         self.emit('insert-text', old_text, ins_text, offset, target_num)
 
     def _on_target_delete_range(self, buff, start_iter, end_iter, target_num):
-        if 'delete-text' not in self._enabled_signals:
-            return
-
         cursor_iter = buff.get_iter_at_mark(buff.get_insert())
         cursor_pos = len(buff.get_text(buff.get_start_iter(), cursor_iter))
         old_text = buff.get_text(buff.get_start_iter(), buff.get_end_iter())
