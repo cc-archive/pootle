@@ -21,11 +21,12 @@
 import gtk
 import os
 import __version__
-from support import openmailto
+
 import pan_app
+from support import openmailto
 
 
-class About(gtk.AboutDialog):
+class AboutDialog(gtk.AboutDialog):
     def __init__(self, parent):
         gtk.AboutDialog.__init__(self)
         self._register_uri_handlers()
