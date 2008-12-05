@@ -113,9 +113,9 @@ class MainController(BaseController):
     def save_file(self, filename=None):
         try:
             self.store_controller.save_file(filename)
-        except IOError, exc:
+        except Exception, exc:
             self.show_error(
-                message=_("Could not save file.\n\n%(error_message)s\n\nTry saving at a different location." % {error_message: str(exc)})
+                _("Could not save file.\n\n%(error_message)s\n\nTry saving at a different location." % {'error_message': str(exc)})
             )
 
     def select_unit(self, unit):

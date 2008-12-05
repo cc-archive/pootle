@@ -54,23 +54,26 @@ class EntryDialog(gtk.Dialog):
         self.add_button(gtk.STOCK_OK, gtk.RESPONSE_OK)
         self.set_default_response(gtk.RESPONSE_OK)
 
-    def run(self, title=None, message=None):
+    def run(self, title=None, message=None, keepInput=False):
         if message:
             self.set_message(message)
         if title:
             self.set_title(title)
 
+        if not keepInput:
+            self.ent_input.set_text('')
+
         self.show_all()
         self.ent_input.grab_focus()
         response = super(EntryDialog, self).run()
 
-        return response, self.ent_message.get_text().decode('utf-8')
+        return response, self.ent_input.get_text().decode('utf-8')
 
     def set_message(self, message):
         self.lbl_message.set_markup(message)
 
     def set_title(self, title):
-        self.set_title(title)
+        super(EntryDialog, self).set_title(title)
 
 # TODO: Reparent dialogs with self._top_window
 # XXX: This class is based on main_window.py:Virtaal from the pre-MVC days.
@@ -255,7 +258,10 @@ class MainView(BaseView):
         response, text = self.input_dialog.run(title=title, message=message)
         self.input_dialog.hide()
         self._top_window = old_top
-        return response == gtk.RESPONSE_OK and text or None
+
+        if response == gtk.RESPONSE_OK:
+            return text
+        return None
 
     def show_open_dialog(self, title=''):
         """@returns: The selected file name and URI if the OK button was clicked.
