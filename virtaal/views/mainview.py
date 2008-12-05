@@ -239,7 +239,7 @@ class MainView(BaseView):
         gtk.main_quit()
 
     def show(self):
-        self.main_window.show_all()
+        self.main_window.show()
         gtk.main()
 
     def show_input_dialog(self, title='', message=''):
