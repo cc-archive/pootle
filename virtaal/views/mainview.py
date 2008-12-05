@@ -20,12 +20,17 @@
 
 import gobject
 import gtk
+import os
 from gtk import gdk
 from gtk import glade
+from translate.storage import factory
+
+from virtaal import pan_app
+from virtaal import recent
+from virtaal.support import openmailto
 
 from aboutdialog import AboutDialog
-from virtaal import pan_app
-from virtaal.support import openmailto
+from baseview import BaseView
 
 try:
     import pygtk
@@ -42,7 +47,7 @@ class EntryDialog(gtk.Dialog):
         self.set_size_request(450, 100)
 
         self.lbl_message = gtk.Label()
-        self.vbox.pack_start(lbl_message)
+        self.vbox.pack_start(self.lbl_message)
 
         self.ent_input = gtk.Entry()
         self.ent_input.set_activates_default(True)
@@ -118,7 +123,7 @@ class MainView(BaseView):
         self.status_bar = self.gui.get_widget("status_bar")
         self.statusbar_context_id = self.status_bar.get_context_id("statusbar")
         self.main_window = self.gui.get_widget("MainWindow")
-        self._top_window = main_window
+        self._top_window = self.main_window
         self.main_window.set_icon_from_file(pan_app.get_abs_data_filename(["icons", "virtaal.ico"]))
         recent_files = self.gui.get_widget("recent_files")
         recent.rc.connect("item-activated", self._on_recent_file_activated)
@@ -132,6 +137,13 @@ class MainView(BaseView):
 
         self.error_dialog = gtk.MessageDialog(self.main_window, gtk.DIALOG_MODAL, gtk.MESSAGE_ERROR, gtk.BUTTONS_OK)
         self.error_dialog.set_title(_("Error"))
+
+        self.prompt_dialog = gtk.MessageDialog(self.main_window,
+            gtk.DIALOG_MODAL,
+            gtk.MESSAGE_QUESTION,
+            gtk.BUTTONS_YES_NO,
+        )
+        self.prompt_dialog.set_default_response(gtk.RESPONSE_NO)
 
         self.open_chooser = gtk.FileChooserDialog(
             _('Choose a translation file'),
@@ -173,9 +185,7 @@ class MainView(BaseView):
             (gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL, gtk.STOCK_SAVE, gtk.RESPONSE_OK)
         )
         self.save_chooser.set_do_overwrite_confirmation(True)
-        directory, filename = path.split(self.controller.get_store().get_filename())
         self.save_chooser.set_default_response(gtk.RESPONSE_OK)
-        self.save_chooser.set_current_folder(directory)
 
         (RESPONSE_SAVE, RESPONSE_DISCARD) = (gtk.RESPONSE_YES, gtk.RESPONSE_NO)
         self.confirm_dialog = gtk.MessageDialog(
@@ -199,10 +209,18 @@ class MainView(BaseView):
         gtk.accel_map_add_entry("<Virtaal>/Navigation/Down", gtk.accelerator_parse("Down")[0], gdk.CONTROL_MASK)
         gtk.accel_map_add_entry("<Virtaal>/Navigation/PgUp", gtk.accelerator_parse("Page_Up")[0], gdk.CONTROL_MASK)
         gtk.accel_map_add_entry("<Virtaal>/Navigation/PgDown", gtk.accelerator_parse("Page_Down")[0], gdk.CONTROL_MASK)
-        self.accel_group.connect_by_path("<Virtaal>/Edit/Undo", self._on_undo)
-        self.accel_group.connect_by_path("<Virtaal>/Edit/Search", self._on_search)
+        # TODO: Move this to where it should be
+        #self.accel_group.connect_by_path("<Virtaal>/Edit/Undo", self._on_undo)
+        #self.accel_group.connect_by_path("<Virtaal>/Edit/Search", self._on_search)
 
     # METHODS #
+    def quit(self):
+        gtk.main_quit()
+
+    def show(self):
+        self.main_window.show_all()
+        gtk.main()
+
     def show_input_dialog(self, title='', message=''):
         """Shows a simple dialog containing a text entry.
             @returns The text entered into the dialog, or C{None}."""
@@ -210,6 +228,7 @@ class MainView(BaseView):
         old_top = self._top_window
         self._top_window = self.input_dialog
         response, text = self.input_dialog.run(title=title, message=message)
+        self.input_dialog.hide()
         self._top_window = old_top
         return response == gtk.RESPONSE_OK and text or None
 
@@ -219,13 +238,14 @@ class MainView(BaseView):
         if title:
             self.open_chooser.set_title(title)
 
-        if path.exists(pan_app.settings.general["lastdir"]):
+        if os.path.exists(pan_app.settings.general["lastdir"]):
             self.open_chooser.set_current_folder(pan_app.settings.general["lastdir"])
 
         self.open_chooser.set_transient_for(self._top_window)
         old_top = self._top_window
         self._top_window = self.open_chooser
         response = self.open_chooser.run() == gtk.RESPONSE_OK
+        self.open_chooser.hide()
         self._top_window = old_top
 
         if response:
@@ -243,7 +263,23 @@ class MainView(BaseView):
         old_top = self._top_window
         self._top_window = self.error_dialog
         response = self.error_dialog.run()
+        self.error_dialog.hide()
         self._top_window = old_top
+
+    def show_prompt_dialog(self, title='', message=''):
+        if title:
+            self.prompt_dialog.set_title(title)
+        if message:
+            self.prompt_dialog.set_markup(message)
+
+        self.prompt_dialog.set_transient_for(self._top_window)
+        old_top = self._top_window
+        self._top_window = self.prompt_dialog
+        response = self.prompt_dialog.run()
+        self.prompt_dialog.hide()
+        self._top_window = old_top
+
+        return response == gtk.RESPONSE_NO
 
     def show_save_dialog(self, title=''):
         """@returns: C{True} if the OK button was pressed, C{False} for any
@@ -251,10 +287,14 @@ class MainView(BaseView):
         if title:
             self.save_chooser.set_title(title)
 
+        directory, filename = os.path.split(self.controller.get_store().get_filename())
+        self.save_chooser.set_current_folder(directory)
+
         self.save_chooser.set_transient_for(self._top_window)
         old_top = self._top_window
         self._top_window = self.save_chooser
         response = self.save_chooser.run()
+        self.save_chooser.hide()
         self._top_window = old_top
 
         return response == gtk.RESPONSE_OK
@@ -266,6 +306,7 @@ class MainView(BaseView):
         old_top = self._top_window
         self._top_window = self.confirm_dialog
         response = self.confirm_dialog.run()
+        self.confirm_dialog.hide()
         self._top_window = old_top
 
         if response == gtk.RESPONSE_YES:
@@ -292,7 +333,7 @@ class MainView(BaseView):
         if filename_and_uri:
             filename = filename_and_uri[0]
             uri = filename_and_uri[1]
-            self.controller.open_file(filename, uri=uri):
+            self.controller.open_file(filename, uri=uri)
 
     def _on_file_save(self, widget=None):
         self.controller.save_file()
@@ -300,7 +341,7 @@ class MainView(BaseView):
     def _on_file_saveas(self, widget=None):
         store_filename = self.controller.get_store_filename()
         if store_filename:
-            directory, filename = path.split(self.controller.get_store_filename())
+            directory, filename = os.path.split(self.controller.get_store_filename())
         else:
             filename = ''
         self.save_chooser.set_current_name(filename)
@@ -327,7 +368,7 @@ class MainView(BaseView):
         if item.exists():
             # For now we only handle local files, and limited the recent
             # manager to only give us those anyway, so we can get the filename
-            self.open_file(item.get_uri_display(), self.main_window, uri=item.get_uri())
+            self.controller.open_file(item.get_uri_display(), uri=item.get_uri())
 
     def _on_report_bug(self, _widget=None):
         openmailto.open("http://bugs.locamotion.org/enter_bug.cgi?product=Virtaal&version=%s" % __version__.ver)
