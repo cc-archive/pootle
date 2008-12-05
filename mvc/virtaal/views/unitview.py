@@ -21,6 +21,7 @@
 import gobject
 import gtk
 import re
+from translate.lang import factory
 
 from virtaal import markup
 from virtaal import rendering
@@ -67,17 +68,16 @@ class UnitView(gtk.EventBox, gtk.CellEditable, BaseView):
     def copy_original(self, text_view):
         buf = text_view.get_buffer()
         position = buf.props.cursor_position
-        lang = factory.getlanguage(self.targetlang)
-        new_source = lang.punctranslate(self._unit.source)
+        lang = factory.getlanguage(self.controller.get_target_language())
+        new_source = lang.punctranslate(self.unit.source)
         # if punctranslate actually changed something, let's insert that as an
         # undo step
-        if new_source != self._unit.source:
-            buf.set_text(markup.escape(self._unit.source))
-            # TODO: consider a better position to return to on undo
-            undo_buffer.merge_actions(buf, position)
+        if new_source != self.unit.source:
+            buf.set_text(markup.escape(self.unit.source))
+            #undo_buffer.merge_actions(buf, position)
         buf.set_text(markup.escape(new_source))
-        undo_buffer.merge_actions(buf, position)
-        unit_layout.focus_text_view(text_view)
+        #undo_buffer.merge_actions(buf, position)
+        self.focus_text_view(text_view)
         return False
 
     def do_start_editing(self, *_args):
@@ -85,6 +85,15 @@ class UnitView(gtk.EventBox, gtk.CellEditable, BaseView):
         self.targets[0].grab_focus()
 
         buf = self.targets[0].get_buffer()
+        text = buf.get_text(buf.get_start_iter(), buf.get_end_iter())
+
+        translation_start = self.first_word_re.match(text).span()[1]
+        buf.place_cursor(buf.get_iter_at_offset(translation_start))
+
+    def focus_text_view(self, text_view):
+        text_view.grab_focus()
+
+        buf = text_view.get_buffer()
         text = buf.get_text(buf.get_start_iter(), buf.get_end_iter())
 
         translation_start = self.first_word_re.match(text).span()[1]
@@ -111,6 +120,10 @@ class UnitView(gtk.EventBox, gtk.CellEditable, BaseView):
 
         self._modified = False
         self.connect('key-press-event', self._on_key_press_event)
+
+    def modified(self):
+        self._modified = True
+        self.emit('modified')
 
     def show(self):
         self.show()
