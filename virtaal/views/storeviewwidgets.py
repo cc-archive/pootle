@@ -198,14 +198,19 @@ class StoreTreeView(gtk.TreeView):
         self._waiting_for_row_change = 0
 
     def _add_accelerator_bindings(self):
-        # TODO: Update the following:
-        pass
-        #self.accel_group = gtk.AccelGroup()
-        #self._owner.main_window.add_accel_group(self.accel_group)
-        #self.accel_group.connect_by_path("<Virtaal>/Navigation/Up", self._move_up)
-        #self.accel_group.connect_by_path("<Virtaal>/Navigation/Down", self._move_down)
-        #self.accel_group.connect_by_path("<Virtaal>/Navigation/PgUp", self._move_pgup)
-        #self.accel_group.connect_by_path("<Virtaal>/Navigation/PgDown", self._move_pgdown)
+        gtk.accel_map_add_entry("<Virtaal>/Navigation/Up", gtk.accelerator_parse("Up")[0], gdk.CONTROL_MASK)
+        gtk.accel_map_add_entry("<Virtaal>/Navigation/Down", gtk.accelerator_parse("Down")[0], gdk.CONTROL_MASK)
+        gtk.accel_map_add_entry("<Virtaal>/Navigation/PgUp", gtk.accelerator_parse("Page_Up")[0], gdk.CONTROL_MASK)
+        gtk.accel_map_add_entry("<Virtaal>/Navigation/PgDown", gtk.accelerator_parse("Page_Down")[0], gdk.CONTROL_MASK)
+
+        self.accel_group = gtk.AccelGroup()
+        self.accel_group.connect_by_path("<Virtaal>/Navigation/Up", self._move_up)
+        self.accel_group.connect_by_path("<Virtaal>/Navigation/Down", self._move_down)
+        self.accel_group.connect_by_path("<Virtaal>/Navigation/PgUp", self._move_pgup)
+        self.accel_group.connect_by_path("<Virtaal>/Navigation/PgDown", self._move_pgdown)
+
+        mainview = self.view.controller.main_controller.view # FIXME: Is this acceptable?
+        mainview.add_accel_group(self.accel_group)
 
     def _enable_tooltips(self):
         if hasattr(self, "set_tooltip_column"):
