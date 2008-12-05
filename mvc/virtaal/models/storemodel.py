@@ -91,9 +91,9 @@ class StoreModel(BaseModel):
         # Adapted from Document.__init__()
         print 'Loading file', filename
         self._trans_store = factory.getobject(filename)
-        self._get_valid_units()
         self.filename = filename
         self.stats = statsdb.StatsCache().filestats(filename, checks.UnitChecker(), self._trans_store)
+        self._get_valid_units()
         self._correct_header(self._trans_store)
         self.nplurals = self._compute_nplurals(self._trans_store)
 
@@ -137,4 +137,12 @@ class StoreModel(BaseModel):
             stats = new_stats
 
     def _get_valid_units(self):
-        self._valid_units = range(1, len(self._trans_store.units))
+        self._valid_units = self.stats['total']
+
+        if not self.stats['total']:
+            return
+
+        # Adjust stats
+        index_start = self.stats['total'][0]
+        for key in self.stats:
+            self.stats[key] = [(i - index_start) for i in self.stats[key]]
