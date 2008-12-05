@@ -40,9 +40,18 @@ class UnitController(BaseController):
         self.store_controller = store_controller
         self.store_controller.unit_controller = self
 
-        self.view = UnitView(self)
+        self.unit_views = {}
 
 
     # METHODS #
-    def get_unit_celleditor(self, unit):
-        return self.view.load_unit(unit)
+    def load_unit(self, unit):
+        self.current_unit = unit
+        self.nplurals = self.store_controller.get_nplurals()
+        self.targetlang = self.store_controller.get_target_language()
+
+        if unit in self.unit_views:
+            return self.unit_views[unit]
+
+        self.unit_views[unit] = self.view = UnitView(self, unit)
+        #self.emit('unit_editor_created', self.view)
+        return self.view
