@@ -18,9 +18,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-from virtaal.controllers import BaseController
-from virtaal.settings import Settings
+from virtaal import pan_app
 from virtaal.views import MainView
+
+from basecontroller import BaseController
 
 
 class MainController(BaseController):
@@ -28,8 +29,8 @@ class MainController(BaseController):
         program loop."""
 
     # INITIALIZERS #
-    def __init__(self, store_controller):
-        self.store_controller = store_controller
+    def __init__(self):
+        self.store_controller = None # This is set by StoreController itself when it is created
         self.view = MainView(self)
 
 
