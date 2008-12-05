@@ -235,7 +235,7 @@ class UnitView(gtk.EventBox, GObjectWrapper, gtk.CellEditable, BaseView):
     def _layout_add_targets(self):
         num_targets = 1
         if self.unit.hasplural():
-            self.controller.nplurals
+            num_targets = self.controller.nplurals
 
         def on_text_view_n_press_event(text_view, event):
             """Handle special keypresses in the textarea."""
