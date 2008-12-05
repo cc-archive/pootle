@@ -124,8 +124,8 @@ class MainView(BaseView):
         self.status_bar = self.gui.get_widget("status_bar")
         self.statusbar_context_id = self.status_bar.get_context_id("statusbar")
         self.main_window = self.gui.get_widget("MainWindow")
-        self._top_window = self.main_window
         self.main_window.set_icon_from_file(pan_app.get_abs_data_filename(["icons", "virtaal.ico"]))
+        self._top_window = self.main_window
         recent_files = self.gui.get_widget("recent_files")
         recent.rc.connect("item-activated", self._on_recent_file_activated)
         recent_files.set_submenu(recent.rc)
