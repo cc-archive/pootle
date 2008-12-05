@@ -20,6 +20,7 @@
 
 import gobject
 import gtk
+import gtk.gdk
 import logging
 import re
 from translate.tools.pogrep import GrepFilter
@@ -78,9 +79,11 @@ class SearchMode(BaseMode):
 
     def _setup_key_bindings(self):
         gtk.accel_map_add_entry("<Virtaal>/Edit/Search", gtk.keysyms.F3, 0)
+        gtk.accel_map_add_entry("<Virtaal>/Edit/SearchCtrlF", gtk.keysyms.F, gtk.gdk.CONTROL_MASK)
 
         self.accel_group = gtk.AccelGroup()
         self.accel_group.connect_by_path("<Virtaal>/Edit/Search", self._on_search_activated)
+        self.accel_group.connect_by_path("<Virtaal>/Edit/SearchCtrlF", self._on_search_activated)
 
         self.controller.main_controller.view.add_accel_group(self.accel_group)
 
