@@ -251,7 +251,7 @@ class MainView(BaseView):
 
     def show_input_dialog(self, title='', message=''):
         """Shows a simple dialog containing a text entry.
-            @returns The text entered into the dialog, or C{None}."""
+            @returns: The text entered into the dialog, or C{None}."""
         self.input_dialog.set_transient_for(self._top_window)
         old_top = self._top_window
         self._top_window = self.input_dialog
@@ -331,7 +331,7 @@ class MainView(BaseView):
         return response == gtk.RESPONSE_OK
 
     def show_save_confirm_dialog(self):
-        """@returns One of C{'save'}, C{'discard'}, C{'cancel'} or C{''},
+        """@returns: One of C{'save'}, C{'discard'}, C{'cancel'} or C{''},
             depending on the button pressed."""
         self.confirm_dialog.set_transient_for(self._top_window)
         old_top = self._top_window

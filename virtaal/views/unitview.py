@@ -98,7 +98,7 @@ class UnitView(gtk.EventBox, GObjectWrapper, gtk.CellEditable, BaseView):
         return False
 
     def do_start_editing(self, *_args):
-        """C{gtk.CellEditable.start_editing()"""
+        """C{gtk.CellEditable.start_editing()}"""
         self.targets[0].grab_focus()
 
         buf = self.targets[0].get_buffer()
