@@ -20,7 +20,7 @@
 
 import os
 
-from virtaal.controllers import MainController, StoreController, UndoController, UnitController
+from virtaal.controllers import *
 
 
 class Virtaal(object):
@@ -33,6 +33,7 @@ class Virtaal(object):
 
         # Load additional built-in modules
         self.undo_controller = UndoController(self.main_controller)
+        self.mode_controller = ModeController(self.main_controller)
 
         if startupfile and os.path.isfile(startupfile):
             self.main_controller.open_file(startupfile)
