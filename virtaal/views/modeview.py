@@ -80,7 +80,7 @@ class ModeView(GObjectWrapper, BaseView):
 
         # Remove previous mode's widgets
         if self.cmb_modes.get_active() > -1:
-            for w in self.mode_box:
+            for w in self.mode_box.get_children():
                 if w in widgets:
                     self.mode_box.remove(w)
 

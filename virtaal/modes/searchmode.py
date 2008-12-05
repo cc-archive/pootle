@@ -67,7 +67,7 @@ class SearchMode(BaseMode):
         self.btn_replace.connect('clicked', self._on_replace_clicked)
         self.chk_replace_all = gtk.CheckButton(_('Replace All'))
 
-        self.Widgets = [
+        self.widgets = [
             self.ent_search, self.btn_search, self.chk_casesensitive, self.chk_regex,
             self.lbl_replace, self.ent_replace, self.btn_replace, self.chk_replace_all
         ]
