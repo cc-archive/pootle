@@ -78,6 +78,7 @@ class StoreModel(BaseModel):
         # Adapted from Document.__init__()
         print 'Loading file', filename
         self.store = factory.getobject(filename)
+        # TODO: Filter out units that are handled by Virtaal.
         self.filename = filename
         self.stats = statsdb.StatsCache().filestats(filename, checks.UnitChecker(), self.store)
         self._correct_header(self.store)
