@@ -43,14 +43,14 @@ class ModeController(BaseController):
         GObjectWrapper.__init__(self)
 
         self.main_controller = main_controller
+        self.main_controller.mode_controller = self
+
         self._init_modes()
         self.view = ModeView(self)
         self.view.connect('mode-selected', self._on_mode_selected)
-        self.view.show()
 
         self.current_mode = None
         self.view.select_mode(self.modenames[self.default_mode_name])
-        #self.select_mode(self.modes[self.default_mode_name])
 
     def _init_modes(self):
         self.modes = {}
@@ -70,6 +70,12 @@ class ModeController(BaseController):
 
 
     # METHODS #
+    def refresh_mode(self):
+        if not self.current_mode:
+            self.select_default_mode()
+        else:
+            self.select_mode(self.current_mode)
+
     def select_default_mode(self):
         self.select_mode_by_name(self.default_mode_name)
 
