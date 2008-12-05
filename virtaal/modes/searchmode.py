@@ -86,14 +86,15 @@ class SearchMode(BaseMode):
         return GrepFilter(searchstring, searchparts, ignorecase, useregexp)
 
     def selected(self):
-        cursor = self.controller.main_controller.store_controller.cursor
-        if not cursor or not cursor.store:
+        # XXX: Assumption: This method is called when a new file is loaded and that is
+        # why we keep a reference to the store's cursor.
+        self.storecursor = self.controller.main_controller.store_controller.cursor
+        if not self.storecursor or not self.storecursor.store:
             return
 
         self._add_widgets()
         if not self.ent_search.get_text():
-            cursor.indices = cursor.store.stats['total']
-            cursor.index = cursor.index # "Reload" cursor position
+            self.storecursor.indices = self.storecursor.store.stats['total']
         else:
             self.update_search()
 
@@ -105,7 +106,6 @@ class SearchMode(BaseMode):
         gobject.timeout_add(100, grab_focus)
 
     def update_search(self):
-        cursor = self.controller.main_controller.store_controller.cursor
         self.filter = self.makefilter()
 
         # Filter stats with text in "self.ent_search"
@@ -129,13 +129,13 @@ class SearchMode(BaseMode):
             if not self.chk_regex.get_active():
                 searchstr = re.escape(searchstr)
             self.re_search = re.compile(u'(%s)' % searchstr, flags)
-            cursor.indices = filtered
+            self.storecursor.indices = filtered
         else:
             self.ent_search.modify_base(gtk.STATE_NORMAL, gtk.gdk.color_parse('#f66'))
             self.ent_search.modify_text(gtk.STATE_NORMAL, gtk.gdk.color_parse('#fff'))
             self.re_search = None
             # Act like the "Default" mode...
-            cursor = cursor.store.stats['total']
+            self.storecursor = self.storecursor.store.stats['total']
 
         def grabfocus():
             self.ent_search.grab_focus()
@@ -168,12 +168,11 @@ class SearchMode(BaseMode):
         self.update_search()
 
     def _on_replace_clicked(self, btn):
-        cursor = self.controller.main_controller.store_controller.cursor
-        if not cursor or not self.ent_search.get_text() or not self.ent_replace.get_text():
+        if not self.storecursor or not self.ent_search.get_text() or not self.ent_replace.get_text():
             return
         self.update_search()
 
-        for unit in cursor.store.units:
+        for unit in self.storecursor.store.units:
             if not self.filter.filterunit(unit):
                 continue
             unit.target = unit.target.replace(self.ent_search.get_text(), self.ent_replace.get_text())

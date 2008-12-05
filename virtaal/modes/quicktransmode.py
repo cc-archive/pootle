@@ -55,7 +55,6 @@ class QuickTranslateMode(BaseMode):
             return
 
         cursor.indices = indices
-        cursor.index = cursor.index
 
     def unselected(self):
         pass

@@ -80,9 +80,6 @@ class ModeController(BaseController):
 
     def _select_mode(self, mode):
         if self.current_mode:
-            if self.current_mode == mode:
-                return
-
             self.view.remove_mode_widgets(self.current_mode.widgets)
             self.current_mode.unselected()
 
