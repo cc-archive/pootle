@@ -20,10 +20,9 @@
 
 import gtk
 import os
-import __version__
 
-import pan_app
-from support import openmailto
+from virtaal import pan_app, __version__
+from virtaal.support import openmailto
 
 
 class AboutDialog(gtk.AboutDialog):
