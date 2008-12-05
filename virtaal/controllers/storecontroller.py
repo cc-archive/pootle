@@ -18,6 +18,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
+import gobject
 from bisect import bisect_left
 
 from virtaal.models import StoreModel
@@ -27,9 +28,17 @@ from basecontroller import BaseController
 
 
 # TODO: Move the following cursor-class(es) to an appropriate file
-class Cursor(object):
+class Cursor(gobject.GObject):
     """Manages the current position in the store."""
 
+    __gtype_name__ = "Cursor"
+
+    __gsignals__ = {
+        "cursor-changed": (gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, ()),
+    }
+
+
+    # INITIALIZERS #
     def __init__(self, storemodel, indices=None, circular=True):
         if indices is None:
             indices = range(len(storemodel.get_units()))
@@ -37,8 +46,19 @@ class Cursor(object):
         self.indices = indices
         self.circular = circular
 
-        self.curr_pos = 0
+        self._curr_pos = 0
 
+
+    # ACCESSORS #
+    def _get_curr_pos(self):
+        return self._curr_pos
+    def _set_curr_pos(self, value):
+        self._curr_pos = value
+        self.emit('cursor-changed')
+    curr_pos = property(_get_curr_pos, _set_curr_pos)
+
+
+    # METHODS #
     def current_index(self):
         if len(self.indices) < 1:
             return -1

@@ -234,7 +234,13 @@ class StoreTreeView(gtk.TreeView):
         column.set_expand(True)
         return column
 
+
     # METHODS #
+    def select_index(self, index):
+        """Select the row with the given index."""
+        # XXX: "index" is used as a iterator for StoreTreeModel below
+        self.get_selection().select_iter(index)
+
     def set_model(self, storemodel):
         model = StoreTreeModel(storemodel)
         super(StoreTreeView, self).set_model(model)
