@@ -42,8 +42,9 @@ class SearchMode(BaseMode):
             @type  controller: virtaal.controllers.ModeController
             @param controller: The ModeController that managing program modes."""
         self.controller = controller
-        self._create_widgets()
 
+        self._create_widgets()
+        self._setup_key_bindings()
         self.filter = self.makefilter()
         self.select_first_match = True
         self._search_timeout = 0
@@ -75,6 +76,14 @@ class SearchMode(BaseMode):
         self.default_base = gtk.widget_get_default_style().base[gtk.STATE_NORMAL]
         self.default_text = gtk.widget_get_default_style().text[gtk.STATE_NORMAL]
 
+    def _setup_key_bindings(self):
+        gtk.accel_map_add_entry("<Virtaal>/Edit/Search", gtk.keysyms.F3, 0)
+
+        self.accel_group = gtk.AccelGroup()
+        self.accel_group.connect_by_path("<Virtaal>/Edit/Search", self._on_search_activated)
+
+        self.controller.main_controller.view.add_accel_group(self.accel_group)
+
 
     # METHODS #
     def makefilter(self):
@@ -93,6 +102,7 @@ class SearchMode(BaseMode):
             return
 
         self._add_widgets()
+        self._connect_highlighting()
         if not self.ent_search.get_text():
             self.storecursor.indices = self.storecursor.store.stats['total']
         else:
@@ -111,7 +121,7 @@ class SearchMode(BaseMode):
         # Filter stats with text in "self.ent_search"
         filtered = []
         i = 0
-        for unit in self.controller.main_controller.store_controller.store.get_units():
+        for unit in self.storecursor.store.get_units():
             if self.filter.filterunit(unit):
                 filtered.append(i)
             i += 1
@@ -135,7 +145,7 @@ class SearchMode(BaseMode):
             self.ent_search.modify_text(gtk.STATE_NORMAL, gtk.gdk.color_parse('#fff'))
             self.re_search = None
             # Act like the "Default" mode...
-            self.storecursor = self.storecursor.store.stats['total']
+            self.storecursor.indices = self.storecursor.store.stats['total']
 
         def grabfocus():
             self.ent_search.grab_focus()
@@ -145,7 +155,8 @@ class SearchMode(BaseMode):
 
     def unselected(self):
         # TODO: Unhightlight the previously selected unit
-        pass
+        if getattr(self, '_signalid_cursor_changed', ''):
+            self.storecursor.disconnect(self._signalid_cursor_changed)
 
     def _add_widgets(self):
         table = self.controller.view.mode_box
@@ -162,10 +173,68 @@ class SearchMode(BaseMode):
 
         table.show_all()
 
+    def _connect_highlighting(self):
+        self._signalid_cursor_changed = self.storecursor.connect('cursor-changed', self._on_cursor_changed)
+
+    def _highlight_matches(self):
+        self._unhighlight_previous_matches()
+
+        if self.re_search is None:
+            return
+
+        unitview = self.controller.main_controller.store_controller.unit_controller.view
+        self._prev_unitview = unitview
+        for textview in unitview.sources + unitview.targets:
+            buff = textview.get_buffer()
+            buffstr = buff.get_text(buff.get_start_iter(), buff.get_end_iter()).decode('utf-8')
+
+            # First make sure that the current buffer contains a highlighting tag.
+            # Because a gtk.TextTag can only be associated with one gtk.TagTable,
+            # we make copies (created by _make_highlight_tag()) to add to all
+            # TagTables. If the tag is already added to a given table, a
+            # ValueError is raised which we can safely ignore.
+            try:
+                buff.get_tag_table().add(self._make_highlight_tag())
+            except ValueError:
+                pass
+
+            select_iters = []
+            for match in self.re_search.finditer(buffstr):
+                start_iter, end_iter = buff.get_iter_at_offset(match.start()), buff.get_iter_at_offset(match.end())
+                buff.apply_tag_by_name('highlight', start_iter, end_iter)
+
+                if textview in unitview.targets and not select_iters and self.select_first_match:
+                    select_iters = [start_iter, end_iter]
+
+            if select_iters:
+                def do_selection():
+                    buff.move_mark_by_name('selection_bound', select_iters[0])
+                    buff.move_mark_by_name('insert', select_iters[1])
+                    return False
+                gobject.idle_add(do_selection)
+
+    def _make_highlight_tag(self):
+        tag = gtk.TextTag(name='highlight')
+        tag.set_property('background', 'yellow')
+        tag.set_property('foreground', 'black')
+        return tag
+
+    def _unhighlight_previous_matches(self):
+        if not getattr(self, '_prev_unitview', ''):
+            return
+
+        for textview in self._prev_unitview.sources + self._prev_unitview.targets:
+            buff = textview.get_buffer()
+            buff.remove_all_tags(buff.get_start_iter(), buff.get_end_iter())
+
 
     # EVENT HANDLERS #
     def _on_entry_activate(self, entry):
         self.update_search()
+
+    def _on_cursor_changed(self, cursor):
+        assert cursor is self.storecursor
+        self._highlight_matches()
 
     def _on_replace_clicked(self, btn):
         if not self.storecursor or not self.ent_search.get_text() or not self.ent_replace.get_text():
@@ -180,6 +249,10 @@ class SearchMode(BaseMode):
                 break
 
         self.update_search()
+
+    def _on_search_activated(self, _accel_group, _acceleratable, _keyval, _modifier):
+        """This is called via the accelerator."""
+        self.controller.select_mode(self)
 
     def _on_search_clicked(self, btn):
         self.update_search()
