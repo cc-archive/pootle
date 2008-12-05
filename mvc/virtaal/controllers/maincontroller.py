@@ -52,6 +52,33 @@ class MainController(BaseController):
         store = self.store_controller.get_store()
         return store and store.get_filename() or None
 
+    def get_translator_name(self):
+        name = pan_app.settings.translator["name"]
+        if not name:
+            return self.show_input(
+                title=_('Header information'),
+                msg=_('Please enter your name')
+            )
+        return name
+
+    def get_translator_email(self):
+        email = pan_app.settings.translator["email"]
+        if not email:
+            return self.show_input(
+                title=_('Header information'),
+                msg=_('Please enter your e-mail address')
+            )
+        return email
+
+    def get_translator_team(self):
+        team = pan_app.settings.translator["team"]
+        if not team:
+            return self.show_input(
+                title=_('Header information'),
+                msg=_("Please enter your team's information")
+            )
+        return team
+
     def set_saveable(self, value):
         self.view.set_saveable(value)
 
