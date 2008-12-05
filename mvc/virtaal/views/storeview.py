@@ -63,6 +63,8 @@ class StoreView(BaseView):
         if store:
             self._treeview.set_model(store)
 
+        self.get_cursor().connect('cursor-changed', self._on_cursor_change)
+
     def show(self):
         child = self.parent_widget.get_child()
         self.parent_widget.remove(child)
@@ -73,3 +75,8 @@ class StoreView(BaseView):
         if self._treeview.get_model():
             selection = self._treeview.get_selection()
             selection.select_iter(self._treeview.get_model().get_iter_first())
+
+
+    # EVENT HANDLERS #
+    def _on_cursor_change(self, cursor):
+        self._treeview.select_index(cursor.curr_pos)
