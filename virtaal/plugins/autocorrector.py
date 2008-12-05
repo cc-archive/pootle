@@ -27,7 +27,7 @@ import re
 import zipfile
 from lxml import etree
 
-import undo_buffer
+#import undo_buffer
 
 
 class AutoCorrector(object):
@@ -223,7 +223,7 @@ class AutoCorrector(object):
                 def correct_text():
                     buffer.props.text = u''.join([res, postfix])
                     buffer.place_cursor( buffer.get_iter_at_offset(len(res) + len(text)) )
-                    undo_buffer.merge_actions(buffer, iteroffset)
+                    #undo_buffer.merge_actions(buffer, iteroffset)
                     return False
 
                 gobject.idle_add(correct_text)
