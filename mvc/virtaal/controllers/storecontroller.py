@@ -105,7 +105,22 @@ class StoreController(BaseController):
         return store and store.get_target_language() or 'und'
 
     def get_unit_celleditor(self, unit):
+        """Load the given unit in via the C{UnitController} and return
+            the C{gtk.CellEditable} it creates."""
         return self.unit_controller.load_unit(unit)
+
+    def select_unit(self, unit):
+        """Select the specified unit and scroll to it."""
+        i = 0
+        for storeunit is self.get_store().get_units():
+            if storeunit == unit:
+                break
+            i += 1
+
+        if not i >= len(self.get_store().get_units()):
+            raise ValueError('Unit not found.')
+
+        self.cursor.select_index(i)
 
     def open_file(self, filename, uri=''):
         if not self.store:

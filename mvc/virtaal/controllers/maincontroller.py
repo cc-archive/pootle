@@ -48,6 +48,10 @@ class MainController(BaseController):
         self.view.set_saveable(value)
 
     # METHODS #
+    def select_unit(self, unit):
+        """Select the specified unit in the store view."""
+        self.store_controller.select_unit(unit)
+
     def show_error(self, msg):
         """Shortcut for C{self.view.show_error_dialog()}"""
         return self.view.show_error_dialog(message=msg)
