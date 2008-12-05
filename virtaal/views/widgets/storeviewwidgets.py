@@ -25,10 +25,9 @@ import pango
 from gtk import gdk
 
 from virtaal.support.simplegeneric import generic
+from virtaal.views import markup, rendering
 
-import markup
-import rendering
-from widgets import label_expander
+import label_expander
 
 
 @generic
