@@ -76,11 +76,10 @@ class StoreCursor(GObjectWrapper):
     def _get_indices(self):
         return self._indices
     def _set_indices(self, value):
-        oldindex = self._indices[self.pos]
+        oldindex = self.index
         #print '%s -> %s' % (self._indices, list(value))
         self._indices = list(value)
-        if self._indices[self.pos] != oldindex:
-            self.emit('cursor-changed')
+        self.index = oldindex
     indices = property(_get_indices, _set_indices)
 
     # METHODS #
