@@ -104,7 +104,7 @@ class MainView(BaseView):
             gtk.rc_parse_string(rc_string)
 
         # Set the Glade file
-        self.gladefile, self.gui = self.load_glade_file(["virtaal", "virtaal.glade"], "virtaal")
+        self.gladefile, self.gui = self.load_glade_file(["virtaal", "virtaal.glade"], root='MainWindow', domain="virtaal")
 
         # Create our events dictionary and connect it
         dic = {
