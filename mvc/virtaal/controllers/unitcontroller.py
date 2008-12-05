@@ -67,6 +67,7 @@ class UnitController(BaseController):
         self.targetlang = self.store_controller.get_target_language()
 
         if unit in self.unit_views:
+            self.view = self.unit_views[unit]
             return self.unit_views[unit]
 
         self._create_unitview(unit)
