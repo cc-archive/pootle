@@ -82,6 +82,7 @@ class StoreModel(BaseModel):
         return self._trans_store.units[self._valid_units[index]]
 
     def get_units(self):
+        # TODO: Add caching
         """Return the current store's (filtered) units."""
         return [self._trans_store.units[i] for i in self._valid_units]
 
