@@ -30,7 +30,8 @@ class UnitController(BaseController):
 
     __gtype_name__ = "UnitController"
     __gsignals__ = {
-        'unit_editor_created': (gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_PYOBJECT,))
+        'unit-editor-created': (gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_PYOBJECT,)),
+        'unit-modified': (gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_PYOBJECT,))
     }
 
     # INITIALIZERS #
@@ -38,7 +39,7 @@ class UnitController(BaseController):
         gobject.GObject.__init__(self)
         self.main_controller = store_controller.main_controller
         self.store_controller = store_controller
-        self.store_controller.unit_controller = self
+        self.store_controller.register_unitcontroller(self)
 
         self.unit_views = {}
 
@@ -52,6 +53,13 @@ class UnitController(BaseController):
         if unit in self.unit_views:
             return self.unit_views[unit]
 
-        self.unit_views[unit] = self.view = UnitView(self, unit)
-        #self.emit('unit_editor_created', self.view)
+        self._create_unitview(unit)
+        self.emit('unit-editor-created', self.view)
         return self.view
+
+    def _create_unitview(self, unit):
+        self.unit_views[unit] = self.view = UnitView(self, unit)
+        self.view.connect('modified', lambda *args: self._unit_modified())
+
+    def _unit_modified(self):
+        self.emit('unit-modified', self.current_unit)

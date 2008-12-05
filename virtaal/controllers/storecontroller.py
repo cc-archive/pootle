@@ -34,6 +34,8 @@ class StoreController(BaseController):
         self.unit_controller = None # This is set by UnitController itself when it is created
 
         self.cursor = None
+        self.handler_ids = {}
+        self._modified = False
         self.store = None
         self.view = StoreView(self)
 
@@ -42,10 +44,15 @@ class StoreController(BaseController):
     def get_store(self):
         return self.store
 
-    def store_is_modified(self):
-        if not self.store:
-            return False
-        return self.store.is_modified()
+    def is_modified(self):
+        return self._modified
+
+    def register_unitcontroller(self, unitcont):
+        """@type unitcont: UnitController"""
+        if self.unit_controller and 'unitview.unit-modified' in self.handler_ids:
+            self.unit_controller.disconnect(self.handler_ids['unitview.unit-modified'])
+        self.unit_controller = unitcont
+        self.handler_ids['unitview.unit-modified'] = self.unit_controller.connect('unit-modified', self._unit_modified)
 
 
     # METHODS #
@@ -72,3 +79,11 @@ class StoreController(BaseController):
 
     def save_file(self, filename=None):
         self.store.save_file(filename)
+        self._modified = False
+        self.main_controller.set_saveable(False)
+
+
+    # EVENT HANDLERS #
+    def _unit_modified(self, emitter, unit):
+        self._modified = True
+        self.main_controller.set_saveable(self._modified)

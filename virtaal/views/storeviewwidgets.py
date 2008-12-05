@@ -493,8 +493,10 @@ class StoreCellRenderer(gtk.GenericCellRenderer):
         _layout_width, target_height = self.target_layout.get_pixel_size()
         return max(source_height, target_height) + self.ROW_PADDING
 
+
+    # EVENT HANDLERS #
     def _on_editor_done(self, editor):
-        self.emit("editing-done", editor.get_data("path"), editor.must_advance, editor.get_modified())
+        self.emit("editing-done", editor.get_data("path"), editor.must_advance, editor.is_modified())
         return True
 
     def _on_modified(self, widget):
