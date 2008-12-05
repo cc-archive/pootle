@@ -38,10 +38,10 @@ class StoreView(BaseView):
     def _init_treeview(self):
         self._treeview = StoreTreeView(self)
 
-    # METHODS #
-    def get_current_cursor_pos(self):
-        # TODO: This should get the current cursor position from self.controller
-        return getattr(self, 'cursor_pos', 0)
+
+    # ACCESSORS #
+    def get_cursor(self):
+        return self.controller.cursor
 
     def get_store(self):
         return self.store
@@ -49,6 +49,11 @@ class StoreView(BaseView):
     def get_unit_celleditor(self, unit):
         return self.controller.get_unit_celleditor(unit)
 
+    def set_cursor_pos(self, pos):
+        self.get_cursor().select_index(pos)
+
+
+    # METHODS #
     def load_store(self, store):
         self.store = store
         if store:
