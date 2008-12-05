@@ -286,7 +286,7 @@ class UnitView(gtk.EventBox, GObjectWrapper, gtk.CellEditable, BaseView):
 
             targetstr = ''
             if self.unit.hasplural():
-                targetstr = self.unit.target[i]
+                targetstr = self.unit.target.strings[i]
             elif i == 0:
                 targetstr = self.unit.target
             else:
