@@ -43,6 +43,9 @@ class StoreView(BaseView):
         # TODO: This should get the current cursor position from self.controller
         return getattr(self, 'cursor_pos', 0)
 
+    def get_store(self):
+        return self.store
+
     def get_unit_celleditor(self, unit):
         return self.controller.get_unit_celleditor(unit)
 
@@ -56,19 +59,12 @@ class StoreView(BaseView):
         self.cursor_pos = pos
 
     def show(self):
-        #self.widget = StoreViewWidget(self.controller.store)
-        #self.widget.connect('cursor-changed', self._on_cursor_changed)
-
         child = self.parent_widget.get_child()
         self.parent_widget.remove(child)
         child.destroy()
         self.parent_widget.add(self._treeview)
         self._treeview.show()
-        #self.widget.show_all()
 
-        #self.widget.select_unit_by_index(0) # Select the first unit in the file
-
-
-    # EVENT HANDLERS #
-    def _on_cursor_changed(self):
-        pass
+        if self._treeview.get_model():
+            selection = self._treeview.get_selection()
+            selection.select_iter(self._treeview.get_model().get_iter_first())
