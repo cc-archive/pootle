@@ -67,9 +67,10 @@ class StoreView(BaseView):
 
     def show(self):
         child = self.parent_widget.get_child()
-        self.parent_widget.remove(child)
-        child.destroy()
-        self.parent_widget.add(self._treeview)
+        if child is not self._treeview:
+            self.parent_widget.remove(child)
+            child.destroy()
+            self.parent_widget.add(self._treeview)
         self._treeview.show()
         self._treeview.select_index(0)
 
