@@ -427,6 +427,8 @@ class StoreCellRenderer(gtk.GenericCellRenderer):
     def do_get_size(self, widget, _cell_area):
         #TODO: store last unitid and computed dimensions
         width = widget.get_toplevel().get_allocation().width - 32
+        if width < -1:
+            width = -1
         if self.editable:
             editor = self.view.get_unit_celleditor(self.unit)
             editor.set_size_request(width, -1)
