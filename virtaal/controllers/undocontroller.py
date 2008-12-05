@@ -18,6 +18,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
+import gtk
+from gtk import gdk
+
 from virtaal.models import UndoModel
 
 from basecontroller import BaseController
@@ -31,10 +34,17 @@ class UndoController(BaseController):
         """Constructor.
             @type main_controller: virtaal.controllers.MainController"""
         self.main_controller = main_controller
+        self.unit_controller = self.main_controller.store_controller.unit_controller
 
         self.undo_stack = UndoModel(self)
 
         self._setup_key_bindings()
+        self._connect_undo_signals()
+
+    def _connect_undo_signals(self):
+        # First connect to the unit controller
+        self.unit_controller.connect('unit-insert-text', self._on_unit_insert_text)
+        self.unit_controller.connect('unit-delete-text', self._on_unit_delete_text)
 
     def _setup_key_bindings(self):
         """Setup Gtk+ key bindings (accelerators).
@@ -51,6 +61,18 @@ class UndoController(BaseController):
 
 
     # METHODS #
+    def _disable_unit_signals(self):
+        """Disable all signals emitted by the unit view.
+            This should always be followed, as soon as possible, by
+            C{self._enable_unit_signals()}."""
+        self.unit_controller.view.disable_signals()
+
+    def _enable_unit_signals(self):
+        """Enable all signals emitted by the unit view.
+            This should always follow, as soon as possible, after a call to
+            C{self._disable_unit_signals()}."""
+        self.unit_controller.view.enable_signals()
+
     def _select_unit(self, unit):
         # FIXME: Fix type of "unit" in doc-string below
         """Select the given unit in the store view.
@@ -63,5 +85,30 @@ class UndoController(BaseController):
     # EVENT HANDLERS #
     def _on_undo_activated(self, _accel_group, _acceleratable, _keyval, _modifier):
         undo_info = self.undo_stack.pop()
+        if not undo_info:
+            return
+
         self._select_unit(undo_info['unit'])
-        undo_info['action'](undo_info['unit'])
+        self._disable_unit_signals()
+        self.unit_controller.set_unit_target(undo_info['targetn'], undo_info['value'], undo_info['cursorpos'])
+        if 'action' in undo_info and callable(undo_info['action']):
+            undo_info['action'](undo_info['unit'])
+        self._enable_unit_signals()
+
+    def _on_unit_delete_text(self, _unit_controller, unit, old_text, start_offset, end_offset, cursor_pos, target_num):
+        #print '_on_unit_delete_text(%s, "%s", %d, %d, %d)' % (repr(unit), old_text, start_offset, end_offset, target_num)
+        self.undo_stack.push({
+            'unit': unit,
+            'targetn': target_num,
+            'value': old_text,
+            'cursorpos': cursor_pos
+        })
+
+    def _on_unit_insert_text(self, _unit_controller, unit, old_text, ins_text, offset, target_num):
+        #print '_on_unit_insert_text(%s, "%s", "%s", %d, %d)' % (repr(unit), old_text, ins_text, offset, target_num)
+        self.undo_stack.push({
+            'unit': unit,
+            'targetn': target_num,
+            'value': old_text,
+            'cursorpos': offset
+        })

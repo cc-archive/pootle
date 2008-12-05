@@ -30,7 +30,7 @@ class UndoModel(BaseModel):
 
         super(UndoModel, self).__init__()
         self.undo_stack = []
-        self.index = 0
+        self.index = -1
 
 
     # METHODS #
@@ -48,8 +48,9 @@ class UndoModel(BaseModel):
         return self.undo_stack[self.index]
 
     def pop(self):
-        if self.undo_stack and self.index > len(self.undo_stack):
+        if self.undo_stack and 0 <= self.index < len(self.undo_stack):
             self.index -= 1
+            #print 'pop()  (index, len) => (%s, %s)' % (self.index, len(self.undo_stack))
             return self.undo_stack[self.index+1]
 
     def push(self, undo_dict):
@@ -58,11 +59,21 @@ class UndoModel(BaseModel):
             @param undo_dict: A dictionary containing undo information with the
                 following keys:
                 - "unit": Value is the unit on which the undo-action is applicable.
+                - "targetn": The index of the target on which the undo is applicable.
+                - "value": Value is the string-value that should be displayed
+                  after the undo was performed.
+                - "cursorpos": The position of the cursor after the undo.
                 - "action": Value is a callable that is called (with the "unit"
-                  value, to effect the undo."""
-        if not ('unit' in undo_dict and 'action' in undo_dict):
-            raise ValueError('Invalid undo dictionary!')
+                  value, to effect the undo. Optional."""
+        for key in ('unit', 'targetn', 'value', 'cursorpos'):
+            if not key in undo_dict:
+                raise ValueError('Invalid undo dictionary!')
 
-        self.undo_stack = self.undo_stack[:self.index]
+        if self.index < 0:
+            self.index = 0
+        if self.index != len(self.undo_stack) - 1:
+            self.undo_stack = self.undo_stack[:self.index]
+
         self.undo_stack.append(undo_dict)
         self.index = len(self.undo_stack) - 1
+        #print 'push() (index, len) => (%s, %s)' % (self.index, len(self.undo_stack))

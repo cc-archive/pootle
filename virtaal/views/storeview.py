@@ -65,8 +65,7 @@ class StoreView(BaseView):
         self.store = store
         if store:
             self._treeview.set_model(store)
-
-        self.get_cursor().connect('cursor-changed', self._on_cursor_change)
+            self.get_cursor().connect('cursor-changed', self._on_cursor_change)
 
     def show(self):
         child = self.parent_widget.get_child()

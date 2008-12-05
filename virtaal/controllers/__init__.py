@@ -20,6 +20,7 @@
 
 from maincontroller  import MainController
 from storecontroller import StoreController
+from undocontroller  import UndoController
 from unitcontroller  import UnitController
 
-__all__ = ['MainController', 'StoreController', 'UnitController']
+__all__ = ['MainController', 'StoreController', 'UndoController', 'UnitController']

@@ -18,7 +18,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-import gobject
+from gobject import GObject, SIGNAL_RUN_FIRST, TYPE_INT, TYPE_NONE, TYPE_PYOBJECT, TYPE_STRING
 
 from virtaal.views import UnitView
 
@@ -30,13 +30,15 @@ class UnitController(BaseController):
 
     __gtype_name__ = "UnitController"
     __gsignals__ = {
-        'unit-editor-created': (gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_PYOBJECT,)),
-        'unit-modified': (gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_PYOBJECT,))
+        'unit-editor-created': (SIGNAL_RUN_FIRST, TYPE_NONE, (TYPE_PYOBJECT,)),
+        'unit-modified':       (SIGNAL_RUN_FIRST, TYPE_NONE, (TYPE_PYOBJECT,)),
+        'unit-delete-text':    (SIGNAL_RUN_FIRST, TYPE_NONE, (TYPE_PYOBJECT, TYPE_STRING, TYPE_INT, TYPE_INT, TYPE_INT, TYPE_INT)),
+        'unit-insert-text':    (SIGNAL_RUN_FIRST, TYPE_NONE, (TYPE_PYOBJECT, TYPE_STRING, TYPE_STRING, TYPE_INT, TYPE_INT)),
     }
 
     # INITIALIZERS #
     def __init__(self, store_controller):
-        gobject.GObject.__init__(self)
+        GObject.__init__(self)
         self.main_controller = store_controller.main_controller
         self.store_controller = store_controller
         self.store_controller.register_unitcontroller(self)
@@ -48,6 +50,12 @@ class UnitController(BaseController):
     def get_target_language(self):
         """Get the target language via C{self.store_controller}."""
         return self.store_controller.get_target_language()
+
+    def get_unit_target(self, target_index):
+        return self.view.get_target_n(target_index)
+
+    def set_unit_target(self, target_index, value, cursor_pos=-1):
+        self.view.set_target_n(target_index, value, cursor_pos)
 
 
     # METHODS #
@@ -65,7 +73,16 @@ class UnitController(BaseController):
 
     def _create_unitview(self, unit):
         self.unit_views[unit] = self.view = UnitView(self, unit)
-        self.view.connect('modified', lambda *args: self._unit_modified())
+        self.view.connect('delete-text', self._unit_delete_text)
+        self.view.connect('insert-text', self._unit_insert_text)
+        self.view.connect('modified', self._unit_modified)
+        self.view.enable_signals()
 
-    def _unit_modified(self):
+    def _unit_delete_text(self, unitview, old_text, start_offset, end_offset, cursor_pos, target_num):
+        self.emit('unit-delete-text', self.current_unit, old_text, start_offset, end_offset, cursor_pos, target_num)
+
+    def _unit_insert_text(self, unitview, old_text, ins_text, offset, target_num):
+        self.emit('unit-insert-text', self.current_unit, old_text, ins_text, offset, target_num)
+
+    def _unit_modified(self, *args):
         self.emit('unit-modified', self.current_unit)

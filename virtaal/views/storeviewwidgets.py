@@ -238,8 +238,16 @@ class StoreTreeView(gtk.TreeView):
     # METHODS #
     def select_index(self, index):
         """Select the row with the given index."""
-        # XXX: "index" is used as a iterator for StoreTreeModel below
-        self.get_selection().select_iter(index)
+        model = self.get_model()
+        newpath = model.store_index_to_path(index)
+        newiter = model.get_iter(newpath)
+        selection = self.get_selection()
+        selected = selection.get_selected()
+
+        if not selected:
+            selection.select_iter(newiter)
+        elif selected[1] != newiter:
+            selection.select_iter(newiter)
 
     def set_model(self, storemodel):
         model = StoreTreeModel(storemodel)

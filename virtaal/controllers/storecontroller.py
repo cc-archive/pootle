@@ -40,6 +40,7 @@ class Cursor(gobject.GObject):
 
     # INITIALIZERS #
     def __init__(self, storemodel, indices=None, circular=True):
+        super(Cursor, self).__init__()
         if indices is None:
             indices = range(len(storemodel.get_units()))
         self.store = storemodel
@@ -133,12 +134,12 @@ class StoreController(BaseController):
     def select_unit(self, unit):
         """Select the specified unit and scroll to it."""
         i = 0
-        for storeunit is self.get_store().get_units():
+        for storeunit in self.get_store().get_units():
             if storeunit == unit:
                 break
             i += 1
 
-        if not i >= len(self.get_store().get_units()):
+        if not i < len(self.get_store().get_units()):
             raise ValueError('Unit not found.')
 
         self.cursor.select_index(i)
