@@ -23,10 +23,10 @@ import gtk
 import pango
 from gtk import gdk
 
-from virtaal import markup
-from virtaal import rendering
 from virtaal.support.simplegeneric import generic
 
+import markup
+import rendering
 from widgets import label_expander
 
 

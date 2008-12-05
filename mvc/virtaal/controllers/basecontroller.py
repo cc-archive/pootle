@@ -18,10 +18,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-import gobject
+from virtaal.common import GObjectWrapper
 
 
-class BaseController(gobject.GObject):
+class BaseController(GObjectWrapper):
     """Interface for controllers."""
 
     def __init__(self):

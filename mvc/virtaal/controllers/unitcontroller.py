@@ -20,6 +20,7 @@
 
 from gobject import GObject, SIGNAL_RUN_FIRST, TYPE_INT, TYPE_NONE, TYPE_PYOBJECT, TYPE_STRING
 
+from virtaal.common import GObjectWrapper
 from virtaal.views import UnitView
 
 from basecontroller import BaseController
@@ -38,7 +39,8 @@ class UnitController(BaseController):
 
     # INITIALIZERS #
     def __init__(self, store_controller):
-        GObject.__init__(self)
+        GObjectWrapper.__init__(self)
+
         self.main_controller = store_controller.main_controller
         self.store_controller = store_controller
         self.store_controller.register_unitcontroller(self)

@@ -159,7 +159,7 @@ def get_abs_data_filename(path_parts):
 
     DATA_DIRS = [
         ["..", "share"],
-        ["share"]
+        ["..", "..", "share"]
     ]
 
     for basepath, data_dir in ((x, y) for x in BASE_DIRS for y in DATA_DIRS):

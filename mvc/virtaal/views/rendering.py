@@ -21,7 +21,7 @@
 import gtk
 import pango
 
-import pan_app
+from virtaal.common import pan_app
 
 _font_descriptions = {}
 
