@@ -44,6 +44,8 @@ class MainController(BaseController):
         store = self.store_controller.get_store()
         return store and store.get_filename() or None
 
+    def set_saveable(self, value):
+        self.view.set_saveable(value)
 
     # METHODS #
     def show_error(self, msg):
@@ -61,7 +63,7 @@ class MainController(BaseController):
     def open_file(self, filename, uri=''):
         """Open the file given by C{filename}.
             @returns: The filename opened, or C{None} if an error has occurred."""
-        if self.store_controller.store_is_modified():
+        if self.store_controller.is_modified():
             response = self.view.show_save_confirm_dialog()
             if response == 'save':
                 self.store_controller.save_file()
@@ -87,7 +89,7 @@ class MainController(BaseController):
         #    raise exc
         #    return None
 
-    def save_file(self, filename=''):
+    def save_file(self, filename=None):
         try:
             self.store_controller.save_file(filename)
         except IOError, exc:
@@ -96,7 +98,13 @@ class MainController(BaseController):
             )
 
     def quit(self):
-        # FIXME: Add modification-checks
+        if self.store_controller.is_modified():
+            response = self.view.show_save_confirm_dialog()
+            if response == 'save':
+                self.store_controller.save_file()
+            elif response == 'cancel':
+                return
+
         self.view.quit()
 
     def run(self):

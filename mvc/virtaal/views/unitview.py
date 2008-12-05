@@ -50,8 +50,17 @@ class UnitView(gtk.EventBox, gtk.CellEditable, BaseView):
         self.sources = []
         self.targets = []
         self.options = {}
+
+        self.must_advance = False
+        self._modified = False
+
         self._get_widgets()
         self.load_unit(unit)
+
+
+    # ACCESSORS #
+    def is_modified(self):
+        return self._modified
 
 
     # METHODS #
@@ -91,12 +100,14 @@ class UnitView(gtk.EventBox, gtk.CellEditable, BaseView):
         self._build_default_editor()
         self.widgets['tbl_editor'].reparent(self)
 
+        i = 0
         for target in self.targets:
             target.connect('key-press-event', self._on_text_view_key_press_event)
-            target.get_buffer().connect("changed", self._on_modify)
+            target.get_buffer().connect("changed", self._on_target_changed, i)
+            i += 1
 
         for option in self.options.values():
-            option.connect("toggled", self._on_modify)
+            option.connect("toggled", self._on_fuzzy_toggled)
 
         self._modified = False
         self.connect('key-press-event', self._on_key_press_event)
@@ -261,8 +272,9 @@ class UnitView(gtk.EventBox, gtk.CellEditable, BaseView):
 
 
     # EVENT HANLDERS #
-    def _on_modify(self, _buf):
-        self.emit('modified')
+    def _on_fuzzy_toggled(self, toggle_button, *args):
+        self.unit.markfuzzy(toggle_button.get_active())
+        self.modified()
 
     def _on_key_press_event(self, _widget, event, *_args):
         if event.keyval == gtk.keysyms.Return or event.keyval == gtk.keysyms.KP_Enter:
@@ -276,6 +288,17 @@ class UnitView(gtk.EventBox, gtk.CellEditable, BaseView):
             widget.parent.emit('key-press-event', event)
             return True
         return False
+
+    def _on_target_changed(self, buffer, index):
+        newtext = buffer.get_text(buffer.get_start_iter(), buffer.get_end_iter())
+        if self.unit.hasplural():
+            self.unit.target.strings[index] = newtext
+        elif index == 0:
+            self.unit.target = newtext
+        else:
+            raise IndexError()
+
+        self.modified()
 
     def _on_text_view_key_press_event(self, widget, event, *_args):
         # Alt-Down
