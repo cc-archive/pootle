@@ -130,6 +130,7 @@ class MainView(BaseView):
         recent.rc.connect("item-activated", self._on_recent_file_activated)
         recent_files.set_submenu(recent.rc)
 
+        self.controller.connect('controller-registered', self._on_controller_registered)
         self._create_dialogs()
         self._setup_key_bindings()
 
@@ -393,3 +394,16 @@ class MainView(BaseView):
 
     def _on_report_bug(self, _widget=None):
         openmailto.open("http://bugs.locamotion.org/enter_bug.cgi?product=Virtaal&version=%s" % __version__.ver)
+    def _on_controller_registered(self, main_controller, new_controller):
+        if not main_controller.store_controller == new_controller:
+            return
+        if getattr(self, '_store_loaded_handler_id ', None):
+            main_controller.store_controller.disconnect(self._store_loaded_handler_id)
+
+        self._store_loaded_handler_id = new_controller.connect('store-loaded', self._on_store_loaded)
+
+
+    def _on_store_loaded(self, store_controller):
+        self.gui.get_widget('saveas_menuitem').set_sensitive(True)
+        if getattr(self, '_uri', None):
+            recent.rm.add_item(self._uri)

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.4.5 on Tue Dec  2 17:54:52 2008 
+<!--Generated with glade3 3.4.5 on Thu Dec  4 14:34:04 2008 
 	Version: 3.0.1
 	Date: Thu Dec  6 12:30:34 2007
 	User: fwolff
@@ -49,6 +49,7 @@
                     <child>
                       <widget class="GtkImageMenuItem" id="saveas_menuitem">
                         <property name="visible">True</property>
+                        <property name="sensitive">False</property>
                         <property name="label">gtk-save-as</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
