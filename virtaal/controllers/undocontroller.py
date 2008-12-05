@@ -41,6 +41,7 @@ class UndoController(BaseController):
         GObjectWrapper.__init__(self)
 
         self.main_controller = main_controller
+        self.main_controller.undo_controller = self
         self.unit_controller = self.main_controller.store_controller.unit_controller
 
         self.undo_stack = UndoModel(self)

@@ -40,7 +40,7 @@ class AutoCorrector(object):
 
     REPLACEMENT, REGEX = range(2)
 
-    def __init__(self, lang='', acorpath=None):
+    def __init__(self, main_controller, lang='', acorpath=None):
         """Create a new AutoCorrector instance and load the OpenOffice.org
             auto-correction diction for language code 'lang'.
 
@@ -52,6 +52,7 @@ class AutoCorrector(object):
             @param acorpath: The path to the directory containing the
                 OpenOffice.org auto-correction data files (acor_*.dat).
             """
+        self.main_controller = main_controller
         self.lang = None
         if acorpath is None or not os.path.isdir(acorpath):
             acorpath = os.path.curdir
@@ -223,7 +224,7 @@ class AutoCorrector(object):
                 def correct_text():
                     buffer.props.text = u''.join([res, postfix])
                     buffer.place_cursor( buffer.get_iter_at_offset(len(res) + len(text)) )
-                    #undo_buffer.merge_actions(buffer, iteroffset)
+                    self.main_controller.undo_controller.undo_stack.pop()
                     return False
 
                 gobject.idle_add(correct_text)
