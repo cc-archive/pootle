@@ -32,8 +32,15 @@ from storecursor import StoreCursor
 class StoreController(BaseController):
     """The controller for all store-level activities."""
 
+    __gtype_name__ = 'StoreController'
+    __gsignals__ = {
+        'store-loaded': (gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, ()),
+    }
+
     # INITIALIZERS #
     def __init__(self, main_controller):
+        GObjectWrapper.__init__(self)
+
         self.main_controller = main_controller
         self.main_controller.store_controller = self
         self.unit_controller = None # This is set by UnitController itself when it is created
@@ -104,6 +111,8 @@ class StoreController(BaseController):
 
         self.view.load_store(self.store)
         self.view.show()
+
+        self.emit('store-loaded')
 
     def save_file(self, filename=None):
         self.store.save_file(filename)
