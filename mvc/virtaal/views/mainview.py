@@ -32,11 +32,8 @@ from virtaal.support import openmailto
 from aboutdialog import AboutDialog
 from baseview import BaseView
 
-try:
-    import pygtk
-    pygtk.require("2.0")
-except:
-    pass
+import pygtk
+pygtk.require("2.0")
 
 
 class EntryDialog(gtk.Dialog):

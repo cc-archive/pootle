@@ -136,9 +136,6 @@ class StoreController(BaseController):
         self.main_controller.set_saveable(self._modified)
 
         self.cursor = StoreCursor(self.store)
-        self.main_controller.mode_controller.refresh_mode()
-        # The above line should be replaced by these below:
-        #self.mode.update_for_store(self.store)
 
         self.view.load_store(self.store)
         self.view.show()
