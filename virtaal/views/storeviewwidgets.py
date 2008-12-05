@@ -84,9 +84,9 @@ COLUMN_NOTE, COLUMN_UNIT, COLUMN_EDITABLE = 0, 1, 2
 class StoreTreeModel(gtk.GenericTreeModel):
     """Custom C{gtk.TreeModel} adapted from the old C{UnitModel} class."""
 
-    def __init__(self, store):
+    def __init__(self, storemodel):
         gtk.GenericTreeModel.__init__(self)
-        self._store = store
+        self._store = storemodel
         self._current_editable = 0
 
     def on_get_flags(self):
@@ -291,16 +291,19 @@ class StoreTreeView(gtk.TreeView):
         # we don't want anything to happen, so we return True.
         if event.window != widget.get_bin_window():
             return True
+
         answer = self.get_path_at_pos(int(event.x), int(event.y))
         if answer is None:
             logging.debug("Not path found at (%d,%d)" % (int(event.x), int(event.y)))
             return True
+
         old_path, _old_column = self.get_cursor()
         path, _column, _x, _y = answer
         if old_path != path:
             index = self.get_model().path_to_store_index(path)
             self.view.set_cursor_pos(index)
             self._activate_editing_path(path)
+
         return True
 
     def _on_cell_edited(self, _cell, _path_string, must_advance, _modified, _model):
@@ -387,6 +390,7 @@ class StoreCellRenderer(gtk.GenericCellRenderer):
     ROW_PADDING = 10
     """The number of pixels between rows."""
 
+    # INITIALIZERS #
     def __init__(self, view):
         gtk.GenericCellRenderer.__init__(self)
         self.set_property('mode', gtk.CELL_RENDERER_MODE_EDITABLE)
@@ -397,6 +401,8 @@ class StoreCellRenderer(gtk.GenericCellRenderer):
         self.source_layout = None
         self.target_layout = None
 
+
+    # ACCESSORS #
     def _get_unit(self):
         return self.__unit
 
@@ -410,6 +416,8 @@ class StoreCellRenderer(gtk.GenericCellRenderer):
 
     unit = property(_get_unit, _set_unit, None, None)
 
+
+    # INTERFACE METHODS #
     def do_set_property(self, pspec, value):
         setattr(self, pspec.name, value)
 
@@ -459,6 +467,8 @@ class StoreCellRenderer(gtk.GenericCellRenderer):
         widget.get_style().paint_layout(window, gtk.STATE_NORMAL, False,
                 cell_area, widget, '', target_x, y, self.target_layout)
 
+
+    # METHODS #
     def _get_pango_layout(self, widget, text, width, font_description):
         '''Gets the Pango layout used in the cell in a TreeView widget.'''
         # We can't use widget.get_pango_context() because we'll end up
