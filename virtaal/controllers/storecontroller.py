@@ -18,10 +18,48 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
+from bisect import bisect_left
+
 from virtaal.models import StoreModel
 from virtaal.views import StoreView
 
 from basecontroller import BaseController
+
+
+# TODO: Move the following cursor-class(es) to an appropriate file
+class Cursor(object):
+    """Manages the current position in the store."""
+
+    def __init__(self, storemodel, indices=None, circular=True):
+        if indices is None:
+            indices = range(len(storemodel.get_units()))
+        self.store = storemodel
+        self.indices = indices
+        self.circular = circular
+
+        self.curr_pos = 0
+
+    def current_index(self):
+        if len(self.indices) < 1:
+            return -1
+        return self.indices[self.curr_pos]
+
+    def move(self, offset):
+        """Move the cursor C{offset} positions down.
+            The cursor will wrap around to the beginning if C{circular=True}
+            was given when the cursor was created."""
+        # FIXME: Possibly contains off-by-one bug(s)
+        if self.curr_pos + offset < len(self.indices):
+            self.curr_pos += offset
+        elif self.circular:
+            self.curr_pos = self.curr_pos + offset - len(self.indices)
+        else:
+            raise IndexError()
+        return self.curr_pos
+
+    def select_index(self, index):
+        """Move the cursor to the cursor to the position specified by C{index}."""
+        self.curr_pos = bisect_left(self.indices, index)
 
 
 class StoreController(BaseController):
@@ -74,6 +112,14 @@ class StoreController(BaseController):
             self.store = StoreModel(filename)
         else:
             self.store.load_file(filename)
+
+        self._modified = False
+        self.main_controller.set_saveable(self._modified)
+
+        self.cursor = Cursor(self.store)
+        # The above line should be replaced by these below:
+        #self.mode.update_for_store(self.store)
+
         self.view.load_store(self.store)
         self.view.show()
 

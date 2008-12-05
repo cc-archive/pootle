@@ -261,7 +261,8 @@ class StoreTreeView(gtk.TreeView):
 
         try:
             #self._owner.set_statusbar_message(self.document.mode_cursor.move(offset))
-            path = self.get_model().store_index_to_path(self.view.get_current_cursor_pos())
+            self.view.get_cursor().move(offset)
+            path = self.get_model().store_index_to_path(self.view.get_cursor().current_index())
             self._activate_editing_path(path)
         except IndexError:
             pass
@@ -310,22 +311,17 @@ class StoreTreeView(gtk.TreeView):
     def on_configure_event(self, _event, *_user_args):
         path, column = self.get_cursor()
 
-        # Horrible hack.
-        # We use set_cursor to cause the editable area to be recreated so that
-        # it can be drawn correctly. This has to be delayed (we used idle_add),
-        # since calling it immediately after columns_autosize() does not work.
-        def reset_cursor():
-            if path != None:
-                self.set_cursor(path, column, start_editing=True)
-            return False
-
         self.columns_autosize()
-        gobject.idle_add(reset_cursor)
+        if path != None:
+            self.set_cursor(path, column, start_editing=True)
 
         return False
 
     def _on_cursor_changed(self, _treeview):
         path, _column = self.get_cursor()
+
+        index = _treeview.get_model().path_to_store_index(path)
+        self.view.set_cursor_pos(index)
 
         # We defer the scrolling until GTK has finished all its current drawing
         # tasks, hence the gobject.idle_add. If we don't wait, then the TreeView
