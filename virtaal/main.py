@@ -18,17 +18,21 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
+import os
 
 from virtaal.controllers import MainController, StoreController, UnitController
 
 
-def Virtaal(object):
+class Virtaal(object):
     """The main Virtaal program entry point."""
 
-    def __init__(self):
-        self.store_controller = StoreController()
+    def __init__(self, startupfile):
+        self.main_controller = MainController()
+        self.store_controller = StoreController(self.main_controller)
         self.unit_controller = UnitController(self.store_controller)
-        self.main_controller = MainController(self.store_controller)
+
+        if startupfile and os.path.isfile(startupfile):
+            self.main_controller.open_file(startupfile)
 
 
     # METHODS #
