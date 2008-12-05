@@ -46,7 +46,7 @@ class StoreCursor(GObjectWrapper):
         if indices is None:
             indices = storemodel.stats['total']
         self.store = storemodel
-        self.indices = indices
+        self._indices = indices
         self.circular = circular
 
         self._pos = 0
@@ -63,15 +63,25 @@ class StoreCursor(GObjectWrapper):
     pos = property(_get_pos, _set_pos)
 
     def _get_index(self):
-        if len(self.indices) < 1:
+        if len(self._indices) < 1:
             return -1
-        return self.indices[self.pos]
+        return self._indices[self.pos]
     def _set_index(self, index):
         """Move the cursor to the cursor to the position specified by C{index}.
             @type  index: int
             @param index: The index that the cursor should point to."""
-        self.pos = bisect_left(self.indices, index)
+        self.pos = bisect_left(self._indices, index)
     index = property(_get_index, _set_index)
+
+    def _get_indices(self):
+        return self._indices
+    def _set_indices(self, value):
+        oldindex = self._indices[self.pos]
+        print '%s -> %s' % (self._indices, list(value))
+        self._indices = list(value)
+        if self._indices[self.pos] != oldindex:
+            self.emit('cursor-changed')
+    indices = property(_get_indices, _set_indices)
 
     # METHODS #
     def move(self, offset):
@@ -79,13 +89,13 @@ class StoreCursor(GObjectWrapper):
             The cursor will wrap around to the beginning if C{circular=True}
             was given when the cursor was created."""
         # FIXME: Possibly contains off-by-one bug(s)
-        if 0 <= self.pos + offset < len(self.indices):
+        if 0 <= self.pos + offset < len(self._indices):
             self.pos += offset
         elif self.circular:
             if self.pos + offset >= 0:
-                self.pos = self.pos + offset - len(self.indices)
+                self.pos = self.pos + offset - len(self._indices)
             elif self.pos + offset < 0:
-                self.pos = self.pos + offset + len(self.indices)
+                self.pos = self.pos + offset + len(self._indices)
         else:
             raise IndexError()
         return self.pos
