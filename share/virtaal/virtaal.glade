@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.4.5 on Fri Nov 28 16:35:14 2008 
+<!--Generated with glade3 3.4.5 on Tue Dec  2 17:54:52 2008 
 	Version: 3.0.1
 	Date: Thu Dec  6 12:30:34 2007
 	User: fwolff
@@ -158,17 +158,50 @@
           </packing>
         </child>
         <child>
-          <widget class="GtkHBox" id="mode_bar">
+          <widget class="GtkTable" id="mode_box">
             <property name="visible">True</property>
-            <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
+            <property name="n_rows">2</property>
+            <property name="n_columns">6</property>
             <child>
-              <widget class="GtkHBox" id="hbox1">
-                <property name="visible">True</property>
-              </widget>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
             </child>
           </widget>
           <packing>
             <property name="expand">False</property>
+            <property name="fill">False</property>
             <property name="position">1</property>
           </packing>
         </child>
