@@ -234,6 +234,12 @@ class MainView(BaseView):
                 )
         self.modified = value
 
+    def set_statusbar_message(self, msg):
+        self.status_bar.pop(self.statusbar_context_id)
+        self.status_bar.push(self.statusbar_context_id, msg)
+        if msg:
+            time.sleep(self.WRAP_DELAY)
+
 
     # METHODS #
     def quit(self):
@@ -339,22 +345,24 @@ class MainView(BaseView):
             return 'cancel'
         return ''
 
-    def set_statusbar_message(self, msg):
-        self.status_bar.pop(self.statusbar_context_id)
-        self.status_bar.push(self.statusbar_context_id, msg)
-        if msg:
-            time.sleep(self.WRAP_DELAY)
-
 
     # SIGNAL HANDLERS #
+    def _on_controller_registered(self, main_controller, new_controller):
+        if not main_controller.store_controller == new_controller:
+            return
+        if getattr(self, '_store_loaded_handler_id ', None):
+            main_controller.store_controller.disconnect(self._store_loaded_handler_id)
+
+        self._store_loaded_handler_id = new_controller.connect('store-loaded', self._on_store_loaded)
+
     def _on_documentation(self, _widget=None):
         openmailto.open("http://translate.sourceforge.net/wiki/virtaal/index")
 
     def _on_file_open(self, _widget, destroyCallback=None):
         filename_and_uri = self.show_open_dialog()
         if filename_and_uri:
-            filename = filename_and_uri[0]
-            uri = filename_and_uri[1]
+            filename, uri = filename_and_uri
+            self._uri = uri
             self.controller.open_file(filename, uri=uri)
 
     def _on_file_save(self, widget=None):
@@ -394,14 +402,6 @@ class MainView(BaseView):
 
     def _on_report_bug(self, _widget=None):
         openmailto.open("http://bugs.locamotion.org/enter_bug.cgi?product=Virtaal&version=%s" % __version__.ver)
-    def _on_controller_registered(self, main_controller, new_controller):
-        if not main_controller.store_controller == new_controller:
-            return
-        if getattr(self, '_store_loaded_handler_id ', None):
-            main_controller.store_controller.disconnect(self._store_loaded_handler_id)
-
-        self._store_loaded_handler_id = new_controller.connect('store-loaded', self._on_store_loaded)
-
 
     def _on_store_loaded(self, store_controller):
         self.gui.get_widget('saveas_menuitem').set_sensitive(True)
