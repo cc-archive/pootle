@@ -45,20 +45,24 @@ class StoreModel(BaseModel):
 
 
     # SPECIAL METHODS #
+    def __getitem__(self, index):
+        """Alias for C{get_unit}."""
+        return self.get_unit(index)
+
     def __len__(self):
-        if not self.store:
+        if not self._trans_store:
             return -1
-        return len(self.store.units)
+        return len(self._valid_units)
 
 
     # ACCESSORS #
     def get_filename(self):
-        return self.filename
+        return self._trans_store and self._trans_store.filename or None
 
     def get_source_language(self):
         """Return the current store's source language."""
         # Copied as-is from Document.get_source_language()
-        candidate = self.store.getsourcelanguage()
+        candidate = self._trans_store.getsourcelanguage()
         if candidate and not candidate in ['und', 'en', 'en_US']:
             return candidate
         else:
@@ -67,22 +71,36 @@ class StoreModel(BaseModel):
     def get_target_language(self):
         """Return the current store's target language."""
         # Copied as-is from Document.get_target_language()
-        candidate = self.store.gettargetlanguage()
+        candidate = self._trans_store.gettargetlanguage()
         if candidate and candidate != 'und':
             return candidate
         else:
             return pan_app.settings.language["contentlang"]
 
+    def get_unit(self, index):
+        """Get a specific unit by index."""
+        return self._trans_store.units[self._valid_units[index]]
+
+    def get_units(self):
+        """Return the current store's (filtered) units."""
+        return [self._trans_store.units[i] for i in self._valid_units]
+
     # METHODS #
     def load_file(self, filename):
         # Adapted from Document.__init__()
         print 'Loading file', filename
-        self.store = factory.getobject(filename)
-        # TODO: Filter out units that are handled by Virtaal.
+        self._trans_store = factory.getobject(filename)
+        self._get_valid_units()
         self.filename = filename
-        self.stats = statsdb.StatsCache().filestats(filename, checks.UnitChecker(), self.store)
-        self._correct_header(self.store)
-        self.nplurals = self._compute_nplurals(self.store)
+        self.stats = statsdb.StatsCache().filestats(filename, checks.UnitChecker(), self._trans_store)
+        self._correct_header(self._trans_store)
+        self.nplurals = self._compute_nplurals(self._trans_store)
+
+    def save_file(self, filename=None):
+        if filename is None or filename == self.filename:
+            self._trans_store.save()
+        else:
+            self._trans_store.savefile(filename)
 
     def _compute_nplurals(self, store):
         # FIXME this needs to be pushed back into the stores, we don't want to import each format
@@ -116,3 +134,6 @@ class StoreModel(BaseModel):
             for key, values in stats.iteritems():
                 new_stats[key] = [value+1 for value in values]
             stats = new_stats
+
+    def _get_valid_units(self):
+        self._valid_units = range(1, len(self._trans_store.units))

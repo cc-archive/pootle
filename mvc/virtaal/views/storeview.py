@@ -57,11 +57,7 @@ class StoreView(BaseView):
     def load_store(self, store):
         self.store = store
         if store:
-            self._treeview.set_model(store.store)
-
-    def set_cursor_pos(self, pos):
-        # TODO: This should pass "pos" to self.controller.set_cursor_pos()
-        self.cursor_pos = pos
+            self._treeview.set_model(store)
 
     def show(self):
         child = self.parent_widget.get_child()

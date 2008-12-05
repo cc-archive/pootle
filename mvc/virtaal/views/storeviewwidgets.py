@@ -111,7 +111,7 @@ class StoreTreeModel(gtk.GenericTreeModel):
 
     def on_get_value(self, rowref, column):
         if column <= 1:
-            unit = self._store.units[rowref]
+            unit = self._store[rowref]
             if column == 0:
                 return markup.markuptext(unit.getnotes(), markupescapes=False) or None
             else:
@@ -120,13 +120,13 @@ class StoreTreeModel(gtk.GenericTreeModel):
             return self._current_editable == rowref
 
     def on_iter_next(self, rowref):
-        if rowref < len(self._store.units) - 1:
+        if rowref < len(self._store) - 1:
             return rowref + 1
         else:
             return None
 
     def on_iter_children(self, parent):
-        if parent == None and len(self._store.units) > 0:
+        if parent == None and len(self._store) > 0:
             return 0
         else:
             return None
@@ -136,7 +136,7 @@ class StoreTreeModel(gtk.GenericTreeModel):
 
     def on_iter_n_children(self, rowref):
         if rowref == None:
-            return len(self._store.units)
+            return len(self._store)
         else:
             return 0
 
@@ -235,8 +235,8 @@ class StoreTreeView(gtk.TreeView):
         return column
 
     # METHODS #
-    def set_model(self, trans_store):
-        model = StoreTreeModel(trans_store)
+    def set_model(self, storemodel):
+        model = StoreTreeModel(storemodel)
         super(StoreTreeView, self).set_model(model)
 
     def _activate_editing_path(self, new_path):
