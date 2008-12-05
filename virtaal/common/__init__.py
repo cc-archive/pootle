@@ -18,12 +18,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-import markup
-import recent
-import rendering
-from mainview  import MainView
-from modeview  import ModeView
-from storeview import StoreView
-from unitview  import UnitView
+import __version__
+import pan_app
+from gobjectwrapper import GObjectWrapper
 
-__all__ = ['markup', 'recent', 'rendering', 'MainView', 'ModeView', 'StoreView', 'UnitView']
+__all__ = ['__version__', 'pan_app', 'GObjectWrapper']

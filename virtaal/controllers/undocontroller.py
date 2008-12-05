@@ -18,9 +18,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
+import gobject
 import gtk
 from gtk import gdk
 
+from virtaal.common import GObjectWrapper
 from virtaal.models import UndoModel
 
 from basecontroller import BaseController
@@ -29,10 +31,15 @@ from basecontroller import BaseController
 class UndoController(BaseController):
     """Contains "undo" logic."""
 
+    __gtype_name__ = 'UndoController'
+
+
     # INITIALIZERS #
     def __init__(self, main_controller):
         """Constructor.
             @type main_controller: virtaal.controllers.MainController"""
+        GObjectWrapper.__init__(self)
+
         self.main_controller = main_controller
         self.unit_controller = self.main_controller.store_controller.unit_controller
 

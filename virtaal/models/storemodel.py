@@ -24,7 +24,7 @@ from translate.storage import factory, statsdb
 from translate.storage import ts2 as ts
 from translate.storage.poheader import poheader
 
-from virtaal import pan_app
+from virtaal.common import pan_app
 
 from basemodel import BaseModel
 

@@ -20,7 +20,7 @@
 
 from gtk import glade
 
-from virtaal import pan_app
+from virtaal.common import pan_app
 
 
 class BaseView(object):

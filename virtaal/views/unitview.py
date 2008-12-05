@@ -23,9 +23,10 @@ import re
 from gobject import idle_add, GObject, SIGNAL_RUN_FIRST, TYPE_INT, TYPE_NONE, TYPE_PYOBJECT, TYPE_STRING
 from translate.lang import factory
 
-from virtaal import markup
-from virtaal import rendering
+from virtaal.common import GObjectWrapper
 
+import markup
+import rendering
 from baseview import BaseView
 from widgets.label_expander import LabelExpander
 

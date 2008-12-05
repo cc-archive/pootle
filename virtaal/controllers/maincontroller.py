@@ -18,7 +18,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-from virtaal import pan_app
+from virtaal.common import GObjectWrapper, pan_app
 from virtaal.views import MainView
 
 from basecontroller import BaseController
@@ -28,8 +28,11 @@ class MainController(BaseController):
     """The main controller that initializes the others and contains the main
         program loop."""
 
+    __gtype_name__ = 'MainController'
+
     # INITIALIZERS #
     def __init__(self):
+        GObjectWrapper.__init__(self)
         self.store_controller = None # This is set by StoreController itself when it is created
         self.view = MainView(self)
 

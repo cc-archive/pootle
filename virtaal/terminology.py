@@ -24,10 +24,10 @@ __all__ = ['get_terminology_matcher',
 import os
 import os.path as path
 
+from translate.search import match
 from translate.storage import factory
 
-import pan_app
-from translate.search import match
+from virtaal.common import pan_app
 
 
 match_store = None # This is if the user specifies a terminology file (as opposed to a directory) on the commmand line

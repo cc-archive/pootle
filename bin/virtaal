@@ -28,8 +28,7 @@ from os import path
 from translate.storage import factory
 
 from virtaal.main import Virtaal
-from virtaal import pan_app
-from virtaal import __version__
+from virtaal.common import pan_app, __version__
 from virtaal import terminology
 
 def set_termininology_dir(option, opt_str, value, parser):
