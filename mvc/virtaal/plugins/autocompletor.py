@@ -24,7 +24,7 @@ import gobject
 import gtk
 import re
 
-import undo_buffer
+#import undo_buffer
 
 
 class AutoCompletor(object):
@@ -67,16 +67,16 @@ class AutoCompletor(object):
             self._word_list += list(words)
         self._word_list = list(set(self._word_list)) # Remove duplicates
 
-    def add_words_from_store(self, store):
-        """Collect all words from the given translation store to use for
+    def add_words_from_units(self, units):
+        """Collect all words from the given translation units to use for
             auto-completion.
 
-            @type  store: translate.storage.pypo.pofile
-            @param store: The translation store to collect words from.
+            @type  units: list
+            @param units: The translation units to collect words from.
             """
         wordcounts = {}
 
-        for unit in store.units:
+        for unit in units:
             if not unit.target:
                 continue
             for word in self.wordsep_re.split(unit.target):
@@ -194,11 +194,10 @@ class AutoCompletor(object):
                 # and its side effects are taken care of. We abuse
                 # gobject.idle_add for that.
                 def suggest_completion():
-                    def insert_action():
-                        buffer.insert_at_cursor(word_postfix)
                     buffer.handler_block(self._textbuffer_insert_ids[buffer])
-                    undo_buffer.execute_without_signals(buffer, insert_action)
+                    buffer.insert_at_cursor(word_postfix)
                     buffer.handler_unblock(self._textbuffer_insert_ids[buffer])
+                    print 'suggest_completion()'
                     sel_iter_start = buffer.get_iter_at_offset(len(prefix))
                     sel_iter_end   = buffer.get_iter_at_offset(len(prefix+word_postfix))
                     buffer.select_range(sel_iter_start, sel_iter_end)
@@ -218,7 +217,7 @@ class AutoCompletor(object):
             selection = buf.get_selection_bounds()
             if selection and suggestion[0].equal(selection[0]) and suggestion[1].equal(selection[1]):
                 # Not pretty, but it works
-                getattr(buf, "__undo_stack").pop()
+                #getattr(buf, "__undo_stack").pop()
                 return False
             else:
                 self._check_delete_selection(buf)
