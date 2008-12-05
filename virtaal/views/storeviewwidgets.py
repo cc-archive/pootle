@@ -238,16 +238,16 @@ class StoreTreeView(gtk.TreeView):
     # METHODS #
     def select_index(self, index):
         """Select the row with the given index."""
+        #print 'Selecting index', index
         model = self.get_model()
         newpath = model.store_index_to_path(index)
         newiter = model.get_iter(newpath)
-        selection = self.get_selection()
-        selected = selection.get_selected()
+        selected = self.get_selection().get_selected()
 
-        if not selected:
-            selection.select_iter(newiter)
-        elif selected[1] != newiter:
-            selection.select_iter(newiter)
+        if (not selected) or (selected[1] != newiter):
+            #print 'select_index()->self.set_cursor(path="%s")' % (newpath)
+            self.set_cursor(newpath, self.get_columns()[0], start_editing=True)
+            self._activate_editing_path(newpath)
 
     def set_model(self, storemodel):
         model = StoreTreeModel(storemodel)
@@ -275,8 +275,8 @@ class StoreTreeView(gtk.TreeView):
 
         try:
             #self._owner.set_statusbar_message(self.document.mode_cursor.move(offset))
-            self.view.get_cursor().move(offset)
-            path = self.get_model().store_index_to_path(self.view.get_cursor().current_index())
+            self.view.cursor.move(offset)
+            path = self.get_model().store_index_to_path(self.view.cursor.index)
             self._activate_editing_path(path)
         except IndexError:
             pass
@@ -315,7 +315,7 @@ class StoreTreeView(gtk.TreeView):
         path, _column, _x, _y = answer
         if old_path != path:
             index = self.get_model().path_to_store_index(path)
-            self.view.set_cursor_pos(index)
+            self.view.cursor.index = index
             self._activate_editing_path(path)
 
         return True
@@ -338,7 +338,8 @@ class StoreTreeView(gtk.TreeView):
         path, _column = self.get_cursor()
 
         index = _treeview.get_model().path_to_store_index(path)
-        self.view.set_cursor_pos(index)
+        if index != self.view.cursor.index:
+            self.view.cursor.index = index
 
         # We defer the scrolling until GTK has finished all its current drawing
         # tasks, hence the gobject.idle_add. If we don't wait, then the TreeView
