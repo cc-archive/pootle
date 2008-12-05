@@ -31,6 +31,8 @@ class UnitView(BaseView):
         self.controller = controller
         self.editor = None
 
+        self.unit_editors = {}
+
 
     # METHODS #
     def load_unit(self, unit):
@@ -38,9 +40,14 @@ class UnitView(BaseView):
             self.editor = None
             return None
 
+        if unit in self.unit_editors:
+            self.unit = unit
+            return self.unit_editors[unit]
+
         nplurals = self.controller.store_controller.get_nplurals()
         targetlang = self.controller.store_controller.get_target_language()
         self.editor = unit_editor.UnitEditor(unit, nplurals, targetlang)
+        self.unit_editors[unit] = self.editor
         self.unit = unit
 
         return self.editor

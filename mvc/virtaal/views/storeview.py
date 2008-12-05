@@ -370,6 +370,7 @@ class StoreCellRenderer(gtk.GenericCellRenderer):
             editor.set_size_request(width, -1)
             unit_editor.compute_optimal_height(editor, width)
             _width, height = editor.size_request()
+            height = max(height, 70)
         else:
             height = self.compute_cell_height(widget, width)
         height = min(height, 600)
