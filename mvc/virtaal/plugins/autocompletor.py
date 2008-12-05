@@ -37,12 +37,13 @@ class AutoCompletor(object):
     DEFAULT_COMPLETION_LENGTH = 4 # The default minimum length of a word that may
                                   # be auto-completed.
 
-    def __init__(self, word_list=[], comp_len=DEFAULT_COMPLETION_LENGTH):
+    def __init__(self, main_controller, word_list=[], comp_len=DEFAULT_COMPLETION_LENGTH):
         """Constructor.
 
             @type  word_list: iterable
             @param word_list: A list of words that should be auto-completed.
         """
+        self.main_controller = main_controller
         assert isinstance(word_list, list)
         self.comp_len = comp_len
         self._word_list = list(set(word_list))
@@ -197,7 +198,6 @@ class AutoCompletor(object):
                     buffer.handler_block(self._textbuffer_insert_ids[buffer])
                     buffer.insert_at_cursor(word_postfix)
                     buffer.handler_unblock(self._textbuffer_insert_ids[buffer])
-                    print 'suggest_completion()'
                     sel_iter_start = buffer.get_iter_at_offset(len(prefix))
                     sel_iter_end   = buffer.get_iter_at_offset(len(prefix+word_postfix))
                     buffer.select_range(sel_iter_start, sel_iter_end)
@@ -241,8 +241,8 @@ class AutoCompletor(object):
         if event.keyval == gtk.keysyms.Tab:
             buf = textview.get_buffer()
             completion = buf.get_text(iters[0], iters[1])
-            buf.delete(iters[0], iters[1])
-            buf.insert_at_cursor(completion)
+            buf.place_cursor(iters[1])
+            buf.move_mark_by_name('selection_bound', iters[1])
             return True
         elif event.state & gtk.gdk.CONTROL_MASK and \
                 event.keyval == gtk.keysyms.Z or event.keyval== gtk.keysyms.BackSpace:

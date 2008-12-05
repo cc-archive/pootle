@@ -76,8 +76,8 @@ class StoreController(BaseController):
 
         from virtaal.common import pan_app
         from virtaal.plugins import AutoCompletor, AutoCorrector
-        self.autocomp = AutoCompletor()
-        self.autocorr = AutoCorrector(acorpath=pan_app.get_abs_data_filename(['virtaal', 'autocorr']))
+        self.autocomp = AutoCompletor(self.main_controller)
+        self.autocorr = AutoCorrector(self.main_controller, acorpath=pan_app.get_abs_data_filename(['virtaal', 'autocorr']))
 
         self.connect('store-loaded', on_store_loaded)
 
