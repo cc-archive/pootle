@@ -42,7 +42,6 @@ class DefaultMode(BaseMode):
         if not cursor or not cursor.store:
             return
         cursor.indices = cursor.store.stats['total']
-        cursor.index = cursor.index # "Reload" cursor position
 
     def unselected(self):
         pass
