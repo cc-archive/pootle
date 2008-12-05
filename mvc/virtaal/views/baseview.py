@@ -18,6 +18,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
+from gtk import glade
+
+from virtaal import pan_app
+
 
 class BaseView(object):
     """Interface for views."""
@@ -26,7 +30,10 @@ class BaseView(object):
         raise NotImplementedError('This interface cannot be instantiated.')
 
     @classmethod
-    def load_glade_file(path_parts, domain):
+    def load_glade_file(cls, path_parts, domain):
         gladename = pan_app.get_abs_data_filename(path_parts)
         gui = glade.XML(gladename, domain=domain)
         return gladename, gui
+
+    def show(self):
+        raise NotImplementedError('This method needs to be implemented by all sub-classes.')
