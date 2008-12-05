@@ -49,7 +49,8 @@ class ModeController(BaseController):
         self.view.show()
 
         self.current_mode = None
-        self._select_mode(self.modes[self.default_mode_name])
+        self.view.select_mode(self.modenames[self.default_mode_name])
+        #self.select_mode(self.modes[self.default_mode_name])
 
     def _init_modes(self):
         self.modes = {}
@@ -73,21 +74,24 @@ class ModeController(BaseController):
         self.select_mode_by_name(self.default_mode_name)
 
     def select_mode_by_display_name(self, displayname):
-        self._select_mode(self.get_mode_by_display_name(displayname))
+        self.select_mode(self.get_mode_by_display_name(displayname))
 
     def select_mode_by_name(self, name):
-        self._select_mode(self.modes[name])
+        self.select_mode(self.modes[name])
 
-    def _select_mode(self, mode):
+    def select_mode(self, mode):
         if self.current_mode:
             self.view.remove_mode_widgets(self.current_mode.widgets)
             self.current_mode.unselected()
 
         self.current_mode = mode
+        self._ignore_mode_change = True
         self.view.select_mode(self.modenames[mode.name])
+        self._ignore_mode_change = False
         self.current_mode.selected()
         print 'Mode selected:', self.current_mode.name
 
     # EVENT HANDLERS #
     def _on_mode_selected(self, _modeview, modename):
-        self._select_mode(self.get_mode_by_display_name(modename))
+        if not getattr(self, '_ignore_mode_change', True):
+            self.select_mode(self.get_mode_by_display_name(modename))
