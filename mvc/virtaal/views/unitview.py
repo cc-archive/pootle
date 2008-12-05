@@ -59,6 +59,8 @@ class UnitView(gtk.EventBox, GObjectWrapper, gtk.CellEditable, BaseView):
         self.must_advance = False
         self._modified = False
 
+        self.connect('key-press-event', self._on_key_press_event)
+
         self._get_widgets()
         self.load_unit(unit)
 
@@ -277,6 +279,18 @@ class UnitView(gtk.EventBox, GObjectWrapper, gtk.CellEditable, BaseView):
                     return True
             return False
 
+        def target_key_press_event(text_view, event, next_text_view):
+            if event.keyval == gtk.keysyms.Return or event.keyval == gtk.keysyms.KP_Enter:
+                self.focus_text_view(next_text_view)
+                return True
+            return False
+
+        def end_target_key_press_event(text_view, event, *_args):
+            if event.keyval == gtk.keysyms.Return or event.keyval == gtk.keysyms.KP_Enter:
+                text_view.parent.parent.emit('key-press-event', event)
+                return True
+            return False
+
         self.targets = []
         for i in range(num_targets):
             if self.unit.hasplural() and self.controller.nplurals != len(self.unit.target.strings):
@@ -307,6 +321,12 @@ class UnitView(gtk.EventBox, GObjectWrapper, gtk.CellEditable, BaseView):
 
             self.widgets['vbox_targets'].add(target)
             self.targets.append(textview)
+
+        self.widgets['vbox_targets'].connect('key-press-event', self._on_key_press_event)
+
+        for target, next_target in zip(self.targets, self.targets[1:]):
+            target.connect('key-press-event', target_key_press_event, next_target)
+        self.targets[-1].connect('key-press-event', end_target_key_press_event)
 
     def _layout_add_fuzzy(self):
         check_button = gtk.CheckButton(label=_('F_uzzy'))
