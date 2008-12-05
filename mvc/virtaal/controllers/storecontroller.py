@@ -143,7 +143,7 @@ class StoreController(BaseController):
         self.emit('store-loaded')
 
     def save_file(self, filename=None):
-        self.store.save_file(filename)
+        self.store.save_file(filename) # store.save_file() will raise an appropriate exception if necessary
         self._modified = False
         self.main_controller.set_saveable(False)
 
