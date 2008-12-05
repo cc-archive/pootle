@@ -19,10 +19,11 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 import gobject
+import time
 from translate.filters import checks
 from translate.storage import factory, statsdb
 from translate.storage import ts2 as ts
-from translate.storage.poheader import poheader
+from translate.storage.poheader import poheader, tzstring
 
 from virtaal.common import pan_app
 
@@ -39,8 +40,9 @@ class StoreModel(BaseModel):
     __gtype_name__ = "StoreModel"
 
     # INITIALIZERS #
-    def __init__(self, filename):
+    def __init__(self, filename, controller):
         super(StoreModel, self).__init__()
+        self.controller = controller
         self.load_file(filename)
 
 
@@ -98,6 +100,7 @@ class StoreModel(BaseModel):
         self.nplurals = self._compute_nplurals(self._trans_store)
 
     def save_file(self, filename=None):
+        self._update_header()
         if filename is None or filename == self.filename:
             self._trans_store.save()
         else:
@@ -132,9 +135,9 @@ class StoreModel(BaseModel):
         if isinstance(store, poheader) and not store.header():
             store.updateheader(add=True)
             new_stats = {}
-            for key, values in stats.iteritems():
+            for key, values in self.stats.iteritems():
                 new_stats[key] = [value+1 for value in values]
-            stats = new_stats
+            self.stats = new_stats
 
     def _get_valid_units(self):
         self._valid_units = self.stats['total']
@@ -146,3 +149,29 @@ class StoreModel(BaseModel):
         index_start = self.stats['total'][0]
         for key in self.stats:
             self.stats[key] = [(i - index_start) for i in self.stats[key]]
+
+    def _update_header(self):
+        """Make sure that headers are complete and update with current time (if applicable)."""
+        # This method comes from Virtaal 0.2's main_window.py:Virtaal._on_file_save().
+        # It makes sure that, if we are working with a PO file, that all header info is present.
+        if isinstance(self._trans_store, poheader):
+            name = self.controller.main_controller.get_translator_name()
+            email = self.controller.main_controller.get_translator_email()
+            team = self.controller.main_controller.get_translator_team()
+            if name is None or email is None or team is None:
+                # User cancelled
+                raise Exception('Save cancelled.')
+            pan_app.settings.translator["name"] = name
+            pan_app.settings.translator["email"] = email
+            pan_app.settings.translator["team"] = team
+            pan_app.settings.write()
+
+            header_updates = {}
+            header_updates["PO_Revision_Date"] = time.strftime("%Y-%m-%d %H:%M") + tzstring()
+            header_updates["X_Generator"] = pan_app.x_generator
+            if name or email:
+                header_updates["Last_Translator"] = u"%s <%s>" % (name, email)
+                self._trans_store.updatecontributor(name, email)
+            if team:
+                header_updates["Language-Team"] = team
+            self._trans_store.updateheader(add=True, **header_updates)

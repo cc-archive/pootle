@@ -128,7 +128,7 @@ class StoreController(BaseController):
 
     def open_file(self, filename, uri=''):
         if not self.store:
-            self.store = StoreModel(filename)
+            self.store = StoreModel(filename, self)
         else:
             self.store.load_file(filename)
 
