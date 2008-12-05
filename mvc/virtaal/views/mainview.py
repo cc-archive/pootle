@@ -206,13 +206,35 @@ class MainView(BaseView):
         self.main_window.add_accel_group(self.accel_group)
         gtk.accel_map_add_entry("<Virtaal>/Edit/Undo", gtk.keysyms.z, gdk.CONTROL_MASK)
         gtk.accel_map_add_entry("<Virtaal>/Edit/Search", gtk.keysyms.F3, 0)
-        gtk.accel_map_add_entry("<Virtaal>/Navigation/Up", gtk.accelerator_parse("Up")[0], gdk.CONTROL_MASK)
-        gtk.accel_map_add_entry("<Virtaal>/Navigation/Down", gtk.accelerator_parse("Down")[0], gdk.CONTROL_MASK)
-        gtk.accel_map_add_entry("<Virtaal>/Navigation/PgUp", gtk.accelerator_parse("Page_Up")[0], gdk.CONTROL_MASK)
-        gtk.accel_map_add_entry("<Virtaal>/Navigation/PgDown", gtk.accelerator_parse("Page_Down")[0], gdk.CONTROL_MASK)
         # TODO: Move this to where it should be
         #self.accel_group.connect_by_path("<Virtaal>/Edit/Undo", self._on_undo)
         #self.accel_group.connect_by_path("<Virtaal>/Edit/Search", self._on_search)
+
+
+    # ACCESSORS #
+    def add_accel_group(self, accel_group):
+        """Add the given accelerator group to the main window.
+            @type accel_group: gtk.AccelGroup()"""
+        self.main_window.add_accel_group(accel_group)
+
+    def set_saveable(self, value):
+        menuitem = self.gui.get_widget("save_menuitem")
+        menuitem.set_sensitive(value)
+        filename = self.controller.get_store_filename()
+        if filename:
+            modified = ""
+            if value:
+                modified = "*"
+            self.main_window.set_title(
+                    (_('Virtaal - %(current_file)s %(modified_marker)s') %
+                        {
+                            "current_file": os.path.basename(filename),
+                            "modified_marker": modified
+                        }
+                    ).rstrip()
+                )
+        self.modified = value
+
 
     # METHODS #
     def quit(self):
