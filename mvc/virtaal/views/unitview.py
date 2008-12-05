@@ -18,9 +18,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-import gobject
 import gtk
 import re
+from gobject import idle_add, GObject, SIGNAL_RUN_FIRST, TYPE_INT, TYPE_NONE, TYPE_PYOBJECT, TYPE_STRING
 from translate.lang import factory
 
 from virtaal import markup
@@ -35,7 +35,9 @@ class UnitView(gtk.EventBox, gtk.CellEditable, BaseView):
 
     __gtype_name__ = "UnitView"
     __gsignals__ = {
-        'modified': (gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, ())
+        'modified': (SIGNAL_RUN_FIRST, TYPE_NONE, ()),
+        'insert-text': (SIGNAL_RUN_FIRST, TYPE_NONE, (TYPE_STRING, TYPE_STRING, TYPE_INT, TYPE_INT)),
+        'delete-text': (SIGNAL_RUN_FIRST, TYPE_NONE, (TYPE_STRING, TYPE_INT, TYPE_INT, TYPE_INT, TYPE_INT)),
     }
 
     # A regular expression to help us find a meaningful place to position the
@@ -48,6 +50,8 @@ class UnitView(gtk.EventBox, gtk.CellEditable, BaseView):
         self.controller = controller
 
         self.gladefilename, self.gui = self.load_glade_file(["virtaal", "virtaal.glade"], root='UnitEditor', domain="virtaal")
+        self._all_signals = ('modified', 'insert-text', 'delete-text')
+        self._enabled_signals = list(self._all_signals)
         self.sources = []
         self.targets = []
         self.options = {}
@@ -62,6 +66,17 @@ class UnitView(gtk.EventBox, gtk.CellEditable, BaseView):
     # ACCESSORS #
     def is_modified(self):
         return self._modified
+
+    def get_target_n(self, n):
+        buff = self.targets[n].get_buffer()
+        return buff.get_text(buff.get_start_iter(), buff.get_end_iter())
+
+    def set_target_n(self, n, newtext, cursor_pos=-1):
+        # TODO: Save cursor position and set after assignment
+        buff = self.targets[n].get_buffer()
+        buff.set_text(newtext)
+        if cursor_pos > -1:
+            buff.place_cursor(buff.get_iter_at_offset(cursor_pos))
 
 
     # METHODS #
@@ -90,6 +105,24 @@ class UnitView(gtk.EventBox, gtk.CellEditable, BaseView):
         translation_start = self.first_word_re.match(text).span()[1]
         buf.place_cursor(buf.get_iter_at_offset(translation_start))
 
+    def disable_signals(self, signals=[]):
+        """Disable all or specified signals."""
+        if signals:
+            for sig in signals:
+                if sig not in self._enabled_signals:
+                    self._enabled_signals.remove(sig)
+        else:
+            self._enabled_signals = []
+
+    def enable_signals(self, signals=[]):
+        """Enable all or specified signals."""
+        if signals:
+            for sig in signals:
+                if sig not in self._enabled_signals:
+                    self._enabled_signals.append(sig)
+        else:
+            self._enabled_signals = list(self._all_signals)
+
     def focus_text_view(self, text_view):
         text_view.grab_focus()
 
@@ -111,8 +144,11 @@ class UnitView(gtk.EventBox, gtk.CellEditable, BaseView):
 
         i = 0
         for target in self.targets:
+            buff = target.get_buffer()
             target.connect('key-press-event', self._on_text_view_key_press_event)
-            target.get_buffer().connect("changed", self._on_target_changed, i)
+            buff.connect('changed', self._on_target_changed, i)
+            buff.connect('insert-text', self._on_target_insert_text, i)
+            buff.connect('delete-range', self._on_target_delete_range, i)
             i += 1
 
         for option in self.options.values():
@@ -304,11 +340,35 @@ class UnitView(gtk.EventBox, gtk.CellEditable, BaseView):
         else:
             raise IndexError()
 
+        if 'modified' not in self._enabled_signals:
+            return
+
         self.modified()
+
+    def _on_target_insert_text(self, buff, iter, ins_text, length, target_num):
+        if 'insert-text' not in self._enabled_signals:
+            return
+
+        old_text = buff.get_text(buff.get_start_iter(), buff.get_end_iter())
+        offset = len(buff.get_text(buff.get_start_iter(), iter)) # FIXME: Isn't there a better way to do this?
+
+        self.emit('insert-text', old_text, ins_text, offset, target_num)
+
+    def _on_target_delete_range(self, buff, start_iter, end_iter, target_num):
+        if 'delete-text' not in self._enabled_signals:
+            return
+
+        cursor_iter = buff.get_iter_at_mark(buff.get_insert())
+        cursor_pos = len(buff.get_text(buff.get_start_iter(), cursor_iter))
+        old_text = buff.get_text(buff.get_start_iter(), buff.get_end_iter())
+        start_offset = len(buff.get_text(buff.get_start_iter(), start_iter)) # FIXME: Isn't there a better way to do this?
+        end_offset = len(buff.get_text(buff.get_start_iter(), end_iter)) # FIXME: Isn't there a better way to do this?
+
+        self.emit('delete-text', old_text, start_offset, end_offset, cursor_pos, target_num)
 
     def _on_text_view_key_press_event(self, widget, event, *_args):
         # Alt-Down
         if event.keyval == gtk.keysyms.Down and event.state & gtk.gdk.MOD1_MASK:
-            gobject.idle_add(self.copy_original, widget)
+            idle_add(self.copy_original, widget)
             return True
         return False

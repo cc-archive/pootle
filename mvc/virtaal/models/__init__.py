@@ -18,7 +18,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-from basemodel import BaseModel
+from basemodel  import BaseModel
 from storemodel import StoreModel
+from undomodel  import UndoModel
 
-__all__ = ['BaseModel', 'StoreModel']
+__all__ = ['BaseModel', 'StoreModel', 'UndoModel']
