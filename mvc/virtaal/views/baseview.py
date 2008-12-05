@@ -30,9 +30,9 @@ class BaseView(object):
         raise NotImplementedError('This interface cannot be instantiated.')
 
     @classmethod
-    def load_glade_file(cls, path_parts, domain):
+    def load_glade_file(cls, path_parts, root=None, domain=''):
         gladename = pan_app.get_abs_data_filename(path_parts)
-        gui = glade.XML(gladename, domain=domain)
+        gui = glade.XML(gladename, root=root, domain=domain)
         return gladename, gui
 
     def show(self):
