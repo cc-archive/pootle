@@ -325,7 +325,7 @@ class StoreTreeView(gtk.TreeView):
             return self._keyboard_move(1)
         return True
 
-    def on_configure_event(self, _event, *_user_args):
+    def on_configure_event(self, widget, _event, *_user_args):
         path, column = self.get_cursor()
 
         self.columns_autosize()
