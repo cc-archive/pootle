@@ -60,7 +60,8 @@ popd
 rm -rf %{buildroot}
 %{__python} setup.py install -O1 --skip-build --install-data=/usr --root %{buildroot}
 
-desktop-file-install --vendor="fedora" --delete-original \
+desktop-file-install                                     \
+   --delete-original                                     \
    --dir=%{buildroot}%{_datadir}/applications            \
    %{buildroot}%{_datadir}/applications/%{name}.desktop
 cp -rp po/locale %{buildroot}%{_datadir}/
