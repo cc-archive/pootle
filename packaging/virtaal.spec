@@ -1,20 +1,17 @@
 %{!?python_sitelib: %define python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib()")}
 
-%define         prerelease -rc1
-
 Name:           virtaal
 Version:        0.2
-Release:        0.3.rc1%{?dist}
+Release:        1%{?dist}
 Summary:        Localization and translation editor
 
 Group:          Development/Tools
 License:        GPLv2+
 URL:            http://translate.sourceforge.net/wiki/virtaal/index
-#Source0:        http://downloads.sourceforge.net/translate/%{name}-%{version}.tar.bz2
-Source0:        http://translate.sourceforge.net/snapshots/%{name}-%{version}%{prerelease}/%{name}-%{version}%{prerelease}.tar.bz2
+Source0:        http://downloads.sourceforge.net/translate/%{name}-%{version}.tar.bz2
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-#Patch1:         Virtaal-0.2-rc1-fixes.patch
+Patch0:         virtaal-0.2-setup_drop_MO_generation.patch
 
 BuildArch:      noarch
 BuildRequires:  python-devel
@@ -23,6 +20,8 @@ BuildRequires:  gettext
 BuildRequires:  intltool
 Requires:       translate-toolkit >= 1.2
 Requires:       pygtk2
+Requires:       pygtk2-libglade
+Requires:       python-lxml
 Requires:       gnome-python2-gtkspell
 Requires:       xdg-utils
 
@@ -30,7 +29,7 @@ Requires:       xdg-utils
 %description
 A program for Computer Aided Translation (CAT) built on the Translate Toolkit.
 
-Virtaal includes features that allow a localizer to work effecively including:
+Virtaal includes features that allow a localizer to work effectively including:
 syntax highlighting, autocomplete and autocorrect.  Showing only 
 the data that is needed through its simple and effective user interface it
 ensures that you can focus on the translation task straight away.
@@ -42,12 +41,12 @@ OpenOffice.org SDF, Java (and Mozilla) .properties and Mozilla DTD.
  
 
 %prep
-%setup -q -n %{name}-%{version}%{prerelease}
-#%patch1 -p1
+%setup -q -n %{name}-%{version}
+%patch0 -p1
 
 %build
 %{__python} setup.py build
-$RPM_SOURCE_DIR/maketranslations %{name}
+./maketranslations %{name}
 pushd po
 for po in $(ls *.po | egrep -v de_DE)
 do
@@ -102,6 +101,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Oct 16 2008 Dwayne Bailey <dwayne@translate.org.za> - 0.2-1.fc9
+- Build for final 0.2 release
+- Add pygtk2-libglade dependency
+
 * Thu Oct 2 2008 Dwayne Bailey <dwayne@translate.org.za> - 0.2-0.3.rc1.fc9
 - Rebuild after tarball restructuring
 
