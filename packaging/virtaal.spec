@@ -57,8 +57,8 @@ popd
 
 
 %install
-rm -rf $RPM_BUILD_ROOT
-%{__python} setup.py install -O1 --skip-build --install-data=/usr --root $RPM_BUILD_ROOT
+rm -rf %{buildroot}
+%{__python} setup.py install -O1 --skip-build --install-data=/usr --root %{buildroot}
 
 desktop-file-install --vendor="fedora" --delete-original \
    --dir=%{buildroot}%{_datadir}/applications            \
@@ -86,7 +86,7 @@ fi
 
 
 %clean
-rm -rf $RPM_BUILD_ROOT
+rm -rf %{buildroot}
 
 
 %files -f %{name}.lang
