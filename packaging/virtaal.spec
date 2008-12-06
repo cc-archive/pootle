@@ -2,7 +2,7 @@
 
 Name:           virtaal
 Version:        0.2
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Localization and translation editor
 
 Group:          Development/Tools
@@ -101,59 +101,62 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Thu Oct 16 2008 Dwayne Bailey <dwayne@translate.org.za> - 0.2-1.fc9
+* Sat Dec 6 2008 Dwayne Bailey <dwayne@translate.org.za> - 0.2-2
+- Cleanups from package review
+
+* Thu Oct 16 2008 Dwayne Bailey <dwayne@translate.org.za> - 0.2-1
 - Build for final 0.2 release
 - Add pygtk2-libglade dependency
 
-* Thu Oct 2 2008 Dwayne Bailey <dwayne@translate.org.za> - 0.2-0.3.rc1.fc9
+* Thu Oct 2 2008 Dwayne Bailey <dwayne@translate.org.za> - 0.2-0.3.rc1
 - Rebuild after tarball restructuring
 
-* Wed Oct 1 2008 Dwayne Bailey <dwayne@translate.org.za> - 0.2-0.2.rc1.fc9
+* Wed Oct 1 2008 Dwayne Bailey <dwayne@translate.org.za> - 0.2-0.2.rc1
 - Fix file locations
 
-* Wed Oct 1 2008 Dwayne Bailey <dwayne@translate.org.za> - 0.2-0.1.rc1.fc9
+* Wed Oct 1 2008 Dwayne Bailey <dwayne@translate.org.za> - 0.2-0.1.rc1
 - Update to RC1
 
-* Sat Sep 20 2008 Dwayne Bailey <dwayne@translate.org.za> - 0.1-12.fc9
+* Sat Sep 20 2008 Dwayne Bailey <dwayne@translate.org.za> - 0.1-12
 - Include LICENSE
 
-* Thu Sep 11 2008 Dwayne Bailey <dwayne@translate.org.za> - 0.1-11.fc9
+* Thu Sep 11 2008 Dwayne Bailey <dwayne@translate.org.za> - 0.1-11
 - Update for various file moves.
 - Package virtaal.pot and gtk+-lite.pot
 - Exclude the de_DE.mo debug translations
 
-* Sat Jul 26 2008 Dwayne Bailey <dwayne@translate.org.za> - 0.1-10.fc9
+* Sat Jul 26 2008 Dwayne Bailey <dwayne@translate.org.za> - 0.1-10
 - Package autocorrect files
 
-* Thu Jul 24 2008 Dwayne Bailey <dwayne@translate.org.za> - 0.1-9.fc9
+* Thu Jul 24 2008 Dwayne Bailey <dwayne@translate.org.za> - 0.1-9
 - Rebuild after upstream data location changes
 
-* Tue Jun 3 2008 Dwayne Bailey <dwayne@translate.org.za> - 0.1-8.fc9
+* Tue Jun 3 2008 Dwayne Bailey <dwayne@translate.org.za> - 0.1-8
 - Rebuild for fc9
 
-* Fri May 9 2008 Dwayne Bailey <dwayne@translate.org.za> - 0.1-8.fc8
+* Fri May 9 2008 Dwayne Bailey <dwayne@translate.org.za> - 0.1-8
 - Add xdg-utils as a requirement as we are using xdg-open
 
-* Wed May 7 2008 Dwayne Bailey <dwayne@translate.org.za> - 0.1-7.fc8
+* Wed May 7 2008 Dwayne Bailey <dwayne@translate.org.za> - 0.1-7
 - Adjust to changes in source package
 
-* Wed Apr 30 2008 Dwayne Bailey <dwayne@translate.org.za> - 0.1-6.fc8
+* Wed Apr 30 2008 Dwayne Bailey <dwayne@translate.org.za> - 0.1-6
 - Adjust to changes in source package
 
-* Thu Apr 17 2008 Dwayne Bailey <dwayne@translate.org.za> - 0.1-5.fc8
+* Thu Apr 17 2008 Dwayne Bailey <dwayne@translate.org.za> - 0.1-5
 - Install icon
 
-* Thu Apr 17 2008 Dwayne Bailey <dwayne@translate.org.za> - 0.1-4.fc8
+* Thu Apr 17 2008 Dwayne Bailey <dwayne@translate.org.za> - 0.1-4
 - Build translatable files using intltool
 
-* Mon Apr 14 2008 Dwayne Bailey <dwayne@translate.org.za> - 0.1-3.fc8
+* Mon Apr 14 2008 Dwayne Bailey <dwayne@translate.org.za> - 0.1-3
 - Install translations
 
-* Sat Apr 12 2008 Dwayne Bailey <dwayne@translate.org.za> - 0.1-2.fc8
+* Sat Apr 12 2008 Dwayne Bailey <dwayne@translate.org.za> - 0.1-2
 - Executable s/run_virtaal.py/virtaal/
 - Remove .glade movement, ./setup.py install it correctly now
 - Install .desktop, locale, mime files
 - Update desktop- and mime-database
 
-* Sat Apr 5 2008 Dwayne Bailey <dwayne@translate.org.za> - 0.1-1.fc8
+* Sat Apr 5 2008 Dwayne Bailey <dwayne@translate.org.za> - 0.1-1
 - Initial packaging
