@@ -26,7 +26,7 @@ from gtk import glade
 from translate.storage import factory
 
 from virtaal.views import recent
-from virtaal.common import pan_app
+from virtaal.common import pan_app, __version__
 from virtaal.support import openmailto
 
 from aboutdialog import AboutDialog
