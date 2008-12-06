@@ -14,6 +14,7 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 Patch0:         virtaal-0.2-setup_drop_MO_generation.patch
 
 BuildArch:      noarch
+BuildRequires:  python
 BuildRequires:  python-devel
 BuildRequires:  desktop-file-utils
 BuildRequires:  gettext
