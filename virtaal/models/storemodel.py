@@ -20,8 +20,8 @@
 
 import gobject
 import time
-from translate.filters import checks
 from translate.storage import factory, statsdb
+from translate.filters import checks
 from translate.storage import ts2 as ts
 from translate.storage.poheader import poheader, tzstring
 
