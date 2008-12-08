@@ -64,12 +64,9 @@ class StoreModel(BaseModel):
     def get_source_language(self):
         """Return the current store's source language."""
         # Copied as-is from Document.get_source_language()
-        candidate = pan_app.settings.language["sourcelang"]
-        try:
-            candidate = self[0].getsourcelanguage()
-        except Exception:
-            pass
-
+        if len(self._trans_store.units) <= 0:
+            return pan_app.settings.language["sourcelang"]
+        candidate = self._trans_store.units[0].getsourcelanguage()
         if candidate and not candidate in ['und', 'en', 'en_US']:
             return candidate
         else:
@@ -78,7 +75,7 @@ class StoreModel(BaseModel):
     def get_target_language(self):
         """Return the current store's target language."""
         # Copied as-is from Document.get_target_language()
-        if len(self._trans_store.units) < 0:
+        if len(self._trans_store.units) <= 0:
             return pan_app.settings.language['contentlang']
         candidate = self._trans_store.units[0].gettargetlanguage()
         if candidate and candidate != 'und':
