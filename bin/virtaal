@@ -100,11 +100,11 @@ def main(argv):
         def profile_runner(startup_file):
             def profile(profile_file, startup_file):
                 import cProfile
-                import source_tree_infrastructure.lsprofcalltree as lsprofcalltree
+                import devsupport.profiling as profiling
                 logging.info('Staring profiling run')
                 profiler = cProfile.Profile()
                 profiler.runcall(run_virtaal, startup_file)
-                k_cache_grind = lsprofcalltree.KCacheGrind(profiler)
+                k_cache_grind = profiling.KCacheGrind(profiler)
                 k_cache_grind.output(profile_file)
                 profile_file.close()
 
