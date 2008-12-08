@@ -94,6 +94,7 @@ class ModeController(BaseController):
         self._ignore_mode_change = True
         self.view.select_mode(self.modenames[mode.name])
         self._ignore_mode_change = False
+        self.view.show()
         self.current_mode.selected()
         print 'Mode selected:', self.current_mode.name
 
