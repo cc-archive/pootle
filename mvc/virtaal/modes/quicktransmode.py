@@ -42,7 +42,7 @@ class QuickTranslateMode(BaseMode):
     # METHODS #
     def selected(self):
         cursor = self.controller.main_controller.store_controller.cursor
-        if not cursor.store:
+        if not cursor or not cursor.store:
             return
 
         indices = list(UnionSetEnumerator(
