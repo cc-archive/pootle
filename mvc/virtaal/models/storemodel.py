@@ -22,6 +22,8 @@ import gobject
 import time
 from translate.storage import factory, statsdb
 from translate.filters import checks
+from translate.convert import pot2po
+
 from translate.storage import ts2 as ts
 from translate.storage.poheader import poheader, tzstring
 
@@ -110,6 +112,34 @@ class StoreModel(BaseModel):
         else:
             self._trans_store.savefile(filename)
 
+    def update_file(self, filename):
+        # Adapted from Document.__init__()
+        print 'Loading template', filename
+        newstore = factory.getobject(filename)
+        oldfilename = self._trans_store.filename
+        
+        #get a copy of old stats before we convert
+        oldstats = statsdb.StatsCache().filestats(oldfilename, checks.UnitChecker(), self._trans_store)
+
+        self._trans_store = pot2po.convert_stores(newstore, self._trans_store)
+
+        #FIXME: ugly tempfile hack, can we please have a pure store implementation of statsdb
+        import tempfile
+        import os
+        tempfd, tempfilename = tempfile.mkstemp()
+        os.write(tempfd, str(self._trans_store))
+        self.stats = statsdb.StatsCache().filestats(tempfilename, checks.UnitChecker(), self._trans_store)
+        os.close(tempfd)
+        os.remove(tempfilename)
+        
+        self.controller.compare_stats(oldstats, self.stats)
+        
+        # store filename or else save is confused
+        self._trans_store.filename = oldfilename
+        self._get_valid_units()
+        self._correct_header(self._trans_store)
+        self.nplurals = self._compute_nplurals(self._trans_store)
+
     def _compute_nplurals(self, store):
         # Copied as-is from Document._compute_nplurals()
         # FIXME this needs to be pushed back into the stores, we don't want to import each format
@@ -179,3 +209,5 @@ class StoreModel(BaseModel):
             if team:
                 header_updates["Language-Team"] = team
             self._trans_store.updateheader(add=True, **header_updates)
+
+

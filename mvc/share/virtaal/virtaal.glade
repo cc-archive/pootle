@@ -57,6 +57,16 @@
                       </widget>
                     </child>
                     <child>
+                      <widget class="GtkImageMenuItem" id="update_menuitem">
+                        <property name="visible">True</property>
+                        <property name="sensitive">False</property>
+                        <property name="label"
+                        translatable="yes">_Update to template</property>
+                        <property name="use_underline">True</property>
+                        <signal name="activate" handler="on_update_activate"/>
+                      </widget>
+                    </child>
+                    <child>
                       <widget class="GtkSeparatorMenuItem" id="separatormenuitem1">
                         <property name="visible">True</property>
                       </widget>

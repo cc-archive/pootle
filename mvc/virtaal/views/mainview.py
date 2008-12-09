@@ -113,6 +113,7 @@ class MainView(BaseView):
                 "on_open_activate" : self._on_file_open,
                 "on_save_activate" : self._on_file_save,
                 "on_saveas_activate" : self._on_file_saveas,
+                "on_update_activate" : self._on_file_update,
                 "on_quit" : self._on_quit,
                 "on_about_activate" : self._on_help_about,
                 "on_localization_guide_activate" : self._on_localization_guide,
@@ -137,7 +138,10 @@ class MainView(BaseView):
     def _create_dialogs(self):
         self.input_dialog = EntryDialog(self.main_window)
 
-        self.error_dialog = gtk.MessageDialog(self.main_window, gtk.DIALOG_MODAL, gtk.MESSAGE_ERROR, gtk.BUTTONS_OK)
+        self.error_dialog = gtk.MessageDialog(self.main_window, 
+            gtk.DIALOG_MODAL, 
+            gtk.MESSAGE_ERROR, 
+            gtk.BUTTONS_OK)
         self.error_dialog.set_title(_("Error"))
 
         self.prompt_dialog = gtk.MessageDialog(self.main_window,
@@ -146,6 +150,12 @@ class MainView(BaseView):
             gtk.BUTTONS_YES_NO,
         )
         self.prompt_dialog.set_default_response(gtk.RESPONSE_NO)
+
+        self.info_dialog = gtk.MessageDialog(self.main_window,
+            gtk.DIALOG_MODAL,
+            gtk.MESSAGE_INFO,
+            gtk.BUTTONS_OK,
+        )
 
         self.open_chooser = gtk.FileChooserDialog(
             _('Choose a translation file'),
@@ -312,6 +322,20 @@ class MainView(BaseView):
 
         return response == gtk.RESPONSE_NO
 
+    def show_info_dialog(self, title='', message=''):
+        """shows a simple info dialog containing a message and an OK button"""
+        if title:
+            self.info_dialog.set_title(title)
+        if message:
+            self.info_dialog.set_markup(message)
+
+        self.info_dialog.set_transient_for(self._top_window)
+        old_top = self._top_window
+        self._top_window = self.info_dialog
+        response = self.info_dialog.run()
+        self.info_dialog.hide()
+        self._top_window = old_top
+
     def show_save_dialog(self, title=''):
         """@returns: C{True} if the OK button was pressed, C{False} for any
             other response."""
@@ -369,7 +393,13 @@ class MainView(BaseView):
             self.controller.open_file(filename, uri=uri)
 
     def _on_file_save(self, widget=None):
-        self.controller.save_file()
+        # we force save us on potentially destructive file level
+        # operations like updating to a template
+        if self.controller.get_force_saveas():
+            self._on_file_saveas(widget)
+            self.controller.set_force_saveas(False)
+        else:
+            self.controller.save_file()
 
     def _on_file_saveas(self, widget=None):
         store_filename = self.controller.get_store_filename()
@@ -380,6 +410,13 @@ class MainView(BaseView):
         self.save_chooser.set_current_name(filename)
         if self.show_save_dialog():
             self.controller.save_file(filename=self.save_chooser.get_filename())
+
+    def _on_file_update(self, _widget, destroyCallback=None):
+        filename_and_uri = self.show_open_dialog()
+        if filename_and_uri:
+            filename, uri = filename_and_uri
+            self._uri = uri
+            self.controller.update_file(filename, uri=uri)
 
     def _on_localization_guide(self, _widget=None):
         # Should be more redundent
@@ -408,5 +445,6 @@ class MainView(BaseView):
 
     def _on_store_loaded(self, store_controller):
         self.gui.get_widget('saveas_menuitem').set_sensitive(True)
+        self.gui.get_widget('update_menuitem').set_sensitive(True)
         if getattr(self, '_uri', None):
             recent.rm.add_item(self._uri)
