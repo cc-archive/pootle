@@ -147,6 +147,53 @@ class StoreController(BaseController):
         self._modified = False
         self.main_controller.set_saveable(False)
 
+    def update_file(self, filename, uri=''):
+        if not self.store:
+            #FIXME: we should never allow updates if no file is already open
+            self.store = StoreModel(filename, self)
+        else:
+            self.store.update_file(filename)
+
+        self._modified = True
+        self.main_controller.set_saveable(self._modified)
+        self.main_controller.set_force_saveas(self._modified)
+
+        self.cursor = StoreCursor(self.store)
+
+        self.view.load_store(self.store)
+        self.view.show()
+
+        self.emit('store-loaded')
+
+    def compare_stats(self, oldstats, newstats):
+        output = """
+Before:
+      Translated: %d
+      Fuzzy: %d
+      Untranslated: %d
+      Total: %d
+After:
+      Translated: %d
+      Fuzzy: %d
+      Untranslated: %d
+      Total: %d
+"""
+        old_trans = len(oldstats['translated'])
+        old_fuzzy = len(oldstats['fuzzy'])
+        old_untrans = len(oldstats['untranslated'])
+        old_total = old_trans + old_fuzzy + old_untrans
+
+        new_trans = len(newstats['translated'])
+        new_fuzzy = len(newstats['fuzzy'])
+        new_untrans = len(newstats['untranslated'])
+        new_total = new_trans + new_fuzzy + new_untrans
+
+        output %= (old_trans, old_fuzzy, old_untrans, old_total,
+                   new_trans, new_fuzzy, new_untrans, new_total)
+
+        self.main_controller.show_info("File updated", output)
+
+
 
     # EVENT HANDLERS #
     def _unit_modified(self, emitter, unit):

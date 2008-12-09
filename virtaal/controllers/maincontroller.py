@@ -40,7 +40,7 @@ class MainController(BaseController):
         GObjectWrapper.__init__(self)
         self.store_controller = None # This is set by StoreController itself when it is created
         self.view = MainView(self)
-
+        self._force_saveas = False
 
     # ACCESSORS #
     def get_store(self):
@@ -81,6 +81,12 @@ class MainController(BaseController):
 
     def set_saveable(self, value):
         self.view.set_saveable(value)
+
+    def set_force_saveas(self, value):
+        self._force_saveas = value
+
+    def get_force_saveas(self):
+        return self._force_saveas
 
     def _get_mode_controller(self):
         return getattr(self, '_mode_controller', None)
@@ -145,6 +151,32 @@ class MainController(BaseController):
                 _("Could not save file.\n\n%(error_message)s\n\nTry saving at a different location." % {'error_message': str(exc)})
             )
 
+    def update_file(self, filename, uri=''):
+        """Update the current file using the file given by C{filename} as template.
+            @returns: The filename opened, or C{None} if an error has occurred."""
+        if self.store_controller.is_modified():
+            response = self.view.show_save_confirm_dialog()
+            if response == 'save':
+                self.store_controller.save_file()
+            elif response == 'cancel':
+                return False
+            # Unnecessary to test for 'discard'
+
+        if self.store_controller.store and self.store_controller.store.get_filename() == filename:
+            promptmsg = 'You selected the currently open file for opening. Do you want to reload the file?'
+            if not self.show_prompt(msg=promptmsg):
+                return False
+
+        try:
+            self.store_controller.update_file(filename, uri)
+            self.mode_controller.refresh_mode()
+            return True
+        except Exception, exc:
+            self.show_error(
+                _("Could not open file.\n\n%(error_message)s\n\nTry opening a different file." % {'error_message': str(exc)})
+            )
+            return False
+
     def select_unit(self, unit):
         """Select the specified unit in the store view."""
         self.store_controller.select_unit(unit)
@@ -160,6 +192,10 @@ class MainController(BaseController):
     def show_prompt(self, title='', msg=''):
         """Shortcut for C{self.view.show_prompt_dialog()}"""
         return self.view.show_prompt_dialog(title=title, message=msg)
+
+    def show_info(self, title='', msg=''):
+        """Shortcut for C{self.view.show_info_dialog()}"""
+        return self.view.show_info_dialog(title=title, message=msg)
 
     def quit(self):
         if self.store_controller.is_modified():
