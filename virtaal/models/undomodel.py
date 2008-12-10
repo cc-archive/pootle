@@ -18,6 +18,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
+import logging
+
 from basemodel import BaseModel
 
 
@@ -50,7 +52,7 @@ class UndoModel(BaseModel):
     def pop(self):
         if self.undo_stack and 0 <= self.index < len(self.undo_stack):
             self.index -= 1
-            #print 'pop()  (index, len) => (%s, %s)' % (self.index, len(self.undo_stack))
+            logging.debug('pop()  (index, len) => (%s, %s)' % (self.index, len(self.undo_stack)))
             return self.undo_stack[self.index+1]
 
     def push(self, undo_dict):
@@ -76,4 +78,4 @@ class UndoModel(BaseModel):
 
         self.undo_stack.append(undo_dict)
         self.index = len(self.undo_stack) - 1
-        #print 'push() (index, len) => (%s, %s)' % (self.index, len(self.undo_stack))
+        logging.debug('push() (index, len) => (%s, %s)' % (self.index, len(self.undo_stack)))

@@ -20,6 +20,7 @@
 
 import gobject
 import gtk
+import logging
 from gtk import gdk
 
 from virtaal.common import GObjectWrapper
@@ -107,7 +108,7 @@ class UndoController(BaseController):
         gobject.idle_add(do_undo)
 
     def _on_unit_delete_text(self, _unit_controller, unit, old_text, start_offset, end_offset, cursor_pos, target_num):
-        #print '_on_unit_delete_text(%s, "%s", %d, %d, %d)' % (repr(unit), old_text, start_offset, end_offset, target_num)
+        logging.debug('_on_unit_delete_text(%s, "%s", %d, %d, %d)' % (repr(unit), old_text, start_offset, end_offset, target_num))
         self.undo_stack.push({
             'unit': unit,
             'targetn': target_num,
@@ -116,7 +117,7 @@ class UndoController(BaseController):
         })
 
     def _on_unit_insert_text(self, _unit_controller, unit, old_text, ins_text, offset, target_num):
-        #print '_on_unit_insert_text(%s, "%s", "%s", %d, %d)' % (repr(unit), old_text, ins_text, offset, target_num)
+        logging.debug('_on_unit_insert_text(%s, "%s", "%s", %d, %d)' % (repr(unit), old_text, ins_text, offset, target_num))
         self.undo_stack.push({
             'unit': unit,
             'targetn': target_num,
