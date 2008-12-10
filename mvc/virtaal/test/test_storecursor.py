@@ -21,7 +21,7 @@
 from test_scaffolding import TestScaffolding
 
 
-class TestStoreCursor(TestScaffolding):
+class TestCursor(TestScaffolding):
     def test_move(self):
         self.store_controller.open_file(self.testfile[1])
         cursor = self.store_controller.cursor

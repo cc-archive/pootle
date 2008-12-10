@@ -25,7 +25,7 @@ from virtaal.models import StoreModel
 from virtaal.views import StoreView
 
 from basecontroller import BaseController
-from storecursor import StoreCursor
+from cursor import Cursor
 
 
 # TODO: Create an event that is emitted when a cursor is created
@@ -135,7 +135,7 @@ class StoreController(BaseController):
         self._modified = False
         self.main_controller.set_saveable(self._modified)
 
-        self.cursor = StoreCursor(self.store)
+        self.cursor = Cursor(self.store, self.store.stats['total'])
 
         self.view.load_store(self.store)
         self.view.show()
