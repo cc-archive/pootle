@@ -89,6 +89,10 @@ class Cursor(GObjectWrapper):
     indices = property(_get_indices, _set_indices)
 
     # METHODS #
+    def changed(self):
+        """Emit the "cursor-changed" signal. USE ONLY WHEN ABSOLUTELY NECESSARY."""
+        self.emit('cursor-changed')
+
     def move(self, offset):
         """Move the cursor C{offset} positions down.
             The cursor will wrap around to the beginning if C{circular=True}
