@@ -77,7 +77,13 @@ class Cursor(GObjectWrapper):
         """Move the cursor to the cursor to the position specified by C{index}.
             @type  index: int
             @param index: The index that the cursor should point to."""
+        oldindex = self.index
+        oldpos = self.pos
+
         self.pos = bisect_left(self._indices, index)
+
+        if oldpos == self.pos and oldindex != self.index:
+            self.emit('cursor-changed')
     index = property(_get_index, _set_index)
 
     def _get_indices(self):
