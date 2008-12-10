@@ -83,12 +83,11 @@ class UndoController(BaseController):
         self.unit_controller.view.enable_signals()
 
     def _select_unit(self, unit):
-        # FIXME: Fix type of "unit" in doc-string below
         """Select the given unit in the store view.
             This is to select the unit where the undo-action took place.
-            @type  unit: translate.storage.unit?
+            @type  unit: translate.storage.base.TranslationUnit
             @param unit: The unit to select in the store view."""
-        self.main_controller.select_unit(unit)
+        self.main_controller.select_unit(unit, force=True)
 
 
     # EVENT HANDLERS #

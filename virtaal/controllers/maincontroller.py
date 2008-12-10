@@ -177,9 +177,9 @@ class MainController(BaseController):
             )
             return False
 
-    def select_unit(self, unit):
+    def select_unit(self, unit, force=False):
         """Select the specified unit in the store view."""
-        self.store_controller.select_unit(unit)
+        self.store_controller.select_unit(unit, force)
 
     def show_error(self, msg):
         """Shortcut for C{self.view.show_error_dialog()}"""

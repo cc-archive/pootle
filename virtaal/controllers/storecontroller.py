@@ -116,7 +116,7 @@ class StoreController(BaseController):
 
 
     # METHODS #
-    def select_unit(self, unit):
+    def select_unit(self, unit, force=False):
         """Select the specified unit and scroll to it.
             Note that, because we change units via the cursor, the unit to
             select must be valid according to the cursor."""
@@ -129,7 +129,10 @@ class StoreController(BaseController):
         if not i < len(self.get_store().get_units()):
             raise ValueError('Unit not found.')
 
-        self.cursor.index = i
+        if force:
+            self.cursor.force_index(i)
+        else:
+            self.cursor.index = i
 
     def open_file(self, filename, uri=''):
         if not self.store:
