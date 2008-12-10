@@ -100,6 +100,23 @@ class Cursor(GObjectWrapper):
         """Emit the "cursor-changed" signal. USE ONLY WHEN ABSOLUTELY NECESSARY."""
         self.emit('cursor-changed')
 
+    def force_index(self, index):
+        """Force the cursor to move to the given index, even if it is not in the
+            C{self.indices} list.
+            This should only be used when absolutely necessary. Be prepared to
+            deal with the consequences of using this method."""
+        oldindex = self.index
+        if index not in self.indices:
+            insert_pos = bisect_left(self.indices, index)
+            if insert_pos == len(self.indices):
+                self.indices.append(index)
+            else:
+                self.indices.insert(insert_pos, index)
+        self.index = index
+
+        if oldindex != self.index:
+            self.emit('cursor-changed')
+
     def move(self, offset):
         """Move the cursor C{offset} positions down.
             The cursor will wrap around to the beginning if C{circular=True}
