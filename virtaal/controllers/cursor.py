@@ -19,6 +19,7 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 import gobject
+import logging
 from bisect import bisect_left
 
 from virtaal.common import GObjectWrapper
@@ -83,7 +84,7 @@ class Cursor(GObjectWrapper):
         return self._indices
     def _set_indices(self, value):
         oldindex = self.index
-        #print '%s -> %s' % (self._indices, list(value))
+        logging.debug('%s -> %s' % (self._indices, list(value)))
         self._indices = list(value)
         self.index = oldindex
     indices = property(_get_indices, _set_indices)
