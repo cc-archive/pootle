@@ -41,6 +41,11 @@ class Cursor(GObjectWrapper):
 
     # INITIALIZERS #
     def __init__(self, model, indices, circular=True):
+        """Constructor.
+            @type  model: anything
+            @param model: The model (usually a collection) to which the cursor is applicable.
+            @type  indices: ordered collection
+            @param indices: The valid values for C{self.index}."""
         GObjectWrapper.__init__(self)
 
         self.model = model

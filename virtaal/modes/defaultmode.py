@@ -39,9 +39,9 @@ class DefaultMode(BaseMode):
     # METHODS #
     def selected(self):
         cursor = self.controller.main_controller.store_controller.cursor
-        if not cursor or not cursor.store:
+        if not cursor or not cursor.model:
             return
-        cursor.indices = cursor.store.stats['total']
+        cursor.indices = cursor.model.stats['total']
 
     def unselected(self):
         pass
