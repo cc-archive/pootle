@@ -19,6 +19,7 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 import gobject
+import logging
 import time
 from translate.storage import factory, statsdb
 from translate.filters import checks
@@ -97,7 +98,7 @@ class StoreModel(BaseModel):
     # METHODS #
     def load_file(self, filename):
         # Adapted from Document.__init__()
-        print 'Loading file', filename
+        logging.info('Loading file %s' % (filename))
         self._trans_store = factory.getobject(filename)
         self.filename = filename
         self.stats = statsdb.StatsCache().filestats(filename, checks.UnitChecker(), self._trans_store)

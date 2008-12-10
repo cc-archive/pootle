@@ -18,6 +18,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
+import logging
+
 from virtaal.common import GObjectWrapper
 from virtaal.modes  import modeclasses
 from virtaal.views  import ModeView
@@ -96,7 +98,7 @@ class ModeController(BaseController):
         self._ignore_mode_change = False
         self.view.show()
         self.current_mode.selected()
-        print 'Mode selected:', self.current_mode.name
+        logging.info('Mode selected: %s' % (self.current_mode.name))
 
     # EVENT HANDLERS #
     def _on_mode_selected(self, _modeview, modename):
