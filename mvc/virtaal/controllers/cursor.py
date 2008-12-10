@@ -98,4 +98,3 @@ class Cursor(GObjectWrapper):
                 self.pos = self.pos + offset + len(self._indices)
         else:
             raise IndexError()
-        return self.pos

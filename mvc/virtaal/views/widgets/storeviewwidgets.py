@@ -315,7 +315,6 @@ class StoreTreeView(gtk.TreeView):
         if old_path != path:
             index = self.get_model().path_to_store_index(path)
             self.view.cursor.index = index
-            self._activate_editing_path(path)
 
         return True
 
