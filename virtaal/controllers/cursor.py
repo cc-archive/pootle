@@ -24,15 +24,15 @@ from bisect import bisect_left
 from virtaal.common import GObjectWrapper
 
 
-class StoreCursor(GObjectWrapper):
+class Cursor(GObjectWrapper):
     """
-    Manages the current position in the store.
+    Manages the current position in an arbitrary model.
 
     NOTE: Assigning to C{self.pos} causes the "cursor-changed" signal
     to be emitted.
     """
 
-    __gtype_name__ = "StoreCursor"
+    __gtype_name__ = "Cursor"
 
     __gsignals__ = {
         "cursor-changed": (gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, ()),
@@ -40,12 +40,10 @@ class StoreCursor(GObjectWrapper):
 
 
     # INITIALIZERS #
-    def __init__(self, storemodel, indices=None, circular=True):
+    def __init__(self, model, indices, circular=True):
         GObjectWrapper.__init__(self)
 
-        if indices is None:
-            indices = storemodel.stats['total']
-        self.store = storemodel
+        self.model = model
         self._indices = indices
         self.circular = circular
 
