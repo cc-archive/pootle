@@ -56,7 +56,10 @@ class Cursor(GObjectWrapper):
     def _set_pos(self, value):
         if value == self._pos:
             return # Don't unnecessarily move the cursor (or emit 'cursor-changed', more specifically)
-        self._pos = value
+        if value >= len(self.indices):
+            self._pos = len(self.indices) - 1
+        else:
+            self._pos = value
         self.emit('cursor-changed')
     pos = property(_get_pos, _set_pos)
 
