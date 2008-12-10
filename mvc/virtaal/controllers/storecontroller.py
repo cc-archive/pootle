@@ -43,7 +43,7 @@ class StoreController(BaseController):
 
         self.main_controller = main_controller
         self.main_controller.store_controller = self
-        self.unit_controller = None # This is set by UnitController itself when it is created
+        self._unit_controller = None # This is set by UnitController itself when it is created
 
         self.cursor = None
         self.handler_ids = {}
@@ -83,25 +83,13 @@ class StoreController(BaseController):
 
 
     # ACCESSORS #
-    def get_store(self):
-        return self.store
-
-    def is_modified(self):
-        return self._modified
-
-    def register_unitcontroller(self, unitcont):
-        """@type unitcont: UnitController"""
-        if self.unit_controller and 'unitview.unit-modified' in self.handler_ids:
-            self.unit_controller.disconnect(self.handler_ids['unitview.unit-modified'])
-        self.unit_controller = unitcont
-        self.handler_ids['unitview.unit-modified'] = self.unit_controller.connect('unit-modified', self._unit_modified)
-
-
-    # METHODS #
     def get_nplurals(self, store=None):
         if not store:
             store = self.store
         return store and store.nplurals or 0
+
+    def get_store(self):
+        return self.store
 
     def get_target_language(self, store=None):
         if not store:
@@ -113,8 +101,25 @@ class StoreController(BaseController):
             the C{gtk.CellEditable} it creates."""
         return self.unit_controller.load_unit(unit)
 
+    def is_modified(self):
+        return self._modified
+
+    def _get_unitcontroller(self):
+        return self._unit_controller
+    def _set_unitcontroller(self, unitcont):
+        """@type unitcont: UnitController"""
+        if self.unit_controller and 'unitview.unit-modified' in self.handler_ids:
+            self.unit_controller.disconnect(self.handler_ids['unitview.unit-modified'])
+        self._unit_controller = unitcont
+        self.handler_ids['unitview.unit-modified'] = self.unit_controller.connect('unit-modified', self._unit_modified)
+    unit_controller = property(_get_unitcontroller, _set_unitcontroller)
+
+
+    # METHODS #
     def select_unit(self, unit):
-        """Select the specified unit and scroll to it."""
+        """Select the specified unit and scroll to it.
+            Note that, because we change units via the cursor, the unit to
+            select must be valid according to the cursor."""
         i = 0
         for storeunit in self.get_store().get_units():
             if storeunit == unit:

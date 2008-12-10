@@ -42,8 +42,9 @@ class UnitController(BaseController):
         GObjectWrapper.__init__(self)
 
         self.main_controller = store_controller.main_controller
+        self.main_controller.unit_controller = self
         self.store_controller = store_controller
-        self.store_controller.register_unitcontroller(self)
+        self.store_controller.unit_controller = self
 
         self.unit_views = {}
 

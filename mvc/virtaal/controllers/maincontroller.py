@@ -111,7 +111,7 @@ class MainController(BaseController):
 
     def _get_unit_controller(self):
         return getattr(self, '_unit_controller', None)
-    def _set_unit_controller(self):
+    def _set_unit_controller(self, value):
         self._unit_controller = value
         self.emit('controller-registered', self._unit_controller)
     unit_controller = property(_get_unit_controller, _set_unit_controller)
