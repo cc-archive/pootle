@@ -23,9 +23,75 @@ import gtk
 import gtk.gdk
 import logging
 import re
-from translate.tools.pogrep import GrepFilter
 
 from basemode import BaseMode
+
+
+class SearchMatch(object):
+    """Just a small data structure that represents a search match."""
+
+    # INITIALIZERS #
+    def __init__(self, unit, part='target', part_n=0, start=0, end=0):
+        self.unit   = unit
+        self.part   = part
+        self.part_n = part_n
+        self.start  = start
+        self.end    = end
+
+    # ACCESSORS #
+    def get_getter(self):
+        if self.part == 'target':
+            def getter():
+                return self.unit.target.strings[self.part_n]
+            return getter
+        elif self.part == 'source':
+            def getter():
+                return self.unit.source.strings[self.part_n]
+            return getter
+        elif self.part == 'notes':
+            def getter():
+                return self.unit.getnotes()[self.part_n]
+            return getter
+        elif self.part == 'locations':
+            def getter():
+                return self.unit.getlocations()[self.part_n]
+            return getter
+
+    def get_setter(self):
+        if self.part == 'target':
+            def setter(value):
+                strings = self.unit.target.strings
+                strings[self.part_n] = value
+                self.unit.target = strings
+            return setter
+
+    # METHODS #
+    def replace(self, replace_str, main_controller=None):
+        unit_controller = main_controller.unit_controller
+        # Using unit_controller directly is a hack to make sure that the replacement changes are immediately displayed.
+        if self.part != 'target':
+            return
+        strings = self.unit.target.strings
+        string_n = strings[self.part_n]
+        if unit_controller is None:
+            strings[self.part_n] = string_n[:self.start] + replace_str + string_n[self.end:]
+            self.unit.target = strings
+        else:
+            main_controller.select_unit(self.unit)
+            unit_controller.set_unit_target(self.part_n, string_n[:self.start] + replace_str + string_n[self.end:])
+
+    # SPECIAL METHODS #
+    def __str__(self):
+        start, end = self.start, self.end
+        if start < 3:
+            start = 3
+        if end > len(self.get_getter()()) - 3:
+            end = len(self.get_getter()()) - 3
+        matchpart = self.get_getter()()[start-2:end+2]
+        return '<SearchMatch "%s" part=%s[%d] start=%d end=%d>' % (matchpart, self.part, self.part_n, self.start, self.end)
+
+    def __repr__(self):
+        return str(self)
 
 
 class SearchMode(BaseMode):
@@ -46,7 +112,8 @@ class SearchMode(BaseMode):
 
         self._create_widgets()
         self._setup_key_bindings()
-        self.filter = self.makefilter()
+
+        self.matches = []
         self.re_search = None
         self.select_first_match = True
         self._search_timeout = 0
@@ -90,25 +157,78 @@ class SearchMode(BaseMode):
 
 
     # METHODS #
-    def makefilter(self):
-        searchstring = self.ent_search.get_text()
+    def get_matches(self, units):
+        if not self.ent_search.get_text():
+            return []
+
+        searchstring = self.ent_search.get_text().decode('utf-8')
         searchparts = ('source', 'target')
         ignorecase = not self.chk_casesensitive.get_active()
         useregexp = self.chk_regex.get_active()
+        flags = re.LOCALE | re.MULTILINE | re.UNICODE
 
-        return GrepFilter(searchstring, searchparts, ignorecase, useregexp)
+        if ignorecase:
+            flags |= re.IGNORECASE
+        if not useregexp:
+            searchstring = re.escape(searchstring)
+        self.re_search = re.compile(u'(%s)' % (searchstring), flags)
+
+        matches = []
+
+        for unit in units:
+            if 'target' in searchparts:
+                part = 'target'
+                part_n = 0
+                for target in unit.target.strings:
+                    for matchobj in self.re_search.finditer(target):
+                        matches.append(
+                            SearchMatch(unit, part=part, part_n=part_n, start=matchobj.start(), end=matchobj.end())
+                        )
+                    part_n += 1
+
+            if 'source' in searchparts:
+                part = 'source'
+                part_n = 0
+                for source in unit.source.strings:
+                    for matchobj in self.re_search.finditer(source):
+                        matches.append(
+                            SearchMatch(unit, part=part, part_n=part_n, start=matchobj.start(), end=matchobj.end())
+                        )
+                    part_n += 1
+
+            if 'notes' in searchparts:
+                part = 'notes'
+                part_n = 0
+                for note in unit.getnotes():
+                    for matchobj in self.re_search.finditer(note):
+                        matches.append(
+                            SearchMatch(unit, part=part, part_n=part_n, start=matchobj.start(), end=matchobj.end())
+                        )
+                    part_n += 1
+
+            if 'locations' in searchparts:
+                part = 'locations'
+                part_n = 0
+                for loc in unit.getlocations():
+                    for matchobj in self.re_search.finditer(loc):
+                        matches.append(
+                            SearchMatch(unit, part=part, part_n=part_n, start=matchobj.start(), end=matchobj.end())
+                        )
+                    part_n += 1
+
+        return matches
 
     def selected(self):
         # XXX: Assumption: This method is called when a new file is loaded and that is
-        # why we keep a reference to the store's cursor.
+        #      why we keep a reference to the store's cursor.
         self.storecursor = self.controller.main_controller.store_controller.cursor
-        if not self.storecursor or not self.storecursor.store:
+        if not self.storecursor or not self.storecursor.model:
             return
 
         self._add_widgets()
         self._connect_highlighting()
         if not self.ent_search.get_text():
-            self.storecursor.indices = self.storecursor.store.stats['total']
+            self.storecursor.indices = self.storecursor.model.stats['total']
         else:
             self.update_search()
 
@@ -120,36 +240,28 @@ class SearchMode(BaseMode):
         gobject.timeout_add(100, grab_focus)
 
     def update_search(self):
-        self.filter = self.makefilter()
+        store_units = self.storecursor.model.get_units()
+        self.matches = self.get_matches(self.storecursor.model.get_units())
+        matchedunits = set([match.unit for match in self.matches])
 
-        # Filter stats with text in "self.ent_search"
-        filtered = []
-        i = 0
-        for unit in self.storecursor.store.get_units():
-            if self.filter.filterunit(unit):
-                filtered.append(i)
-            i += 1
+        indexes = [store_units.index(match.unit) for match in self.matches]
+        indexes = list(set(indexes)) # Remove duplicates
+        indexes.sort()
 
-        logging.debug('Search text: %s (%d matches)' % (self.ent_search.get_text(), len(filtered)))
+        logging.debug('Search text: %s (%d matches)' % (self.ent_search.get_text(), len(indexes)))
 
-        if filtered:
+        if indexes:
             self.ent_search.modify_base(gtk.STATE_NORMAL, self.default_base)
             self.ent_search.modify_text(gtk.STATE_NORMAL, self.default_text)
 
-            searchstr = self.ent_search.get_text().decode('utf-8')
-            flags = re.UNICODE | re.MULTILINE
-            if not self.chk_casesensitive.get_active():
-                flags |= re.IGNORECASE
-            if not self.chk_regex.get_active():
-                searchstr = re.escape(searchstr)
-            self.re_search = re.compile(u'(%s)' % searchstr, flags)
-            self.storecursor.indices = filtered
+            self.storecursor.indices = indexes
         else:
             self.ent_search.modify_base(gtk.STATE_NORMAL, gtk.gdk.color_parse('#f66'))
             self.ent_search.modify_text(gtk.STATE_NORMAL, gtk.gdk.color_parse('#fff'))
             self.re_search = None
             # Act like the "Default" mode...
-            self.storecursor.indices = self.storecursor.store.stats['total']
+            self.storecursor.indices = self.storecursor.model.stats['total']
+        self.storecursor.changed()
 
         def grabfocus():
             self.ent_search.grab_focus()
@@ -186,7 +298,7 @@ class SearchMode(BaseMode):
         if self.re_search is None:
             return
 
-        unitview = self.controller.main_controller.store_controller.unit_controller.view
+        unitview = self.controller.main_controller.unit_controller.view
         self._prev_unitview = unitview
         for textview in unitview.sources + unitview.targets:
             buff = textview.get_buffer()
@@ -211,17 +323,19 @@ class SearchMode(BaseMode):
                     select_iters = [start_iter, end_iter]
 
             if select_iters:
-                def do_selection():
-                    buff.move_mark_by_name('selection_bound', select_iters[0])
-                    buff.move_mark_by_name('insert', select_iters[1])
-                    return False
-                gobject.idle_add(do_selection)
+                buff.move_mark_by_name('selection_bound', select_iters[0])
+                buff.move_mark_by_name('insert', select_iters[1])
+                return False
 
     def _make_highlight_tag(self):
         tag = gtk.TextTag(name='highlight')
         tag.set_property('background', 'yellow')
         tag.set_property('foreground', 'black')
         return tag
+
+    def _replace_all(self):
+        for match in self.matches:
+            match.replace(self.ent_replace.get_text(), self.controller.main_controller)
 
     def _unhighlight_previous_matches(self):
         if not getattr(self, '_prev_unitview', ''):
@@ -245,12 +359,17 @@ class SearchMode(BaseMode):
             return
         self.update_search()
 
-        for unit in self.storecursor.store.units:
-            if not self.filter.filterunit(unit):
-                continue
-            unit.target = unit.target.replace(self.ent_search.get_text(), self.ent_replace.get_text())
-            if not self.chk_replace_all.get_active():
-                break
+        if self.chk_replace_all.get_active():
+            self._replace_all()
+        else:
+            current_unit = self.storecursor.model[self.storecursor.index]
+            # Find matches in the current unit.
+            unit_matches = [match for match in self.matches if match.unit is current_unit and match.part == 'target']
+            if len(unit_matches) > 0:
+                unit_matches[0].replace(self.ent_replace.get_text(), self.controller.main_controller)
+                self.matches.remove(unit_matches[0])
+            else:
+                self.storecursor.move(1)
 
         self.update_search()
 
@@ -269,4 +388,4 @@ class SearchMode(BaseMode):
         self._search_timeout = gobject.timeout_add(self.SEARCH_DELAY, self.update_search)
 
     def _refresh_proxy(self, *args):
-        self._on_search_text_changed(self.ent_search)
+        self.update_search()
