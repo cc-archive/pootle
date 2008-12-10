@@ -238,14 +238,13 @@ class StoreTreeView(gtk.TreeView):
     # METHODS #
     def select_index(self, index):
         """Select the row with the given index."""
-        #print 'Selecting index', index
         model = self.get_model()
         newpath = model.store_index_to_path(index)
-        newiter = model.get_iter(newpath)
         selected = self.get_selection().get_selected()
+        selected_path = isinstance(selected[1], gtk.TreeIter) and model.get_path(selected[1]) or None
 
-        if (not selected) or (selected[1] != newiter):
-            #print 'select_index()->self.set_cursor(path="%s")' % (newpath)
+        if selected[1] is None or (selected_path and selected_path != newpath):
+            logging.debug('select_index()->self.set_cursor(path="%s")' % (newpath))
             self.set_cursor(newpath, self.get_columns()[0], start_editing=True)
             self._activate_editing_path(newpath)
 
