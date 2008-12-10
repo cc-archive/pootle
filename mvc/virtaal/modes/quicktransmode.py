@@ -42,12 +42,12 @@ class QuickTranslateMode(BaseMode):
     # METHODS #
     def selected(self):
         cursor = self.controller.main_controller.store_controller.cursor
-        if not cursor or not cursor.store:
+        if not cursor or not cursor.model:
             return
 
         indices = list(UnionSetEnumerator(
-            SortedSet(cursor.store.stats['untranslated']),
-            SortedSet(cursor.store.stats['fuzzy'])
+            SortedSet(cursor.model.stats['untranslated']),
+            SortedSet(cursor.model.stats['fuzzy'])
         ).set)
 
         if not indices:
