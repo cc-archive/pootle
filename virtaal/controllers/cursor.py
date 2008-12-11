@@ -95,10 +95,6 @@ class Cursor(GObjectWrapper):
     indices = property(_get_indices, _set_indices)
 
     # METHODS #
-    def changed(self):
-        """Emit the "cursor-changed" signal. USE ONLY WHEN ABSOLUTELY NECESSARY."""
-        self.emit('cursor-changed')
-
     def force_index(self, index):
         """Force the cursor to move to the given index, even if it is not in the
             C{self.indices} list.
