@@ -102,11 +102,13 @@ class Cursor(GObjectWrapper):
             deal with the consequences of using this method."""
         oldindex = self.index
         if index not in self.indices:
+            newindices = list(self.indices)
             insert_pos = bisect_left(self.indices, index)
             if insert_pos == len(self.indices):
-                self.indices.append(index)
+                newindices.append(index)
             else:
-                self.indices.insert(insert_pos, index)
+                newindices.insert(insert_pos, index)
+            self.indices = newindices
         self.index = index
 
         if oldindex != self.index:
