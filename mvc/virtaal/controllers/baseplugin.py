@@ -18,13 +18,21 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-from baseplugin       import BasePlugin
-from cursor           import Cursor
-from maincontroller   import MainController
-from modecontroller   import ModeController
-from storecontroller  import StoreController
-from plugincontroller import PluginController
-from undocontroller   import UndoController
-from unitcontroller   import UnitController
 
-__all__ = ['BasePlugin', 'Cursor', 'MainController', 'ModeController', 'PluginController', 'StoreController', 'UndoController', 'UnitController']
+class BasePlugin(object):
+    """The base interface to be implemented by all plug-ins."""
+    name = ''
+    """The plug-in's name, suitable for display."""
+    version = 0
+    """The plug-in's version number."""
+
+    def __new__(cls, *args, **kwargs):
+        """Create a new plug-in instance and check that it is valid."""
+        if not cls.name:
+            raise Exception('No name specified')
+        if cls.version <= 0:
+            raise Exception('Invalid version number specified')
+        return super(BasePlugin, cls).__new__(cls, *args, **kwargs)
+
+    def __init__(self):
+        raise NotImplementedError('This interface cannot be instantiated.')
