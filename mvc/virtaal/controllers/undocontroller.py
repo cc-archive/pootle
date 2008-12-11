@@ -97,14 +97,11 @@ class UndoController(BaseController):
             return
 
         self._select_unit(undo_info['unit'])
-        # Wait for selection to finish, so we use gobject.idle_add()
-        def do_undo():
-            self._disable_unit_signals()
-            self.unit_controller.set_unit_target(undo_info['targetn'], undo_info['value'], undo_info['cursorpos'])
-            if 'action' in undo_info and callable(undo_info['action']):
-                undo_info['action'](undo_info['unit'])
-            self._enable_unit_signals()
-        gobject.idle_add(do_undo)
+        self._disable_unit_signals()
+        self.unit_controller.set_unit_target(undo_info['targetn'], undo_info['value'], undo_info['cursorpos'])
+        if 'action' in undo_info and callable(undo_info['action']):
+            undo_info['action'](undo_info['unit'])
+        self._enable_unit_signals()
 
     def _on_unit_delete_text(self, _unit_controller, unit, old_text, start_offset, end_offset, cursor_pos, target_num):
         logging.debug('_on_unit_delete_text(%s, "%s", %d, %d, %d)' % (repr(unit), old_text, start_offset, end_offset, target_num))
