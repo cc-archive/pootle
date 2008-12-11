@@ -51,36 +51,6 @@ class StoreController(BaseController):
         self.store = None
         self.view = StoreView(self)
 
-        self._add_extensions()
-
-    def _add_extensions(self):
-        """This method adds auto-correction and -completion.
-            This should be moved to its own MVC-classes/plugins."""
-        # FIXME: Move this stuff to a more appropriate place.
-        def on_store_loaded(storecontroller):
-            self.autocomp.add_words_from_units(self.store.get_units())
-            self.autocorr.load_dictionary(lang=pan_app.settings.language['contentlang'])
-            self.cursor.connect('cursor-changed', on_cursor_change)
-
-        def on_cursor_change(cursor):
-            for textview in self.autocomp.widgets:
-                buffer = textview.get_buffer()
-                bufftext = buffer.get_text(buffer.get_start_iter(), buffer.get_end_iter()).decode('utf-8')
-                self.autocomp.add_words(self.autocomp.wordsep_re.split(bufftext))
-
-            self.autocomp.clear_widgets()
-            self.autocorr.clear_widgets()
-            for target in self.unit_controller.view.targets:
-                self.autocomp.add_widget(target)
-                self.autocorr.add_widget(target)
-
-        from virtaal.common import pan_app
-        from virtaal.plugins import AutoCompletor, AutoCorrector
-        self.autocomp = AutoCompletor(self.main_controller)
-        self.autocorr = AutoCorrector(self.main_controller, acorpath=pan_app.get_abs_data_filename(['virtaal', 'autocorr']))
-
-        self.connect('store-loaded', on_store_loaded)
-
 
     # ACCESSORS #
     def get_nplurals(self, store=None):
