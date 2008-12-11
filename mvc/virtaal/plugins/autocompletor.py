@@ -22,9 +22,10 @@
 
 import gobject
 import gtk
+import logging
 import re
 
-#import undo_buffer
+from virtaal.controllers import BasePlugin
 
 
 class AutoCompletor(object):
@@ -282,3 +283,34 @@ class AutoCompletor(object):
         textview.disconnect(self._textview_move_cursor_ids[textview])
 
         self.widgets.remove(textview)
+
+
+class Plugin(BasePlugin):
+    name = 'AutoCompletor'
+    version = 0.1
+
+    def __init__(self, main_controller):
+        self.main_controller = main_controller
+
+        self._init_plugin()
+        logging.debug('AutoCorrector loaded')
+
+    def _init_plugin(self):
+        from virtaal.common import pan_app
+        self.autocomp = AutoCompletor(self.main_controller)
+
+        def on_store_loaded(storecontroller):
+            self.autocomp.add_words_from_units(storecontroller.get_store().get_units())
+            storecontroller.cursor.connect('cursor-changed', on_cursor_change)
+
+        def on_cursor_change(cursor):
+            for textview in self.autocomp.widgets:
+                buffer = textview.get_buffer()
+                bufftext = buffer.get_text(buffer.get_start_iter(), buffer.get_end_iter()).decode('utf-8')
+                self.autocomp.add_words(self.autocomp.wordsep_re.split(bufftext))
+
+            self.autocomp.clear_widgets()
+            for target in self.main_controller.unit_controller.view.targets:
+                self.autocomp.add_widget(target)
+
+        self.main_controller.store_controller.connect('store-loaded', on_store_loaded)

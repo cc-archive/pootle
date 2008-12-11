@@ -22,12 +22,14 @@
 
 import gobject
 import gtk
+import logging
 import os
 import re
 import zipfile
 from lxml import etree
 
-#import undo_buffer
+from virtaal.common import pan_app
+from virtaal.controllers import BasePlugin
 
 
 class AutoCorrector(object):
@@ -238,3 +240,28 @@ class AutoCorrector(object):
         # Disconnect the "insert-text" event handler
         textview.get_buffer().disconnect(self._textbuffer_handler_ids[textview])
         self.widgets.remove(textview)
+
+
+class Plugin(BasePlugin):
+    name = 'AutoCorrector'
+    version = 0.1
+
+    def __init__(self, main_controller):
+        self.main_controller = main_controller
+
+        self._init_plugin()
+        logging.debug('AutoCorrector loaded')
+
+    def _init_plugin(self):
+        self.autocorr = AutoCorrector(self.main_controller, acorpath=pan_app.get_abs_data_filename(['virtaal', 'autocorr']))
+
+        def on_store_loaded(storecontroller):
+            self.autocorr.load_dictionary(lang=pan_app.settings.language['contentlang'])
+            storecontroller.cursor.connect('cursor-changed', on_cursor_change)
+
+        def on_cursor_change(cursor):
+            self.autocorr.clear_widgets()
+            for target in self.main_controller.unit_controller.view.targets:
+                self.autocorr.add_widget(target)
+
+        self.main_controller.store_controller.connect('store-loaded', on_store_loaded)
