@@ -37,6 +37,7 @@ class Cursor(GObjectWrapper):
 
     __gsignals__ = {
         "cursor-changed": (gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, ()),
+        "cursor-empty": (gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, ()),
     }
 
 
@@ -90,6 +91,8 @@ class Cursor(GObjectWrapper):
         self._indices = list(value)
 
         self.index = oldindex
+        if len(self._indices) == 0:
+            self.emit('cursor-empty')
         if oldpos == self.pos and oldindex != self.index:
             self.emit('cursor-changed')
     indices = property(_get_indices, _set_indices)
