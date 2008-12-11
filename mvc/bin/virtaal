@@ -29,17 +29,6 @@ from translate.storage import factory
 
 from virtaal.main import Virtaal
 from virtaal.common import pan_app, __version__
-from virtaal import terminology
-
-def set_termininology_dir(option, opt_str, value, parser):
-    def get_term(value):
-        if not path.isdir(value):
-            try:
-                return factory.getobject(value)
-            except ValueError:
-                raise OptionValueError(_("You must specify a directory or a translation file for --terminology"))
-        return value
-    parser.values.terminology = get_term(value)
 
 optparse._ = _
 usage = _("%prog [options] [translation_file]")
@@ -54,10 +43,6 @@ option_list = [
     make_option("--config",
                 action="store", type="string", dest="config", metavar=_("CONFIG"),
                 help=_("use the configuration file given by the supplied filename.")),
-    make_option("--terminology", metavar=_("TERMINOLOGY"),
-                action="callback", type="string",
-                callback=set_termininology_dir, nargs=1,
-                help=_("specify a directory containing terminology files"))
 ]
 parser = OptionParser(option_list=option_list, usage=usage, version=__version__.ver)
 
@@ -129,7 +114,6 @@ def main(argv):
     options, args = parser.parse_args(argv[1:])
     set_config(options)
     set_logging(options)
-    terminology.set_terminology_source(options.terminology)
     startup_file = get_startup_file(options)
     runner = get_virtaal_runner(options)
     runner(startup_file)
