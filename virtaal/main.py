@@ -28,6 +28,7 @@ class Virtaal(object):
 
     def __init__(self, startupfile):
         self.main_controller = MainController()
+        self.plugin_controller = PluginController(self.main_controller)
         self.store_controller = StoreController(self.main_controller)
         self.unit_controller = UnitController(self.store_controller)
 
@@ -35,6 +36,10 @@ class Virtaal(object):
         self.undo_controller = UndoController(self.main_controller)
         self.mode_controller = ModeController(self.main_controller)
 
+        # Load plug-ins
+        self.plugin_controller.load_plugins()
+
+        # Load the file given on the command-line, if any
         if startupfile and os.path.isfile(startupfile):
             self.main_controller.open_file(startupfile)
 

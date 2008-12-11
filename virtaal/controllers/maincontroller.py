@@ -95,6 +95,13 @@ class MainController(BaseController):
         self.emit('controller-registered', self._mode_controller)
     mode_controller = property(_get_mode_controller, _set_mode_controller)
 
+    def _get_plugin_controller(self):
+        return getattr(self, '_plugin_controller', None)
+    def _set_plugin_controller(self, value):
+        self._plugin_controller = value
+        self.emit('controller-registered', self._plugin_controller)
+    plugin_controller = property(_get_plugin_controller, _set_plugin_controller)
+
     def _get_store_controller(self):
         return getattr(self, '_store_controller', None)
     def _set_store_controller(self, value):
