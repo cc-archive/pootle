@@ -261,7 +261,7 @@ class SearchMode(BaseMode):
             self.re_search = None
             # Act like the "Default" mode...
             self.storecursor.indices = self.storecursor.model.stats['total']
-        self.storecursor.changed()
+        self._highlight_matches()
 
         def grabfocus():
             self.ent_search.grab_focus()
