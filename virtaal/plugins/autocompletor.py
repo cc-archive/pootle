@@ -293,7 +293,7 @@ class Plugin(BasePlugin):
         self.main_controller = main_controller
 
         self._init_plugin()
-        logging.debug('AutoCorrector loaded')
+        logging.debug('AutoCompletor loaded')
 
     def _init_plugin(self):
         from virtaal.common import pan_app
