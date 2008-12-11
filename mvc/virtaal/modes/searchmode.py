@@ -24,6 +24,8 @@ import gtk.gdk
 import logging
 import re
 
+from virtaal.controllers import Cursor
+
 from basemode import BaseMode
 
 
@@ -144,6 +146,7 @@ class SearchMode(BaseMode):
         self.re_search = None
         self.select_first_match = True
         self._search_timeout = 0
+        self._unit_modified_id = 0
 
     def _create_widgets(self):
         # Widgets for search functionality (in first row)
@@ -174,11 +177,15 @@ class SearchMode(BaseMode):
 
     def _setup_key_bindings(self):
         gtk.accel_map_add_entry("<Virtaal>/Edit/Search", gtk.keysyms.F3, 0)
-        gtk.accel_map_add_entry("<Virtaal>/Edit/SearchCtrlF", gtk.keysyms.F, gtk.gdk.CONTROL_MASK)
+        gtk.accel_map_add_entry("<Virtaal>/Edit/Search Ctrl+F", gtk.keysyms.F, gtk.gdk.CONTROL_MASK)
+        gtk.accel_map_add_entry("<Virtaal>/Edit/Search: Next", gtk.keysyms.G, gtk.gdk.CONTROL_MASK)
+        gtk.accel_map_add_entry("<Virtaal>/Edit/Search: Previous", gtk.keysyms.G, gtk.gdk.CONTROL_MASK | gtk.gdk.SHIFT_MASK)
 
         self.accel_group = gtk.AccelGroup()
-        self.accel_group.connect_by_path("<Virtaal>/Edit/Search", self._on_search_activated)
-        self.accel_group.connect_by_path("<Virtaal>/Edit/SearchCtrlF", self._on_search_activated)
+        self.accel_group.connect_by_path("<Virtaal>/Edit/Search", self._on_start_search)
+        self.accel_group.connect_by_path("<Virtaal>/Edit/Search Ctrl+F", self._on_start_search)
+        self.accel_group.connect_by_path("<Virtaal>/Edit/Search: Next", self._on_search_next)
+        self.accel_group.connect_by_path("<Virtaal>/Edit/Search: Previous", self._on_search_prev)
 
         self.controller.main_controller.view.add_accel_group(self.accel_group)
 
@@ -267,39 +274,20 @@ class SearchMode(BaseMode):
         gobject.timeout_add(100, grab_focus)
 
     def update_search(self):
-        store_units = self.storecursor.model.get_units()
         self.matches = self.get_matches(self.storecursor.model.get_units())
-        matchedunits = set([match.unit for match in self.matches])
-
-        indexes = [store_units.index(match.unit) for match in self.matches]
-        indexes = list(set(indexes)) # Remove duplicates
-        indexes.sort()
-
-        logging.debug('Search text: %s (%d matches)' % (self.ent_search.get_text(), len(indexes)))
-
-        if indexes:
-            self.ent_search.modify_base(gtk.STATE_NORMAL, self.default_base)
-            self.ent_search.modify_text(gtk.STATE_NORMAL, self.default_text)
-
-            self.storecursor.indices = indexes
-        else:
-            self.ent_search.modify_base(gtk.STATE_NORMAL, gtk.gdk.color_parse('#f66'))
-            self.ent_search.modify_text(gtk.STATE_NORMAL, gtk.gdk.color_parse('#fff'))
-            self.re_search = None
-            # Act like the "Default" mode...
-            self.storecursor.indices = self.storecursor.model.stats['total']
-        self._highlight_matches()
-
-        def grabfocus():
-            self.ent_search.grab_focus()
-            self.ent_search.set_position(-1)
-            return False
-        gobject.idle_add(grabfocus)
+        self.matchcursor = Cursor(self.matches, range(len(self.matches)))
+        self._recalculate_match_indexes()
 
     def unselected(self):
         # TODO: Unhightlight the previously selected unit
         if getattr(self, '_signalid_cursor_changed', ''):
             self.storecursor.disconnect(self._signalid_cursor_changed)
+
+        if self._unit_modified_id:
+            self.controller.main_controller.unit_controller.disconnect(self._unit_modified_id)
+            self._unit_modified_id = 0
+
+        self.matches = []
 
     def _add_widgets(self):
         table = self.controller.view.mode_box
@@ -350,15 +338,63 @@ class SearchMode(BaseMode):
                     select_iters = [start_iter, end_iter]
 
             if select_iters:
-                buff.move_mark_by_name('selection_bound', select_iters[0])
-                buff.move_mark_by_name('insert', select_iters[1])
-                return False
+                buff.select_range(select_iters[1], select_iters[0])
+                return
 
     def _make_highlight_tag(self):
         tag = gtk.TextTag(name='highlight')
         tag.set_property('background', 'yellow')
         tag.set_property('foreground', 'black')
         return tag
+
+    def _move_match(self, offset):
+        if getattr(self, 'matchcursor', None) is None:
+            self.update_search()
+            self._move_match(offset)
+            return
+
+        old_match_index = self.matchcursor.index
+        if not self.matches or old_match_index != self.matchcursor.index:
+            self.update_search()
+            return
+
+        self.matchcursor.move(offset)
+        self.matches[self.matchcursor.index].select(self.controller.main_controller)
+
+    def _recalculate_match_indexes(self):
+        store_units = self.storecursor.model.get_units()
+        indexes = [store_units.index(match.unit) for match in self.matches]
+        indexes = list(set(indexes)) # Remove duplicates
+        indexes.sort()
+
+        logging.debug('Search text: %s (%d matches)' % (self.ent_search.get_text(), len(indexes)))
+
+        if indexes:
+            self.ent_search.modify_base(gtk.STATE_NORMAL, self.default_base)
+            self.ent_search.modify_text(gtk.STATE_NORMAL, self.default_text)
+
+            self.storecursor.indices = indexes
+            # Select initial match for in the current unit.
+            match_index = 0
+            selected_unit = self.storecursor.model[self.storecursor.index]
+            for match in self.matches:
+                if match.unit is selected_unit:
+                    break
+                match_index += 1
+            self.matchcursor.index = match_index
+        else:
+            self.ent_search.modify_base(gtk.STATE_NORMAL, gtk.gdk.color_parse('#f66'))
+            self.ent_search.modify_text(gtk.STATE_NORMAL, gtk.gdk.color_parse('#fff'))
+            self.re_search = None
+            # Act like the "Default" mode...
+            self.storecursor.indices = self.storecursor.model.stats['total']
+        self._highlight_matches()
+
+        def grabfocus():
+            self.ent_search.grab_focus()
+            self.ent_search.set_position(-1)
+            return False
+        gobject.idle_add(grabfocus)
 
     def _replace_all(self):
         for match in self.matches:
@@ -379,6 +415,11 @@ class SearchMode(BaseMode):
 
     def _on_cursor_changed(self, cursor):
         assert cursor is self.storecursor
+
+        unitcont = self.controller.main_controller.unit_controller
+        if self._unit_modified_id:
+            unitcont.disconnect(self._unit_modified_id)
+        self._unit_modified_id = unitcont.connect('unit-modified', self._on_unit_modified)
         self._highlight_matches()
 
     def _on_replace_clicked(self, btn):
@@ -394,18 +435,22 @@ class SearchMode(BaseMode):
             unit_matches = [match for match in self.matches if match.unit is current_unit and match.part == 'target']
             if len(unit_matches) > 0:
                 unit_matches[0].replace(self.ent_replace.get_text(), self.controller.main_controller)
+                self.controller.main_controller.undo_controller.undo_stack.pop()
+                self.controller.main_controller.undo_controller.undo_stack.undo_stack.pop()
                 self.matches.remove(unit_matches[0])
             else:
                 self.storecursor.move(1)
 
         self.update_search()
 
-    def _on_search_activated(self, _accel_group, _acceleratable, _keyval, _modifier):
-        """This is called via the accelerator."""
-        self.controller.select_mode(self)
-
     def _on_search_clicked(self, btn):
-        self.update_search()
+        self._move_match(1)
+
+    def _on_search_next(self, *args):
+        self._move_match(1)
+
+    def _on_search_prev(self, *args):
+        self._move_match(-1)
 
     def _on_search_text_changed(self, entry):
         if self._search_timeout:
@@ -413,6 +458,13 @@ class SearchMode(BaseMode):
             self._search_timeout = 0
 
         self._search_timeout = gobject.timeout_add(self.SEARCH_DELAY, self.update_search)
+
+    def _on_start_search(self, _accel_group, _acceleratable, _keyval, _modifier):
+        """This is called via the accelerator."""
+        self.controller.select_mode(self)
+
+    def _on_unit_modified(self, unit_controller, current_unit):
+        pass
 
     def _refresh_proxy(self, *args):
         self.update_search()
