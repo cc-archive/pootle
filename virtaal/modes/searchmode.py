@@ -307,6 +307,9 @@ class SearchMode(BaseMode):
     def _connect_highlighting(self):
         self._signalid_cursor_changed = self.storecursor.connect('cursor-changed', self._on_cursor_changed)
 
+    def _get_matches_for_unit(self, unit):
+        return [match for match in self.matches if match.unit is unit]
+
     def _highlight_matches(self):
         self._unhighlight_previous_matches()
 
@@ -464,7 +467,12 @@ class SearchMode(BaseMode):
         self.controller.select_mode(self)
 
     def _on_unit_modified(self, unit_controller, current_unit):
-        pass
+        unit_matches = self._get_matches_for_unit(current_unit)
+        for match in unit_matches:
+            if not self.re_search.match(match.get_getter()()[match.start:match.end]):
+                logging.debug('Match to remove: %s' % (match))
+                self.matches.remove(match)
+                self.matchcursor.indices = range(len(self.matches))
 
     def _refresh_proxy(self, *args):
         self.update_search()
