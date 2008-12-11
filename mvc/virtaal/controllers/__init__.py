@@ -18,6 +18,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
+from basecontroller   import BaseController
 from baseplugin       import BasePlugin
 from cursor           import Cursor
 from maincontroller   import MainController
@@ -27,4 +28,14 @@ from plugincontroller import PluginController
 from undocontroller   import UndoController
 from unitcontroller   import UnitController
 
-__all__ = ['BasePlugin', 'Cursor', 'MainController', 'ModeController', 'PluginController', 'StoreController', 'UndoController', 'UnitController']
+__all__ = [
+    'BaseController',
+    'BasePlugin',
+    'Cursor',
+    'MainController',
+    'ModeController',
+    'PluginController',
+    'StoreController',
+    'UndoController',
+    'UnitController'
+]
