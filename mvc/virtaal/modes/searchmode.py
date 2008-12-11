@@ -66,6 +66,33 @@ class SearchMatch(object):
             return setter
 
     # METHODS #
+    def select(self, main_controller):
+        """Select this match in the GUI."""
+        main_controller.select_unit(self.unit)
+        view = main_controller.unit_controller.view
+
+        # Wait for SearchMode to finish with its highlighting and stuff, and then we do...
+        if self.part == 'target':
+            def select_match_text():
+                target = view.targets[self.part_n]
+                target.grab_focus()
+                buff = target.get_buffer()
+                start_iter = buff.get_iter_at_offset(self.start)
+                end_iter = buff.get_iter_at_offset(self.end)
+                buff.select_range(end_iter, start_iter)
+                return False
+        elif self.part == 'source':
+            def select_match_text():
+                source = view.sources[self.part_n]
+                source.grab_focus()
+                buff = source.get_buffer()
+                start_iter = buff.get_iter_at_offset(self.start)
+                end_iter = buff.get_iter_at_offset(self.end)
+                buff.select_range(end_iter, start_iter)
+                return False
+        # TODO: Implement for 'notes' and 'locations' parts
+        gobject.idle_add(select_match_text)
+
     def replace(self, replace_str, main_controller=None):
         unit_controller = main_controller.unit_controller
         # Using unit_controller directly is a hack to make sure that the replacement changes are immediately displayed.
