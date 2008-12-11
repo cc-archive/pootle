@@ -48,6 +48,7 @@ class PluginController(BaseController):
         self.plugin        = {}
         self.pluginmodules = {}
 
+        logging.info('Loading plug-ins:')
         for name in self._find_plugin_names():
             module = __import__(
                 'virtaal.plugins.' + name,
@@ -62,8 +63,10 @@ class PluginController(BaseController):
             self.pluginmodules[name] = module
             try:
                 self.plugin[name] = module.Plugin(self.main_controller)
+                logging.info('    - ' + self.plugin[name].name)
             except Exception, exc:
                 logging.warning('Failed to load plugin "%s": %s' % (name, exc))
+        logging.info('Done loading plug-ins.')
 
     def _find_plugin_names(self):
         plugin_names = []
