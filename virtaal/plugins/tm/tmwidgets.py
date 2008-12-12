@@ -30,7 +30,7 @@ class TMWindow(gtk.Window):
 
     # INITIALIZERS #
     def __init__(self, view):
-        super(TMWindow, self).__init__()
+        super(TMWindow, self).__init__(gtk.WINDOW_POPUP)
         self.view = view
 
         self._build_gui()
