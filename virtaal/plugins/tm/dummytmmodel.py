@@ -38,8 +38,16 @@ class DummyTMModel(BaseModel):
         tm_matches = []
         tm_matches.append({
             'source': query_str.lower(),
-            'target': None,
+            'target': query_str.upper(),
             'quality': 100
+        })
+        reverse_str = list(query_str)
+        reverse_str.reverse()
+        reverse_str = ''.join(reverse_str)
+        tm_matches.append({
+            'source': reverse_str.lower(),
+            'target': reverse_str.upper(),
+            'quality': 32
         })
 
         self.controller.accept_response(query_str, tm_matches)
