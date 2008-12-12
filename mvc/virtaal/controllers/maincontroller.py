@@ -153,9 +153,13 @@ class MainController(BaseController):
     def save_file(self, filename=None):
         try:
             self.store_controller.save_file(filename)
-        except Exception, exc:
+        except IOError, exc:
             self.show_error(
                 _("Could not save file.\n\n%(error_message)s\n\nTry saving at a different location." % {'error_message': str(exc)})
+            )
+        except Exception, exc:
+            self.show_error(
+                _("Could not save file.\n\n%(error_message)s" % {'error_message': str(exc)})
             )
 
     def update_file(self, filename, uri=''):
