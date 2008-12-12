@@ -35,6 +35,14 @@ from baseview import BaseView
 import pygtk
 pygtk.require("2.0")
 
+def fill_dialog(dialog, title='', message='', markup=''):
+    if title:
+        dialog.set_title(title)
+    if markup:
+        dialog.set_markup(markup)
+    else:
+        dialog.set_markup(message.replace('<', '&lt;'))
+
 
 class EntryDialog(gtk.Dialog):
     """A simple dialog containing a dialog for user input."""
@@ -294,11 +302,8 @@ class MainView(BaseView):
         else:
             return ()
 
-    def show_error_dialog(self, title='', message=''):
-        if title:
-            self.error_dialog.set_title(title)
-        if message:
-            self.error_dialog.set_markup(message)
+    def show_error_dialog(self, title='', message='', markup=''):
+        fill_dialog(self.error_dialog, title, message, markup)
 
         self.error_dialog.set_transient_for(self._top_window)
         old_top = self._top_window
@@ -307,11 +312,8 @@ class MainView(BaseView):
         self.error_dialog.hide()
         self._top_window = old_top
 
-    def show_prompt_dialog(self, title='', message=''):
-        if title:
-            self.prompt_dialog.set_title(title)
-        if message:
-            self.prompt_dialog.set_markup(message)
+    def show_prompt_dialog(self, title='', message='', markup=''):
+        fill_dialog(self.prompt_dialog, title, message, markup)
 
         self.prompt_dialog.set_transient_for(self._top_window)
         old_top = self._top_window
@@ -322,12 +324,9 @@ class MainView(BaseView):
 
         return response == gtk.RESPONSE_NO
 
-    def show_info_dialog(self, title='', message=''):
+    def show_info_dialog(self, title='', message='', markup=''):
         """shows a simple info dialog containing a message and an OK button"""
-        if title:
-            self.info_dialog.set_title(title)
-        if message:
-            self.info_dialog.set_markup(message)
+        fill_dialog(self.info_dialog, title, message, markup)
 
         self.info_dialog.set_transient_for(self._top_window)
         old_top = self._top_window
