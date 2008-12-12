@@ -24,8 +24,8 @@ import gobject
 from virtaal.common import GObjectWrapper
 from virtaal.views import BaseView
 
+from tmwidgets import *
 
-COLUMN_PERCENT, COLUMN_MATCH = range(2, 4)
 
 class TMView(BaseView, GObjectWrapper):
     """The fake drop-down menu in which the TM matches are displayed."""
@@ -40,58 +40,32 @@ class TMView(BaseView, GObjectWrapper):
         GObjectWrapper.__init__(self)
 
         self.controller = controller
-
-        self._build_gui()
-
-        self.visible = False
-
-    def _build_gui(self):
-        self.window = gtk.Window()
-        self.window.connect('key-press-event', self._on_key_press)
-
-        self.scrolled_window = gtk.ScrolledWindow()
-        self.scrolled_window.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-
-        self.treeview = self._create_treeview()
-
-        self.scrolled_window.add(self.treeview)
-        self.window.add(self.scrolled_window)
-
-    def _create_treeview(self):
-        self.liststore = gtk.ListStore(gobject.TYPE_PYOBJECT)
-        treeview = gtk.TreeView(model=self.liststore)
-
-        self.perc_renderer = gtk.CellRendererProgress()
-        self.match_renderer = CellRendererTMMatch()
-
-        self.tvc_perc = gtk.TreeViewColumn(
-            title='%',
-            cell_renderer=self.perc_renderer,
-            value=COLUMN_PERCENT
-        )
-        self.tvc_match = gtk.TreeViewColumn(
-            title='Matches',
-            cell_renderer=self.match_renderer
-        )
+        self.isvisible = False
+        self.tmwindow = TMWindow(self)
 
 
     # METHODS #
     def display_matches(self, matches):
-        pass
+        liststore = self.tmwindow.liststore
+
+        # Get the currently selected target TextView
+        selected = self.controller.main_controller.unit_controller.view.targets[0]
+        if selected:
+            self.tmwindow.update_geometry(selected.parent)
+
+        for match in matches:
+            liststore.append([match])
+
+        if len(liststore) > 0 and not self.isvisible:
+            self.show()
 
     def hide(self):
         """Hide the TM window."""
-        self.window.hide()
-        self.visible = False
+        self.tmwindow.hide()
+        self.isvisible = False
 
     def show(self):
         """Show the TM window."""
-        self.window.show()
+        self.tmwindow.show_all()
         # TODO: Scroll to top
-        self.visible = True
-
-
-    # EVENT HANDLERS #
-    def _on_key_press(self, _widget, event, *_args):
-        if event.keyval == gtk.keysyms.Escape:
-            self.hide()
+        self.isvisible = True
