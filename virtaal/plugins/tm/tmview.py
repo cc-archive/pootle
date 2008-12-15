@@ -45,6 +45,10 @@ class TMView(BaseView, GObjectWrapper):
 
 
     # METHODS #
+    def clear(self):
+        self.tmwindow.liststore.clear()
+        self.hide()
+
     def display_matches(self, matches):
         liststore = self.tmwindow.liststore
 
