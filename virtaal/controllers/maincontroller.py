@@ -146,7 +146,7 @@ class MainController(BaseController):
             return True
         except Exception, exc:
             self.show_error(
-                _("Could not open file.\n\n%(error_message)s\n\nTry opening a different file." % {'error_message': str(exc)})
+                _("Could not open file.\n\n%(error_message)s\n\nTry opening a different file.") % {'error_message': str(exc)}
             )
             return False
 
@@ -155,7 +155,7 @@ class MainController(BaseController):
             self.store_controller.save_file(filename)
         except IOError, exc:
             self.show_error(
-                _("Could not save file.\n\n%(error_message)s\n\nTry saving at a different location." % {'error_message': str(exc)})
+                _("Could not save file.\n\n%(error_message)s\n\nTry saving at a different location.") % {'error_message': str(exc)}
             )
         except Exception, exc:
             self.show_error(
@@ -189,7 +189,7 @@ class MainController(BaseController):
             return True
         except Exception, exc:
             self.show_error(
-                _("Could not open file.\n\n%(error_message)s\n\nTry opening a different file." % {'error_message': str(exc)})
+                _("Could not open file.\n\n%(error_message)s\n\nTry opening a different file.") % {'error_message': str(exc)}
             )
             return False
 
