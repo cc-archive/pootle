@@ -136,7 +136,7 @@ class MainController(BaseController):
             # Unnecessary to test for 'discard'
 
         if self.store_controller.store and self.store_controller.store.get_filename() == filename:
-            promptmsg = 'You selected the currently open file for opening. Do you want to reload the file?'
+            promptmsg = _('You selected the currently open file for opening. Do you want to reload the file?')
             if not self.show_prompt(msg=promptmsg):
                 return False
 
@@ -163,7 +163,7 @@ class MainController(BaseController):
             )
 
     def revert_file(self, filename=None):
-        confirm = self.show_prompt("Reload File", "Reload file from last saved copy and loose all changes ?")
+        confirm = self.show_prompt(_("Reload File"), _("Reload file from last saved copy and loose all changes?"))
         if confirm:
             self.store_controller.revert_file()
         
@@ -179,7 +179,7 @@ class MainController(BaseController):
             # Unnecessary to test for 'discard'
 
         if self.store_controller.store and self.store_controller.store.get_filename() == filename:
-            promptmsg = 'You selected the currently open file for opening. Do you want to reload the file?'
+            promptmsg = _('You selected the currently open file for opening. Do you want to reload the file?')
             if not self.show_prompt(msg=promptmsg):
                 return False
 
