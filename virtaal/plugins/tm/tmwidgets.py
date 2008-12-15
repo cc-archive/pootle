@@ -78,7 +78,7 @@ class TMWindow(gtk.Window):
 
     def _percent_data_func(self, column, cell_renderer, tree_model, iter):
         match_data = tree_model.get_value(iter, 0)
-        cell_renderer.set_property('value', match_data['quality'])
+        cell_renderer.set_property('value', int(match_data['quality']))
         cell_renderer.set_property('text', "%s%%" % (match_data['quality']))
 
 

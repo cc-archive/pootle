@@ -21,7 +21,7 @@
 from virtaal.common import GObjectWrapper
 from virtaal.controllers import BaseController
 
-from dummytmmodel import DummyTMModel
+from tmmodel import TMModel
 from tmview import TMView
 
 
@@ -36,7 +36,7 @@ class TMController(BaseController):
 
         self.main_controller = main_controller
         self.view = TMView(self)
-        self.model = DummyTMModel(self)
+        self.model = TMModel(self)
 
         self._connect_plugin()
 
