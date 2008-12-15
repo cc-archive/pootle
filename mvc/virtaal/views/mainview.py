@@ -83,8 +83,7 @@ class EntryDialog(gtk.Dialog):
     def set_title(self, title):
         super(EntryDialog, self).set_title(title)
 
-# TODO: Reparent dialogs with self._top_window
-# XXX: This class is based on main_window.py:Virtaal from the pre-MVC days.
+# XXX: This class is based on main_window.py:Virtaal from the pre-MVC days (Virtaal 0.2).
 class MainView(BaseView):
     """The view containing the main window and menus."""
 
