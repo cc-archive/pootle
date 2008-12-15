@@ -73,11 +73,12 @@ class TMWindow(gtk.Window):
         y = 0
         while widget:
             alloc = tuple(widget.get_allocation())
-            y += alloc[1]# + alloc[3]
+            y += alloc[1]
             widget = widget.parent
             if widget is self.view.controller.main_controller.store_controller.view:
                 break
 
+        #print '-> %d, %d' % (x, y)
         self.move(x, y)
 
 
