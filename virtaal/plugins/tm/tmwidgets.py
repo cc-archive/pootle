@@ -54,9 +54,10 @@ class TMWindow(gtk.Window):
         self.perc_renderer = gtk.CellRendererProgress()
         self.match_renderer = TMMatchRenderer(self.view)
 
-        self.tvc_perc = gtk.TreeViewColumn('%', self.perc_renderer)
+        # l10n: match quality column label
+        self.tvc_perc = gtk.TreeViewColumn(_('%'), self.perc_renderer)
         self.tvc_perc.set_cell_data_func(self.perc_renderer, self._percent_data_func)
-        self.tvc_match = gtk.TreeViewColumn('Matches', self.match_renderer, matchdata=0)
+        self.tvc_match = gtk.TreeViewColumn(_('Matches'), self.match_renderer, matchdata=0)
 
         treeview.append_column(self.tvc_perc)
         treeview.append_column(self.tvc_match)
@@ -90,7 +91,7 @@ class TMWindow(gtk.Window):
     def _percent_data_func(self, column, cell_renderer, tree_model, iter):
         match_data = tree_model.get_value(iter, 0)
         cell_renderer.set_property('value', int(match_data['quality']))
-        cell_renderer.set_property('text', "%s%%" % (match_data['quality']))
+        cell_renderer.set_property('text', _("%(match_quality)s%%") % {"match_quality": match_data['quality']})
 
 
 class TMMatchRenderer(gtk.GenericCellRenderer):
