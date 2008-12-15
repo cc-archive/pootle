@@ -162,6 +162,11 @@ class MainController(BaseController):
                 _("Could not save file.\n\n%(error_message)s" % {'error_message': str(exc)})
             )
 
+    def revert_file(self, filename=None):
+        confirm = self.show_prompt("Reload File", "Reload file from last saved copy and loose all changes ?")
+        if confirm:
+            self.store_controller.revert_file()
+        
     def update_file(self, filename, uri=''):
         """Update the current file using the file given by C{filename} as template.
             @returns: The filename opened, or C{None} if an error has occurred."""

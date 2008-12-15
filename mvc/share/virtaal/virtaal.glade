@@ -57,11 +57,20 @@
                       </widget>
                     </child>
                     <child>
+                      <widget class="GtkImageMenuItem" id="revert_menuitem">
+                        <property name="visible">True</property>
+                        <property name="sensitive">False</property>
+                        <property name="label">gtk-revert-to-saved</property>
+                        <property name="use_underline">True</property>
+                        <property name="use_stock">True</property>
+                        <signal name="activate" handler="on_revert_activate"/>
+                      </widget>
+                    </child>
+                    <child>
                       <widget class="GtkImageMenuItem" id="update_menuitem">
                         <property name="visible">True</property>
                         <property name="sensitive">False</property>
-                        <property name="label"
-                        translatable="yes">_Update to template</property>
+                        <property name="label" translatable="yes">_Update to template</property>
                         <property name="use_underline">True</property>
                         <signal name="activate" handler="on_update_activate"/>
                       </widget>

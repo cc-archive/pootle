@@ -125,6 +125,9 @@ class StoreController(BaseController):
         self._modified = False
         self.main_controller.set_saveable(False)
 
+    def revert_file(self):
+        self.open_file(self.store.filename)
+        
     def update_file(self, filename, uri=''):
         if not self.store:
             #FIXME: we should never allow updates if no file is already open
