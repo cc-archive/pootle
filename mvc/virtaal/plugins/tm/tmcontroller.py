@@ -57,6 +57,7 @@ class TMController(BaseController):
             self.unit = unit
 
         self.current_query = unicode(self.unit.source.strings[0])
+        self.view.clear()
         self.model.query(self.current_query)
 
 
