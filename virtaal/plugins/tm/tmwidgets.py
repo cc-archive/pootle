@@ -33,6 +33,8 @@ class TMWindow(gtk.Window):
         super(TMWindow, self).__init__(gtk.WINDOW_POPUP)
         self.view = view
 
+        self.set_has_frame(True)
+
         self._build_gui()
 
     def _build_gui(self):
@@ -70,18 +72,13 @@ class TMWindow(gtk.Window):
             bottom left corner and this window's top left corner line up."""
         self.set_size_request(400, 300)
 
-        alloc = tuple(widget.get_allocation())
-        x = alloc[0]
-        y = 0
-        while widget:
-            alloc = tuple(widget.get_allocation())
-            y += alloc[1]
-            widget = widget.parent
-            if widget is self.view.controller.main_controller.store_controller.view:
-                break
+        x, y = widget.get_window(gtk.TEXT_WINDOW_WIDGET).get_origin()
+        x -= self.tvc_perc.get_width()
+        y += widget.get_allocation()[3] + 2
 
         #print '-> %d, %d' % (x, y)
         self.move(x, y)
+        self.scrolled_window.reparent(self)
 
 
     # EVENT HANLDERS #
