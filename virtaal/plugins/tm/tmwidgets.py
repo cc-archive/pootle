@@ -66,7 +66,8 @@ class TMWindow(gtk.Window):
 
     # METHODS #
     def update_geometry(self, widget):
-        """Move this window to right below the given widget."""
+        """Move this window to right below the given widget so that C{widget}'s
+            bottom left corner and this window's top left corner line up."""
         self.set_size_request(400, 300)
 
         alloc = tuple(widget.get_allocation())
