@@ -322,7 +322,7 @@ class MainView(BaseView):
         self.prompt_dialog.hide()
         self._top_window = old_top
 
-        return response == gtk.RESPONSE_NO
+        return response == gtk.RESPONSE_YES
 
     def show_info_dialog(self, title='', message='', markup=''):
         """shows a simple info dialog containing a message and an OK button"""
@@ -395,8 +395,8 @@ class MainView(BaseView):
         # we force save us on potentially destructive file level
         # operations like updating to a template
         if self.controller.get_force_saveas():
-            self._on_file_saveas(widget)
-            self.controller.set_force_saveas(False)
+            res = self._on_file_saveas(widget)
+            self.controller.set_force_saveas(not res)
         else:
             self.controller.save_file()
 
@@ -409,6 +409,8 @@ class MainView(BaseView):
         self.save_chooser.set_current_name(filename)
         if self.show_save_dialog():
             self.controller.save_file(filename=self.save_chooser.get_filename())
+            return True
+        return False
 
     def _on_file_update(self, _widget, destroyCallback=None):
         filename_and_uri = self.show_open_dialog()
