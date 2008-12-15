@@ -18,8 +18,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-from virtaal.models import BaseModel
 from translate.services import tmclient
+
+from virtaal.models import BaseModel
+
 
 class TMModel(BaseModel):
     """This is the translation memory model."""
@@ -31,11 +33,11 @@ class TMModel(BaseModel):
         super(TMModel, self).__init__()
 
         self.controller = controller
-        
+
         #TODO: tm server connection settings should come from configs
         self.tmclient = tmclient.TMClient("http://localhost:8080/tmserver")
         self.cache = {}
-        
+
 
     # METHODS #
     def query(self, query_str):
