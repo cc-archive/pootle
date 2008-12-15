@@ -43,9 +43,14 @@ class TMView(BaseView, GObjectWrapper):
 
         self.controller = controller
         self.isvisible = False
+        self._should_show_tmwindow = False
+
         self.tmwindow = TMWindow(self)
         self.tmwindow.treeview.connect('row-activated', self._on_row_activated)
 
+        main_window = self.controller.main_controller.view.main_window
+        main_window.connect('focus-in-event', self._on_focus_in_mainwindow)
+        main_window.connect('focus-out-event', self._on_focus_out_mainwindow)
         self._setup_key_bindings()
 
     def _setup_key_bindings(self):
@@ -71,15 +76,14 @@ class TMView(BaseView, GObjectWrapper):
     def display_matches(self, matches):
         liststore = self.tmwindow.liststore
 
-        # Get the currently selected target TextView
-        selected = self.controller.main_controller.unit_controller.view.targets[0]
-        self.tmwindow.update_geometry(selected.parent)
-
         for match in matches:
             liststore.append([match])
 
         if len(liststore) > 0:
             self.show()
+
+        selected = self.controller.main_controller.unit_controller.view.targets[0]
+        self.tmwindow.update_geometry(selected)
 
     def hide(self):
         """Hide the TM window."""
@@ -96,14 +100,18 @@ class TMView(BaseView, GObjectWrapper):
             return
 
         logging.debug('Selecting index %d' % (index))
-        itr = self.tmwindow.liststore.get_iter_first()
+        liststore = self.tmwindow.liststore
+        itr = liststore.get_iter_first()
 
         i=1
-        while i < index:
-            itr = self.tmwindow.liststore.iter_next(itr)
+        while i < index and liststore.iter_is_valid(itr):
+            itr = liststore.iter_next(itr)
             i += 1
 
-        path = self.tmwindow.liststore.get_path(itr)
+        if not itr or not liststore.iter_is_valid(itr):
+            return
+
+        path = liststore.get_path(itr)
         self.tmwindow.treeview.get_selection().select_iter(itr)
         self.tmwindow.treeview.row_activated(path, self.tmwindow.tvc_match)
 
@@ -111,12 +119,26 @@ class TMView(BaseView, GObjectWrapper):
         """Show the TM window."""
         if self.isvisible and not force:
             return # This window is already visible
+        self._should_show_tmwindow = False
         self.tmwindow.show_all()
-        # TODO: Scroll to top
         self.isvisible = True
 
 
     # EVENT HANDLERS #
+    def _on_focus_in_mainwindow(self, widget, event):
+        if not self._should_show_tmwindow or self.isvisible:
+            return
+        self.show()
+
+        selected = self.controller.main_controller.unit_controller.view.targets[0]
+        self.tmwindow.update_geometry(selected)
+
+    def _on_focus_out_mainwindow(self, widget, event):
+        if not self.isvisible:
+            return
+        self.hide()
+        self._should_show_tmwindow = True
+
     def _on_row_activated(self, treeview, path, column):
         """Called when a TM match is selected in the TM window."""
         liststore = treeview.get_model()
