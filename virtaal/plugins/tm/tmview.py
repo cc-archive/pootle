@@ -77,13 +77,15 @@ class TMView(BaseView, GObjectWrapper):
         liststore = self.tmwindow.liststore
 
         for match in matches:
-            liststore.append([match])
+            tooltip = ''
+            if len(liststore) < 3:
+                tooltip = 'Ctrl+' + chr(ord('1') + len(liststore))
+            liststore.append([match, tooltip])
 
         if len(liststore) > 0:
             self.show()
-
-        selected = self.controller.main_controller.unit_controller.view.targets[0]
-        self.tmwindow.update_geometry(selected)
+            selected = self.controller.main_controller.unit_controller.view.targets[0]
+            self.tmwindow.update_geometry(selected)
 
     def hide(self):
         """Hide the TM window."""

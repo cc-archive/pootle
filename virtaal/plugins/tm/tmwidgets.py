@@ -20,6 +20,7 @@
 
 import gobject
 import gtk
+import logging
 import pango
 
 from virtaal.views import markup, rendering
@@ -27,6 +28,8 @@ from virtaal.views import markup, rendering
 
 class TMWindow(gtk.Window):
     """Constructs the main TM window and all its children."""
+
+    MAX_HEIGHT = 300
 
     # INITIALIZERS #
     def __init__(self, view):
@@ -49,9 +52,10 @@ class TMWindow(gtk.Window):
         self.add(self.scrolled_window)
 
     def _create_treeview(self):
-        self.liststore = gtk.ListStore(gobject.TYPE_PYOBJECT)
+        self.liststore = gtk.ListStore(gobject.TYPE_PYOBJECT, gobject.TYPE_STRING)
         treeview = gtk.TreeView(model=self.liststore)
         treeview.set_rules_hint(True)
+        treeview.set_headers_visible(False)
 
         self.perc_renderer = gtk.CellRendererProgress()
         self.match_renderer = TMMatchRenderer(self.view)
@@ -63,22 +67,36 @@ class TMWindow(gtk.Window):
 
         treeview.append_column(self.tvc_perc)
         treeview.append_column(self.tvc_match)
+        treeview.set_tooltip_column(1)
 
         return treeview
 
     # METHODS #
+    def rows_height(self):
+        height = 0
+        itr = self.liststore.get_iter_first()
+        while itr and self.liststore.iter_is_valid(itr):
+            path = self.liststore.get_path(itr)
+            height += self.treeview.get_cell_area(path, self.tvc_match).height
+            itr = self.liststore.iter_next(itr)
+
+        return height
+
     def update_geometry(self, widget):
         """Move this window to right below the given widget so that C{widget}'s
             bottom left corner and this window's top left corner line up."""
-        self.set_size_request(400, 300)
 
+        widget_alloc = widget.get_allocation()
         x, y = widget.get_window(gtk.TEXT_WINDOW_WIDGET).get_origin()
         x -= self.tvc_perc.get_width()
-        y += widget.get_allocation()[3] + 2
+        y += widget_alloc.height + 2
+        width = widget_alloc.width + self.tvc_perc.get_width()
+        height = min(self.rows_height(), self.MAX_HEIGHT)
 
-        #print '-> %d, %d' % (x, y)
+        logging.debug('-> %dx%d +%d+%d' % (width, height, x, y))
+        self.set_size_request(width, height)
+        self.reshow_with_initial_size()
         self.move(x, y)
-        self.scrolled_window.reparent(self)
 
 
     # EVENT HANLDERS #
