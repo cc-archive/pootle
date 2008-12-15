@@ -22,6 +22,7 @@ import logging
 import os
 
 from virtaal.common import GObjectWrapper
+from virtaal import plugins
 
 from basecontroller import BaseController
 from baseplugin import BasePlugin
@@ -32,7 +33,7 @@ class PluginController(BaseController):
 
     __gtype_name__ = 'PluginController'
 
-    PLUGIN_DIR = os.path.join('virtaal', 'plugins') # FIXME: This should be replaced with a generic location
+    PLUGIN_DIR = os.path.dirname(plugins.__file__)
 
     # INITIALIZERS #
     def __init__(self, main_controller):
