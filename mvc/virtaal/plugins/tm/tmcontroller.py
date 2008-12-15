@@ -52,7 +52,16 @@ class TMController(BaseController):
         if query_str == self.current_query:
             self.view.display_matches(matches)
 
+    def select_match(self, match_data):
+        """Handle a match-selection event.
+            (This method is used as View-Controller communications)"""
+        unit_controller = self.main_controller.unit_controller
+        target_n = unit_controller.view.focused_target_n
+        unit_controller.set_unit_target(target_n, match_data['target'])
+
     def send_tm_query(self, unit=None):
+        """Send a new query to the TM engine.
+            (This method is used as Controller-Model communications)"""
         if unit is not None:
             self.unit = unit
 

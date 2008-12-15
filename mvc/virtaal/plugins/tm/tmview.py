@@ -32,7 +32,7 @@ class TMView(BaseView, GObjectWrapper):
 
     __gtype_name__ = 'TMView'
     __gsignals__ = {
-        'tm-match-selected': (gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_STRING,)),
+        'tm-match-selected': (gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_PYOBJECT,)),
     }
 
     # INITIALIZERS #
@@ -42,6 +42,7 @@ class TMView(BaseView, GObjectWrapper):
         self.controller = controller
         self.isvisible = False
         self.tmwindow = TMWindow(self)
+        self.tmwindow.treeview.connect('row-activated', self._on_row_activated)
 
 
     # METHODS #
@@ -67,6 +68,10 @@ class TMView(BaseView, GObjectWrapper):
         self.tmwindow.hide()
         self.isvisible = False
 
+    def select_match(self, match_data):
+        """Select the match data as accepted by the user."""
+        self.controller.select_match(match_data)
+
     def show(self, force=False):
         """Show the TM window."""
         if self.isvisible and not force:
@@ -74,3 +79,14 @@ class TMView(BaseView, GObjectWrapper):
         self.tmwindow.show_all()
         # TODO: Scroll to top
         self.isvisible = True
+
+
+    # EVENT HANDLERS #
+    def _on_row_activated(self, treeview, path, column):
+        """Called when a TM match is selected in the TM window."""
+        liststore = treeview.get_model()
+        assert liststore is self.tmwindow.liststore
+        iter = liststore.get_iter(path)
+        match_data = liststore.get_value(iter, 0)
+
+        self.select_match(match_data)
