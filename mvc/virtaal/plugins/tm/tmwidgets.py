@@ -66,9 +66,19 @@ class TMWindow(gtk.Window):
     # METHODS #
     def update_geometry(self, widget):
         """Move this window to right below the given widget."""
-        width, height = widget.size_request()
-        print '(w, h) => (%d, %d)' % (width, height)
-        self.set_size_request(width, 100)
+        self.set_size_request(400, 300)
+
+        alloc = tuple(widget.get_allocation())
+        x = alloc[0]
+        y = 0
+        while widget:
+            alloc = tuple(widget.get_allocation())
+            y += alloc[1]# + alloc[3]
+            widget = widget.parent
+            if widget is self.view.controller.main_controller.store_controller.view:
+                break
+
+        self.move(x, y)
 
 
     # EVENT HANLDERS #

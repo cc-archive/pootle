@@ -50,13 +50,12 @@ class TMView(BaseView, GObjectWrapper):
 
         # Get the currently selected target TextView
         selected = self.controller.main_controller.unit_controller.view.targets[0]
-        if selected:
-            self.tmwindow.update_geometry(selected.parent)
+        self.tmwindow.update_geometry(selected.parent)
 
         for match in matches:
             liststore.append([match])
 
-        if len(liststore) > 0 and not self.isvisible:
+        if len(liststore) > 0:
             self.show()
 
     def hide(self):
@@ -64,8 +63,10 @@ class TMView(BaseView, GObjectWrapper):
         self.tmwindow.hide()
         self.isvisible = False
 
-    def show(self):
+    def show(self, force=False):
         """Show the TM window."""
+        if self.isvisible and not force:
+            return # This window is already visible
         self.tmwindow.show_all()
         # TODO: Scroll to top
         self.isvisible = True

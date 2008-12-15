@@ -18,6 +18,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
+import gobject
+
 from virtaal.common import GObjectWrapper
 from virtaal.controllers import BaseController
 
@@ -29,6 +31,7 @@ class TMController(BaseController):
     """The logic-filled glue between the TM view and -model."""
 
     __gtype_name__ = 'TMController'
+    QUERY_DELAY = 300
 
     # INITIALIZERS #
     def __init__(self, main_controller):
@@ -59,9 +62,16 @@ class TMController(BaseController):
 
     # EVENT HANDLERS #
     def _on_cursor_changed(self, cursor):
-        self.view.hide()
         self.unit = cursor.model[cursor.index]
-        self.send_tm_query()
+        self.view.hide()
+
+        def start_query():
+            self.send_tm_query()
+            return False
+
+        if getattr(self, '_delay_id', 0):
+            gobject.source_remove(self._delay_id)
+        self._delay_id = gobject.timeout_add(self.QUERY_DELAY, start_query)
 
     def _on_store_loaded(self, storecontroller):
         if getattr(self, '_cursor_changed_id', None):
