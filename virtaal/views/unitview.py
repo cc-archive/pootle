@@ -52,6 +52,7 @@ class UnitView(gtk.EventBox, GObjectWrapper, gtk.CellEditable, BaseView):
         GObjectWrapper.__init__(self)
 
         self.controller = controller
+        self._focused_target_n = None
         self.gladefilename, self.gui = self.load_glade_file(["virtaal", "virtaal.glade"], root='UnitEditor', domain="virtaal")
         self.sources = []
         self.targets = []
@@ -69,6 +70,12 @@ class UnitView(gtk.EventBox, GObjectWrapper, gtk.CellEditable, BaseView):
     # ACCESSORS #
     def is_modified(self):
         return self._modified
+
+    def _get_focused_target_n(self):
+        return self._focused_target_n
+    def _set_focused_target_n(self, target_n):
+        self.focus_text_view(self.targets[target_n])
+    focused_target_n = property(_get_focused_target_n, _set_focused_target_n)
 
     def get_target_n(self, n):
         buff = self.targets[n].get_buffer()
@@ -100,13 +107,7 @@ class UnitView(gtk.EventBox, GObjectWrapper, gtk.CellEditable, BaseView):
 
     def do_start_editing(self, *_args):
         """C{gtk.CellEditable.start_editing()}"""
-        self.targets[0].grab_focus()
-
-        buf = self.targets[0].get_buffer()
-        text = buf.get_text(buf.get_start_iter(), buf.get_end_iter())
-
-        translation_start = self.first_word_re.match(text).span()[1]
-        buf.place_cursor(buf.get_iter_at_offset(translation_start))
+        self.focus_text_view(self.targets[0])
 
     def focus_text_view(self, text_view):
         text_view.grab_focus()
@@ -116,6 +117,8 @@ class UnitView(gtk.EventBox, GObjectWrapper, gtk.CellEditable, BaseView):
 
         translation_start = self.first_word_re.match(text).span()[1]
         buf.place_cursor(buf.get_iter_at_offset(translation_start))
+
+        self._focused_target_n = self.targets.index(text_view)
 
     def load_unit(self, unit):
         """Load a GUI (C{gtk.CellEditable}) for the given unit."""
