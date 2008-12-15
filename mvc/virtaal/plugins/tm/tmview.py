@@ -20,6 +20,8 @@
 
 import gtk
 import gobject
+import logging
+from gtk import gdk
 
 from virtaal.common import GObjectWrapper
 from virtaal.views import BaseView
@@ -43,6 +45,22 @@ class TMView(BaseView, GObjectWrapper):
         self.isvisible = False
         self.tmwindow = TMWindow(self)
         self.tmwindow.treeview.connect('row-activated', self._on_row_activated)
+
+        self._setup_key_bindings()
+
+    def _setup_key_bindings(self):
+        """Setup Gtk+ key bindings (accelerators)."""
+        gtk.accel_map_add_entry("<Virtaal>/TM/Select match 1", gtk.keysyms._1, gdk.CONTROL_MASK)
+        gtk.accel_map_add_entry("<Virtaal>/TM/Select match 2", gtk.keysyms._2, gdk.CONTROL_MASK)
+        gtk.accel_map_add_entry("<Virtaal>/TM/Select match 3", gtk.keysyms._3, gdk.CONTROL_MASK)
+
+        self.accel_group = gtk.AccelGroup()
+        self.accel_group.connect_by_path("<Virtaal>/TM/Select match 1", self._on_select_match)
+        self.accel_group.connect_by_path("<Virtaal>/TM/Select match 2", self._on_select_match)
+        self.accel_group.connect_by_path("<Virtaal>/TM/Select match 3", self._on_select_match)
+
+        mainview = self.controller.main_controller.view # FIXME: Is this acceptable?
+        mainview.add_accel_group(self.accel_group)
 
 
     # METHODS #
@@ -72,6 +90,23 @@ class TMView(BaseView, GObjectWrapper):
         """Select the match data as accepted by the user."""
         self.controller.select_match(match_data)
 
+    def select_match_index(self, index):
+        """Select the TM match with the given index (first match is C{1})."""
+        if index < 0:
+            return
+
+        logging.debug('Selecting index %d' % (index))
+        itr = self.tmwindow.liststore.get_iter_first()
+
+        i=1
+        while i < index:
+            itr = self.tmwindow.liststore.iter_next(itr)
+            i += 1
+
+        path = self.tmwindow.liststore.get_path(itr)
+        self.tmwindow.treeview.get_selection().select_iter(itr)
+        self.tmwindow.treeview.row_activated(path, self.tmwindow.tvc_match)
+
     def show(self, force=False):
         """Show the TM window."""
         if self.isvisible and not force:
@@ -86,7 +121,10 @@ class TMView(BaseView, GObjectWrapper):
         """Called when a TM match is selected in the TM window."""
         liststore = treeview.get_model()
         assert liststore is self.tmwindow.liststore
-        iter = liststore.get_iter(path)
-        match_data = liststore.get_value(iter, 0)
+        itr = liststore.get_iter(path)
+        match_data = liststore.get_value(itr, 0)
 
         self.select_match(match_data)
+
+    def _on_select_match(self, accel_group, acceleratable, keyval, modifier):
+        self.select_match_index(int(keyval - gtk.keysyms._0))
