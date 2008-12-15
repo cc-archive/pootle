@@ -33,11 +33,8 @@ for name, extensions, mimetypes in factory.supported_files():
     if mimetypes:
         for mimetype in mimetypes:
             rf.add_mime_type(mimetype)
-    rf.add_application("virtaal")
-    rf.add_application("poedit")
-    rf.add_application("kbabel")
-    rf.add_application("lokalize")
-    rf.add_application("gtranslator")
+for app in ("virtaal", "poedit", "kbabel", "lokalize", "gtranslator"):
+    rf.add_application(app)
 
 rm = gtk.recent_manager_get_default()
 
