@@ -122,6 +122,7 @@ class MainView(BaseView):
                 "on_save_activate" : self._on_file_save,
                 "on_saveas_activate" : self._on_file_saveas,
                 "on_update_activate" : self._on_file_update,
+                "on_revert_activate" : self._on_file_revert,
                 "on_quit" : self._on_quit,
                 "on_about_activate" : self._on_help_about,
                 "on_localization_guide_activate" : self._on_localization_guide,
@@ -236,6 +237,8 @@ class MainView(BaseView):
 
     def set_saveable(self, value):
         menuitem = self.gui.get_widget("save_menuitem")
+        menuitem.set_sensitive(value)
+        menuitem = self.gui.get_widget("revert_menuitem")
         menuitem.set_sensitive(value)
         filename = self.controller.get_store_filename()
         if filename:
@@ -418,6 +421,9 @@ class MainView(BaseView):
             filename, uri = filename_and_uri
             self._uri = uri
             self.controller.update_file(filename, uri=uri)
+            
+    def _on_file_revert(self, widget=None):
+        self.controller.revert_file()
 
     def _on_localization_guide(self, _widget=None):
         # Should be more redundent
