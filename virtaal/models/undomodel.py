@@ -36,6 +36,11 @@ class UndoModel(BaseModel):
 
 
     # METHODS #
+    def clear(self):
+        """Clear the undo stack and reset the index pointer."""
+        self.undo_stack = []
+        self.index = -1
+
     def head(self):
         """Get the undo info currently pointed to by C{self.index}."""
         return self.undo_stack[self.index]
