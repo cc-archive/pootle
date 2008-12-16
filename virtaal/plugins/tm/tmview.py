@@ -102,7 +102,10 @@ class TMView(BaseView, GObjectWrapper):
         self.controller.select_match(match_data)
 
     def select_match_index(self, index):
-        """Select the TM match with the given index (first match is C{1})."""
+        """Select the TM match with the given index (first match is 1).
+            This method causes a row in the TM window's C{gtk.TreeView} to be
+            selected and activated. This runs this class's C{_on_select_match()}
+            method which runs C{select_match()}."""
         if index < 0:
             return
 

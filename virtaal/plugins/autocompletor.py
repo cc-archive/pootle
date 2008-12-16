@@ -212,13 +212,10 @@ class AutoCompletor(object):
             buffer._suggestion = None
 
     def _on_delete_range(self, buf, start_iter, end_iter):
-        # If we are deleting the suggestion, we don't want it in the undo_stack
         suggestion = getattr(buf, '_suggestion', None)
         if suggestion:
             selection = buf.get_selection_bounds()
             if selection and suggestion[0].equal(selection[0]) and suggestion[1].equal(selection[1]):
-                # Not pretty, but it works
-                #getattr(buf, "__undo_stack").pop()
                 return False
             else:
                 self._check_delete_selection(buf)
@@ -248,7 +245,7 @@ class AutoCompletor(object):
         elif event.state & gtk.gdk.CONTROL_MASK and \
                 event.keyval == gtk.keysyms.Z or event.keyval== gtk.keysyms.BackSpace:
             # An undo/delete event will unselect the suggestion and make it hang
-            # around. Therefore weneed to remove the suggestion manually.
+            # around. Therefore we need to remove the suggestion manually.
             self._check_delete_selection(textview.get_buffer())
             return False
 
