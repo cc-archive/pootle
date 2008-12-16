@@ -54,11 +54,26 @@ class UndoModel(BaseModel):
         self.index = newindex
         return self.undo_stack[self.index]
 
-    def pop(self):
-        if self.undo_stack and 0 <= self.index < len(self.undo_stack):
-            self.index -= 1
+    def peek(self, index=None, offset=None):
+        """Peek at the item at C{index} or C{offset} positions away without
+            moving the cursor (C{self.index}) there."""
+        if index is not None:
+            return self.undo_stack[index]
+        if offset is not None:
+            return self.undo_stack[self.index + offset]
+
+    def pop(self, permanent=False):
+        if not self.undo_stack or not (0 <= self.index < len(self.undo_stack)):
+            return None
+
+        if not permanent:
             logging.debug('pop()  (index, len) => (%s, %s)' % (self.index, len(self.undo_stack)))
+            self.index -= 1
             return self.undo_stack[self.index+1]
+
+        item = self.undo_stack.pop()
+        self.index = len(self.undo_stack) - 1
+        return item
 
     def push(self, undo_dict):
         """Push an undo-action onto the undo stack.
