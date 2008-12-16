@@ -54,6 +54,7 @@ class UndoController(BaseController):
         # First connect to the unit controller
         self.unit_controller.connect('unit-insert-text', self._on_unit_insert_text)
         self.unit_controller.connect('unit-delete-text', self._on_unit_delete_text)
+        self.main_controller.store_controller.connect('store-loaded', self._on_store_loaded)
 
     def _setup_key_bindings(self):
         """Setup Gtk+ key bindings (accelerators).
@@ -91,6 +92,9 @@ class UndoController(BaseController):
 
 
     # EVENT HANDLERS #
+    def _on_store_loaded(self, storecontroller):
+        self.undo_stack.clear()
+
     def _on_undo_activated(self, _accel_group, _acceleratable, _keyval, _modifier):
         undo_info = self.undo_stack.pop()
         if not undo_info:
