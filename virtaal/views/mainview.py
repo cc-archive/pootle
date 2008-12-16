@@ -24,6 +24,7 @@ import os
 from gtk import gdk
 from gtk import glade
 from translate.storage import factory
+from translate.lang import factory as langfactory
 
 from virtaal.views import recent
 from virtaal.common import pan_app, __version__
@@ -259,6 +260,36 @@ class MainView(BaseView):
 
 
     # METHODS #
+    def ask_plural_info(self):
+        """Ask the user to provide plural information.
+            @returns: A 2-tuple containing the number of plurals as the first
+                element and the plural equation as the second element."""
+        # Adapted from Virtaal 0.2's document.py:compute_nplurals
+        def get_content_lang():
+            if pan_app.settings.language["contentlang"] != None:
+                return pan_app.settings.language["contentlang"]
+            else:
+                return self.show_input_dialog(message=_("Please enter the language code for the target language"))
+
+        def ask_for_number_of_plurals():
+            while True:
+                try:
+                    nplurals = self.show_input_dialog(message=_("Please enter the number of noun forms (plurals) to use"))
+                    return int(nplurals)
+                except ValueError, _e:
+                    pass
+
+        def ask_for_plurals_equation():
+            return self.show_input_dialog(message=_("Please enter the plural equation to use"))
+
+        lang     = langfactory.getlanguage(get_content_lang())
+        nplurals = lang.nplurals or ask_for_number_of_plurals()
+        if nplurals > 1 and lang.pluralequation == "0":
+            return nplurals, ask_for_plurals_equation()
+        else:
+            # Note that if nplurals == 1, the default equation "0" is correct
+            return nplurals, lang.pluralequation
+
     def quit(self):
         gtk.main_quit()
 

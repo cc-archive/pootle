@@ -153,7 +153,9 @@ class StoreModel(BaseModel):
                 pluralequation = settings.language["plural"]
                 if not (int(nplurals) > 0 and pluralequation):
                     # TODO: If we get here, we have to ask the user for "nplurals" and "plural"
-                    pass
+                    nplurals, pluralequation = self.controller.main_controller.view.ask_plural_info()
+                    pan_app.settings.language["nplurals"] = nplurals
+                    pan_app.settings.language["plural"]   = pluralequation
                 store.updateheaderplural(nplurals, pluralequation)
                 # If we actually updated something significant, of course the file
                 # won't appear changed yet, which is probably what we want.
