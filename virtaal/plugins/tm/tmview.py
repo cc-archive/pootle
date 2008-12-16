@@ -73,10 +73,12 @@ class TMView(BaseView, GObjectWrapper):
 
     # METHODS #
     def clear(self):
+        """Clear the TM matches."""
         self.tmwindow.liststore.clear()
         self.hide()
 
     def display_matches(self, matches):
+        """Add the list of TM matches to those available and show the TM window."""
         liststore = self.tmwindow.liststore
 
         for match in matches:

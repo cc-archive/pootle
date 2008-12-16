@@ -49,6 +49,8 @@ class TMController(BaseController):
 
     # METHODS #
     def accept_response(self, query_str, matches):
+        """Accept a query-response from the model.
+            (This method is used as Model-Controller communications)"""
         if query_str == self.current_query:
             self.view.display_matches(matches)
 
@@ -72,6 +74,7 @@ class TMController(BaseController):
 
     # EVENT HANDLERS #
     def _on_cursor_changed(self, cursor):
+        """Start a TM query after C{self.QUERY_DELAY} milliseconds."""
         self.unit = cursor.model[cursor.index]
         self.view.hide()
 
@@ -84,6 +87,7 @@ class TMController(BaseController):
         self._delay_id = gobject.timeout_add(self.QUERY_DELAY, start_query)
 
     def _on_store_loaded(self, storecontroller):
+        """Disconnect from the previous store's cursor and connect to the new one."""
         if getattr(self, '_cursor_changed_id', None):
             self.storecursor.disconnect(self._cursor_changed_id)
         self.storecursor = storecontroller.cursor
