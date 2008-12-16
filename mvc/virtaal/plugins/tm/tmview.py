@@ -64,7 +64,7 @@ class TMView(BaseView, GObjectWrapper):
         self.accel_group.connect_by_path("<Virtaal>/TM/Select match 2", self._on_select_match)
         self.accel_group.connect_by_path("<Virtaal>/TM/Select match 3", self._on_select_match)
 
-        mainview = self.controller.main_controller.view # FIXME: Is this acceptable?
+        mainview = self.controller.main_controller.view
         mainview.add_accel_group(self.accel_group)
 
 
