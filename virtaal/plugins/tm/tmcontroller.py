@@ -46,6 +46,10 @@ class TMController(BaseController):
     def _connect_plugin(self):
         self._store_loaded_id = self.main_controller.store_controller.connect('store-loaded', self._on_store_loaded)
 
+        modecontroller = getattr(self.main_controller, 'mode_controller', None)
+        if modecontroller is not None:
+            modecontroller.connect('mode-selected', self._on_mode_selected)
+
 
     # METHODS #
     def accept_response(self, query_str, matches):
@@ -86,6 +90,9 @@ class TMController(BaseController):
         if getattr(self, '_delay_id', 0):
             gobject.source_remove(self._delay_id)
         self._delay_id = gobject.timeout_add(self.QUERY_DELAY, start_query)
+
+    def _on_mode_selected(self, modecontroller, mode):
+        self.view.update_geometry()
 
     def _on_store_loaded(self, storecontroller):
         """Disconnect from the previous store's cursor and connect to the new one."""
