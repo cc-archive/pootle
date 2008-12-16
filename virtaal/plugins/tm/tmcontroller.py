@@ -80,13 +80,15 @@ class TMController(BaseController):
     # EVENT HANDLERS #
     def _on_cursor_changed(self, cursor):
         """Start a TM query after C{self.QUERY_DELAY} milliseconds."""
+        if getattr(self, '_target_focused_id', None):
+            self.main_controller.unit_controller.view.disconnect(self._target_focused_id)
+        self.main_controller.unit_controller.view.connect('target-focused', self._on_target_focused)
         self.unit = cursor.model[cursor.index]
         self.view.hide()
 
         def start_query():
             self.send_tm_query()
             return False
-
         if getattr(self, '_delay_id', 0):
             gobject.source_remove(self._delay_id)
         self._delay_id = gobject.timeout_add(self.QUERY_DELAY, start_query)
@@ -105,3 +107,6 @@ class TMController(BaseController):
             self._on_cursor_changed(self.storecursor)
             return False
         gobject.idle_add(handle_first_unit)
+
+    def _on_target_focused(self, unitcontroller, target_n):
+        self.view.update_geometry()
