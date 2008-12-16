@@ -127,7 +127,7 @@ class StoreController(BaseController):
 
     def revert_file(self):
         self.open_file(self.store.filename)
-        
+
     def update_file(self, filename, uri=''):
         if not self.store:
             #FIXME: we should never allow updates if no file is already open
