@@ -85,5 +85,11 @@ class TMController(BaseController):
 
     def _on_store_loaded(self, storecontroller):
         if getattr(self, '_cursor_changed_id', None):
-            storecontroller.disconnect(self._cursor_changed_id)
-        self._cursor_changed_id = storecontroller.cursor.connect('cursor-changed', self._on_cursor_changed)
+            self.storecursor.disconnect(self._cursor_changed_id)
+        self.storecursor = storecontroller.cursor
+        self._cursor_changed_id = self.storecursor.connect('cursor-changed', self._on_cursor_changed)
+
+        def handle_first_unit():
+            self._on_cursor_changed(self.storecursor)
+            return False
+        gobject.idle_add(handle_first_unit)
