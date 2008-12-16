@@ -56,11 +56,13 @@ class TMView(BaseView, GObjectWrapper):
 
     def _setup_key_bindings(self):
         """Setup Gtk+ key bindings (accelerators)."""
+        gtk.accel_map_add_entry("<Virtaal>/TM/Hide TM", gtk.keysyms.Escape, 0)
         gtk.accel_map_add_entry("<Virtaal>/TM/Select match 1", gtk.keysyms._1, gdk.CONTROL_MASK)
         gtk.accel_map_add_entry("<Virtaal>/TM/Select match 2", gtk.keysyms._2, gdk.CONTROL_MASK)
         gtk.accel_map_add_entry("<Virtaal>/TM/Select match 3", gtk.keysyms._3, gdk.CONTROL_MASK)
 
         self.accel_group = gtk.AccelGroup()
+        self.accel_group.connect_by_path("<Virtaal>/TM/Hide TM", self._on_hide_tm)
         self.accel_group.connect_by_path("<Virtaal>/TM/Select match 1", self._on_select_match)
         self.accel_group.connect_by_path("<Virtaal>/TM/Select match 2", self._on_select_match)
         self.accel_group.connect_by_path("<Virtaal>/TM/Select match 3", self._on_select_match)
@@ -143,6 +145,9 @@ class TMView(BaseView, GObjectWrapper):
             return
         self.hide()
         self._should_show_tmwindow = True
+
+    def _on_hide_tm(self, accel_group, acceleratable, keyval, modifier):
+        self.hide()
 
     def _on_row_activated(self, treeview, path, column):
         """Called when a TM match is selected in the TM window."""
