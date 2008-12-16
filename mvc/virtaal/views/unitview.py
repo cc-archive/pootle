@@ -134,6 +134,7 @@ class UnitView(gtk.EventBox, GObjectWrapper, gtk.CellEditable, BaseView):
 
         i = 0
         for target in self.targets:
+            target._source_text = unit.source
             buff = target.get_buffer()
             target.connect('key-press-event', self._on_text_view_key_press_event)
             buff.connect('changed', self._on_target_changed, i)
