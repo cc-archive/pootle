@@ -18,6 +18,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
+import gobject
 import logging
 
 from virtaal.common import GObjectWrapper
@@ -38,6 +39,9 @@ class ModeController(BaseController):
     """
 
     __gtype_name__ = 'ModeController'
+    __gsignals__ = {
+        'mode-selected': (gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_PYOBJECT,)),
+    }
     default_mode_name = 'Default'
 
     # INITIALIZERS #
@@ -99,6 +103,7 @@ class ModeController(BaseController):
         self.view.show()
         self.current_mode.selected()
         logging.info('Mode selected: %s' % (self.current_mode.name))
+        self.emit('mode-selected', self.current_mode)
 
     # EVENT HANDLERS #
     def _on_mode_selected(self, _modeview, modename):
