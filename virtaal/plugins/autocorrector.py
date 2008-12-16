@@ -255,13 +255,17 @@ class Plugin(BasePlugin):
     def _init_plugin(self):
         self.autocorr = AutoCorrector(self.main_controller, acorpath=pan_app.get_abs_data_filename(['virtaal', 'autocorr']))
 
+        def on_cursor_change(cursor):
+            def add_widgets():
+                self.autocorr.clear_widgets()
+                for target in self.main_controller.unit_controller.view.targets:
+                    self.autocorr.add_widget(target)
+                return False
+            gobject.idle_add(add_widgets)
+
         def on_store_loaded(storecontroller):
             self.autocorr.load_dictionary(lang=pan_app.settings.language['contentlang'])
             storecontroller.cursor.connect('cursor-changed', on_cursor_change)
-
-        def on_cursor_change(cursor):
-            self.autocorr.clear_widgets()
-            for target in self.main_controller.unit_controller.view.targets:
-                self.autocorr.add_widget(target)
+            on_cursor_change(storecontroller.cursor)
 
         self.main_controller.store_controller.connect('store-loaded', on_store_loaded)
