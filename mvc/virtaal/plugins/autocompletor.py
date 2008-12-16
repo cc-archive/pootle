@@ -296,18 +296,22 @@ class Plugin(BasePlugin):
         from virtaal.common import pan_app
         self.autocomp = AutoCompletor(self.main_controller)
 
+        def on_cursor_change(cursor):
+            def add_widgets():
+                for textview in self.autocomp.widgets:
+                    buffer = textview.get_buffer()
+                    bufftext = buffer.get_text(buffer.get_start_iter(), buffer.get_end_iter()).decode('utf-8')
+                    self.autocomp.add_words(self.autocomp.wordsep_re.split(bufftext))
+
+                self.autocomp.clear_widgets()
+                for target in self.main_controller.unit_controller.view.targets:
+                    self.autocomp.add_widget(target)
+                return False
+            gobject.idle_add(add_widgets)
+
         def on_store_loaded(storecontroller):
             self.autocomp.add_words_from_units(storecontroller.get_store().get_units())
             storecontroller.cursor.connect('cursor-changed', on_cursor_change)
-
-        def on_cursor_change(cursor):
-            for textview in self.autocomp.widgets:
-                buffer = textview.get_buffer()
-                bufftext = buffer.get_text(buffer.get_start_iter(), buffer.get_end_iter()).decode('utf-8')
-                self.autocomp.add_words(self.autocomp.wordsep_re.split(bufftext))
-
-            self.autocomp.clear_widgets()
-            for target in self.main_controller.unit_controller.view.targets:
-                self.autocomp.add_widget(target)
+            on_cursor_change(storecontroller.cursor)
 
         self.main_controller.store_controller.connect('store-loaded', on_store_loaded)
