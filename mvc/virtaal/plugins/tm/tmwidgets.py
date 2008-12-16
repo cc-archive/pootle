@@ -41,8 +41,6 @@ class TMWindow(gtk.Window):
         self._build_gui()
 
     def _build_gui(self):
-        self.connect('key-press-event', self._on_key_press)
-
         self.scrolled_window = gtk.ScrolledWindow()
         self.scrolled_window.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
 
@@ -102,10 +100,6 @@ class TMWindow(gtk.Window):
 
 
     # EVENT HANLDERS #
-    def _on_key_press(self, _widget, event, *_args):
-        if event.keyval == gtk.keysyms.Escape:
-            self.view.hide()
-
     def _percent_data_func(self, column, cell_renderer, tree_model, iter):
         match_data = tree_model.get_value(iter, 0)
         cell_renderer.set_property('value', int(match_data['quality']))
