@@ -130,6 +130,8 @@ class Plugin(BasePlugin):
         # We need to work out wich language code to import, or do all, but 
         # separately. For now, we look for the contentlang in the poedit 
         #language list from the TM section of the config.
+        if not self.hasattr(self, "poedit_config"):
+            return
         lang = pan_app.settings.language["contentlang"]
         while lang:
             if lang in self.poedit_languages:
