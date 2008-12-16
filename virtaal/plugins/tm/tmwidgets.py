@@ -85,6 +85,8 @@ class TMWindow(gtk.Window):
     def update_geometry(self, widget):
         """Move this window to right below the given widget so that C{widget}'s
             bottom left corner and this window's top left corner line up."""
+        if not self.props.visible:
+            return
 
         widget_alloc = widget.get_allocation()
         x, y = widget.get_window(gtk.TEXT_WINDOW_WIDGET).get_origin()

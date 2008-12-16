@@ -43,6 +43,7 @@ class TMView(BaseView, GObjectWrapper):
 
         self.controller = controller
         self.isvisible = False
+        self._may_show_tmwindow = False
         self._should_show_tmwindow = False
 
         self.tmwindow = TMWindow(self)
@@ -119,15 +120,16 @@ class TMView(BaseView, GObjectWrapper):
 
     def show(self, force=False):
         """Show the TM window."""
-        if self.isvisible and not force:
+        if (self.isvisible and not force) or not self._may_show_tmwindow:
             return # This window is already visible
-        self._should_show_tmwindow = False
         self.tmwindow.show_all()
         self.isvisible = True
+        self._should_show_tmwindow = False
 
 
     # EVENT HANDLERS #
     def _on_focus_in_mainwindow(self, widget, event):
+        self._may_show_tmwindow = True
         if not self._should_show_tmwindow or self.isvisible:
             return
         self.show()
@@ -136,6 +138,7 @@ class TMView(BaseView, GObjectWrapper):
         self.tmwindow.update_geometry(selected)
 
     def _on_focus_out_mainwindow(self, widget, event):
+        self._may_show_tmwindow = False
         if not self.isvisible:
             return
         self.hide()
