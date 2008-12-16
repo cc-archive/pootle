@@ -89,8 +89,7 @@ class TMView(BaseView, GObjectWrapper):
 
         if len(liststore) > 0:
             self.show()
-            selected = self.controller.main_controller.unit_controller.view.targets[0]
-            self.tmwindow.update_geometry(selected)
+            self.update_geometry()
 
     def hide(self):
         """Hide the TM window."""
@@ -132,6 +131,13 @@ class TMView(BaseView, GObjectWrapper):
         self.tmwindow.show_all()
         self.isvisible = True
         self._should_show_tmwindow = False
+
+    def update_geometry(self):
+        """Update the TM window's position and size."""
+        def update():
+            selected = self.controller.main_controller.unit_controller.view.targets[0]
+            self.tmwindow.update_geometry(selected)
+        gobject.idle_add(update)
 
 
     # EVENT HANDLERS #
