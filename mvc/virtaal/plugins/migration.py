@@ -127,11 +127,11 @@ class Plugin(BasePlugin):
 
     def poedit_tm_import(self):
         """Attempt to import the Translation Memory used in KBabel."""
+        if not hasattr(self, "poedit_config"):
+            return
         # We need to work out wich language code to import, or do all, but 
         # separately. For now, we look for the contentlang in the poedit 
         #language list from the TM section of the config.
-        if not self.hasattr(self, "poedit_config"):
-            return
         lang = pan_app.settings.language["contentlang"]
         while lang:
             if lang in self.poedit_languages:
@@ -183,7 +183,7 @@ class Plugin(BasePlugin):
             return
 
         lokalize_config = ConfigParser.ConfigParser()
-        self.poedit_config.read(self.lokalize_rc)
+        lokalize_config.read(self.lokalize_rc)
         lokalize_identity = dict(lokalize_config.items('Identity'))
 
         pan_app.settings.translator['name'] = lokalize_identity['authorLocalizedName']
