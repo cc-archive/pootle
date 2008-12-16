@@ -83,6 +83,25 @@ class UndoController(BaseController):
             C{self._disable_unit_signals()}."""
         self.unit_controller.view.enable_signals()
 
+    def remove_blank_undo(self):
+        """Removes items from the top of the undo stack with no C{value} or
+            C{action} values. The "top of the stack" is one of the top 2 items.
+
+            This is a convenience method that can be used by any code that
+            directly sets unit values."""
+        if not self.undo_stack.undo_stack:
+            return
+
+        head = self.undo_stack.head()
+        if not head['value'] and ('action' in head and not head['action'] or True):
+            self.undo_stack.pop(permanent=True)
+            return
+
+        item = self.undo_stack.peek(offset=-1)
+        if not item['value'] and ('action' in head and not item['action'] or True):
+            self.undo_stack.index -= 1
+            self.undo_stack.undo_stack.remove(item)
+
     def _select_unit(self, unit):
         """Select the given unit in the store view.
             This is to select the unit where the undo-action took place.
