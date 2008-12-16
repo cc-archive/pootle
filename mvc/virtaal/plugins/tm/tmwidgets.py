@@ -87,7 +87,10 @@ class TMWindow(gtk.Window):
             return
 
         widget_alloc = widget.get_allocation()
-        x, y = widget.get_window(gtk.TEXT_WINDOW_WIDGET).get_origin()
+        gdkwin = widget.get_window(gtk.TEXT_WINDOW_WIDGET)
+        if gdkwin is None:
+            return
+        x, y = gdkwin.get_origin()
         x -= self.tvc_perc.get_width()
         y += widget_alloc.height + 2
         width = widget_alloc.width + self.tvc_perc.get_width()
