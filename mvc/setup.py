@@ -19,7 +19,7 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 from distutils.core import setup, Distribution, Command
-from virtaal.__version__ import ver as virtaal_version
+from virtaal.common.__version__ import ver as virtaal_version
 import glob
 import os
 import os.path as path
@@ -90,8 +90,16 @@ options = {
     ],
     'packages': [
         "virtaal",
+        "virtaal.common",
+        "virtaal.controllers",
+        "virtaal.models",
+        "virtaal.modes",
+        "virtaal.plugins",
+        "virtaal.plugins.tm",
         "virtaal.support",
-        "virtaal.widgets"
+        "virtaal.test",
+        "virtaal.views",
+        "virtaal.views.widgets"
     ],
 }
 
