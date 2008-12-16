@@ -37,9 +37,10 @@ class UnitView(gtk.EventBox, GObjectWrapper, gtk.CellEditable, BaseView):
 
     __gtype_name__ = "UnitView"
     __gsignals__ = {
-        'modified': (SIGNAL_RUN_FIRST, TYPE_NONE, ()),
-        'insert-text': (SIGNAL_RUN_FIRST, TYPE_NONE, (TYPE_STRING, TYPE_STRING, TYPE_INT, TYPE_INT)),
         'delete-text': (SIGNAL_RUN_FIRST, TYPE_NONE, (TYPE_STRING, TYPE_INT, TYPE_INT, TYPE_INT, TYPE_INT)),
+        'insert-text': (SIGNAL_RUN_FIRST, TYPE_NONE, (TYPE_STRING, TYPE_STRING, TYPE_INT, TYPE_INT)),
+        'modified': (SIGNAL_RUN_FIRST, TYPE_NONE, ()),
+        'target-focused': (SIGNAL_RUN_FIRST, TYPE_NONE, (TYPE_INT,)),
     }
 
     # A regular expression to help us find a meaningful place to position the
@@ -119,6 +120,7 @@ class UnitView(gtk.EventBox, GObjectWrapper, gtk.CellEditable, BaseView):
         buf.place_cursor(buf.get_iter_at_offset(translation_start))
 
         self._focused_target_n = self.targets.index(text_view)
+        self.emit('target-focused', self._focused_target_n)
 
     def load_unit(self, unit):
         """Load a GUI (C{gtk.CellEditable}) for the given unit."""
