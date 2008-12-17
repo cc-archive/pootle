@@ -92,7 +92,8 @@ class TMWindow(gtk.Window):
         if gdkwin is None:
             return
         x, y = gdkwin.get_origin()
-        x -= self.tvc_perc.get_width()
+        if widget.get_direction() == gtk.TEXT_DIR_LTR:
+            x -= self.tvc_perc.get_width()
         y += widget_alloc.height + 2
         width = widget_alloc.width + self.tvc_perc.get_width()
         height = min(self.rows_height(), self.MAX_HEIGHT)
