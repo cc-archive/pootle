@@ -107,8 +107,12 @@ class TMWindow(gtk.Window):
     # EVENT HANLDERS #
     def _percent_data_func(self, column, cell_renderer, tree_model, iter):
         match_data = tree_model.get_value(iter, 0)
-        cell_renderer.set_property('value', int(match_data['quality']))
-        cell_renderer.set_property('text', _("%(match_quality)s%%") % {"match_quality": match_data['quality']})
+        if 'quality' in match_data:
+            cell_renderer.set_property('value', int(match_data['quality']))
+            cell_renderer.set_property('text', _("%(match_quality)s%%") % {"match_quality": match_data['quality']})
+        else:
+            cell_renderer.set_property('value', 0)
+            cell_renderer.set_property('text', "")
 
 
 class TMMatchRenderer(gtk.GenericCellRenderer):
