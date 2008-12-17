@@ -98,7 +98,7 @@ class UndoController(BaseController):
             return
 
         item = self.undo_stack.peek(offset=-1)
-        if not item['value'] and ('action' in head and not item['action'] or True):
+        if not item['value'] and ('action' in item and not item['action'] or True):
             self.undo_stack.index -= 1
             self.undo_stack.undo_stack.remove(item)
 
