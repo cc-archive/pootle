@@ -85,7 +85,7 @@ class UnitView(gtk.EventBox, GObjectWrapper, gtk.CellEditable, BaseView):
     def set_target_n(self, n, newtext, cursor_pos=-1):
         # TODO: Save cursor position and set after assignment
         buff = self.targets[n].get_buffer()
-        buff.set_text(newtext)
+        buff.set_text(markup.escape(newtext))
         if cursor_pos > -1:
             buff.place_cursor(buff.get_iter_at_offset(cursor_pos))
 
