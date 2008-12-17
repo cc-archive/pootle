@@ -30,7 +30,7 @@ from virtaal.views import recent
 from virtaal.common import pan_app, __version__
 from virtaal.support import openmailto
 
-from aboutdialog import AboutDialog
+from widgets.aboutdialog import AboutDialog
 from baseview import BaseView
 
 import pygtk
