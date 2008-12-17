@@ -147,9 +147,9 @@ class MainView(BaseView):
     def _create_dialogs(self):
         self.input_dialog = EntryDialog(self.main_window)
 
-        self.error_dialog = gtk.MessageDialog(self.main_window, 
-            gtk.DIALOG_MODAL, 
-            gtk.MESSAGE_ERROR, 
+        self.error_dialog = gtk.MessageDialog(self.main_window,
+            gtk.DIALOG_MODAL,
+            gtk.MESSAGE_ERROR,
             gtk.BUTTONS_OK)
         self.error_dialog.set_title(_("Error"))
 
@@ -448,7 +448,7 @@ class MainView(BaseView):
             filename, uri = filename_and_uri
             self._uri = uri
             self.controller.update_file(filename, uri=uri)
-            
+
     def _on_file_revert(self, widget=None):
         self.controller.revert_file()
 

@@ -118,7 +118,7 @@ class StoreModel(BaseModel):
         print 'Loading template', filename
         newstore = factory.getobject(filename)
         oldfilename = self._trans_store.filename
-        
+
         #get a copy of old stats before we convert
         oldstats = statsdb.StatsCache().filestats(oldfilename, checks.UnitChecker(), self._trans_store)
 
@@ -132,9 +132,9 @@ class StoreModel(BaseModel):
         self.stats = statsdb.StatsCache().filestats(tempfilename, checks.UnitChecker(), self._trans_store)
         os.close(tempfd)
         os.remove(tempfilename)
-        
+
         self.controller.compare_stats(oldstats, self.stats)
-        
+
         # store filename or else save is confused
         self._trans_store.filename = oldfilename
         self._get_valid_units()
