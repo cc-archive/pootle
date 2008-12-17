@@ -87,7 +87,7 @@ class TMWindow(gtk.Window):
         if not self.props.visible:
             return
 
-        widget_alloc = widget.get_allocation()
+        widget_alloc = widget.parent.get_allocation()
         gdkwin = widget.get_window(gtk.TEXT_WINDOW_WIDGET)
         if gdkwin is None:
             return
@@ -127,8 +127,8 @@ class TMMatchRenderer(gtk.GenericCellRenderer):
         ),
     }
 
-    LINE_SEPARATION = 30
-    ROW_PADDING = 10
+    LINE_SEPARATION = 10
+    ROW_PADDING = 6
     """The number of pixels between rows."""
 
     # INITIALIZERS #
@@ -165,44 +165,50 @@ class TMMatchRenderer(gtk.GenericCellRenderer):
         x_offset, y_offset, width, height = self.do_get_size(widget, cell_area)
 
         x = cell_area.x + x_offset
+        source_height = self.source_layout.get_pixel_size()[1]
+        target_height = self.target_layout.get_pixel_size()[1]
         source_y = cell_area.y + y_offset
-        target_y = cell_area.y + y_offset + height/2
+        target_y = cell_area.y + y_offset + source_height + self.LINE_SEPARATION
 
+        widget.get_style().paint_box(window, gtk.STATE_NORMAL, gtk.SHADOW_IN,
+                cell_area, widget, '', x, source_y-2, width, source_height+4)
         widget.get_style().paint_layout(window, gtk.STATE_NORMAL, False,
-                cell_area, widget, '', x, source_y, self.source_layout)
+                cell_area, widget, '', x+1, source_y, self.source_layout)
         widget.get_style().paint_layout(window, gtk.STATE_NORMAL, False,
-                cell_area, widget, '', x, target_y, self.target_layout)
+                cell_area, widget, '', x+1, target_y, self.target_layout)
 
     # METHODS #
     def _compute_cell_height(self, widget, width):
-        self.source_layout, self.target_layout = self._get_pango_layouts(
-            widget, self.matchdata, width,
+        self.source_layout = self._get_pango_layout(
+            widget, self.matchdata['source'], width,
             rendering.get_source_font_description()
         )
         self.source_layout.get_context().set_language(rendering.get_source_language())
+
+        self.target_layout = self._get_pango_layout(
+            widget, self.matchdata['target'], width,
+            rendering.get_target_font_description()
+        )
+        self.target_layout.get_context().set_language(rendering.get_target_language())
+
         # This makes no sense, but has the desired effect to align things correctly for
         # both LTR and RTL languages:
         if widget.get_direction() == gtk.TEXT_DIR_RTL:
-            self.layout.set_alignment(pango.ALIGN_RIGHT)
+            self.source_layout.set_alignment(pango.ALIGN_RIGHT)
+            self.target_layout.set_alignment(pango.ALIGN_RIGHT)
+
         height = self.source_layout.get_pixel_size()[1] + self.target_layout.get_pixel_size()[1]
         return height + self.LINE_SEPARATION + self.ROW_PADDING
 
-    def _get_pango_layouts(self, widget, matchdata, width, font_description):
+    def _get_pango_layout(self, widget, text, width, font_description):
         '''Gets the Pango layout used in the cell in a TreeView widget.'''
         # We can't use widget.get_pango_context() because we'll end up
         # overwriting the language and font settings if we don't have a
         # new one
-        slayout = pango.Layout(widget.create_pango_context())
-        slayout.set_font_description(font_description)
-        slayout.set_wrap(pango.WRAP_WORD_CHAR)
-        slayout.set_width(width * pango.SCALE)
+        layout = pango.Layout(widget.create_pango_context())
+        layout.set_font_description(font_description)
+        layout.set_wrap(pango.WRAP_WORD_CHAR)
+        layout.set_width(width * pango.SCALE)
         #XXX - plurals?
-        slayout.set_markup(markup.markuptext(matchdata['source']))
-
-        tlayout = pango.Layout(widget.create_pango_context())
-        tlayout.set_font_description(font_description)
-        tlayout.set_wrap(pango.WRAP_WORD_CHAR)
-        tlayout.set_width(width * pango.SCALE)
-        #XXX - plurals?
-        tlayout.set_markup(markup.markuptext(matchdata['target']))
-        return slayout, tlayout
+        layout.set_markup(markup.markuptext(text))
+        return layout
