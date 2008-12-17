@@ -49,5 +49,9 @@ class DummyTMModel(BaseModel):
             'target': reverse_str.upper(),
             'quality': 32
         })
+        tm_matches.append({
+            'source': 'This match has no "quality" field',
+            'target': 'Hierdie woordeboek het geen "quality"-veld nie.'
+        })
 
         self.controller.accept_response(query_str, tm_matches)
