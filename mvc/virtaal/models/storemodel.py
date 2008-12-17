@@ -102,8 +102,8 @@ class StoreModel(BaseModel):
         self._trans_store = factory.getobject(filename)
         self.filename = filename
         self.stats = statsdb.StatsCache().filestats(filename, checks.UnitChecker(), self._trans_store)
-        self._get_valid_units()
         self._correct_header(self._trans_store)
+        self._get_valid_units()
         self.nplurals = self._compute_nplurals(self._trans_store)
 
     def save_file(self, filename=None):
