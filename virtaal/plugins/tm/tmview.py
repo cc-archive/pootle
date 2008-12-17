@@ -113,7 +113,7 @@ class TMView(BaseView, GObjectWrapper):
         itr = liststore.get_iter_first()
 
         i=1
-        while i < index and liststore.iter_is_valid(itr):
+        while itr and i < index and liststore.iter_is_valid(itr):
             itr = liststore.iter_next(itr)
             i += 1
 
