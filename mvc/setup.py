@@ -77,7 +77,7 @@ for po_filename in glob.glob(path.join('po', '*.po')):
         ( path.join(TARGET_DATA_DIR, 'locale', lang, 'LC_MESSAGES'), [mo_filename])
     )
 
-# Some of these depend on some files to be built externally before running 
+# Some of these depend on some files to be built externally before running
 # setup.py, like the .xml and .desktop files
 options = {
     'data_files': [

@@ -166,7 +166,7 @@ class MainController(BaseController):
         confirm = self.show_prompt(_("Reload File"), _("Reload file from last saved copy and loose all changes?"))
         if confirm:
             self.store_controller.revert_file()
-        
+
     def update_file(self, filename, uri=''):
         """Update the current file using the file given by C{filename} as template.
             @returns: The filename opened, or C{None} if an error has occurred."""

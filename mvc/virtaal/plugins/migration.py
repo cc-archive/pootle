@@ -20,7 +20,7 @@
 
 """Plugin to import data from other applications.
 
-Currently there is some support for importing settings from Poedit and 
+Currently there is some support for importing settings from Poedit and
 Lokalize. Translation Memory can be imported from Poedit and Lokalize.
 """
 
@@ -129,8 +129,8 @@ class Plugin(BasePlugin):
         """Attempt to import the Translation Memory used in KBabel."""
         if not hasattr(self, "poedit_config"):
             return
-        # We need to work out wich language code to import, or do all, but 
-        # separately. For now, we look for the contentlang in the poedit 
+        # We need to work out wich language code to import, or do all, but
+        # separately. For now, we look for the contentlang in the poedit
         #language list from the TM section of the config.
         lang = pan_app.settings.language["contentlang"]
         while lang:
