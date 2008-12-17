@@ -63,7 +63,7 @@ class TMController(BaseController):
             (This method is used as View-Controller communications)"""
         unit_controller = self.main_controller.unit_controller
         target_n = unit_controller.view.focused_target_n
-        old_text = unit_controller.view.targets[target_n]
+        old_text = unit_controller.view.get_target_n(target_n)
         unit_controller.set_unit_target(target_n, match_data['target'])
         if len(old_text) > 0:
             self.main_controller.undo_controller.remove_blank_undo()
