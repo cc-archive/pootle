@@ -127,6 +127,7 @@ class TMMatchRenderer(gtk.GenericCellRenderer):
         ),
     }
 
+    LINE_SEPARATION = 30
     ROW_PADDING = 10
     """The number of pixels between rows."""
 
@@ -141,7 +142,9 @@ class TMMatchRenderer(gtk.GenericCellRenderer):
 
     # INTERFACE METHODS #
     def do_get_size(self, widget, _cell_area):
-        width = widget.get_toplevel().get_allocation().width - 32
+        width = -1
+        if _cell_area:
+            width = _cell_area.width
         if width < -1:
             width = -1
 
@@ -159,34 +162,47 @@ class TMMatchRenderer(gtk.GenericCellRenderer):
         return None # We should never be editing
 
     def on_render(self, window, widget, _background_area, cell_area, _expose_area, _flags):
-        x_offset, y_offset, width, _height = self.do_get_size(widget, cell_area)
+        x_offset, y_offset, width, height = self.do_get_size(widget, cell_area)
+
         x = cell_area.x + x_offset
-        y = cell_area.y + y_offset
+        source_y = cell_area.y + y_offset
+        target_y = cell_area.y + y_offset + height/2
+
         widget.get_style().paint_layout(window, gtk.STATE_NORMAL, False,
-                cell_area, widget, '', x, y, self.layout)
+                cell_area, widget, '', x, source_y, self.source_layout)
+        widget.get_style().paint_layout(window, gtk.STATE_NORMAL, False,
+                cell_area, widget, '', x, target_y, self.target_layout)
 
     # METHODS #
     def _compute_cell_height(self, widget, width):
-        self.layout = self._get_pango_layout(widget, self.matchdata, width,
-                rendering.get_source_font_description())
-        self.layout.get_context().set_language(rendering.get_source_language())
+        self.source_layout, self.target_layout = self._get_pango_layouts(
+            widget, self.matchdata, width,
+            rendering.get_source_font_description()
+        )
+        self.source_layout.get_context().set_language(rendering.get_source_language())
         # This makes no sense, but has the desired effect to align things correctly for
         # both LTR and RTL languages:
         if widget.get_direction() == gtk.TEXT_DIR_RTL:
             self.layout.set_alignment(pango.ALIGN_RIGHT)
-        _layout_width, height = self.layout.get_pixel_size()
-        return height + self.ROW_PADDING
+        height = self.source_layout.get_pixel_size()[1] + self.target_layout.get_pixel_size()[1]
+        return height + self.LINE_SEPARATION + self.ROW_PADDING
 
-    def _get_pango_layout(self, widget, matchdata, width, font_description):
+    def _get_pango_layouts(self, widget, matchdata, width, font_description):
         '''Gets the Pango layout used in the cell in a TreeView widget.'''
         # We can't use widget.get_pango_context() because we'll end up
         # overwriting the language and font settings if we don't have a
         # new one
-        layout = pango.Layout(widget.create_pango_context())
-        layout.set_font_description(font_description)
-        layout.set_wrap(pango.WRAP_WORD_CHAR)
-        layout.set_width(width * pango.SCALE)
+        slayout = pango.Layout(widget.create_pango_context())
+        slayout.set_font_description(font_description)
+        slayout.set_wrap(pango.WRAP_WORD_CHAR)
+        slayout.set_width(width * pango.SCALE)
         #XXX - plurals?
-        text = markup.markuptext(matchdata['source']) + '\n\n' + markup.markuptext(matchdata['target'])
-        layout.set_markup(text)
-        return layout
+        slayout.set_markup(markup.markuptext(matchdata['source']))
+
+        tlayout = pango.Layout(widget.create_pango_context())
+        tlayout.set_font_description(font_description)
+        tlayout.set_wrap(pango.WRAP_WORD_CHAR)
+        tlayout.set_width(width * pango.SCALE)
+        #XXX - plurals?
+        tlayout.set_markup(markup.markuptext(matchdata['target']))
+        return slayout, tlayout
