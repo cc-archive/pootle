@@ -77,6 +77,7 @@ class TMWindow(gtk.Window):
             path = self.liststore.get_path(itr)
             height += self.treeview.get_cell_area(path, self.tvc_match).height
             itr = self.liststore.iter_next(itr)
+            # TODO: Add the "vertical-separator" style property value here
 
         return height
 
