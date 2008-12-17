@@ -94,15 +94,17 @@ class UnitView(gtk.EventBox, GObjectWrapper, gtk.CellEditable, BaseView):
     def copy_original(self, text_view):
         buf = text_view.get_buffer()
         position = buf.props.cursor_position
+        old_text = buf.get_text(buf.get_start_iter(), buf.get_end_iter())
         lang = factory.getlanguage(self.controller.get_target_language())
         new_source = lang.punctranslate(self.unit.source)
         # if punctranslate actually changed something, let's insert that as an
         # undo step
         if new_source != self.unit.source:
             buf.set_text(markup.escape(self.unit.source))
-            #undo_buffer.merge_actions(buf, position)
+            self.controller.main_controller.undo_controller.remove_blank_undo()
         buf.set_text(markup.escape(new_source))
-        #undo_buffer.merge_actions(buf, position)
+        if old_text:
+            self.controller.main_controller.undo_controller.remove_blank_undo()
         self.focus_text_view(text_view)
         return False
 
