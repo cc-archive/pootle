@@ -127,7 +127,11 @@ class TMMatchRenderer(gtk.GenericCellRenderer):
         ),
     }
 
+    BOX_MARGIN = 2
+    """The number of pixels between where the source box is drawn and where the
+        text layout begins."""
     LINE_SEPARATION = 10
+    """The number of pixels between source and target in a single row."""
     ROW_PADDING = 6
     """The number of pixels between rows."""
 
@@ -141,10 +145,15 @@ class TMMatchRenderer(gtk.GenericCellRenderer):
 
 
     # INTERFACE METHODS #
-    def do_get_size(self, widget, _cell_area):
-        width = -1
-        if _cell_area:
-            width = _cell_area.width
+    def do_get_size(self, widget, cell_area):
+        if cell_area:
+            width = cell_area.width
+        else:
+            perc_column_width = widget.get_columns()[0].get_width()
+            horiz_sep_width = widget.style_get_property('horizontal-separator')
+            width = widget.get_allocation().width - perc_column_width - horiz_sep_width
+            if width <= 1:
+                width = -1
         if width < -1:
             width = -1
 
@@ -170,32 +179,28 @@ class TMMatchRenderer(gtk.GenericCellRenderer):
         source_y = cell_area.y + y_offset
         target_y = cell_area.y + y_offset + source_height + self.LINE_SEPARATION
 
+        source_dx = target_dx = self.BOX_MARGIN
+
         widget.get_style().paint_box(window, gtk.STATE_NORMAL, gtk.SHADOW_IN,
-                cell_area, widget, '', x, source_y-2, width, source_height+4)
+                cell_area, widget, '', x, source_y-(self.ROW_PADDING/4), width-self.BOX_MARGIN, source_height+(self.LINE_SEPARATION/2))
         widget.get_style().paint_layout(window, gtk.STATE_NORMAL, False,
-                cell_area, widget, '', x+1, source_y, self.source_layout)
+                cell_area, widget, '', x + source_dx, source_y, self.source_layout)
         widget.get_style().paint_layout(window, gtk.STATE_NORMAL, False,
-                cell_area, widget, '', x+1, target_y, self.target_layout)
+                cell_area, widget, '', x + target_dx, target_y, self.target_layout)
 
     # METHODS #
     def _compute_cell_height(self, widget, width):
         self.source_layout = self._get_pango_layout(
-            widget, self.matchdata['source'], width,
+            widget, self.matchdata['source'], width - (2*self.BOX_MARGIN),
             rendering.get_source_font_description()
         )
         self.source_layout.get_context().set_language(rendering.get_source_language())
 
         self.target_layout = self._get_pango_layout(
-            widget, self.matchdata['target'], width,
+            widget, self.matchdata['target'], width - (2*self.BOX_MARGIN),
             rendering.get_target_font_description()
         )
         self.target_layout.get_context().set_language(rendering.get_target_language())
-
-        # This makes no sense, but has the desired effect to align things correctly for
-        # both LTR and RTL languages:
-        if widget.get_direction() == gtk.TEXT_DIR_RTL:
-            self.source_layout.set_alignment(pango.ALIGN_RIGHT)
-            self.target_layout.set_alignment(pango.ALIGN_RIGHT)
 
         height = self.source_layout.get_pixel_size()[1] + self.target_layout.get_pixel_size()[1]
         return height + self.LINE_SEPARATION + self.ROW_PADDING
@@ -211,4 +216,8 @@ class TMMatchRenderer(gtk.GenericCellRenderer):
         layout.set_width(width * pango.SCALE)
         #XXX - plurals?
         layout.set_markup(markup.markuptext(text))
+        # This makes no sense, but has the desired effect to align things correctly for
+        # both LTR and RTL languages:
+        if widget.get_direction() == gtk.TEXT_DIR_RTL:
+            layout.set_alignment(pango.ALIGN_RIGHT)
         return layout
