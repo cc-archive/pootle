@@ -73,11 +73,11 @@ class TMWindow(gtk.Window):
     def rows_height(self):
         height = 0
         itr = self.liststore.get_iter_first()
+        vert_sep = self.treeview.style_get_property('vertical-separator')
         while itr and self.liststore.iter_is_valid(itr):
             path = self.liststore.get_path(itr)
-            height += self.treeview.get_cell_area(path, self.tvc_match).height
+            height += self.treeview.get_cell_area(path, self.tvc_match).height + vert_sep
             itr = self.liststore.iter_next(itr)
-            # TODO: Add the "vertical-separator" style property value here
 
         return height
 
