@@ -101,10 +101,12 @@ def import_languages(alchemysession, parsed_data):
 
         # nplurals
         db_lang.nplurals = try_type(int,
-                                    _get_attribute(data, lang, 'nplurals', unicode_me = False, default=1))
+                                    _get_attribute(data, lang, 'nplurals',
+                                    unicode_me = False, default=1))
 
         # pluralequation
-        db_lang.pluralequation = _get_attribute(data, lang, 'pluralequation', unicode_me = False)
+        db_lang.pluralequation = _get_attribute(data, 
+                                 lang, 'pluralequation', unicode_me = False)
 
         # specialchars
         db_lang.specialchars = _get_attribute(data, lang, 'specialchars')
