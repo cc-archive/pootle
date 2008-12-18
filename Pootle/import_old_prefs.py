@@ -47,7 +47,7 @@ def set_up_db_then_import_languages_then_users(instance, oldprefs,
 
     #metadata = Base.metadata
     engine = create_engine('sqlite:///%s' % STATS_OPTIONS['database'])
-    conn = engine.connect()
+    engine.connect()
 
     Session = sessionmaker(bind=engine, autoflush=True)
     alchemysession = Session()
