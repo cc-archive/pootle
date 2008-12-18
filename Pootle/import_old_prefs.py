@@ -69,9 +69,9 @@ def try_type(try_me, value):
         return bool(value)
     if try_me == int:
         if type(value) == int:
-                return value
+            return value
         if value.isdigit():
-                return int(value)
+            return int(value)
     assert type(value) == try_me
     return value
 
