@@ -25,7 +25,7 @@ def main():
     parsed_oldprefs = prefs.PrefsParser(oldprefsfile)
     usersfile = sys.argv[3]
     parsed_users = prefs.PrefsParser(usersfile)
-    set_up_db_then_import_languages(parsed_prefs, parsed_oldprefs)
+    set_up_db_then_import_languages_then_users(parsed_prefs, parsed_oldprefs, parsed_users)
 
 def set_up_db_then_import_languages_then_users(instance, oldprefs, parsed_users):
     # Set up the connection options
