@@ -188,7 +188,7 @@ def import_users(alchemysession, parsed_users):
         # id for free, obviously.
 
         # Check if we already exist:
-        possible_us = alchemysession.query(User).filter_by(user_name=user_name
+        possible_us = alchemysession.query(User).filter_by(username=user_name
                                                           ).all()
         if possible_us:
             print >> sys.stderr, 'Already found a user for named', user_name
