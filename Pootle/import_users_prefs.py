@@ -14,14 +14,10 @@ import types
 
 from initdb import attempt
 
+from import_languages import _get_attribute
+
 def _get_user_attribute(data, user_name, attribute, unicode_me = True, default = ''):
-    raw_value = data.get(user_name + '.' + attribute, default)
-    if unicode_me:
-        assert type(raw_value) in types.StringTypes
-        value = unicode(raw_value)
-    else:
-        value = raw_value
-    return value
+    return _get_attribute(data, user_name, attribute, unicode_me, default, prefix='')
 
 def try_type(try_me, value):
     '''This gentle type-converter should work fine for int and bool.    It would not work for unicode, though.'''
