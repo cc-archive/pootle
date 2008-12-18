@@ -80,10 +80,11 @@ class PluginController(BaseController):
             if plugin_class is None:
                 raise Exception('Plugin "%s" has no class called "%s"' % (name, self.PLUGIN_CLASSNAME))
 
-            if (getattr(plugin_class, '__bases__', None) is None) or (self.PLUGIN_INTERFACE not in plugin_class.__bases__):
-                raise Exception(
-                    'Plugin "%s" contains a member called "%s" which is not a valid plug-in class.' % (name, self.PLUGIN_CLASSNAME)
-                )
+            if self.PLUGIN_INTERFACE is not None:
+                if (getattr(plugin_class, '__bases__', None) is None) or (self.PLUGIN_INTERFACE not in plugin_class.__bases__):
+                    raise Exception(
+                        'Plugin "%s" contains a member called "%s" which is not a valid plug-in class.' % (name, self.PLUGIN_CLASSNAME)
+                    )
 
             self.pluginmodules[name] = module
 
