@@ -14,23 +14,6 @@ import types
 
 from initdb import attempt
 
-def set_up_db_then_import_users(instance, parsed_users):
-    # Set up the connection options
-    STATS_OPTIONS = {}
-    for k,v in instance.stats.connect.iteritems():
-        STATS_OPTIONS[k] = v
-
-    #metadata = Base.metadata
-    engine = create_engine('sqlite:///%s' % STATS_OPTIONS['database'])
-    conn = engine.connect()
-
-    Session = sessionmaker(bind=engine, autoflush=True)
-    alchemysession = Session()
-
-    metadata.create_all(engine)
-
-    import_users(alchemysession, parsed_users)
-
 def _get_user_attribute(data, user_name, attribute, unicode_me = True, default = ''):
     raw_value = data.get(user_name + '.' + attribute, default)
     if unicode_me:
