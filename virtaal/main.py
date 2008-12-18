@@ -29,6 +29,7 @@ class Virtaal(object):
     def __init__(self, startupfile):
         self.main_controller = MainController()
         self.plugin_controller = PluginController(self.main_controller)
+        self.main_controller.plugin_controller = self.plugin_controller
         self.store_controller = StoreController(self.main_controller)
         self.unit_controller = UnitController(self.store_controller)
 

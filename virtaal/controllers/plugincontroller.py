@@ -51,7 +51,6 @@ class PluginController(BaseController):
         GObjectWrapper.__init__(self)
 
         self.controller = controller
-        self.controller.plugin_controller = self
 
 
     # METHODS #
