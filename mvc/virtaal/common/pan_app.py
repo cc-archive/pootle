@@ -59,7 +59,7 @@ def name():
 class Settings:
     """Handles loading/saving settings from/to a configuration file."""
 
-    sections = ["translator", "general", "language", "undo"]
+    sections = ["translator", "general", "language", "plugin_state", "undo"]
 
     translator =    {
             "name": name(),
@@ -80,6 +80,8 @@ class Settings:
             "targetfont": "mono 9",
             "nplurals": 0,
             "plural": None,
+    }
+    plugin_state =  {
     }
     undo = {
             "depth": 50,
@@ -116,6 +118,8 @@ class Settings:
             self.general[key] = value
         for key, value in self.config.items("language"):
             self.language[key] = value
+        for key, value in self.config.items("plugin_state"):
+            self.plugin_state[key] = value
         for key, value in self.config.items("undo"):
             self.undo[key] = value
 
@@ -127,6 +131,8 @@ class Settings:
             self.config.set("general", key, self.general[key])
         for key in self.language:
             self.config.set("language", key, self.language[key])
+        for key in self.plugin_state:
+            self.config.set("plugin_state", key, self.plugin_state[key])
         for key in self.undo:
             self.config.set("undo", key, self.undo[key])
 
