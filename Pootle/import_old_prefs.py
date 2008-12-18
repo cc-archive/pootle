@@ -50,7 +50,8 @@ def set_up_db_then_import_languages_then_users(instance, oldprefs,
     import_projects(alchemysession, oldprefs)
     import_users(alchemysession, parsed_users)
 
-def _get_attribute(data, name, attribute, unicode_me = True, default = '', prefix='Pootle.languages.'):
+def _get_attribute(data, name, attribute, unicode_me = True, 
+                   default = '', prefix='Pootle.languages.'):
     raw_value = data.get(prefix + name + '.' + attribute, default)
     if unicode_me:
         assert type(raw_value) in types.StringTypes
