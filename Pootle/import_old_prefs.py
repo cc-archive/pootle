@@ -302,7 +302,7 @@ def import_users(alchemysession, parsed_users):
             if db_language not in user.languages:
                 user.languages.append(db_language)
 
-        if user_object_must_be_added:
+        if must_add_user_object:
             # Commit the user.
             attempt(alchemysession, user)
         else:
