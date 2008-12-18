@@ -23,9 +23,9 @@ def main():
     parsed_prefs = prefs.PrefsParser(prefsfile).Pootle
     oldprefsfile = sys.argv[2]
     parsed_oldprefs = prefs.PrefsParser(oldprefsfile)
-    set_up_db_then_import_users(parsed_prefs, parsed_oldprefs)
+    set_up_db_then_import_languages(parsed_prefs, parsed_oldprefs)
 
-def set_up_db_then_import_users(instance, oldprefs):
+def set_up_db_then_import_languages(instance, oldprefs):
     # Set up the connection options
     STATS_OPTIONS = {}
     for k,v in instance.stats.connect.iteritems():
