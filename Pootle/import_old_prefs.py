@@ -137,7 +137,7 @@ def import_projects(alchemysession, parsed_data):
 
         # createmofiles?
         db_proj.createmofiles = try_type(bool,
-                                    _get_attribute(data, proj, 'createmofiles', default=0))
+                                    _get_attribute(data, proj, 'createmofiles', unicode_me=False, default=0))
 
         # treestyle
         db_proj.treestyle = _get_attribute(data, proj, 'treestyle', unicode_me = False)
