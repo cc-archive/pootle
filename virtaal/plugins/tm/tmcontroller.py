@@ -19,11 +19,11 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 import gobject
+import os
 
 from virtaal.common import GObjectWrapper
-from virtaal.controllers import BaseController
+from virtaal.controllers import BaseController, PluginController
 
-from models.localtm import TMModel
 from tmview import TMView
 
 
@@ -31,7 +31,13 @@ class TMController(BaseController):
     """The logic-filled glue between the TM view and -model."""
 
     __gtype_name__ = 'TMController'
+    __gsignals__ = {
+        'start-query': (gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_STRING,))
+    }
+
     QUERY_DELAY = 300
+    """The delay after a unit is selected (C{Cursor}'s "cursor-changed" event)
+        before the TM is queried."""
 
     # INITIALIZERS #
     def __init__(self, main_controller):
@@ -39,7 +45,7 @@ class TMController(BaseController):
 
         self.main_controller = main_controller
         self.view = TMView(self)
-        self.model = TMModel(self)
+        self._load_models()
 
         self._connect_plugin()
 
@@ -50,9 +56,22 @@ class TMController(BaseController):
         if modecontroller is not None:
             self._mode_selected_id = modecontroller.connect('mode-selected', self._on_mode_selected)
 
+    def _load_models(self):
+        self.plugin_controller = PluginController(self)
+        self.plugin_controller.PLUGIN_CLASSNAME = 'TMModel'
+        self.plugin_controller.PLUGIN_DIRS = [os.path.join('virtaal', 'plugins', 'tm', 'models')]
+        self.plugin_controller.PLUGIN_INTERFACE = None
+        self.plugin_controller.PLUGIN_MODULE = 'virtaal.plugins.tm.models'
+        self.plugin_controller.PLUGIN_NAME_ATTRIB = '__gtype_name__'
+        self.plugin_controller.load_plugins()
+
+        self._model_signal_ids = {}
+        for model_name in self.plugin_controller.plugins:
+            self._model_signal_ids[model_name] = self.plugin_controller.plugins[model_name].connect('match-found', self.accept_response)
+
 
     # METHODS #
-    def accept_response(self, query_str, matches):
+    def accept_response(self, tmmodel, query_str, matches):
         """Accept a query-response from the model.
             (This method is used as Model-Controller communications)"""
         if query_str == self.current_query:
@@ -66,6 +85,11 @@ class TMController(BaseController):
             self.main_controller.mode_controller.disconnect(self._mode_selected_id)
         if getattr(self, '_target_focused_id', None):
             self.main_controller.unit_controller.view.disconnect(self._target_focused_id)
+
+        for model_name in self._model_signal_ids:
+            self.plugin_controller.plugins[model_name].disconnect(self._model_signal_ids[model_name])
+
+        self.plugin_controller.shutdown()
 
     def select_match(self, match_data):
         """Handle a match-selection event.
@@ -85,7 +109,7 @@ class TMController(BaseController):
 
         self.current_query = unicode(self.unit.source)
         self.view.clear()
-        self.model.query(self.current_query)
+        self.emit('start-query', self.current_query)
 
 
     # EVENT HANDLERS #
