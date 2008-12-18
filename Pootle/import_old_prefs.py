@@ -1,6 +1,7 @@
 # Author: Asheesh Laroia <asheesh@creativecommons.org>
 # Copyright: (C) 2008 Creative Commons
-# Permission is granted to redistribute this file under the GPLv2 or later, at your option.   See COPYING for details.
+# Permission is granted to redistribute this file under the GPLv2 or later, 
+# at your option.   See COPYING for details.
 
 # coding: utf-8
 from sqlalchemy import *
@@ -16,7 +17,8 @@ from initdb import attempt
 
 def main():
     if len(sys.argv) != 4:
-        print "Usage: %s pootle.prefs old_pootle.prefs users.prefs" % sys.argv[0]
+        print "Usage: %s pootle.prefs old_pootle.prefs users.prefs" % (
+                sys.argv[0])
         return
 
     prefsfile = sys.argv[1]
