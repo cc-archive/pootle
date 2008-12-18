@@ -21,6 +21,7 @@ def _get_user_attribute(data, user_name, attribute, unicode_me = True, default =
 
 def try_type(try_me, value):
     '''This gentle type-converter should work fine for int and bool.    It would not work for unicode, though.'''
+    assert try_me is not unicode
     if try_me == bool:
         assert type(value) == int
         return bool(value)
