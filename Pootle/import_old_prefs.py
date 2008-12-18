@@ -115,7 +115,8 @@ def import_languages(alchemysession, parsed_data):
 
 def import_projects(alchemysession, parsed_data):
     # This could prompt the user, asking:
-    # "Want us to import projects? Say no if you have already added the projects to the new Pootle DB in the web UI."
+    # "Want us to import projects? Say no if you have already 
+    # added the projects to the new Pootle DB in the web UI."
         
     data = parsed_data.__root__._assignments # Is this really the right way?
     prefix = 'Pootle.projects.'
