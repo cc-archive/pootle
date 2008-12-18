@@ -67,7 +67,8 @@ def _get_attribute(data, name, attribute, unicode_me = True,
     return value
 
 def try_type(try_me, value):
-    '''This gentle type-converter should work fine for int and bool.    It would not work for unicode, though.'''
+    '''This gentle type-converter should work fine for int and bool.
+    It would not work for unicode, though.'''
     assert try_me is not unicode
     if try_me == bool:
         assert type(value) == int
