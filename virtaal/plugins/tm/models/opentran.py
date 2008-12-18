@@ -21,6 +21,7 @@
 import gobject
 
 from translate.services import opentranclient
+from translate.search.lshtein import LevenshteinComparer
 
 from virtaal.models import BaseModel
 from virtaal.common import pan_app
@@ -39,8 +40,8 @@ class TMModel(BaseModel):
         super(TMModel, self).__init__()
 
         self.controller = controller
+        self.comparer = LevenshteinComparer()
 
-        #TODO: we should only simplify the language if needed for open-tran
         language = pan_app.settings.language["contentlang"]
         #TODO: open-tran connection settings should come from configs
         self.tmclient = opentranclient.OpenTranClient("http://open-tran.eu/RPC2", language)
@@ -57,5 +58,15 @@ class TMModel(BaseModel):
             self.tmclient.translate_unit(query_str, self.handle_matches)
 
     def handle_matches(self, widget, query_str, matches):
+        #open-tran often gives too many results with many which can't really be
+        #considered to be suitable for translation memory
+        #TODO: we should probably parameterise these:
+        #   (number of suggestions, minimum similarity)
+        matches = matches[:20]
+        for match in matches:
+            match['quality'] = self.comparer.similarity(query_str, match['source'])
+        # This use of .sort() is not compatible with Python 2.3
+        matches.sort(key=lambda match: match['quality'], reverse=True)
+        matches = matches[:3]
         self.cache[query_str] = matches
         self.emit('match-found', query_str, matches)
