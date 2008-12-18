@@ -44,7 +44,7 @@ def set_up_db_then_import_languages_then_users(instance, oldprefs, parsed_users)
 
     import_languages(alchemysession, oldprefs)
     import_projects(alchemysession, oldprefs)
-    import_users_prefs.import_users(alchemysession, parsed_users)
+    import_users(alchemysession, parsed_users)
 
 def _get_attribute(data, name, attribute, unicode_me = True, default = '', prefix='Pootle.languages.'):
     raw_value = data.get(prefix + name + '.' + attribute, default)
