@@ -48,7 +48,7 @@ class TMController(BaseController):
 
         modecontroller = getattr(self.main_controller, 'mode_controller', None)
         if modecontroller is not None:
-            modecontroller.connect('mode-selected', self._on_mode_selected)
+            self._mode_selected_id = modecontroller.connect('mode-selected', self._on_mode_selected)
 
 
     # METHODS #
@@ -57,6 +57,15 @@ class TMController(BaseController):
             (This method is used as Model-Controller communications)"""
         if query_str == self.current_query:
             self.view.display_matches(matches)
+
+    def destroy(self):
+        self.main_controller.store_controller.disconnect(self._store_loaded_id)
+        if getattr(self, '_cursor_changed_id', None):
+            self.main_controller.store_controller.cursor.disconnect(self._cursor_changed_id)
+        if getattr(self, '_mode_selected_id', None):
+            self.main_controller.mode_controller.disconnect(self._mode_selected_id)
+        if getattr(self, '_target_focused_id', None):
+            self.main_controller.unit_controller.view.disconnect(self._target_focused_id)
 
     def select_match(self, match_data):
         """Handle a match-selection event.
@@ -84,7 +93,7 @@ class TMController(BaseController):
         """Start a TM query after C{self.QUERY_DELAY} milliseconds."""
         if getattr(self, '_target_focused_id', None):
             self.main_controller.unit_controller.view.disconnect(self._target_focused_id)
-        self.main_controller.unit_controller.view.connect('target-focused', self._on_target_focused)
+        self._target_focused_id = self.main_controller.unit_controller.view.connect('target-focused', self._on_target_focused)
         self.unit = cursor.model[cursor.index]
         self.view.hide()
 
