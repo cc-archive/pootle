@@ -139,20 +139,24 @@ def import_projects(alchemysession, parsed_data):
         db_proj.description = _get_attribute(data, proj, 'description')
 
         # checkstyle
-        db_proj.checkstyle = _get_attribute(data, proj, 'checkstyle', unicode_me = False)
+        db_proj.checkstyle = _get_attribute(data, proj, 'checkstyle',
+                             unicode_me = False)
 
         # localfiletype
         db_proj.localfiletype = _get_attribute(data, proj, 'localfiletype')
 
         # createmofiles?
         db_proj.createmofiles = try_type(bool,
-                                    _get_attribute(data, proj, 'createmofiles', unicode_me=False, default=0))
+                                 _get_attribute(data, proj, 'createmofiles',
+                                 unicode_me=False, default=0))
 
         # treestyle
-        db_proj.treestyle = _get_attribute(data, proj, 'treestyle', unicode_me = False)
+        db_proj.treestyle = _get_attribute(data, proj, 'treestyle',
+                            unicode_me = False)
 
         # ignoredfiles
-        db_proj.ignoredfiles = _get_attribute(data, proj, 'ignoredfiles', default=u'')
+        db_proj.ignoredfiles = _get_attribute(data, proj, 'ignoredfiles',
+                               default=u'')
 
         attempt(alchemysession, db_proj)
 
