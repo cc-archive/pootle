@@ -94,7 +94,7 @@ class PluginController(BaseController):
 
     def shutdown(self):
         """Disable all plug-ins."""
-        for name in self.plugin:
+        for name in list(self.plugin.keys()):
             self.disable_plugin(name)
 
     def _find_plugin_names(self):
