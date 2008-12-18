@@ -19,20 +19,6 @@ from import_languages import _get_attribute
 def _get_user_attribute(data, user_name, attribute, unicode_me = True, default = ''):
     return _get_attribute(data, user_name, attribute, unicode_me, default, prefix='')
 
-def try_type(try_me, value):
-    '''This gentle type-converter should work fine for int and bool.    It would not work for unicode, though.'''
-    assert try_me is not unicode
-    if try_me == bool:
-        assert type(value) == int
-        return bool(value)
-    if try_me == int:
-        if type(value) == int:
-                return value
-        if value.isnumeric():
-                return int(value)
-    assert type(value) == try_me
-    return value
-        
 def import_users(alchemysession, parsed_users):
     data = parsed_users.__root__._assignments # Is this really the
                                               # right way?
