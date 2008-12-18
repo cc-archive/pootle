@@ -37,7 +37,9 @@ def set_up_db_then_import_languages_then_users(instance, oldprefs,
     objects.
 
     Use the new prefs ("instance") to connect to the SQLite DB and import
-    data from oldprefs and parsed_users.'''
+    data from oldprefs and parsed_users.
+
+    The name "instance" comes from the convention in initdb.py.'''
     # Set up the connection options
     STATS_OPTIONS = {}
     for k,v in instance.stats.connect.iteritems():
