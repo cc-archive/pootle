@@ -73,7 +73,8 @@ def committed2prefs_and_stats(committedfile):
     realpath = os.path.realpath(committedfile)
     dir, base = os.path.split(realpath)
     
-    prefs_and_stats = glob.glob(dir, 'pootle-cc_org-*')
+    globme = os.path.join(dir, 'pootle-cc_org-*')
+    prefs_and_stats = glob.glob(globme)
     return prefs_and_stats
 
 def postcommit(committedfile, success):
