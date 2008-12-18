@@ -36,3 +36,8 @@ class BasePlugin(object):
 
     def __init__(self):
         raise NotImplementedError('This interface cannot be instantiated.')
+
+    def destroy(self):
+        """This method is called by C{PluginController.shutdown()} and should be
+            implemented by all plug-ins that need to do clean-up."""
+        pass
