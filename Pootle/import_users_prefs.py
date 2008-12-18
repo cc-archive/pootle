@@ -14,17 +14,6 @@ import types
 
 from initdb import attempt
 
-def main():
-    if len(sys.argv) != 3:
-        print "Usage: %s pootle.prefs users.prefs" % sys.argv[0]
-        return
-
-    prefsfile = sys.argv[1]
-    usersfile = sys.argv[2]
-    parsed_prefs = prefs.PrefsParser(prefsfile).Pootle
-    parsed_users = prefs.PrefsParser(usersfile)
-    set_up_db_then_import_users(parsed_prefs, parsed_users)
-
 def set_up_db_then_import_users(instance, parsed_users):
     # Set up the connection options
     STATS_OPTIONS = {}
