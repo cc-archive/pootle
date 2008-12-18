@@ -33,6 +33,11 @@ def main():
 
 def set_up_db_then_import_languages_then_users(instance, oldprefs, 
                                                parsed_users):
+    '''instance, oldprefs, and parsed_users are jToolkit prefs.PrefsParser
+    objects.
+
+    Use the new prefs ("instance") to connect to the SQLite DB and import
+    data from oldprefs and parsed_users.'''
     # Set up the connection options
     STATS_OPTIONS = {}
     for k,v in instance.stats.connect.iteritems():
