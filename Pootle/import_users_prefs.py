@@ -106,7 +106,7 @@ def import_users(alchemysession, parsed_users):
 
         # Fill in the user_projects table
         # (projects in the users.prefs file)
-        raw_projects = try_type(unicode, _get_user_attribute(data, user_name, 'projects'))
+        raw_projects = _get_user_attribute(data, user_name, 'projects')
         projects_list = raw_projects.split(',')
         for project_name in projects_list:
             try:
@@ -118,7 +118,7 @@ def import_users(alchemysession, parsed_users):
 
         # Fill in the user_languages table
         # (languages in users.prefs)
-        raw_languages = try_type(unicode, _get_user_attribute(data, user_name, 'languages'))
+        raw_languages = _get_user_attribute(data, user_name, 'languages')
         languages_list = raw_languages.split(',')
         for language_name in languages_list:
             try:
