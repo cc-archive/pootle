@@ -45,6 +45,8 @@ class PluginController(BaseController):
     """The module name to import the plugin from. This is prepended to the
         plug-in's name as found by C{_find_plugin_names()} and passed to
         C{__import__()}."""
+    PLUGIN_NAME_ATTRIB = 'name'
+    """The attribute of a plug-in that contains its name."""
 
     # INITIALIZERS #
     def __init__(self, controller):
@@ -90,7 +92,7 @@ class PluginController(BaseController):
 
         try:
             self.plugins[name] = plugin_class(self.controller)
-            logging.info('    - ' + self.plugins[name].name)
+            logging.info('    - ' + getattr(self.plugins[name], self.PLUGIN_NAME_ATTRIB, name))
             return self.plugins[name]
         except Exception, exc:
             logging.warning('Failed to load plugin "%s": %s' % (name, exc))
