@@ -44,16 +44,19 @@ class PluginController(BaseController):
 
 
     # METHODS #
-    def load_plugins(self):
-        """Load plugins from the "plugins" directory."""
-        self.plugin        = {}
-        self.pluginmodules = {}
-        disabled_plugins = self._get_disabled_plugins()
+    def disable_plugin(self, name):
+        """Destroy the plug-in with the given name."""
+        if name in self.plugin:
+            del self.plugin[name]
+        if name in self.pluginmodules:
+            del self.pluginmodules[name]
 
-        logging.info('Loading plug-ins:')
-        for name in self._find_plugin_names():
-            if name in disabled_plugins:
-                continue
+    def enable_plugin(self, name):
+        """Load the plug-in with the given name and instantiate it."""
+        if name in self.plugin:
+            return None
+
+        if name not in self.pluginmodules:
             module = __import__(
                 'virtaal.plugins.' + name,
                 globals=globals(),
@@ -65,12 +68,33 @@ class PluginController(BaseController):
                 raise Exception('Plugin "%s" contains a member called "Plugin" which is not a valid plug-in class.' % (name))
 
             self.pluginmodules[name] = module
-            try:
-                self.plugin[name] = module.Plugin(self.main_controller)
-                logging.info('    - ' + self.plugin[name].name)
-            except Exception, exc:
-                logging.warning('Failed to load plugin "%s": %s' % (name, exc))
+
+        try:
+            self.plugin[name] = module.Plugin(self.main_controller)
+            logging.info('    - ' + self.plugin[name].name)
+            return self.plugin[name]
+        except Exception, exc:
+            logging.warning('Failed to load plugin "%s": %s' % (name, exc))
+
+        return None
+
+    def load_plugins(self):
+        """Load plugins from the "plugins" directory."""
+        self.plugin        = {}
+        self.pluginmodules = {}
+        disabled_plugins = self._get_disabled_plugins()
+
+        logging.info('Loading plug-ins:')
+        for name in self._find_plugin_names():
+            if name in disabled_plugins:
+                continue
+            self.enable_plugin(name)
         logging.info('Done loading plug-ins.')
+
+    def shutdown(self):
+        """Disable all plug-ins."""
+        for name in self.plugin:
+            self.disable_plugin(name)
 
     def _find_plugin_names(self):
         plugin_names = []
