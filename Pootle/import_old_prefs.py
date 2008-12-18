@@ -225,6 +225,8 @@ def import_users(alchemysession, parsed_users):
         # (projects in the users.prefs file)
         raw_projects = _get_user_attribute(data, user_name, 'projects')
         projects_list = raw_projects.split(',')
+        # remove the empty string from our list of "projects"
+        projects_list = filter(lambda thing: thing, projects_list)
         for project_name in projects_list:
             try:
                 db_project = alchemysession.query(Project).filter_by(code=project_name).one()
@@ -237,6 +239,8 @@ def import_users(alchemysession, parsed_users):
         # (languages in users.prefs)
         raw_languages = _get_user_attribute(data, user_name, 'languages')
         languages_list = raw_languages.split(',')
+        # remove the empty string from our list of "languages"
+        languages_list = filter(lambda thing: thing, languages_list)
         for language_name in languages_list:
             try:
                 db_language = alchemysession.query(Language).filter_by(code=language_name).one()
