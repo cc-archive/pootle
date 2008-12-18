@@ -15,17 +15,19 @@ import types
 from initdb import attempt
 
 def main():
-    if len(sys.argv) != 3:
-        print "Usage: %s pootle.prefs old_pootle.prefs" % sys.argv[0]
+    if len(sys.argv) != 4:
+        print "Usage: %s pootle.prefs old_pootle.prefs users.prefs" % sys.argv[0]
         return
 
     prefsfile = sys.argv[1]
     parsed_prefs = prefs.PrefsParser(prefsfile).Pootle
     oldprefsfile = sys.argv[2]
     parsed_oldprefs = prefs.PrefsParser(oldprefsfile)
+    usersfile = sys.argv[3]
+    parsed_users = prefs.PrefsParser(usersfile)
     set_up_db_then_import_languages(parsed_prefs, parsed_oldprefs)
 
-def set_up_db_then_import_languages(instance, oldprefs):
+def set_up_db_then_import_languages_then_users(instance, oldprefs, parsed_users):
     # Set up the connection options
     STATS_OPTIONS = {}
     for k,v in instance.stats.connect.iteritems():
@@ -41,6 +43,8 @@ def set_up_db_then_import_languages(instance, oldprefs):
     metadata.create_all(engine)
 
     import_languages(alchemysession, oldprefs)
+    import import_users_prefs
+    import_users_prefs.import_users(alchemysession, parsed_users)
 
 def _get_attribute(data, name, attribute, unicode_me = True, default = '', prefix='Pootle.languages.'):
     raw_value = data.get(prefix + name + '.' + attribute, default)
