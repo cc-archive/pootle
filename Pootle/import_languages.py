@@ -43,6 +43,7 @@ def set_up_db_then_import_languages_then_users(instance, oldprefs, parsed_users)
     metadata.create_all(engine)
 
     import_languages(alchemysession, oldprefs)
+    import_projects(alchemysession, oldprefs)
     import_users_prefs.import_users(alchemysession, parsed_users)
 
 def _get_attribute(data, name, attribute, unicode_me = True, default = '', prefix='Pootle.languages.'):
@@ -103,6 +104,48 @@ def import_languages(alchemysession, parsed_data):
         db_lang.specialchars = _get_attribute(data, lang, 'specialchars')
 
         attempt(alchemysession, db_lang)
+
+def import_projects(alchemysession, parsed_data):
+    # This could prompt the user, asking:
+    # "Want us to import projects? Say no if you have already added the projects to the new Pootle DB in the web UI."
+        
+    data = parsed_data.__root__._assignments # Is this really the right way?
+    prefix = 'Pootle.projects.'
+
+    # Filter out unrelated keys
+    keys = [key for key in data if key.startswith(prefix)]
+
+    # Clean up 'pootle.fullname' into 'pootle'
+    projs = set([key[len(prefix):].split('.')[0] for key in keys]) 
+
+    for proj in map(lambda s: unicode(s, 'utf-8'), projs):
+        # id, for free
+        # code:
+        db_proj = Project(proj)
+
+        # fullname
+        db_proj.fullname = _get_attribute(data, proj, 'fullname')
+
+        # description
+        db_proj.description = _get_attribute(data, proj, 'description')
+
+        # checkstyle
+        db_proj.checkstyle = _get_attribute(data, proj, 'checkstyle', unicode_me = False)
+
+        # localfiletype
+        db_proj.localfiletype = _get_attribute(data, proj, 'localfiletype')
+
+        # createmofiles?
+        db_proj.createmofiles = try_type(bool,
+                                    _get_attribute(data, proj, 'createmofiles', default=0))
+
+        # treestyle
+        db_proj.treestyle = _get_attribute(data, proj, 'treestyle', unicode_me = False)
+
+        # ignoredfiles
+        db_proj.ignoredfiles = _get_attribute(data, proj, 'ignoredfiles', default=u'')
+
+        attempt(alchemysession, db_proj)
 
 def _get_user_attribute(data, user_name, attribute, unicode_me = True, default = ''):
     return _get_attribute(data, user_name, attribute, unicode_me, default, prefix='')
