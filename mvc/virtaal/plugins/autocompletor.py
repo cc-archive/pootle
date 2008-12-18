@@ -311,7 +311,13 @@ class Plugin(BasePlugin):
 
         def on_store_loaded(storecontroller):
             self.autocomp.add_words_from_units(storecontroller.get_store().get_units())
-            storecontroller.cursor.connect('cursor-changed', on_cursor_change)
+            self._cursor_changed_id = storecontroller.cursor.connect('cursor-changed', on_cursor_change)
             on_cursor_change(storecontroller.cursor)
 
-        self.main_controller.store_controller.connect('store-loaded', on_store_loaded)
+        self._store_loaded_id = self.main_controller.store_controller.connect('store-loaded', on_store_loaded)
+
+    def destroy(self):
+        """Remove all signal-connections."""
+        self.main_controller.store_controller.disconnect(self._store_loaded_id)
+        if getattr(self, '_cursor_changed_id', None):
+            self.main_controller.store_controller.cursor.disconnect(self._cursor_changed_id)
