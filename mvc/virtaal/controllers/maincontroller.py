@@ -221,6 +221,7 @@ class MainController(BaseController):
             elif response == 'cancel':
                 return
 
+        self.plugin_controller.shutdown()
         self.view.quit()
 
     def run(self):
