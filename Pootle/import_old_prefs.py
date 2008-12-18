@@ -10,7 +10,6 @@ from sqlalchemy.ext.declarative import declarative_base
 from dbclasses import *
 import sys
 from jToolkit import prefs
-import md5
 import types
 
 from initdb import attempt
