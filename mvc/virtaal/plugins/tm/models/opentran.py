@@ -19,8 +19,10 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 from translate.services import opentranclient
+from translate.lang import data
 
 from virtaal.models import BaseModel
+from virtaal.common import pan_app
 
 
 class TMModel(BaseModel):
@@ -34,8 +36,10 @@ class TMModel(BaseModel):
 
         self.controller = controller
 
+        #TODO: we should only simplify the language if needed for open-tran
+        language = data.simplercode(pan_app.settings.language["contentlang"])
         #TODO: open-tran connection settings should come from configs
-        self.tmclient = tmclient.OpenTranClient("http://open-tran.eu/RPC2")
+        self.tmclient = opentranclient.OpenTranClient("http://open-tran.eu/RPC2", language)
         self.cache = {}
 
 
