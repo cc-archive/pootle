@@ -160,8 +160,10 @@ def import_projects(alchemysession, parsed_data):
 
         attempt(alchemysession, db_proj)
 
-def _get_user_attribute(data, user_name, attribute, unicode_me = True, default = ''):
-    return _get_attribute(data, user_name, attribute, unicode_me, default, prefix='')
+def _get_user_attribute(data, user_name, attribute, unicode_me = True,
+                        default = ''):
+    return _get_attribute(data, user_name, attribute, unicode_me, default,
+                          prefix='')
 
 def import_users(alchemysession, parsed_users):
     data = parsed_users.__root__._assignments # Is this really the
