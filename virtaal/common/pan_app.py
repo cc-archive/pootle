@@ -168,3 +168,45 @@ def get_abs_data_filename(path_parts):
         if os.path.exists(datafile):
             return datafile
     raise Exception('Could not find "%s"' % (os.path.join(*path_parts)))
+
+def load_config(filename, section=None):
+    """Load the configuration from the given filename (and optional section
+        into a dictionary structure.
+
+        @returns: A 2D-dictionary representing the configuration file if no
+            section was specified. Otherwise a simple dictionary representing
+            the given configuration section."""
+    parser = ConfigParser.ConfigParser()
+    parser.read(filename)
+
+    if section:
+        return dict(parser.items(section))
+
+    conf = {}
+    for section in parser.sections():
+        conf[section] = dict(parser.items(section))
+    return conf
+
+def save_config(filename, config, section=None):
+    """Save the given configuration data to the given filename and under the
+        given section (if specified).
+
+        @param config: A dictionary containing the configuration section data
+            if C{section} was specified. Otherwise, if C{section} is not
+            specified, it should be a 2D-dictionary representing the entire
+            configuration file."""
+    parser = ConfigParser.ConfigParser()
+    parser.read(filename)
+
+    if section:
+        config = {section: config}
+
+    for section, section_conf in config.items():
+        if section not in parser.sections():
+            parser.add_section(section)
+        for key, value in section_conf.items():
+            parser.set(section, key, value)
+
+    conffile = open(filename, 'w')
+    parser.write(conffile)
+    conffile.close()
