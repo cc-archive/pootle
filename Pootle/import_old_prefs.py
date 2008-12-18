@@ -16,6 +16,7 @@ import types
 from initdb import attempt
 
 def main():
+    '''Read sys.argv for cofiguration, and perform the imports.'''
     if len(sys.argv) != 4:
         print "Usage: %s pootle.prefs old_pootle.prefs users.prefs" % (
                 sys.argv[0])
