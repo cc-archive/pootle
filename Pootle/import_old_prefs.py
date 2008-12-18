@@ -30,7 +30,8 @@ def main():
     set_up_db_then_import_languages_then_users(parsed_prefs, parsed_oldprefs,
                                                parsed_users)
 
-def set_up_db_then_import_languages_then_users(instance, oldprefs, parsed_users):
+def set_up_db_then_import_languages_then_users(instance, oldprefs, 
+                                               parsed_users):
     # Set up the connection options
     STATS_OPTIONS = {}
     for k,v in instance.stats.connect.iteritems():
