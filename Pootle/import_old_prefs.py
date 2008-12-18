@@ -171,69 +171,84 @@ def import_users(alchemysession, parsed_users):
     user_names = set([key.split('.')[0] for key in data])
     
     for user_name in user_names:
+        must_add_user_object = True
+
         if type(user_name) == unicode:
             pass
         else:
             user_name = unicode(user_name, 'utf-8')
         # id for free, obviously.
 
-        # username
-        user = User(user_name)
+        # Check if we already exist:
+        possible_us = alchemysession.query(User).filter_by(user_name=user_name).all()
+        if possible_us:
+            print >> sys.stderr, 'Already found a user for this username:', user_name
+            print >> sys.stderr, 'Going to skip importing his data, but will make sure language and project preferences are imported.'
+            assert len(possible_us) == 1
+            user = possible_us[0]
+            must_add_user_object = False
+        else:
+            # username
+            user = User(user_name)
 
-        # name
-        user.name = _get_user_attribute(data, user_name, 'name')
+            # name
+            user.name = _get_user_attribute(data, user_name, 'name')
 
-        # email
-        user.email =    _get_user_attribute(data, user_name, 'email')
+            # email
+            user.email =    _get_user_attribute(data, user_name, 'email')
 
-        # activated
-        user.activated = try_type(bool,
+            # activated
+            user.activated = try_type(bool,
                                   _get_user_attribute(data, user_name, 'activated', unicode_me=False, default=0))
 
-        # activationcode
-        user.activationcode = _get_user_attribute(data, user_name, 'activationcode', unicode_me = False, default=0)
+            # activationcode
+            user.activationcode = _get_user_attribute(data, user_name, 'activationcode', unicode_me = False, default=0)
 
-        # passwdhash
-        user.passwdhash = _get_user_attribute(data, user_name, 'passwdhash', unicode_me = False)
+            # passwdhash
+            user.passwdhash = _get_user_attribute(data, user_name, 'passwdhash', unicode_me = False)
 
-        # logintype
-        # "hash" is the login type that indicates "hash" the user's submitted password into MD5 and check against
-        # a local file/DB.
-        user.logintype = _get_user_attribute(data, user_name, 'logintype', unicode_me = False, default = 'hash')
+            # logintype
+            # "hash" is the login type that indicates "hash" the user's submitted password into MD5 and check against
+            # a local file/DB.
+            user.logintype = _get_user_attribute(data, user_name, 'logintype',
+                             unicode_me = False, default = 'hash')
 
-        # siteadmin
-        user.siteadmin = try_type(bool,
-                                                _get_user_attribute(data, user_name, 'siteadmin', unicode_me=False, default=0))
+            # siteadmin
+            user.siteadmin = try_type(bool,
+                             _get_user_attribute(data, user_name, 'siteadmin',
+                             unicode_me=False, default=0))
 
-        # viewrows
-        user.viewrows = try_type(int,
-                                                _get_user_attribute(data, user_name, 'viewrows', unicode_me=False, default=10))
+            # viewrows
+            user.viewrows = try_type(int,
+                            _get_user_attribute(data, user_name, 'viewrows',
+                            unicode_me=False, default=10))
 
-        # translaterows
-        user.translaterows = try_type(int,
-                                      _get_user_attribute(data, user_name, 'translaterows', unicode_me=False, default=10))
+            # translaterows
+            user.translaterows = try_type(int,
+                                 _get_user_attribute(data, user_name,
+                                 'translaterows', unicode_me=False, default=10))
 
-        # uilanguage
-        raw_uilanguage = _get_user_attribute(data, user_name, 'uilanguages')
-        assert ',' not in raw_uilanguage # just one value here
-        if raw_uilanguage:
-            db_uilanguage = alchemysession.query(Language).filter_by(code=raw_uilanguage).one()
-            user.uilanguage = db_uilanguage
-        else:
-            pass # leave it NULL
+            # uilanguage
+            raw_uilanguage = _get_user_attribute(data, user_name, 'uilanguages')
+            assert ',' not in raw_uilanguage # just one value here
+            if raw_uilanguage:
+                db_uilanguage = alchemysession.query(Language).filter_by(code=raw_uilanguage).one()
+                user.uilanguage = db_uilanguage
+            else:
+                pass # leave it NULL
 
-        # altsrclanguage
-        raw_altsrclanguage = _get_user_attribute(data, user_name, 'altsrclanguage')
-        assert ',' not in raw_altsrclanguage # just one value here
-        if raw_altsrclanguage:
-            db_altsrclanguage = alchemysession.query(Language).filter_by(code=raw_altsrclanguage).one()
-            user.altsrclanguage = db_altsrclanguage
-        else:
-            pass # leave it NULL
+            # altsrclanguage
+            raw_altsrclanguage = _get_user_attribute(data, user_name, 'altsrclanguage')
+            assert ',' not in raw_altsrclanguage # just one value here
+            if raw_altsrclanguage:
+                db_altsrclanguage = alchemysession.query(Language).filter_by(code=raw_altsrclanguage).one()
+                user.altsrclanguage = db_altsrclanguage
+            else:
+                pass # leave it NULL
 
         # ASSUMPTION: Someone has already created all the necessary projects
-        #             and languages in the web UI or through some other importer
-
+        #             and languages in the web UI or through the earlier importer
+    
         # Fill in the user_projects table
         # (projects in the users.prefs file)
         raw_projects = _get_user_attribute(data, user_name, 'projects')
@@ -262,8 +277,20 @@ def import_users(alchemysession, parsed_users):
             if db_language not in user.languages:
                 user.languages.append(db_language)
 
-        # Commit the user.
-        attempt(alchemysession, user)
+        if user_object_must_be_added:
+            # Commit the user.
+            attempt(alchemysession, user)
+        else:
+            # Save our session another way
+            try:
+                alchemysession.commit()
+            except Exception, e:
+                print 'weird, the session failed'
+                alchemysession.rollback()
+                print "FAILED: %s" % e
+            else:
+                print 'Imported user', user_name, 'OK'
+
 
 if __name__ == '__main__':
   main()
