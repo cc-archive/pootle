@@ -21,7 +21,7 @@
 import logging
 import os
 
-from virtaal.common import GObjectWrapper
+from virtaal.common import pan_app, GObjectWrapper
 from virtaal import plugins
 
 from basecontroller import BaseController
@@ -48,9 +48,12 @@ class PluginController(BaseController):
         """Load plugins from the "plugins" directory."""
         self.plugin        = {}
         self.pluginmodules = {}
+        disabled_plugins = self._get_disabled_plugins()
 
         logging.info('Loading plug-ins:')
         for name in self._find_plugin_names():
+            if name in disabled_plugins:
+                continue
             module = __import__(
                 'virtaal.plugins.' + name,
                 globals=globals(),
@@ -86,3 +89,6 @@ class PluginController(BaseController):
         plugin_names = list(set(plugin_names))
         logging.debug('Found plugins: %s' % (plugin_names))
         return plugin_names
+
+    def _get_disabled_plugins(self):
+        return [plugin_name for (plugin_name, state) in pan_app.settings.plugin_state.items() if state.lower() == 'disabled']
