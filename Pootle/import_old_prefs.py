@@ -182,10 +182,12 @@ def import_users(alchemysession, parsed_users):
         # id for free, obviously.
 
         # Check if we already exist:
-        possible_us = alchemysession.query(User).filter_by(user_name=user_name).all()
+        possible_us = alchemysession.query(User).filter_by(user_name=user_name
+                                                          ).all()
         if possible_us:
-            print >> sys.stderr, 'Already found a user for this username:', user_name
-            print >> sys.stderr, 'Going to skip importing his data, but will make sure language and project preferences are imported.'
+            print >> sys.stderr, 'Already found a user for named', user_name
+            print >> sys.stderr, 'Going to skip importing his data, but will',
+            print >> sys.stderr, 'import his language and project preferences.'
             assert len(possible_us) == 1
             user = possible_us[0]
             must_add_user_object = False
@@ -197,21 +199,25 @@ def import_users(alchemysession, parsed_users):
             user.name = _get_user_attribute(data, user_name, 'name')
 
             # email
-            user.email =    _get_user_attribute(data, user_name, 'email')
+            user.email = _get_user_attribute(data, user_name, 'email')
 
             # activated
             user.activated = try_type(bool,
-                                  _get_user_attribute(data, user_name, 'activated', unicode_me=False, default=0))
+                             _get_user_attribute(data, user_name, 'activated',
+                             unicode_me=False, default=0))
 
             # activationcode
-            user.activationcode = _get_user_attribute(data, user_name, 'activationcode', unicode_me = False, default=0)
+            user.activationcode = _get_user_attribute(data, user_name,
+                                  'activationcode', unicode_me = False,
+                                  default=0)
 
             # passwdhash
-            user.passwdhash = _get_user_attribute(data, user_name, 'passwdhash', unicode_me = False)
+            user.passwdhash = _get_user_attribute(data, user_name,
+                              'passwdhash', unicode_me = False)
 
             # logintype
-            # "hash" is the login type that indicates "hash" the user's submitted password into MD5 and check against
-            # a local file/DB.
+            # "hash" is the login type that indicates "hash" the user's
+            # submitted password into MD5 and check against a local file/DB.
             user.logintype = _get_user_attribute(data, user_name, 'logintype',
                              unicode_me = False, default = 'hash')
 
@@ -234,22 +240,25 @@ def import_users(alchemysession, parsed_users):
             raw_uilanguage = _get_user_attribute(data, user_name, 'uilanguages')
             assert ',' not in raw_uilanguage # just one value here
             if raw_uilanguage:
-                db_uilanguage = alchemysession.query(Language).filter_by(code=raw_uilanguage).one()
+                db_uilanguage = alchemysession.query(Language).filter_by(
+                                               code=raw_uilanguage).one()
                 user.uilanguage = db_uilanguage
             else:
                 pass # leave it NULL
 
             # altsrclanguage
-            raw_altsrclanguage = _get_user_attribute(data, user_name, 'altsrclanguage')
+            raw_altsrclanguage = _get_user_attribute(data, user_name,
+                                                     'altsrclanguage')
             assert ',' not in raw_altsrclanguage # just one value here
             if raw_altsrclanguage:
-                db_altsrclanguage = alchemysession.query(Language).filter_by(code=raw_altsrclanguage).one()
+                db_altsrclanguage = alchemysession.query(Language).filter_by(
+                                    code=raw_altsrclanguage).one()
                 user.altsrclanguage = db_altsrclanguage
             else:
                 pass # leave it NULL
 
         # ASSUMPTION: Someone has already created all the necessary projects
-        #             and languages in the web UI or through the earlier importer
+        # and languages in the web UI or through the earlier importer
     
         # Fill in the user_projects table
         # (projects in the users.prefs file)
@@ -259,9 +268,12 @@ def import_users(alchemysession, parsed_users):
         projects_list = filter(lambda thing: thing, projects_list)
         for project_name in projects_list:
             try:
-                db_project = alchemysession.query(Project).filter_by(code=project_name).one()
+                db_project = alchemysession.query(Project).filter_by(
+                             code=project_name).one()
             except object: # wrong exception name
-                print >> sys.stderr, "Failed to add", user, "to project ID", project_name, "; you probably need to create it."
+                print >> sys.stderr, "Failed to add", user, "to project ID", 
+                print >> sys.stderr, project_name, 
+                print >> sys.stderr, "; you probably need to create it."
             if db_project not in user.projects:
                 user.projects.append(db_project)
 
@@ -273,9 +285,12 @@ def import_users(alchemysession, parsed_users):
         languages_list = filter(lambda thing: thing, languages_list)
         for language_name in languages_list:
             try:
-                db_language = alchemysession.query(Language).filter_by(code=language_name).one()
+                db_language = alchemysession.query(Language).filter_by(
+                                             code=language_name).one()
             except object: # wrong exception name
-                print >> sys.stderr, "Failed to add", user, "to language ID", language_name, "; you probably need to create it."
+                print >> sys.stderr, "Failed to add", user, "to language ID",
+                print >> sys.stderr, language_name,
+                print >> sys.stderr,  "; you probably need to create it."
             if db_language not in user.languages:
                 user.languages.append(db_language)
 
