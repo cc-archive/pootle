@@ -246,8 +246,8 @@ def import_users(alchemysession, parsed_users):
                 db_language = alchemysession.query(Language).filter_by(code=language_name).one()
             except object: # wrong exception name
                 print >> sys.stderr, "Failed to add", user, "to language ID", language_name, "; you probably need to create it."
-            if language_name not in user.languages:
-                user.languages.append(language_name)
+            if db_language not in user.languages:
+                user.languages.append(db_language)
 
         # Commit the user.
         attempt(alchemysession, user)
