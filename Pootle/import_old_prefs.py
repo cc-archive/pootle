@@ -246,7 +246,7 @@ def import_users(alchemysession, parsed_users):
             except object: # wrong exception name
                 print >> sys.stderr, "Failed to add", user, "to project ID", project_name, "; you probably need to create it."
             if db_project not in user.projects:
-                user.projects.append(db_project) # Is it really this easy?
+                user.projects.append(db_project)
 
         # Fill in the user_languages table
         # (languages in users.prefs)
