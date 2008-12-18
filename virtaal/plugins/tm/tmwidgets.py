@@ -108,11 +108,16 @@ class TMWindow(gtk.Window):
     def _percent_data_func(self, column, cell_renderer, tree_model, iter):
         match_data = tree_model.get_value(iter, 0)
         if 'quality' in match_data:
-            cell_renderer.set_property('value', int(match_data['quality']))
-            cell_renderer.set_property('text', _("%(match_quality)s%%") % {"match_quality": match_data['quality']})
-        else:
-            cell_renderer.set_property('value', 0)
-            cell_renderer.set_property('text', "")
+            quality = match_data['quality']
+            if isinstance(quality, float) or \
+                    isinstance(quality, basestring) and quality.isdigit():
+                quality = int(quality)
+            cell_renderer.set_property('value', quality)
+            cell_renderer.set_property('text', _("%(match_quality)s%%") % \
+                    {"match_quality": quality})
+            return
+        cell_renderer.set_property('value', 0)
+        cell_renderer.set_property('text', "")
 
 
 class TMMatchRenderer(gtk.GenericCellRenderer):
