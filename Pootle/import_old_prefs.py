@@ -6,6 +6,7 @@ Permission is granted to redistribute this file under the GPLv2 or later,
 # coding: utf-8
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm.exc import NoResultFound
 from dbclasses import User, Language, Project, metadata
 import sys
 from jToolkit import prefs
@@ -276,7 +277,7 @@ def import_users(alchemysession, parsed_users):
             try:
                 db_project = alchemysession.query(Project).filter_by(
                              code=project_name).one()
-            except object: # wrong exception name
+            except NoResultFound: # wrong exception name
                 print >> sys.stderr, "Failed to add", user, "to project ID", 
                 print >> sys.stderr, project_name, 
                 print >> sys.stderr, "; you probably need to create it."
@@ -293,7 +294,7 @@ def import_users(alchemysession, parsed_users):
             try:
                 db_language = alchemysession.query(Language).filter_by(
                                              code=language_name).one()
-            except object: # wrong exception name
+            except NoResultFound: # wrong exception name
                 print >> sys.stderr, "Failed to add", user, "to language ID",
                 print >> sys.stderr, language_name,
                 print >> sys.stderr,  "; you probably need to create it."
