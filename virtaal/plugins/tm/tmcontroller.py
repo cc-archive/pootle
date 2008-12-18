@@ -19,10 +19,11 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 import gobject
-import os
+import os.path
 
 from virtaal.common import GObjectWrapper
 from virtaal.controllers import BaseController, PluginController
+from virtaal.plugins.tm import models
 
 from tmview import TMView
 
@@ -59,7 +60,7 @@ class TMController(BaseController):
     def _load_models(self):
         self.plugin_controller = PluginController(self)
         self.plugin_controller.PLUGIN_CLASSNAME = 'TMModel'
-        self.plugin_controller.PLUGIN_DIRS = [os.path.join('virtaal', 'plugins', 'tm', 'models')]
+        self.plugin_controller.PLUGIN_DIRS = [os.path.dirname(models.__file__)]
         self.plugin_controller.PLUGIN_INTERFACE = None
         self.plugin_controller.PLUGIN_MODULE = 'virtaal.plugins.tm.models'
         self.plugin_controller.PLUGIN_NAME_ATTRIB = '__gtype_name__'
