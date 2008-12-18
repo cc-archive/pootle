@@ -132,6 +132,33 @@ def import_users(alchemysession, parsed_users):
         else:
             pass # leave it NULL
 
+        # ASSUMPTION: Someone has already created all the necessary projects
+        #             and languages in the web UI or through some other importer
+
+        # Fill in the user_projects table
+        # (projects in the users.prefs file)
+        raw_projects = try_type(unicode, _get_user_attribute(data, user_name, 'projects'))
+        projects_list = raw_projects.split(',')
+        for project_name in projects_list:
+            try:
+                db_project = alchemysession.query(Project).filter_by(code=project_name).one()
+            except object: # wrong exception name
+                print >> sys.stderr, "Failed to add", user, "to project ID", project_name, "; you probably need to create it."
+            if db_project not in user.projects:
+                user.projects.append(db_project) # Is it really this easy?
+
+        # Fill in the user_languages table
+        # (languages in users.prefs)
+        raw_languages = try_type(unicode, _get_user_attribute(data, user_name, 'languages'))
+        languages_list = raw_languages.split(',')
+        for language_name in languages_list:
+            try:
+                db_language = alchemysession.query(Language).filter_by(code=language_name).one()
+            except object: # wrong exception name
+                print >> sys.stderr, "Failed to add", user, "to language ID", language_name, "; you probably need to create it."
+            if language_name not in user.languages:
+                user.languages.append(language_name)
+
         # Commit the user.
         attempt(alchemysession, user)
         
