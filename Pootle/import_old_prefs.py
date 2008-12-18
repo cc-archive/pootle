@@ -4,7 +4,7 @@ Permission is granted to redistribute this file under the GPLv2 or later,
  at your option.   See COPYING for details.'''
 
 # coding: utf-8
-from sqlalchemy import *
+from sqlalchemy import create_engine
 from sqlalchemy.orm import *
 from sqlalchemy.ext.declarative import declarative_base
 from dbclasses import User, Language, Project, metadata
