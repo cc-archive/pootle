@@ -23,7 +23,7 @@ import gobject
 from virtaal.common import GObjectWrapper
 from virtaal.controllers import BaseController
 
-from tmmodel import TMModel
+from models.localtm import TMModel
 from tmview import TMView
 
 
