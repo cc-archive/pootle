@@ -7,7 +7,7 @@ Permission is granted to redistribute this file under the GPLv2 or later,
 from sqlalchemy import *
 from sqlalchemy.orm import *
 from sqlalchemy.ext.declarative import declarative_base
-from dbclasses import *
+from dbclasses import User, Language, Project, metadata
 import sys
 from jToolkit import prefs
 import types
