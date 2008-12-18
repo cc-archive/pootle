@@ -5,7 +5,7 @@ Permission is granted to redistribute this file under the GPLv2 or later,
 
 # coding: utf-8
 from sqlalchemy import create_engine
-from sqlalchemy.orm import *
+from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 from dbclasses import User, Language, Project, metadata
 import sys
