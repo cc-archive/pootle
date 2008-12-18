@@ -33,47 +33,65 @@ class PluginController(BaseController):
 
     __gtype_name__ = 'PluginController'
 
-    PLUGIN_DIR = os.path.dirname(plugins.__file__)
+    # The following class variables are set for the main plug-in controller.
+    # To use this class to manage any other plug-ins, these will (most likely) have to be changed.
+    PLUGIN_CLASSNAME = 'Plugin'
+    """The name of the class that will be instantiated from the plug-in module."""
+    PLUGIN_DIRS = [os.path.dirname(plugins.__file__)]
+    """The directories to search for plug-in names."""
+    PLUGIN_INTERFACE = BasePlugin
+    """The interface class that the plug-in class must inherit from."""
+    PLUGIN_MODULE = 'virtaal.plugins'
+    """The module name to import the plugin from. This is prepended to the
+        plug-in's name as found by C{_find_plugin_names()} and passed to
+        C{__import__()}."""
 
     # INITIALIZERS #
-    def __init__(self, main_controller):
+    def __init__(self, controller):
         GObjectWrapper.__init__(self)
 
-        self.main_controller = main_controller
-        self.main_controller.plugin_controller = self
+        self.controller = controller
+        self.controller.plugin_controller = self
 
 
     # METHODS #
     def disable_plugin(self, name):
         """Destroy the plug-in with the given name."""
-        if name in self.plugin:
-            self.plugin[name].destroy()
-            del self.plugin[name]
+        if name in self.plugins:
+            self.plugins[name].destroy()
+            del self.plugins[name]
         if name in self.pluginmodules:
             del self.pluginmodules[name]
 
     def enable_plugin(self, name):
         """Load the plug-in with the given name and instantiate it."""
-        if name in self.plugin:
+        if name in self.plugins:
             return None
 
-        if name not in self.pluginmodules:
+        # The following line makes sure that we have a valid module name to import from
+        modulename = '.'.join([part for part in [self.PLUGIN_MODULE, name] if part])
+        if modulename and name not in self.pluginmodules:
             module = __import__(
-                'virtaal.plugins.' + name,
+                modulename,
                 globals=globals(),
-                fromlist=['Plugin']
+                fromlist=[self.PLUGIN_CLASSNAME]
             )
-            if not getattr(module, 'Plugin', None):
-                raise Exception('Plugin "%s" has no class called "Plugin"' % (name))
-            if getattr(module.Plugin, '__bases__', None) is None or BasePlugin not in module.Plugin.__bases__:
-                raise Exception('Plugin "%s" contains a member called "Plugin" which is not a valid plug-in class.' % (name))
+
+            plugin_class = getattr(module, self.PLUGIN_CLASSNAME, None)
+            if plugin_class is None:
+                raise Exception('Plugin "%s" has no class called "%s"' % (name, self.PLUGIN_CLASSNAME))
+
+            if (getattr(plugin_class, '__bases__', None) is None) or (self.PLUGIN_INTERFACE not in plugin_class.__bases__):
+                raise Exception(
+                    'Plugin "%s" contains a member called "%s" which is not a valid plug-in class.' % (name, self.PLUGIN_CLASSNAME)
+                )
 
             self.pluginmodules[name] = module
 
         try:
-            self.plugin[name] = module.Plugin(self.main_controller)
-            logging.info('    - ' + self.plugin[name].name)
-            return self.plugin[name]
+            self.plugins[name] = plugin_class(self.controller)
+            logging.info('    - ' + self.plugins[name].name)
+            return self.plugins[name]
         except Exception, exc:
             logging.warning('Failed to load plugin "%s": %s' % (name, exc))
 
@@ -81,7 +99,7 @@ class PluginController(BaseController):
 
     def load_plugins(self):
         """Load plugins from the "plugins" directory."""
-        self.plugin        = {}
+        self.plugins       = {}
         self.pluginmodules = {}
         disabled_plugins = self._get_disabled_plugins()
 
@@ -94,22 +112,23 @@ class PluginController(BaseController):
 
     def shutdown(self):
         """Disable all plug-ins."""
-        for name in list(self.plugin.keys()):
+        for name in list(self.plugins.keys()):
             self.disable_plugin(name)
 
     def _find_plugin_names(self):
         plugin_names = []
 
-        for name in os.listdir(self.PLUGIN_DIR):
-            if name.startswith('.'):
-                continue
-            fullpath = os.path.join(self.PLUGIN_DIR, name)
-            if os.path.isdir(fullpath):
-                # XXX: The plug-in system assumes that a plug-in in a directory makes the Plugin class accessible via it's __init__.py
-                plugin_names.append(name)
-            elif os.path.isfile(fullpath) and not name.startswith('__init__.py'):
-                plugname = '.'.join(name.split('.')[:-1]) # Effectively removes extension, preserving other .'s int he name
-                plugin_names.append(plugname)
+        for dir in self.PLUGIN_DIRS:
+            for name in os.listdir(dir):
+                if name.startswith('.'):
+                    continue
+                fullpath = os.path.join(dir, name)
+                if os.path.isdir(fullpath):
+                    # XXX: The plug-in system assumes that a plug-in in a directory makes the Plugin class accessible via it's __init__.py
+                    plugin_names.append(name)
+                elif os.path.isfile(fullpath) and not name.startswith('__init__.py'):
+                    plugname = '.'.join(name.split('.')[:-1]) # Effectively removes extension, preserving other .'s int he name
+                    plugin_names.append(plugname)
 
         plugin_names = list(set(plugin_names))
         logging.debug('Found plugins: %s' % (plugin_names))
