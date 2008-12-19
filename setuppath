@@ -7,7 +7,7 @@ scriptname = os.path.abspath(sys.argv[0])
 translatedir = os.path.dirname(scriptname)
 pythonpathstr = ['"$PYTHONPATH"']
 pathstr = ['"$PATH"']
-for translatesubdir in ("convert", "tools", "filters"):
+for translatesubdir in ("convert", "tools", "filters", "services"):
   pathstr.append('"%s"' % os.path.join(translatedir, "translate", translatesubdir))
 pathstr.append('"%s"' % os.path.join(translatedir, "tools"))
 pathstr.append('"%s"' % os.path.join(translatedir, "Pootle"))
