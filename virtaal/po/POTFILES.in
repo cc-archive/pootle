@@ -1,0 +1,18 @@
+[encoding: UTF-8]
+bin/virtaal
+share/applications/virtaal.desktop.in
+share/virtaal/virtaal.glade
+share/mime/packages/virtaal-mimetype.xml.in
+virtaal/tips.py
+virtaal/controllers/maincontroller.py
+virtaal/modes/defaultmode.py
+virtaal/modes/quicktransmode.py
+virtaal/modes/searchmode.py
+virtaal/plugins/migration.py
+virtaal/plugins/tm/tmview.py
+virtaal/plugins/tm/tmwidgets.py
+virtaal/views/aboutdialog.py
+virtaal/views/mainview.py
+virtaal/views/modeview.py
+virtaal/views/unitview.py
+devsupport/optparse.py
