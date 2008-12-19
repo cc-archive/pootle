@@ -354,12 +354,6 @@ class StoreTreeView(gtk.TreeView):
         gobject.idle_add(do_scroll)
         return True
 
-    # TODO: Check that this is used after the cursors are implemented.
-    #def _on_document_cursor_changed(self, _document):
-    #    # Select and edit the new row indicated by the new cursor position
-    #    path = self.get_model().store_index_to_path(self.document.mode_cursor.deref())
-    #    self._activate_editing_path(path)
-
     def _on_key_press(self, _widget, _event, _data=None):
         # The TreeView does interesting things with combos like SHIFT+TAB.
         # So we're going to stop it from doing this.
