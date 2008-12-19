@@ -56,16 +56,18 @@ class TMView(BaseView, GObjectWrapper):
 
     def _setup_key_bindings(self):
         """Setup Gtk+ key bindings (accelerators)."""
+
         gtk.accel_map_add_entry("<Virtaal>/TM/Hide TM", gtk.keysyms.Escape, 0)
-        gtk.accel_map_add_entry("<Virtaal>/TM/Select match 1", gtk.keysyms._1, gdk.CONTROL_MASK)
-        gtk.accel_map_add_entry("<Virtaal>/TM/Select match 2", gtk.keysyms._2, gdk.CONTROL_MASK)
-        gtk.accel_map_add_entry("<Virtaal>/TM/Select match 3", gtk.keysyms._3, gdk.CONTROL_MASK)
 
         self.accel_group = gtk.AccelGroup()
         self.accel_group.connect_by_path("<Virtaal>/TM/Hide TM", self._on_hide_tm)
-        self.accel_group.connect_by_path("<Virtaal>/TM/Select match 1", self._on_select_match)
-        self.accel_group.connect_by_path("<Virtaal>/TM/Select match 2", self._on_select_match)
-        self.accel_group.connect_by_path("<Virtaal>/TM/Select match 3", self._on_select_match)
+
+        # Connect Ctrl+n (1 <= n <= 9) to select match n.
+        for i in range(1, 10):
+            numstr = str(i)
+            numkey = gtk.keysyms._0 + i
+            gtk.accel_map_add_entry("<Virtaal>/TM/Select match " + numstr, numkey, gdk.CONTROL_MASK)
+            self.accel_group.connect_by_path("<Virtaal>/TM/Select match " + numstr, self._on_select_match)
 
         mainview = self.controller.main_controller.view
         mainview.add_accel_group(self.accel_group)
