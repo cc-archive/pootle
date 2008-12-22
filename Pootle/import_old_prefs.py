@@ -20,16 +20,14 @@ import types
 
 def main():
     '''Read sys.argv for cofiguration, and perform the imports.'''
-    if len(sys.argv) != 4:
-        print "Usage: %s pootle.prefs old_pootle.prefs users.prefs" % (
+    if len(sys.argv) != 3:
+        print "Usage: %s old_pootle.prefs users.prefs" % (
                 sys.argv[0])
         return
 
-    prefsfile = sys.argv[1]
-    parsed_prefs = prefs.PrefsParser(prefsfile).Pootle
-    oldprefsfile = sys.argv[2]
+    oldprefsfile = sys.argv[1]
     parsed_oldprefs = prefs.PrefsParser(oldprefsfile)
-    usersfile = sys.argv[3]
+    usersfile = sys.argv[2]
     parsed_users = prefs.PrefsParser(usersfile)
     try:
         transaction.enter_transaction_management()
