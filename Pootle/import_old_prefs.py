@@ -12,7 +12,7 @@ os.environ['DJANGO_SETTINGS_MODULE'] = 'Pootle.settings'
 from django.db import transaction
 
 from django.contrib.auth.models import User
-from Pootle.pootle_app.models import Project, Language, PootleProfile, make_pootle_user
+from Pootle.pootle_app.models import Project, Language, PootleProfile, make_pootle_user, get_profile
 
 import sys
 from jToolkit import prefs
@@ -294,14 +294,10 @@ def import_users(parsed_users):
                 print >> sys.stderr, "Failed to add", user, "to language ID",
                 print >> sys.stderr, language_name,
                 print >> sys.stderr,  "; you probably need to create it."
-            try:
-                prefs = PootleProfile.objects.filter(user=user)[0]
-            except IndexError:
-                prefs = PootleProfile(user=user)
-                prefs.save()
-            if db_language not in prefs.languages:
-                prefs.languages.append(db_language)
-                prefs.save()
+            profile = get_profile(user)
+            if db_language not in profile.languages:
+                profile.languages.append(db_language)
+                profile.save()
 
         if must_add_user_object:
             # Commit the user.
