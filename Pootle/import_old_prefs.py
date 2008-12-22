@@ -14,7 +14,9 @@ from django.db import transaction
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.exc import NoResultFound
-from dbclasses import User, Language, Project, metadata
+from django.contrib.auth.models import User
+from Pootle.pootle_app.models import Project, Language, PootleProfile, make_pootle_user
+
 import sys
 from jToolkit import prefs
 import types
