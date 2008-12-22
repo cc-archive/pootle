@@ -11,9 +11,6 @@ os.environ['DJANGO_SETTINGS_MODULE'] = 'Pootle.settings'
 
 from django.db import transaction
 
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy.orm.exc import NoResultFound
 from django.contrib.auth.models import User
 from Pootle.pootle_app.models import Project, Language, PootleProfile, make_pootle_user
 
@@ -38,8 +35,8 @@ def main():
         transaction.enter_transaction_management()
         transaction.managed(True)
 
-        set_up_db_then_import_languages_then_users(parsed_prefs, parsed_oldprefs,
-                                               parsed_users)
+        set_up_db_then_import_languages_then_users(parsed_oldprefs,
+                                                   parsed_users)
     except:
         if transaction.is_dirty():
             transaction.rollback()
@@ -53,32 +50,12 @@ def main():
         if transaction.is_managed():
             transaction.leave_transaction_management()
 
-def set_up_db_then_import_languages_then_users(instance, oldprefs, 
-                                               parsed_users):
-    '''instance, oldprefs, and parsed_users are jToolkit prefs.PrefsParser
-    objects.
-
-    Use the new prefs ("instance") to connect to the SQLite DB and import
-    data from oldprefs and parsed_users.
-
-    The name "instance" comes from the convention in initdb.py.'''
-    # Set up the connection options
-    STATS_OPTIONS = {}
-    for k,v in instance.stats.connect.iteritems():
-        STATS_OPTIONS[k] = v
-
-    #metadata = Base.metadata
-    engine = create_engine('sqlite:///%s' % STATS_OPTIONS['database'])
-    engine.connect()
-
-    Session = sessionmaker(bind=engine, autoflush=True)
-    alchemysession = Session()
-
-    metadata.create_all(engine)
-
-    import_languages(alchemysession, oldprefs)
-    import_projects(alchemysession, oldprefs)
-    import_users(alchemysession, parsed_users)
+def set_up_db_then_import_languages_then_users(oldprefs, parsed_users):
+    '''oldprefs and parsed_users are jToolkit prefs.PrefsParser
+    objects.'''
+    import_languages(oldprefs)
+    import_projects(oldprefs)
+    import_users(parsed_users)
 
 def _get_attribute(data, name, attribute, unicode_me = True, 
                    default = '', prefix='Pootle.languages.'):
@@ -111,7 +88,7 @@ def try_type(try_me, value):
     assert type(value) == try_me
     return value
 
-def import_languages(alchemysession, parsed_data):
+def import_languages(parsed_data):
     data = parsed_data.__root__._assignments # Is this really the right way?
     prefix = 'Pootle.languages.'
 
@@ -124,7 +101,7 @@ def import_languages(alchemysession, parsed_data):
     for lang in map(lambda s: unicode(s, 'utf-8'), langs):
         # id, for free
         # code:
-        db_lang = Language(lang)
+        db_lang = Language(code=lang)
 
         # fullname
         db_lang.fullname = _get_attribute(data, lang, 'fullname')
@@ -143,7 +120,7 @@ def import_languages(alchemysession, parsed_data):
 
         db_lang.save()
 
-def import_projects(alchemysession, parsed_data):
+def import_projects(parsed_data):
     # This could prompt the user, asking:
     # "Want us to import projects? Say no if you have already 
     # added the projects to the new Pootle DB in the web UI."
@@ -160,7 +137,7 @@ def import_projects(alchemysession, parsed_data):
     for proj in map(lambda s: unicode(s, 'utf-8'), projs):
         # id, for free
         # code:
-        db_proj = Project(proj)
+        db_proj = Project(code=proj)
 
         # fullname
         db_proj.fullname = _get_attribute(data, proj, 'fullname')
@@ -195,7 +172,8 @@ def _get_user_attribute(data, user_name, attribute, unicode_me = True,
     return _get_attribute(data, user_name, attribute, unicode_me, default,
                           prefix='')
 
-def import_users(alchemysession, parsed_users):
+def import_users(parsed_users):
+    return
     data = parsed_users.__root__._assignments # Is this really the
                                               # right way?
 
