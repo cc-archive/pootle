@@ -197,7 +197,7 @@ def import_users(parsed_users):
             must_add_user_object = False
         else:
             # username
-            user = User(username=user_name)
+            user = make_pootle_user(user_name)
 
             # name
             user.name = _get_user_attribute(data, user_name, 'name')
