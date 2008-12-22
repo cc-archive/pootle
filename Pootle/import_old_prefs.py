@@ -6,6 +6,11 @@ Copyright: (C) 2008 Creative Commons
 Permission is granted to redistribute this file under the GPLv2 or later, 
  at your option.   See COPYING for details.'''
 
+import os
+os.environ['DJANGO_SETTINGS_MODULE'] = 'Pootle.settings'
+
+from django.db import transaction
+
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.exc import NoResultFound
@@ -13,8 +18,6 @@ from dbclasses import User, Language, Project, metadata
 import sys
 from jToolkit import prefs
 import types
-
-from initdb import attempt
 
 def main():
     '''Read sys.argv for cofiguration, and perform the imports.'''
