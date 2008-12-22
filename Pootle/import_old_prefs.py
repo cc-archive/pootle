@@ -1,9 +1,11 @@
+#!/usr/bin/env python
+# coding: utf-8
+
 '''Author: Asheesh Laroia <asheesh@creativecommons.org>
 Copyright: (C) 2008 Creative Commons
 Permission is granted to redistribute this file under the GPLv2 or later, 
  at your option.   See COPYING for details.'''
 
-# coding: utf-8
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.exc import NoResultFound
