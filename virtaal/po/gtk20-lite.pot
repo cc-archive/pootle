@@ -25,6 +25,29 @@ msgstr ""
 msgid "default:LTR"
 msgstr ""
 
+#. This is the text that should appear next to menu accelerators
+#. * that use the control key. If the text on this key isn't typically
+#. * translated on keyboards used for your language, don't translate
+#. * this.
+#. *
+#. * Don't include the prefix "keyboard label|" in the translation.
+#.
+#. GTK <=2.14
+#. Configuration: Ctrl modifier label
+msgid "keyboard label|Ctrl"
+msgstr ""
+
+#. This is the text that should appear next to menu accelerators
+#. * that use the control key. If the text on this key isn't typically
+#. * translated on keyboards used for your language, don't translate
+#. * this.
+#.
+#. GTK HEAD (allows future proofing)
+#. Configuration: Ctrl modifier label
+msgctxt "keyboard label"
+msgid "Ctrl"
+msgstr ""
+
 #. File->Open
 msgid "_Open"
 msgstr ""
@@ -37,8 +60,62 @@ msgstr ""
 msgid "Save _As"
 msgstr ""
 
+#. File->Revert
+msgid "_Revert"
+msgstr ""
+
+#. File ->Recent Files->No items found
+msgid "No items found"
+msgstr ""
+
 #. File->Recent Files->tooltip
 msgid "Open '%s'"
+msgstr ""
+
+#. This is the label format that is used for the first 10 items
+#. * in a recent files menu. The %d is the number of the item,
+#. * the %s is the name of the item. Please keep the _ in front
+#. * of the number to give these menu items a mnemonic.
+#. *
+#. * Don't include the prefix "recent menu label|" in the translation.
+#.
+#. GTK <=2.14
+#. File->Recent Files->Selection label
+msgid "recent menu label|_%d. %s"
+msgstr ""
+
+#. This is the label format that is used for the first 10 items
+#. * in a recent files menu. The %d is the number of the item,
+#. * the %s is the name of the item. Please keep the _ in front
+#. * of the number to give these menu items a mnemonic.
+#.
+#. GTK HEAD (allows future proofing)
+#. File->Recent Files->Selection label
+msgctxt "recent menu label"
+msgid "_%d. %s"
+msgstr ""
+
+#. This is the format that is used for items in a recent files menu.
+#. * The %d is the number of the item, the %s is the name of the item.
+#. *
+#. * Don't include the prefix "recent menu label|" in the translation.
+#.
+#. GTK <=2.14
+#: ../gtk/gtkrecentchoosermenu.c:788
+#, c-format
+msgid "recent menu label|%d. %s"
+msgstr "%d. %s"
+
+#. This is the label format that is used for the first 10 items
+#. * in a recent files menu. The %d is the number of the item,
+#. * the %s is the name of the item. Please keep the _ in front
+#. * of the number to give these menu items a mnemonic.
+#.
+#. GTK HEAD (allows future proofing)
+#: ../gtk/gtkrecentchoosermenu.c:779
+#, c-format
+msgctxt "recent menu label"
+msgid "_%d. %s"
 msgstr ""
 
 #. File->Quit
@@ -111,7 +188,7 @@ msgstr ""
 
 #. File dialog - Remove button - tooltip
 msgid "Remove the selected bookmark"
-msgstr "De geselecteerde bladwijzer verwijderen"
+msgstr ""
 
 #. File dialog - Location - Label
 msgid "_Location:"
@@ -131,6 +208,10 @@ msgstr ""
 
 #. File dialog - Places - Entry - Desktop
 msgid "Desktop"
+msgstr ""
+
+#. File dialog - Places - Entry - File System
+msgid "File System"
 msgstr ""
 
 #. File dialog - Places - Right-Click - Remove
@@ -207,4 +288,16 @@ msgstr ""
 
 #. Right Click (on empty) -> Select All
 msgid "Select _All"
+msgstr ""
+
+#. Revert Confirmation Dialog -> Yes
+msgid "_Yes"
+msgstr ""
+
+#. Revert Confirmation Dialog -> No
+msgid "_No"
+msgstr ""
+
+#. Error Dialog -> OK
+msgid "_OK"
 msgstr ""

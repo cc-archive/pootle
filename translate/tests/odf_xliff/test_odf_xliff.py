@@ -24,6 +24,7 @@ import os.path as path
 import zipfile
 
 from lxml import etree
+import difflib
 
 from translate.storage import factory
 from translate.convert import odf2xliff
@@ -49,20 +50,30 @@ def xliff___eq__(self, other):
 
 factory.classes[u'xlf'].__eq__ = xliff___eq__
 
-def test_odf2xliff():
-    SOURCE_ODF            = u'test_2.odt'
-    REFERENCE_XLF         = u'test_2-test_odf2xliff-reference.xlf'
-    GENERATED_XLF_ITOOLS  = u'test_2-test_odf2xliff-itools.xlf'
-    GENERATED_XLF_TOOLKIT = u'test_2-test_odf2xliff-toolkit.xlf'
+def print_diff(store1, store2):
+    for line in difflib.unified_diff(str(store1).split('\n'), str(store2).split('\n')):
+        print line
 
+SOURCE_ODF            = u'test_2.odt'
+REFERENCE_XLF         = u'test_2-test_odf2xliff-reference.xlf'
+GENERATED_XLF_ITOOLS  = u'test_2-test_odf2xliff-itools.xlf'
+GENERATED_XLF_TOOLKIT = u'test_2-test_odf2xliff-toolkit.xlf'
+
+TARGET_XLF    = u'test_2-test_roundtrip.xlf'
+REFERENCE_ODF = u'test_2.odt'
+GENERATED_ODF = u'test_2-test_roundtrip-generated.odt'
+
+def test_odf2xliff():
     reference_xlf = factory.getobject(REFERENCE_XLF)
-    
+
     odf2xliff.main(args(SOURCE_ODF, GENERATED_XLF_TOOLKIT))
     generated_xlf_toolkit = factory.getobject(GENERATED_XLF_TOOLKIT)
+    print_diff(reference_xlf, generated_xlf_toolkit)
     assert reference_xlf == generated_xlf_toolkit
 
     odf2xliff.main(args(SOURCE_ODF, GENERATED_XLF_ITOOLS))
     generated_xlf_itools = factory.getobject(GENERATED_XLF_ITOOLS)
+    print_diff(reference_xlf, generated_xlf_itools)
     assert reference_xlf == generated_xlf_itools
 
 def is_content_file(filename):
@@ -96,25 +107,33 @@ class ODF(object):
                     return False
         return True
 
+    def __str__(self):
+        return self.odf.read('content.xml')
+
 def test_roundtrip():
-    SOURCE_ODF    = u'test_2.odt'
-    TARGET_XLF    = u'test_2-test_roundtrip.xlf'
-    REFERENCE_ODF = u'test_2.odt'
-    GENERATED_ODF = u'test_2-test_roundtrip-generated.odt'
-    
+
     odf2xliff.main(args(SOURCE_ODF, TARGET_XLF))
     xliff2odf.main(args(TARGET_XLF, GENERATED_ODF, t=SOURCE_ODF))
-    
+
     reference_odf = ODF(REFERENCE_ODF)
     generated_odf = ODF(GENERATED_ODF)
+
+    print_diff(reference_odf, generated_odf)
     assert reference_odf == generated_odf
 
+def remove(filename):
+    """Removes the file if it exists."""
+    if os.path.exists(filename):
+        os.unlink(filename)
+
 def teardown_module(module):
-    # TODO: Add code to remove the automatically generated files
-    pass
+    remove(GENERATED_XLF_TOOLKIT)
+    remove(GENERATED_ODF)
+    remove(GENERATED_XLF_ITOOLS)
+    remove(TARGET_XLF)
 
 if __name__ == '__main__':
     setup_module(None)
     test_roundtrip()
     teardown_module(None)
-    
+

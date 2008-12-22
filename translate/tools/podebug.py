@@ -26,9 +26,15 @@ usage instructions
 """
 
 from translate.storage import factory
+from translate.misc.rich import map_rich, only_strings
 import os
 import re
 import md5
+
+def add_prefix(prefix, strings):
+    for string in strings:
+        string.insert(0, prefix)
+    return strings
 
 class podebug:
     def __init__(self, format=None, rewritestyle=None, hash=None, ignoreoption=None):
@@ -100,7 +106,7 @@ class podebug:
         return "".join(map(transpose, string))
 
     def ignorelist(cls):
-        return [rewrite.replace("ignore_", "") for rewrite in dir(cls) if rewrite.startswith("ignore_")]
+        return [ignore.replace("ignore_", "") for ignore in dir(cls) if ignore.startswith("ignore_")]
     ignorelist = classmethod(ignorelist)
 
     def ignore_openoffice(self, unit):
@@ -132,6 +138,11 @@ class podebug:
             return True
         return False
 
+    def ignore_kde(self, unit):
+        if unit.source == "LTR":
+            return True
+        return False
+
     def convertunit(self, unit, prefix):
         if self.ignorefunc:
             if self.ignorefunc(unit):
@@ -143,16 +154,10 @@ class podebug:
                 hashable = unit.source
             prefix = md5.new(hashable).hexdigest()[:self.hash] + " "
         if self.rewritefunc:
-            unit.target = self.rewritefunc(unit.source)
+            unit.rich_target = map_rich(only_strings(self.rewritefunc), unit.rich_source)
         elif not unit.istranslated():
-            unit.target = unit.source
-        if unit.hasplural():
-            strings = unit.target.strings
-            for i, string in enumerate(strings):
-                strings[i] = prefix + string
-            unit.target = strings
-        else:
-            unit.target = prefix + unit.target
+            unit.rich_target = unit.rich_source
+        unit.rich_target = add_prefix(prefix, unit.rich_target)
         return unit
 
     def convertstore(self, store):
@@ -221,7 +226,7 @@ def main():
     formats = {"po":("po", convertpo), "pot":("po", convertpo), "xlf":("xlf", convertpo)}
     parser = convert.ConvertOptionParser(formats, description=__doc__)
     # TODO: add documentation on format strings...
-    parser.add_option("-f", "--format", dest="format", default="[%s] ", help="specify format string")
+    parser.add_option("-f", "--format", dest="format", default="", help="specify format string")
     parser.add_option("", "--rewrite", dest="rewritestyle", 
         type="choice", choices=podebug.rewritelist(), metavar="STYLE", help="the translation rewrite style: %s" % ", ".join(podebug.rewritelist()))
     parser.add_option("", "--ignore", dest="ignoreoption", 
