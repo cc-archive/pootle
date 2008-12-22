@@ -34,8 +34,24 @@ def main():
     parsed_oldprefs = prefs.PrefsParser(oldprefsfile)
     usersfile = sys.argv[3]
     parsed_users = prefs.PrefsParser(usersfile)
-    set_up_db_then_import_languages_then_users(parsed_prefs, parsed_oldprefs,
+    try:
+        transaction.enter_transaction_management()
+        transaction.managed(True)
+
+        set_up_db_then_import_languages_then_users(parsed_prefs, parsed_oldprefs,
                                                parsed_users)
+    except:
+        if transaction.is_dirty():
+            transaction.rollback()
+        if transaction.is_managed():
+            transaction.leave_transaction_management()
+        raise
+    finally:
+        if transaction.is_managed():
+            if transaction.is_dirty():
+              transaction.commit()
+        if transaction.is_managed():
+            transaction.leave_transaction_management()
 
 def set_up_db_then_import_languages_then_users(instance, oldprefs, 
                                                parsed_users):
@@ -125,7 +141,7 @@ def import_languages(alchemysession, parsed_data):
         # specialchars
         db_lang.specialchars = _get_attribute(data, lang, 'specialchars')
 
-        attempt(alchemysession, db_lang)
+        db_lang.save()
 
 def import_projects(alchemysession, parsed_data):
     # This could prompt the user, asking:
@@ -172,7 +188,7 @@ def import_projects(alchemysession, parsed_data):
         db_proj.ignoredfiles = _get_attribute(data, proj, 'ignoredfiles',
                                default=u'')
 
-        attempt(alchemysession, db_proj)
+        db_proj.save()
 
 def _get_user_attribute(data, user_name, attribute, unicode_me = True,
                         default = ''):
