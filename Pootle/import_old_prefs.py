@@ -171,7 +171,6 @@ def _get_user_attribute(data, user_name, attribute, unicode_me = True,
                           prefix='')
 
 def import_users(parsed_users):
-    return
     data = parsed_users.__root__._assignments # Is this really the
                                               # right way?
 
@@ -188,8 +187,7 @@ def import_users(parsed_users):
         # id for free, obviously.
 
         # Check if we already exist:
-        possible_us = alchemysession.query(User).filter_by(username=user_name
-                                                          ).all()
+        possible_us = User.objects.filter(username=user_name).all()
         if possible_us:
             print >> sys.stderr, 'Already found a user for named', user_name
             print >> sys.stderr, 'Going to skip importing his data, but will',
@@ -199,7 +197,7 @@ def import_users(parsed_users):
             must_add_user_object = False
         else:
             # username
-            user = User(user_name)
+            user = User(username=user_name)
 
             # name
             user.name = _get_user_attribute(data, user_name, 'name')
@@ -247,7 +245,7 @@ def import_users(parsed_users):
             assert ',' not in raw_uilanguage # just one value here
             if raw_uilanguage:
                 db_uilanguage = alchemysession.query(Language).filter_by(
-                                               code=raw_uilanguage).one()
+                                               code=raw_uilanguage).all()[0]
                 user.uilanguage = db_uilanguage
             else:
                 pass # leave it NULL
@@ -258,10 +256,11 @@ def import_users(parsed_users):
             assert ',' not in raw_altsrclanguage # just one value here
             if raw_altsrclanguage:
                 db_altsrclanguage = alchemysession.query(Language).filter_by(
-                                    code=raw_altsrclanguage).one()
+                                    code=raw_altsrclanguage).all()[0]
                 user.altsrclanguage = db_altsrclanguage
             else:
                 pass # leave it NULL
+            user.save()
 
         # ASSUMPTION: Someone has already created all the necessary projects
         # and languages in the web UI or through the earlier importer
@@ -274,8 +273,7 @@ def import_users(parsed_users):
         projects_list = filter(lambda thing: thing, projects_list)
         for project_name in projects_list:
             try:
-                db_project = alchemysession.query(Project).filter_by(
-                             code=project_name).one()
+                db_project = Project.objects.filter(code=project_name).all()[0]
             except NoResultFound: # wrong exception name
                 print >> sys.stderr, "Failed to add", user, "to project ID", 
                 print >> sys.stderr, project_name, 
@@ -291,29 +289,26 @@ def import_users(parsed_users):
         languages_list = filter(lambda thing: thing, languages_list)
         for language_name in languages_list:
             try:
-                db_language = alchemysession.query(Language).filter_by(
-                                             code=language_name).one()
-            except NoResultFound: # wrong exception name
+                db_language = Language.objects.filter(code=language_name).all()[0]
+            except IndexError:
                 print >> sys.stderr, "Failed to add", user, "to language ID",
                 print >> sys.stderr, language_name,
                 print >> sys.stderr,  "; you probably need to create it."
-            if db_language not in user.languages:
-                user.languages.append(db_language)
+            try:
+                prefs = PootleProfile.objects.filter(user=user)[0]
+            except IndexError:
+                prefs = PootleProfile(user=user)
+                prefs.save()
+            if db_language not in prefs.languages:
+                prefs.languages.append(db_language)
+                prefs.save()
 
         if must_add_user_object:
             # Commit the user.
-            attempt(alchemysession, user)
+            user.save()
         else:
-            # Save our session another way
-            try:
-                alchemysession.commit()
-            except Exception, e:
-                print 'weird, the session failed'
-                alchemysession.rollback()
-                print "FAILED: %s" % e
-            else:
-                print 'Imported user', user_name, 'OK'
-
+            print 'YOW?' # should save() or something
+			
 
 if __name__ == '__main__':
     main()
