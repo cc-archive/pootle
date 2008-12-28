@@ -2,7 +2,7 @@
 
 Name:           virtaal
 Version:        0.2
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Localization and translation editor
 
 Group:          Development/Tools
@@ -16,7 +16,6 @@ Patch0:         virtaal-0.2-setup_drop_MO_generation.patch
 BuildArch:      noarch
 BuildRequires:  python
 BuildRequires:  python-devel
-BuildRequires:  desktop-file-utils
 BuildRequires:  gettext
 BuildRequires:  intltool
 Requires:       translate-toolkit >= 1.2
@@ -103,6 +102,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Sun Dec 28 2008 Dwayne Bailey <dwayne@translate.org.za> - 0.2-3
+- Drop BuildRequires: desktop-file-utils
+
 * Sat Dec 6 2008 Dwayne Bailey <dwayne@translate.org.za> - 0.2-2
 - Cleanups from package review
 
