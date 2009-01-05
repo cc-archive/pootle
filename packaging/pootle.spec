@@ -10,7 +10,7 @@ Summary:        Localization and translation management web application
 Group:          Development/Tools
 License:        GPLv2+
 URL:            http://translate.sourceforge.net/wiki/pootle/index
-Source:        http://downloads.sourceforge.net/translate/%{fullname}-%{version}.tar.bz2
+Source:         http://downloads.sourceforge.net/translate/%{fullname}-%{version}.tar.bz2
 #Source:         http://translate.sourceforge.net/snapshots/%{fullname}-%{version}-beta2/%{fullname}-%{version}%{prerelease}.tar.bz2
 Source1:        pootle-initscript
 Source2:        pootle-logrotate
@@ -22,6 +22,7 @@ Patch1:         pootle-1.2.0-fixes.patch
 
 BuildArch:      noarch
 BuildRequires:  python-devel
+BuildRequires:  translate-toolkit >= 1.2
 Requires:       translate-toolkit >= 1.2
 Requires:       jToolkit
 Requires:       python-kid
@@ -70,8 +71,7 @@ install -d $RPM_BUILD_ROOT/usr/sbin $RPM_BUILD_ROOT/usr/share/pootle/ $RPM_BUILD
 install $RPM_BUILD_ROOT/usr/bin/PootleServer $RPM_BUILD_ROOT/usr/sbin
 rm $RPM_BUILD_ROOT/usr/bin/PootleServer
 mv $RPM_BUILD_ROOT/%{python_sitelib}/Pootle/html $RPM_BUILD_ROOT/usr/share/pootle
-install $RPM_BUILD_ROOT/%{python_sitelib}/Pootle/templates/*.html $RPM_BUILD_ROOT/usr/share/pootle/templates
-rm  $RPM_BUILD_ROOT/%{python_sitelib}/Pootle/templates/*.html
+mv $RPM_BUILD_ROOT/%{python_sitelib}/Pootle/templates $RPM_BUILD_ROOT/usr/share/pootle
 mv $RPM_BUILD_ROOT/%{python_sitelib}/Pootle/po/pootle $RPM_BUILD_ROOT/var/lib/pootle
 install $RPM_BUILD_ROOT/%{python_sitelib}/Pootle/*.prefs $RPM_BUILD_ROOT/etc/pootle
 install -d $RPM_BUILD_ROOT/var/cache/pootle
@@ -98,6 +98,10 @@ exit 0
 %post
 chown -R pootle.pootle /var/lib/pootle
 chmod -R g+w /var/lib/pootle
+
+
+%preun
+/etc/rc.d/init.d/pootle stop
 
 
 %files
