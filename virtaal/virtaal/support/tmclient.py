@@ -19,10 +19,13 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 import os
+
 import simplejson as json
 
-from translate.services import restclient
 from translate.lang import data
+
+from virtaal.support import restclient
+
 
 class TMClient(restclient.RESTClient):
     """CRUD operations for TM units and stores"""

@@ -20,12 +20,14 @@
 
 import os
 import xmlrpclib
-import pycurl
 import logging
 
-from translate.services import restclient
+import pycurl
+
 from translate.lang import data
 from translate.search.lshtein import LevenshteinComparer
+
+from virtaal.support import restclient
 
 class OpenTranClient(restclient.RESTClient):
     """CRUD operations for TM units and stores"""

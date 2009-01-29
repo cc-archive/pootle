@@ -20,17 +20,33 @@
 
 import StringIO
 import urllib
-import pycurl
-import gobject
 import logging
+
+import gobject
+import pycurl
+
+from virtaal.common.gobjectwrapper import GObjectWrapper 
 
 class RESTClient(object):
     """Nonblocking client that can handle multiple HTTP REST requests"""
 
-    class Request(gobject.GObject):
+    class Request(GObjectWrapper):
         """Single HTTP REST request, blocking if used standalone"""
+        __gtype_name__ = 'RestClientRequest'
+        __gsignals__ = {
+            "REST-success": (gobject.SIGNAL_RUN_LAST, 
+                             gobject.TYPE_NONE,
+                             (gobject.TYPE_PYOBJECT, gobject.TYPE_PYOBJECT)),
+            "REST-client-error": (gobject.SIGNAL_RUN_LAST,
+                                  gobject.TYPE_NONE,
+                                  (gobject.TYPE_PYOBJECT, gobject.TYPE_PYOBJECT)),
+            "REST-server-error": (gobject.SIGNAL_RUN_LAST,
+                                  gobject.TYPE_NONE,
+                                  (gobject.TYPE_PYOBJECT, gobject.TYPE_PYOBJECT)),
+        }
+        
         def __init__(self, url, id, method='GET', data=None, headers=None, callback=None):
-            gobject.GObject.__init__(self)
+            GObjectWrapper.__init__(self)
             self.result = StringIO.StringIO()
             self.result_headers = StringIO.StringIO()
 
@@ -142,18 +158,3 @@ class RESTClient(object):
             #we are done with this batch what do we do?
             return False
         return True
-
-
-#register the signal
-gobject.signal_new("REST-success", RESTClient.Request,
-                   gobject.SIGNAL_RUN_LAST,
-                   gobject.TYPE_NONE,
-                   (gobject.TYPE_PYOBJECT, gobject.TYPE_PYOBJECT))
-gobject.signal_new("REST-client-error", RESTClient.Request,
-                   gobject.SIGNAL_RUN_LAST,
-                   gobject.TYPE_NONE,
-                   (gobject.TYPE_PYOBJECT, gobject.TYPE_PYOBJECT))
-gobject.signal_new("REST-server-error", RESTClient.Request,
-                   gobject.SIGNAL_RUN_LAST,
-                   gobject.TYPE_NONE,
-                   (gobject.TYPE_PYOBJECT, gobject.TYPE_PYOBJECT))
