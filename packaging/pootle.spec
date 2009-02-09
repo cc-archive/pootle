@@ -1,7 +1,7 @@
 %{!?python_sitelib: %define python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib()")}
 
 %define         fullname Pootle
-%define         svn svn10163
+%define         svn svn10165
 
 Name:           pootle
 Version:        1.3.0
@@ -29,6 +29,11 @@ Requires:       Django
 Requires:       python-kid
 Requires:       iso-codes
 Requires(pre):  shadow-utils
+Requires(post): chkconfig
+Requires(preun): chkconfig
+# This is for /sbin/service
+Requires(preun): initscripts
+Requires(postun): initscripts
 # Options
 # Xapian, PyLucene
 
@@ -100,10 +105,21 @@ exit 0
 %post
 chown -R pootle.pootle /var/lib/pootle
 chmod -R g+w /var/lib/pootle
+# This adds the proper /etc/rc*.d links for the script
+/sbin/chkconfig --add pootle
 
 
 %preun
-/etc/rc.d/init.d/pootle stop
+if [ $1 = 0 ] ; then
+    /sbin/service pootle stop >/dev/null 2>&1
+    /sbin/chkconfig --del pootle
+fi
+
+
+%postun
+if [ "$1" -ge "1" ] ; then
+    /sbin/service pootle condrestart >/dev/null 2>&1 || :
+fi
 
 
 %files
@@ -119,12 +135,12 @@ chmod -R g+w /var/lib/pootle
 /var/lib/pootle
 %dir /var/cache/pootle
 %dir /var/log/pootle
-/etc/rc.d/init.d/pootle
+%{_initrddir}/*
 /etc/logrotate.d/pootle
 
 
 %changelog
-* Thu Jan 8 2009 Dwayne Bailey <dwayne@translate.org.za> - 1.2.0-1
+* Thu Jan 8 2009 Dwayne Bailey <dwayne@translate.org.za> - 1.3.0-0.1
 - Django based Pootle
 
 * Mon Oct 6 2008 Dwayne Bailey <dwayne@translate.org.za> - 1.2.0-1
