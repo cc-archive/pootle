@@ -1,13 +1,13 @@
 #!/bin/bash
 #
-# pootle       Startup script for the Pootle localisation server
+# pootle       Pootle localisation server
 #
 # chkconfig:   - 20 80
 # description: Web-based localisation server that allows online translations and \
 #              management of localisation projects using Gettext PO or XLIFF files.
 
 ### BEGIN INIT INFO
-# Provides: 
+# Provides:         Pootle
 # Required-Start: 
 # Required-Stop: 
 # Should-Start: 
@@ -24,6 +24,7 @@
 
 exec="/usr/sbin/PootleServer"
 prog="pootle"
+config="/etc/pootle/pootle.ini"
 
 [ -e /etc/sysconfig/$prog ] && . /etc/sysconfig/$prog
 
