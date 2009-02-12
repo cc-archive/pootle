@@ -136,9 +136,9 @@ case ${_filetype} in
 		remove_email_addresses |
 		split_on_punctuation | 
 		split "[\][n]" |
-		# Split / seperated word - after HTML becaise of </a> markers
+		# Split / separated word - after HTML because of </a> markers
 		split "\/" |
-		# Remove all HTML escaped chars eg &amp; then split ; seperated words
+		# Remove all HTML escaped chars eg &amp; then split ; separated words
 		remove "&[^;]*;" | split ";" | 
 		remove_punctuation_only_words |
 		remove_words_starting_with_numbers |
