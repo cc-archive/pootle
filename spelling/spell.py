@@ -32,6 +32,10 @@ L{SpellRequest} and L{SpellResult}
 import httplib
 import re
 import enchant
+import sys
+if sys.platform == "win32":
+    import win32com.client
+    import pythoncom
 import os
 
 class SpellChecker:
@@ -200,9 +204,6 @@ class MSChecker(SpellChecker):
          want a higher quality checker available through a SpellServer (make sure you 
          have enough licences!).  Google for "SpellerInit CSAPI" to start from almost zero :).
     """
-    import sys
-    if sys.platform == "win32":
-        import win32com.client
 
     def __init__(self, request, pwldir=None):
         """
@@ -215,10 +216,11 @@ class MSChecker(SpellChecker):
         instance for each time we check a word.  Rather create something that can be used when the
         server is called or when the checker is first used and that can be reused for each spell check.
         """
+        pythoncom.CoInitialize()
         SpellChecker.__init__(self, request, pwldir)
         self.__msword = win32com.client.Dispatch('Word.Application')
-        self.__msword.Visible = False
-        self.__worddoc = self.__msword.Document.Add()
+        self.__msword.Visible = 0
+        self.__worddoc = self.__msword.Documents.Add()
 
     def __destroy__(self):
         self.__worddoc.Close()
@@ -240,8 +242,8 @@ class MSChecker(SpellChecker):
                 offset = text.find(word, offset)
                 length = len(word)
                 suggestions = self.__msword.GetSpellingSuggestions(Word=word, CustomDictionary="", 
-                          IgnoreUppercase=False, MainDictionary=self._request.lang())
-                result.add(offset, length, suggestions[0:5])
+                          IgnoreUppercase=False, MainDictionary="Zulu")
+                result.add(offset, length, [unicode(suggestion) for suggestion in suggestions][0:5])
         return result
 
     @classmethod
@@ -249,7 +251,7 @@ class MSChecker(SpellChecker):
         """
         @note: still to determine how to list available languages
         """
-        pass
+        return ['af', 'zu']
 
 class SpellRequest:
     """A spell checker request
