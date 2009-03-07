@@ -8,6 +8,7 @@ More information at https://wiki.mozilla.org/Verbatim'''
 # Author: Asheesh Laroia <asheesh@creativecommons.org>
 
 import os
+import sys
 ## HACK
 BASE_DIR = os.path.join(os.getenv('HOME'), 'checkouts', 'cc_org')
 CC_CHECKOUT = os.path.join(BASE_DIR, 'cc-i18n-trunk')
@@ -19,13 +20,15 @@ def initialize(projectdir, languagecode):
     '''This does nothing because for now I expect the CC Pootle maintainers to manually symlink in each language directory'''
     pass
 
-def silent_success_call(argv, cwd = None):
+def silent_success_call(argv, cwd = None, silent = True):
     '''Give me an argv list, and I will pass it Popen, assert that it
     exit(0)'d, and assert it had no output.'''
     pipe = Popen(argv, stdout=PIPE, cwd = cwd)
     output = pipe.communicate()
     assert pipe.returncode == 0
-    assert not output[0]
+    #print >> sys.stderr, 'lame', output[0]
+    if silent:
+        assert not output[0]
 
 def committed2real_sub_cc(committedfile):
     '''Given a filesystem path to a cc_org PO file, verify that it
@@ -49,11 +52,13 @@ def precommit(committedfile, author, message):
     let's merge these changes into the CC-style PO file, and then
     ask Pootle to commit both files.'''
     # Later: Optimize this by pulling the language out of the filename
-    
+
+    # First, "svn update" on the CC-style file
+    realpath, subpath, cc_style = committed2real_sub_cc(committedfile)
+    silent_success_call(['/usr/bin/svn', 'update', cc_style], cwd=CC_CHECKOUT, silent=False)
+
     # run po2cc, and also be sure to commit the cc version
     silent_success_call(['./bin/po2cc'], cwd=CC_CHECKOUT) # needs no arguments
-
-    realpath, subpath, cc_style = committed2real_sub_cc(committedfile)
 
     ret = [CC_CHECKOUT + subpath, CC_CHECKOUT + cc_style]
 
