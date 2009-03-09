@@ -55,7 +55,7 @@ def precommit(committedfile, author, message):
 
     # First, "svn update" on the CC-style file
     realpath, subpath, cc_style = committed2real_sub_cc(committedfile)
-    silent_success_call(['/usr/bin/svn', 'update', cc_style], cwd=CC_CHECKOUT, silent=False)
+    silent_success_call(['/usr/bin/svn', 'update', '-q', os.path.dirname(cc_style)], cwd=CC_CHECKOUT)
 
     # run po2cc, and also be sure to commit the cc version
     silent_success_call(['./bin/po2cc'], cwd=CC_CHECKOUT) # needs no arguments
