@@ -362,7 +362,7 @@ html[dir="rtl"] #header h1 a {
 #body {
     margin: 0 10px;
     padding: 65px 10px 0 0;
-    width: 910px;
+    width: 950px;
 }
 
 #body:after {
@@ -386,7 +386,7 @@ html[dir="rtl"] #header h1 a {
 
 .module-primary {
     width: 990px;
-    margin: 0 -35px 0 -35px;
+    margin: 0;
 }
 
 .module-primary .bd {
@@ -402,7 +402,7 @@ html[dir="rtl"] #header h1 a {
 
 /* first class for first module to get margins right */
 #body .first {
-    margin: 0 0 0 -35px;
+    margin: 0;
 }
 
 .module .hd {
@@ -410,7 +410,7 @@ html[dir="rtl"] #header h1 a {
 }
 
 .module .hd h2, .module-primary .hd h2 {
-    margin: 0 0 10px 25px;
+    margin: 0 0 10px 15px;
     color: #afaba3;
 }
 
