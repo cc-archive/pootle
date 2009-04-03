@@ -40,10 +40,13 @@ def committed2real_sub_cc(committedfile):
 
     # Grab the relative path from CC_CHECKOUT
     subpath = realpath.split(CC_CHECKOUT, 1)[1]
+	# Make sure it is a relative path
+    if subpath[0] == '/':
+        subpath = subpath[1:]
 
     assert 'po' in subpath
 
-    cc_style = subpath.replace('po', 'i18n', 1) # just replace the first 'po'
+    cc_style = subpath.replace('po/', 'i18n/', 1) # just replace the first 'po/'
 
     return (realpath, subpath, cc_style)
 
@@ -55,13 +58,14 @@ def precommit(committedfile, author, message):
 
     # First, "svn update" on the CC-style file
     realpath, subpath, cc_style = committed2real_sub_cc(committedfile)
-    silent_success_call(['/usr/bin/svn', 'update', '-q', cc_style], cwd=CC_CHECKOUT)
+    silent_success_call(['/usr/bin/svn', 'update', '-q', os.path.dirname(cc_style)], cwd=CC_CHECKOUT)
 
     # run po2cc, and also be sure to commit the cc version
 	# tell po2cc to only operate on what we care about
-    silent_success_call(['./bin/po2cc', '-i', subpath, '-o', cc_style], cwd=CC_CHECKOUT)
+    silent_success_call(['./bin/po2cc', '-i', os.path.dirname(subpath), '-o',
+						os.path.dirname(cc_style)], cwd=CC_CHECKOUT)
 
-    ret = [CC_CHECKOUT + subpath, CC_CHECKOUT + cc_style]
+    ret = [os.path.join(CC_CHECKOUT, subpath), os.path.join(CC_CHECKOUT, cc_style)]
 
     # See if suggestion files and other gunk exists
     rest = glob.glob(committedfile.replace('.po', '') + '.pending')
@@ -93,7 +97,8 @@ def preupdate(updatedfile):
 
     realpath, subpath, cc_style = committed2real_sub_cc(updatedfile)
 
-    return [CC_CHECKOUT + subpath, CC_CHECKOUT + cc_style]
+    return [os.path.join(CC_CHECKOUT, subpath), 
+            os.path.join(CC_CHECKOUT, cc_style)]
 
 def postupdate(updatedfile):
     '''cc_org postupdate: After a new version of a file is grabbed from svn,
