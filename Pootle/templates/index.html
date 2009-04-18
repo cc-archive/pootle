@@ -25,8 +25,19 @@ from Pootle.templates import pootlepage
 
     <h1 py:content="XML(description)">this is a demo installation of pootle</h1>
 
-    <div py:if="message" class="site-message">
-        <div class="info" py:if="message" py:content="XML(message)">Message</div>
+    <div class="site-message">
+        <div class="info">
+<p>This server hosts translation for Creative Commons projects and tools.</p>
+
+<p>Documentation:</p>
+<ul>
+<li><a href="http://wiki.creativecommons.org/Translating_with_Pootle">CC guide to translating and managing translations.</a></li>
+<li><a href="http://translate.creativecommons.org/doc/en/index.html">Pootle documentation (from the Pootle developers).</a></li>
+</ul>
+
+<p>If you want to translate our videos or wiki, we have 
+<a href="http://wiki.creativecommons.org/Translate">separate instructions.</a></p>
+</div>
     </div>
 
       <div class="module first">

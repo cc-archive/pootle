@@ -1029,3 +1029,7 @@ label.inputHint {
 	margin-right:8px;
 }
 
+div.info li {
+    list-style-type: disc;
+}
+

@@ -64,7 +64,7 @@ Pootle:
   # your description to ensure proper rendering and for better accessibility.
   # Be sure to include all contact information that users would need to contact 
   # you for support (adding languages or projects).
-  description = u" <p dir='ltr' lang='en'>This server hosts translation for Creative Commons projects and tools.</p> <p>You can find help at:</p> <ul> <li><a href='http://wiki.creativecommons.org/Translate'>Translation overview</a></li> <li><a href='http://wiki.creativecommons.org/Translating_with_Pootle'>Overview of using Pootle</a></li> <li><a href='http://translate.creativecommons.org/doc/en/index.html'>Pootle (the software that runs this site) documentation</a></li> </ul> "
+  description = 'Creative Commons translation'
 
   # Pootle.defaultlanguage
   # 
