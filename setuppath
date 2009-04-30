@@ -15,6 +15,7 @@ pathstr.append('"%s"' % os.path.join(translatedir, "Pootle", "tools"))
 pathstr.append('"%s"' % os.path.join(translatedir, "virtaal", "bin"))
 pythonpathstr.append('"%s"' % translatedir)
 pythonpathstr.append('"%s"' % os.path.join(translatedir, "virtaal"))
+pythonpathstr.append('"%s"' % os.path.join(translatedir, "Pootle", "local_apps"))
 
 setpathfile = open(os.path.join(translatedir, "setpath"), "w")
 setpathfile.write("#!/bin/bash\n")
