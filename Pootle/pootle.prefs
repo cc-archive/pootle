@@ -65,6 +65,7 @@ Pootle:
   # Be sure to include all contact information that users would need to contact 
   # you for support (adding languages or projects).
   description = 'Creative Commons translation'
+  message = 'See the front page for documentation links.'
 
   # Pootle.defaultlanguage
   # 
