@@ -9,16 +9,56 @@ class Project:
     @property
     def languages(self):
         return [k for k in os.listdir(self.basedir) if k != '.svn']
+    def _prefs_filename(self, lang):
+        return os.path.join(
+            self.basedir, lang, 'pootle-cc_org-%s.prefs' % lang)
     def prefs_file(self, lang):
-        prefs_files = glob.glob(os.path.join(
-            self.basedir, lang, 'pootle-cc_org-%s.prefs' % lang))
+        prefs_files = glob.glob(self._prefs_filename(lang))
         if len(prefs_files) == 1:
             # great, that passes the sanity check.
             return prefs_files[0]
         else:
             print "Something is weird with", lang, "in project", self.name
             return None
-    
+    def set_lang2perms(self, new_lang2perms):
+        '''Input: A str2str2set mapping from lang2user2permissions
+        Output: True or False, based on if we had to actually change the filesystem'''
+        dirty = False
+        for lang in new_lang2perms:
+            new_langperms = new_lang2perms[lang]
+            # Figure out the current ones; if there is no prefs filename, fake an empty dict
+            if self.prefs_file(lang):
+                current_langperms = prefs2user2rights(open(self.prefs_file(lang)))
+            else:
+                current_langperms = {}
+            # Check if the current is the same as the "new"; if so, do nothing
+            if current_langperms == new_langperms:
+                pass
+            else:
+                # else, we have to actually save this lang's permissions
+                dirty = True
+                self.set_lang_perms(lang, new_langperms)
+                
+        return dirty
+
+    def set_lang_perms(self, lang, perms):
+        '''Input: a language and a mapping from usernames to rights.
+        Side-effect: Modifies the prefs file on disk.'''
+        prefs = jToolkit.prefs.PrefsParser()
+        for username in perms:
+            prefs.__root__._assignments['rights.' + username] = ','.join(
+                sorted(perms[username]))
+        # The following could fail if the language does not exist.
+        # so mkdir() the directory (later, we will need to actually
+        # create the PO file. But that can be done by a separate script).
+        target_prefs_file = self._prefs_filename(lang)
+        target_prefs_dir = os.path.dirname(target_prefs_file)
+        if not os.path.exists(target_prefs_dir):
+            print 'Creating dir:', target_prefs_dir
+            os.mkdir(target_prefs_dir, 0755)
+        prefs.savefile(target_prefs_file)
+        return True
+        
 def prefs2user2rights(prefs_string):
     pootle_users_prefs = prefs_string
     pootle_users_prefs = unicode(pootle_users_prefs)
@@ -75,4 +115,5 @@ def copy_cc_org_to_other_project(target_project_name):
     # do the merge
     target_data = copy_one_str2str2set_to_another(cc_org_data, target_data)
     # now apply it
-    print target_data
+    target_project = Project(target_project_name)
+    target_project.set_lang2perms(target_data)
