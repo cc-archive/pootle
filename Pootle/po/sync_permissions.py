@@ -49,7 +49,30 @@ def create_lang2perms_for_project(project_name):
             ret[lang] = user2rights
     return ret
 
-def copy_perms_from_cc_org_to(project):
+def copy_one_str2str2set_to_another(src, dst):
+    '''
+    >>> copy_one_str2str2set_to_another({'a': {'b': set(['c'])}}, {'b': {'b': set(['c'])}})
+    {'a': {'b': set(['c'])}, 'b': {'b': set(['c'])}}
+    >>> copy_one_str2str2set_to_another({'a': {'b': set(['c'])}}, {'a': {'b': set(['e'])}})
+    {'a': {'b': set(['c', 'e'])}}
+    '''
+    # NOTE: Mutates dst :-(
+    for lang in src:
+        if lang not in dst:
+            # if the target project has no permissions for this language, copy them straight in
+            dst[lang] = src[lang]
+        else:
+            # if the target project has some permissions for this, update it with the cc_org info
+            for user in src[lang]:
+                if user not in dst[lang]:
+                    dst[lang][user] = src[lang][user]
+                else:
+                    dst[lang][user].update(src[lang][user])
+    return dst
+
+                                           
+
+    
     for cc_org_lang in cc_org.languages:
         assert cc_org_lang.name in project.languages
         proj_lang = project.languages[cc_org_lang.name]
