@@ -17,7 +17,7 @@ class Project:
             # great, that passes the sanity check.
             return prefs_files[0]
         else:
-            print "Something is weird with", lang, "in project cc_org."
+            print "Something is weird with", lang, "in project", self.name
             return None
     
 def prefs2user2rights(prefs_string):
