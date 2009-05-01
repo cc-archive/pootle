@@ -9,7 +9,16 @@ class Project:
     @property
     def languages(self):
         return [k for k in os.listdir(self.basedir) if k != '.svn']
-
+    @property
+    def prefs_file(self, lang):
+        prefs_files = glob.glob(os.path.join(
+            self.basedir, lang, 'pootle-cc_org-%s.prefs' % lang))
+        if len(prefs_files) == 1:
+            # great, that passes the sanity check.
+            return prefs_files[0]
+        else:
+            print "Something is weird with", lang, "in project cc_org."
+            return None
     
 def prefs2user2rights(prefs_string):
     pootle_users_prefs = prefs_string
@@ -29,18 +38,15 @@ def prefs2user2rights(prefs_string):
 
     return user2rights
 
-def create_lang2perms_for_cc_org():
-    cc_org = Project('cc_org')
+def create_lang2perms_for_project(project_name):
+    project = Project(project_name)
     ret = {}
-    for lang in cc_org.languages:
+    for lang in project.languages:
         # find prefs file
-        prefs_files = glob.glob('cc_org/' + lang + '/pootle-cc_org-%s.prefs' % lang)
-        if len(prefs_files) == 1:
-            # great, that passes the sanity check.
-            user2rights = prefs2user2rights(open(prefs_files[0]).read())
+        prefs_file = project.prefs_files()
+        if prefs_files is not None:
+            user2rights = prefs2user2rights(open(prefs_file).read())
             ret[lang] = user2rights
-        else:
-            print "Something is weird with", lang, "in project cc_org."
     return ret
 
 def copy_perms_from_cc_org_to(project):
