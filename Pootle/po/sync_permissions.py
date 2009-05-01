@@ -38,10 +38,11 @@ def create_lang2perms_for_cc_org():
         if len(prefs_files) == 1:
             # great, that passes the sanity check.
             user2rights = prefs2user2rights(open(prefs_files[0]).read())
-            print user2rights
+            ret[lang] = user2rights
         else:
             print "Something is weird with", lang, "in project cc_org."
-    
+    return ret
+
 def copy_perms_from_cc_org_to(project):
     for cc_org_lang in cc_org.languages:
         assert cc_org_lang.name in project.languages
