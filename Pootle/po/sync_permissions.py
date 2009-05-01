@@ -9,7 +9,6 @@ class Project:
     @property
     def languages(self):
         return [k for k in os.listdir(self.basedir) if k != '.svn']
-    @property
     def prefs_file(self, lang):
         prefs_files = glob.glob(os.path.join(
             self.basedir, lang, 'pootle-cc_org-%s.prefs' % lang))
@@ -43,8 +42,8 @@ def create_lang2perms_for_project(project_name):
     ret = {}
     for lang in project.languages:
         # find prefs file
-        prefs_file = project.prefs_files()
-        if prefs_files is not None:
+        prefs_file = project.prefs_file(lang)
+        if prefs_file is not None:
             user2rights = prefs2user2rights(open(prefs_file).read())
             ret[lang] = user2rights
     return ret
@@ -70,14 +69,10 @@ def copy_one_str2str2set_to_another(src, dst):
                     dst[lang][user].update(src[lang][user])
     return dst
 
-                                           
-
-    
-    for cc_org_lang in cc_org.languages:
-        assert cc_org_lang.name in project.languages
-        proj_lang = project.languages[cc_org_lang.name]
-        # first of all, make it exist in project
-        for user in cc_org_lang.users2permissions:
-            perms = cc_org_lang.users2permissions[users]
-            # make sure that user has the same permissions in the project
-            #proj_lang.users2permissions[user].update(perms)
+def copy_cc_org_to_other_project(target_project_name):
+    cc_org_data = create_lang2perms_for_project('cc_org')
+    target_data = create_lang2perms_for_project(target_project_name)
+    # do the merge
+    target_data = copy_one_str2str2set_to_another(cc_org_data, target_data)
+    # now apply it
+    print target_data
