@@ -576,6 +576,8 @@ class TranslatePage(pagelayout.PootleNavPage):
 
   def escapetext(self, text, fancyspaces=True, stripescapes=False):
     """Replace special characters &, <, >, add and handle escapes if asked."""
+    if not text:
+        return u""
     text = text.replace("&", "&amp;") # Must be done first!
     text = text.replace("<", "&lt;").replace(">", "&gt;")
 
@@ -615,6 +617,8 @@ class TranslatePage(pagelayout.PootleNavPage):
     return text
 
   def escapefortextarea(self, text):
+    if not text:
+        return u""
     text = text.replace("&", "&amp;") # Must be done first!
     text = text.replace("<", "&lt;").replace(">", "&gt;")
     text = text.replace("\r\n", '\\r\\n')
@@ -745,6 +749,8 @@ class TranslatePage(pagelayout.PootleNavPage):
     diffs should be list of diff opcodes
     issrc specifies whether to use the src or destination positions in reconstructing the text
     this escapes the text on the fly to prevent confusion in escaping the highlighting"""
+    if not text:
+        return u""
     if issrc:
       diffstart = [(i1, 'start', tag) for (tag, i1, i2, j1, j2) in diffs if tag != 'equal']
       diffstop = [(i2, 'stop', tag) for (tag, i1, i2, j1, j2) in diffs if tag != 'equal']
