@@ -11,7 +11,7 @@ class Project:
         return [k for k in os.listdir(self.basedir) if k != '.svn']
     def _prefs_filename(self, lang):
         return os.path.join(
-            self.basedir, lang, 'pootle-cc_org-%s.prefs' % lang)
+            self.basedir, lang, 'pootle-%s-%s.prefs' % (self.name, lang))
     def prefs_file(self, lang):
         prefs_files = glob.glob(self._prefs_filename(lang))
         if len(prefs_files) == 1:
@@ -117,3 +117,9 @@ def copy_cc_org_to_other_project(target_project_name):
     # now apply it
     target_project = Project(target_project_name)
     target_project.set_lang2perms(target_data)
+
+if __name__ == '__main__':
+    import sys
+    assert not sys.argv[1].endswith('/'), "No trailing slash!"
+    copy_cc_org_to_other_project(sys.argv[1])
+

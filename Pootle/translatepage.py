@@ -662,6 +662,7 @@ class TranslatePage(pagelayout.PootleNavPage):
            "isplural": len(orig) > 1 or None,
            "singular_title": self.localize("Singular"),
            "plural_title": self.localize("Plural"),
+           "item_number": "%d" % item,
            }
     if len(orig) > 1:
       origdict["singular_text"] = self.escapetext(orig[0])

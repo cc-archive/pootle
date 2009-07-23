@@ -99,6 +99,8 @@ from Pootle.templates import pootlepage, navbar
               <div id="${item.orig.itemid}" class="translate-original ${item.orig.focus_class}" lang="en">
                 <input py:for="field in item.orig.pure" type="hidden" name="${field.pureid}" value="${field.value}" id="${field.pureid}"/>
                 <div py:if="not item.orig.isplural" class="translation-text" py:content="XML(item.orig.text)"></div>
+				<span class="permalink">
+</span>
                 <span py:if="item.orig.isplural" py:strip="True">
                   <span class="translation-text-headers" py:content="item.orig.singular_title">Singular</span><br />
                   <span class="translation-text" py:content="XML(item.orig.singular_text)">singular text</span><br />

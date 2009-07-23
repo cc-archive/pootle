@@ -77,6 +77,7 @@ class AboutPage(pagelayout.PootlePage):
     self.localize = session.localize
     pagetitle = getattr(session.instance, "title")
     description = getattr(session.instance, "description")
+    message = getattr(session.instance, "message")
     meta_description = shortdescription(description)
     keywords = ["Pootle", "locamotion", "translate", "translation", "localisation",
                 "localization", "l10n", "traduction", "traduire"]
@@ -98,7 +99,7 @@ class AboutPage(pagelayout.PootlePage):
         "meta_description": meta_description, "keywords": keywords,
         "abouttitle": abouttitle, "introtext": introtext,
         "hosttext": hosttext, "nametext": nametext, "versiontitle": versiontitle, "versiontext": versiontext,
-        "session": sessionvars, "instancetitle": instancetitle}
+        "session": sessionvars, "instancetitle": instancetitle, 'message': message}
     pagelayout.PootlePage.__init__(self, templatename, templatevars, session)
 
 class PootleIndex(pagelayout.PootlePage):
@@ -926,12 +927,12 @@ class ProjectIndex(pagelayout.PootleNavPage):
         moname = basename.replace(".po", ".mo")
         molink = {"href": moname, "text": self.localize('MO file')}
         actionlinks.append(molink)
-    if "update" in linksrequired and "admin" in self.rights:
-      if versioncontrol.hasversioning(os.path.join(self.project.podir,
-              self.dirname, basename)):
-        # l10n: Update from version control (like CVS or Subversion)
-        updatelink = {"href": "index.html?editing=1&doupdate=1&updatefile=%s" % (basename), "text": self.localize('Update')}
-        actionlinks.append(updatelink)
+    #if "update" in linksrequired and "admin" in self.rights:
+    #  if versioncontrol.hasversioning(os.path.join(self.project.podir,
+    #          self.dirname, basename)):
+    #    # l10n: Update from version control (like CVS or Subversion)
+    #    updatelink = {"href": "index.html?editing=1&doupdate=1&updatefile=%s" % (basename), "text": self.localize('Update')}
+    #    actionlinks.append(updatelink)
     if "commit" in linksrequired and "commit" in self.rights:
       if versioncontrol.hasversioning(os.path.join(self.project.podir,
               self.dirname, basename)):
