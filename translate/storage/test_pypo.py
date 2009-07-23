@@ -48,7 +48,7 @@ class TestPYPOUnit(test_po.TestPOUnit):
         unit.target = "Boom"
         # FIXME: currently assigning the target to the same as the first string won't change anything
         # we need to verify that this is the desired behaviour...
-        assert unit.target.strings == ["Boom", "Bome"]
+        assert unit.target.strings == ["Boom"]
         unit.target = "Een Boom"
         assert unit.target.strings == ["Een Boom"]
 
@@ -236,7 +236,6 @@ class TestPYPOFile(test_po.TestPOFile):
         """tests behaviour of unassociated comments."""
         oldsource = '# old lonesome comment\n\nmsgid "one"\nmsgstr "een"\n'
         oldfile = self.poparse(oldsource)
-        print "__str__", str(oldfile)
-        assert len(oldfile.units) == 2
-        assert str(oldfile).find("# old lonesome comment\n\n") >= 0
-    
+        print str(oldfile)
+        assert len(oldfile.units) == 1
+

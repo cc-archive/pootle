@@ -1,61 +1,59 @@
+#!/usr/bin/env python
+# coding: utf-8
+
 '''Author: Asheesh Laroia <asheesh@creativecommons.org>
 Copyright: (C) 2008 Creative Commons
 Permission is granted to redistribute this file under the GPLv2 or later, 
  at your option.   See COPYING for details.'''
 
-# coding: utf-8
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy.orm.exc import NoResultFound
-from dbclasses import User, Language, Project, metadata
+import os
+os.environ['DJANGO_SETTINGS_MODULE'] = 'Pootle.settings'
+
+from django.db import transaction
+
+from django.contrib.auth.models import User
+from Pootle.pootle_app.models import Project, Language, PootleProfile, make_pootle_user, get_profile
+
 import sys
 from jToolkit import prefs
 import types
 
-from initdb import attempt
-
 def main():
     '''Read sys.argv for cofiguration, and perform the imports.'''
-    if len(sys.argv) != 4:
-        print "Usage: %s pootle.prefs old_pootle.prefs users.prefs" % (
+    if len(sys.argv) != 3:
+        print "Usage: %s old_pootle.prefs users.prefs" % (
                 sys.argv[0])
         return
 
-    prefsfile = sys.argv[1]
-    parsed_prefs = prefs.PrefsParser(prefsfile).Pootle
-    oldprefsfile = sys.argv[2]
+    oldprefsfile = sys.argv[1]
     parsed_oldprefs = prefs.PrefsParser(oldprefsfile)
-    usersfile = sys.argv[3]
+    usersfile = sys.argv[2]
     parsed_users = prefs.PrefsParser(usersfile)
-    set_up_db_then_import_languages_then_users(parsed_prefs, parsed_oldprefs,
-                                               parsed_users)
+    try:
+        transaction.enter_transaction_management()
+        transaction.managed(True)
 
-def set_up_db_then_import_languages_then_users(instance, oldprefs, 
-                                               parsed_users):
-    '''instance, oldprefs, and parsed_users are jToolkit prefs.PrefsParser
-    objects.
+        set_up_db_then_import_languages_then_users(parsed_oldprefs,
+                                                   parsed_users)
+    except:
+        if transaction.is_dirty():
+            transaction.rollback()
+        if transaction.is_managed():
+            transaction.leave_transaction_management()
+        raise
+    finally:
+        if transaction.is_managed():
+            if transaction.is_dirty():
+              transaction.commit()
+        if transaction.is_managed():
+            transaction.leave_transaction_management()
 
-    Use the new prefs ("instance") to connect to the SQLite DB and import
-    data from oldprefs and parsed_users.
-
-    The name "instance" comes from the convention in initdb.py.'''
-    # Set up the connection options
-    STATS_OPTIONS = {}
-    for k,v in instance.stats.connect.iteritems():
-        STATS_OPTIONS[k] = v
-
-    #metadata = Base.metadata
-    engine = create_engine('sqlite:///%s' % STATS_OPTIONS['database'])
-    engine.connect()
-
-    Session = sessionmaker(bind=engine, autoflush=True)
-    alchemysession = Session()
-
-    metadata.create_all(engine)
-
-    import_languages(alchemysession, oldprefs)
-    import_projects(alchemysession, oldprefs)
-    import_users(alchemysession, parsed_users)
+def set_up_db_then_import_languages_then_users(oldprefs, parsed_users):
+    '''oldprefs and parsed_users are jToolkit prefs.PrefsParser
+    objects.'''
+    import_languages(oldprefs)
+    import_projects(oldprefs)
+    import_users(parsed_users)
 
 def _get_attribute(data, name, attribute, unicode_me = True, 
                    default = '', prefix='Pootle.languages.'):
@@ -88,7 +86,7 @@ def try_type(try_me, value):
     assert type(value) == try_me
     return value
 
-def import_languages(alchemysession, parsed_data):
+def import_languages(parsed_data):
     data = parsed_data.__root__._assignments # Is this really the right way?
     prefix = 'Pootle.languages.'
 
@@ -101,7 +99,7 @@ def import_languages(alchemysession, parsed_data):
     for lang in map(lambda s: unicode(s, 'utf-8'), langs):
         # id, for free
         # code:
-        db_lang = Language(lang)
+        db_lang = Language(code=lang)
 
         # fullname
         db_lang.fullname = _get_attribute(data, lang, 'fullname')
@@ -118,9 +116,9 @@ def import_languages(alchemysession, parsed_data):
         # specialchars
         db_lang.specialchars = _get_attribute(data, lang, 'specialchars')
 
-        attempt(alchemysession, db_lang)
+        db_lang.save()
 
-def import_projects(alchemysession, parsed_data):
+def import_projects(parsed_data):
     # This could prompt the user, asking:
     # "Want us to import projects? Say no if you have already 
     # added the projects to the new Pootle DB in the web UI."
@@ -137,7 +135,7 @@ def import_projects(alchemysession, parsed_data):
     for proj in map(lambda s: unicode(s, 'utf-8'), projs):
         # id, for free
         # code:
-        db_proj = Project(proj)
+        db_proj = Project(code=proj)
 
         # fullname
         db_proj.fullname = _get_attribute(data, proj, 'fullname')
@@ -165,14 +163,14 @@ def import_projects(alchemysession, parsed_data):
         db_proj.ignoredfiles = _get_attribute(data, proj, 'ignoredfiles',
                                default=u'')
 
-        attempt(alchemysession, db_proj)
+        db_proj.save()
 
 def _get_user_attribute(data, user_name, attribute, unicode_me = True,
                         default = ''):
     return _get_attribute(data, user_name, attribute, unicode_me, default,
                           prefix='')
 
-def import_users(alchemysession, parsed_users):
+def import_users(parsed_users):
     data = parsed_users.__root__._assignments # Is this really the
                                               # right way?
 
@@ -189,8 +187,7 @@ def import_users(alchemysession, parsed_users):
         # id for free, obviously.
 
         # Check if we already exist:
-        possible_us = alchemysession.query(User).filter_by(username=user_name
-                                                          ).all()
+        possible_us = User.objects.filter(username=user_name).all()
         if possible_us:
             print >> sys.stderr, 'Already found a user for named', user_name
             print >> sys.stderr, 'Going to skip importing his data, but will',
@@ -200,7 +197,7 @@ def import_users(alchemysession, parsed_users):
             must_add_user_object = False
         else:
             # username
-            user = User(user_name)
+            user = make_pootle_user(user_name)
 
             # name
             user.name = _get_user_attribute(data, user_name, 'name')
@@ -248,7 +245,7 @@ def import_users(alchemysession, parsed_users):
             assert ',' not in raw_uilanguage # just one value here
             if raw_uilanguage:
                 db_uilanguage = alchemysession.query(Language).filter_by(
-                                               code=raw_uilanguage).one()
+                                               code=raw_uilanguage).all()[0]
                 user.uilanguage = db_uilanguage
             else:
                 pass # leave it NULL
@@ -259,10 +256,11 @@ def import_users(alchemysession, parsed_users):
             assert ',' not in raw_altsrclanguage # just one value here
             if raw_altsrclanguage:
                 db_altsrclanguage = alchemysession.query(Language).filter_by(
-                                    code=raw_altsrclanguage).one()
+                                    code=raw_altsrclanguage).all()[0]
                 user.altsrclanguage = db_altsrclanguage
             else:
                 pass # leave it NULL
+            user.save()
 
         # ASSUMPTION: Someone has already created all the necessary projects
         # and languages in the web UI or through the earlier importer
@@ -275,8 +273,7 @@ def import_users(alchemysession, parsed_users):
         projects_list = filter(lambda thing: thing, projects_list)
         for project_name in projects_list:
             try:
-                db_project = alchemysession.query(Project).filter_by(
-                             code=project_name).one()
+                db_project = Project.objects.filter(code=project_name).all()[0]
             except NoResultFound: # wrong exception name
                 print >> sys.stderr, "Failed to add", user, "to project ID", 
                 print >> sys.stderr, project_name, 
@@ -292,29 +289,22 @@ def import_users(alchemysession, parsed_users):
         languages_list = filter(lambda thing: thing, languages_list)
         for language_name in languages_list:
             try:
-                db_language = alchemysession.query(Language).filter_by(
-                                             code=language_name).one()
-            except NoResultFound: # wrong exception name
+                db_language = Language.objects.filter(code=language_name).all()[0]
+            except IndexError:
                 print >> sys.stderr, "Failed to add", user, "to language ID",
                 print >> sys.stderr, language_name,
                 print >> sys.stderr,  "; you probably need to create it."
-            if db_language not in user.languages:
-                user.languages.append(db_language)
+            profile = get_profile(user)
+            if db_language not in profile.languages:
+                profile.languages.append(db_language)
+                profile.save()
 
         if must_add_user_object:
             # Commit the user.
-            attempt(alchemysession, user)
+            user.save()
         else:
-            # Save our session another way
-            try:
-                alchemysession.commit()
-            except Exception, e:
-                print 'weird, the session failed'
-                alchemysession.rollback()
-                print "FAILED: %s" % e
-            else:
-                print 'Imported user', user_name, 'OK'
-
+            print 'YOW?' # should save() or something
+			
 
 if __name__ == '__main__':
     main()
