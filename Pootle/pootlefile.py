@@ -618,11 +618,9 @@ def make_class(base_class):
           # We can't use the multistring, because it might contain more than two
           # entries in a PO xliff file. Rather use the singular.
           source = unicode(newpo.source)
-          if source in self.sourceindex:
-            oldpo = self.sourceindex[source]
-            matches.append((oldpo, newpo))
-          else:
-            matches.append((None, newpo))
+          oldpo = self.findunit(source)
+          matches.append((oldpo, newpo))
+    
       # find items that have been removed
       matcheditems = set(oldpo for oldpo, newpo in matches if oldpo)
       for oldpo in self.units:

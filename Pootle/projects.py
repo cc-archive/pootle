@@ -1363,7 +1363,7 @@ class TranslationProject(object):
         pofile.makeindex()
       elif not hasattr(pofile, "sourceindex"):
         pofile.makeindex()
-      unit = pofile.sourceindex.get(message, None)
+      unit = pofile.findunit(message)
       if not unit or not unit.istranslated():
         continue
       tmsg = unit.target
@@ -1377,7 +1377,7 @@ class TranslationProject(object):
       try:
         if pofile.pofreshen() or not hasattr(pofile, "sourceindex"):
           pofile.makeindex()
-        unit = pofile.sourceindex.get(message, None)
+        unit = pofile.findunit(message)
         if not unit or not unit.istranslated():
           continue
         tmsg = unit.target
@@ -1402,7 +1402,7 @@ class TranslationProject(object):
         nplural, pluralequation = pofile.getheaderplural()
         if pluralequation:
           pluralfn = gettext.c2py(pluralequation)
-          unit = pofile.sourceindex.get(singular, None)
+          unit = pofile.findunit(singular)
           if not unit or not unit.istranslated():
             continue
           tmsg = unit.target.strings[pluralfn(n)]
