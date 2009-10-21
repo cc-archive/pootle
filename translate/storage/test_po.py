@@ -5,6 +5,7 @@ from translate.storage import po
 from translate.storage import test_base
 from translate.misc import wStringIO
 from translate.misc.multistring import multistring
+from translate.storage.placeables import X, G
 from py.test import raises
 
 def test_roundtrip_quoting():
@@ -129,6 +130,16 @@ class TestPOUnit(test_base.TestTranslationUnit):
         assert not unit.isheader()
         unit.source = u"Goeiemôre"
         assert not unit.isheader()
+
+#     def test_rich_source(self):
+#         unit = self.unit
+#         unit.rich_source = [['a', X('42'), 'c']]
+#         assert unit.rich_source == [[u'a\ufffcc']]
+
+#     def test_rich_target(self):
+#         unit = self.unit
+#         unit.rich_target = [['a', G('42', ['b']), 'c']]
+#         assert unit.rich_target == [['abc']]
 
 class TestPOFile(test_base.TestTranslationStore):
     StoreClass = po.pofile
@@ -353,6 +364,25 @@ msgstr "tweede"
         assert unit.isobsolete()
         assert str(pofile) == posource
 
+        posource = '''msgid "one"
+msgstr "een"
+
+#, fuzzy
+#~ msgid "File not found."
+#~ msgid_plural "Files not found."
+#~ msgstr[0] "Leer(s) nie gevind nie."
+#~ msgstr[1] "Leer(s) nie gevind nie."
+'''
+        pofile = self.poparse(posource)
+        assert len(pofile.units) == 2
+        unit = pofile.units[1]
+        assert unit.isobsolete()
+
+        assert str(pofile) == posource
+        unit.resurrect()
+        assert unit.hasplural()
+
+
     def test_header_escapes(self):
         pofile = self.StoreClass()
         header = pofile.makeheader(**{"Report-Msgid-Bugs-To": r"http://qa.openoffice.org/issues/enter_bug.cgi?subcomponent=ui&comment=&short_desc=Localization%20issue%20in%20file%3A%20dbaccess\source\core\resource.oo&component=l10n&form_name=enter_issue"})
@@ -553,6 +583,15 @@ msgstr "omskakel"
         unit = pofile.units[1]
         assert unit.getcontext() == 'Verb. _: The action of changing.'
         assert unit.getnotes() == 'Test comment 2'
+
+    def test_broken_kde_context(self):
+        posource = '''msgid "Broken _: here"
+msgstr "Broken _: here"
+'''
+        pofile = self.poparse(posource)
+        unit = pofile.units[0]
+        assert unit.source == "Broken _: here"
+        assert unit.target == "Broken _: here"
   
     def test_id(self):
         """checks that ids work correctly"""

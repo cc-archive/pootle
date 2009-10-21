@@ -19,7 +19,7 @@ from Pootle.templates import pootlepage
 <div id="wrapper">
 <div id="doc">
     
-  <div py:replace="pootlepage.header(links, session, baseurl, instancetitle)"/>
+  <div py:replace="pootlepage.header(links, request, baseurl, instancetitle)"/>
 
   <div id="body">
 
@@ -44,12 +44,22 @@ from Pootle.templates import pootlepage
 
 <h3>Note to community members submitting translations</h3>
 <p>
-Because many of the strings available for translation on this site
-have a legal aspect, only official CC Project Leads have authority to approve final translations appearing on the CC website. CC Project Leads may or may not accept the translations in their sole discretion. Unless you have specifically been given the necessary rights on this site by an official CC Project Lead, all of your submissions are marked as suggestions with no guarantee of publication.
+Because many of the strings available for translation on this site have a legal
+aspect, only official CC Project Leads have authority to approve final
+translations appearing on the CC website. CC Project Leads may or may not
+accept the translations in their sole discretion. Unless you have specifically
+been given the necessary rights on this site by an official CC Project Lead,
+all of your submissions are marked as suggestions with no guarantee of
+publication.
 
-This is the case even if there is no designated CC Project Lead in a jurisdiction where that particular language is spoken. However, please know that your translations may very well ease a jurisdiction's localization efforts once an official CC Project Lead has been identified there.
+This is the case even if there is no designated CC Project Lead in a
+jurisdiction where that particular language is spoken. However, please know
+that your translations may very well ease a jurisdiction's localization efforts
+once an official CC Project Lead has been identified there.
 
-To get an idea of our active and project jurisdictions, please see the <a href="http://creativecommons.org/international/">International page</a> at the CC website.
+To get an idea of our active and project jurisdictions, please see the
+<a href="http://creativecommons.org/international/">
+International page</a> at the CC website.
 </p>
 
 </div>
@@ -114,7 +124,7 @@ To get an idea of our active and project jurisdictions, please see the <a href="
 
   </div><!-- end #body-->
 
-  <div py:replace="pootlepage.login_form(username_title, password_title, login_text, register_text, canregister, session, uilanguage)"/>
+  <div py:replace="pootlepage.login_form(username_title, password_title, login_text, register_text, canregister, request, uilanguage)"/>
 	
 </div><!-- end #doc -->
 </div><!-- end #wrapper -->

@@ -19,6 +19,14 @@
 # along with translate; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
+# TODO: Make this less ugly
+import os
+os.environ['DJANGO_SETTINGS_MODULE'] = 'Pootle.settings'
+
+import optparse
+from wsgiref.simple_server import make_server
+from django.core.handlers.wsgi import WSGIHandler
+
 from jToolkit.web import server
 from jToolkit.web import templateserver
 from jToolkit.web import session
@@ -33,7 +41,6 @@ from Pootle import adminpages
 from Pootle import translatepage
 from Pootle import pagelayout
 from Pootle import projects
-from Pootle import potree
 from Pootle import pootlefile
 from Pootle import users
 from Pootle import filelocations
@@ -44,7 +51,8 @@ from Pootle import __version__ as pootleversion
 from translate import __version__ as toolkitversion
 from jToolkit import __version__ as jtoolkitversion
 from Pootle import statistics, pan_app
-from translate.storage import statsdb
+from Pootle.misc.transaction import django_transaction
+from Pootle.misc import prefs
 
 try:
   from xml.etree import ElementTree
@@ -59,10 +67,6 @@ import re
 import random
 import pprint
 
-import dbclasses
-from sqlalchemy import *
-from sqlalchemy.orm import *
-
 def use_request_cache(f):
     def decorated_f(*args, **kwargs):
         try:
@@ -71,37 +75,12 @@ def use_request_cache(f):
             request_cache.reset()
     return decorated_f
 
-class PootleServer(users.OptionalLoginAppServer, templateserver.TemplateServer):
+class PootleServer(users.OptionalLoginAppServer):
   """the Server that serves the Pootle Pages"""
-  def __init__(self, instance, webserver, sessioncache=None, errorhandler=None, loginpageclass=users.LoginPage):
-    if sessioncache is None:
-      sessioncache = users.PootleSessionCache(sessionclass=users.PootleSession)
-
-    self.configDB(instance)
-    try:
-      self.potree = potree.POTree(instance, self)
-      super(PootleServer, self).__init__(instance, webserver, sessioncache, errorhandler, loginpageclass)
-      self.templatedir = filelocations.templatedir
-      self.setdefaultoptions()
-    except Exception, e:
-      self.alchemysession.rollback()
-      self.alchemysession.close()
-      raise e
-
-  def configDB(self, instance):
-    statistics.statsdb = statsdb
-    # Set up the connection options
-    for k,v in instance.stats.connect.iteritems():
-      statistics.STATS_OPTIONS[k] = v
-
-    self.metadata = dbclasses.metadata
-    self.engine = create_engine('sqlite:///%s' % statistics.STATS_OPTIONS['database'])
-    self.conn = self.engine.connect()
-
-    Session = sessionmaker(bind=self.engine, autoflush=True, autocommit=True)
-    self.alchemysession = Session()
-
-    self.metadata.create_all(self.engine)
+  def __init__(self):
+    self.potree = pan_app.get_po_tree()
+    super(PootleServer, self).__init__()
+    self.templatedir = filelocations.templatedir
 
   def loadurl(self, filename, context):
     """loads a url internally for overlay code"""
@@ -113,63 +92,11 @@ class PootleServer(users.OptionalLoginAppServer, templateserver.TemplateServer):
 
   def saveprefs(self):
     """saves any changes made to the preferences"""
-    # TODO: this is a hack, fix it up nicely :-)
-    prefsfile = self.instance.__root__.__dict__["_setvalue"].im_self
-    prefsfile.savefile()
+    prefs.save_preferences(pan_app.prefs)
 
-  def setdefaultoptions(self):
-    """sets the default options in the preferences"""
-    changed = False
-    if not hasattr(self.instance, "title"):
-      setattr(self.instance, "title", "Pootle Demo")
-      changed = True
-    if not hasattr(self.instance, "description"):
-      defaultdescription = "This is a demo installation of pootle. The administrator can customize the description in the preferences."
-      setattr(self.instance, "description", defaultdescription)
-      changed = True
-    if not hasattr(self.instance, "baseurl"):
-      setattr(self.instance, "baseurl", "/")
-      changed = True
-    if not hasattr(self.instance, "enablealtsrc"):
-      setattr(self.instance, "enablealtsrc", False)
-      changed = True
-    if changed:
-      self.saveprefs()
-
-  def changeoptions(self, argdict):
+  def changeoptions(self, arg_dict):
     """changes options on the instance"""
-    for key, value in argdict.iteritems():
-      if not key.startswith("option-"):
-        continue
-      optionname = key.replace("option-", "", 1)
-      setattr(self.instance, optionname, value)
-    self.saveprefs()
-
-  def initlanguage(self, req, session):
-    """Initialises the session language from the request"""
-    availablelanguages = self.potree.getlanguagecodes('pootle')
-    acceptlanguageheader = req.headers_in.getheader('Accept-Language')
-    if not acceptlanguageheader:
-      return
-
-    for langpref in acceptlanguageheader.split(","):
-      langpref = pagelayout.localelanguage(langpref)
-      pos = langpref.find(";")
-      if pos >= 0:
-        langpref = langpref[:pos]
-      if langpref in availablelanguages:
-        session.setlanguage(langpref)
-        return
-      elif langpref.startswith("en"):
-        session.setlanguage(None)
-        return
-      dashpos = langpref.find("_"); # Try removing the locale, find the lang
-      if dashpos >= 0:
-        lonelang = langpref[:dashpos]
-        if lonelang in availablelanguages:
-          session.setlanguage(lonelang)
-          return
-    session.setlanguage(None)
+    prefs.change_preferences(pan_app.prefs, arg_dict)
 
   def inittranslation(self, localedir=None, localedomains=None, defaultlanguage=None):
     """initializes live translations using the Pootle PO files"""
@@ -179,7 +106,7 @@ class PootleServer(users.OptionalLoginAppServer, templateserver.TemplateServer):
     self.languagenames = self.potree.getlanguages()
     self.defaultlanguage = defaultlanguage
     if self.defaultlanguage is None:
-      self.defaultlanguage = getattr(self.instance, "defaultlanguage", "en")
+      self.defaultlanguage = getattr(pan_app.prefs, "defaultlanguage", "en")
     if self.potree.hasproject(self.defaultlanguage, 'pootle'):
       try:
         self.translation = self.potree.getproject(self.defaultlanguage, 'pootle')
@@ -255,27 +182,36 @@ class PootleServer(users.OptionalLoginAppServer, templateserver.TemplateServer):
       content += "Disallow: /%s/\n" % langcode
     return content
 
-  def getuserlanguage(self, session):
+  def getuserlanguage(self, request):
     """gets the language for a user who does not specify one in the URL"""
-    return session.language 
+    raise NotImplementedError()
+    #return session.language 
 
   @use_request_cache
-  def getpage(self, pathwords, session, argdict):
+  #@django_transaction
+  def getpage(self, request, pathwords):
     """return a page that will be sent to the user"""
 
-    #Ensure we get unicode from argdict
-    #TODO: remove when jToolkit does this
-    newargdict = {}
-    for key, value in argdict.iteritems():
-      if isinstance(key, str):
-       key = key.decode("utf-8")
-      if isinstance(value, str):
-       value = value.decode("utf-8")
-      newargdict[key] = value
-    argdict = newargdict
+    def remove_from_list(lst):
+      if len(lst) == 1:
+        return lst[0]
+      else:
+        return lst
 
+    def get_arg_dict(request):
+      if request.method == 'GET':
+        return request.GET
+      else:
+        return request.POST
+
+    def process_django_request_args(request):
+      return dict((key, remove_from_list(value)) for key, value in get_arg_dict(request).iteritems())
+
+    arg_dict = process_django_request_args(request)
+
+    pathwords = pathwords.split('/')
     # Strip of the base url
-    baseurl = re.sub('https?://[^/]*', '', self.instance.baseurl)
+    baseurl = re.sub('https?://[^/]*', '', pan_app.prefs.baseurl)
     # Split up and remove empty parts
     basepathwords = filter(None, baseurl.split('/'))
     while pathwords and basepathwords and basepathwords[0] == pathwords[0]:
@@ -288,179 +224,52 @@ class PootleServer(users.OptionalLoginAppServer, templateserver.TemplateServer):
       top = ""
 
     try:
-      if top == 'js':
-        pathwords = pathwords[1:]
-        jsfile = os.path.join(filelocations.htmldir, 'js', *pathwords)
-        if not os.path.exists(jsfile):
-          jsfile = os.path.join(filelocations.jtoolkitdir, 'js', *pathwords)
-          if not os.path.exists(jsfile):
-            return None
-        jspage = widgets.PlainContents(None)
-        jspage.content_type = "application/x-javascript"
-        jspage.sendfile_path = jsfile
-        jspage.allowcaching = True
-        return jspage
-      elif pathwords and pathwords[-1].endswith(".css"):
-        cssfile = os.path.join(filelocations.htmldir, *pathwords)
-        if not os.path.exists(cssfile):
-          return None
-        csspage = widgets.PlainContents(None)
-        csspage.content_type = "text/css"
-        csspage.sendfile_path = cssfile
-        csspage.allowcaching = True
-        return csspage
-      elif top in ['selenium', 'tests']:
-        picturefile = os.path.join(filelocations.htmldir, *pathwords)
-        picture = widgets.SendFile(picturefile)
-        if picturefile.endswith(".html"):
-          picture.content_type = 'text/html'
-        elif picturefile.endswith(".js"):
-          picture.content_type = 'text/javascript'
-        picture.allowcaching = True
-        return picture
-      elif top == 'images':
-        pathwords = pathwords[1:]
-        picturefile = os.path.join(filelocations.htmldir, 'images', *pathwords)
-        picture = widgets.SendFile(picturefile)
-        picture.content_type = thumbgallery.getcontenttype(pathwords[-1])
-        picture.allowcaching = True
-        return picture
-      elif pathwords and pathwords[-1].endswith(".ico"):
-        picturefile = os.path.join(filelocations.htmldir, *pathwords)
-        picture = widgets.SendFile(picturefile)
-        picture.content_type = 'image/ico'
-        picture.allowcaching = True
-        return picture
-      elif top == "robots.txt":
+      if top == "robots.txt":
         robotspage = widgets.PlainContents(self.generaterobotsfile())
         robotspage.content_type = 'text/plain'
         robotspage.allowcaching = True
         return robotspage
       elif top == "testtemplates.html":
-        return templateserver.TemplateServer.getpage(self, pathwords, session, argdict)
+        return templateserver.TemplateServer.getpage(self, pathwords, request, arg_dict)
       elif not top or top == "index.html":
-        return indexpage.PootleIndex(self.potree, session)
+        return indexpage.PootleIndex(request)
       elif top == 'about.html':
-        return indexpage.AboutPage(session)
+        return indexpage.AboutPage(request)
       elif top == "login.html":
-        if 'doregister' in argdict:
-          return self.registerpage(session, argdict)
-        try:
-          if session.usercreated:
-            session.usercreated = False
-            return server.Redirect('home/')
-        except:
-          pass
-        if session.isopen:
-          returnurl = argdict.get('returnurl', None) 
+        if 'doregister' in arg_dict:
+          return self.registerpage(request, arg_dict)
+# TODO: Figure out what to do here
+#         try:
+#           if session.usercreated:
+#             session.usercreated = False
+#             return server.Redirect('home/')
+#         except:
+#           pass
+        if not request.user.is_anonymous(): # session.isopen:
+          returnurl = arg_dict.get('returnurl', None) 
           if returnurl == None or re.search('[^A-Za-z0-9?./]+', returnurl):
-            returnurl = getattr(self.instance, 'homepage', '/index.html')
+            returnurl = getattr(pan_app.prefs, 'homepage', '/index.html')
+          # TODO: This won't work. Do it the Django way.
           return server.Redirect(returnurl)
         message = None
-        if 'username' in argdict:
-          session.username = argdict["username"]
-          message = session.localize("Login failed")
-        return users.LoginPage(session, languagenames=self.languagenames, message=message)
+        if 'username' in arg_dict:
+          # TODO: Find another place to store the arg_dict["username"], so that we
+          #       can correctly complain to the user if the login fails.
+          #session.username = arg_dict["username"]
+          message = request.localize("Login failed")
+        return users.LoginPage(request, languagenames=self.languagenames, message=message)
       elif top == "register.html":
-        return self.registerpage(session, argdict)
+        return self.registerpage(request, arg_dict)
       elif top == "activate.html":
-        return self.activatepage(session, argdict)
+        return self.activatepage(request, arg_dict)
       elif top == "projects":
-        pathwords = pathwords[1:]
-        if pathwords:
-          top = pathwords[0]
-        else:
-          top = ""
-        if not top or top == "index.html":
-          return indexpage.ProjectsIndex(self.potree, session)
-        else:
-          projectcode = top
-          if not self.potree.hasproject(None, projectcode):
-            return None
-          pathwords = pathwords[1:]
-          if pathwords:
-            top = pathwords[0]
-          else:
-            top = ""
-          if not top or top == "index.html":
-            return indexpage.ProjectLanguageIndex(self.potree, projectcode, session)
-          elif top == "admin.html":
-            return adminpages.ProjectAdminPage(self.potree, projectcode, session, argdict)
+        raise NotImplementedError()
       elif top == "home":
-        pathwords = pathwords[1:]
-        if pathwords:
-          top = pathwords[0]
-        else:
-          top = ""
-        if not session.isopen:
-          templatename = "redirect"
-          templatevars = {
-              "pagetitle": session.localize("Redirecting to login..."),
-              "refresh": 1,
-              "refreshurl": "login.html",
-              "message": session.localize("You need to log in to access your home page"),
-              }
-          pagelayout.completetemplatevars(templatevars, session)
-          return server.Redirect("../login.html", withtemplate=(templatename, templatevars))
-        if not top or top == "index.html":
-          return indexpage.UserIndex(self.potree, session)
-        elif top == "options.html":
-          message = None
-          try:
-            if "changeoptions" in argdict:
-              session.setoptions(argdict)
-            if "changepersonal" in argdict:
-              session.setpersonaloptions(argdict)
-              message = session.localize("Personal details updated")
-            if "changeinterface" in argdict:
-              session.setinterfaceoptions(argdict)
-          except users.RegistrationError, errormessage:
-            message = errormessage
-          return users.UserOptions(self.potree, session, message)
+        raise NotImplementedError()
       elif top == "admin":
-        pathwords = pathwords[1:]
-        if pathwords:
-          top = pathwords[0]
-        else:
-          top = ""
-        if not session.isopen:
-          templatename = "redirect"
-          templatevars = {
-              "pagetitle": session.localize("Redirecting to login..."),
-              "refresh": 1,
-              "refreshurl": "login.html",
-              "message": session.localize("You must log in to administer Pootle."),
-              }
-          pagelayout.completetemplatevars(templatevars, session)
-          return server.Redirect("../login.html", withtemplate=(templatename, templatevars))
-        if not session.issiteadmin():
-          templatename = "redirect"
-          templatevars = {
-              "pagetitle": session.localize("Redirecting to home..."),
-              "refresh": 1,
-              "refreshurl": "login.html",
-              "message": self.localize("You do not have the rights to administer pootle."),
-              }
-          pagelayout.completetemplatevars(templatevars, session)
-          return server.Redirect("../index.html", withtemplate=(templatename, templatevars))
-        if not top or top == "index.html":
-          if "changegeneral" in argdict:
-            self.changeoptions(argdict)
-          return adminpages.AdminPage(self.potree, session, self.instance)
-        elif top == "users.html":
-          if "changeusers" in argdict:
-            self.changeusers(session, argdict)
-          return adminpages.UsersAdminPage(self, session.server.alchemysession, session, self.instance)
-        elif top == "languages.html":
-          if "changelanguages" in argdict:
-            self.potree.changelanguages(argdict)
-          return adminpages.LanguagesAdminPage(self.potree, session, self.instance)
-        elif top == "projects.html":
-          if "changeprojects" in argdict:
-            self.potree.changeprojects(argdict)
-          return adminpages.ProjectsAdminPage(self.potree, session, self.instance)
+        raise NotImplementedError()
       if not top or top == "index.html":
-        return indexpage.LanguagesIndex(self.potree, session)
+        return indexpage.LanguagesIndex(request)
       if top == "templates" or self.potree.haslanguage(top):
         languagecode = top
         pathwords = pathwords[1:]
@@ -471,7 +280,7 @@ class PootleServer(users.OptionalLoginAppServer, templateserver.TemplateServer):
           top = ""
           bottom = ""
         if not top or top == "index.html":
-          return indexpage.LanguageIndex(self.potree, languagecode, session)
+          return indexpage.LanguageIndex(languagecode, request)
         if self.potree.hasproject(languagecode, top):
           projectcode = top
           project = self.potree.getproject(languagecode, projectcode)
@@ -482,43 +291,43 @@ class PootleServer(users.OptionalLoginAppServer, templateserver.TemplateServer):
             top = ""
           if not top or top == "index.html":
             try:
-              return indexpage.ProjectIndex(project, session, argdict)
+              return indexpage.ProjectIndex(project, request, arg_dict)
             except projects.RightsError, stoppedby:
-              argdict["message"] = str(stoppedby)
-              return indexpage.PootleIndex(self.potree, session)
+              arg_dict["message"] = str(stoppedby)
+              return indexpage.PootleIndex(request)
           elif top == "admin.html":
-            return adminpages.TranslationProjectAdminPage(self.potree, project, session, argdict)
+            return adminpages.TranslationProjectAdminPage(project, request, arg_dict)
           elif bottom == "translate.html":
             if len(pathwords) > 1:
               dirfilter = os.path.join(*pathwords[:-1])
             else:
               dirfilter = ""
             try:
-              return translatepage.TranslatePage(project, session, argdict, dirfilter)
+              return translatepage.TranslatePage(project, request, arg_dict, dirfilter)
             except projects.RightsError, stoppedby:
-              argdict["message"] = str(stoppedby)
-              return indexpage.ProjectIndex(project, session, argdict, dirfilter)
+              arg_dict["message"] = str(stoppedby)
+              return indexpage.ProjectIndex(project, request, arg_dict, dirfilter)
           elif bottom == "spellcheck.html":
             # the full review page
-            argdict["spellchecklang"] = languagecode
-            return spellui.SpellingReview(session, argdict, js_url="/js/spellui.js")
+            arg_dict["spellchecklang"] = languagecode
+            return spellui.SpellingReview(session, arg_dict, js_url="/js/spellui.js")
           elif bottom == "spellingstandby.html":
             # a simple 'loading' page
             return spellui.SpellingStandby()
           elif bottom.endswith("." + project.fileext):
             pofilename = os.path.join(*pathwords)
-            if argdict.get("translate", 0):
+            if arg_dict.get("translate", 0):
               try:
-                return translatepage.TranslatePage(project, session, argdict, dirfilter=pofilename)
+                return translatepage.TranslatePage(project, request, arg_dict, dirfilter=pofilename)
               except projects.RightsError, stoppedby:
                 if len(pathwords) > 1:
                   dirfilter = os.path.join(*pathwords[:-1])
                 else:
                   dirfilter = ""
-                argdict["message"] = str(stoppedby)
-                return indexpage.ProjectIndex(project, session, argdict, dirfilter=dirfilter)
-            elif argdict.get("index", 0):
-              return indexpage.ProjectIndex(project, session, argdict, dirfilter=pofilename)
+                arg_dict["message"] = str(stoppedby)
+                return indexpage.ProjectIndex(project, session, arg_dict, dirfilter=dirfilter)
+            elif arg_dict.get("index", 0):
+              return indexpage.ProjectIndex(project, session, arg_dict, dirfilter=pofilename)
             else:
               pofile = project.getpofile(pofilename, freshen=False)
               page = widgets.SendFile(pofile.filename)
@@ -558,7 +367,7 @@ class PootleServer(users.OptionalLoginAppServer, templateserver.TemplateServer):
               dirfilter = os.path.join(*pathwords[:-1])
             else:
               dirfilter = None
-            goal = argdict.get("goal", None)
+            goal = arg_dict.get("goal", None)
             if goal:
               goalfiles = project.getgoalfiles(goal)
               pofilenames = []
@@ -582,163 +391,53 @@ class PootleServer(users.OptionalLoginAppServer, templateserver.TemplateServer):
               dirfilter = os.path.join(*pathwords[:-1])
             else:
               dirfilter = None
-            return indexpage.ProjectIndex(project, session, argdict, dirfilter)
+            return indexpage.ProjectIndex(project, request, arg_dict, dirfilter)
           else:
-            return indexpage.ProjectIndex(project, session, argdict, os.path.join(*pathwords))
+            return indexpage.ProjectIndex(project, request, arg_dict, os.path.join(*pathwords))
       return None
     except projects.Rights404Error:
       return None
 
-  # I implemented buildpage and sendpage here so that jToolkit's template system could
-  # be circumvented. This code originally comes from jToolkit and is still close to
-  # the original code.
-
-  def buildpage(self, filename, context, loadurl=None, localize=None, innerid=None):
-    """build a response for the template with the vars in context"""
-    context = templateserver.attribify(context)
-    template_module = kid.load_template(filename, cache=pan_app.cache_templates)
-    t = template_module.Template(filename, **context)
-    try:
-      return t.serialize(output="xhtml")
-    except Exception, e:
-      tb = sys.exc_info()[2]
-      tb_point = tb
-      while tb_point.tb_next:
-          tb_point = tb_point.tb_next
-      ancestors = tb_point.tb_frame.f_locals.get("ancestors", [])
-      xml_traceback = []
-      for ancestor in ancestors:
-          if ancestor is None: continue
-          try:
-            ancestor_str = str(ancestor)
-          except Exception, e:
-            ancestor_str = "(could not convert %s: %s)" % (str(ancestor), str(e))
-          xml_traceback.append(ancestor_str)
-      context_str = pprint.pformat(context)
-      xml_traceback_str = "  " + "\n  ".join(xml_traceback)
-      self.errorhandler.logerror("Error converting template: %s\nContext\n%s\nXML Ancestors:\n%s\n%s\n" % (e, context_str, xml_traceback_str, self.errorhandler.traceback_str()))
-      if self.webserver.options.debug:
-        import pdb
-        pdb.post_mortem(tb)
-      raise
-
-  def sendpage(self, req, thepage):
-    """bridge to widget code to allow templating to gradually replace it"""
-    if kid is not None and hasattr(thepage, "templatename") and hasattr(thepage, "templatevars"):
-      # renders using templates rather than the underlying widget class
-      kid.enable_import()
-      #template = kid.Template(os.path.join(self.templatedir, thepage.templatename + ".html")) #self.gettemplate(thepage.templatename)
-      loadurl = getattr(thepage, "loadurl", None)
-      if loadurl is None:
-        loadurl = getattr(self, "loadurl", None)
-      pagestring = self.buildpage(os.path.join(self.templatedir, thepage.templatename + ".html"), thepage.templatevars, loadurl, req.session.localize)
-      builtpage = widgets.PlainContents(pagestring)
-      # make sure certain attributes are retained on the built page
-      for copyattr in ('content_type', 'logresponse', 'sendfile_path', 'allowcaching', 'etag'):
-        if hasattr(thepage, copyattr):
-          setattr(builtpage, copyattr, getattr(thepage, copyattr))
-      thepage = builtpage
-    return super(PootleServer, self).sendpage(req, thepage)
-
-class PootleOptionParser(simplewebserver.WebOptionParser):
+class PootleOptionParser(optparse.OptionParser):
   def __init__(self):
     versionstring = "%%prog %s\njToolkit %s\nTranslate Toolkit %s\nKid %s\nElementTree %s\nPython %s (on %s/%s)" % (pootleversion.ver, jtoolkitversion.ver, toolkitversion.ver, kid.__version__, ElementTree.VERSION, sys.version, sys.platform, os.name)
-    simplewebserver.WebOptionParser.__init__(self, version=versionstring)
+    optparse.OptionParser.__init__(self)
     self.set_default('prefsfile', filelocations.prefsfile)
     self.set_default('instance', 'Pootle')
     self.set_default('htmldir', filelocations.htmldir)
     self.add_option('', "--refreshstats", dest="action", action="store_const", const="refreshstats",
         default="runwebserver", help="refresh the stats files instead of running the webserver")
-    psycomodes=["none", "full", "profile"]
     self.add_option('', "--statsdb_file", action="store", type="string", dest="statsdb_file",
                     default=None, help="Specifies the location of the SQLite stats db file.")
-    self.add_option('', "--profile", action="store", type="string", dest="profile",
-                    help="Perform profiling, storing the result to the supplied filename.")
     self.add_option('', "--no_cache_templates", action="store_false", dest="cache_templates", default=True,
                     help="Pootle should not cache templates, but reload them with every request.")
-    try:
-      import psyco
-      self.add_option('', "--psyco", dest="psyco", default=None, choices=psycomodes, metavar="MODE",
-                      help="use psyco to speed up the operation, modes: %s" % (", ".join(psycomodes)))
-    except ImportError, e:
-      return
+    self.add_option('', "--port", action="store", type="int", dest="port", default="8080",
+                    help="The TCP port on which the server should listen for new connections.")
 
 def checkversions():
   """Checks that version dependencies are met"""
   if not hasattr(toolkitversion, "build") or toolkitversion.build < 12000:
     raise RuntimeError("requires Translate Toolkit version >= 1.1.  Current installed version is: %s" % toolkitversion.ver)
 
-def usepsyco(options):
-  # options.psyco == None means the default, which is "full", but don't give a warning...
-  # options.psyco == "none" means don't use psyco at all...
-  if getattr(options, "psyco", "none") == "none":
-    return
-  try:
-    import psyco
-  except ImportError:
-    if options.psyco is not None:
-      optrecurse.RecursiveOptionParser(formats={}).warning("psyco unavailable", options, sys.exc_info())
-    return
-  if options.psyco is None:
-    options.psyco = "full"
-  if options.psyco == "full":
-    psyco.full()
-  elif options.psyco == "profile":
-    psyco.profile()
-  # tell psyco the functions it cannot compile, to prevent warnings
-  import encodings
-  psyco.cannotcompile(encodings.search_function)
-
-def profile_runner(server, options):
-  import cProfile
-  import Pootle.profiling.lsprofcalltree as lsprofcalltree
-
-  def write_cache_grind(profiler, file):
-    k_cache_grind = lsprofcalltree.KCacheGrind(profiler)
-    k_cache_grind.output(file)
-    file.close()
-
-  def do_profile_run(file):
-    profiler = cProfile.Profile()
-    try:
-      profiler.runcall(simplewebserver.run, server, options)
-    finally:
-      write_cache_grind(profiler, file)
-
-  try:
-    profile_file = open(options.profile, "w+")
-    do_profile_run(profile_file)
-  except IOError, _e:
-    print "Could not open profiling file %s" % (options.profile,)
-
-def get_runner(options):
-  if getattr(options, "profile", None) != None:
-    return profile_runner
-  else:
-    return simplewebserver.run
-
-def set_stats_db(server, options):
-  def get_stats():
-    if options.statsdb_file != None:
-      return options.statsdb_file
-    else:
-      return getattr(server.instance, 'stats_db', None)
-
-  statistics.STATS_DB_FILE = get_stats()
+def set_stats_db(options):
+  prefs.config_db(pan_app.prefs)
+  if options.statsdb_file is not None:
+    statistics.STATS_OPTIONS['database'] = options.statsdb_file
 
 def set_template_caching(options):
   if options.cache_templates is not None:
     pan_app.cache_templates = options.cache_templates
 
-def set_options(server, options):
-  set_stats_db(server, options)
+def set_options(options):
+  pan_app.prefs = prefs.load_preferences(options.prefsfile)
+  set_stats_db(options)
   set_template_caching(options)                                        
   server.options = options
 
-def run_pootle(server, options, args):
+def run_pootle(options, args):
   if options.action == "runwebserver":
-    run = get_runner(options)
-    run(server, options)
+    httpd = make_server('', options.port, WSGIHandler())
+    httpd.serve_forever()
   elif options.action == "refreshstats":
     server.refreshstats(args)
 
@@ -747,13 +446,10 @@ def main():
   checkversions()
   parser = PootleOptionParser()
   options, args = parser.parse_args()
-  options.errorlevel = options.logerrors
-  usepsyco(options)
   if options.action != "runwebserver":
     options.servertype = "dummy"
-  server = parser.getserver(options)
-  set_options(server, options)
-  run_pootle(server, options, args)                                        
+  set_options(options)
+  run_pootle(options, args)                                        
 
 if __name__ == '__main__':
   main()

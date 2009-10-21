@@ -1,16 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
+<?python
+    from Pootle.pootle_app.models import get_profile
+?>
 <include xmlns:py="http://purl.org/kid/ns#">
 
-    <div py:def="header(links, session, baseurl, instancetitle)" py:strip="True">
+    <div py:def="header(links, request, baseurl, instancetitle)" py:strip="True">
         <!-- start header -->
         <div id="nav-access">
             <a href="#nav-main" py:content="links.skip_nav">skip to navigation</a>
         </div>
         <?python
             header_attributes = {};
-            if session.isopen:
+            if request.isopen:
                 header_attributes = {'class':'logged-in'}
-            if session.issiteadmin:
+            if request.issiteadmin:
                 header_attributes = {'class':'logged-in admin'}
         ?>
 
@@ -23,14 +26,14 @@
                     <ul class="first-of-type">
                         <li class="yuimenubaritem"><a href="${baseurl}" py:content="links.home">Home</a></li>
                         <li class="yuimenubaritem"><a href="${baseurl}doc/${links.doclang}/index.html" py:content="links.doc">Docs &amp; Help</a></li>
-                        <span py:if="session.issiteadmin" py:strip="True">
+                        <span py:if="request.issiteadmin" py:strip="True">
                             <li class="yuimenubaritem"><a href="${baseurl}admin/" py:content="links.admin">Admin</a></li>
                         </span>
-                        <span py:if="session.isopen" py:strip="True">
+                        <span py:if="request.isopen" py:strip="True">
                             <li class="yuimenubaritem"><a href="${baseurl}home/">My account</a></li>
-                            <li class="yuimenubaritem"><a href="${baseurl}?islogout=1">Log out</a></li>
+                            <li class="yuimenubaritem"><a href="${baseurl}logout.html">Log out</a></li>
                         </span>
-                        <span py:if="not session.isopen" py:strip="True">
+                        <span py:if="not request.isopen" py:strip="True">
                             <li id="menu-login" class="yuimenubaritem"><a href="${baseurl}login.html"><span>Log in</span></a></li>
                         </span>
                     </ul>
@@ -63,9 +66,9 @@
         <!-- end footer -->
     </div>
 
-    <div py:def="login_form(username_title, password_title, login_text, register_text, canregister, session, uilanguage)" py:strip="True">
+    <div py:def="login_form(username_title, password_title, login_text, register_text, canregister, request, uilanguage)" py:strip="True">
         <!-- start login form -->
-        <div py:if="not session.isopen" py:strip="True">
+        <div py:if="not request.isopen" py:strip="True">
             <form action="/login.html" method="post" id="login-form">
                 <p><label for="username" py:content="username_title">Username</label> <input type="text" id="username" name="username" /></p>
                 <p><label for="password" py:content="password_title">Password</label> <input type="password" id="password" name="password" /></p>
@@ -89,19 +92,19 @@
       <table>
         <tr>
           <th scope="row" py:content="statstext['suggaccepted']">Suggestions Accepted</th>
-          <td>${user.suggestionsAcceptedCount()}</td>
+          <td>${get_profile(user).suggestions_accepted_count}</td>
         </tr>
         <tr>
           <th scope="row" py:content="statstext['suggpending']">Suggestions Pending</th>
-          <td>${user.suggestionsPendingCount()}</td>
+          <td>${get_profile(user).suggestions_pending_count}</td>
         </tr>
         <tr>
           <th scope="row" py:content="statstext['suggreviewed']">Suggestions Reviewed</th>
-          <td>${user.suggestionsReviewedCount()}</td>
+          <td>${get_profile(user).suggestions_reviewed_count}</td>
         </tr>
         <tr>
           <th scope="row" py:content="statstext['submade']">Submissions Made</th>
-          <td>${user.submissionsCount()}</td>
+          <td>${get_profile(user).submissions_count}</td>
         </tr>
       </table>
     </div>
@@ -112,14 +115,14 @@
           <div py:for="stats in topstats">
               <div class="statslist">
                   <h3 py:content="stats['headerlabel']">Top</h3>
-                  <ul py:for="(num, (name, val)) in enumerate(stats['data'])">
+                  <ul py:for="(num, (user, val)) in enumerate(stats['data'])">
                       <?python
                         if num % 2:
                             list_attributes = {'class': 'even'}
                         else:
                             list_attributes = {'class': 'odd'}
                       ?>
-                      <li py:attrs="list_attributes"><span class="name">${name}</span><span class="value">${val}</span></li>
+                      <li py:attrs="list_attributes"><span class="name">${user.username}</span><span class="value">${val}</span></li>
                   </ul>
               </div>
           </div>
