@@ -54,6 +54,9 @@
                     <li><a href="${baseurl}" py:content="links.home">Home</a></li>
                     <li><a href="${baseurl}doc/${links.doclang}/index.html" py:content="links.doc">Docs &amp; Help</a></li>
                     <li><a href="${baseurl}about.html" py:content="links.about">About this Pootle Server</a></li>
+                    <li><a href="http://creativecommons.org/policies/">Policies</a></li>
+                    <li><a href="http://creativecommons.org/privacy/">Privacy Policy</a></li>
+                    <li><a href="http://creativecommons.org/terms/">Terms of Use</a></li>
                 </ul>
             </div>
         </div>
