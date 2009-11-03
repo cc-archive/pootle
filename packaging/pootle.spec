@@ -1,59 +1,78 @@
 %{!?python_sitelib: %define python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib()")}
 
 %define         fullname Pootle
-%define         svn svn10165
 
 Name:           pootle
 Version:        1.3.0
-Release:        0.1.%{svn}%{?dist}
+Release:        0.1.beta4%{?dist}
 Summary:        Localization and translation management web application
 
 Group:          Development/Tools
 License:        GPLv2+
 URL:            http://translate.sourceforge.net/wiki/pootle/index
 #Source:         http://downloads.sourceforge.net/translate/%{fullname}-%{version}.tar.bz2
-Source:         http://downloads.sourceforge.net/translate/%{fullname}-%{version}.%{svn}.tar.bz2
+Source:         http://downloads.sourceforge.net/translate/%{fullname}-%{version}-beta4.tar.bz2
 Source1:        pootle-initscript
 Source2:        pootle-logrotate
 Source3:        pootle-sysconfig
 Source4:        run_pootle.sh
+Source5:        pootle.conf
+Source6:        README.fedora
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-Patch1:         Pootle-1.3.0-file_locations.diff
+Patch0:         pootle-1.3.0-remove-syspath.patch
+Patch1:         pootle-1.3.0-file-locations.patch
+Patch2:         pootle-1.3.0-fedora-settings.patch
+Patch3:         pootle-1.3.0-r12812-r12819-initdb.patch
 
 BuildArch:      noarch
 BuildRequires:  python-devel
-BuildRequires:  translate-toolkit >= 1.2
-Requires:       translate-toolkit >= 1.2
-Requires:       Django
-Requires:       python-kid
+BuildRequires:  translate-toolkit >= 1.4.1
+Requires:       Django >= 1.0
+Requires:       httpd
 Requires:       iso-codes
+Requires:       python-lxml
+Requires:       python-memcached
+Requires:       python-Levenshtein
+Requires:       translate-toolkit >= 1.4.1-2
+Requires:       xapian-bindings-python >= 1.0.13
+Requires:       zip
 Requires(pre):  shadow-utils
 Requires(post): chkconfig
 Requires(preun): chkconfig
 # This is for /sbin/service
 Requires(preun): initscripts
 Requires(postun): initscripts
-# Options
-# Xapian, PyLucene
 
 
 
 %description
-A web application for managing the translation of Gettext PO and XLIFF files.
+Pootle is web application for managing distributed or crowdsourced
+translation.
+
+It's features include::
+  * Translation of Gettext PO and XLIFF files.
+  * Submitting to remote version control systems (VCS).
+  * Managing groups of translators
+  * Online webbased or offline translation
+  * Quality checks
+
 
 %prep
-%setup -q -n %{fullname}-%{version}.%{svn}
-%patch1 -p1
+%setup -q -n %{fullname}-%{version}-beta4
+%patch0 -p1 -b .remove-syspath
+%patch1 -p1 -b .file-locations
+%patch2 -p1 -b .fedora-settings
+%patch3 -p1 -b .r12812-initdb
 
 
 %build
-%{__python} pootlesetup.py build
+%{__python} setup.py build
 
 
 %install
 rm -rf $RPM_BUILD_ROOT
-%{__python} pootlesetup.py install -O1 --skip-build --root $RPM_BUILD_ROOT
+%{__python} setup.py install -O1 --skip-build --root $RPM_BUILD_ROOT
 
 # Create the manpages
 mkdir -p $RPM_BUILD_ROOT/%{_mandir}/man1
@@ -70,23 +89,18 @@ do
     esac
 done
 
-# remove documentation files from site-packages
-rm $RPM_BUILD_ROOT/%{python_sitelib}/Pootle/{COPYING,ChangeLog,LICENSE,README}
-#install -d $RPM_BUILD_ROOT/usr/sbin $RPM_BUILD_ROOT/usr/share/pootle/ $RPM_BUILD_ROOT/usr/share/pootle/html $RPM_BUILD_ROOT/usr/share/pootle/templates $RPM_BUILD_ROOT/var/lib/pootle $RPM_BUILD_ROOT/etc/pootle
 install -d $RPM_BUILD_ROOT/usr/sbin $RPM_BUILD_ROOT/usr/share/pootle/ $RPM_BUILD_ROOT/var/lib/pootle $RPM_BUILD_ROOT/etc/pootle
 install $RPM_BUILD_ROOT/usr/bin/PootleServer $RPM_BUILD_ROOT/usr/sbin
 rm $RPM_BUILD_ROOT/usr/bin/PootleServer
-mv $RPM_BUILD_ROOT/%{python_sitelib}/Pootle/html $RPM_BUILD_ROOT/usr/share/pootle
-#mv $RPM_BUILD_ROOT/%{python_sitelib}/Pootle/templates $RPM_BUILD_ROOT/usr/share/pootle
-mv $RPM_BUILD_ROOT/%{python_sitelib}/Pootle/po/pootle $RPM_BUILD_ROOT/var/lib/pootle
-mv $RPM_BUILD_ROOT/%{python_sitelib}/Pootle/*.prefs $RPM_BUILD_ROOT/etc/pootle
-mv $RPM_BUILD_ROOT/%{python_sitelib}/Pootle/pootle.ini $RPM_BUILD_ROOT/etc/pootle
 install -d $RPM_BUILD_ROOT/var/cache/pootle
 install -d $RPM_BUILD_ROOT/var/log/pootle
-install $RPM_SOURCE_DIR/pootle-initscript -D $RPM_BUILD_ROOT/etc/rc.d/init.d/pootle
-install $RPM_SOURCE_DIR/pootle-logrotate -D $RPM_BUILD_ROOT/etc/logrotate.d/pootle
-install $RPM_SOURCE_DIR/pootle-sysconfig -D $RPM_BUILD_ROOT/etc/sysconfig/pootle
-install $RPM_SOURCE_DIR/run_pootle.sh -D $RPM_BUILD_ROOT/usr/sbin
+install %{SOURCE1} -D $RPM_BUILD_ROOT/etc/rc.d/init.d/pootle
+install %{SOURCE2} -D $RPM_BUILD_ROOT/etc/logrotate.d/pootle
+install %{SOURCE3} -D $RPM_BUILD_ROOT/etc/sysconfig/pootle
+install %{SOURCE4} -D $RPM_BUILD_ROOT/usr/sbin
+install -p --mode=644 %{SOURCE5} -D $RPM_BUILD_ROOT/etc/httpd/conf.d/pootle.conf
+install wsgi.py $RPM_BUILD_ROOT/usr/share/pootle/
+cp -p %{SOURCE6} .
 
 
 %clean
@@ -100,13 +114,16 @@ getent group %{groupname} >/dev/null || groupadd -r %{groupname}
 getent passwd %{username} >/dev/null || \
 useradd -r -g %{groupname} -d /var/lib/pootle -s /sbin/nologin \
 -c "Pootle daemon" %{username}
+usermod -a --groups pootle apache
 exit 0
 
 %post
-chown -R pootle.pootle /var/lib/pootle
+chown -R apache.pootle /var/lib/pootle
 chmod -R g+w /var/lib/pootle
 # This adds the proper /etc/rc*.d links for the script
 /sbin/chkconfig --add pootle
+
+
 
 
 %preun
@@ -124,22 +141,31 @@ fi
 
 %files
 %defattr(-,root,root,-)
-%doc Pootle/{COPYING,ChangeLog,README}
+%doc COPYING ChangeLog README README.fedora
 %{_bindir}/*
 %{_sbindir}/*
 %{_mandir}/man1/*
 %config /etc/pootle
 %config /etc/sysconfig/pootle
-%{python_sitelib}/Pootle*
+%config /etc/httpd/conf.d/pootle.conf
+%{python_sitelib}/*
 /usr/share/pootle
 /var/lib/pootle
-%dir /var/cache/pootle
-%dir /var/log/pootle
+/var/cache/pootle
+/var/log/pootle
 %{_initrddir}/*
 /etc/logrotate.d/pootle
+%exclude /usr/share/doc/pootle
 
 
 %changelog
+* Mon Nov 2 2009 Dwayne Bailey <dwayne@translate.org.za> - 1.3.0-0.2
+- Update to 1.3.0 beta4
+- Enable mod_wsgi operation: require httpd, default pootle.conf
+- Backport DB initialisation
+- Add dependencies for performance: memcached, Levenshtein, xapian
+- Fedora README
+
 * Thu Jan 8 2009 Dwayne Bailey <dwayne@translate.org.za> - 1.3.0-0.1
 - Django based Pootle
 
