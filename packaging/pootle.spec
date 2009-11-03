@@ -4,7 +4,7 @@
 
 Name:           pootle
 Version:        1.3.0
-Release:        0.1.beta4%{?dist}
+Release:        0.2.beta4%{?dist}
 Summary:        Localization and translation management web application
 
 Group:          Development/Tools
@@ -31,6 +31,7 @@ BuildRequires:  translate-toolkit >= 1.4.1
 Requires:       Django >= 1.0
 Requires:       httpd
 Requires:       iso-codes
+Requires:       memcached
 Requires:       python-lxml
 Requires:       python-memcached
 Requires:       python-Levenshtein
