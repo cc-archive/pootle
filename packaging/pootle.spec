@@ -4,7 +4,7 @@
 
 Name:           pootle
 Version:        1.3.0
-Release:        0.2.beta4%{?dist}
+Release:        0.3.beta4%{?dist}
 Summary:        Localization and translation management web application
 
 Group:          Development/Tools
@@ -29,9 +29,9 @@ BuildArch:      noarch
 BuildRequires:  python-devel
 BuildRequires:  translate-toolkit >= 1.4.1
 Requires:       Django >= 1.0
-Requires:       httpd
 Requires:       iso-codes
 Requires:       memcached
+Requires:       mod_wsgi
 Requires:       python-lxml
 Requires:       python-memcached
 Requires:       python-Levenshtein
@@ -160,6 +160,9 @@ fi
 
 
 %changelog
+* Thu Nov 5 2009 Dwayne Bailey <dwayne@translate.org.za> - 1.3.0-0.3
+- Depend on mod_wsgi
+
 * Mon Nov 2 2009 Dwayne Bailey <dwayne@translate.org.za> - 1.3.0-0.2
 - Update to 1.3.0 beta4
 - Enable mod_wsgi operation: require httpd, default pootle.conf
