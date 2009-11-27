@@ -1,29 +1,31 @@
-%define oname Pootle
-%define oversion 2.0.0-rc2
+%define upstream_name		Pootle
+%define upstream_version	2.0.0-rc2
 
 Name:		pootle
 Version:	2.0.0
-Release:	%mkrel 0.rc2
-Summary:	Localization and translation management web application
-Group:		Development/Other
-License:	GPLv2+
-URL:		http://translate.sourceforge.net/wiki/pootle/index
+Release:	%mkrel 0.rc2.1
 
-Source0:	http://translate.sourceforge.net/snapshots/%{oname}-%{oversion}/%{oname}-%{oversion}.tar.bz2
-Patch0:		%{name}-%{oversion}-optimal-settings.patch
+Summary:	Localization and translation management web application
+License:	GPLv2+
+Group:		Development/Other
+URL:		http://translate.sourceforge.net/wiki/pootle/index
+Source0:	http://translate.sourceforge.net/snapshots/%{upstream_name}-%{upstream_version}/%{upstream_name}-%{upstream_version}.tar.bz2
+Patch0:		pootle-2.0-optimal-settings.patch
 
 BuildArch:	noarch
-BuildRoot:	%{_tmppath}/%{name}-%{oversion}-%{release}-buildroot
+BuildRequires:	rpm-mandriva-setup >= 1.23
+BuildRequires:	rpm-helper >= 0.16
+BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
 
-Requires(post):	rpm-helper
-Requires(postun): rpm-helper
-Requires(pre):	apache-conf
+%py_requires -d
+Requires(post):	rpm-helper >= 0.16
+Requires(postun): rpm-helper >= 0.16
+Requires(pre):	apache-conf >= 2.0.54
 Requires(pre):	memcached
-Requires:	python-translate >= 1.4.1
+Requires:	python-translate >= 1.5.0
 Requires:	python-django
 Requires:	apache-mod_wsgi
 Requires:	python-memcached
-
 
 Suggests:	python-lxml
 Suggests:	python-levenshtein
@@ -31,9 +33,8 @@ Suggests:	iso-codes
 Suggests:	unzip
 Suggests:	xapian-bindings-python
 Suggests:	python-mysql
-Suggests:	mysqlg
+Suggests:	mysqlserver
 
-%py_requires -d
 
 %description
 Pootle is a web application for distributed or crowdsourced translation.
@@ -47,7 +48,7 @@ It's features include::
 
 
 %prep
-%setup -q -n %{oname}-%{oversion}
+%setup -q -n %{upstream_name}-%{upstream_version}
 %patch0 -p2
 
 %build
@@ -124,5 +125,5 @@ fi
 
 
 %changelog
-* Fri Nov 27 2009 Alaa Abd El Fattah <alaa@translate.org.za> 2.0.0-0.rc2-1mdv2010.0
+* Fri Nov 27 2009 Alaa Abd El Fattah <alaa@translate.org.za> 2.0.0-0.rc2.1mdv2010.0
 - first mandriva package since move to Django

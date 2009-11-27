@@ -1,20 +1,26 @@
-%define pname translate
-%define oname %{pname}-toolkit
+%define pname		translate
+%define upstream_name	%{pname}-toolkit
 
-Name: 		python-%{pname}
-Version: 	1.5.1
+Name:		python-%{pname}
+Version:	1.5.1
 Release:	%mkrel 1
-Summary: 	Software localization toolkit
-Group:		Development/Python
-License:	GPLv2+
-URL:		http://translate.sourceforge.net/
 
-Source0:	http://downloads.sourceforge.net/translate/%{oname}-%{version}.tar.bz2
+Summary:	Software localization toolkit
+License:	GPLv2+
+Group:		Development/Python
+URL:		http://translate.sourceforge.net/
+Source0:	http://downloads.sourceforge.net/translate/%{upstream_name}-%{version}.tar.bz2
 
 BuildArch:	noarch
+Buildrequires:	rpm-mandriva-setup >= 1.23
+Buildrequires:	rpm-helper >= 0.16
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
 
+%py_requires -d
+
 Requires:	python-lxml
+Requires(post):	rpm-helper >= 0.16
+Requires(postun): rpm-helper >= 0.16
 
 Suggests:	python-psyco
 Suggests:	python-simplejson
@@ -24,9 +30,7 @@ Suggests:	python-vobject
 Suggests:	python-iniparse
 Suggests:	gaupol
 
-Provides: 	%{oname} = %{version}-%{release}
-
-%py_requires -d
+Provides:	%{upstream_name} = %{version}-%{release}
 
 
 %description
@@ -37,18 +41,18 @@ Including:
   * Formats:
     * Core localization formats - XLIFF and Gettext PO
     * Other localization formats - TMX, TBX, Qt Linguist (.ts), 
-           Java .properties, Wordfast TM
+      Java .properties, Wordfast TM
     * Compiled formats: Gettext MO, Qt .qm
     * Other formats - text, HTML, CSV, INI, wiki (MediaWiki, DokuWiki), iCal
     * Specialised - OpenOffice.org GSI/SDF, PHP,
-            Mozilla (.dtd, .properties, etc)
+      Mozilla (.dtd, .properties, etc)
   * Tools: count, search, debug, segment and extract terminology from
-            localization files.
+    localization files.
   * Checkers: validate translations with over 46 checks
 
 
 %prep
-%setup -q -n %{oname}-%{version}
+%setup -q -n %{upstream_name}-%{version}
 
 %build
 ./setup.py build
