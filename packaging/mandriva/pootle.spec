@@ -1,15 +1,14 @@
 %define upstream_name		Pootle
-%define upstream_version	2.0.0-rc2
 
 Name:		pootle
 Version:	2.0.0
-Release:	%mkrel 0.rc2.1
+Release:	%mkrel 1
 
 Summary:	Localization and translation management web application
 License:	GPLv2+
 Group:		Development/Other
 URL:		http://translate.sourceforge.net/wiki/pootle/index
-Source0:	http://translate.sourceforge.net/snapshots/%{upstream_name}-%{upstream_version}/%{upstream_name}-%{upstream_version}.tar.bz2
+Source0:	http://sourceforge.net/projects/translate/files/%{upstream_name}/%{version}/%{upstream_name}-%{version}.tar.bz2
 Patch0:		pootle-2.0-optimal-settings.patch
 
 BuildArch:	noarch
@@ -23,17 +22,19 @@ Requires(postun): rpm-helper >= 0.16
 Requires(pre):	apache-conf >= 2.0.54
 Requires(pre):	memcached
 Requires:	python-translate >= 1.5.0
-Requires:	python-django
+Requires:	python-django >= 1.0
 Requires:	apache-mod_wsgi
 Requires:	python-memcached
+Requires:	python-lxml
 
-Suggests:	python-lxml
 Suggests:	python-levenshtein
 Suggests:	iso-codes
 Suggests:	unzip
-Suggests:	xapian-bindings-python
+Suggests:	xapian-bindings-python >= 1.0.13
+Suggests:	xapian-core >= 1.0.13
 Suggests:	python-mysql
 Suggests:	mysqlserver
+Suggests:	apache-mod_deflate
 
 
 %description
@@ -48,7 +49,7 @@ It's features include::
 
 
 %prep
-%setup -q -n %{upstream_name}-%{upstream_version}
+%setup -q -n %{upstream_name}-%{version}
 %patch0 -p2
 
 %build
@@ -80,6 +81,15 @@ Alias /%{name}/export %{_var}/lib/%{name}/po
     Order deny,allow
     Allow from all
 </Directory>
+
+<IfModule mod_deflate.c>
+    <location /%{name}/html>
+        SetOutputFilter DEFLATE
+    </location>
+    <location /%{name}/export>
+        SetOutputFilter DEFLATE
+    </location>
+</IfModule>
 EOF
 
 %clean
@@ -125,5 +135,12 @@ fi
 
 
 %changelog
+* Tue Dec 08 2009 Alaa Abd El Fattah <alaa@translate.org.za> 2.0.0-1mdv2010.0
+- New version 2.0.0
+- add optional mod_deflate support in apache config
+- specify versions for Django, Xapian dependencies
+- Depend on xapian-core since xapian support needs xapian-check command
+- Make lxml a dependency, XLIFF support too important
+ 
 * Fri Nov 27 2009 Alaa Abd El Fattah <alaa@translate.org.za> 2.0.0-0.rc2.1mdv2010.0
 - first mandriva package since move to Django
