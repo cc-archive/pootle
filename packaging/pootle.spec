@@ -3,8 +3,8 @@
 %define         fullname Pootle
 
 Name:           pootle
-Version:        2.0.0
-Release:        1%{?dist}
+Version:        2.0.1
+Release:        2%{?dist}
 Summary:        Localization and translation management web application
 
 Group:          Development/Tools
@@ -77,11 +77,11 @@ do
     esac
 done
 
-install -d $RPM_BUILD_ROOT/usr/sbin $RPM_BUILD_ROOT/usr/share/pootle/ $RPM_BUILD_ROOT/var/lib/pootle $RPM_BUILD_ROOT/etc/pootle
-install $RPM_BUILD_ROOT/usr/bin/PootleServer $RPM_BUILD_ROOT/usr/sbin
-rm $RPM_BUILD_ROOT/usr/bin/PootleServer
-install -p --mode=644 %{SOURCE1} -D $RPM_BUILD_ROOT/etc/httpd/conf.d/pootle.conf
-install wsgi.py $RPM_BUILD_ROOT/usr/share/pootle/
+install -d $RPM_BUILD_ROOT%{_sbindir} $RPM_BUILD_ROOT%{_datadir}/pootle/ $RPM_BUILD_ROOT%{_sharedstatedir}/pootle $RPM_BUILD_ROOT%{_sysconfdir}/pootle
+install $RPM_BUILD_ROOT%{_bindir}/PootleServer $RPM_BUILD_ROOT%{_sbindir}
+rm $RPM_BUILD_ROOT%{_bindir}/PootleServer
+install -p --mode=644 %{SOURCE1} -D $RPM_BUILD_ROOT%{_sysconfdir}/httpd/conf.d/pootle.conf
+install wsgi.py $RPM_BUILD_ROOT%{_datadir}/pootle/
 cp -p %{SOURCE2} .
 
 
@@ -110,12 +110,19 @@ fi
 %config(noreplace) /etc/pootle
 %config(noreplace) /etc/httpd/conf.d/pootle.conf
 %{python_sitelib}/*
-/usr/share/pootle
-%attr(-,apache,apache) /var/lib/pootle
+%{_datadir}/pootle
+%attr(-,apache,apache) %{_sharedstatedir}/pootle
+# We exclude docs as the Pootle installer doesn't do ${name}-${version} as expected in Fedora
 %exclude /usr/share/doc/pootle
 
 
 %changelog
+* Thu Jan 14 2010 Dwayne Bailey <dwayne@translate.org.za> - 2.0.1-2
+- Fixes from spec review
+
+* Thu Jan 14 2010 Dwayne Bailey <dwayne@translate.org.za> - 2.0.1-1
+- Update to 2.0.1
+
 * Mon Dec 7 2009 Dwayne Bailey <dwayne@translate.org.za> - 2.0.0-1
 - Update to 2.0.0 final
 - Prefer running under Apache and drop standalone supporting infrastructure
