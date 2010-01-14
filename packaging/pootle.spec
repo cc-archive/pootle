@@ -1,6 +1,6 @@
 %{!?python_sitelib: %define python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib()")}
 
-%define         fullname Pootle
+%global         fullname Pootle
 
 Name:           pootle
 Version:        2.0.1
@@ -107,13 +107,13 @@ fi
 %{_bindir}/*
 %{_sbindir}/*
 %{_mandir}/man1/*
-%config(noreplace) /etc/pootle
-%config(noreplace) /etc/httpd/conf.d/pootle.conf
+%config(noreplace) %{_sysconfdir}/pootle
+%config(noreplace) %{_sysconfdir}/httpd/conf.d/pootle.conf
 %{python_sitelib}/*
 %{_datadir}/pootle
 %attr(-,apache,apache) %{_sharedstatedir}/pootle
 # We exclude docs as the Pootle installer doesn't do ${name}-${version} as expected in Fedora
-%exclude /usr/share/doc/pootle
+%exclude %{_datadir}/doc/pootle
 
 
 %changelog
