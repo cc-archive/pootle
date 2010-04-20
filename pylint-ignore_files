@@ -1,2 +1,5 @@
 /test_
 /typecheck
+misc/ini.py
+misc/selector.py
+misc/textwrap.py
