@@ -27,6 +27,7 @@ setpathfile.write("#or\n")
 setpathfile.write("#	. setpath\n")
 setpathfile.write("export PYTHONPATH=%s\n" % ":".join(pythonpathstr))
 setpathfile.write("export PATH=%s\n" % ":".join(pathstr))
+setpathfile.write("export PYTHONTYPECHECK=1\n")
 setpathfile.close()
 
 os.chmod(os.path.join(translatedir, "setpath"), 0755)
