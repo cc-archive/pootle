@@ -3,3 +3,6 @@
 misc/ini.py
 misc/selector.py
 misc/textwrap.py
+virtaal/plugins/_ipython_console/ipython_view.py
+legacy/jToolkit
+external_apps
