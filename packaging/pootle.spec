@@ -3,7 +3,7 @@
 %global         fullname Pootle
 
 Name:           pootle
-Version:        2.0.1
+Version:        2.1.1
 Release:        2%{?dist}
 Summary:        Localization and translation management web application
 
@@ -15,21 +15,27 @@ Source1:        pootle.conf
 Source2:        README.fedora
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-Patch0:         pootle-2.0.0-rc2-fedora-settings.patch
+Patch0:         pootle-2.1.1-1-fedora-settings.patch
 
 BuildArch:      noarch
 BuildRequires:  python-devel
 BuildRequires:  translate-toolkit >= 1.4.1
 Requires:       Django >= 1.0
-Requires:       iso-codes
+Requires:       Django-south
+%{?fedora:Requires:       iso-codes}
 Requires:       memcached
 Requires:       mod_wsgi
+Requires:       python-djblets
 Requires:       python-lxml
 Requires:       python-memcached
 Requires:       python-Levenshtein
-Requires:       translate-toolkit >= 1.5.1
+# EL-5 uses Python 2.4 and thus needs sqlite2
+%{?rhel:Requires:       python-sqlite2}
+Requires:       translate-toolkit >= 1.8.0
+%if 0%{?rhel} >= 6 || 0%{?fedora}
 Requires:       xapian-bindings-python >= 1.0.13
 Requires:       xapian-core
+%endif
 Requires:       zip
 # This is for /sbin/service
 Requires(post): initscripts
@@ -80,6 +86,7 @@ done
 install -d $RPM_BUILD_ROOT%{_sbindir} $RPM_BUILD_ROOT%{_datadir}/pootle/ $RPM_BUILD_ROOT%{_sharedstatedir}/pootle $RPM_BUILD_ROOT%{_sysconfdir}/pootle
 install $RPM_BUILD_ROOT%{_bindir}/PootleServer $RPM_BUILD_ROOT%{_sbindir}
 rm $RPM_BUILD_ROOT%{_bindir}/PootleServer
+rm -r $RPM_BUILD_ROOT%{python_sitelib}/djblets
 install -p --mode=644 %{SOURCE1} -D $RPM_BUILD_ROOT%{_sysconfdir}/httpd/conf.d/pootle.conf
 install wsgi.py $RPM_BUILD_ROOT%{_datadir}/pootle/
 cp -p %{SOURCE2} .
@@ -111,12 +118,94 @@ fi
 %config(noreplace) %{_sysconfdir}/httpd/conf.d/pootle.conf
 %{python_sitelib}/*
 %{_datadir}/pootle
-%attr(-,apache,apache) %{_sharedstatedir}/pootle
+%if 0%{?rhel} >= 6 || 0%{?fedora}
+%attr(2770,apache,apache) %{_sharedstatedir}/pootle
+%else
+%attr(2770,apache,apache) /var/lib/pootle
+%endif
 # We exclude docs as the Pootle installer doesn't do ${name}-${version} as expected in Fedora
 %exclude %{_datadir}/doc/pootle
 
 
 %changelog
+* Sat Sep 4 2010 Dwayne Bailey <dwayne@translate.org.za> - 2.1.1-2
+- Updated README.fedora with more SELinux information
+
+* Sat Sep 4 2010 Dwayne Bailey <dwayne@translate.org.za> - 2.1.1-1
+- Update to 2.1.1
+   - Ability to migrate data between different database engines
+   - New translations: Slovenian, Songhai, Tamil and Faroese
+   - New Apertium API
+   - Better caching for imporove performance
+     - Save to disk only when there are new translations
+     - Cache exported ZIP archives and XLIFF files
+   - Fixed a bug where Pootle kept files open even when not needed.
+   - Better handling of invalid file types on upload
+   - Don't accept empty suggestions
+   - HTML registration emails
+- Refresh fedora-settings patch
+
+* Fri Sep 3 2010 Dwayne Bailey <dwayne@translate.org.za> - 2.1.0-5
+- Set default rights for /var/lib/pootle
+
+* Wed Aug 18 2010 Dwayne Bailey <dwayne@translate.org.za> - 2.1.0-4
+- Improve README.fedora to deal with SELinux
+
+* Wed Aug 18 2010 Dwayne Bailey <dwayne@translate.org.za> - 2.1.0-3
+- Require Translate Toolkit >= 1.8.0 to fix some multistring issues
+
+* Wed Aug 18 2010 Dwayne Bailey <dwayne@translate.org.za> - 2.1.0-2
+- Fix %%if logic for RHEL and Fedora versions
+
+* Wed Aug 18 2010 Dwayne Bailey <dwayne@translate.org.za> - 2.1.0-1
+- Update to 2.1.0
+   - Improved performance, concurrency and memory consumption
+   - UI improvements for translators
+   - Machine translation
+   - Terminology extraction
+   - Formats: Support for monolingual formats without conversion
+       - Java properties
+       - Mac OSX strings
+       - PHP arrays
+       - Subtitle files
+       - Haiku catkeys
+       - Offline translation in XLIFF for all formats
+       - Reviewing suggestions offline with the XLIFF alt-trans tag
+   - New admin dashboard, contact form
+   - Captcha support to combat spam
+   - Several new batch operations via the command-line
+- Require Django-south for database migration
+
+* Wed Jul 21 2010 David Malcolm <dmalcolm@redhat.com> - 2.0.3-2
+- Rebuilt for https://fedoraproject.org/wiki/Features/Python_2.7/MassRebuild
+
+* Thu Mar 25 2010 Dwayne Bailey <dwayne@translate.org.za> - 2.0.3-1
+- Update to 2.0.3
+   - Support for Qt TS files
+   - Support for TMX and TBX files
+   - Corrections to PostgreSQL support (#1368)
+   - Some improvements to memory use
+   - Timestamps for news items when viewed on the web
+   - It is possible to change tree style more reliably (#1363)
+   - More correct method for finding alternative translations
+   - A complete translation into Asturian, and other translation updates
+- Update to 2.0.2
+   - Don't count the templates towards the front page statistics (#1345)
+   - Fix password change/reset links work without registration (#1350)
+   - Allow deleting translator comments (#1349)
+   - Show the date of items on the news page
+   - New and updated translations, including Luganda, Punjabi and Asturian
+- Remove djblets from external_apps, use the Fedora package instead
+
+* Mon Jan 18 2010 Dwayne Bailey <dwayne@translate.org.za> - 2.0.1-5
+- Require python-sqlite2 as its not included in Python 2.4
+
+* Mon Jan 18 2010 Dwayne Bailey <dwayne@translate.org.za> - 2.0.1-4
+- Drop Xapian and ISO code support as they're not packaged for EL-5
+
+* Sun Jan 17 2010 Dwayne Bailey <dwayne@translate.org.za> - 2.0.1-3
+- Can't use %%{_sharedstatedir}
+
 * Thu Jan 14 2010 Dwayne Bailey <dwayne@translate.org.za> - 2.0.1-2
 - Fixes from spec review
 
