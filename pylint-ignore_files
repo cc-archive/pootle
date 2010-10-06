@@ -1,5 +1,6 @@
 /test_
 /typecheck
+misc/diff_match_patch.py
 misc/ini.py
 misc/selector.py
 misc/textwrap.py
